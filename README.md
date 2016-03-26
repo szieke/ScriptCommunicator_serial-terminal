@@ -23,9 +23,9 @@ This script interface has following features:
 
 ![settings dialog](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2015-12-02_09h50_12.png)
 
-**plotting via script**
+**example script GUI**
 
-![plotting via script](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2015-12-02_10h19_22.png)
+![example script GUI](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2015-12-02_10h19_22.png)
 
 # Downloads (prebuild versions)
 - [Windows](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicatorSetup_04_08_windows.zip/download)
