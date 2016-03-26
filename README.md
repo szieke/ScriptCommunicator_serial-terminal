@@ -22,6 +22,7 @@ This script interface has following features:
 ![settings dialog](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2015-12-02_10h19_22.png)
 
 **plotting via script**
+
 ![plotting via script](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2015-12-02_09h50_12.png)
 
 # Downloads (prebuild versions)
