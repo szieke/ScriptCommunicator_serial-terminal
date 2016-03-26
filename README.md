@@ -13,3 +13,8 @@ This script interface has following features:
 - Multiple plot windows can be created by scripts (QCustomPlot from Emanuel Eichhammer is used)
 
 ![main window](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/sdssdrhhhh5.png)
+
+*Downloads*
+
+[Windows:](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicatorSetup_04_08_windows.zip/download)
+
