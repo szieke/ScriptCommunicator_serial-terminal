@@ -13,8 +13,12 @@ This script interface has following features:
 - Multiple plot windows can be created by scripts (QCustomPlot from Emanuel Eichhammer is used)
 
 ![main window](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/sdssdrhhhh5.png)
+![settings dialog](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2015-12-02_10h19_22.png)
+![plotting via script](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2015-12-02_09h50_12.png)
 
-# Downloads
-- [windows](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicatorSetup_04_08_windows.zip/download)
-- [linux 32 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_32Bit/ScriptCommunicator_04_08_linux_32_bit.zip/download)
+# Downloads (prebuild versions)
+- [Windows](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicatorSetup_04_08_windows.zip/download)
+- [Linux 32 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_32Bit/ScriptCommunicator_04_08_linux_32_bit.zip/download)
+- [Linux 64 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_64Bit/ScriptCommunicator_04_08_linux_64_bit.zip/download)
+- [Mac OS X](http://sourceforge.net/projects/scriptcommunicator/files/Mac%20OS%20X/ScriptCommunicator_04_08_mac.zip/download)
 
