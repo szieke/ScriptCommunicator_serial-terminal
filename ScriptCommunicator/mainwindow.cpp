@@ -2014,7 +2014,7 @@ QString MainWindow::getPluginsFolder(void)
 }
 
 /**
- * Returns the folder ich which the ScriptCommunicator files
+ * Returns the folder in which the ScriptCommunicator files
  * are locared (templates, example scripts and the manual)
  * @return
  *      The folder.
@@ -2035,7 +2035,11 @@ QString MainWindow::getScriptCommunicatorFilesFolder(void)
  */
 QString MainWindow::getAndCreateProgramUserFolder(void)
 {
+#ifdef Q_OS_LINUX
+    QString folder = QStandardPaths::writableLocation(QStandardPaths::ConfigLocation) + "/ScriptCommunicator";
+#else
     QString folder = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) + "/ScriptCommunicator";
+#endif
 
     if(!QDir(folder).exists())
     {
