@@ -15,6 +15,8 @@ This script interface has following features:
 * Scripts can use their own GUI (GUI files which have been created with QtDesigner (is included) or QtCreator).
 * Multiple plot windows can be created by scripts (QCustomPlot from Emanuel Eichhammer is used)
 
+**Web Site:**![Web Site](https://sourceforge.net/projects/scriptcommunicator/)
+
 **main window**
 
 ![main window](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/sdssdrhhhh5.png)
