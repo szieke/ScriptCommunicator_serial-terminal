@@ -1,0 +1,26 @@
+seq::byteArrayToString(QVector<unsigned char> data):QString \nConverts a byte array which contains ascii characters into a ascii string (QString).
+seq::byteArrayToHexString(QVector<unsigned char> data):QString \nConverts a byte array into a hex string.
+seq::stringToArray(QString str):QVector<unsigned char> \nConverts an ascii string into a byte array.
+seq::addStringToArray(QVector<unsigned char> array, QString str):QVector<unsigned char> \nAdds an ascii string to a byte array.
+seq::calculateCrc8(const QVector<unsigned char> data):quint8 \nCalculates a crc8.
+seq::calculateCrc16(const QVector<unsigned char> data):quint16 \nCalculates a crc16.
+seq::calculateCrc32(const QVector<unsigned char> data):quint32 \nCalculates a crc32.
+seq::calculateCrc64(const QVector<unsigned char> data):quint64 \nCalculates a crc64.
+seq::setGlobalString(QString name, QString string):void \nSets a string in the global string map (Scripts can exchange data with this map).
+seq::getGlobalString(QString name, bool removeValue=false):QString \nReturns a string from the global string map (Scripts can exchange data with this map).\nNote: Returns an empty string if name is not in the map.
+seq::setGlobalDataArray(QString name, QVector<unsigned char> data):void \nSets a data vector in the global data vector map (Scripts can exchange data with this map).
+seq::getGlobalDataArray(QString name, bool removeValue=false):QVector<unsigned char> \nReturns a data vector from the global data vector map (Scripts can exchange data with this map).\nNote: Returns an empty data vector if name is not in the map.
+seq::setGlobalUnsignedNumber(QString name, quint32 number):void \nSets a unsigned number in the global unsigned number map Scripts can exchange data with this map).
+seq::getGlobalUnsignedNumber(QString name,bool removeValue=false):QList<quint32> \nReturns a unsigned number from the global unsigned number map (Scripts can exchange data with this map).\nThe first element is the result status (1=name found, 0=name not found). The second element is the read value.
+seq::setGlobalSignedNumber(QString name, qint32 number):void \nSets a signed number in the global signed number map (Scripts can exchange data with this map).
+seq::getGlobalSignedNumber(QString name,bool removeValue=false):QList<qint32> \nReturns a signed number from the global signed number map (Scripts can exchange data with this map).\nThe first element is the result status (1=name found, 0=name not found). The second element is the read value.
+seq::getCurrentVersion(void):QString \nReturns the current version of ScriptCommunicator.
+seq::messageBox(QString icon, QString title, QString text, QWidget* parent=0):void \nShows a message box.
+seq::showYesNoDialog(QString icon, QString title, QString text, QWidget* parent=0):bool \nShows a yes/no dialog.
+seq::showTextInputDialog(QString title, QString label, QString displayedText="", QWidget* parent=0):QString \nConvenience function to get a string from the user.\nShows a QInputDialog::getText dialog (line edit).
+seq::showMultiLineTextInputDialog(QString title, QString label, QString displayedText="", QWidget* parent=0):QString \nConvenience function to get a multiline string from the user.\nShows a QInputDialog::getMultiLineText dialog (plain text edit).
+seq::showGetItemDialog(QString title, QString label, QStringList displayedItems, int currentItemIndex=0, bool editable=false, QWidget* parent=0):QString \nConvenience function to let the user select an item from a string list.\nShows a QInputDialog::getItem dialog (combobox).
+seq::showGetIntDialog(QString title, QString label, int initialValue, int min, int max, int step, QWidget* parent=0):QList<int> \nConvenience function to get an integer input from the user.\nShows a QInputDialog::getInt dialog (spinbox).
+seq::showGetDoubleDialog(QString title, QString label, double initialValue, double min, double max, int decimals, QWidget* parent=0):QList<double> \nConvenience function to get a floating point number from the user.\nShows a QInputDialog::getDouble dialog (spinbox).
+seq::showColorDialog(quint8 initInitalRed=255, quint8 initInitalGreen=255, quint8 initInitalBlue=255, quint8 initInitalAlpha=255, bool alphaIsEnabled=false, QWidget* parent=0):QList<int> \nConvenience function to get color settings from the user.
+seq::setBlockTime(quint32 blockTime):void \nSets the script block time.\nNote: After this execution time (sendData and the script main function (all outside a function))\nthe script is regarded as blocked and will be stopped.

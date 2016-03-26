@@ -1,0 +1,24 @@
+Building ScriptCommunicator:
+
+- download ScriptCommunicator source
+- install Qt (5.5 or higher) and QtCreator
+- open ScriptCommunicator.pro and set the build directory
+- set the build configuration to release and build
+- open ScriptEditor.pro (can be found in ./ScriptEditor) and set the build directory
+- set the build configuration to release and build
+- open DeleteFolder.pro (can be found in ./DeleteFolder) and set the build directory
+- set the build configuration to release and build
+
+In addition to this following must be copied to the ScriptCommunicator executable:
+- the ScriptEditor executable
+- the DeleteFolder executable
+- QtDesigner (can be found in ./designer)
+- the Qt5DesignerComponents library (is customized for ScriptCommunicator, can be found in ./designer/'plattform name')
+- manual
+- template folder 
+- exampleScripts folder
+- apiFiles folder (can be found in ./ScriptEditor)
+- cheetah library
+- PCANBasic library (only on windows)
+
+For an example look at a pre-build version of ScriptCommunicator.

@@ -1,0 +1,18 @@
+
+- Sourcen herrunter laden (am besten auf der jeweilen Plattform auspacken, damit die Rechte stimmen)
+- Pfad zu den build tools(qmake, moc ...) setzen
+	- windows: set PATH=D:\Programme\Qt\Qt5.5.1\5.5\mingw492_32\bin;D:\Programme\Qt\Qt5.5.1\Tools\mingw492_32\bin;%PATH%
+	- Ubuntu: export MAKE=/usr/bin/make
+- widgetbox.xml ersetzen (Src\qttools\src\designer\src\components\widgetbox)
+- Qt konfigurieren
+	- windows: configure -shared -platform win32-g++ -release -nomake examples -nomake tests -opengl desktop
+	- Ununtu 64 bit: ./configure -shared -prefix $PWD/qtbase -platform linux-g++-64 -release -nomake examples -nomake tests -opengl desktop
+	- Ununtu 32 bit: ./configure -shared -prefix $PWD/qtbase -platform linux-g++-32 -release -nomake examples -nomake tests -opengl desktop -qt-xcb
+
+	
+- kompilieren
+	- windows: mingw32-make -j4 -k
+	- Ubuntu: make -k
+
+- Src\qtbase(oder qttools)\lib\Qt5DesignerComponents.(dll, so) kopieren
+

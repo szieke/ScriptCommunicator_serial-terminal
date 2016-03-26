@@ -1,0 +1,25 @@
+cust::byteArrayToString(QVector<unsigned char> data):QString \nConverts a byte array which contains ascii characters into a ascii string (QString).
+cust::byteArrayToHexString(QVector<unsigned char> data):QString \nConverts a byte array into a hex string.
+cust::stringToArray(QString str):QVector<unsigned char> \nConverts an ascii string into a byte array.
+cust::addStringToArray(QVector<unsigned char> array, QString str):QVector<unsigned char> \nAdds an ascii string to a byte array.
+cust::getScriptFolder(void):QString \nReturns the folder in which the script resides.
+cust::loadScript(QString scriptPath, bool isRelativePath=true):bool \nLoads/includes one script (QtScript has no built in include mechanism).
+cust::readFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1):QString \nReads a text file and returns the content.
+cust::readBinaryFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1):QVector<unsigned char> \nReads a binary file and returns the content.
+cust::getFileSize(QString path, bool isRelativePath=true):qint64 \nReturns the size of a file.
+cust::checkFileExists(QString path, bool isRelativePath=true):bool \nChecks if a file exists.
+cust::checkDirectoryExists(QString directory, bool isRelativePath=true):bool \nChecks if a directory exists.
+cust::createDirectory(QString directory, bool isRelativePath=true):bool \nCreates a directory.
+cust::renameDirectory(QString directory, QString newName):bool \nRenames a directory.
+cust::renameFile(QString path, QString newName):bool \nRenames a file.
+cust::deleteFile(QString path, bool isRelativePath=true):bool \nDeletes a file.
+cust::deleteDirectory(QString directory, bool isRelativePath=true):bool \nDeletes a directory (must be empty).
+cust::deleteDirectoryRecursively(QString directory, bool isRelativePath=true):bool \nIf a file or directory cannot be removed, deleteDirectoryRecursively() keeps going and attempts to delete as many files and sub-directories as possible, then returns false. If the directory was already removed, the method returns true (expected result already reached).
+cust::readDirectory(QString directory, bool isRelativePath=true, bool recursive=true, bool returnFiles=true, bool returnDirectories=true):QStringList \nReads the content of a directory and his sub directories.
+cust::writeFile(QString path, bool isRelativePath, QString content, bool replaceFile, qint64 startPosition=-1):bool \nWrites a text file (if replaceFile is true, the existing file is overwritten, else the content is appended).
+cust::writeBinaryFile(QString path, bool isRelativePath, QVector<unsigned char> content, bool replaceFile, qint64 startPosition=-1):bool \nWrites a binary file (if replaceFile is true, the existing file is overwritten, else the content is appended).
+cust::createAbsolutePath(QString fileName):QString \nConverts a relative path into an absolute path.
+cust::getCurrentVersion(void):QString \nReturns the current version of ScriptCommunicator.
+cust::setBlockTime(quint32 blockTime):void \nSets the script block time.\nNote: After this execution time (createString and the script main function (all outside a function))\nthe script is regarded as blocked and will be terminated.
+cust::createXmlReader(void):ScriptXmlReader \nCreates a XML reader.
+cust::createXmlWriter(void):ScriptXmlWriter \nCreates a XML writer.

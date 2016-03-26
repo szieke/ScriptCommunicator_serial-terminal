@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings>
+  <consoleSettings consoleTimestampFormat="&#10;yyyy-MM-dd hh:mm:ss.zzz&#10;" consoleBackgroundColor="efefef" consoleNewLineAfterBytes="0" consoleNewLineAfterPause="0" consoleNewLineAt="10" consoleReceiveColor="000000" consoleSendColor="7c0000" generateTimeStampsInConsole="0" lockScrollingInConsole="0" maxCharsInConsole="50000" showAsciiInConsole="1" showBinaryConsole="0" showCanMetaInformationInConsole="1" showCanTab="0" showDecimalInConsole="0" showHexInConsole="0" showMixedConsole="0" showReceivedDataInConsole="1" showSendDataInConsole="1" stringConsoleFont="MS Shell Dlg 2" stringConsoleFontSize="10" timeStampIntervalConsole="100" updateIntervalConsole="200"/>
+  <logSettings logTimestampFormat="&#10;yyyy-MM-dd hh:mm:ss.zzz&#10;" generateTimeStampsInLog="0" htmlLogFile="0" htmlLogFileName="" logNewLineAfterBytes="0" logNewLineAfterPause="0" stringHtmlLogFont="MS Shell Dlg 2" stringHtmlLogFontSize="10" textLogFile="0" textLogFileName="" timeStampIntervalLog="100" writeAsciiInToLog="1" writeBinaryInToLog="0" writeCanMetaInformationInToLog="1" writeDecimalInToLog="0" writeHexInToLog="0" writeReceivedDataInToLog="1" writeSendDataInToLog="1"/>
+  <serialPortSetting baudRate="115200" dataBits="8" flowControl="None" name="" parity="None" setDTR="1" setRTS="1" stopBits="1"/>
+  <socketSetting adress="" connectionType="0" ownPort="0" partnerPort="0" proxyAddress="" proxyPassword="" proxyPort="0" proxySettings="0" proxyUserName="" socketType="Tcp client"/>
+  <cheetahSpiSetting baudRate="12000" chipSelect="1" mode="0" port="0"/>
+  <pcanSetting baudRate="20" busOffAutoReset="1" channel="0" filterExtended="1" filterFrom="00000000" filterTo="1FFFFFFF" powerSupply="0"/>
+  <sendWindow windowSplitter="202:152" cyclicAreaSplitter="176:412" cyclicScript="./exampleScripts/SequenceScripts/sequenceSendScript.js" interactiveConsoleCheckBox="0" isConnected="0" sendString="00 01 02 03 04 05 06 07 08" sendStringFormat="hex" sendStringPause="0" sendStringRepetition="0" sequenceFileName=""/>
+  <mainWindowPositionAndSize height="609" left="193" scriptTextEdit="" sendAreaInputsSplitterSizes="26:26" sendAreaSplitterSizes="393:85" sendFormatComboBox="ascii" sendTextEdit="" splitterSizes="823:171" toolBoxIndex="3" toolBoxSplitterSizes="155:167:191:171" top="99" width="1021" sendTextEdit="" scriptTextEdit=""/>
+  <sendWindowPositionAndSize height="437" left="1103" top="157" visible="0" width="631"/>
+  <settingsDialogPositionAndSize height="418" left="1000" top="104" visible="0" width="650"/>
+  <scriptWindowPositionAndSize height="530" left="1124" top="132" visible="0" width="702"/>
+  <scriptWindow scriptConfigFileName="" scriptEditorPath="" splitterSize1="260" splitterSize2="206"/>
+  <searchConsoleWindow lastSearchStrings="" directionDownRadioButton="0" matchCaseCheckBox="0" matchWholeWordCheckBox="0"/>
+</settings>
