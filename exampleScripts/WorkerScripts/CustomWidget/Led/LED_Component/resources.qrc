@@ -1,5 +1,0 @@
-<RCC>
-    <qresource prefix="/icons">
-        <file>led.png</file>
-    </qresource>
-</RCC>
