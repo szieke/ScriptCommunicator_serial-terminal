@@ -1,0 +1,28 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/connect.png</file>
+        <file>images/disconnect.png</file>
+        <file>images/application-exit.png</file>
+        <file>images/settings.png</file>
+        <file>images/clear.png</file>
+        <file>images/send.png</file>
+        <file>images/listmodel.png</file>
+        <file>images/qeasingcurve-incirc.png</file>
+        <file>images/guake.ico</file>
+        <file>colorWidgets/alphaback.png</file>
+        <file>images/BringToTop.png</file>
+        <file>images/main.ico</file>
+        <file>images/add.ico</file>
+        <file>images/remove.ico</file>
+        <file>images/addAll.ico</file>
+        <file>images/down.ico</file>
+        <file>images/up.ico</file>
+        <file>images/lock.ico</file>
+        <file>images/message.ico</file>
+        <file>images/BringToTop.ico</file>
+        <file>images/scripts.ico</file>
+        <file>images/send.ico</file>
+        <file>images/folder_add.ico</file>
+        <file>images/reopen.ico</file>
+    </qresource>
+</RCC>

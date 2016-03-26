@@ -1,0 +1,549 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SendWindow</class>
+ <widget class="QMainWindow" name="SendWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>659</width>
+    <height>483</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="windowTitle">
+   <string>Send</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="ScriptCommunicator.qrc">
+    <normaloff>:/images/send.png</normaloff>:/images/send.png</iconset>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_5">
+    <item>
+     <widget class="QSplitter" name="windowSplitter">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="title">
+        <string>single sequences</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <widget class="SequenceTableView" name="tableWidget">
+          <property name="toolTip">
+           <string>to send a sequence press the corresponding row with right mouse button</string>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
+          </property>
+          <property name="dragEnabled">
+           <bool>false</bool>
+          </property>
+          <property name="dragDropOverwriteMode">
+           <bool>false</bool>
+          </property>
+          <property name="dragDropMode">
+           <enum>QAbstractItemView::NoDragDrop</enum>
+          </property>
+          <property name="defaultDropAction">
+           <enum>Qt::IgnoreAction</enum>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <property name="textElideMode">
+           <enum>Qt::ElideLeft</enum>
+          </property>
+          <property name="rowCount">
+           <number>0</number>
+          </property>
+          <property name="columnCount">
+           <number>4</number>
+          </property>
+          <attribute name="horizontalHeaderVisible">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="horizontalHeaderCascadingSectionResizes">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="horizontalHeaderHighlightSections">
+           <bool>false</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderHighlightSections">
+           <bool>false</bool>
+          </attribute>
+          <column/>
+          <column/>
+          <column/>
+          <column/>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="title">
+        <string>cyclic sequence</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,1,0">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QPushButton" name="SendPushButton">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="text">
+             <string>send</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="CyclicSendFormat">
+            <property name="toolTip">
+             <string>data format</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="Repetition_Label">
+            <property name="toolTip">
+             <string>number of repetitions (if 0 is entered the data is sent only once, if 1 is entered the data is sent twice)</string>
+            </property>
+            <property name="text">
+             <string>Repetitions</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="CyclicSendRepetition">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>45</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="baseSize">
+             <size>
+              <width>100</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>number of repetitions (if 0 is entered the data is sent only once, if 1 is entered the data is sent twice)</string>
+            </property>
+            <property name="inputMask">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="placeholderText">
+             <string>0</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="PauseLabel">
+            <property name="toolTip">
+             <string>pause in milliseconds between two repetitions</string>
+            </property>
+            <property name="text">
+             <string>Pause</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="CyclicSendPause">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>45</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>pause in milliseconds between two repetitions</string>
+            </property>
+            <property name="inputMask">
+             <string/>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+            </property>
+            <property name="placeholderText">
+             <string>0</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QCheckBox" name="addToHistoryCheckBox">
+            <property name="toolTip">
+             <string>check if the cyclic data should be added to the send history</string>
+            </property>
+            <property name="text">
+             <string>add to history</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QSplitter" name="cyclicAreaSplitter">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <widget class="QWidget" name="verticalLayoutWidget_2">
+           <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,1">
+            <item>
+             <widget class="QLabel" name="label_3">
+              <property name="text">
+               <string>sequence value</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="SendWindowTextEdit" name="CyclicSendInput">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>the send data</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="verticalLayoutWidget">
+           <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
+            <item>
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string>optional sequence script</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="CyclicScriptTextEdit" name="CyclicSendScript">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="minimumSize">
+               <size>
+                <width>0</width>
+                <height>0</height>
+               </size>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>path to the (optional) sequence send script</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+        <item>
+         <widget class="QProgressBar" name="SendProgressBar">
+          <property name="value">
+           <number>24</number>
+          </property>
+          <property name="textVisible">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label">
+      <property name="text">
+       <string>Note: To send a file use the script sendFile.js in the script window</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>659</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuSequence">
+    <property name="title">
+     <string>single sequences</string>
+    </property>
+    <addaction name="action_new"/>
+    <addaction name="separator"/>
+    <addaction name="actionAddSequenceScript"/>
+    <addaction name="actionCreateSequenceScript"/>
+    <addaction name="actionEditScript"/>
+    <addaction name="actionDebugSequenceScript"/>
+    <addaction name="separator"/>
+    <addaction name="actionRemoveScript"/>
+    <addaction name="action_delete"/>
+    <addaction name="separator"/>
+    <addaction name="actionMoveUp"/>
+    <addaction name="actionMoveDown"/>
+    <addaction name="separator"/>
+    <addaction name="actionEditAllSequenceScripts"/>
+   </widget>
+   <widget class="QMenu" name="menuConfig">
+    <property name="title">
+     <string>config</string>
+    </property>
+    <addaction name="action_save"/>
+    <addaction name="actionSave_as"/>
+    <addaction name="actionLoad"/>
+    <addaction name="actionUnload"/>
+   </widget>
+   <widget class="QMenu" name="menuCyclic_sequence">
+    <property name="title">
+     <string>cyclic sequence</string>
+    </property>
+    <addaction name="actionAddCyclicScript"/>
+    <addaction name="actionEditCyclicScript"/>
+    <addaction name="actionCopySequenceFromTable"/>
+    <addaction name="actionDebugCyclicSequenceScript"/>
+   </widget>
+   <addaction name="menuConfig"/>
+   <addaction name="menuSequence"/>
+   <addaction name="menuCyclic_sequence"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionEditScript">
+   <property name="text">
+    <string>edit sequence script</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="action_delete">
+   <property name="text">
+    <string>&amp;delete sequence</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
+   </property>
+  </action>
+  <action name="action_save">
+   <property name="text">
+    <string>&amp;save config</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSave_as">
+   <property name="text">
+    <string>save config as</string>
+   </property>
+  </action>
+  <action name="actionLoad">
+   <property name="text">
+    <string>load config</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionUnload">
+   <property name="text">
+    <string>unload config</string>
+   </property>
+  </action>
+  <action name="actionRemoveScript">
+   <property name="text">
+    <string>remove sequence script</string>
+   </property>
+  </action>
+  <action name="action_new">
+   <property name="text">
+    <string>new sequence</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionAddSequenceScript">
+   <property name="text">
+    <string>add sequence script</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="actionCreateSequenceScript">
+   <property name="text">
+    <string>create sequence script</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
+   </property>
+  </action>
+  <action name="actionMoveDown">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>move down</string>
+   </property>
+   <property name="toolTip">
+    <string>move sequence-table entry down</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Down</string>
+   </property>
+  </action>
+  <action name="actionMoveUp">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>move up</string>
+   </property>
+   <property name="toolTip">
+    <string>move sequence-table entry up</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Up</string>
+   </property>
+  </action>
+  <action name="actionAddCyclicScript">
+   <property name="text">
+    <string>add sequence script</string>
+   </property>
+  </action>
+  <action name="actionEditCyclicScript">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>edit sequence script</string>
+   </property>
+  </action>
+  <action name="actionCopySequenceFromTable">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>copy sequence from table</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+C</string>
+   </property>
+  </action>
+  <action name="actionDebugSequenceScript">
+   <property name="text">
+    <string>debug sequence script</string>
+   </property>
+  </action>
+  <action name="actionDebugCyclicSequenceScript">
+   <property name="text">
+    <string>debug sequence script</string>
+   </property>
+  </action>
+  <action name="actionEditAllSequenceScripts">
+   <property name="text">
+    <string>edit all sequence scripts</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+A</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>SendWindowTextEdit</class>
+   <extends>QPlainTextEdit</extends>
+   <header>sendwindow.h</header>
+  </customwidget>
+  <customwidget>
+   <class>CyclicScriptTextEdit</class>
+   <extends>QPlainTextEdit</extends>
+   <header>sendwindow.h</header>
+  </customwidget>
+  <customwidget>
+   <class>SequenceTableView</class>
+   <extends>QTableWidget</extends>
+   <header>sequencetableview.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="ScriptCommunicator.qrc"/>
+ </resources>
+ <connections/>
+</ui>

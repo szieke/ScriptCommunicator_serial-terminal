@@ -1,0 +1,553 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CreateSceFile</class>
+ <widget class="QMainWindow" name="CreateSceFile">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Create sce file</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_3">
+    <item>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Vertical</enum>
+      </property>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="title">
+        <string>files</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout">
+          <item>
+           <widget class="QToolButton" name="addFile">
+            <property name="toolTip">
+             <string>add files</string>
+            </property>
+            <property name="text">
+             <string>add</string>
+            </property>
+            <property name="icon">
+             <iconset resource="ScriptCommunicator.qrc">
+              <normaloff>:/images/add.ico</normaloff>:/images/add.ico</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="removeFile">
+            <property name="toolTip">
+             <string>remove an entry</string>
+            </property>
+            <property name="text">
+             <string>remove</string>
+            </property>
+            <property name="icon">
+             <iconset resource="ScriptCommunicator.qrc">
+              <normaloff>:/images/remove.ico</normaloff>:/images/remove.ico</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="addFolder">
+            <property name="toolTip">
+             <string>add a folder</string>
+            </property>
+            <property name="statusTip">
+             <string/>
+            </property>
+            <property name="text">
+             <string>...</string>
+            </property>
+            <property name="icon">
+             <iconset resource="ScriptCommunicator.qrc">
+              <normaloff>:/images/folder_add.ico</normaloff>:/images/folder_add.ico</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="addAllFromScriptTable">
+            <property name="toolTip">
+             <string>add all scripts from the script window</string>
+            </property>
+            <property name="text">
+             <string>add all</string>
+            </property>
+            <property name="icon">
+             <iconset resource="ScriptCommunicator.qrc">
+              <normaloff>:/images/addAll.ico</normaloff>:/images/addAll.ico</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="fileEntryUp">
+            <property name="toolTip">
+             <string>move entry up</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="ScriptCommunicator.qrc">
+              <normaloff>:/images/up.ico</normaloff>:/images/up.ico</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="fileEntryDown">
+            <property name="toolTip">
+             <string>move entry down</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="ScriptCommunicator.qrc">
+              <normaloff>:/images/down.ico</normaloff>:/images/down.ico</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="DragDropTableWidget" name="filesTableWidget">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAsNeeded</enum>
+          </property>
+          <property name="dragDropMode">
+           <enum>QAbstractItemView::DropOnly</enum>
+          </property>
+          <property name="defaultDropAction">
+           <enum>Qt::LinkAction</enum>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <column>
+           <property name="text">
+            <string>sub directory</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>file type</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>source</string>
+           </property>
+          </column>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QGroupBox" name="groupBox_2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="title">
+        <string>arguments</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item>
+           <widget class="QToolButton" name="addArgument">
+            <property name="toolTip">
+             <string>add an argument</string>
+            </property>
+            <property name="text">
+             <string>add</string>
+            </property>
+            <property name="icon">
+             <iconset resource="ScriptCommunicator.qrc">
+              <normaloff>:/images/add.ico</normaloff>:/images/add.ico</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="removeArgument">
+            <property name="toolTip">
+             <string>remove an entry</string>
+            </property>
+            <property name="text">
+             <string>remove</string>
+            </property>
+            <property name="icon">
+             <iconset resource="ScriptCommunicator.qrc">
+              <normaloff>:/images/remove.ico</normaloff>:/images/remove.ico</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="argEntryUp">
+            <property name="toolTip">
+             <string>move entry up</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="ScriptCommunicator.qrc">
+              <normaloff>:/images/up.ico</normaloff>:/images/up.ico</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="argEntryDown">
+            <property name="toolTip">
+             <string>move entry down</string>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="ScriptCommunicator.qrc">
+              <normaloff>:/images/down.ico</normaloff>:/images/down.ico</iconset>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QListWidget" name="argumentsListWidget">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip">
+           <string/>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_4">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="title">
+       <string>options</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0,0,0,1">
+       <item>
+        <widget class="QLabel" name="label">
+         <property name="toolTip">
+          <string>minimun ScriptCommunicator version</string>
+         </property>
+         <property name="text">
+          <string>min. version</string>
+         </property>
+         <property name="scaledContents">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QSpinBox" name="minScVersionMajor">
+           <property name="toolTip">
+            <string>major number</string>
+           </property>
+           <property name="specialValueText">
+            <string/>
+           </property>
+           <property name="showGroupSeparator" stdset="0">
+            <bool>false</bool>
+           </property>
+           <property name="suffix">
+            <string/>
+           </property>
+           <property name="prefix">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_2">
+           <property name="text">
+            <string>.</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="minScVersionMinor">
+           <property name="toolTip">
+            <string>minor number</string>
+           </property>
+           <property name="frame">
+            <bool>true</bool>
+           </property>
+           <property name="prefix">
+            <string/>
+           </property>
+           <property name="value">
+            <number>0</number>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="withScriptWindowCheckBox">
+         <property name="toolTip">
+          <string>show script window</string>
+         </property>
+         <property name="text">
+          <string>with script window</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="notMinimized">
+         <property name="toolTip">
+          <string>the script window is not minimized</string>
+         </property>
+         <property name="text">
+          <string>not minimized</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="groupBox_3">
+      <property name="title">
+       <string>sce file</string>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="DragDropLineEdit" name="fileLineEdit">
+         <property name="toolTip">
+          <string>ScripCommunicator executable file</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="selectFile">
+         <property name="toolTip">
+          <string>select the ScripCommunicator executable file</string>
+         </property>
+         <property name="text">
+          <string>select</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0" colspan="3">
+        <widget class="QProgressBar" name="progressBar">
+         <property name="value">
+          <number>24</number>
+         </property>
+         <property name="textVisible">
+          <bool>false</bool>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuConfig">
+    <property name="title">
+     <string>Config</string>
+    </property>
+    <addaction name="actionLoadConfig"/>
+    <addaction name="actionUnloadConfig"/>
+    <addaction name="actionSaveConfigAs"/>
+    <addaction name="actionSaveConfig"/>
+   </widget>
+   <widget class="QMenu" name="menuGenerate">
+    <property name="title">
+     <string>Generate</string>
+    </property>
+    <addaction name="actionGenerateFileSce"/>
+    <addaction name="actionGenerateCompressedFile"/>
+   </widget>
+   <addaction name="menuConfig"/>
+   <addaction name="menuGenerate"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionLoadConfig">
+   <property name="text">
+    <string>load config</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
+  </action>
+  <action name="actionSaveConfig">
+   <property name="text">
+    <string>save config</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionSaveConfigAs">
+   <property name="text">
+    <string>save config as</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
+   </property>
+  </action>
+  <action name="actionUnloadConfig">
+   <property name="text">
+    <string>unload config</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+U</string>
+   </property>
+  </action>
+  <action name="actionGenerateFileSce">
+   <property name="text">
+    <string>generate file (.sce)</string>
+   </property>
+   <property name="toolTip">
+    <string>generate sce file</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="actionGenerateCompressedFile">
+   <property name="text">
+    <string>generate compressed file (.scez)</string>
+   </property>
+   <property name="toolTip">
+    <string>generate scez file</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+G</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>DragDropLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">mainwindow.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DragDropTableWidget</class>
+   <extends>QTableWidget</extends>
+   <header location="global">scriptwindow.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="ScriptCommunicator.qrc"/>
+ </resources>
+ <connections/>
+</ui>

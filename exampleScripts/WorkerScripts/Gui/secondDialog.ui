@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>secondDialog</class>
+ <widget class="QDialog" name="secondDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>298</width>
+    <height>79</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>second dialog</string>
+  </property>
+  <widget class="QSplitter" name="SecondDialogSplitter">
+   <property name="geometry">
+    <rect>
+     <x>9</x>
+     <y>30</y>
+     <width>283</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <widget class="QLineEdit" name="secondDialogLineEdit"/>
+   <widget class="QPushButton" name="secondDialogOkButton">
+    <property name="text">
+     <string>ok</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="secondDialogCancel">
+    <property name="text">
+     <string>cancel</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>secondDialogOkButton</sender>
+   <signal>clicked()</signal>
+   <receiver>secondDialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>232</x>
+     <y>41</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>179</x>
+     <y>41</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>secondDialogCancel</sender>
+   <signal>clicked()</signal>
+   <receiver>secondDialog</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>313</x>
+     <y>41</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>179</x>
+     <y>41</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

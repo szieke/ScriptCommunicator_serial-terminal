@@ -1,0 +1,12 @@
+
+<ScriptConfig>
+  <columnWidth width0="88" width1="70" width2="209"/>
+  <script name="send input example" status="not running" path="./exampleScripts/WorkerScripts/SendUserInput/sendUserInput.js" ui="./exampleScripts/WorkerScripts/SendUserInput/sendUserInput.ui" height="56"/>
+  <script name="gui example" status="not running" path="./exampleScripts/WorkerScripts/Gui/guiExample.js" ui="./exampleScripts/WorkerScripts/Gui/guiExample.ui" height="56"/>
+  <script name="plot example" status="not running" path="./exampleScripts/WorkerScripts/PlotWindow/plotWindowExample.js" ui="" height="48"/>
+  <script name="send file" status="not running" path="./exampleScripts/WorkerScripts/SendFile/sendFile.js" ui="./exampleScripts/WorkerScripts/SendFile/sendFile.ui" height="58"/>
+  <script name="receive file" status="not running" path="./exampleScripts/WorkerScripts/ReceiveFile/receiveFile.js" ui="./exampleScripts/WorkerScripts/ReceiveFile/receiveFile.ui" height="60"/>
+  <script name="cyclic send example" status="not running" path="./exampleScripts/WorkerScripts/CyclicSendReceive/CyclicSend.js" ui="./exampleScripts/WorkerScripts/CyclicSendReceive/CyclicSend.ui" height="60"/>
+  <script name="cyclic receive example" status="not running" path="./exampleScripts/WorkerScripts/CyclicSendReceive/CyclicReceive.js" ui="./exampleScripts/WorkerScripts/CyclicSendReceive/CyclicReceive.ui" height="60"/>
+  <script name="http server example" status="not running" path="./exampleScripts/WorkerScripts/uHTTPServer/uHTTPserver.js" ui="./exampleScripts/WorkerScripts/uHTTPServer/uHTTPserver.ui" height="60"/>
+</ScriptConfig>

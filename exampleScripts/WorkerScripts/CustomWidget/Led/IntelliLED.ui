@@ -1,0 +1,606 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>434</width>
+    <height>120</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>custom widget example</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="LED" name="l1">
+       <property name="minimumSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="visible">
+        <bool>true</bool>
+       </property>
+       <property name="diameter">
+        <double>4.000000000000000</double>
+       </property>
+       <property name="color">
+        <color>
+         <red>0</red>
+         <green>170</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="state">
+        <bool>false</bool>
+       </property>
+       <property name="threshold">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="LED" name="l2">
+       <property name="minimumSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="visible">
+        <bool>true</bool>
+       </property>
+       <property name="diameter">
+        <double>4.000000000000000</double>
+       </property>
+       <property name="color">
+        <color>
+         <red>0</red>
+         <green>170</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="state">
+        <bool>false</bool>
+       </property>
+       <property name="threshold">
+        <number>10</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="LED" name="l3">
+       <property name="minimumSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="visible">
+        <bool>true</bool>
+       </property>
+       <property name="diameter">
+        <double>4.000000000000000</double>
+       </property>
+       <property name="color">
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="state">
+        <bool>false</bool>
+       </property>
+       <property name="threshold">
+        <number>20</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="LED" name="l4">
+       <property name="minimumSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="visible">
+        <bool>true</bool>
+       </property>
+       <property name="diameter">
+        <double>4.000000000000000</double>
+       </property>
+       <property name="color">
+        <color>
+         <red>255</red>
+         <green>255</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="state">
+        <bool>false</bool>
+       </property>
+       <property name="threshold">
+        <number>30</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="LED" name="l5">
+       <property name="minimumSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="visible">
+        <bool>true</bool>
+       </property>
+       <property name="diameter">
+        <double>4.000000000000000</double>
+       </property>
+       <property name="color">
+        <color>
+         <red>255</red>
+         <green>170</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="state">
+        <bool>false</bool>
+       </property>
+       <property name="threshold">
+        <number>40</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="LED" name="l6">
+       <property name="minimumSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="visible">
+        <bool>true</bool>
+       </property>
+       <property name="diameter">
+        <double>4.000000000000000</double>
+       </property>
+       <property name="color">
+        <color>
+         <red>255</red>
+         <green>170</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="state">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="LED" name="l7">
+       <property name="minimumSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="visible">
+        <bool>true</bool>
+       </property>
+       <property name="diameter">
+        <double>4.000000000000000</double>
+       </property>
+       <property name="color">
+        <color>
+         <red>255</red>
+         <green>170</green>
+         <blue>0</blue>
+        </color>
+       </property>
+       <property name="state">
+        <bool>false</bool>
+       </property>
+       <property name="threshold">
+        <number>60</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="LED" name="l8">
+       <property name="minimumSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="visible">
+        <bool>true</bool>
+       </property>
+       <property name="diameter">
+        <double>4.000000000000000</double>
+       </property>
+       <property name="state">
+        <bool>false</bool>
+       </property>
+       <property name="threshold">
+        <number>70</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="LED" name="l9">
+       <property name="minimumSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="visible">
+        <bool>true</bool>
+       </property>
+       <property name="diameter">
+        <double>4.000000000000000</double>
+       </property>
+       <property name="state">
+        <bool>false</bool>
+       </property>
+       <property name="threshold">
+        <number>80</number>
+       </property>
+       <property name="input">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="LED" name="l10">
+       <property name="minimumSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="visible">
+        <bool>true</bool>
+       </property>
+       <property name="diameter">
+        <double>4.000000000000000</double>
+       </property>
+       <property name="state">
+        <bool>false</bool>
+       </property>
+       <property name="threshold">
+        <number>90</number>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <widget class="QSlider" name="horizontalSlider">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QCheckBox" name="checkBox">
+       <property name="text">
+        <string>Flash</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="LED" name="led">
+       <property name="minimumSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="visible">
+        <bool>true</bool>
+       </property>
+       <property name="diameter">
+        <double>4.000000000000000</double>
+       </property>
+       <property name="state">
+        <bool>false</bool>
+       </property>
+       <property name="flashing">
+        <bool>false</bool>
+       </property>
+       <property name="flashRate">
+        <number>500</number>
+       </property>
+       <property name="alphaForOff">
+        <number>80</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>LED</class>
+   <extends>QWidget</extends>
+   <header>LED.h</header>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>l1</receiver>
+   <slot>setInput(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>157</x>
+     <y>54</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>22</x>
+     <y>22</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>l2</receiver>
+   <slot>setInput(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>157</x>
+     <y>54</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>52</x>
+     <y>22</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>l3</receiver>
+   <slot>setInput(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>157</x>
+     <y>54</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>82</x>
+     <y>22</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>l4</receiver>
+   <slot>setInput(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>157</x>
+     <y>54</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>112</x>
+     <y>22</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>l5</receiver>
+   <slot>setInput(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>157</x>
+     <y>54</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>142</x>
+     <y>22</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>l6</receiver>
+   <slot>setInput(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>157</x>
+     <y>54</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>172</x>
+     <y>22</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>l7</receiver>
+   <slot>setInput(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>157</x>
+     <y>54</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>202</x>
+     <y>22</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>l8</receiver>
+   <slot>setInput(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>157</x>
+     <y>54</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>232</x>
+     <y>22</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>l9</receiver>
+   <slot>setInput(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>157</x>
+     <y>54</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>262</x>
+     <y>22</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>l10</receiver>
+   <slot>setInput(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>157</x>
+     <y>54</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>292</x>
+     <y>22</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>checkBox</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>led</receiver>
+   <slot>setFlashing(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>110</x>
+     <y>83</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>155</x>
+     <y>85</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

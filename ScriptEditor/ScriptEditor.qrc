@@ -1,0 +1,16 @@
+<RCC>
+    <qresource prefix="/">
+        <file>images/copy.png</file>
+        <file>images/cut.png</file>
+        <file>images/new.png</file>
+        <file>images/open.png</file>
+        <file>images/paste.png</file>
+        <file>images/save.png</file>
+        <file>images/find.png</file>
+        <file>images/undo.ico</file>
+        <file>images/redo.ico</file>
+        <file>images/openScripts.ico</file>
+        <file>images/new.ico</file>
+        <file>images/designer.ico</file>
+    </qresource>
+</RCC>
