@@ -11,3 +11,5 @@ This script interface has following features:
 - In addition to the main interface scripts can create and use own interfaces (serial port (RS232, USB to serial), UDP, TCP client, TCP server, PCAN and SPI master).
 - Scripts can use their own GUI (GUI files which have been created with QtDesigner (is included) or QtCreator).
 - Multiple plot windows can be created by scripts (QCustomPlot from Emanuel Eichhammer is used)
+
+![main window](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/sdssdrhhhh5.png)
