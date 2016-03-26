@@ -1,6 +1,11 @@
 # ScriptCommunicator_serial-terminal
 
-ScriptCommunicator is a scriptable cross-platform data terminal which supports serial port (RS232, USB to serial), UDP, TCP client/server (network proxy support for TCP clients), SPI master (cheetah SPI) and CAN (PCAN-USB, only on Windows)
+ScriptCommunicator is a scriptable cross-platform data terminal which supports:
+- serial port (RS232, USB to serial)
+- UDP
+- TCP client/server (network proxy support for TCP clients)
+- SPI master (cheetah SPI)
+- CAN (PCAN-USB, only on Windows)
 
 All sent and received data can be shown in a console and can be logged in an html, a text and a custom log.
 
