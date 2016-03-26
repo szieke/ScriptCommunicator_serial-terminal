@@ -138,6 +138,9 @@ public:
                         QStringList extraPluginPaths, QStringList scriptArguments);
     ~MainWindow();
 
+    ///Hide pop-up menu on toolbar
+    QMenu *createPopupMenu(){ return NULL;}
+
     ///The current version of ScriptCommunicator.
     static const QString VERSION;
 

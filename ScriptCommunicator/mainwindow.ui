@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>972</width>
-    <height>663</height>
+    <width>1183</width>
+    <height>742</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -176,8 +176,8 @@
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Quantico'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="acceptRichText">
                 <bool>false</bool>
@@ -279,8 +279,8 @@ p, li { white-space: pre-wrap; }
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Quantico'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="acceptRichText">
                 <bool>false</bool>
@@ -385,8 +385,8 @@ p, li { white-space: pre-wrap; }
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Quantico'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="acceptRichText">
                 <bool>false</bool>
@@ -491,8 +491,8 @@ p, li { white-space: pre-wrap; }
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Quantico'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="acceptRichText">
                 <bool>false</bool>
@@ -602,7 +602,7 @@ p, li { white-space: pre-wrap; }
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Courier New'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Courier New'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="acceptRichText">
@@ -888,7 +888,7 @@ p, li { white-space: pre-wrap; }
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Courier New'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Courier New'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="acceptRichText">
@@ -1003,8 +1003,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>93</width>
-          <height>93</height>
+          <width>269</width>
+          <height>440</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1048,8 +1048,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>182</width>
-          <height>130</height>
+          <width>269</width>
+          <height>440</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1109,8 +1109,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>195</width>
-          <height>434</height>
+          <width>269</width>
+          <height>440</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1315,8 +1315,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>139</width>
-          <height>271</height>
+          <width>269</width>
+          <height>440</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1566,6 +1566,7 @@ to send a sequence double click on it</string>
    <addaction name="actionLockScrolling"/>
    <addaction name="actionReopenAllLogs"/>
    <addaction name="actionBringAllToForeground"/>
+   <addaction name="actionQuit"/>
   </widget>
   <widget class="QStatusBar" name="statusBar">
    <property name="sizePolicy">
@@ -1589,13 +1590,13 @@ to send a sequence double click on it</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>972</width>
-     <height>21</height>
+     <width>1183</width>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
-     <string>Help</string>
+     <string>He&amp;lp</string>
     </property>
     <addaction name="actionManual"/>
     <addaction name="actionVideo"/>
@@ -1610,7 +1611,7 @@ to send a sequence double click on it</string>
    </widget>
    <widget class="QMenu" name="menuConfig">
     <property name="title">
-     <string>Config</string>
+     <string>&amp;Config</string>
     </property>
     <addaction name="actionLoadPreviosConfig"/>
     <addaction name="actionLoadConfig"/>
@@ -1632,12 +1633,30 @@ to send a sequence double click on it</string>
    </widget>
    <widget class="QMenu" name="menuSend_area">
     <property name="title">
-     <string>Send area</string>
+     <string>Send a&amp;rea</string>
     </property>
     <addaction name="actionEditScript"/>
     <addaction name="actionAddScript"/>
     <addaction name="actionDebugSequenceScript"/>
    </widget>
+   <widget class="QMenu" name="menu_File">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionConnect"/>
+    <addaction name="actionDisconnect"/>
+    <addaction name="actionConfigure"/>
+    <addaction name="actionSending"/>
+    <addaction name="actionScripts"/>
+    <addaction name="actionAddMessage"/>
+    <addaction name="separator"/>
+    <addaction name="actionClear"/>
+    <addaction name="actionLockScrolling"/>
+    <addaction name="actionReopenAllLogs"/>
+    <addaction name="actionBringAllToForeground"/>
+    <addaction name="actionQuit"/>
+   </widget>
+   <addaction name="menu_File"/>
    <addaction name="menuConfig"/>
    <addaction name="menuConsole"/>
    <addaction name="menuSend_area"/>
@@ -1750,7 +1769,7 @@ to send a sequence double click on it</string>
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>about</string>
+    <string>&amp;about</string>
    </property>
   </action>
   <action name="actionLockScrolling">
@@ -1773,7 +1792,7 @@ to send a sequence double click on it</string>
   </action>
   <action name="actionManual">
    <property name="text">
-    <string>manual</string>
+    <string>&amp;manual</string>
    </property>
    <property name="toolTip">
     <string>open the manual</string>
@@ -1796,77 +1815,77 @@ to send a sequence double click on it</string>
   </action>
   <action name="actionCopyConfig">
    <property name="text">
-    <string>copy config</string>
+    <string>co&amp;py config</string>
    </property>
   </action>
   <action name="actionLoadConfig">
    <property name="text">
-    <string>load config</string>
+    <string>l&amp;oad config</string>
    </property>
   </action>
   <action name="actionLoadPreviosConfig">
    <property name="text">
-    <string>load previous used config</string>
+    <string>&amp;load previous used config</string>
    </property>
   </action>
   <action name="actionDeletePreviousConfigList">
    <property name="text">
-    <string>delete previous used config list</string>
+    <string>&amp;delete previous used config list</string>
    </property>
   </action>
   <action name="actionSetCurrentConfigToDefault">
    <property name="text">
-    <string>set current config to default</string>
+    <string>&amp;set current config to default</string>
    </property>
   </action>
   <action name="actionResetDefaultConfig">
    <property name="text">
-    <string>reset default config</string>
+    <string>&amp;reset default config</string>
    </property>
   </action>
   <action name="actionCreateNewConfig">
    <property name="text">
-    <string>create new config</string>
+    <string>&amp;create new config</string>
    </property>
   </action>
   <action name="actionSaveConsole">
    <property name="text">
-    <string>save console</string>
+    <string>&amp;save console</string>
    </property>
   </action>
   <action name="actionPrintConsole">
    <property name="text">
-    <string>print console</string>
+    <string>&amp;print console</string>
    </property>
   </action>
   <action name="actionSubmitBug">
    <property name="text">
-    <string>report a bug</string>
+    <string>&amp;report a bug</string>
    </property>
   </action>
   <action name="actionRequestFeature">
    <property name="text">
-    <string>feature request</string>
+    <string>&amp;feature request</string>
    </property>
   </action>
   <action name="actionVideo">
    <property name="text">
-    <string>video (youtube)</string>
+    <string>&amp;video (youtube)</string>
    </property>
   </action>
   <action name="actionGetSupport">
    <property name="text">
-    <string>get support</string>
+    <string>&amp;get support</string>
    </property>
   </action>
   <action name="actionEditScript">
    <property name="text">
-    <string>edit sequence script</string>
+    <string>&amp;edit sequence script</string>
    </property>
   </action>
   <action name="actionAddScript">
    <property name="text">
-    <string>add sequence script</string>
+    <string>&amp;add sequence script</string>
    </property>
   </action>
   <action name="actionBringAllToForeground">
@@ -1883,12 +1902,12 @@ to send a sequence double click on it</string>
   </action>
   <action name="actionDebugSequenceScript">
    <property name="text">
-    <string>debug sequence script</string>
+    <string>&amp;debug sequence script</string>
    </property>
   </action>
   <action name="actionCheckForUpdates">
    <property name="text">
-    <string>check for updates (in background)</string>
+    <string>&amp;check for updates (in background)</string>
    </property>
   </action>
   <action name="actionReopenAllLogs">
@@ -1897,7 +1916,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/reopen.ico</normaloff>:/images/reopen.ico</iconset>
    </property>
    <property name="text">
-    <string>logs</string>
+    <string>Logs</string>
    </property>
    <property name="toolTip">
     <string>close and reopen all enabled logs (if the 'append time stamp at log file name'
