@@ -46,7 +46,7 @@
 #include "scriptTcpClient.h"
 
 ///The current version of ScriptCommunicator.
-const QString MainWindow::VERSION = "04.08";
+const QString MainWindow::VERSION = "04.09";
 
 #ifdef Q_OS_WIN32
 const QString MainWindow::INIT_MAIN_CONFIG_FILE = "initialSettingsWin.xml";
@@ -1595,6 +1595,7 @@ void MainWindow::loadSettings()
                         m_userInterface->startIndexSpinBox->setValue(node.attributes().namedItem("startIndexSpinBox").nodeValue().toUInt());
                         m_userInterface->endIndexSpinBox->setValue(node.attributes().namedItem("endIndexSpinBox").nodeValue().toUInt());
                         m_userInterface->sendPauseSpinBox->setValue(node.attributes().namedItem("sendPauseSpinBox").nodeValue().toUInt());
+                        m_userInterface->sendRepetitionCountSpinBox->setValue(node.attributes().namedItem("sendRepetitionCountSpinBox").nodeValue().toUInt());
                         m_userInterface->historyFormatComboBox->setCurrentText(node.attributes().namedItem("historyFormatComboBox").nodeValue());
 
                         m_userInterface->startIndexSpinBox->blockSignals(false);
@@ -2321,6 +2322,7 @@ void MainWindow::saveSettings()
                     std::make_pair(QString("startIndexSpinBox"), QString("%1").arg(m_userInterface->startIndexSpinBox->value())),
                     std::make_pair(QString("endIndexSpinBox"), QString("%1").arg(m_userInterface->endIndexSpinBox->value())),
                     std::make_pair(QString("sendPauseSpinBox"), QString("%1").arg(m_userInterface->sendPauseSpinBox->value())),
+                    std::make_pair(QString("sendRepetitionCountSpinBox"), QString("%1").arg(m_userInterface->sendRepetitionCountSpinBox->value())),
                     std::make_pair(QString("historyFormatComboBox"), m_userInterface->historyFormatComboBox->currentText())
                 };
 
@@ -3311,10 +3313,11 @@ void MainWindow::showAboutWindowSlot(void)
 
     QString text = "author: Stefan Zieker";
     text.append("<br>email:<a href=\"s.zieker@gmx.net\">s.zieker@gmx.net</a>");
-    text.append("<br>web:<a href=\"http://sourceforge.net/projects/scriptcommunicator/\">http://sourceforge.net/projects/scriptcommunicator/</a>");
+    text.append("<br>web1:<a href=\"https://sourceforge.net/projects/scriptcommunicator/\">https://sourceforge.net/projects/scriptcommunicator/</a>");
+    text.append("<br>web2:<a href=\"https://github.com/szieke/ScriptCommunicator_serial-terminal\">https://github.com/szieke/ScriptCommunicator_serial-terminal</a>");
 
     //SVN revision
-    QString svnRevison = "$Revision: 1021 $";
+    QString svnRevison = "$Revision: 1032 $";
     svnRevison.remove("$Revision: ");
     svnRevison.remove(" $");
     text.append("<br>revision:" + svnRevison);
