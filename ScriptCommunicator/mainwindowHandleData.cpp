@@ -1771,24 +1771,28 @@ void MainWindowHandleData::sendHistory(void)
 {
     qint32 endIndex = m_mainWindow->m_userInterface->endIndexSpinBox->value();
     qint32 startIndex = m_mainWindow->m_userInterface->startIndexSpinBox->value();
+    qint32 repetitionCount = m_mainWindow->m_userInterface->sendRepetitionCountSpinBox->value() + 1U;
     qint32 count = 0;
     m_sendHistorySendData.clear();
 
-    if(startIndex < endIndex)
+    for(qint32 i = 0; i < repetitionCount; i++)
     {
-        for(qint32 i = startIndex; (i <= endIndex) && (i < m_sendHistory.length()); i++)
+        if(startIndex < endIndex)
         {
-            m_sendHistorySendData.push_back(m_sendHistory[i]);
+            for(qint32 i = startIndex; (i <= endIndex) && (i < m_sendHistory.length()); i++)
+            {
+                m_sendHistorySendData.push_back(m_sendHistory[i]);
+            }
+            count += (endIndex - startIndex) + 1;
         }
-        count = (endIndex - startIndex) + 1;
-    }
-    else
-    {
-        for(qint32 i = startIndex; (i >= endIndex) && (i < m_sendHistory.length()); i--)
+        else
         {
-            m_sendHistorySendData.push_back(m_sendHistory[i]);
+            for(qint32 i = startIndex; (i >= endIndex) && (i < m_sendHistory.length()); i--)
+            {
+                m_sendHistorySendData.push_back(m_sendHistory[i]);
+            }
+            count += (startIndex - endIndex) + 1;
         }
-        count = (startIndex - endIndex) + 1;
     }
 
     m_historySendIsInProgress = true;
