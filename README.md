@@ -30,7 +30,7 @@ This script interface has following features:
 # Homepage
 [https://sourceforge.net/projects/scriptcommunicator/](https://sourceforge.net/projects/scriptcommunicator/)
 
-# Downloads (prebuild versions)
+# Downloads (release 04.08)
 - [Windows](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicatorSetup_04_08_windows.zip/download)
 - [Linux 32 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_32Bit/ScriptCommunicator_04_08_linux_32_bit.zip/download)
 - [Linux 64 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_64Bit/ScriptCommunicator_04_08_linux_64_bit.zip/download)
