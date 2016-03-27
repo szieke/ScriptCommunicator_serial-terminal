@@ -89,7 +89,7 @@ private slots:
     void stub_currentItemChangedSlot(int index){emit currentItemChangedSignal(index);}
 
 private:
-    ///The wrapped push button.
+    ///The wrapped tool box.
     QToolBox* m_box;
 };
 

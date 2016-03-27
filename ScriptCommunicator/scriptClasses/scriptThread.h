@@ -40,6 +40,7 @@
 #include <QProcess>
 #include <scriptHelper.h>
 #include <QStandardPaths>
+#include <QToolBox>
 
 
 class ScriptWidget;
@@ -49,6 +50,7 @@ class ScriptCheetahSpi;
 class ScriptPcan;
 class ScriptWindow;
 class ScriptTabWidget;
+class ScriptToolBox;
 
 
 typedef QObject* (*CreateScriptCommunicatorWidget)(QObject *parent, QWidget* uiElement, bool scriptRunsInDebugger);
@@ -491,6 +493,10 @@ public:
 	///Note: This function fails in command-line mode.
     Q_INVOKABLE bool addTabsToMainWindow(ScriptTabWidget* tabWidget);
 
+    ///Adds script toolbox pages to the main window (all pages are removed from toolBox).
+    ///Note: This function fails in command-line mode.
+    Q_INVOKABLE bool addToolBoxPagesToMainWindow(ScriptToolBox* scriptToolBox);
+
     ///Returns the tread state.
     ThreadSate getThreadState(){return m_state;}
 
@@ -606,9 +612,13 @@ signals:
     ///This signal must not be used from script.
     void loadUserInterfaceFileSignal(QWidget** scriptUi, QString path);
 
-    ///Is connected with ScriptWindow::addTabsToMainWindow.
+    ///Is connected with MainWindow::addTabsToMainWindowSlot.
     ///This signal must not be used from script.
     void addTabsToMainWindowSignal(QTabWidget* tabWidget);
+
+    ///Is connected with MainWindow::addToolBoxPagesToMainWindowSlot.
+    ///This signal must not be used from script.
+    void addToolBoxPagesToMainWindowSignal(QToolBox* toolBox);
 
     ///Enables/Disables all script tabs for one script thread.
     ///This signal must not be used from script.
@@ -755,8 +765,8 @@ private:
     ///The debug window.
     QMainWindow *m_debugWindow;
 
-    ///True if the script has tabs in the main window.
-    bool m_hasMainWindowTabs;
+    ///True if the script has GUI elements in the main window.
+    bool m_hasMainWindowGuiElements;
 
 #ifdef Q_OS_MAC
     ///The debug timer (checks if the script is suspended by the debugger or is running).

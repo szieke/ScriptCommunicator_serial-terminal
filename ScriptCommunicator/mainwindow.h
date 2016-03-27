@@ -52,6 +52,7 @@
 #include <QLineEdit>
 #include <QFileInfo>
 #include <QDir>
+#include <QToolBox>
 
 
 
@@ -235,6 +236,9 @@ public:
      ///Returns true if the ScriptCommunicator starts the first time.
     bool isFirstProgramStart(void){return m_isFirstProgramStart;}
 
+    ///Removes all script tabs and tool box pages for one script thread.
+    void removeAllTabsAndToolBoxPages(QObject *scriptThread);
+
 signals:
     ///With this signal the main window requests the main interface thread to connect with the man interface interface.
     ///This signal is connected to the MainInterfaceThread::connectDataConnectionSlot slot.
@@ -255,8 +259,8 @@ public slots:
     ///Adds script tabs to the main window.
     void addTabsToMainWindowSlot(QTabWidget* tabWidget);
 
-    ///Removes all script tabs for one script thread.
-    void removeAllTabsForOneScriptThreadSlot(QObject *scriptThread);
+    ///Adds script toolbox pages to the main window.
+    void addToolBoxPagesToMainWindowSlot(QToolBox* toolBox);
 
     ///Enables/Disables all script tabs for one script thread.
     void enableAllTabsForOneScriptThreadSlot(QObject *scriptThread, bool enable);
@@ -647,6 +651,9 @@ private:
 
     ///Map which contains all script tabs titles (the first argument is a pointer to the tab).
     QMap<QWidget*, QString> m_scriptTabsTitles;
+
+    ///Map which contains all script tool box page (the second argument is a pointer to the script thread).
+    QMap<QWidget*, QObject*> m_scriptToolBoxPage;
 
 };
 
