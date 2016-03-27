@@ -2751,12 +2751,19 @@ void MainWindow::dataConnectionStatusSlot(bool isConnected, QString message)
 
         m_isConnected = true;
         m_isConnectedWithCan = (currentSettings->connectionType == CONNECTION_TYPE_PCAN) ? true : false;
+
+        m_userInterface->actionConnect->setIcon(QIcon(":/disconnect"));
+        m_userInterface->actionConnect->setText("Dis&connect");
     }
     else
     {
         m_isConnected = false;
         m_isConnectedWithCan = false;
+
+        m_userInterface->actionConnect->setIcon(QIcon(":/connect"));
+        m_userInterface->actionConnect->setText("&Connect");
     }
+    m_userInterface->actionConnect->setChecked(isConnected);
 }
 
 /**
@@ -2773,15 +2780,11 @@ void MainWindow::toggleConnectionSlot(bool connectionStatus)
         settings.serialPort.setDTR = m_userInterface->dtrCheckBox->isChecked();
         settings.serialPort.setRTS = m_userInterface->rtsCheckBox->isChecked();
         configHasToBeSavedSlot();
-        m_userInterface->actionConnect->setIcon(QIcon(":/disconnect"));
-        m_userInterface->actionConnect->setText("Dis&connect");
         emit connectDataConnectionSignal(settings, true);
     }
     else
     {
         //disconnect
-        m_userInterface->actionConnect->setIcon(QIcon(":/connect"));
-        m_userInterface->actionConnect->setText("&Connect");
         emit connectDataConnectionSignal(settings, false);
     }
 }
@@ -3140,6 +3143,13 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
     {
         //Store the scroll bar position.
         int val = textEdit->verticalScrollBar()->value();
+
+        if (textEdit == m_userInterface->ReceiveTextEditMixed)
+        {
+            consoleString->prepend("<body bgcolor=#ceecee>");
+            consoleString->append("</body>");
+        }
+
 
         textEdit->moveCursor(QTextCursor::End);
         textEdit->insertHtml(*consoleString);
