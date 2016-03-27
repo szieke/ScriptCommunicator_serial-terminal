@@ -394,10 +394,7 @@ private slots:
     void messageEnteredSlot(QString message, bool forceTimeStamp);
 
     ///Slot function for the connect button.
-    void connectSlot();
-
-    ///Slot function for the disconnect button.
-    void disconnectSlot();
+    void toggleConnectionSlot(bool connectionStatus);
 
     ///Slot function for the show sending window button.
     void showSendingWindowSlot();
