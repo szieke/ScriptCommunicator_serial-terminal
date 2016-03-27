@@ -3312,18 +3312,15 @@ void MainWindow::showAboutWindowSlot(void)
 {
 
     QString text = "author: Stefan Zieker";
-    text.append("<br>email:<a href=\"s.zieker@gmx.net\">s.zieker@gmx.net</a>");
-    text.append("<br>web1:<a href=\"https://sourceforge.net/projects/scriptcommunicator/\">https://sourceforge.net/projects/scriptcommunicator/</a>");
-    text.append("<br>web2:<a href=\"https://github.com/szieke/ScriptCommunicator_serial-terminal\">https://github.com/szieke/ScriptCommunicator_serial-terminal</a>");
+    text.append("<br>email: <a href=\"s.zieker@gmx.net\">s.zieker@gmx.net</a>");
+    text.append("<br>web1: <a href=\"https://sourceforge.net/projects/scriptcommunicator/\">https://sourceforge.net/projects/scriptcommunicator/</a>");
+    text.append("<br>web2: <a href=\"https://github.com/szieke/ScriptCommunicator_serial-terminal\">https://github.com/szieke/ScriptCommunicator_serial-terminal</a>");
 
-    //SVN revision
-    QString svnRevison = "$Revision: 1032 $";
-    svnRevison.remove("$Revision: ");
-    svnRevison.remove(" $");
-    text.append("<br>revision:" + svnRevison);
+    //Current version
+    text.append("<br>version: " + VERSION);
 
     //Qt version
-    text.append("<br>qt version:");
+    text.append("<br>qt version: ");
     text.append(QT_VERSION_STR);
 
     QMessageBox msgBox(QMessageBox::Information, "about",text);
