@@ -190,8 +190,6 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     m_userInterface->statusBar->addPermanentWidget(&m_statusBarLabel, 1);
 
 
-    m_userInterface->actionConnect->setEnabled(true);
-    m_userInterface->actionDisconnect->setEnabled(false);
     m_userInterface->actionQuit->setEnabled(true);
     m_userInterface->actionConfigure->setEnabled(true);
 
@@ -1691,7 +1689,7 @@ void MainWindow::loadSettings()
         }
         if(isConnected)
         {
-            connectSlot();
+            toggleConnectionSlot(isConnected);
         }
 
         textLogActivatedSlot(currentSettings.textLogFile);
@@ -2690,17 +2688,6 @@ void MainWindow::customLogActivatedSlot(bool activated)
 void MainWindow::setConnectionButtonsSlot(bool enable)
 {
     m_settingsDialog->setInterfaceSettingsCanBeChanged(enable);
-
-    if(enable)
-    {
-        m_userInterface->actionConnect->setEnabled(true);
-        m_userInterface->actionDisconnect->setEnabled(false);
-    }
-    else
-    {
-        m_userInterface->actionConnect->setEnabled(false);
-        m_userInterface->actionDisconnect->setEnabled(true);
-    }
 }
 
 /**
@@ -2762,41 +2749,41 @@ void MainWindow::dataConnectionStatusSlot(bool isConnected, QString message)
     {
         const Settings* currentSettings = m_settingsDialog->settings();
 
-        m_userInterface->actionConnect->setEnabled(false);
-        m_userInterface->actionDisconnect->setEnabled(true);
-
         m_isConnected = true;
-
         m_isConnectedWithCan = (currentSettings->connectionType == CONNECTION_TYPE_PCAN) ? true : false;
     }
     else
     {
         m_isConnected = false;
         m_isConnectedWithCan = false;
-        m_userInterface->actionConnect->setEnabled(true);
-        m_userInterface->actionDisconnect->setEnabled(false);
     }
 }
 
 /**
- * Slot function for the connect button.
+ * Slot function for the connect/disconnect button.
  */
-void MainWindow::connectSlot()
+void MainWindow::toggleConnectionSlot(bool connectionStatus)
 {
     m_settingsDialog->updateSettings();
     Settings settings = *m_settingsDialog->settings();
-    settings.serialPort.setDTR = m_userInterface->dtrCheckBox->isChecked();
-    settings.serialPort.setRTS = m_userInterface->rtsCheckBox->isChecked();
-    configHasToBeSavedSlot();
-    emit connectDataConnectionSignal(settings, true);
-}
 
-/**
- * Slot function for the disconnect button.
- */
-void MainWindow::disconnectSlot()
-{
-    emit connectDataConnectionSignal(*m_settingsDialog->settings(), false);
+    if (connectionStatus)
+    {
+        //connect
+        settings.serialPort.setDTR = m_userInterface->dtrCheckBox->isChecked();
+        settings.serialPort.setRTS = m_userInterface->rtsCheckBox->isChecked();
+        configHasToBeSavedSlot();
+        m_userInterface->actionConnect->setIcon(QIcon(":/disconnect"));
+        m_userInterface->actionConnect->setText("Dis&connect");
+        emit connectDataConnectionSignal(settings, true);
+    }
+    else
+    {
+        //disconnect
+        m_userInterface->actionConnect->setIcon(QIcon(":/connect"));
+        m_userInterface->actionConnect->setText("&Connect");
+        emit connectDataConnectionSignal(settings, false);
+    }
 }
 
 /**
@@ -3205,8 +3192,7 @@ void MainWindow::dataRateUpdateSlot(quint32 dataRateSend, quint32 dataRateReceiv
  */
 void MainWindow::initActionsConnections()
 {
-    connect(m_userInterface->actionConnect, SIGNAL(triggered()), this, SLOT(connectSlot()));
-    connect(m_userInterface->actionDisconnect, SIGNAL(triggered()), this, SLOT(disconnectSlot()));
+    connect(m_userInterface->actionConnect, SIGNAL(toggled(bool)), this, SLOT(toggleConnectionSlot(bool)));
     connect(m_userInterface->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
     connect(m_userInterface->actionQuit, SIGNAL(triggered()), m_sendWindow, SLOT(close()));
     connect(m_userInterface->actionConfigure, SIGNAL(triggered()), this, SLOT(showSettingsWindowSlot()));
