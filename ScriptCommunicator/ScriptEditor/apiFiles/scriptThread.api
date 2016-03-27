@@ -102,6 +102,7 @@ scriptThread::getScriptArguments(void):QStringList \nReturns the script argument
 scriptThread::getScriptCommunicatorFolder(void):QString \nReturns the ScriptCommunicator program folder.
 scriptThread::getUserDocumentsFolder(void):QString \nReturns the directory containing user document files.
 scriptThread::addTabsToMainWindow(ScriptTabWidget* tabWidget):bool \nAdds script tabs to the main window.\nNote: This function fails in command-line mode.
+scriptThread::addToolBoxPagesToMainWindow(ScriptToolBox* scriptToolBox):bool \nAdds script toolbox pages to the main window (all pages are removed from toolBox).\nNote: This function fails in command-line mode.
 scriptThread::globalStringChangedSignal.connect(QString name, QString string)\nIs emitted if a string in the global string map has been changed.
 scriptThread::globalDataArrayChangedSignal.connect(QString name, QVector<unsigned char> data)\nIs emitted if a data vector in the global string data vector has been changed.
 scriptThread::globalUnsignedChangedSignal.connect(QString name, quint32 number)\nIs emitted if an unsigned number in the global unsigned number map has been changed

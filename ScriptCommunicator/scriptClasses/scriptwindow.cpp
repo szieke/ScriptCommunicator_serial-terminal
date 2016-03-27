@@ -1254,7 +1254,7 @@ void ScriptWindow::threadStateChangedSlot(ThreadSate state, ScriptThread* thread
                 delete thread;
             }
 
-            m_mainWindow->removeAllTabsForOneScriptThreadSlot(thread);
+            m_mainWindow->removeAllTabsAndToolBoxPages(thread);
         }
 
         if(m_userInterface->tableWidget->rowCount() > 0)
@@ -1778,7 +1778,7 @@ void ScriptWindow::stopScriptThread(int selectedRow)
                     if(thread)
                     {
                         thread->terminateScriptThread();
-                        m_mainWindow->removeAllTabsForOneScriptThreadSlot(thread);
+                        m_mainWindow->removeAllTabsAndToolBoxPages(thread);
                     }
 
                     checkIfScriptCommunicatorMustExit();

@@ -108,7 +108,7 @@ ScriptThread::ScriptThread(ScriptWindow* scriptWindow, quint32 sendId, QString s
                            SettingsDialog *settingsDialog, bool scriptRunsInDebugger) :
     m_sendingSucceeded(false), m_shallExit(false), m_shallPause(false) ,m_scriptRunsInDebugger(scriptRunsInDebugger), m_state(INVALID),
     m_pauseTimer(0),m_scriptEngine(0), m_settingsDialog(settingsDialog), m_scriptSql(), m_blockTime(DEFAULT_BLOCK_TIME),
-    m_standardDialogs(0), m_scriptFileObject(0), m_isSuspendedByDebuger(false), m_debugger(0), m_debugWindow(0), m_hasMainWindowTabs(false)
+    m_standardDialogs(0), m_scriptFileObject(0), m_isSuspendedByDebuger(false), m_debugger(0), m_debugWindow(0), m_hasMainWindowGuiElements(false)
 {
     m_scriptWindow = scriptWindow;
 
@@ -289,6 +289,9 @@ void ScriptThread::run()
 
         connect(this, SIGNAL(addTabsToMainWindowSignal(QTabWidget*)),
                 m_scriptWindow->m_mainWindow, SLOT(addTabsToMainWindowSlot(QTabWidget*)), directConnectionType);
+
+        connect(this, SIGNAL(addToolBoxPagesToMainWindowSignal(QToolBox*)),
+                m_scriptWindow->m_mainWindow, SLOT(addToolBoxPagesToMainWindowSlot(QToolBox*)), directConnectionType);
 
         connect(this, SIGNAL(enableAllTabsForOneScriptThreadSignal(QObject*,bool)),
                 m_scriptWindow->m_mainWindow, SLOT(enableAllTabsForOneScriptThreadSlot(QObject*,bool)), directConnectionType);
@@ -1118,7 +1121,7 @@ void ScriptThread::debugTimerSlot(void)
                         break;
                     }
                 }
-                if(allWindowsAreClosed  && !m_hasMainWindowTabs)
+                if(allWindowsAreClosed  && !m_hasMainWindowGuiElements)
                 {
                     if(m_isSuspendedByDebuger)
                     {
@@ -1211,7 +1214,7 @@ void ScriptThread::pauseTimerSlot()
                         break;
                     }
                 }
-                if(allWindowsAreClosed  && !m_hasMainWindowTabs)
+                if(allWindowsAreClosed  && !m_hasMainWindowGuiElements)
                 {
                     if(m_isSuspendedByDebuger)
                     {
@@ -2726,7 +2729,6 @@ QStringList ScriptThread::getScriptArguments(void)
 
 /**
  * Adds scrip tabs to the main window.
- *
  * Note: This function fails in command-line mode.
  *
  * @param tabWidget
@@ -2741,12 +2743,37 @@ bool ScriptThread::addTabsToMainWindow(ScriptTabWidget* tabWidget)
     if(!m_scriptWindow->getMainWindow()->isCommandLineMode())
     {//No command-line mode.
         QTabWidget* tabs = static_cast<QTabWidget*> (tabWidget->getWidgetPointer());
-        m_hasMainWindowTabs = true;
+        m_hasMainWindowGuiElements = true;
         emit addTabsToMainWindowSignal(tabs);
         result = true;
     }
     return result;
 }
+
+
+/**
+ * Adds script toolbox pages to the main window (all pages are removed from toolBox).
+ * Note: This function fails in command-line mode.
+ *
+ * @param scriptToolBox
+ *      The script tool box.
+ * @return
+ *      True on success.
+ */
+bool ScriptThread::addToolBoxPagesToMainWindow(ScriptToolBox* scriptToolBox)
+{
+    bool result = false;
+
+    if(!m_scriptWindow->getMainWindow()->isCommandLineMode())
+    {//No command-line mode.
+        QToolBox* toolBox = static_cast<QToolBox*> (scriptToolBox->getWidgetPointer());
+        m_hasMainWindowGuiElements = true;
+        emit addToolBoxPagesToMainWindowSignal(toolBox);
+        result = true;
+    }
+    return result;
+}
+
 /**
  * Converts a string into a QMessageBox::Icon.
  * @param icon

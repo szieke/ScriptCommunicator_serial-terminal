@@ -135,7 +135,8 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     m_isFirstProgramStart(false), m_mouseGrabWidget(0), m_searchConsole(0),
     m_dataRateSend(0), m_dataRateReceive(0), m_handleData(0), m_ignoreNextResizeEventTime(QDateTime::currentDateTime()), m_toolBoxSplitterSizeSecond(0),
     m_sendAreaSplitterSizeSecond(0), m_sendAreaInputsSplitterSizeSecond(0), m_toolBoxSplitterSizesSecond(), m_currentToolBoxIndex(0), m_mainConfigLockFile(),
-    m_configLockFileTimer(), m_extraPluginPaths(extraPluginPaths), m_scriptArguments(scriptArguments), updatesManager(0), m_scriptTabs(), m_scriptTabsTitles()
+    m_configLockFileTimer(), m_extraPluginPaths(extraPluginPaths), m_scriptArguments(scriptArguments), updatesManager(0), m_scriptTabs(), m_scriptTabsTitles(),
+    m_scriptToolBoxPage()
 {
 
     m_userInterface->setupUi(this);
@@ -1417,6 +1418,7 @@ void MainWindow::loadSettings()
 
 
                         m_currentToolBoxIndex = node.attributes().namedItem("toolBoxIndex").nodeValue().toInt();
+
                         m_userInterface->toolBox->blockSignals(true);
                         m_userInterface->toolBox->setCurrentIndex(m_currentToolBoxIndex);
                         m_userInterface->toolBox->blockSignals(false);
@@ -2241,7 +2243,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("splitterSizes"), QString("%1:%2").arg(splitterSizes[0]).arg(splitterSizes[1])),
                  std::make_pair(QString("sendAreaSplitterSizes"), QString("%1:%2").arg(sendAreaSplitterSizes[0]).arg(sendAreaSplitterSizes[1])),
                  std::make_pair(QString("sendAreaInputsSplitterSizes"), QString("%1:%2").arg(sendAreaInputsSplitterSizes[0]).arg(sendAreaInputsSplitterSizes[1])),
-                 std::make_pair(QString("toolBoxIndex"), QString("%1").arg(m_userInterface->toolBox->currentIndex())),
+                 std::make_pair(QString("toolBoxIndex"), QString("%1").arg(m_currentToolBoxIndex)),
                  std::make_pair(QString("sendTextEdit"), m_userInterface->SendTextEdit->toPlainText()),
                  std::make_pair(QString("scriptTextEdit"), m_userInterface->ScriptTextEdit->toPlainText()),
                  std::make_pair(QString("sendFormatComboBox"), m_userInterface->SendFormatComboBox->currentText()),
@@ -3406,13 +3408,45 @@ void MainWindow::addTabsToMainWindowSlot(QTabWidget* tabWidget)
     m_userInterface->tabWidget->setCurrentIndex(m_userInterface->tabWidget->count() - 1);
 
 }
+/**
+ * Adds script toolbox pages to the main window.
+ * @param toolBox
+ *      The tool box.
+ */
+void  MainWindow::addToolBoxPagesToMainWindowSlot(QToolBox* toolBox)
+{
+    QObject* scriptThread = sender();
+
+    while(toolBox->count() > 0)
+    {
+        QWidget* page = toolBox->widget(0);
+        m_scriptToolBoxPage[page] = scriptThread;
+        QString text = toolBox->itemText(0);
+        toolBox->removeItem(0);
+
+        m_toolBoxSplitterSizesSecond.append(m_toolBoxSplitterSizeSecond);
+        m_userInterface->toolBox->addItem(page, text);
+
+    }
+
+    if(!isHidden())
+    {
+        m_userInterface->toolBox->setCurrentIndex(m_userInterface->toolBox->count() - 1);
+    }
+    else
+    {
+        m_userInterface->toolBox->blockSignals(true);
+        m_userInterface->toolBox->setCurrentIndex(m_currentToolBoxIndex);
+        m_userInterface->toolBox->blockSignals(false);
+    }
+}
 
 /**
- * Removes all script tabs for one script thread.
+ * Removes all script tabs and tool box pages for one script thread.
  * @param scriptThrad
  *      The script thread.
  */
-void MainWindow::removeAllTabsForOneScriptThreadSlot(QObject* scriptThread)
+void MainWindow::removeAllTabsAndToolBoxPages(QObject* scriptThread)
 {
     //Add all script tabs.
     QMap<QWidget*, QObject*>::iterator i;
@@ -3433,6 +3467,20 @@ void MainWindow::removeAllTabsForOneScriptThreadSlot(QObject* scriptThread)
         }
     }
 
+    for (i = m_scriptToolBoxPage.begin(); i != m_scriptToolBoxPage.end();)
+    {
+        if(i.value() == scriptThread)
+        {
+            int index = m_userInterface->toolBox->indexOf(i.key());
+            m_userInterface->toolBox->removeItem(index);
+            m_toolBoxSplitterSizesSecond.removeAt(index);
+            i = m_scriptToolBoxPage.erase(i);
+        }
+        else
+        {
+            ++i;
+        }
+    }
 }
 
 /**
