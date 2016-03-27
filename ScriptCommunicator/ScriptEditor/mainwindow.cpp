@@ -1141,7 +1141,7 @@ void MainWindow::initActions()
  */
 void MainWindow::readSettings()
 {
-    QSettings settings("ScriptCommunator", QString("script editor %1").arg(INTERNAL_VERSION));
+    QSettings settings("ScriptCommunicator", QString("ScriptEditor_%1").arg(INTERNAL_VERSION));
 
     if(settings.contains("pos") && settings.contains("size") && settings.contains("mainSplitter"))
     {
@@ -1172,7 +1172,7 @@ void MainWindow::readSettings()
  */
 void MainWindow::writeSettings()
 {
-    QSettings settings("ScriptCommunator", QString("script editor %1").arg(INTERNAL_VERSION));
+    QSettings settings("ScriptCommunicator", QString("ScriptEditor_%1").arg(INTERNAL_VERSION));
     settings.setValue("pos", pos());
     settings.setValue("size", size());
     settings.setValue("mainSplitter", ui->splitter->saveState());
@@ -1299,7 +1299,7 @@ bool MainWindow::loadFile(const QString &fileName)
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly))
     {
-        QMessageBox::warning(this, tr("ScriptCommunator script editor"),
+        QMessageBox::warning(this, tr("ScriptCommunicator script editor"),
                              tr("Cannot read file %1:\n%2")
                              .arg(fileName)
                              .arg(file.errorString()));
@@ -1329,7 +1329,7 @@ bool MainWindow::saveFile(const QString &fileName)
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly))
     {
-        QMessageBox::warning(this, tr("ScriptCommunator script editor"),
+        QMessageBox::warning(this, tr("ScriptCommunicator script editor"),
                              tr("Cannot write file %1:\n%2.")
                              .arg(fileName)
                              .arg(file.errorString()));
