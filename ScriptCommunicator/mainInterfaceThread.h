@@ -86,7 +86,7 @@ public:
 signals:
 
     ///The main interface thread emits this signal if his connection state has been changed.
-    void dataConnectionStatusSignal(bool isConnected, QString message);
+    void dataConnectionStatusSignal(bool isConnected, QString message, bool isWaiting);
 
     ///The main interface thread emits this signal to show additional information about the connection in the main window.
     void showAdditionalConnectionInformationSignal(QString text);

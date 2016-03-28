@@ -291,7 +291,7 @@ public slots:
 
     ///The main window receive the current connection status with this slot (from the main interface thread).
     ///This slot is connected to the MainInterfaceThread::dataConnectionStatusSignal signal.
-    void dataConnectionStatusSlot(bool isConnected, QString message);
+    void dataConnectionStatusSlot(bool isConnected, QString message, bool isWaiting);
 
     ///Shows additional Information about the connection in the mainwindow.
     void showAdditionalConnectionInformationSlot(QString text);
@@ -395,6 +395,9 @@ private slots:
 
     ///Slot function for the connect button.
     void toggleConnectionSlot(bool connectionStatus);
+
+    ///Slot function for the connect button.
+    void connectButtonSlot(void);
 
     ///Slot function for the show sending window button.
     void showSendingWindowSlot();

@@ -231,7 +231,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     qRegisterMetaType<Settings>("Settings");
     connect(this, SIGNAL(connectDataConnectionSignal(Settings, bool)),m_mainInterface,
             SLOT(connectDataConnectionSlot(Settings, bool)), Qt::QueuedConnection);
-    connect(m_mainInterface, SIGNAL(dataConnectionStatusSignal(bool, QString)),this, SLOT(dataConnectionStatusSlot(bool, QString)), Qt::QueuedConnection);
+    connect(m_mainInterface, SIGNAL(dataConnectionStatusSignal(bool, QString, bool)),this, SLOT(dataConnectionStatusSlot(bool, QString, bool)), Qt::QueuedConnection);
 
     connect(this, SIGNAL(exitThreadSignal()),m_mainInterface, SLOT(exitThreadSlot()), Qt::BlockingQueuedConnection);
 
@@ -2687,6 +2687,7 @@ void MainWindow::customLogActivatedSlot(bool activated)
  */
 void MainWindow::setConnectionButtonsSlot(bool enable)
 {
+    m_userInterface->actionConnect->setEnabled(enable);
     m_settingsDialog->setInterfaceSettingsCanBeChanged(enable);
 }
 
@@ -2736,13 +2737,14 @@ void MainWindow::serialPortPinsChangedSlot(void)
  *      True for connected.
  * @param message
  *      Additional information about the connection status.
+ * @param isWaiting
+ *      True if the interface is waiting for a client/connection
  */
-void MainWindow::dataConnectionStatusSlot(bool isConnected, QString message)
+void MainWindow::dataConnectionStatusSlot(bool isConnected, QString message, bool isWaiting)
 {
     m_sendWindow->setIsConnected(isConnected);
 
     m_settingsDialog->setInterfaceSettingsCanBeChanged(!isConnected);
-
     m_statusBarLabel.setText(message);
 
     if(isConnected)
@@ -2760,10 +2762,19 @@ void MainWindow::dataConnectionStatusSlot(bool isConnected, QString message)
         m_isConnected = false;
         m_isConnectedWithCan = false;
 
-        m_userInterface->actionConnect->setIcon(QIcon(":/connect"));
-        m_userInterface->actionConnect->setText("&Connect");
+        if(isWaiting)
+        {
+            m_userInterface->actionConnect->setIcon(QIcon(":/disconnect"));
+            m_userInterface->actionConnect->setText("Dis&connect");
+        }
+        else
+        {
+            m_userInterface->actionConnect->setIcon(QIcon(":/connect"));
+            m_userInterface->actionConnect->setText("&Connect");
+        }
     }
     m_userInterface->actionConnect->setChecked(isConnected);
+
 }
 
 /**
@@ -3191,13 +3202,20 @@ void MainWindow::dataRateUpdateSlot(quint32 dataRateSend, quint32 dataRateReceiv
 }
 
 /**
+ * Slot function for the connect button.
+ */
+void MainWindow::connectButtonSlot(void)
+{
+    toggleConnectionSlot((m_userInterface->actionConnect->text() == "&Connect") ? true : false);
+}
+
+/**
  * Initializes all actions from the main window gui.
  */
 void MainWindow::initActionsConnections()
 {
-    connect(m_userInterface->actionConnect, SIGNAL(toggled(bool)), this, SLOT(toggleConnectionSlot(bool)));
+    connect(m_userInterface->actionConnect, SIGNAL(triggered()), this, SLOT(connectButtonSlot()));
     connect(m_userInterface->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
-    connect(m_userInterface->actionQuit, SIGNAL(triggered()), m_sendWindow, SLOT(close()));
     connect(m_userInterface->actionConfigure, SIGNAL(triggered()), this, SLOT(showSettingsWindowSlot()));
     connect(m_userInterface->actionClear, SIGNAL(triggered()), this, SLOT(clearConsoleSlot()));
     connect(m_userInterface->actionSending, SIGNAL(triggered()), this, SLOT(showSendingWindowSlot()));

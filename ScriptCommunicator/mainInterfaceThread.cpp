@@ -180,7 +180,7 @@ void MainInterfaceThread::tcpServerOnNewConnectionSlot(void)
         m_isConnected = true;
         emit dataConnectionStatusSignal(true, tr("connected to adress:%1  port:%2").arg(
                                             socket->peerAddress().toString()).arg(
-                                            socket->peerPort()));
+                                            socket->peerPort()), false);
         emit showAdditionalConnectionInformationSignal("");
     }
     else
@@ -224,8 +224,9 @@ void MainInterfaceThread::tcpClientSocketOnConnectedSlot(void)
     m_isConnected = true;
     emit dataConnectionStatusSignal(true, tr("connected to adress:%1  port:%2").arg(
                                         m_currentGlobalSettings.socketSettings.adress).arg(
-                                        m_currentGlobalSettings.socketSettings.partnerPort));
+                                        m_currentGlobalSettings.socketSettings.partnerPort), false);
     emit showAdditionalConnectionInformationSignal("");
+    emit setConnectionButtonsSignal(true);
 }
 
 /**
@@ -266,6 +267,7 @@ void MainInterfaceThread::tcpClientSocketErrorSlot(QAbstractSocket::SocketError 
     }
 
     connectDataConnectionSlot(m_currentGlobalSettings, false);
+    emit setConnectionButtonsSignal(true);
 }
 
 /**
@@ -277,7 +279,7 @@ void MainInterfaceThread::tcpClientSocketOnDisconnectedSlot(void)
     disconnect(m_tcpClientSocket, SIGNAL(readyRead()));
 
     m_isConnected = false;
-    emit dataConnectionStatusSignal(false, tr("Disconnected"));
+    emit dataConnectionStatusSignal(false, tr("Disconnected"), false);
     emit showAdditionalConnectionInformationSignal("");
 }
 
@@ -424,7 +426,7 @@ void MainInterfaceThread::sendDataSlot(const QByteArray data, uint id)
  */
 void MainInterfaceThread::exitThreadSlot()
 {
-    emit dataConnectionStatusSignal(false, "");
+    emit dataConnectionStatusSignal(false, "", false);
 
     m_serial->close();
     m_tcpClientSocket->close();
@@ -533,7 +535,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
                                                     .arg(m_currentGlobalSettings.serialPort.stringDataBits)
                                                     .arg(m_currentGlobalSettings.serialPort.stringParity)
                                                     .arg(m_currentGlobalSettings.serialPort.stringStopBits)
-                                                    .arg(m_currentGlobalSettings.serialPort.stringFlowControl));
+                                                    .arg(m_currentGlobalSettings.serialPort.stringFlowControl), false);
                     emit showAdditionalConnectionInformationSignal(serialPortPinoutSignalsToInfoString());
                 }
                 else
@@ -548,7 +550,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
                     {
                         showMessageBox(QMessageBox::Critical, tr("configure error"), "the current baudrate is not supported by the device");
                     }
-                    emit dataConnectionStatusSignal(false, tr("configure error"));
+                    emit dataConnectionStatusSignal(false, tr("configure error"), false);
                     emit showAdditionalConnectionInformationSignal("CTS=0, DSR=0, DCD=0, RI=0");
 
                     m_serial->setDataTerminalReady(false);
@@ -561,7 +563,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
                 showMessageBox(QMessageBox::Critical, tr("open error"),
                                           "could not open serial port: " + m_currentGlobalSettings.serialPort.name);
                 m_isConnected = false;
-                emit dataConnectionStatusSignal(false, tr("open error"));
+                emit dataConnectionStatusSignal(false, tr("open error"), false);
                 emit showAdditionalConnectionInformationSignal("CTS=0, DSR=0, DCD=0, RI=0");
             }
         }//if(m_currentGlobalSettings.connectionType == CONNECTION_TYPE_SERIAL_PORT)
@@ -570,7 +572,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
             m_isConnected = false;
             emit dataConnectionStatusSignal(false, tr("connecting to adress:%1  port:%2")
                                             .arg( m_currentGlobalSettings.socketSettings.adress)
-                                            .arg(m_currentGlobalSettings.socketSettings.partnerPort));
+                                            .arg(m_currentGlobalSettings.socketSettings.partnerPort), false);
             emit showAdditionalConnectionInformationSignal("");
 
             emit setConnectionButtonsSignal(false);
@@ -587,7 +589,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
             if(!m_tcpServer->listen(QHostAddress::Any, m_currentGlobalSettings.socketSettings.ownPort))
             {
                 m_tcpServer->close();
-                emit dataConnectionStatusSignal(false, tr("could not create tcp server"));
+                emit dataConnectionStatusSignal(false, tr("could not create tcp server"), false);
                 emit showAdditionalConnectionInformationSignal("");
 
                 showMessageBox(QMessageBox::Critical, tr("server error"), QString("could not create tcp server")+
@@ -597,10 +599,9 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
             else
             {
                 emit dataConnectionStatusSignal(false, tr("waiting for client: port:%1").arg(
-                                                        m_tcpServer->serverPort()));
+                                                        m_tcpServer->serverPort()), true);
 
                 emit showAdditionalConnectionInformationSignal("");
-                emit setConnectionButtonsSignal(false);
             }
         }//
         else if(m_currentGlobalSettings.connectionType == CONNECTION_TYPE_UDP_SOCKET)
@@ -611,7 +612,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
             if(!m_udpServerSocket->bind(QHostAddress::Any, m_currentGlobalSettings.socketSettings.ownPort))
             {
                 m_udpServerSocket->close();
-                emit dataConnectionStatusSignal(false, tr("could not create udp socket"));
+                emit dataConnectionStatusSignal(false, tr("could not create udp socket"), false);
                 emit showAdditionalConnectionInformationSignal("");
 
                 showMessageBox(QMessageBox::Critical, tr("socket error"), QString("could not create udp socket")+
@@ -621,7 +622,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
             else
             {
                 emit dataConnectionStatusSignal(true, tr("waiting for data: port:%1").arg(
-                                                       m_udpServerSocket->localPort()));
+                                                       m_udpServerSocket->localPort()), false);
                 emit showAdditionalConnectionInformationSignal("");
             }
         }
@@ -635,7 +636,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
                 emit dataConnectionStatusSignal(true, tr("Connected to cheetah spi interface: port=%1, baudarte=%2 (kHz), mode=%3")
                                                 .arg(m_currentGlobalSettings.cheetahSpi.port)
                                                 .arg(m_currentGlobalSettings.cheetahSpi.baudRate)
-                                                .arg(m_currentGlobalSettings.cheetahSpi.mode));
+                                                .arg(m_currentGlobalSettings.cheetahSpi.mode), false);
 
             }
             else
@@ -646,7 +647,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
                                           .arg(m_currentGlobalSettings.cheetahSpi.baudRate)
                                           .arg(m_currentGlobalSettings.cheetahSpi.mode));
                 m_isConnected = false;
-                emit dataConnectionStatusSignal(false, tr("open error"));
+                emit dataConnectionStatusSignal(false, tr("open error"), false);
                 emit showAdditionalConnectionInformationSignal("");
             }
         }
@@ -675,7 +676,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
                                                 .arg(m_currentGlobalSettings.pcanInterface.busOffAutoReset)
                                                 .arg(m_currentGlobalSettings.pcanInterface.filterExtended ? "ext" : "std")
                                                 .arg(m_currentGlobalSettings.pcanInterface.filterFrom)
-                                                .arg(m_currentGlobalSettings.pcanInterface.filterTo));
+                                                .arg(m_currentGlobalSettings.pcanInterface.filterTo), false);
 
             }
             else
@@ -699,7 +700,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
                 showMessageBox(QMessageBox::Critical, tr("pcan open error"), "pcan is only available on windows");
 #endif
                 m_isConnected = false;
-                emit dataConnectionStatusSignal(false, tr("open error"));
+                emit dataConnectionStatusSignal(false, tr("open error"), false);
                 emit showAdditionalConnectionInformationSignal("");
             }
 
@@ -707,7 +708,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
         else
         {
             m_isConnected = false;
-            emit dataConnectionStatusSignal(false, tr("Disconnected"));
+            emit dataConnectionStatusSignal(false, tr("Disconnected"), false);
             emit showAdditionalConnectionInformationSignal("");
             showMessageBox(QMessageBox::Critical, tr("Error"), "invalid connection type");
         }
@@ -715,7 +716,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
     else
     {
         m_isConnected = false;
-        emit dataConnectionStatusSignal(false, tr("Disconnected"));
+        emit dataConnectionStatusSignal(false, tr("Disconnected"), false);
 
         if(m_currentGlobalSettings.connectionType == CONNECTION_TYPE_SERIAL_PORT)
         {
