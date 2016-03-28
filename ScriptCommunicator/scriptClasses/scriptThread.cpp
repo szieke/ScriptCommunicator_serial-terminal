@@ -325,7 +325,7 @@ void ScriptThread::run()
                 m_scriptWindow, SLOT(exitScriptCommunicatorSlot()), Qt::QueuedConnection);
 
         connect(m_scriptWindow->m_mainInterfaceThread, SIGNAL(dataConnectionStatusSignal(bool, QString, bool)),
-                this, SLOT(dataConnectionStatusSlot(bool, QString, bool)), Qt::DirectConnection);
+                this, SLOT(dataConnectionStatusSlot(bool,QString,bool)), Qt::DirectConnection);
 
         connect(this, SIGNAL(sendDataSignal(const QByteArray, uint)),
                 m_scriptWindow->m_mainInterfaceThread, SLOT(sendDataSlot(const QByteArray, uint)), Qt::BlockingQueuedConnection);
