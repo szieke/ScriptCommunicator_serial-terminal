@@ -2753,14 +2753,14 @@ void MainWindow::dataConnectionStatusSlot(bool isConnected, QString message, boo
         m_isConnected = true;
         m_isConnectedWithCan = (currentSettings->connectionType == CONNECTION_TYPE_PCAN) ? true : false;
         showConnect = false;
-        m_userInterface->actionConnect->setText("Dis&connect");
+        m_userInterface->actionConnect->setText("Disconnect");
     }
     else
     {
         m_isConnected = false;
         m_isConnectedWithCan = false;
         showConnect = isWaiting ? false : true;
-        m_userInterface->actionConnect->setText(isWaiting ? "&Stop waiting" : "&Connect");
+        m_userInterface->actionConnect->setText(isWaiting ? "Stop waiting" : "Connect");
     }
 
     m_userInterface->actionConnect->setIcon(showConnect ? QIcon(":/connect") : QIcon(":/disconnect"));
@@ -3197,7 +3197,7 @@ void MainWindow::dataRateUpdateSlot(quint32 dataRateSend, quint32 dataRateReceiv
  */
 void MainWindow::connectButtonSlot(void)
 {
-    toggleConnectionSlot((m_userInterface->actionConnect->text() == "&Connect") ? true : false);
+    toggleConnectionSlot((m_userInterface->actionConnect->text() == "Connect") ? true : false);
 }
 
 /**

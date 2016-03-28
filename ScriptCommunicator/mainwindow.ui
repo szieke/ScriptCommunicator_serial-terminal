@@ -1003,8 +1003,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>98</width>
-          <height>93</height>
+          <width>239</width>
+          <height>513</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1048,8 +1048,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>182</width>
-          <height>130</height>
+          <width>239</width>
+          <height>513</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1332,8 +1332,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>139</width>
-          <height>271</height>
+          <width>239</width>
+          <height>513</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1657,7 +1657,7 @@ to send a sequence double click on it</string>
    </widget>
    <widget class="QMenu" name="menu_File">
     <property name="title">
-     <string>&amp;File</string>
+     <string>&amp;Actions</string>
     </property>
     <addaction name="actionConnect"/>
     <addaction name="actionConfigure"/>
@@ -1683,13 +1683,13 @@ to send a sequence double click on it</string>
      <normaloff>:/connect</normaloff>:/connect</iconset>
    </property>
    <property name="text">
-    <string>&amp;Connect</string>
+    <string>Connect</string>
    </property>
    <property name="toolTip">
     <string>connect</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+O</string>
+    <string>Alt+C</string>
    </property>
   </action>
   <action name="actionConfigure">
@@ -1698,13 +1698,13 @@ to send a sequence double click on it</string>
      <normaloff>:/images/settings.png</normaloff>:/images/settings.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Settings</string>
+    <string>Settings</string>
    </property>
    <property name="toolTip">
     <string>settings</string>
    </property>
    <property name="shortcut">
-    <string>Alt+C</string>
+    <string>Alt+S</string>
    </property>
   </action>
   <action name="actionClear">
@@ -1728,7 +1728,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/application-exit.png</normaloff>:/images/application-exit.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Quit</string>
+    <string>Quit</string>
    </property>
    <property name="toolTip">
     <string>quit</string>
@@ -1743,7 +1743,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/send.ico</normaloff>:/images/send.ico</iconset>
    </property>
    <property name="text">
-    <string>S&amp;end</string>
+    <string>Send</string>
    </property>
    <property name="toolTip">
     <string>send window</string>
@@ -1758,7 +1758,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/scripts.ico</normaloff>:/images/scripts.ico</iconset>
    </property>
    <property name="text">
-    <string>Sc&amp;ripts</string>
+    <string>Scripts</string>
    </property>
    <property name="toolTip">
     <string>script window</string>
@@ -1769,7 +1769,7 @@ to send a sequence double click on it</string>
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>&amp;about</string>
+    <string>about</string>
    </property>
   </action>
   <action name="actionLockScrolling">
@@ -1781,7 +1781,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/lock.ico</normaloff>:/images/lock.ico</iconset>
    </property>
    <property name="text">
-    <string>&amp;Lock</string>
+    <string>Lock</string>
    </property>
    <property name="iconText">
     <string>Lock</string>
@@ -1789,10 +1789,13 @@ to send a sequence double click on it</string>
    <property name="toolTip">
     <string>lock scrolling in all consoles</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
+   </property>
   </action>
   <action name="actionManual">
    <property name="text">
-    <string>&amp;manual</string>
+    <string>manual</string>
    </property>
    <property name="toolTip">
     <string>open the manual</string>
@@ -1804,7 +1807,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/message.ico</normaloff>:/images/message.ico</iconset>
    </property>
    <property name="text">
-    <string>&amp;Message</string>
+    <string>Message</string>
    </property>
    <property name="iconText">
     <string>Message</string>
@@ -1815,77 +1818,77 @@ to send a sequence double click on it</string>
   </action>
   <action name="actionCopyConfig">
    <property name="text">
-    <string>co&amp;py config</string>
+    <string>copy config</string>
    </property>
   </action>
   <action name="actionLoadConfig">
    <property name="text">
-    <string>l&amp;oad config</string>
+    <string>load config</string>
    </property>
   </action>
   <action name="actionLoadPreviosConfig">
    <property name="text">
-    <string>&amp;load previous used config</string>
+    <string>load previous used config</string>
    </property>
   </action>
   <action name="actionDeletePreviousConfigList">
    <property name="text">
-    <string>&amp;delete previous used config list</string>
+    <string>delete previous used config list</string>
    </property>
   </action>
   <action name="actionSetCurrentConfigToDefault">
    <property name="text">
-    <string>&amp;set current config to default</string>
+    <string>set current config to default</string>
    </property>
   </action>
   <action name="actionResetDefaultConfig">
    <property name="text">
-    <string>&amp;reset default config</string>
+    <string>reset default config</string>
    </property>
   </action>
   <action name="actionCreateNewConfig">
    <property name="text">
-    <string>&amp;create new config</string>
+    <string>create new config</string>
    </property>
   </action>
   <action name="actionSaveConsole">
    <property name="text">
-    <string>&amp;save console</string>
+    <string>save console</string>
    </property>
   </action>
   <action name="actionPrintConsole">
    <property name="text">
-    <string>&amp;print console</string>
+    <string>print console</string>
    </property>
   </action>
   <action name="actionSubmitBug">
    <property name="text">
-    <string>&amp;report a bug</string>
+    <string>report a bug</string>
    </property>
   </action>
   <action name="actionRequestFeature">
    <property name="text">
-    <string>&amp;feature request</string>
+    <string>feature request</string>
    </property>
   </action>
   <action name="actionVideo">
    <property name="text">
-    <string>&amp;video (youtube)</string>
+    <string>video (youtube)</string>
    </property>
   </action>
   <action name="actionGetSupport">
    <property name="text">
-    <string>&amp;get support</string>
+    <string>get support</string>
    </property>
   </action>
   <action name="actionEditScript">
    <property name="text">
-    <string>&amp;edit sequence script</string>
+    <string>edit sequence script</string>
    </property>
   </action>
   <action name="actionAddScript">
    <property name="text">
-    <string>&amp;add sequence script</string>
+    <string>add sequence script</string>
    </property>
   </action>
   <action name="actionBringAllToForeground">
@@ -1894,7 +1897,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/BringToTop.ico</normaloff>:/images/BringToTop.ico</iconset>
    </property>
    <property name="text">
-    <string>&amp;Top</string>
+    <string>Top</string>
    </property>
    <property name="toolTip">
     <string>bring all windows to top</string>
@@ -1902,12 +1905,12 @@ to send a sequence double click on it</string>
   </action>
   <action name="actionDebugSequenceScript">
    <property name="text">
-    <string>&amp;debug sequence script</string>
+    <string>debug sequence script</string>
    </property>
   </action>
   <action name="actionCheckForUpdates">
    <property name="text">
-    <string>&amp;check for updates (in background)</string>
+    <string>check for updates (in background)</string>
    </property>
   </action>
   <action name="actionReopenAllLogs">
@@ -1916,7 +1919,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/reopen.ico</normaloff>:/images/reopen.ico</iconset>
    </property>
    <property name="text">
-    <string>L&amp;ogs</string>
+    <string>Logs</string>
    </property>
    <property name="toolTip">
     <string>close and reopen all enabled logs (if the 'append time stamp at log file name'
