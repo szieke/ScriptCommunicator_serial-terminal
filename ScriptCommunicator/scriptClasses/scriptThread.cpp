@@ -324,8 +324,8 @@ void ScriptThread::run()
         connect(this, SIGNAL(exitScriptCommunicatorSignal()),
                 m_scriptWindow, SLOT(exitScriptCommunicatorSlot()), Qt::QueuedConnection);
 
-        connect(m_scriptWindow->m_mainInterfaceThread, SIGNAL(dataConnectionStatusSignal(bool, QString)),
-                this, SLOT(dataConnectionStatusSlot(bool, QString)), Qt::DirectConnection);
+        connect(m_scriptWindow->m_mainInterfaceThread, SIGNAL(dataConnectionStatusSignal(bool, QString, bool)),
+                this, SLOT(dataConnectionStatusSlot(bool, QString, bool)), Qt::DirectConnection);
 
         connect(this, SIGNAL(sendDataSignal(const QByteArray, uint)),
                 m_scriptWindow->m_mainInterfaceThread, SLOT(sendDataSlot(const QByteArray, uint)), Qt::BlockingQueuedConnection);
@@ -1358,10 +1358,13 @@ void ScriptThread::dataReceivedSlot(QByteArray data)
  *      True for connected.
  * @param message
  *      String with additional information.
+ * @param isWaiting
+ *      True if the interface is waiting for a client/connection
  */
-void ScriptThread::dataConnectionStatusSlot(bool isConnected, QString message)
+void ScriptThread::dataConnectionStatusSlot(bool isConnected, QString message, bool isWaiting)
 {
     (void)message;
+    (void)isWaiting;
     m_isConnected = isConnected;
     m_isConnectedWithCan = m_scriptWindow->m_mainInterfaceThread->isConnectedWithCan();
 

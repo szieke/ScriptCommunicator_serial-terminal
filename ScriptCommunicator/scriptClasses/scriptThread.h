@@ -670,7 +670,7 @@ private slots:
 
     ///This slot is connected with MainInterfaceThread::dataConnectionStatusSignal.
     ///The connected status (main interface) is reported with this signal.
-    void dataConnectionStatusSlot(bool isConnected, QString message);
+    void dataConnectionStatusSlot(bool isConnected, QString message, bool isWaiting);
 
     ///This slot is connected with the MainInterfaceThread::sendingFinishedSignal signal.
     ///The main interface thread emits this signal if the sending of data has been finished.
