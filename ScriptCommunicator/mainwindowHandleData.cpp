@@ -159,7 +159,7 @@ void MainWindowHandleData::updateConsoleAndLog(void)
  * @param data
  *      The data.
  * @param isSend
- *      True if the data has been send and false if the data has been received.
+ *      True if the data has been sent and false if the data has been received.
  * @param isUserMessage
  *      True if the data is a user message.
  * @param isFromCan
@@ -359,7 +359,7 @@ void MainWindowHandleData::calculateMixedConsoleData()
     }
     else
     {
-        qint32 numberOfSpaces = (m_mixedConsoleData.divider - 1);
+        qint32 numberOfSpaces = (m_mixedConsoleData.divider - 2);
         if(currentSettings->showDecimalInConsole && ! currentSettings->showBinaryConsole)
         {
             numberOfSpaces = 0;
@@ -390,7 +390,7 @@ void MainWindowHandleData::calculateMixedConsoleData()
     }
     else
     {
-        qint32 numberOfSpaces = (m_mixedConsoleData.divider - 2);
+        qint32 numberOfSpaces = (m_mixedConsoleData.divider - 3);
         if(currentSettings->showDecimalInConsole && ! currentSettings->showBinaryConsole)
         {
             numberOfSpaces = 0;
@@ -418,12 +418,12 @@ void MainWindowHandleData::calculateMixedConsoleData()
     {
         qint32 numberOfSpaces = 0;
 
-        if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_UINT8){numberOfSpaces = currentSettings->showBinaryConsole ? 6 : 1;}
-        else if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_INT8){numberOfSpaces = currentSettings->showBinaryConsole ? 5 : 1;}
-        else if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_UINT16){numberOfSpaces = currentSettings->showBinaryConsole ? 13 : 1;}
-        else if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_INT16){numberOfSpaces = currentSettings->showBinaryConsole ? 12 : 1;}
-        else if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_UINT32){numberOfSpaces = currentSettings->showBinaryConsole ? 26 : 1;}
-        else{numberOfSpaces = currentSettings->showBinaryConsole ? 25 : 1;}
+        if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_UINT8){numberOfSpaces = currentSettings->showBinaryConsole ? 5 : 1;}
+        else if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_INT8){numberOfSpaces = currentSettings->showBinaryConsole ? 4 : 1;}
+        else if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_UINT16){numberOfSpaces = currentSettings->showBinaryConsole ? 12 : 1;}
+        else if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_INT16){numberOfSpaces = currentSettings->showBinaryConsole ? 11 : 1;}
+        else if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_UINT32){numberOfSpaces = currentSettings->showBinaryConsole ? 25 : 1;}
+        else{numberOfSpaces = currentSettings->showBinaryConsole ? 24 : 1;}
 
         for(int i = 0; i < numberOfSpaces; i++)
         {
@@ -445,6 +445,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
 {
     QString result;
     QString tmpString;
+    QChar tmpChar;
     const Settings* currentSettings = m_settingsDialog->settings();
 
     if(m_mixedConsoleData.onlyOneType)
@@ -489,19 +490,34 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 ///Create the ascii string.
                 for(int i = 0; i < tmpString.length(); i++)
                 {
+                    tmpChar = tmpString[i];
+                    asciiString += "&nbsp;";
+                    asciiString += "<span style=background-color:cyan>";
                     if(!m_mixedConsoleData.asciiExtraSpaces.isEmpty() && ((i % modulo) == 0))
                     {
                        asciiString += m_mixedConsoleData.asciiExtraSpaces;
                     }
-                    asciiString += m_mixedConsoleData.asciiSpaces;
-                    asciiString += tmpString[i];
-                }
 
+                    asciiString += m_mixedConsoleData.asciiSpaces;
+                    // replace tags so our span does not get mangled up
+                    if (tmpChar == '<')
+                        asciiString += "&lt;";
+                    else if (tmpChar == '>')
+                        asciiString += "&gt;";
+                    else
+                        asciiString += tmpChar;
+                    asciiString += "</span>";
+                }
+/*
                 asciiString.replace("<", "&lt;");
                 asciiString.replace(">", "&gt;");
                 asciiString.replace(" ", "&nbsp;");
                 asciiString.replace("\n", " ");
-
+                asciiString.replace("\r", " ");
+                asciiString.replace("&", "&amp;");
+                asciiString.replace("\"", "&quot;");
+                asciiString.replace("\'", "&#39;");
+*/
                 result += asciiString;
             }
 
@@ -515,12 +531,15 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 qint32 modulo = m_mixedConsoleData.bytesPerDecimal;
                 for(int i = 0; i < list.length(); i++)
                 {
+                    result += "&nbsp;";
+                    result += "<span style=background-color:lightseagreen>";
                     if(!m_mixedConsoleData.hexExtraSpaces.isEmpty() && ((i % modulo) == 0))
                     {
                        result += m_mixedConsoleData.hexExtraSpaces;
                     }
                     result += m_mixedConsoleData.hexSpaces;
                     result += list[i];
+                    result += "</span>";
                 }
             }
 
@@ -534,8 +553,11 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 QStringList list = tmpString.split(" ");
                 for(auto el : list)
                 {
+                    result += "&nbsp;";
+                    result += "<span style=background-color:powderblue>";
                     result += m_mixedConsoleData.decimalSpaces;
                     result += el;
+                    result += "</span>";
                 }
             }
             if(currentSettings->showBinaryConsole)
@@ -547,7 +569,9 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 for(auto el : list)
                 {
                     result += "&nbsp;";
+                    result += "<span style=background-color:lavender>";
                     result += el;
+                    result += "</span>";
                 }
             }
 
@@ -559,6 +583,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
 
     return result;
 }
+
 /**
  * Appends data to the console buffers (m_consoleDataBufferAscii, m_consoleDataBufferHex;
  * m_consoleDataBufferDec)
@@ -1447,7 +1472,6 @@ void MainWindowHandleData::processDataInStoredData()
 
     for(auto el : m_unprocessedConsoleData)
     {
-
         if(el.type == STORED_DATA_CLEAR_ALL_STANDARD_CONSOLES)
         {
             m_userInterface->ReceiveTextEditAscii->clear();
@@ -1469,8 +1493,6 @@ void MainWindowHandleData::processDataInStoredData()
         else
            {
             bool isFromAddMessageDialog = (el.type == STORED_DATA_TYPE_USER_MESSAGE) ? true : false;
-
-
             bool isTimeStamp = (el.type == STORED_DATA_TYPE_TIMESTAMP) ? true : false;
             bool isNewLine = (el.type == STORED_DATA_TYPE_NEW_LINE) ? true : false;
 
@@ -1497,7 +1519,7 @@ void MainWindowHandleData::processDataInStoredData()
                         array.remove(0, settings->consoleNewLineAfterBytes - m_bytesSinceLastNewLineInConsole);
 
                         tmpArray = QString("\n").toLocal8Bit();
-                        //Save the console data bevore calling appendDataToConsoleStrings (0 are replace by 0xff in this function).
+                        //Save the console data before calling appendDataToConsoleStrings (0 are replace by 0xff in this function).
                         storedData.data = tmpArray;
                         storedData.type = STORED_DATA_TYPE_NEW_LINE;
                         m_storedConsoleData.push_back(storedData);
