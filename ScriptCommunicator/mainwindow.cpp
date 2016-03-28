@@ -2742,9 +2742,8 @@ void MainWindow::serialPortPinsChangedSlot(void)
  */
 void MainWindow::dataConnectionStatusSlot(bool isConnected, QString message, bool isWaiting)
 {
+    bool showConnect = true;
     m_sendWindow->setIsConnected(isConnected);
-
-    m_settingsDialog->setInterfaceSettingsCanBeChanged(!isConnected);
     m_statusBarLabel.setText(message);
 
     if(isConnected)
@@ -2753,27 +2752,19 @@ void MainWindow::dataConnectionStatusSlot(bool isConnected, QString message, boo
 
         m_isConnected = true;
         m_isConnectedWithCan = (currentSettings->connectionType == CONNECTION_TYPE_PCAN) ? true : false;
-
-        m_userInterface->actionConnect->setIcon(QIcon(":/disconnect"));
+        showConnect = false;
         m_userInterface->actionConnect->setText("Dis&connect");
     }
     else
     {
         m_isConnected = false;
         m_isConnectedWithCan = false;
-
-        if(isWaiting)
-        {
-            m_userInterface->actionConnect->setIcon(QIcon(":/disconnect"));
-            m_userInterface->actionConnect->setText("Dis&connect");
-        }
-        else
-        {
-            m_userInterface->actionConnect->setIcon(QIcon(":/connect"));
-            m_userInterface->actionConnect->setText("&Connect");
-        }
+        showConnect = isWaiting ? false : true;
+        m_userInterface->actionConnect->setText(isWaiting ? "&Stop waiting" : "&Connect");
     }
-    m_userInterface->actionConnect->setChecked(isConnected);
+
+    m_userInterface->actionConnect->setIcon(showConnect ? QIcon(":/connect") : QIcon(":/disconnect"));
+    m_settingsDialog->setInterfaceSettingsCanBeChanged(showConnect);
 
 }
 
