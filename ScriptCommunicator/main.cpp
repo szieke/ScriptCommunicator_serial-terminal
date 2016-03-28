@@ -31,6 +31,7 @@
 #include <QCryptographicHash>
 #include <QLibrary>
 #include <QProcess>
+#include <QStandardPaths>
 
 ///Is set to true if a thread has been terminated.
 ///This variabke is used un the main function.
@@ -130,7 +131,7 @@ int main(int argc, char *argv[])
             {
                 if(MainWindow::checkScezFileHash(currentArg))
                 {
-                    g_currentScezFolder = MainWindow::getAndCreateProgramUserFolder() + "/" + QString("%1").arg(QDateTime::currentDateTime().currentMSecsSinceEpoch());
+                    g_currentScezFolder = QStandardPaths::writableLocation(QStandardPaths::TempLocation) + "/" + QString("%1").arg(QDateTime::currentDateTime().currentMSecsSinceEpoch());
                     if(ScriptFile::extractZipFile(currentArg, g_currentScezFolder))
                     {
                         QString currentSceFile;
