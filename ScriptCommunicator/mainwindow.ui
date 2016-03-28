@@ -1003,8 +1003,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>239</width>
-          <height>513</height>
+          <width>98</width>
+          <height>93</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1048,8 +1048,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>239</width>
-          <height>513</height>
+          <width>182</width>
+          <height>130</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1332,8 +1332,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>239</width>
-          <height>513</height>
+          <width>139</width>
+          <height>271</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1612,7 +1612,7 @@ to send a sequence double click on it</string>
    </property>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
-     <string>He&amp;lp</string>
+     <string>&amp;Help</string>
     </property>
     <addaction name="actionManual"/>
     <addaction name="actionVideo"/>
@@ -1642,14 +1642,14 @@ to send a sequence double click on it</string>
    </widget>
    <widget class="QMenu" name="menuConsole">
     <property name="title">
-     <string>Console</string>
+     <string>C&amp;onsole</string>
     </property>
     <addaction name="actionSaveConsole"/>
     <addaction name="actionPrintConsole"/>
    </widget>
    <widget class="QMenu" name="menuSend_area">
     <property name="title">
-     <string>Send a&amp;rea</string>
+     <string>&amp;Send area</string>
     </property>
     <addaction name="actionEditScript"/>
     <addaction name="actionAddScript"/>
@@ -1689,7 +1689,7 @@ to send a sequence double click on it</string>
     <string>connect</string>
    </property>
    <property name="shortcut">
-    <string>Alt+C</string>
+    <string>Ctrl+O</string>
    </property>
   </action>
   <action name="actionConfigure">
@@ -1704,7 +1704,7 @@ to send a sequence double click on it</string>
     <string>settings</string>
    </property>
    <property name="shortcut">
-    <string>Alt+S</string>
+    <string>Ctrl+T</string>
    </property>
   </action>
   <action name="actionClear">
