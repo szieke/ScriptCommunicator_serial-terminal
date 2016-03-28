@@ -176,8 +176,8 @@
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Quantico'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="acceptRichText">
                 <bool>false</bool>
@@ -279,8 +279,8 @@ p, li { white-space: pre-wrap; }
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Quantico'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="acceptRichText">
                 <bool>false</bool>
@@ -385,8 +385,8 @@ p, li { white-space: pre-wrap; }
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Quantico'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="acceptRichText">
                 <bool>false</bool>
@@ -491,8 +491,8 @@ p, li { white-space: pre-wrap; }
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Quantico'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="acceptRichText">
                 <bool>false</bool>
@@ -602,7 +602,7 @@ p, li { white-space: pre-wrap; }
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Courier New'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Courier New'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="acceptRichText">
@@ -888,7 +888,7 @@ p, li { white-space: pre-wrap; }
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Courier New'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Courier New'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="acceptRichText">
@@ -1003,8 +1003,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>93</width>
-          <height>93</height>
+          <width>270</width>
+          <height>440</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1048,8 +1048,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>182</width>
-          <height>130</height>
+          <width>270</width>
+          <height>440</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1109,8 +1109,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>239</width>
-          <height>513</height>
+          <width>270</width>
+          <height>440</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1332,8 +1332,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>139</width>
-          <height>271</height>
+          <width>270</width>
+          <height>440</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1573,7 +1573,6 @@ to send a sequence double click on it</string>
     <bool>false</bool>
    </attribute>
    <addaction name="actionConnect"/>
-   <addaction name="actionDisconnect"/>
    <addaction name="actionConfigure"/>
    <addaction name="actionSending"/>
    <addaction name="actionScripts"/>
@@ -1608,7 +1607,7 @@ to send a sequence double click on it</string>
      <x>0</x>
      <y>0</y>
      <width>1183</width>
-     <height>21</height>
+     <height>29</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp">
@@ -1661,7 +1660,6 @@ to send a sequence double click on it</string>
      <string>&amp;File</string>
     </property>
     <addaction name="actionConnect"/>
-    <addaction name="actionDisconnect"/>
     <addaction name="actionConfigure"/>
     <addaction name="actionSending"/>
     <addaction name="actionScripts"/>
@@ -1680,12 +1678,15 @@ to send a sequence double click on it</string>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionConnect">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="ScriptCommunicator.qrc">
-     <normaloff>:/images/connect.png</normaloff>:/images/connect.png</iconset>
+     <normaloff>:/connect</normaloff>:/connect</iconset>
    </property>
    <property name="text">
-    <string>Connect</string>
+    <string>&amp;Connect</string>
    </property>
    <property name="toolTip">
     <string>connect</string>
@@ -1694,28 +1695,13 @@ to send a sequence double click on it</string>
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="actionDisconnect">
-   <property name="icon">
-    <iconset resource="ScriptCommunicator.qrc">
-     <normaloff>:/images/disconnect.png</normaloff>:/images/disconnect.png</iconset>
-   </property>
-   <property name="text">
-    <string>Disconnect</string>
-   </property>
-   <property name="toolTip">
-    <string>disconnect</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+D</string>
-   </property>
-  </action>
   <action name="actionConfigure">
    <property name="icon">
     <iconset resource="ScriptCommunicator.qrc">
      <normaloff>:/images/settings.png</normaloff>:/images/settings.png</iconset>
    </property>
    <property name="text">
-    <string>Settings</string>
+    <string>&amp;Settings</string>
    </property>
    <property name="toolTip">
     <string>settings</string>
@@ -1745,7 +1731,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/application-exit.png</normaloff>:/images/application-exit.png</iconset>
    </property>
    <property name="text">
-    <string>Quit</string>
+    <string>&amp;Quit</string>
    </property>
    <property name="toolTip">
     <string>quit</string>
@@ -1760,7 +1746,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/send.ico</normaloff>:/images/send.ico</iconset>
    </property>
    <property name="text">
-    <string>Send</string>
+    <string>S&amp;end</string>
    </property>
    <property name="toolTip">
     <string>send window</string>
@@ -1775,7 +1761,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/scripts.ico</normaloff>:/images/scripts.ico</iconset>
    </property>
    <property name="text">
-    <string>Scripts</string>
+    <string>Sc&amp;ripts</string>
    </property>
    <property name="toolTip">
     <string>script window</string>
@@ -1798,7 +1784,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/lock.ico</normaloff>:/images/lock.ico</iconset>
    </property>
    <property name="text">
-    <string>Lock</string>
+    <string>&amp;Lock</string>
    </property>
    <property name="iconText">
     <string>Lock</string>
@@ -1821,7 +1807,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/message.ico</normaloff>:/images/message.ico</iconset>
    </property>
    <property name="text">
-    <string>Message</string>
+    <string>&amp;Message</string>
    </property>
    <property name="iconText">
     <string>Message</string>
@@ -1911,7 +1897,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/BringToTop.ico</normaloff>:/images/BringToTop.ico</iconset>
    </property>
    <property name="text">
-    <string>Top</string>
+    <string>&amp;Top</string>
    </property>
    <property name="toolTip">
     <string>bring all windows to top</string>
@@ -1933,7 +1919,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/reopen.ico</normaloff>:/images/reopen.ico</iconset>
    </property>
    <property name="text">
-    <string>Logs</string>
+    <string>L&amp;ogs</string>
    </property>
    <property name="toolTip">
     <string>close and reopen all enabled logs (if the 'append time stamp at log file name'
