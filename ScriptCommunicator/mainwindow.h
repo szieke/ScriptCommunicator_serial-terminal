@@ -396,7 +396,7 @@ private slots:
     ///Slot function for the connect button.
     void toggleConnectionSlot(bool connectionStatus);
 
-	///Slot function for the connect button.
+    ///Slot function for the connect button.
     void connectButtonSlot(void);
 
     ///Slot function for the show sending window button.

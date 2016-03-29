@@ -1678,15 +1678,12 @@ to send a sequence double click on it</string>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionConnect">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
    <property name="icon">
     <iconset resource="ScriptCommunicator.qrc">
      <normaloff>:/connect</normaloff>:/connect</iconset>
    </property>
    <property name="text">
-    <string>&amp;Connect</string>
+    <string>Connect</string>
    </property>
    <property name="toolTip">
     <string>connect</string>
@@ -1701,7 +1698,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/settings.png</normaloff>:/images/settings.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Settings</string>
+    <string>Settings</string>
    </property>
    <property name="toolTip">
     <string>settings</string>
@@ -1731,7 +1728,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/application-exit.png</normaloff>:/images/application-exit.png</iconset>
    </property>
    <property name="text">
-    <string>&amp;Quit</string>
+    <string>Quit</string>
    </property>
    <property name="toolTip">
     <string>quit</string>
@@ -1746,7 +1743,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/send.ico</normaloff>:/images/send.ico</iconset>
    </property>
    <property name="text">
-    <string>S&amp;end</string>
+    <string>Send</string>
    </property>
    <property name="toolTip">
     <string>send window</string>
@@ -1761,7 +1758,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/scripts.ico</normaloff>:/images/scripts.ico</iconset>
    </property>
    <property name="text">
-    <string>Sc&amp;ripts</string>
+    <string>Scripts</string>
    </property>
    <property name="toolTip">
     <string>script window</string>
@@ -1784,7 +1781,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/lock.ico</normaloff>:/images/lock.ico</iconset>
    </property>
    <property name="text">
-    <string>&amp;Lock</string>
+    <string>Lock</string>
    </property>
    <property name="iconText">
     <string>Lock</string>
@@ -1810,7 +1807,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/message.ico</normaloff>:/images/message.ico</iconset>
    </property>
    <property name="text">
-    <string>&amp;Message</string>
+    <string>Message</string>
    </property>
    <property name="iconText">
     <string>Message</string>
@@ -1900,7 +1897,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/BringToTop.ico</normaloff>:/images/BringToTop.ico</iconset>
    </property>
    <property name="text">
-    <string>&amp;Top</string>
+    <string>Top</string>
    </property>
    <property name="toolTip">
     <string>bring all windows to top</string>
@@ -1922,7 +1919,7 @@ to send a sequence double click on it</string>
      <normaloff>:/images/reopen.ico</normaloff>:/images/reopen.ico</iconset>
    </property>
    <property name="text">
-    <string>L&amp;ogs</string>
+    <string>Logs</string>
    </property>
    <property name="toolTip">
     <string>close and reopen all enabled logs (if the 'append time stamp at log file name'

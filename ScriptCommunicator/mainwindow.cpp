@@ -3181,13 +3181,6 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
         //Store the scroll bar position.
         int val = textEdit->verticalScrollBar()->value();
 
-        if (textEdit == m_userInterface->ReceiveTextEditMixed)
-        {
-            consoleString->prepend("<body bgcolor=#ceecee>");
-            consoleString->append("</body>");
-        }
-
-
         textEdit->moveCursor(QTextCursor::End);
         textEdit->insertHtml(*consoleString);
         textEdit->moveCursor(QTextCursor::End);
