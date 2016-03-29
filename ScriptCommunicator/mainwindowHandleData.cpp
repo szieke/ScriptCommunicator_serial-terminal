@@ -292,30 +292,30 @@ void MainWindowHandleData::calculateMixedConsoleData()
 
     if(currentSettings->showBinaryConsole)
     {
-        m_mixedConsoleData.divider = 9;
+        m_mixedConsoleData.divider = 8;
         m_mixedConsoleData.onlyOneType = (!currentSettings->showHexInConsole && !currentSettings->showAsciiInConsole && !currentSettings->showDecimalInConsole) ? true : false;
     }
     else if(currentSettings->showDecimalInConsole)
     {
         if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_UINT8)
         {
-           m_mixedConsoleData.divider = 4;
+           m_mixedConsoleData.divider = 3;
         }
         else if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_INT8)
         {
-           m_mixedConsoleData.divider = 5;
+           m_mixedConsoleData.divider = 4;
         }
         else if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_INT16)
         {
-           m_mixedConsoleData.divider = (7.0 / 2.0);
+           m_mixedConsoleData.divider = (6.0 / 2.0);
         }
         else if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_UINT32)
         {
-           m_mixedConsoleData.divider = (11.0 / 4.0);
+           m_mixedConsoleData.divider = (10.0 / 4.0);
         }
         else
         {
-            m_mixedConsoleData.divider = 3;
+            m_mixedConsoleData.divider = 2;
         }
         m_mixedConsoleData.onlyOneType = (!currentSettings->showHexInConsole && !currentSettings->showAsciiInConsole) ? true : false;
     }
@@ -359,7 +359,7 @@ void MainWindowHandleData::calculateMixedConsoleData()
     }
     else
     {
-        qint32 numberOfSpaces = (m_mixedConsoleData.divider - 2);
+        qint32 numberOfSpaces = (m_mixedConsoleData.divider - 1);
         if(currentSettings->showDecimalInConsole && ! currentSettings->showBinaryConsole)
         {
             numberOfSpaces = 0;
@@ -390,7 +390,7 @@ void MainWindowHandleData::calculateMixedConsoleData()
     }
     else
     {
-        qint32 numberOfSpaces = (m_mixedConsoleData.divider - 3);
+        qint32 numberOfSpaces = (m_mixedConsoleData.divider - 2);
         if(currentSettings->showDecimalInConsole && ! currentSettings->showBinaryConsole)
         {
             numberOfSpaces = 0;
@@ -446,6 +446,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
     QString result;
     QString tmpString;
     QChar tmpChar;
+    const QString unprintable = "\r\n ";
     const Settings* currentSettings = m_settingsDialog->settings();
 
     if(m_mixedConsoleData.onlyOneType)
@@ -491,7 +492,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 for(int i = 0; i < tmpString.length(); i++)
                 {
                     tmpChar = tmpString[i];
-                    asciiString += "&nbsp;";
+                    asciiString += "&nbsp;";    // uncolored
                     asciiString += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMessageAsciiColor);
                     if(!m_mixedConsoleData.asciiExtraSpaces.isEmpty() && ((i % modulo) == 0))
                     {
@@ -504,6 +505,8 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                         asciiString += "&lt;";
                     else if (tmpChar == '>')
                         asciiString += "&gt;";
+                    else if (unprintable.contains(tmpChar))
+                        asciiString += ".";
                     else
                         asciiString += tmpChar;
                     asciiString += "</span>";
@@ -531,7 +534,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 qint32 modulo = m_mixedConsoleData.bytesPerDecimal;
                 for(int i = 0; i < list.length(); i++)
                 {
-                    result += "&nbsp;";
+                    result += "&nbsp;";     // uncolored
                     result += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMessageHexadecimalColor);
                     if(!m_mixedConsoleData.hexExtraSpaces.isEmpty() && ((i % modulo) == 0))
                     {
@@ -553,7 +556,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 QStringList list = tmpString.split(" ");
                 for(auto el : list)
                 {
-                    result += "&nbsp;";
+                    result += "&nbsp;";     // uncolored
                     result += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMessageDecimalColor);
                     result += m_mixedConsoleData.decimalSpaces;
                     result += el;
@@ -568,7 +571,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 QStringList list = tmpString.split(" ");
                 for(auto el : list)
                 {
-                    result += "&nbsp;";
+                    result += "&nbsp;";     // uncolored
                     result += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMessageBinaryColor);
                     result += el;
                     result += "</span>";
