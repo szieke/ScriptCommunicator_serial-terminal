@@ -31,6 +31,7 @@
 #include <QLabel>
 #include <QToolButton>
 #include <QComboBox>
+#include <QSignalMapper>
 
 QT_USE_NAMESPACE
 
@@ -219,6 +220,12 @@ struct Settings
     ///The color of timestamps and messages.
     QString consoleMessageAndTimestampColor;
 
+    ///Colors for mixed console
+    QString consoleMessageAsciiColor;
+    QString consoleMessageDecimalColor;
+    QString consoleMessageHexadecimalColor;
+    QString consoleMessageBinaryColor;
+
     ///New line after ... number of sent/received bytes (0=off).
     quint32 consoleNewLineAfterBytes;
 
@@ -380,7 +387,7 @@ public:
     QString getColorStringFromButton(QToolButton* button);
 
     ///Sets the text color of a button.
-    void setButtonTextColorFromString(QString colorString, QToolButton* button);
+    void setButtonColorFromString(QString colorString, QToolButton* button);
 
     ///Sets m_interfaceSettingsCanBeChanged.
     void setInterfaceSettingsCanBeChanged(bool interfaceSettingsCanBeChanged);
@@ -416,18 +423,6 @@ private slots:
 
     ///Is called if the user presses the search log script button.
     void searchLogScriptSlot();
-
-    ///Is called if the received color button button is pressed.
-    void receiveColorButtonPressedSlot(void);
-
-    ///Is called if the send color button button is pressed.
-    void sendColorButtonPressedSlot(void);
-
-    ///Is called if the message and timestamp color button button is pressed.
-    void messageAndTimestampColorButtonPressedSlot(void);
-
-    ///Is called if the background button is pressed.
-    void backgroundColorButtonPressedSlot(void);
 
     ///Is called if a filter radio button is pressed.
     void setFilterRadioButtonPressedSlot(void);
@@ -570,6 +565,7 @@ private:
 
     ///Reads the information from all available serial port.
     QVector<QStringList> getSerialPortsInfo();
+    QSignalMapper *mapColorButtons;
 
 private:
     ///The user interface.

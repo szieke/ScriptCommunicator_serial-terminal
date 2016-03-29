@@ -209,7 +209,6 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->logShowAsciiCheckBox, SIGNAL(stateChanged(int)),
             this, SLOT(stateFromCheckboxChangedSlot(int)));
 
-
     connect(m_userInterface->consoleShowMixedCheckBox, SIGNAL(stateChanged(int)),
             this, SLOT(stateFromCheckboxChangedSlot(int)));
 
@@ -221,8 +220,10 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     connect(m_userInterface->socketAdressLineEdit, SIGNAL(textChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
+
     connect(m_userInterface->socketPartnerPortLineEdit, SIGNAL(textChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
+
     connect(m_userInterface->socketsTypeComboBox, SIGNAL(currentTextChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
 
@@ -269,17 +270,29 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->cheetahChipSelectComboBox, SIGNAL(currentTextChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
 
-    connect(m_userInterface->consoleReceiveColorButton, SIGNAL(clicked()),
-            this, SLOT(receiveColorButtonPressedSlot()));
-
-    connect(m_userInterface->consoleSendColorButton, SIGNAL(clicked()),
-            this, SLOT(sendColorButtonPressedSlot()));
-
-    connect(m_userInterface->consoleMessageColorButton, SIGNAL(clicked()),
-            this, SLOT(messageAndTimestampColorButtonPressedSlot()));
-
-    connect(m_userInterface->consoleBackgroundColorButton, SIGNAL(clicked()),
-            this, SLOT(backgroundColorButtonPressedSlot()));
+    // connect color buttons via signal mapper to function which opens color dialog
+    mapColorButtons = new QSignalMapper(this);
+    mapColorButtons->setMapping(m_userInterface->consoleSendColorButton, m_userInterface->consoleSendColorButton);
+    mapColorButtons->setMapping(m_userInterface->consoleMessageColorButton, m_userInterface->consoleMessageColorButton);
+    mapColorButtons->setMapping(m_userInterface->consoleReceiveColorButton, m_userInterface->consoleReceiveColorButton);
+    mapColorButtons->setMapping(m_userInterface->consoleBackgroundColorButton, m_userInterface->consoleBackgroundColorButton);
+    mapColorButtons->setMapping(m_userInterface->btnColorAscii, m_userInterface->btnColorAscii);
+    mapColorButtons->setMapping(m_userInterface->btnColorDec, m_userInterface->btnColorDec);
+    mapColorButtons->setMapping(m_userInterface->btnColorHex, m_userInterface->btnColorHex);
+    mapColorButtons->setMapping(m_userInterface->btnColorBin, m_userInterface->btnColorBin);
+    connect(m_userInterface->consoleSendColorButton, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
+    connect(m_userInterface->consoleMessageColorButton, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
+    connect(m_userInterface->consoleReceiveColorButton, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
+    connect(m_userInterface->consoleBackgroundColorButton, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
+    connect(m_userInterface->btnColorAscii, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
+    connect(m_userInterface->btnColorDec, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
+    connect(m_userInterface->btnColorHex, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
+    connect(m_userInterface->btnColorBin, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
+    connect(mapColorButtons, static_cast<void(QSignalMapper::*)(QWidget *)>(&QSignalMapper::mapped),
+    [=](QWidget *widget){
+        QToolButton *btn = qobject_cast<QToolButton *>(widget);
+        colorButtonPressed(btn);
+    });
 
     connect(m_userInterface->consoleNewLineAfterNumberBytes, SIGNAL(textChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
@@ -346,10 +359,7 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->logEditScriptPushButton, SIGNAL(clicked()),
             this, SLOT(editCustomLogScriptSlot()));
 
-
-
     m_userInterface->serialPortInfoListBox->installEventFilter(this);
-
 
     fillSerialPortParameters();
 
@@ -396,7 +406,6 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     m_userInterface->cheetahBaudrateLineEdit->setValidator(new QIntValidator(0, INT_MAX, m_userInterface->cheetahBaudrateLineEdit));
     m_userInterface->cheetahBaudrateLineEdit->setText("12000");
 
-
     m_userInterface->cheetahPlainTextEdit->appendPlainText(CheetahSpi::detectDevices());
 
     detectPcanSlot();
@@ -410,11 +419,14 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     v->setRegExp(rx);
     m_userInterface->pcanFilterToLineEdit->setValidator(v);
 
-
-    setButtonTextColorFromString("000000", m_userInterface->consoleReceiveColorButton);
-    setButtonTextColorFromString("7c0000", m_userInterface->consoleSendColorButton);
-    setButtonTextColorFromString("efefef", m_userInterface->consoleBackgroundColorButton);
-    setButtonTextColorFromString("7c0000", m_userInterface->consoleMessageColorButton);
+    setButtonColorFromString("000000", m_userInterface->consoleReceiveColorButton);
+    setButtonColorFromString("7c0000", m_userInterface->consoleSendColorButton);
+    setButtonColorFromString("efefef", m_userInterface->consoleBackgroundColorButton);
+    setButtonColorFromString("7c0000", m_userInterface->consoleMessageColorButton);
+    setButtonColorFromString("8faf9f", m_userInterface->btnColorAscii);
+    setButtonColorFromString("f8f893", m_userInterface->btnColorDec);
+    setButtonColorFromString("6c9339", m_userInterface->btnColorHex);
+    setButtonColorFromString("bf9b76", m_userInterface->btnColorBin);
 
     m_userInterface->consoleNewLineAt->addItem("LF", (quint16)'\n');
     m_userInterface->consoleNewLineAt->addItem("CR", (quint16)'\r');
@@ -426,7 +438,6 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
             this, SLOT(checkCustomConsoleNewLineAtSlot(int)));
     connect(m_userInterface->consoleNewLineAt, SIGNAL(currentTextChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
-
 
     m_userInterface->logNewLineAt->addItem("LF", (quint16)'\n');
     m_userInterface->logNewLineAt->addItem("CR", (quint16)'\r');
@@ -447,7 +458,6 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     m_userInterface->consoleSendOnEnter->addItem("CR+LF", "\r\n");
 #endif
 
-
     m_userInterface->consoleTimestampAtByteComboBox->addItem("LF", (quint16)'\n');
     m_userInterface->consoleTimestampAtByteComboBox->addItem("CR", (quint16)'\r');
     m_userInterface->consoleTimestampAtByteComboBox->addItem("custom");
@@ -465,7 +475,6 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
             this, SLOT(checkCustomLogTimestampAtSlot(int)));
     connect(m_userInterface->logTimestampAtByteComboBox, SIGNAL(currentTextChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
-
 
     connect(m_userInterface->consoleTimestampAtByteCheckBox, SIGNAL(stateChanged(int)),
             this, SLOT(stateFromCheckboxChangedSlot(int)));
@@ -485,7 +494,6 @@ SettingsDialog::~SettingsDialog()
 {
     delete m_userInterface;
 }
-
 
 /**
  * Is called when the user presses the search console script button.
@@ -544,56 +552,19 @@ void SettingsDialog::colorButtonPressed(QToolButton* button)
 {
     QPalette palette = button->palette();
 
-    //QColor color =  QColorDialog::getColor(palette.color(QPalette::ButtonText));
-
     color_widgets::ColorDialog* dialog = new color_widgets::ColorDialog(this);
     dialog->setButtonMode(color_widgets::ColorDialog::OkCancel);
-    dialog->setColor(palette.color(QPalette::ButtonText));
+    dialog->setColor(palette.color(QPalette::Button));
     dialog->setAlphaEnabled(false);
 
     if(dialog->exec())
     {
-
         QColor color = dialog->color();
 
-        palette.setColor(QPalette::ButtonText, color);
-        button->setPalette(palette);
+        button->setStyleSheet(QString("background-color: %1;}").arg(color.name()));
         updateSettings();
         emit configHasToBeSavedSignal();
     }
-}
-
-/**
- * Is called if the received color button button is pressed.
- */
-void SettingsDialog::receiveColorButtonPressedSlot(void)
-{
-    colorButtonPressed(m_userInterface->consoleReceiveColorButton);
-}
-
-/**
- * Is called if the send color button button is pressed.
- */
-void SettingsDialog::sendColorButtonPressedSlot(void)
-{
-    colorButtonPressed(m_userInterface->consoleSendColorButton);
-}
-
-
-/**
- * Is called if the message and timestamp color button button is pressed.
- */
-void SettingsDialog::messageAndTimestampColorButtonPressedSlot(void)
-{
-    colorButtonPressed(m_userInterface->consoleMessageColorButton);
-}
-
-/**
- * Is called if the background button is pressed.
- */
-void SettingsDialog::backgroundColorButtonPressedSlot(void)
-{
-    colorButtonPressed(m_userInterface->consoleBackgroundColorButton);
 }
 
 /**
@@ -627,9 +598,7 @@ void SettingsDialog::setFilterRadioButtonPressedSlot(void)
 
     m_userInterface->pcanFilterFromLineEdit->setValidator(v1);
     m_userInterface->pcanFilterToLineEdit->setValidator(v2);
-
 }
-
 
 /**
  * Returns the current pcan baudrate;
@@ -724,7 +693,6 @@ void SettingsDialog::cheetahScanButtonSlot(void)
     m_userInterface->cheetahPlainTextEdit->appendPlainText(CheetahSpi::detectDevices());
 }
 
-
 /**
  * This slot function is called if the value of the script editor path line edit has been changed.
  * @param path
@@ -773,14 +741,11 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings)
     }
     m_userInterface->baudRateBox->setCurrentText(QString("%1").arg(settings.serialPort.baudRate));
 
-
-
     // Data bits
     m_userInterface->dataBitsBox->setCurrentText(QString("%1").arg(settings.serialPort.dataBits));
 
     // Stop bits
     m_userInterface->stopBitsBox->setCurrentText(QString("%1").arg(settings.serialPort.stopBits));
-
 
     // Parity
     m_userInterface->parityBox->setCurrentText(settings.serialPort.stringParity);
@@ -813,7 +778,6 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings)
 
     m_userInterface->consoleTimestampAtByteCheckBox->setChecked(settings.consoleCreateTimestampAt);
     setDecimalComboBox(settings.consoleDecimalsType, m_userInterface->consoleDecimalsType);
-
 
     if(settings.consoleTimestampAt == 10)
     {
@@ -864,13 +828,19 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings)
     if(settings.consoleSendColor.isEmpty()){settings.consoleSendColor = "7c0000";}
     if(settings.consoleBackgroundColor.isEmpty()){settings.consoleBackgroundColor = "efefef";}
     if(settings.consoleMessageAndTimestampColor.isEmpty()){settings.consoleMessageAndTimestampColor = "7c0000";}
+    if(settings.consoleMessageAsciiColor.isEmpty()){settings.consoleMessageAsciiColor = "8faf9f";}
+    if(settings.consoleMessageDecimalColor.isEmpty()){settings.consoleMessageDecimalColor = "f8f893";}
+    if(settings.consoleMessageHexadecimalColor.isEmpty()){settings.consoleMessageHexadecimalColor = "6c9339";}
+    if(settings.consoleMessageBinaryColor.isEmpty()){settings.consoleMessageBinaryColor = "bf9b76";}
 
-    setButtonTextColorFromString(settings.consoleReceiveColor, m_userInterface->consoleReceiveColorButton);
-    setButtonTextColorFromString(settings.consoleSendColor, m_userInterface->consoleSendColorButton);
-    setButtonTextColorFromString(settings.consoleBackgroundColor, m_userInterface->consoleBackgroundColorButton);
-    setButtonTextColorFromString(settings.consoleMessageAndTimestampColor, m_userInterface->consoleMessageColorButton);
-
-
+    setButtonColorFromString(settings.consoleReceiveColor, m_userInterface->consoleReceiveColorButton);
+    setButtonColorFromString(settings.consoleSendColor, m_userInterface->consoleSendColorButton);
+    setButtonColorFromString(settings.consoleBackgroundColor, m_userInterface->consoleBackgroundColorButton);
+    setButtonColorFromString(settings.consoleMessageAndTimestampColor, m_userInterface->consoleMessageColorButton);
+    setButtonColorFromString(settings.consoleMessageAsciiColor, m_userInterface->btnColorAscii);
+    setButtonColorFromString(settings.consoleMessageDecimalColor, m_userInterface->btnColorDec);
+    setButtonColorFromString(settings.consoleMessageHexadecimalColor, m_userInterface->btnColorHex);
+    setButtonColorFromString(settings.consoleMessageBinaryColor, m_userInterface->btnColorBin);
 
     // log option
     m_userInterface->HtmlLogCheckBox->setChecked(settings.htmlLogFile);
@@ -1677,7 +1647,7 @@ QString SettingsDialog::getColorStringFromButton(QToolButton* button)
 {
     QString colorString;
 
-    QColor color =  button->palette().color(QPalette::ButtonText);
+    QColor color =  button->palette().color(QPalette::Button);
 
     int r;
     int g;
@@ -1716,7 +1686,7 @@ QString SettingsDialog::getColorStringFromButton(QToolButton* button)
  * @param button
  *      The button.
  */
-void SettingsDialog::setButtonTextColorFromString(QString colorString, QToolButton* button)
+void SettingsDialog::setButtonColorFromString(QString colorString, QToolButton* button)
 {
     bool isOk;
 
@@ -1725,10 +1695,7 @@ void SettingsDialog::setButtonTextColorFromString(QString colorString, QToolButt
     int b = colorString.mid(4, 2).toUInt(&isOk, 16);
 
     QColor color(r,g,b);
-
-    QPalette palette = button->palette();
-    palette.setColor(QPalette::ButtonText, color);
-    button->setPalette(palette);
+    button->setStyleSheet(QString("background-color: %1;").arg(color.name()));
 }
 
 /**
@@ -1874,6 +1841,10 @@ void SettingsDialog::updateSettings()
     m_currentSettings.consoleSendColor= getColorStringFromButton(m_userInterface->consoleSendColorButton);
     m_currentSettings.consoleBackgroundColor= getColorStringFromButton(m_userInterface->consoleBackgroundColorButton);
     m_currentSettings.consoleMessageAndTimestampColor= getColorStringFromButton(m_userInterface->consoleMessageColorButton);
+    m_currentSettings.consoleMessageAsciiColor = getColorStringFromButton(m_userInterface->btnColorAscii);
+    m_currentSettings.consoleMessageDecimalColor = getColorStringFromButton(m_userInterface->btnColorDec);
+    m_currentSettings.consoleMessageHexadecimalColor= getColorStringFromButton(m_userInterface->btnColorHex);
+    m_currentSettings.consoleMessageBinaryColor= getColorStringFromButton(m_userInterface->btnColorBin);
     m_currentSettings.consoleNewLineAfterBytes = m_userInterface->consoleNewLineAfterNumberBytes->text().toUInt();
     m_currentSettings.consoleNewLineAfterPause = m_userInterface->consoleNewLineAfterPause->text().toUInt();
     m_currentSettings.consoleSendOnEnter = m_userInterface->consoleSendOnEnter->itemData(m_userInterface->consoleSendOnEnter->currentIndex()).toString();
