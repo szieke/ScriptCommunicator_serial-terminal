@@ -1110,6 +1110,10 @@ void MainWindow::loadSettings()
                         currentSettings.consoleSendColor = node.attributes().namedItem("consoleSendColor").nodeValue();
                         currentSettings.consoleBackgroundColor = node.attributes().namedItem("consoleBackgroundColor").nodeValue();
                         currentSettings.consoleMessageAndTimestampColor = node.attributes().namedItem("consoleMessageAndTimestampColor").nodeValue();
+                        currentSettings.consoleMessageAsciiColor = node.attributes().namedItem("consoleMessageAsciiColor").nodeValue();
+                        currentSettings.consoleMessageDecimalColor = node.attributes().namedItem("consoleMessageDecimalColor").nodeValue();
+                        currentSettings.consoleMessageHexadecimalColor = node.attributes().namedItem("consoleMessageHexadecimalColor").nodeValue();
+                        currentSettings.consoleMessageBinaryColor = node.attributes().namedItem("consoleMessageBinaryColor").nodeValue();
                         currentSettings.consoleNewLineAfterBytes = node.attributes().namedItem("consoleNewLineAfterBytes").nodeValue().toUInt();
                         currentSettings.consoleNewLineAfterPause = node.attributes().namedItem("consoleNewLineAfterPause").nodeValue().toUInt();
                         currentSettings.consoleSendOnEnter = node.attributes().namedItem("consoleSendOnEnter").nodeValue();
@@ -1785,6 +1789,10 @@ void MainWindow::inititializeTab(void)
     static QString sendColor = "";
     static QString backgroundColor = "";
     static QString messageAndTimestampColor = "";
+    static QString messageAsciiColor = "";
+    static QString messageDecimalColor = "";
+    static QString messageHexadecimalColor = "";
+    static QString messageBinaryColor = "";
     static QString consoleFont = "";
     static QString stringConsoleFontSize = "";
     static DecimalType  consoleDecimalsType = DECIMAL_TYPE_UINT8;
@@ -1839,6 +1847,30 @@ void MainWindow::inititializeTab(void)
     {
         tabsChanged = true;
         messageAndTimestampColor = currentSettings->consoleMessageAndTimestampColor;
+    }
+
+    if(messageAsciiColor != currentSettings->consoleMessageAsciiColor)
+    {
+        tabsChanged = true;
+        messageAsciiColor = currentSettings->consoleMessageAsciiColor;
+    }
+
+    if(messageDecimalColor != currentSettings->consoleMessageDecimalColor)
+    {
+        tabsChanged = true;
+        messageDecimalColor = currentSettings->consoleMessageDecimalColor;
+    }
+
+    if(messageHexadecimalColor != currentSettings->consoleMessageHexadecimalColor)
+    {
+        tabsChanged = true;
+        messageHexadecimalColor = currentSettings->consoleMessageHexadecimalColor;
+    }
+
+    if(messageBinaryColor != currentSettings->consoleMessageBinaryColor)
+    {
+        tabsChanged = true;
+        messageBinaryColor = currentSettings->consoleMessageBinaryColor;
     }
 
     if(showAsciiInConsole != currentSettings->showAsciiInConsole)
@@ -2103,6 +2135,10 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("consoleSendColor"), QString("%1").arg(currentSettings->consoleSendColor)),
                  std::make_pair(QString("consoleBackgroundColor"), QString("%1").arg(currentSettings->consoleBackgroundColor)),
                  std::make_pair(QString("consoleMessageAndTimestampColor"), QString("%1").arg(currentSettings->consoleMessageAndTimestampColor)),
+                 std::make_pair(QString("consoleMessageAsciiColor"), QString("%1").arg(currentSettings->consoleMessageAsciiColor)),
+                 std::make_pair(QString("consoleMessageDecimalColor"), QString("%1").arg(currentSettings->consoleMessageDecimalColor)),
+                 std::make_pair(QString("consoleMessageHexadecimalColor"), QString("%1").arg(currentSettings->consoleMessageHexadecimalColor)),
+                 std::make_pair(QString("consoleMessageBinaryColor"), QString("%1").arg(currentSettings->consoleMessageBinaryColor)),
                  std::make_pair(QString("consoleNewLineAfterBytes"), QString("%1").arg(currentSettings->consoleNewLineAfterBytes)),
                  std::make_pair(QString("consoleNewLineAfterPause"), QString("%1").arg(currentSettings->consoleNewLineAfterPause)),
                  std::make_pair(QString("consoleNewLineAt"), QString("%1").arg(currentSettings->consoleNewLineAt)),
