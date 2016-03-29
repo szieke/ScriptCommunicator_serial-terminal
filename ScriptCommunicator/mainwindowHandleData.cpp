@@ -492,7 +492,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 {
                     tmpChar = tmpString[i];
                     asciiString += "&nbsp;";
-                    asciiString += "<span style=background-color:cyan>";
+                    asciiString += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMessageAsciiColor);
                     if(!m_mixedConsoleData.asciiExtraSpaces.isEmpty() && ((i % modulo) == 0))
                     {
                        asciiString += m_mixedConsoleData.asciiExtraSpaces;
@@ -532,7 +532,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 for(int i = 0; i < list.length(); i++)
                 {
                     result += "&nbsp;";
-                    result += "<span style=background-color:lightseagreen>";
+                    result += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMessageHexadecimalColor);
                     if(!m_mixedConsoleData.hexExtraSpaces.isEmpty() && ((i % modulo) == 0))
                     {
                        result += m_mixedConsoleData.hexExtraSpaces;
@@ -554,7 +554,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 for(auto el : list)
                 {
                     result += "&nbsp;";
-                    result += "<span style=background-color:powderblue>";
+                    result += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMessageDecimalColor);
                     result += m_mixedConsoleData.decimalSpaces;
                     result += el;
                     result += "</span>";
@@ -569,7 +569,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 for(auto el : list)
                 {
                     result += "&nbsp;";
-                    result += "<span style=background-color:lavender>";
+                    result += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMessageBinaryColor);
                     result += el;
                     result += "</span>";
                 }
@@ -672,7 +672,6 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, bool isS
                 }
 
                 canInformation = "<br>id: " +  messageIdString + " type: " + typeString + "   ";
-
             }
 
             if(isSend){canArray.remove(0, PCANBasicClass::BYTES_METADATA_SEND);}
@@ -747,8 +746,6 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, bool isS
             dataStringAscii.replace("\r", "");
             dataStringAscii = canInformation + dataStringAscii;
         }
-
-
     }
 
     //Note: data/dataArray is modified during the creation of dataStringAscii (see above), therefore data/dataArray must not be used.
