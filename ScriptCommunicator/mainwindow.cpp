@@ -1112,10 +1112,10 @@ void MainWindow::loadSettings()
                         currentSettings.consoleSendColor = node.attributes().namedItem("consoleSendColor").nodeValue();
                         currentSettings.consoleBackgroundColor = node.attributes().namedItem("consoleBackgroundColor").nodeValue();
                         currentSettings.consoleMessageAndTimestampColor = node.attributes().namedItem("consoleMessageAndTimestampColor").nodeValue();
-                        currentSettings.consoleMessageAsciiColor = node.attributes().namedItem("consoleMessageAsciiColor").nodeValue();
-                        currentSettings.consoleMessageDecimalColor = node.attributes().namedItem("consoleMessageDecimalColor").nodeValue();
-                        currentSettings.consoleMessageHexadecimalColor = node.attributes().namedItem("consoleMessageHexadecimalColor").nodeValue();
-                        currentSettings.consoleMessageBinaryColor = node.attributes().namedItem("consoleMessageBinaryColor").nodeValue();
+                        currentSettings.consoleMixedAsciiColor = node.attributes().namedItem("consoleMixedAsciiColor").nodeValue();
+                        currentSettings.consoleMixedDecimalColor = node.attributes().namedItem("consoleMixedDecimalColor").nodeValue();
+                        currentSettings.consoleMixedHexadecimalColor = node.attributes().namedItem("consoleMixedHexadecimalColor").nodeValue();
+                        currentSettings.consoleMixedBinaryColor = node.attributes().namedItem("consoleMixedBinaryColor").nodeValue();
                         currentSettings.consoleNewLineAfterBytes = node.attributes().namedItem("consoleNewLineAfterBytes").nodeValue().toUInt();
                         currentSettings.consoleNewLineAfterPause = node.attributes().namedItem("consoleNewLineAfterPause").nodeValue().toUInt();
                         currentSettings.consoleSendOnEnter = node.attributes().namedItem("consoleSendOnEnter").nodeValue();
@@ -1791,10 +1791,10 @@ void MainWindow::inititializeTab(void)
     static QString sendColor = "";
     static QString backgroundColor = "";
     static QString messageAndTimestampColor = "";
-    static QString messageAsciiColor = "";
-    static QString messageDecimalColor = "";
-    static QString messageHexadecimalColor = "";
-    static QString messageBinaryColor = "";
+    static QString mixedAsciiColor = "";
+    static QString mixedDecimalColor = "";
+    static QString mixedHexadecimalColor = "";
+    static QString mixedBinaryColor = "";
     static QString consoleFont = "";
     static QString stringConsoleFontSize = "";
     static DecimalType  consoleDecimalsType = DECIMAL_TYPE_UINT8;
@@ -1851,28 +1851,28 @@ void MainWindow::inititializeTab(void)
         messageAndTimestampColor = currentSettings->consoleMessageAndTimestampColor;
     }
 
-    if(messageAsciiColor != currentSettings->consoleMessageAsciiColor)
+    if(mixedAsciiColor != currentSettings->consoleMixedAsciiColor)
     {
         tabsChanged = true;
-        messageAsciiColor = currentSettings->consoleMessageAsciiColor;
+        mixedAsciiColor = currentSettings->consoleMixedAsciiColor;
     }
 
-    if(messageDecimalColor != currentSettings->consoleMessageDecimalColor)
+    if(mixedDecimalColor != currentSettings->consoleMixedDecimalColor)
     {
         tabsChanged = true;
-        messageDecimalColor = currentSettings->consoleMessageDecimalColor;
+        mixedDecimalColor = currentSettings->consoleMixedDecimalColor;
     }
 
-    if(messageHexadecimalColor != currentSettings->consoleMessageHexadecimalColor)
+    if(mixedHexadecimalColor != currentSettings->consoleMixedHexadecimalColor)
     {
         tabsChanged = true;
-        messageHexadecimalColor = currentSettings->consoleMessageHexadecimalColor;
+        mixedHexadecimalColor = currentSettings->consoleMixedHexadecimalColor;
     }
 
-    if(messageBinaryColor != currentSettings->consoleMessageBinaryColor)
+    if(mixedBinaryColor != currentSettings->consoleMixedBinaryColor)
     {
         tabsChanged = true;
-        messageBinaryColor = currentSettings->consoleMessageBinaryColor;
+        mixedBinaryColor = currentSettings->consoleMixedBinaryColor;
     }
 
     if(showAsciiInConsole != currentSettings->showAsciiInConsole)
@@ -2137,10 +2137,10 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("consoleSendColor"), QString("%1").arg(currentSettings->consoleSendColor)),
                  std::make_pair(QString("consoleBackgroundColor"), QString("%1").arg(currentSettings->consoleBackgroundColor)),
                  std::make_pair(QString("consoleMessageAndTimestampColor"), QString("%1").arg(currentSettings->consoleMessageAndTimestampColor)),
-                 std::make_pair(QString("consoleMessageAsciiColor"), QString("%1").arg(currentSettings->consoleMessageAsciiColor)),
-                 std::make_pair(QString("consoleMessageDecimalColor"), QString("%1").arg(currentSettings->consoleMessageDecimalColor)),
-                 std::make_pair(QString("consoleMessageHexadecimalColor"), QString("%1").arg(currentSettings->consoleMessageHexadecimalColor)),
-                 std::make_pair(QString("consoleMessageBinaryColor"), QString("%1").arg(currentSettings->consoleMessageBinaryColor)),
+                 std::make_pair(QString("consoleMixedAsciiColor"), QString("%1").arg(currentSettings->consoleMixedAsciiColor)),
+                 std::make_pair(QString("consoleMixedDecimalColor"), QString("%1").arg(currentSettings->consoleMixedDecimalColor)),
+                 std::make_pair(QString("consoleMixedHexadecimalColor"), QString("%1").arg(currentSettings->consoleMixedHexadecimalColor)),
+                 std::make_pair(QString("consoleMixedBinaryColor"), QString("%1").arg(currentSettings->consoleMixedBinaryColor)),
                  std::make_pair(QString("consoleNewLineAfterBytes"), QString("%1").arg(currentSettings->consoleNewLineAfterBytes)),
                  std::make_pair(QString("consoleNewLineAfterPause"), QString("%1").arg(currentSettings->consoleNewLineAfterPause)),
                  std::make_pair(QString("consoleNewLineAt"), QString("%1").arg(currentSettings->consoleNewLineAt)),

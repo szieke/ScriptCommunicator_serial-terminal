@@ -828,19 +828,19 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings)
     if(settings.consoleSendColor.isEmpty()){settings.consoleSendColor = "7c0000";}
     if(settings.consoleBackgroundColor.isEmpty()){settings.consoleBackgroundColor = "efefef";}
     if(settings.consoleMessageAndTimestampColor.isEmpty()){settings.consoleMessageAndTimestampColor = "7c0000";}
-    if(settings.consoleMessageAsciiColor.isEmpty()){settings.consoleMessageAsciiColor = "8faf9f";}
-    if(settings.consoleMessageDecimalColor.isEmpty()){settings.consoleMessageDecimalColor = "f8f893";}
-    if(settings.consoleMessageHexadecimalColor.isEmpty()){settings.consoleMessageHexadecimalColor = "6c9339";}
-    if(settings.consoleMessageBinaryColor.isEmpty()){settings.consoleMessageBinaryColor = "bf9b76";}
+    if(settings.consoleMixedAsciiColor.isEmpty()){settings.consoleMixedAsciiColor = "8faf9f";}
+    if(settings.consoleMixedDecimalColor.isEmpty()){settings.consoleMixedDecimalColor = "f8f893";}
+    if(settings.consoleMixedHexadecimalColor.isEmpty()){settings.consoleMixedHexadecimalColor = "6c9339";}
+    if(settings.consoleMixedBinaryColor.isEmpty()){settings.consoleMixedBinaryColor = "bf9b76";}
 
     setButtonColorFromString(settings.consoleReceiveColor, m_userInterface->consoleReceiveColorButton);
     setButtonColorFromString(settings.consoleSendColor, m_userInterface->consoleSendColorButton);
     setButtonColorFromString(settings.consoleBackgroundColor, m_userInterface->consoleBackgroundColorButton);
     setButtonColorFromString(settings.consoleMessageAndTimestampColor, m_userInterface->consoleMessageColorButton);
-    setButtonColorFromString(settings.consoleMessageAsciiColor, m_userInterface->btnColorAscii);
-    setButtonColorFromString(settings.consoleMessageDecimalColor, m_userInterface->btnColorDec);
-    setButtonColorFromString(settings.consoleMessageHexadecimalColor, m_userInterface->btnColorHex);
-    setButtonColorFromString(settings.consoleMessageBinaryColor, m_userInterface->btnColorBin);
+    setButtonColorFromString(settings.consoleMixedAsciiColor, m_userInterface->btnColorAscii);
+    setButtonColorFromString(settings.consoleMixedDecimalColor, m_userInterface->btnColorDec);
+    setButtonColorFromString(settings.consoleMixedHexadecimalColor, m_userInterface->btnColorHex);
+    setButtonColorFromString(settings.consoleMixedBinaryColor, m_userInterface->btnColorBin);
 
     // log option
     m_userInterface->HtmlLogCheckBox->setChecked(settings.htmlLogFile);
@@ -1841,10 +1841,10 @@ void SettingsDialog::updateSettings()
     m_currentSettings.consoleSendColor= getColorStringFromButton(m_userInterface->consoleSendColorButton);
     m_currentSettings.consoleBackgroundColor= getColorStringFromButton(m_userInterface->consoleBackgroundColorButton);
     m_currentSettings.consoleMessageAndTimestampColor= getColorStringFromButton(m_userInterface->consoleMessageColorButton);
-    m_currentSettings.consoleMessageAsciiColor = getColorStringFromButton(m_userInterface->btnColorAscii);
-    m_currentSettings.consoleMessageDecimalColor = getColorStringFromButton(m_userInterface->btnColorDec);
-    m_currentSettings.consoleMessageHexadecimalColor= getColorStringFromButton(m_userInterface->btnColorHex);
-    m_currentSettings.consoleMessageBinaryColor= getColorStringFromButton(m_userInterface->btnColorBin);
+    m_currentSettings.consoleMixedAsciiColor = getColorStringFromButton(m_userInterface->btnColorAscii);
+    m_currentSettings.consoleMixedDecimalColor = getColorStringFromButton(m_userInterface->btnColorDec);
+    m_currentSettings.consoleMixedHexadecimalColor= getColorStringFromButton(m_userInterface->btnColorHex);
+    m_currentSettings.consoleMixedBinaryColor= getColorStringFromButton(m_userInterface->btnColorBin);
     m_currentSettings.consoleNewLineAfterBytes = m_userInterface->consoleNewLineAfterNumberBytes->text().toUInt();
     m_currentSettings.consoleNewLineAfterPause = m_userInterface->consoleNewLineAfterPause->text().toUInt();
     m_currentSettings.consoleSendOnEnter = m_userInterface->consoleSendOnEnter->itemData(m_userInterface->consoleSendOnEnter->currentIndex()).toString();

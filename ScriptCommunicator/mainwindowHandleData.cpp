@@ -522,20 +522,16 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                             asciiString += "</span>";
                         }
                         asciiString += "&nbsp;";    // uncolored
-                        asciiString += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMessageAsciiColor);
+                        asciiString += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMixedAsciiColor);
                         asciiString += m_mixedConsoleData.asciiSpaces;
                     }
 
 
-                    // replace tags so our span does not get mangled up
-                    if (tmpChar == '<')
-                        asciiString += "&lt;";
-                    else if (tmpChar == '>')
-                        asciiString += "&gt;";
-                    else if (unprintable.contains(tmpChar))
-                        asciiString += ".";
-                    else
-                        asciiString += tmpChar;
+                    //Replace tags so our span does not get mangled up.
+                    if (tmpChar == '<')asciiString += "&lt;";
+                    else if (tmpChar == '>')asciiString += "&gt;";
+                    else if (unprintable.contains(tmpChar)) asciiString += ".";
+                    else asciiString += tmpChar;
                 }
                 asciiString += "</span>";
 
@@ -546,7 +542,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
             {
                 result += "<br>";
 
-                ///Create the hex string.
+                //Create the hex string.
                 tmpString = MainWindow::byteArrayToNumberString(arrayWithMaxBytes, false, true, false);
                 QStringList list = tmpString.split(" ");
                 qint32 modulo = m_mixedConsoleData.bytesPerDecimal;
@@ -559,7 +555,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                             result += "</span>";
                         }
                         result += "&nbsp;";    // uncolored
-                        result += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMessageHexadecimalColor);
+                        result += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMixedHexadecimalColor);
                         result += m_mixedConsoleData.hexSpaces;
                     }
 
@@ -579,7 +575,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 for(auto el : list)
                 {
                     result += "&nbsp;";     // uncolored
-                    result += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMessageDecimalColor);
+                    result += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMixedDecimalColor);
                     result += m_mixedConsoleData.decimalSpaces;
                     result += el;
                     result += "</span>";
@@ -602,7 +598,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                         }
 
                         result += "&nbsp;";     // uncolored
-                        result += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMessageBinaryColor);
+                        result += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMixedBinaryColor);
                     }
                     result += list[i];
                 }

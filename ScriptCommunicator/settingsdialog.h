@@ -221,10 +221,10 @@ struct Settings
     QString consoleMessageAndTimestampColor;
 
     ///Colors for mixed console
-    QString consoleMessageAsciiColor;
-    QString consoleMessageDecimalColor;
-    QString consoleMessageHexadecimalColor;
-    QString consoleMessageBinaryColor;
+    QString consoleMixedAsciiColor;
+    QString consoleMixedDecimalColor;
+    QString consoleMixedHexadecimalColor;
+    QString consoleMixedBinaryColor;
 
     ///New line after ... number of sent/received bytes (0=off).
     quint32 consoleNewLineAfterBytes;
