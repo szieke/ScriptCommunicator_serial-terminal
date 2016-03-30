@@ -1388,8 +1388,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>743</width>
-            <height>329</height>
+            <width>828</width>
+            <height>377</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
@@ -1534,7 +1534,7 @@ for TCP clients.</string>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>80</width>
+                 <width>16777215</width>
                  <height>16777215</height>
                 </size>
                </property>
@@ -1569,7 +1569,7 @@ for TCP clients.</string>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>80</width>
+                 <width>16777215</width>
                  <height>16777215</height>
                 </size>
                </property>
@@ -1601,7 +1601,7 @@ for TCP clients.</string>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>80</width>
+                 <width>16777215</width>
                  <height>16777215</height>
                 </size>
                </property>
@@ -1633,7 +1633,7 @@ for TCP clients.</string>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>80</width>
+                 <width>16777215</width>
                  <height>16777215</height>
                 </size>
                </property>
@@ -1786,7 +1786,7 @@ for TCP clients.</string>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>80</width>
+                 <width>16777215</width>
                  <height>16777215</height>
                 </size>
                </property>
@@ -1991,8 +1991,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>353</width>
-            <height>278</height>
+            <width>828</width>
+            <height>377</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2226,7 +2226,7 @@ for TCP clients.</string>
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
+            <y>-35</y>
             <width>811</width>
             <height>412</height>
            </rect>
