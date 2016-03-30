@@ -467,7 +467,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
 {
     QString result;
     QString tmpString;
-    QChar tmpChar;
+
     const Settings* currentSettings = m_settingsDialog->settings();
 
     if(m_mixedConsoleData.onlyOneType)
@@ -512,8 +512,6 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 ///Create the ascii string.
                 for(int i = 0; i < tmpString.length(); i++)
                 {
-                    tmpChar = tmpString[i];
-
                     if(!currentSettings->showDecimalInConsole || ((i % modulo) == 0))
                     {
                         if(i != 0)
@@ -527,10 +525,10 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
 
 
                     //Replace tags so our span does not get mangled up.
-                    if (tmpChar == '<')asciiString += "&lt;";
-                    else if (tmpChar == '>')asciiString += "&gt;";
-                    else if (tmpChar < 33 || tmpChar > 126) asciiString += QChar(255);
-                    else asciiString += tmpChar;
+                    if (tmpString[i] == '<')asciiString += "&lt;";
+                    else if (tmpString[i] == '>')asciiString += "&gt;";
+                    else if (tmpString[i] < 33 || tmpString[i] > 126) asciiString += 255;
+                    else asciiString += tmpString[i];
                 }
                 asciiString += "</span>";
 
@@ -776,7 +774,7 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, bool isS
                 else if (el == ' ')tmpString += "&nbsp;";
                 else if (el == '\n')tmpString += "";
                 else if (el == '\r')tmpString += "";
-                else if (el < 33 || el > 126) tmpString += QChar(255);
+                else if (el < 33 || el > 126) tmpString += 255;
                 else tmpString += el;
             }
 
@@ -924,7 +922,6 @@ void MainWindowHandleData::appendDataToLog(const QByteArray &data, bool isSend, 
 
             QString tmp = QString::fromLocal8Bit(asciiArray);
 
-            //if(isFromCan && currentSettings->writeCanMetaInformationInToLog && !isUserMessage && !isTimeStamp && !isNewLine)
             if(!isUserMessage && !isTimeStamp && !isNewLine)
             {
                 tmp.replace("\n", "");
@@ -1007,13 +1004,18 @@ void MainWindowHandleData::appendDataToLog(const QByteArray &data, bool isSend, 
                     }
                 }
 
-                dataString.replace("<", "&lt;");
-                dataString.replace(">", "&gt;");
-                dataString.replace("\n", "<br>");
-                dataString.replace(" ", "&nbsp;");
+                QString tmpString;
+                for(auto el : dataString)
+                {
+                    if (el == '<')tmpString += "&lt;";
+                    else if (el == '>')tmpString += "&gt;";
+                    else if (el == ' ')tmpString += "&nbsp;";
+                    else if (el == '\n')tmpString += "<br>";
+                    else tmpString += el;
+                }
                 m_HtmlLogFileStream << QString("<span style=\"  font-family:'") + currentSettings->stringHtmlLogFont +
                                        QString("'; font-size:") + currentSettings->stringHtmlLogFontSize + QString("pt; color:" + color + ";\">")
-                                       + dataString +  QString("</span>");
+                                       + tmpString +  QString("</span>");
 
             }//if(currentSettings->htmlLogFile && m_htmlLogFile.isOpen())
 
@@ -1899,7 +1901,7 @@ void MainWindowHandleData::historyConsoleTimerSlot()
                 else if (el == ' ')tmpString += "&nbsp;";
                 else if (el == '\n')tmpString += "";
                 else if (el == '\r')tmpString += "";
-                else if (el < 33 || el > 126) tmpString += QChar(255);
+                else if (el < 33 || el > 126) tmpString += 255;
                 else tmpString += el;
             }
             text += tmpString;
