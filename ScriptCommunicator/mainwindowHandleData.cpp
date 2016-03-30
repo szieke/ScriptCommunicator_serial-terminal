@@ -468,7 +468,6 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
     QString result;
     QString tmpString;
     QChar tmpChar;
-    const QString unprintable = "\r\n\t ";
     const Settings* currentSettings = m_settingsDialog->settings();
 
     if(m_mixedConsoleData.onlyOneType)
@@ -530,7 +529,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                     //Replace tags so our span does not get mangled up.
                     if (tmpChar == '<')asciiString += "&lt;";
                     else if (tmpChar == '>')asciiString += "&gt;";
-                    else if (unprintable.contains(tmpChar)) asciiString += ".";
+                    else if (tmpChar < 33 || tmpChar > 126) asciiString += QChar(255);
                     else asciiString += tmpChar;
                 }
                 asciiString += "</span>";
@@ -765,16 +764,23 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, bool isS
 
         if(currentSettings->showAsciiInConsole)
         {
+
             //Replace the binary 0 (for the ascii console).
             dataArray->replace(0, 255);
 
-            dataStringAscii = QString::fromLocal8Bit(*dataArray);
-            dataStringAscii.replace("<", "&lt;");
-            dataStringAscii.replace(">", "&gt;");
-            dataStringAscii.replace(" ", "&nbsp;");
-            dataStringAscii.replace("\n", "");
-            dataStringAscii.replace("\r", "");
-            dataStringAscii = canInformation + dataStringAscii;
+            QString tmpString;
+            for(auto el : QString::fromLocal8Bit(*dataArray))
+            {
+                if (el == '<')tmpString += "&lt;";
+                else if (el == '>')tmpString += "&gt;";
+                else if (el == ' ')tmpString += "&nbsp;";
+                else if (el == '\n')tmpString += "";
+                else if (el == '\r')tmpString += "";
+                else if (el < 33 || el > 126) tmpString += QChar(255);
+                else tmpString += el;
+            }
+
+            dataStringAscii = canInformation + tmpString;
         }
     }
 
@@ -1888,13 +1894,14 @@ void MainWindowHandleData::historyConsoleTimerSlot()
             QString tmpString;
             for(auto el : m_sendHistory[i])
             {
-                tmpString += (el != 0) ? el : 0xff;
+                if (el == '<')tmpString += "&lt;";
+                else if (el == '>')tmpString += "&gt;";
+                else if (el == ' ')tmpString += "&nbsp;";
+                else if (el == '\n')tmpString += "";
+                else if (el == '\r')tmpString += "";
+                else if (el < 33 || el > 126) tmpString += QChar(255);
+                else tmpString += el;
             }
-            tmpString.replace("<", "&lt;");
-            tmpString.replace(">", "&gt;");
-            tmpString.replace(" ", "&nbsp;");
-            tmpString.replace(currentSettings->consoleSendOnEnter, "<br>");
-
             text += tmpString;
         }
         else

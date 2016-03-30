@@ -1041,7 +1041,7 @@ void MainWindow::show(void)
     m_userInterface->sendHistoryPushButton->setMinimumSize(tmpSize);
     m_userInterface->clearHistoryPushButton->setMinimumSize(tmpSize);
 
-    inititializeTab();
+    m_handleData->reInsertDataInMixecConsoleSlot();
 }
 
 /**
@@ -3909,6 +3909,8 @@ void MainWindow::resizeEvent(QResizeEvent* event)
 
         //Restore the size of the second element in the send area inputs splitter
         restoreSizeSplitterSecondElement(m_userInterface->SendAreaInputsSplitter, m_sendAreaInputsSplitterSizeSecond);
+
+        m_handleData->calculateMixedConsoleData();
     }
 }
 
