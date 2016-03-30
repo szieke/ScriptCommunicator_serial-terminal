@@ -76,9 +76,6 @@ typedef struct
     ///The spaces for the ascii characters.
     QString asciiSpaces;
 
-    ///The extra spaces for the ascii characters.
-    QString asciiExtraSpaces;
-
     ///The spaces for the hex characters.
     QString hexSpaces;
 

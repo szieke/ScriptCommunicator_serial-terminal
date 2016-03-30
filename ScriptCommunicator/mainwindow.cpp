@@ -1040,6 +1040,8 @@ void MainWindow::show(void)
     m_userInterface->createScriptPushButton->setMinimumSize(tmpSize);
     m_userInterface->sendHistoryPushButton->setMinimumSize(tmpSize);
     m_userInterface->clearHistoryPushButton->setMinimumSize(tmpSize);
+
+    inititializeTab();
 }
 
 /**
