@@ -292,7 +292,19 @@ void MainWindowHandleData::calculateMixedConsoleData()
 
     if(currentSettings->showBinaryConsole)
     {
-        m_mixedConsoleData.divider = 8.2;
+        if((currentSettings->consoleDecimalsType == DECIMAL_TYPE_UINT8)|| (currentSettings->consoleDecimalsType == DECIMAL_TYPE_INT8))
+        {
+            m_mixedConsoleData.divider = 9;
+        }
+        else if((currentSettings->consoleDecimalsType == DECIMAL_TYPE_UINT16)|| (currentSettings->consoleDecimalsType == DECIMAL_TYPE_INT16))
+        {
+            m_mixedConsoleData.divider = 8.6;
+        }
+        else
+        {
+             m_mixedConsoleData.divider = 8.2;
+        }
+
         m_mixedConsoleData.onlyOneType = (!currentSettings->showHexInConsole && !currentSettings->showAsciiInConsole && !currentSettings->showDecimalInConsole) ? true : false;
     }
     else if(currentSettings->showDecimalInConsole)
