@@ -351,7 +351,6 @@ void MainWindowHandleData::calculateMixedConsoleData()
     }
 
     /******calculate the ascii spaces*********/
-    m_mixedConsoleData.asciiExtraSpaces.clear();
     m_mixedConsoleData.asciiSpaces.clear();
     if(m_mixedConsoleData.onlyOneType)
     {
