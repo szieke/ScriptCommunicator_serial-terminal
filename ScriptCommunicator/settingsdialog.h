@@ -205,6 +205,9 @@ struct Settings
     ///The consoles font size.
     QString stringConsoleFontSize;
 
+    static const int minFontSize = 4;
+    static const int maxFontSize = 20;
+
     ///The consoles update interval.
     quint32 updateIntervalConsole;
 
