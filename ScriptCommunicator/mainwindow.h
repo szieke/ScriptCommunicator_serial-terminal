@@ -110,6 +110,9 @@ public:
     ///The user has pressed a key.
     void keyPressEvent(QKeyEvent *event);
 
+    ///The user scrolled within console.
+    void wheelEvent(QWheelEvent *event);
+
     ///Sets m_mainWindow.
     void setMainWindow(MainWindow* mainWindow)
     {
@@ -396,7 +399,7 @@ private slots:
     ///Slot function for the connect button.
     void toggleConnectionSlot(bool connectionStatus);
 
-	///Slot function for the connect button.
+    ///Slot function for the connect button.
     void connectButtonSlot(void);
 
     ///Slot function for the show sending window button.

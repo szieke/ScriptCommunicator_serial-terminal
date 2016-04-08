@@ -117,6 +117,39 @@ void SendConsole::keyPressEvent(QKeyEvent *event)
 }
 
 /**
+ * Use Ctrl + mouse wheel to increase/decrease font size in consoles.
+ */
+void SendConsole::wheelEvent(QWheelEvent *event)
+{
+    SettingsDialog *m_settingsDialog = m_mainWindow->getSettingsDialog();
+    m_settingsDialog->updateSettings();
+    Settings currentSettings = *m_settingsDialog->settings();
+    QString currentConsoleFontSize = currentSettings.stringConsoleFontSize;
+    auto fontSize = currentConsoleFontSize.toInt();
+
+    if (event->modifiers() == Qt::ControlModifier) {
+        QPoint numDegrees = event->angleDelta();
+        if (!numDegrees.isNull()) {
+            if (numDegrees.y() > 0) {
+                // scroll up zooms in
+                if (++fontSize > currentSettings.maxFontSize)
+                    fontSize = currentSettings.maxFontSize;
+            } else {
+                // scroll down zooms out
+                if (--fontSize < currentSettings.minFontSize)
+                    fontSize = currentSettings.minFontSize;
+            }
+        }
+
+        currentSettings.stringConsoleFontSize = QString::number(fontSize);
+        m_settingsDialog->setAllSettingsSlot(currentSettings);
+    }
+
+    // forward event to parent for normal scrolling
+    QTextEdit::wheelEvent(event);
+}
+
+/**
  * Constructor.
  * @param scripts
  *      The command-line scripts.
