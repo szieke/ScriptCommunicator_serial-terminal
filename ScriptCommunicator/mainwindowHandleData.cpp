@@ -123,11 +123,11 @@ void MainWindowHandleData::updateConsoleAndLog(void)
             html += QString("pt;color:#" + settings->consoleReceiveColor+ ";\">");
             consoleString = html + consoleString + QString("</span>");
 
-            bool wasEmpty = (m_userInterface->ReceiveTextEditCustom->document()->characterCount() <= 1) ? true : false;
             m_mainWindow->appendConsoleStringToConsole(&consoleString, m_userInterface->ReceiveTextEditCustom);
             m_customConsoleStrings.clear();
             m_numberOfBytesInCustomConsoleStrings = 0;
-            if(wasEmpty)
+
+            if(m_userInterface->ReceiveTextEditCustom->document()->characterCount() <= 1)
             {
                 //Force the custom console to render the content.
                 QRect rect = MainWindow::windowPositionAndSize(m_mainWindow);
@@ -140,7 +140,8 @@ void MainWindowHandleData::updateConsoleAndLog(void)
             }
 
             while((m_numberOfBytesInCustomConsoleStoredStrings > (settings->maxCharsInConsole * 2)) && m_customConsoleStoredStrings.length() > 1)
-            {//Limit the number of bytes in m_customConsoleStoredStrings.
+            {
+                //Limit the number of bytes in m_customConsoleStoredStrings.
                 m_numberOfBytesInCustomConsoleStoredStrings -= m_customConsoleStoredStrings.first().length();
                 m_customConsoleStoredStrings.removeFirst();
             }

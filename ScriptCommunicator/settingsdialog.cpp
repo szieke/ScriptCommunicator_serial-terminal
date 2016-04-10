@@ -68,11 +68,11 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     m_pcanInterface = new PCANBasicClass(this);
 
-
     m_userInterface->baudRateBox->setInsertPolicy(QComboBox::NoInsert);
 
     QStringList listFontSize;
-    listFontSize << "4" << "5" << "6" << "7" << "8" << "9" << "10" << "11" << "12" << "13" << "14" << "15" << "16";
+    for (int fs = settings()->minFontSize; fs <= settings()->maxFontSize; fs++)
+        listFontSize.append(QString::number(fs));
     m_userInterface->consoleFontSizeComboBox->addItems(listFontSize);
     m_userInterface->consoleFontSizeComboBox->setCurrentText("10");
 
