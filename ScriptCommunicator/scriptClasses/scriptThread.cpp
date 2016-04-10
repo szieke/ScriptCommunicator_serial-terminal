@@ -309,8 +309,8 @@ void ScriptThread::run()
         connect(this, SIGNAL(addMessageToLogAndConsolesSignal(QString, bool)),m_scriptWindow->m_mainWindow, SLOT(messageEnteredSlot(QString, bool)),
                 directConnectionType);
 
-        connect(this, SIGNAL(setAllSettingsSignal(Settings&)),
-                m_settingsDialog, SLOT(setAllSettingsSlot(Settings&)), directConnectionType);
+        connect(this, SIGNAL(setAllSettingsSignal(Settings&,bool)),
+                m_settingsDialog, SLOT(setAllSettingsSlot(Settings&,bool)), directConnectionType);
 
         connect(this, SIGNAL(appendTextToConsoleSignal(QString, bool)),
                 m_scriptWindow, SLOT(appendTextToConsoleSlot(QString, bool)), directConnectionType);
@@ -1586,14 +1586,14 @@ bool ScriptThread::connectSocket(bool isTcp, bool isServer, QString ip, quint32 
     settings.socketSettings.adress = ip;
     settings.socketSettings.ownPort = ownPort;
     settings.socketSettings.partnerPort = partnerPort;
-    emit setAllSettingsSignal(settings);
+    emit setAllSettingsSignal(settings, false);
     emit connectDataConnectionSignal(settings, true);
 
     waitForMainInterfaceToConnect(connectTimeout);
 
     if(!m_isConnected)
     {
-        emit setAllSettingsSignal(oldSettings);
+        emit setAllSettingsSignal(oldSettings, false);
         emit connectDataConnectionSignal(oldSettings, false);
     }
 
@@ -1643,14 +1643,14 @@ bool ScriptThread::connectPcan(quint8 channel, quint32 baudrate, quint32 connect
     newSettings.pcanInterface.filterExtended = filterExtended;
     newSettings.pcanInterface.filterFrom = QString::number(filterFrom, 16);
     newSettings.pcanInterface.filterTo = QString::number(filterTo, 16);
-    emit setAllSettingsSignal(newSettings);
+    emit setAllSettingsSignal(newSettings, false);
     emit connectDataConnectionSignal(newSettings, true);
 
     waitForMainInterfaceToConnect(connectTimeout);
 
     if(!m_isConnected)
     {
-        emit setAllSettingsSignal(oldSettings);
+        emit setAllSettingsSignal(oldSettings, false);
         emit connectDataConnectionSignal(oldSettings, false);
     }
 
@@ -1763,14 +1763,14 @@ bool ScriptThread::connectSerialPort(QString name, qint32 baudRate, quint32 conn
     }
 
 
-    emit setAllSettingsSignal(settings);
+    emit setAllSettingsSignal(settings, false);
     emit connectDataConnectionSignal(settings, true);
 
     waitForMainInterfaceToConnect(connectTimeout);
 
     if(!m_isConnected)
     {
-        emit setAllSettingsSignal(oldSettings);
+        emit setAllSettingsSignal(oldSettings, false);
         emit connectDataConnectionSignal(oldSettings, false);
     }
 
@@ -1808,14 +1808,14 @@ bool ScriptThread::connectCheetahSpi(quint32 port, qint16 mode, quint32 baudrate
     settings.cheetahSpi.baudRate = baudrate;
     settings.cheetahSpi.chipSelect = chipSelectBits;
 
-     emit setAllSettingsSignal(settings);
+     emit setAllSettingsSignal(settings, false);
     emit connectDataConnectionSignal(settings, true);
 
     waitForMainInterfaceToConnect(connectTimeout);
 
     if(!m_isConnected)
     {
-        emit setAllSettingsSignal(oldSettings);
+        emit setAllSettingsSignal(oldSettings, false);
         emit connectDataConnectionSignal(oldSettings, false);
     }
 
@@ -2379,7 +2379,7 @@ bool ScriptThread::showReceivedDataInConsoles(bool show)
     Settings settings = *m_settingsDialog->settings();
     bool oldValue = settings.showReceivedDataInConsole;
     settings.showReceivedDataInConsole = show;
-    emit setAllSettingsSignal(settings);
+    emit setAllSettingsSignal(settings, false);
 
     return oldValue;
 }
@@ -2397,7 +2397,7 @@ bool ScriptThread::showTransmitDataInConsoles(bool show)
     Settings settings = *m_settingsDialog->settings();
     bool oldValue = settings.showSendDataInConsole;
     settings.showSendDataInConsole = show;
-    emit setAllSettingsSignal(settings);
+    emit setAllSettingsSignal(settings, false);
 
     return oldValue;
 }

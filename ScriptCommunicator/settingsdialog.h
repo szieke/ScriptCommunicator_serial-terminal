@@ -205,8 +205,11 @@ struct Settings
     ///The consoles font size.
     QString stringConsoleFontSize;
 
-    static const int minFontSize = 4;
-    static const int maxFontSize = 20;
+    ///The min. console font size.
+    static const int MIN_FONT_SIZE = 4;
+
+    ///The max. console font size.
+    static const int MAX_FONT_SIZE = 20;
 
     ///The consoles update interval.
     quint32 updateIntervalConsole;
@@ -418,7 +421,7 @@ public:
 public slots:
 
     ///Sets all settings in the gui and the settings struct (m_currentSettings).
-    void setAllSettingsSlot(Settings& settings);
+    void setAllSettingsSlot(Settings& settings, bool setTabIndex);
 private slots:
 
     ///Is called if the user presses the search console script button.

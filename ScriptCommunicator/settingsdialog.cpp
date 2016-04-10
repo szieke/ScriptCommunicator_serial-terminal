@@ -71,8 +71,9 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     m_userInterface->baudRateBox->setInsertPolicy(QComboBox::NoInsert);
 
     QStringList listFontSize;
-    for (int fs = settings()->minFontSize; fs <= settings()->maxFontSize; fs++)
+    for (int fs = Settings::MIN_FONT_SIZE; fs <= Settings::MAX_FONT_SIZE; fs++)
         listFontSize.append(QString::number(fs));
+
     m_userInterface->consoleFontSizeComboBox->addItems(listFontSize);
     m_userInterface->consoleFontSizeComboBox->setCurrentText("10");
 
@@ -724,8 +725,10 @@ void SettingsDialog::searchScriptEditorButtonPressedSlot(void)
  * Sets all settings in the gui and the settings struct (m_currentSettings).
  * @param settings
  *      The new settings.
+ * @param setTabIndex
+ *      True if the tab index (settings dialog) shall set.
  */
-void SettingsDialog::setAllSettingsSlot(Settings& settings)
+void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
 {
     showAllLocalIpAddresses();
 
@@ -733,7 +736,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings)
 
     m_userInterface->serialPortInfoListBox->setCurrentText(QString("%1").arg(settings.serialPort.name));
 
-    // Baud Rate
+    //Baud Rate
     if((settings.serialPort.baudRate != 9600) && (settings.serialPort.baudRate != 19200) &&
             (settings.serialPort.baudRate != 38400) && (settings.serialPort.baudRate != 57600) && (settings.serialPort.baudRate != 115200))
     {
@@ -741,19 +744,19 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings)
     }
     m_userInterface->baudRateBox->setCurrentText(QString("%1").arg(settings.serialPort.baudRate));
 
-    // Data bits
+    //Data bits
     m_userInterface->dataBitsBox->setCurrentText(QString("%1").arg(settings.serialPort.dataBits));
 
-    // Stop bits
+    //Stop bits
     m_userInterface->stopBitsBox->setCurrentText(QString("%1").arg(settings.serialPort.stopBits));
 
-    // Parity
+    //Parity
     m_userInterface->parityBox->setCurrentText(settings.serialPort.stringParity);
 
-    // Flow control
+    //Flow control
     m_userInterface->flowControlBox->setCurrentText(settings.serialPort.stringFlowControl);
 
-    // console options
+    //Console options
     m_userInterface->ShowReceivedCheckBox->setChecked(settings.showReceivedDataInConsole);
     m_userInterface->ShowSendInConsoleCheckBox->setChecked(settings.showSendDataInConsole);
     m_userInterface->PrintTimeStampCheckBox->setChecked(settings.generateTimeStampsInConsole);
@@ -842,7 +845,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings)
     setButtonColorFromString(settings.consoleMixedHexadecimalColor, m_userInterface->btnColorHex);
     setButtonColorFromString(settings.consoleMixedBinaryColor, m_userInterface->btnColorBin);
 
-    // log option
+    //Log option
     m_userInterface->HtmlLogCheckBox->setChecked(settings.htmlLogFile);
     m_userInterface->logHtmlLineEdit->setText(settings.htmlLogfileName);
     m_userInterface->TextLogCheckBox->setChecked(settings.textLogFile);
@@ -948,13 +951,13 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings)
 
     }
 
-    //cheetah settings
+    //Cheetah settings
     m_userInterface->cheetahPortLineEdit->setText(QString("%1").arg(settings.cheetahSpi.port));
     m_userInterface->cheetahBaudrateLineEdit->setText(QString("%1").arg(settings.cheetahSpi.baudRate));
     m_userInterface->cheetahSpiModeComboBox->setCurrentIndex(settings.cheetahSpi.mode);
     m_userInterface->cheetahChipSelectComboBox->setCurrentText(QString("%1").arg(settings.cheetahSpi.chipSelect));
 
-    //pcan settings
+    //Pcan settings
     m_userInterface->pcan5VoltComboBox->setCurrentText(settings.pcanInterface.powerSupply ? "on" : "off");
     m_userInterface->pcanBusOffResetComboBox->setCurrentText(settings.pcanInterface.busOffAutoReset ? "on" : "off");
     m_userInterface->pcanBaudratecomboBox->setCurrentText(convertPcanBaudrate(settings.pcanInterface.baudRate));
@@ -981,7 +984,10 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings)
         m_userInterface->endianessComboBox->setCurrentIndex(1);
     }
 
-    m_userInterface->tabWidget->setCurrentIndex(settings.settingsDialogTabIndex);
+    if(setTabIndex)
+    {
+        m_userInterface->tabWidget->setCurrentIndex(settings.settingsDialogTabIndex);
+    }
 
     updateSettings();
 

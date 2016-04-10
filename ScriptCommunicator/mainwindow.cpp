@@ -118,39 +118,45 @@ void SendConsole::keyPressEvent(QKeyEvent *event)
 
 /**
  * Use Ctrl + mouse wheel to increase/decrease font size in consoles.
+ *
+ * @param event
+ *      The wheel event.
  */
 void SendConsole::wheelEvent(QWheelEvent *event)
 {
-    SettingsDialog *m_settingsDialog = m_mainWindow->getSettingsDialog();
-    m_settingsDialog->updateSettings();
-    Settings currentSettings = *m_settingsDialog->settings();
-    QString currentConsoleFontSize = currentSettings.stringConsoleFontSize;
-    auto fontSize = currentConsoleFontSize.toInt();
+    if (event->modifiers() == Qt::ControlModifier)
+    {
+        SettingsDialog* settingsDialog = m_mainWindow->getSettingsDialog();
+        Settings currentSettings = *settingsDialog->settings();
+        auto fontSize = currentSettings.stringConsoleFontSize.toInt();
 
-    if (event->modifiers() == Qt::ControlModifier) {
         QPoint numDegrees = event->angleDelta();
-        if (!numDegrees.isNull()) {
-            if (numDegrees.y() > 0) {
-                // scroll up zooms in
-                if (++fontSize > currentSettings.maxFontSize)
-                    fontSize = currentSettings.maxFontSize;
-            } else {
-                // scroll down zooms out
-                if (--fontSize < currentSettings.minFontSize)
-                    fontSize = currentSettings.minFontSize;
+        if (!numDegrees.isNull())
+        {
+            if (numDegrees.y() > 0)
+            {
+                //Scroll up zooms in.
+                if (++fontSize > Settings::MAX_FONT_SIZE)
+                    fontSize = Settings::MAX_FONT_SIZE;
+            } else
+            {
+                //Scroll down zooms out.
+                if (--fontSize < Settings::MIN_FONT_SIZE)
+                    fontSize = Settings::MIN_FONT_SIZE;
             }
         }
 
         currentSettings.stringConsoleFontSize = QString::number(fontSize);
-        m_settingsDialog->setAllSettingsSlot(currentSettings);
+        settingsDialog->setAllSettingsSlot(currentSettings, false);
     }
 
-    // forward event to parent for normal scrolling
+    //Forward event to parent for normal scrolling.
     QTextEdit::wheelEvent(event);
 }
 
 /**
  * Constructor.
+ *
  * @param scripts
  *      The command-line scripts.
  * @param withScriptWindow
@@ -471,7 +477,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
         settings.htmlLogFile = false;
         settings.textLogFile = false;
 
-        m_settingsDialog->setAllSettingsSlot(settings);
+        m_settingsDialog->setAllSettingsSlot(settings, true);
 
         m_scriptWindow->startCommandLineScripts();
 
@@ -1686,7 +1692,7 @@ void MainWindow::loadSettings()
                 }
 
                 m_settingsDialog->blockSignals(true);
-                m_settingsDialog->setAllSettingsSlot(currentSettings);
+                m_settingsDialog->setAllSettingsSlot(currentSettings, true);
                 m_settingsDialog->blockSignals(false);
 
                 m_userInterface->rtsCheckBox->blockSignals(true);
@@ -2514,7 +2520,7 @@ void MainWindow::htmLogActivatedSlot(bool activated)
             {
                 currentSettings.htmlLogFile = false;
             }
-            m_settingsDialog->setAllSettingsSlot(currentSettings);
+            m_settingsDialog->setAllSettingsSlot(currentSettings, false);
         }
 
         if(!currentSettings.htmlLogfileName.isEmpty())
@@ -2534,7 +2540,7 @@ void MainWindow::htmLogActivatedSlot(bool activated)
             {
                 QMessageBox::critical(this, "could not open file", fileName);
                 currentSettings.htmlLogFile = false;
-                m_settingsDialog->setAllSettingsSlot(currentSettings);
+                m_settingsDialog->setAllSettingsSlot(currentSettings, false);
             }
         }
     }
@@ -2601,7 +2607,7 @@ void MainWindow::textLogActivatedSlot(bool activated)
                 currentSettings.textLogFile = false;
             }
 
-            m_settingsDialog->setAllSettingsSlot(currentSettings);
+            m_settingsDialog->setAllSettingsSlot(currentSettings, false);
         }
 
         if(!currentSettings.textLogfileName.isEmpty())
@@ -2618,7 +2624,7 @@ void MainWindow::textLogActivatedSlot(bool activated)
             {
                 QMessageBox::critical(this, "could not open file", fileName);
                 currentSettings.textLogFile = false;
-                m_settingsDialog->setAllSettingsSlot(currentSettings);
+                m_settingsDialog->setAllSettingsSlot(currentSettings, false);
             }
         }
     }
@@ -2651,7 +2657,7 @@ void MainWindow::customConsoleSettingsChangedSlot()
         {
             settings.consoleShowCustomConsole = false;
             settings.consoleDebugCustomConsole= false;
-            m_settingsDialog->setAllSettingsSlot(settings);
+            m_settingsDialog->setAllSettingsSlot(settings, false);
         }
 
 
@@ -2682,11 +2688,11 @@ void MainWindow::customLogSettingsChangedSlot()
         {
             settings.logGenerateCustomLog = false;
             settings.logDebugCustomLog = false;
-            m_settingsDialog->setAllSettingsSlot(settings);
+            m_settingsDialog->setAllSettingsSlot(settings, false);
         }
 
         //Must be here, because in this call the corresponding check boxes are disabled if the script runs in the debugger.
-        m_settingsDialog->setAllSettingsSlot(settings);
+        m_settingsDialog->setAllSettingsSlot(settings, false);
     }
 
     if(settings.logDebugCustomLog || settings.consoleDebugCustomConsole)
@@ -2719,7 +2725,7 @@ void MainWindow::customLogActivatedSlot(bool activated)
             {
                 currentSettings.logGenerateCustomLog = false;
             }
-            m_settingsDialog->setAllSettingsSlot(currentSettings);
+            m_settingsDialog->setAllSettingsSlot(currentSettings, false);
         }
 
         if(!currentSettings.customLogfileName.isEmpty())
@@ -2739,7 +2745,7 @@ void MainWindow::customLogActivatedSlot(bool activated)
             {
                 QMessageBox::critical(this, "could not open file", fileName);
                 currentSettings.logGenerateCustomLog = false;
-                m_settingsDialog->setAllSettingsSlot(currentSettings);
+                m_settingsDialog->setAllSettingsSlot(currentSettings, false);
             }
         }
     }
@@ -2796,7 +2802,7 @@ void MainWindow::serialPortPinsChangedSlot(void)
     Settings settings = *m_settingsDialog->settings();
     settings.serialPort.setDTR = m_userInterface->dtrCheckBox->isChecked();
     settings.serialPort.setRTS = m_userInterface->rtsCheckBox->isChecked();
-    m_settingsDialog->setAllSettingsSlot(settings);
+    m_settingsDialog->setAllSettingsSlot(settings, false);
     saveSettings();
 
 }

@@ -1769,7 +1769,7 @@ void MainWindowHandleData::checkDebugWindowsIsClosedSlot()
     {
         settings.consoleDebugCustomConsole = false;
         settings.consoleShowCustomConsole = false;
-        m_settingsDialog->setAllSettingsSlot(settings);
+        m_settingsDialog->setAllSettingsSlot(settings, false);
         m_mainWindow->customConsoleSettingsChangedSlot();
         m_mainWindow->inititializeTab();
     }
@@ -1778,7 +1778,7 @@ void MainWindowHandleData::checkDebugWindowsIsClosedSlot()
     {
         settings.logDebugCustomLog  = false;
         settings.logGenerateCustomLog = false;
-        m_settingsDialog->setAllSettingsSlot(settings);
+        m_settingsDialog->setAllSettingsSlot(settings, false);
         m_mainWindow->customLogSettingsChangedSlot();
         m_customLogFile.close();
     }

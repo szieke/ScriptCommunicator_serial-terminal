@@ -581,7 +581,7 @@ signals:
 
     ///With this signal scripts can change the current settings.
     ///This signal must not be used from script.
-    void setAllSettingsSignal(Settings& settings);
+    void setAllSettingsSignal(Settings& settings, bool setTabIndex);
 
     ///With this signal the script thread requests the main window to add a message in the log and the consoles.
     ///This signal is connected to the MainWindow::messageEnteredSlot slot.
