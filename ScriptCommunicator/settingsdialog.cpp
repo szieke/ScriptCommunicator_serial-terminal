@@ -1372,7 +1372,6 @@ void SettingsDialog::initializeInterfaceTabs(void)
     {
         m_userInterface->connectionTypeComboBox->setEnabled(true);
         m_userInterface->socketsTypeComboBox->setEnabled(true);
-        //m_userInterface->socketPartnerPortLineEdit->setEnabled(true);
         m_userInterface->socketAdressLineEdit->setEnabled(true);
         m_userInterface->socketOwnPortLineEdit->setEnabled(true);
         m_userInterface->serialPortInfoListBox->setEnabled(true);

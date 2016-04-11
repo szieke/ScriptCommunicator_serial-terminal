@@ -404,7 +404,7 @@
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0,1">
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_10" stretch="0,0,0">
+            <layout class="QVBoxLayout" name="verticalLayout_10" stretch="0,0">
              <item>
               <layout class="QGridLayout" name="gridLayout_4">
                <item row="0" column="0">
@@ -457,7 +457,7 @@
                <item row="1" column="0">
                 <widget class="QLabel" name="socketPortLabel">
                  <property name="text">
-                  <string>partner port</string>
+                  <string>destination port</string>
                  </property>
                 </widget>
                </item>
@@ -489,7 +489,7 @@
                <item row="2" column="0">
                 <widget class="QLabel" name="soketAddressLabel">
                  <property name="text">
-                  <string>partner ip address</string>
+                  <string>destination ip address</string>
                  </property>
                 </widget>
                </item>
@@ -556,40 +556,7 @@
                  </property>
                 </widget>
                </item>
-               <item row="1" column="2">
-                <spacer name="horizontalSpacer_4">
-                 <property name="orientation">
-                  <enum>Qt::Horizontal</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>40</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
-             </item>
-             <item>
-              <layout class="QGridLayout" name="gridLayout_10">
-               <item row="0" column="0">
-                <widget class="QRadioButton" name="noProxyRadioButton">
-                 <property name="maximumSize">
-                  <size>
-                   <width>100</width>
-                   <height>16777215</height>
-                  </size>
-                 </property>
-                 <property name="text">
-                  <string>no proxy</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item row="1" column="0">
+               <item row="6" column="0">
                 <widget class="QRadioButton" name="useSystemProxyRadioButton">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -608,113 +575,28 @@
                  </property>
                 </widget>
                </item>
-               <item row="5" column="1">
-                <widget class="QLineEdit" name="proxyPortLineEdit">
-                 <property name="enabled">
-                  <bool>false</bool>
+               <item row="4" column="0">
+                <spacer name="verticalSpacer_3">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
                  </property>
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
+                 <property name="sizeHint" stdset="0">
                   <size>
-                   <width>0</width>
-                   <height>20</height>
+                   <width>20</width>
+                   <height>40</height>
                   </size>
                  </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>100</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                </widget>
+                </spacer>
                </item>
-               <item row="5" column="0">
-                <widget class="QLabel" name="label_20">
+               <item row="8" column="0">
+                <widget class="QLabel" name="label_23">
                  <property name="text">
-                  <string>proxy port</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="0">
-                <widget class="QLabel" name="label_21">
-                 <property name="text">
-                  <string>proxy user name</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="6" column="1">
-                <widget class="QLineEdit" name="proxyUserNameLineEdit">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>100</width>
-                   <height>20</height>
-                  </size>
+                  <string>Note: A proxy is only supported
+for TCP clients.</string>
                  </property>
                 </widget>
                </item>
                <item row="7" column="0">
-                <widget class="QLabel" name="label_22">
-                 <property name="text">
-                  <string>proxy password</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="7" column="1">
-                <widget class="QLineEdit" name="proxyPasswordLineEdit">
-                 <property name="enabled">
-                  <bool>false</bool>
-                 </property>
-                 <property name="sizePolicy">
-                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-                   <horstretch>0</horstretch>
-                   <verstretch>0</verstretch>
-                  </sizepolicy>
-                 </property>
-                 <property name="minimumSize">
-                  <size>
-                   <width>0</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                 <property name="maximumSize">
-                  <size>
-                   <width>100</width>
-                   <height>20</height>
-                  </size>
-                 </property>
-                 <property name="echoMode">
-                  <enum>QLineEdit::Password</enum>
-                 </property>
-                </widget>
-               </item>
-               <item row="4" column="0">
-                <widget class="QLabel" name="label_19">
-                 <property name="text">
-                  <string>proxy ip address</string>
-                 </property>
-                </widget>
-               </item>
-               <item row="2" column="0">
                 <widget class="QRadioButton" name="useSpecificProxyRadioButton">
                  <property name="sizePolicy">
                   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -733,7 +615,14 @@
                  </property>
                 </widget>
                </item>
-               <item row="4" column="1">
+               <item row="9" column="0">
+                <widget class="QLabel" name="label_19">
+                 <property name="text">
+                  <string>proxy ip address</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="9" column="1">
                 <widget class="QLineEdit" name="proxyAddressLineEdit">
                  <property name="enabled">
                   <bool>false</bool>
@@ -758,11 +647,118 @@
                  </property>
                 </widget>
                </item>
-               <item row="3" column="0">
-                <widget class="QLabel" name="label_23">
+               <item row="5" column="0">
+                <widget class="QRadioButton" name="noProxyRadioButton">
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
                  <property name="text">
-                  <string>Note: A proxy is only supported
-for TCP clients.</string>
+                  <string>no proxy</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+               <item row="10" column="0">
+                <widget class="QLabel" name="label_20">
+                 <property name="text">
+                  <string>proxy port</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="10" column="1">
+                <widget class="QLineEdit" name="proxyPortLineEdit">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item row="11" column="0">
+                <widget class="QLabel" name="label_21">
+                 <property name="text">
+                  <string>proxy user name</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="11" column="1">
+                <widget class="QLineEdit" name="proxyUserNameLineEdit">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                </widget>
+               </item>
+               <item row="12" column="0">
+                <widget class="QLabel" name="label_22">
+                 <property name="text">
+                  <string>proxy password</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="12" column="1">
+                <widget class="QLineEdit" name="proxyPasswordLineEdit">
+                 <property name="enabled">
+                  <bool>false</bool>
+                 </property>
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>0</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>100</width>
+                   <height>20</height>
+                  </size>
+                 </property>
+                 <property name="echoMode">
+                  <enum>QLineEdit::Password</enum>
                  </property>
                 </widget>
                </item>
@@ -2226,7 +2222,7 @@ for TCP clients.</string>
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>-35</y>
+            <y>0</y>
             <width>811</width>
             <height>412</height>
            </rect>
