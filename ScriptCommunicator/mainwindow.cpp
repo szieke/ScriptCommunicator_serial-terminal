@@ -4221,7 +4221,7 @@ void MainWindow::checkForUpdatesSlot()
     updatesManager->setProxy(proxy);
     connect(updatesManager, SIGNAL(finished(QNetworkReply*)),this, SLOT(updateManagerReplyFinished(QNetworkReply*)));
 
-    updatesManager->get(QNetworkRequest(QUrl("https://scriptcommunicator.codeplex.com/documentation")));
+    updatesManager->get(QNetworkRequest(QUrl("https://github.com/szieke/ScriptCommunicator_serial-terminal/blob/master/README.md")));
 }
 
 /**
@@ -4231,10 +4231,12 @@ void MainWindow::checkForUpdatesSlot()
  */
 void MainWindow::updateManagerReplyFinished(QNetworkReply* reply)
 {
-    if(reply->error() == QNetworkReply::NoError)
+    QNetworkReply::NetworkError error = reply->error();
+
+    if(error == QNetworkReply::NoError)
     {
         QString result = reply->readAll();
-        QStringList list = result.split("CURRENTSCRIPTCOMMUNICATORVERSION=");
+        QStringList list = result.split("Downloads (release ");
 
         bool pageIsInvalid = false;
         if(list.length() == 2)
@@ -4300,7 +4302,8 @@ void MainWindow::updateManagerReplyFinished(QNetworkReply* reply)
     }
     else
     {
-        QString text = "Connection error. Are you connected with the internet and are your proxy settings (socket tab in the setting dialog) correct?";
+        QString text = "Connection error (eror code: %1). Are you connected with the internet and are your proxy settings (socket tab in the setting dialog) correct?";
+        text = text.arg(error);
         QMessageBox msgBox(QMessageBox::Information, "connection error",text);
         msgBox.setTextFormat(Qt::RichText);
         msgBox.exec();
