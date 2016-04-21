@@ -1,6 +1,6 @@
 # ScriptCommunicator
 
-ScriptCommunicator is a scriptable cross-platform data terminal which supports several interface.
+ScriptCommunicator is a scriptable cross-platform data terminal which supports several interfaces.
 All sent and received data can be shown in a console and can be logged in an html, a text and a custom log.
 In addition to the simple sending and receiving of data ScriptCommunicator has a QtScript (similar to JavaScript) interface.
 This script interface has following features:
