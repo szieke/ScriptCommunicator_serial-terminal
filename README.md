@@ -1,23 +1,31 @@
 # ScriptCommunicator
 
-ScriptCommunicator is a scriptable cross-platform data terminal which supports:
-* serial port (RS232, USB to serial)
-* UDP
-* TCP client/server (network proxy support for TCP clients)
-* SPI master (cheetah SPI)
-* CAN (PCAN-USB, only on Windows)
-
+ScriptCommunicator is a scriptable cross-platform data terminal which supports several interfaces.
 All sent and received data can be shown in a console and can be logged in an html, a text and a custom log.
 In addition to the simple sending and receiving of data ScriptCommunicator has a QtScript (similar to JavaScript) interface.
 This script interface has following features:
 * Scripts can send and receive data with the main interface.
 * In addition to the main interface scripts can create and use own interfaces (serial port (RS232, USB to serial), UDP, TCP client, TCP server, PCAN and SPI master).
 * Scripts can use their own GUI (GUI files which have been created with QtDesigner (is included) or QtCreator).
-* Multiple plot windows can be created by scripts (QCustomPlot from Emanuel Eichhammer is used)
+* Multiple plot windows can be created by scripts (QCustomPlot from Emanuel Eichhammer is used).
+
+**Features**
+
+* seriel port (RS232, USB to serial)
+* TCP client/server
+* UDP
+* SPI master (cheetah SPI)
+* CAN (PCAN-USB, only on windows)
+* ascii, hexadecimal, decimal, binary, custom and mixed console (adjustable colors)
+* html, text and custom log
+* script interface (QtScript)->run automated test jobs, automatic device configuration scripts...
+* use ui files (user interface created with QtDesigner (is included) or QtCreator) via script->building test GUIs, control GUIs...
+* plotting data via script and export the generated graphs to file (png, jpg, bmp, pdf and csv)->e.g. to visualize a PID controller or a heater
+* multi user and multi workspace support
 
 **main window**
 
-![main window](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2016-03-29_15h51_14.png)
+![main window](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2016-04-21_15h55_54.png)
 
 **settings dialog**
 
