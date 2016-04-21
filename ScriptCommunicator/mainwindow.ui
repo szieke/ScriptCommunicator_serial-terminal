@@ -1003,8 +1003,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>98</width>
-          <height>93</height>
+          <width>239</width>
+          <height>513</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1048,8 +1048,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>182</width>
-          <height>130</height>
+          <width>239</width>
+          <height>513</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1279,6 +1279,9 @@ to send a sequence double click on it</string>
                <property name="toolTip">
                 <string>the number of repetitions</string>
                </property>
+               <property name="maximum">
+                <number>999999999</number>
+               </property>
               </widget>
              </item>
              <item row="4" column="1">
@@ -1332,8 +1335,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>139</width>
-          <height>271</height>
+          <width>239</width>
+          <height>513</height>
          </rect>
         </property>
         <attribute name="label">
