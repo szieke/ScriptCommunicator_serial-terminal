@@ -15,6 +15,19 @@ This script interface has following features:
 * Scripts can use their own GUI (GUI files which have been created with QtDesigner (is included) or QtCreator).
 * Multiple plot windows can be created by scripts (QCustomPlot from Emanuel Eichhammer is used)
 
+#Features
+* seriel port (RS232, USB to serial)
+* TCP client/server
+* UDP
+* SPI master (cheetah SPI)
+* CAN (PCAN-USB, only on windows)
+* ascii, hexadecimal, decimal, binary, custom and mixed console (adjustable colors)
+* html, text and custom log
+* script interface (QtScript)->run automated test jobs, automatic device configuration scripts...
+* use ui files (user interface created with QtDesigner (is included) or QtCreator) via script->building test GUIs, control GUIs...
+* plotting data via script and export the generated graphs to file (png, jpg, bmp, pdf and csv)->e.g. to visualize a PID controller or a heater
+* multi user and multi workspace support
+
 **main window**
 
 ![main window](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2016-03-29_15h51_14.png)
