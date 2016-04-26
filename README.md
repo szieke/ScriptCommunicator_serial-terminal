@@ -25,7 +25,7 @@ This script interface has following features:
 
 **main window**
 
-![main window](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2016-04-21_15h55_54.png)
+![main window](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2016-04-26_07h31_37.png)
 
 **settings dialog**
 
