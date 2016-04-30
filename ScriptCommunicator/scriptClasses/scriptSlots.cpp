@@ -820,6 +820,8 @@ void ScriptSlots::writeTextSlot(QTextEdit* textEdit, QString text, bool insertHt
     //Store the scroll bar position.
     int val = textEdit->verticalScrollBar()->value();
 
+    textEdit->setUpdatesEnabled(false);
+
     if(atTheEnd)textEdit->moveCursor(QTextCursor::End);
 
     if(insertHtml)
@@ -848,4 +850,6 @@ void ScriptSlots::writeTextSlot(QTextEdit* textEdit, QString text, bool insertHt
     {   //Move the scroll bar to the end.
         textEdit->horizontalScrollBar()->setSliderPosition(0);
     }
+
+    textEdit->setUpdatesEnabled(true);
 }
