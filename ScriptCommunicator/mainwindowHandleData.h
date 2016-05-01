@@ -56,7 +56,7 @@ typedef struct
 
 }StoredData;
 
-///The data which is needed for the mixed console.
+///The precalculated data which is needed for the mixed console.
 typedef struct
 {   ///The number of pixels per character.
     int pixelsWide;
@@ -88,6 +88,33 @@ typedef struct
 
 }MixedConsoleData;
 
+///The precalculated data which is needed for the all consoles.
+typedef struct
+{
+    ///The data for the mixed console.
+    MixedConsoleData mixedData;
+
+    ///The HTML data for time stamps and user messages.
+    QString htmlMessageAndTimestamp;
+
+    ///The HTML data for received data.
+    QString htmlReceived;
+
+    ///The HTML data for sent data.
+    QString htmlSend;
+
+    ///The HTML data for time stamps and user messages in the mixed console.
+    QString htmlMixedMessageAndTimestamp;
+
+    ///The HTML data for received data in the mixed console.
+    QString htmlMixedReceived;
+
+    ///The HTML data for sent data in the mixed console.
+    QString htmlMixedSend;
+
+
+}ConsoleData;
+
 
 ///Contains the MainWindow functions for handling the sent and recieved data.
 class MainWindowHandleData : public QObject
@@ -106,12 +133,12 @@ public:
     ///Creates the string for the mixed console.
     QString createMixedConsoleString(const QByteArray &data, bool hasCanMeta);
 
-    ///Caclulates the mixed console data.
-    void calculateMixedConsoleData();
+    ///Caclulates the console data.
+    void calculateConsoleData();
 
     ///Appends data to the console strings (m_consoleDataBufferAscii, m_consoleDataBufferHex;
     ///m_consoleDataBufferDec)
-    void appendDataToConsoleStrings(QByteArray& data, bool isSend, bool isUserMessage, bool isTimeStamp, bool isFromCan, bool isNewLine);
+    void appendDataToConsoleStrings(QByteArray& data, const Settings *currentSettings, bool isSend, bool isUserMessage, bool isTimeStamp, bool isFromCan, bool isNewLine);
 
     ///Appends data the log file.
     void appendDataToLog(const QByteArray& data, bool isSend, bool isUserMessage, bool isTimeStamp, bool isFromCan, bool isNewLine);
@@ -288,8 +315,8 @@ private:
     ///The number of bytes in m_customConsoleStoredStrings
     quint32 m_numberOfBytesInCustomConsoleStoredStrings;
 
-    ///The mixed console data.
-    MixedConsoleData m_mixedConsoleData;
+    ///The precalculated console data.
+    ConsoleData m_consoleData;
 
     ///The byte buffer for the decimal console.
     ///If insufficent number of bytes for a decimal are received then these a bytes are stored here.

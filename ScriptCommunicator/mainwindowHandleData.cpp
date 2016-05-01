@@ -6,6 +6,7 @@
 #include <QScrollBar>
 #include "canTab.h"
 #include "mainInterfaceThread.h"
+#include <QMessageBox>
 
 /**
  * Constructor.
@@ -278,72 +279,72 @@ void MainWindowHandleData::appendDataToStoredData(QByteArray &data, bool isSend,
 
 
 /**
- * Caclulates the mixed console data.
+ * Caclulates the console data.
  */
-void MainWindowHandleData::calculateMixedConsoleData()
+void MainWindowHandleData::calculateConsoleData()
 {
     const Settings* currentSettings = m_settingsDialog->settings();
 
     QFont textEditFont("Courier new",  currentSettings->stringConsoleFontSize.toInt());
     QFontMetrics fm(textEditFont);
-    m_mixedConsoleData.pixelsWide = fm.width("0");
+    m_consoleData.mixedData.pixelsWide = fm.width("0");
 
-    m_mixedConsoleData.divider = 1;
-    m_mixedConsoleData.bytesPerDecimal = bytesPerDecimalInConsole(currentSettings->consoleDecimalsType);
+    m_consoleData.mixedData.divider = 1;
+    m_consoleData.mixedData.bytesPerDecimal = bytesPerDecimalInConsole(currentSettings->consoleDecimalsType);
 
     if(currentSettings->showBinaryConsole)
     {
         if((currentSettings->consoleDecimalsType == DECIMAL_TYPE_UINT8)|| (currentSettings->consoleDecimalsType == DECIMAL_TYPE_INT8))
         {
-            m_mixedConsoleData.divider = 9;
+            m_consoleData.mixedData.divider = 9;
         }
         else if((currentSettings->consoleDecimalsType == DECIMAL_TYPE_UINT16)|| (currentSettings->consoleDecimalsType == DECIMAL_TYPE_INT16))
         {
-            m_mixedConsoleData.divider = 8.6;
+            m_consoleData.mixedData.divider = 8.6;
         }
         else
         {
-             m_mixedConsoleData.divider = 8.2;
+             m_consoleData.mixedData.divider = 8.2;
         }
 
-        m_mixedConsoleData.onlyOneType = (!currentSettings->showHexInConsole && !currentSettings->showAsciiInConsole && !currentSettings->showDecimalInConsole) ? true : false;
+        m_consoleData.mixedData.onlyOneType = (!currentSettings->showHexInConsole && !currentSettings->showAsciiInConsole && !currentSettings->showDecimalInConsole) ? true : false;
     }
     else if(currentSettings->showDecimalInConsole)
     {
         if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_UINT8)
         {
-           m_mixedConsoleData.divider = 4;
+           m_consoleData.mixedData.divider = 4;
         }
         else if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_INT8)
         {
-           m_mixedConsoleData.divider = 5;
+           m_consoleData.mixedData.divider = 5;
         }
         else if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_INT16)
         {
-           m_mixedConsoleData.divider = (7.0 / 2.0);
+           m_consoleData.mixedData.divider = (7.0 / 2.0);
         }
         else if(currentSettings->consoleDecimalsType == DECIMAL_TYPE_UINT32)
         {
-           m_mixedConsoleData.divider = (11.0 / 4.0);
+           m_consoleData.mixedData.divider = (11.0 / 4.0);
         }
         else
         {
-            m_mixedConsoleData.divider = 2;
+            m_consoleData.mixedData.divider = 2;
         }
-        m_mixedConsoleData.onlyOneType = (!currentSettings->showHexInConsole && !currentSettings->showAsciiInConsole) ? true : false;
+        m_consoleData.mixedData.onlyOneType = (!currentSettings->showHexInConsole && !currentSettings->showAsciiInConsole) ? true : false;
     }
     else if(currentSettings->showHexInConsole)
     {
-        m_mixedConsoleData.divider = 3;
-        m_mixedConsoleData.onlyOneType = (!currentSettings->showAsciiInConsole) ? true : false;
+        m_consoleData.mixedData.divider = 3;
+        m_consoleData.mixedData.onlyOneType = (!currentSettings->showAsciiInConsole) ? true : false;
     }
     else
     {//ascii
-        m_mixedConsoleData.divider = 1;
-        m_mixedConsoleData.onlyOneType = true;
+        m_consoleData.mixedData.divider = 1;
+        m_consoleData.mixedData.onlyOneType = true;
     }
 
-    if(m_mixedConsoleData.onlyOneType)
+    if(m_consoleData.mixedData.onlyOneType)
     {
         m_userInterface->ReceiveTextEditMixed->setLineWrapMode(QTextEdit::WidgetWidth);
     }
@@ -353,21 +354,21 @@ void MainWindowHandleData::calculateMixedConsoleData()
     }
 
     int lineEditWidth = m_userInterface->ReceiveTextEditMixed->width() - m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->width() - 10;
-    m_mixedConsoleData.maxBytePerLine = (int)(((double)lineEditWidth / (double)m_mixedConsoleData.pixelsWide) /(double) m_mixedConsoleData.divider);
+    m_consoleData.mixedData.maxBytePerLine = (int)(((double)lineEditWidth / (double)m_consoleData.mixedData.pixelsWide) /(double) m_consoleData.mixedData.divider);
     if(currentSettings->showDecimalInConsole)
     {
-        int tmp = m_mixedConsoleData.maxBytePerLine % m_mixedConsoleData.bytesPerDecimal;
+        int tmp = m_consoleData.mixedData.maxBytePerLine % m_consoleData.mixedData.bytesPerDecimal;
         if(tmp != 0)
         {
-            m_mixedConsoleData.maxBytePerLine -= tmp;
+            m_consoleData.mixedData.maxBytePerLine -= tmp;
         }
     }
 
     /******calculate the ascii spaces*********/
-    m_mixedConsoleData.asciiSpaces.clear();
-    if(m_mixedConsoleData.onlyOneType)
+    m_consoleData.mixedData.asciiSpaces.clear();
+    if(m_consoleData.mixedData.onlyOneType)
     {
-        m_mixedConsoleData.asciiSpaces = "";
+        m_consoleData.mixedData.asciiSpaces = "";
     }
     else
     {
@@ -392,20 +393,20 @@ void MainWindowHandleData::calculateMixedConsoleData()
 
         for(int i = 0; i < numberOfSpaces; i++)
         {
-            m_mixedConsoleData.asciiSpaces += "&nbsp;";
+            m_consoleData.mixedData.asciiSpaces += "&nbsp;";
         }
     }
 
     /******calculate the hex spaces*********/
-    m_mixedConsoleData.hexExtraSpaces.clear();
-    m_mixedConsoleData.hexSpaces.clear();
-    if(m_mixedConsoleData.onlyOneType)
+    m_consoleData.mixedData.hexExtraSpaces.clear();
+    m_consoleData.mixedData.hexSpaces.clear();
+    if(m_consoleData.mixedData.onlyOneType)
     {
-        m_mixedConsoleData.hexSpaces = "&nbsp;";
+        m_consoleData.mixedData.hexSpaces = "&nbsp;";
     }
     else if(currentSettings->showAsciiInConsole && !currentSettings->showDecimalInConsole && !currentSettings->showBinaryConsole)
     {
-        m_mixedConsoleData.hexSpaces = "";
+        m_consoleData.mixedData.hexSpaces = "";
     }
     else
     {
@@ -427,15 +428,15 @@ void MainWindowHandleData::calculateMixedConsoleData()
 
         for(int i = 0; i < numberOfSpaces; i++)
         {
-            m_mixedConsoleData.hexSpaces += "&nbsp;";
+            m_consoleData.mixedData.hexSpaces += "&nbsp;";
         }
     }
 
     /******calculate the decimal spaces*********/
-    m_mixedConsoleData.decimalSpaces.clear();
-    if(m_mixedConsoleData.onlyOneType)
+    m_consoleData.mixedData.decimalSpaces.clear();
+    if(m_consoleData.mixedData.onlyOneType)
     {
-        m_mixedConsoleData.decimalSpaces = "&nbsp;";
+        m_consoleData.mixedData.decimalSpaces = "&nbsp;";
     }
     else
     {
@@ -450,9 +451,31 @@ void MainWindowHandleData::calculateMixedConsoleData()
 
         for(int i = 0; i < numberOfSpaces; i++)
         {
-            m_mixedConsoleData.decimalSpaces += "&nbsp;";
+            m_consoleData.mixedData.decimalSpaces += "&nbsp;";
         }
     }
+
+
+    /******calculate the HTML data*********/
+
+    m_consoleData.htmlMessageAndTimestamp = QString("<span style=\"font-family:'") + currentSettings->stringConsoleFont +
+            QString("';font-size:") + currentSettings->stringConsoleFontSize + QString("pt;color:#" + currentSettings->consoleMessageAndTimestampColor + ";\">");
+
+    m_consoleData.htmlReceived = QString("<span style=\"font-family:'") + currentSettings->stringConsoleFont +
+            QString("';font-size:") + currentSettings->stringConsoleFontSize + QString("pt;color:#" + currentSettings->consoleReceiveColor + ";\">");
+
+    m_consoleData.htmlSend = QString("<span style=\"font-family:'") + currentSettings->stringConsoleFont +
+            QString("';font-size:") + currentSettings->stringConsoleFontSize + QString("pt;color:#" + currentSettings->consoleSendColor + ";\">");
+
+
+    m_consoleData.htmlMixedMessageAndTimestamp = QString("<span style=\"font-family:'") + "Courier new" +
+            QString("';font-size:") + currentSettings->stringConsoleFontSize + QString("pt;color:#" + currentSettings->consoleMessageAndTimestampColor + ";\">");
+
+    m_consoleData.htmlMixedReceived = QString("<span style=\"font-family:'") + "Courier new" +
+            QString("';font-size:") + currentSettings->stringConsoleFontSize + QString("pt;color:#" + currentSettings->consoleReceiveColor + ";\">");
+
+    m_consoleData.htmlMixedSend = QString("<span style=\"font-family:'") + "Courier new" +
+            QString("';font-size:") + currentSettings->stringConsoleFontSize + QString("pt;color:#" + currentSettings->consoleSendColor + ";\">");
 }
 
 /**
@@ -471,7 +494,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
 
     const Settings* currentSettings = m_settingsDialog->settings();
 
-    if(m_mixedConsoleData.onlyOneType)
+    if(m_consoleData.mixedData.onlyOneType)
     {
         if(currentSettings->showDecimalInConsole)result = MainWindow::byteArrayToNumberString(data, false, false, false, true, true, currentSettings->consoleDecimalsType, currentSettings->targetEndianess) + " ";
         if(currentSettings->showHexInConsole)result = MainWindow::byteArrayToNumberString(data, false, true, false) + " ";
@@ -496,7 +519,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
 
         do
         {
-            QByteArray arrayWithMaxBytes = data.mid(convertedBytes, m_mixedConsoleData.maxBytePerLine);
+            QByteArray arrayWithMaxBytes = data.mid(convertedBytes, m_consoleData.mixedData.maxBytePerLine);
             convertedBytes += arrayWithMaxBytes.length();
 
             if(currentSettings->showAsciiInConsole)
@@ -509,7 +532,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 tmpString = QString::fromLocal8Bit(asciiArray);
                 result += "<br>";
 
-                qint32 modulo = m_mixedConsoleData.bytesPerDecimal;
+                qint32 modulo = m_consoleData.mixedData.bytesPerDecimal;
                 ///Create the ascii string.
                 for(int i = 0; i < tmpString.length(); i++)
                 {
@@ -521,7 +544,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                         }
                         asciiString += "&nbsp;";    // uncolored
                         asciiString += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMixedAsciiColor);
-                        asciiString += m_mixedConsoleData.asciiSpaces;
+                        asciiString += m_consoleData.mixedData.asciiSpaces;
                     }
 
 
@@ -543,7 +566,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 //Create the hex string.
                 tmpString = MainWindow::byteArrayToNumberString(arrayWithMaxBytes, false, true, false);
                 QStringList list = tmpString.split(" ");
-                qint32 modulo = m_mixedConsoleData.bytesPerDecimal;
+                qint32 modulo = m_consoleData.mixedData.bytesPerDecimal;
                 for(int i = 0; i < list.length(); i++)
                 {
                     if(!currentSettings->showDecimalInConsole || ((i % modulo) == 0))
@@ -554,7 +577,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                         }
                         result += "&nbsp;";    // uncolored
                         result += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMixedHexadecimalColor);
-                        result += m_mixedConsoleData.hexSpaces;
+                        result += m_consoleData.mixedData.hexSpaces;
                     }
 
                     result += list[i];
@@ -574,7 +597,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 {
                     result += "&nbsp;";     // uncolored
                     result += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMixedDecimalColor);
-                    result += m_mixedConsoleData.decimalSpaces;
+                    result += m_consoleData.mixedData.decimalSpaces;
                     result += el;
                     result += "</span>";
                 }
@@ -585,7 +608,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 ///Create the binary string.
                 tmpString = MainWindow::byteArrayToNumberString(arrayWithMaxBytes, true, false, false);
                 QStringList list = tmpString.split(" ");
-                qint32 modulo = m_mixedConsoleData.bytesPerDecimal;
+                qint32 modulo = m_consoleData.mixedData.bytesPerDecimal;
                 for(int i = 0; i < list.length(); i++)
                 {
                     if(!currentSettings->showDecimalInConsole || ((i % modulo) == 0))
@@ -628,15 +651,11 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
  * @param isNewLine
  *      True if the data is a new line.
  */
-void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, bool isSend, bool isUserMessage,
+void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Settings* currentSettings, bool isSend, bool isUserMessage,
                                             bool isTimeStamp, bool isFromCan, bool isNewLine)
 {
-    const Settings* currentSettings = m_settingsDialog->settings();
-    QString dataStringAscii;
-    QString dataStringHex;
-    QString dataStringDec;
-    QString dataStringMixed;
-    QString dataStringBinary;
+    QString* html = 0;
+    QString* htmlMixed = 0;
 
     QByteArray* dataArray = &data;
     QByteArray canArray;
@@ -644,6 +663,32 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, bool isS
 
     QString canInformation;
     if(data.isEmpty()) return;
+
+
+    if(isTimeStamp || isUserMessage)
+    {
+        html = &m_consoleData.htmlMessageAndTimestamp;
+        htmlMixed = &m_consoleData.htmlMixedMessageAndTimestamp;
+    }
+    else
+    {
+        if(isSend)
+        {
+            html = &m_consoleData.htmlSend;
+            htmlMixed = &m_consoleData.htmlMixedSend;
+        }
+        else
+        {
+            html = &m_consoleData.htmlReceived;
+            htmlMixed = &m_consoleData.htmlMixedReceived;
+        }
+    }
+
+    if(currentSettings->showAsciiInConsole)m_consoleDataBufferAscii.append(*html);
+    if(currentSettings->showDecimalInConsole)m_consoleDataBufferDec.append(*html);
+    if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(*html);
+    if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(*html);
+    if(currentSettings->showMixedConsole)m_consoleDataBufferMixed.append(*htmlMixed);
 
     if(isUserMessage || isTimeStamp || isNewLine)
     {
@@ -653,11 +698,11 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, bool isS
         tmpString.replace("\n", "<br>");
         tmpString.replace(" ", "&nbsp;");
 
-        if(currentSettings->showDecimalInConsole)dataStringDec = tmpString;
-        if(currentSettings->showHexInConsole)dataStringHex = tmpString;
-        if(currentSettings->showMixedConsole && !isNewLine)dataStringMixed = tmpString;
-        if(currentSettings->showBinaryConsole)dataStringBinary = tmpString;
-        if(currentSettings->showAsciiInConsole)dataStringAscii = tmpString;
+        if(currentSettings->showDecimalInConsole)m_consoleDataBufferDec.append(tmpString + QString("</span>"));
+        if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(tmpString + QString("</span>"));
+        if(currentSettings->showMixedConsole && !isNewLine)m_consoleDataBufferMixed.append(tmpString + QString("</span>"));
+        if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(tmpString + QString("</span>"));
+        if(currentSettings->showAsciiInConsole)m_consoleDataBufferAscii.append(tmpString + QString("</span>"));
     }
     else
     {
@@ -721,8 +766,9 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, bool isS
             {
                 usedArray = dataArray;
             }
-            dataStringDec.append(canInformation + MainWindow::byteArrayToNumberString(*usedArray, false, false, false, true, true, currentSettings->consoleDecimalsType, currentSettings->targetEndianess) + " ");
-            qint32 tmp = usedArray->length() % m_mixedConsoleData.bytesPerDecimal;
+            m_consoleDataBufferDec.append(canInformation + MainWindow::byteArrayToNumberString(*usedArray, false, false, false, true, true, currentSettings->consoleDecimalsType, currentSettings->targetEndianess)
+                                          + " " + QString("</span>"));
+            qint32 tmp = usedArray->length() % m_consoleData.mixedData.bytesPerDecimal;
             if(tmp != 0)
             {
                 m_decimalConsoleByteBuffer = usedArray->right(tmp);
@@ -732,20 +778,20 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, bool isS
                 m_decimalConsoleByteBuffer.clear();
             }
         }
-        if(currentSettings->showHexInConsole)dataStringHex.append(canInformation + MainWindow::byteArrayToNumberString(*dataArray, false, true, false) + " ");
-        if(currentSettings->showBinaryConsole)dataStringBinary.append(canInformation + MainWindow::byteArrayToNumberString(*dataArray, true, false, false) + " ");
+        if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(canInformation + MainWindow::byteArrayToNumberString(*dataArray, false, true, false) + " " + QString("</span>"));
+        if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(canInformation + MainWindow::byteArrayToNumberString(*dataArray, true, false, false) + " " + QString("</span>"));
 
         if(currentSettings->showMixedConsole)
         {
-            if(!currentSettings->showDecimalInConsole || m_mixedConsoleData.bytesPerDecimal == 1)
+            if(!currentSettings->showDecimalInConsole || m_consoleData.mixedData.bytesPerDecimal == 1)
             {
-                dataStringMixed = canInformation + createMixedConsoleString(*dataArray, isFromCan && currentSettings->showCanMetaInformationInConsole);
+                m_consoleDataBufferMixed.append(canInformation + createMixedConsoleString(*dataArray, isFromCan && currentSettings->showCanMetaInformationInConsole) + QString("</span>"));
             }
             else
             {
                 QByteArray tmpData = m_mixedConsoleByteBuffer + *dataArray;
 
-                qint32 tmp = tmpData.length() % m_mixedConsoleData.bytesPerDecimal;
+                qint32 tmp = tmpData.length() % m_consoleData.mixedData.bytesPerDecimal;
                 if(tmp != 0)
                 {
                     m_mixedConsoleByteBuffer = tmpData.mid(tmpData.length() - tmp, tmp);
@@ -756,7 +802,7 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, bool isS
                     m_mixedConsoleByteBuffer.clear();
                 }
 
-                dataStringMixed = canInformation + createMixedConsoleString(tmpData, isFromCan && currentSettings->showCanMetaInformationInConsole);
+                m_consoleDataBufferMixed.append(canInformation + createMixedConsoleString(tmpData, isFromCan && currentSettings->showCanMetaInformationInConsole) + QString("</span>"));
 
             }
         }
@@ -779,50 +825,11 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, bool isS
                 else tmpString += el;
             }
 
-            dataStringAscii = canInformation + tmpString;
+            m_consoleDataBufferAscii.append(canInformation + tmpString + QString("</span>"));
         }
     }
 
     //Note: data/dataArray is modified during the creation of dataStringAscii (see above), therefore data/dataArray must not be used.
-
-
-    QString html = QString("<span style=\"font-family:'") + currentSettings->stringConsoleFont +
-            QString("';font-size:") + currentSettings->stringConsoleFontSize;
-
-    QString htmlMixed = QString("<span style=\"font-family:'") + "Courier new" +
-            QString("';font-size:") + currentSettings->stringConsoleFontSize;
-
-    if(isTimeStamp)
-    {
-        html = html + QString("pt;color:#" + currentSettings->consoleMessageAndTimestampColor + ";\">");
-        htmlMixed = htmlMixed + QString("pt;color:#" + currentSettings->consoleMessageAndTimestampColor + ";\">");
-    }
-    else if(isUserMessage)
-    {
-        html += QString("pt;color:#" + currentSettings->consoleMessageAndTimestampColor + ";\">");
-        htmlMixed += QString("pt;color:#" + currentSettings->consoleMessageAndTimestampColor + ";\">");
-    }
-    else
-    {
-        if(isSend)
-        {
-            html += QString("pt;color:#" + currentSettings->consoleSendColor + ";\">");
-            htmlMixed += QString("pt;color:#" + currentSettings->consoleSendColor + ";\">");
-
-        }
-        else
-        {
-            html += QString("pt;color:#" + currentSettings->consoleReceiveColor + ";\">");
-            htmlMixed += QString("pt;color:#" + currentSettings->consoleReceiveColor + ";\">");
-
-        }
-    }
-
-    if(currentSettings->showAsciiInConsole)m_consoleDataBufferAscii.append(html + dataStringAscii  + QString("</span>"));
-    if(currentSettings->showDecimalInConsole)m_consoleDataBufferDec.append(html + dataStringDec  + QString("</span>"));
-    if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(html + dataStringHex  + QString("</span>"));
-    if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(html + dataStringBinary  + QString("</span>"));
-    if(currentSettings->showMixedConsole)m_consoleDataBufferMixed.append(htmlMixed + dataStringMixed  + QString("</span>"));
 
 }
 
@@ -1551,7 +1558,7 @@ void MainWindowHandleData::processDataInStoredData()
                         m_storedConsoleData.push_back(storedData);
                         m_bytesInStoredConsoleData += storedData.data.size();
 
-                        appendDataToConsoleStrings(tmpArray, el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, isNewLine);
+                        appendDataToConsoleStrings(tmpArray, settings, el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, isNewLine);
                         array.remove(0, settings->consoleNewLineAfterBytes - m_bytesSinceLastNewLineInConsole);
 
                         tmpArray = QString("\n").toLocal8Bit();
@@ -1561,7 +1568,7 @@ void MainWindowHandleData::processDataInStoredData()
                         m_storedConsoleData.push_back(storedData);
                         m_bytesInStoredConsoleData += storedData.data.size();
 
-                        appendDataToConsoleStrings(tmpArray, el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, true);
+                        appendDataToConsoleStrings(tmpArray, settings, el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, true);
 
                         m_bytesSinceLastNewLineInConsole = 0;
 
@@ -1577,7 +1584,7 @@ void MainWindowHandleData::processDataInStoredData()
                     m_storedConsoleData.push_back(storedData);
                     m_bytesInStoredConsoleData += storedData.data.size();
 
-                    appendDataToConsoleStrings(array, el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, isNewLine);
+                    appendDataToConsoleStrings(array, settings, el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, isNewLine);
                     m_bytesSinceLastNewLineInConsole += array.length();
                 }
 
@@ -1589,7 +1596,7 @@ void MainWindowHandleData::processDataInStoredData()
                 m_storedConsoleData.push_back(el);
                 m_bytesInStoredConsoleData += el.data.size();
 
-                appendDataToConsoleStrings(el.data, el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, isNewLine);
+                appendDataToConsoleStrings(el.data, settings, el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, isNewLine);
             }
 
         }
@@ -1612,7 +1619,7 @@ void MainWindowHandleData::processDataInStoredData()
             {
                 mixedArray = m_decimalLogByteBuffer + el.data;
 
-                qint32 tmp = mixedArray.length() % m_mixedConsoleData.bytesPerDecimal;
+                qint32 tmp = mixedArray.length() % m_consoleData.mixedData.bytesPerDecimal;
                 if(tmp != 0)
                 {
                     m_decimalLogByteBuffer = mixedArray.mid(mixedArray.length() - tmp, tmp);
@@ -1683,32 +1690,57 @@ void MainWindowHandleData::processDataInStoredData()
  */
 void MainWindowHandleData::reInsertDataInMixecConsoleSlot(void)
 {
-    m_mainWindow->m_resizeTimer.stop();
+    Settings settings = *m_settingsDialog->settings();
 
-    int pos = 0;
-    pos = m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->value();
-
-    m_userInterface->ReceiveTextEditMixed->clear();
-    m_mixedConsoleByteBuffer.clear();
-    calculateMixedConsoleData();
-
-
-    for(auto el : m_storedConsoleData)
+    if(settings.showMixedConsole)
     {
-        bool isFromAddMessageDialog = (el.type == STORED_DATA_TYPE_USER_MESSAGE) ? true : false;
-        bool isTimeStamp = (el.type == STORED_DATA_TYPE_TIMESTAMP) ? true : false;
-        bool isNewLine = (el.type == STORED_DATA_TYPE_NEW_LINE) ? true : false;
+        QMessageBox box(QMessageBox::Information, "ScriptCommunicator", "Recalculating console data",
+                        QMessageBox::NoButton, m_mainWindow);
+        box.setStandardButtons(QMessageBox::NoButton);
 
-        appendDataToConsoleStrings(el.data, el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, isNewLine);
+        if(m_bytesInStoredConsoleData > 2500)
+        {
+            QApplication::setActiveWindow(&box);
+            box.setModal(false);
+            box.show();
+
+            QApplication::processEvents();
+        }
+
+        m_mainWindow->m_resizeTimer.stop();
+
+        int pos = 0;
+        pos = m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->value();
+
+        m_userInterface->ReceiveTextEditMixed->clear();
+        m_mixedConsoleByteBuffer.clear();
+        calculateConsoleData();
+
+        //Only the mixed console data shall be generated.
+        settings.showAsciiInConsole = false;
+        if(m_consoleData.mixedData.bytesPerDecimal == 1) settings.showDecimalInConsole = false;
+        settings.showHexInConsole = false;
+        settings.showBinaryConsole = false;
+
+        for(auto el : m_storedConsoleData)
+        {
+            bool isFromAddMessageDialog = (el.type == STORED_DATA_TYPE_USER_MESSAGE) ? true : false;
+            bool isTimeStamp = (el.type == STORED_DATA_TYPE_TIMESTAMP) ? true : false;
+            bool isNewLine = (el.type == STORED_DATA_TYPE_NEW_LINE) ? true : false;
+
+            appendDataToConsoleStrings(el.data, &settings, el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, isNewLine);
+        }
+
+        m_consoleDataBufferAscii.clear();
+        m_consoleDataBufferHex.clear();
+        m_consoleDataBufferDec.clear();
+        m_consoleDataBufferBinary.clear();
+
+        m_mainWindow->appendConsoleStringToConsole(&m_consoleDataBufferMixed, m_userInterface->ReceiveTextEditMixed);
+        m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->setValue(pos);
+
+        box.close();
     }
-
-    m_consoleDataBufferAscii.clear();
-    m_consoleDataBufferHex.clear();
-    m_consoleDataBufferDec.clear();
-    m_consoleDataBufferBinary.clear();
-
-    m_mainWindow->appendConsoleStringToConsole(&m_consoleDataBufferMixed, m_userInterface->ReceiveTextEditMixed);
-    m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->setValue(pos);
 }
 
 /**
@@ -1960,7 +1992,20 @@ void MainWindowHandleData::reInsertDataInConsole(void)
     int val4 = 0;
     int val5 = 0;
     int val6 = 0;
+    QMessageBox box(QMessageBox::Information, "ScriptCommunicator", "Recalculating console data",
+                    QMessageBox::NoButton, m_mainWindow);
+    box.setStandardButtons(QMessageBox::NoButton);
     const Settings* settings = m_settingsDialog->settings();
+
+
+    if(settings->showMixedConsole && (m_bytesInStoredConsoleData > 2500))
+    {
+        QApplication::setActiveWindow(&box);
+        box.setModal(false);
+        box.show();
+
+        QApplication::processEvents();
+    }
 
     if(settings->showAsciiInConsole){val1 = m_userInterface->ReceiveTextEditAscii->verticalScrollBar()->value();}
     if(settings->showHexInConsole){val2 = m_userInterface->ReceiveTextEditHex->verticalScrollBar()->value();}
@@ -1978,7 +2023,7 @@ void MainWindowHandleData::reInsertDataInConsole(void)
     m_decimalConsoleByteBuffer.clear();
     m_mixedConsoleByteBuffer.clear();
 
-    calculateMixedConsoleData();
+    calculateConsoleData();
 
     for(auto el : m_storedConsoleData)
     {
@@ -1986,7 +2031,7 @@ void MainWindowHandleData::reInsertDataInConsole(void)
         bool isTimeStamp = (el.type == STORED_DATA_TYPE_TIMESTAMP) ? true : false;
         bool isNewLine = (el.type == STORED_DATA_TYPE_NEW_LINE) ? true : false;
 
-        appendDataToConsoleStrings(el.data, el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, isNewLine);
+        appendDataToConsoleStrings(el.data, settings, el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, isNewLine);
     }
 
     if(settings->consoleShowCustomConsole)
@@ -2004,4 +2049,6 @@ void MainWindowHandleData::reInsertDataInConsole(void)
     if(settings->showMixedConsole){m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->setValue(val4);}
     if(settings->showBinaryConsole){m_userInterface->ReceiveTextEditBinary->verticalScrollBar()->setValue(val5);}
     if(settings->consoleShowCustomConsole){m_userInterface->ReceiveTextEditCustom->verticalScrollBar()->setValue(val6);}
+
+    box.close();
 }
