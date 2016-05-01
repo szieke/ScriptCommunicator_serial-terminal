@@ -118,17 +118,24 @@ void MainWindowHandleData::updateConsoleAndLog(void)
 
         }
 
+        while((m_numberOfBytesInCustomConsoleStoredStrings > (settings->maxCharsInConsole * 2)) && m_customConsoleStoredStrings.length() > 1)
+        {
+            //Limit the number of bytes in m_customConsoleStoredStrings.
+            m_numberOfBytesInCustomConsoleStoredStrings -= m_customConsoleStoredStrings.first().length();
+            m_customConsoleStoredStrings.removeFirst();
+        }
+
+
         if(!consoleString.isEmpty())
         {
-            QString html = QString("<span style=\"font-family:'") + settings->stringConsoleFont + QString("';font-size:") + settings->stringConsoleFontSize;
-            html += QString("pt;color:#" + settings->consoleReceiveColor+ ";\">");
-            consoleString = html + consoleString + QString("</span>");
+            bool consoleWasEmpty = (m_userInterface->ReceiveTextEditCustom->document()->characterCount() <= 1) ? true : false;
+            consoleString = m_consoleData.htmlReceived + consoleString + QString("</span>");
 
             m_mainWindow->appendConsoleStringToConsole(&consoleString, m_userInterface->ReceiveTextEditCustom);
             m_customConsoleStrings.clear();
             m_numberOfBytesInCustomConsoleStrings = 0;
 
-            if(m_userInterface->ReceiveTextEditCustom->document()->characterCount() <= 1)
+            if(consoleWasEmpty)
             {
                 //Force the custom console to render the content.
                 QRect rect = MainWindow::windowPositionAndSize(m_mainWindow);
@@ -140,12 +147,6 @@ void MainWindowHandleData::updateConsoleAndLog(void)
                 MainWindow::setWindowPositionAndSize(m_mainWindow, rect);
             }
 
-            while((m_numberOfBytesInCustomConsoleStoredStrings > (settings->maxCharsInConsole * 2)) && m_customConsoleStoredStrings.length() > 1)
-            {
-                //Limit the number of bytes in m_customConsoleStoredStrings.
-                m_numberOfBytesInCustomConsoleStoredStrings -= m_customConsoleStoredStrings.first().length();
-                m_customConsoleStoredStrings.removeFirst();
-            }
         }
     }
 
@@ -232,15 +233,31 @@ void MainWindowHandleData::appendDataToStoredData(QByteArray &data, bool isSend,
                 m_numberOfBytesInCustomConsoleStrings += m_customConsoleStrings.last().length();
             }
 
-            if ((m_numberOfBytesInCustomConsoleStrings > (currentSettings->maxCharsInConsole * 2)) && m_unprocessedConsoleData.length() > 1)
+            if ((m_numberOfBytesInCustomConsoleStrings > (currentSettings->maxCharsInConsole * 2)))
             {
-                while((m_numberOfBytesInCustomConsoleStrings > (currentSettings->maxCharsInConsole * 2)) && m_unprocessedConsoleData.length() > 1)
+                while(m_numberOfBytesInCustomConsoleStrings > (currentSettings->maxCharsInConsole * 2))
                 {//Limit the number of bytes in m_customConsoleStrings.
-                    m_numberOfBytesInCustomConsoleStrings -= m_customConsoleStrings.first().length();
-                    m_customConsoleStrings.removeFirst();
+
+                    if(m_customConsoleStrings.length() > 1)
+                    {
+                        m_numberOfBytesInCustomConsoleStrings -= m_customConsoleStrings.first().length();
+                        m_customConsoleStrings.removeFirst();
+                    }
+                    else
+                    {
+                        m_customConsoleStrings.first().remove(0, m_numberOfBytesInCustomConsoleStrings - currentSettings->maxCharsInConsole);
+                        m_numberOfBytesInCustomConsoleStrings -= m_numberOfBytesInCustomConsoleStrings - currentSettings->maxCharsInConsole;
+
+                    }
+
+
                 }
-                //Restart the console/log timer.
-                m_updateConsoleAndLogTimer->start(1);
+
+                if(m_bytesInStoredConsoleData != 0)
+                {
+                    //Restart the console/log timer.
+                    m_updateConsoleAndLogTimer->start(1);
+                }
             }
         }
 
@@ -262,8 +279,11 @@ void MainWindowHandleData::appendDataToStoredData(QByteArray &data, bool isSend,
                 }
             }
 
-            //Restart the console/log timer.
-            m_updateConsoleAndLogTimer->start(1);
+            if(m_bytesInStoredConsoleData != 0)
+            {
+                //Restart the console/log timer.
+                m_updateConsoleAndLogTimer->start(1);
+            }
 
             StoredData storedData;
             storedData.type = STORED_DATA_CLEAR_ALL_STANDARD_CONSOLES;
