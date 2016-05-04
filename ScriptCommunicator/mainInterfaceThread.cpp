@@ -397,6 +397,8 @@ void MainInterfaceThread::sendDataSlot(const QByteArray data, uint id)
 {
     if(data.size() > 0)
     {
+        emit sendDataWithWorkerScriptsSignal(data);
+
         if(sendDataWithTheMainInterface(data, true))
         {
             sendingFinishedSignal(true, id);

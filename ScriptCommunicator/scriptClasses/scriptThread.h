@@ -497,6 +497,15 @@ public:
     ///Note: This function fails in command-line mode.
     Q_INVOKABLE bool addToolBoxPagesToMainWindow(ScriptToolBox* scriptToolBox);
 
+    ///Sends received data (received with an script internal interface) to the main interface.
+    ///This data will be shown as received data in the consoles, the log and will be received by
+    ///worker scripts via the dataReceivedSignal.
+    Q_INVOKABLE void sendReceivedDataToMainInterface(QVector<unsigned char> data);
+
+    ///Registers for send data from the main interface. If registered then the script function
+    ///sendDataFromMainInterface is called which must send the data with the scriptinterface(s).
+    Q_INVOKABLE bool registerForSendDataFromMainInterface(bool register shallRegister);
+
     ///Returns the tread state.
     ThreadSate getThreadState(){return m_state;}
 
@@ -680,6 +689,9 @@ private slots:
     ///This function checks if the thread has to be paused and do the necessary actions.
     void pauseTimerSlot();
 
+    ///Sends the send data from the main interface.
+    void sendDataFromMainInterfaceSlot(const QByteArray data);
+
 #ifdef Q_OS_MAC
     ///Debug timer slot (checks if the script is suspended by the debugger or is running).
     void debugTimerSlot(void);
@@ -767,6 +779,9 @@ private:
 
     ///True if the script has GUI elements in the main window.
     bool m_hasMainWindowGuiElements;
+
+    ///The script sendDataFromMainInterface function.
+    QScriptValue sendDataFromMainInterfaceFunction;
 
 #ifdef Q_OS_MAC
     ///The debug timer (checks if the script is suspended by the debugger or is running).

@@ -2791,30 +2791,6 @@ void ScriptThread::sendReceivedDataToMainInterface(QVector<unsigned char> data)
     m_scriptWindow->m_mainInterfaceThread->dataReceived(array);
 }
 
-/**
- * Sends the send data from the main interface.
- * @param data
- *      The data.
- */
-void ScriptThread::sendDataFromMainInterfaceSlot(const QByteArray data)
-{
-
-    QScriptValue scriptArray = m_scriptEngine->newArray(data.size());
-    for(int i = 0; i < data.size(); i++)
-    {
-        scriptArray.setProperty(i, QScriptValue(m_scriptEngine, data[i]));
-    }
-
-    QScriptValue result = sendDataFromMainInterfaceFunction.call(QScriptValue(), QScriptValueList() << scriptArray);
-
-    if(!result.toBool())
-    {
-        QObject::disconnect(m_scriptWindow->m_mainInterfaceThread, SIGNAL(sendDataWithWorkerScriptsSignal(QByteArray)),
-                this, SLOT(sendDataFromMainInterfaceSlot(QByteArray)));
-
-        messageBox("Critical", m_scriptFileName, "send data from main interface failed");
-    }
-}
 
 /**
  * Registers for send data from the main interface. If registered then the script function
@@ -2825,32 +2801,18 @@ void ScriptThread::sendDataFromMainInterfaceSlot(const QByteArray data)
  * @return
  *      True on success (fails only if the script function sendDataFromMainInterface can not be found).
  */
-bool ScriptThread::registerForSendDataFromMainInterface(bool shallRegister)
+bool ScriptThread::registerForSendDataFromMainInterface(bool register)
 {
-    bool result = true;
+    bool result = false;
+    QScriptValue sendDataFromMainInterfaceFunction = m_scriptEngine->evaluate("sendDataFromMainInterface");
 
-    if(shallRegister)
-    {
-        sendDataFromMainInterfaceFunction = m_scriptEngine->evaluate("sendDataFromMainInterface");
+    if (sendDataFromMainInterfaceFunction.isError())
+    {//The script has no sendDataFromMainInterface function
 
-        if (sendDataFromMainInterfaceFunction.isError())
-        {//The script has no sendDataFromMainInterface function
-
-            result = false;
-        }
-        else
-        {
-            result = true;
-
-            connect(m_scriptWindow->m_mainInterfaceThread, SIGNAL(sendDataWithWorkerScriptsSignal(QByteArray)),
-                    this, SLOT(sendDataFromMainInterfaceSlot(QByteArray)), Qt::QueuedConnection);
-        }
     }
     else
     {
-        sendDataFromMainInterfaceFunction = QScriptValue();
-        QObject::disconnect(m_scriptWindow->m_mainInterfaceThread, SIGNAL(sendDataWithWorkerScriptsSignal(QByteArray)),
-                this, SLOT(sendDataFromMainInterfaceSlot(QByteArray)));
+
     }
 
     return result;

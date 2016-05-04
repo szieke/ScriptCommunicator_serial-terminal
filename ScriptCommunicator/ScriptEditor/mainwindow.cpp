@@ -341,7 +341,7 @@ void MainWindow::startDesigner(QString uiFile)
 {
     QString program;
 #ifdef Q_OS_LINUX
-    program = "./designer";
+    program = getScriptEditorFilesFolder() + "/designer";
 #elif defined Q_OS_MAC
 
     QFileInfo fi("/Applications/Qt Creator.app");
@@ -371,7 +371,7 @@ void MainWindow::startDesigner(QString uiFile)
 
     return;
 #else
-    program = "./designer.exe";
+    program = getScriptEditorFilesFolder() + "/designer.exe";
 #endif
     QStringList arguments;
     arguments << uiFile;

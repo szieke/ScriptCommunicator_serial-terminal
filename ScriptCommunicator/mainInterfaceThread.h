@@ -118,6 +118,9 @@ signals:
     ///Signal which publishes the current data rates.
     void dataRateUpdateSignal(quint32 dataRateSend, quint32 dataRateReceive);
 
+    ///Send the send data to all worker scripts which must send the data too.
+    void sendDataWithWorkerScriptsSignal(const QByteArray data);
+
 
 protected:
     ///The main interface thread main function.
