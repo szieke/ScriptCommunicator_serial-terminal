@@ -61,11 +61,6 @@ function dataReceived()
 		{
 			scriptThread.sendReceivedDataToMainInterface(data);
 		}
-			if(g_consoleData.length > 50000)
-			{
-				g_consoleData = g_consoleData.substring(g_consoleData.length - 50000);
-				consoleTimer.start(1);
-			}
 	}
 }
 
@@ -89,12 +84,6 @@ function sendDataFromMainInterface(data)
 				g_consoleData += "<span style=\"color:#ff0000;\">"  + scriptThread.byteArrayToHexString(data) + "</span>";
 			}
 		}
-		
-			if(g_consoleData.length > 50000)
-			{
-				g_consoleData = g_consoleData.substring(g_consoleData.length - 50000);
-				consoleTimer.start(1);
-			}
 	}
 	else
 	{
@@ -106,6 +95,12 @@ function updateConsole()
 {
 	if(g_consoleData.length > 0)
 	{
+		if(g_consoleData.length > 50000)
+		{
+			g_consoleData = g_consoleData.substring(g_consoleData.length - 30000);
+			UI_TextEdit.clear();
+		}
+			
 		var list = g_consoleData.split("<br>")
 		if(list.length == 1)
 		{

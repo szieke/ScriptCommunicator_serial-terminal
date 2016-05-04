@@ -317,7 +317,7 @@
           <string>ascii</string>
          </property>
          <property name="checked">
-          <bool>true</bool>
+          <bool>false</bool>
          </property>
         </widget>
        </item>
@@ -328,6 +328,9 @@
          </property>
          <property name="text">
           <string>none</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
