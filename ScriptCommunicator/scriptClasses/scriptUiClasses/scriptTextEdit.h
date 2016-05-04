@@ -57,6 +57,7 @@ public:
 
         connect(this, SIGNAL(writeTextSignal(QTextEdit*,QString,bool,bool,bool,bool,quint32,bool)), scriptThread->getScriptWindow(),
                 SLOT(writeTextSlot(QTextEdit*,QString,bool,bool,bool,bool,quint32,bool)), directConnectionType);
+
     }
 
 

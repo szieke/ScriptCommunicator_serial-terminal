@@ -289,10 +289,10 @@ void ScriptThread::run()
                 m_scriptWindow->m_mainWindow, SLOT(setSerialPortPinsSlot(bool,bool)), directConnectionType);
 
         connect(this, SIGNAL(addTabsToMainWindowSignal(QTabWidget*)),
-                m_scriptWindow->m_mainWindow, SLOT(addTabsToMainWindowSlot(QTabWidget*)), directConnectionType);
+                m_scriptWindow->m_mainWindow, SLOT(addTabsToMainWindowSlot(QTabWidget*)), Qt::QueuedConnection);
 
         connect(this, SIGNAL(addToolBoxPagesToMainWindowSignal(QToolBox*)),
-                m_scriptWindow->m_mainWindow, SLOT(addToolBoxPagesToMainWindowSlot(QToolBox*)), directConnectionType);
+                m_scriptWindow->m_mainWindow, SLOT(addToolBoxPagesToMainWindowSlot(QToolBox*)), Qt::QueuedConnection);
 
         connect(this, SIGNAL(enableAllTabsForOneScriptThreadSignal(QObject*,bool)),
                 m_scriptWindow->m_mainWindow, SLOT(enableAllTabsForOneScriptThreadSlot(QObject*,bool)), directConnectionType);
@@ -321,6 +321,10 @@ void ScriptThread::run()
 
         connect(m_scriptWindow->m_mainInterfaceThread, SIGNAL(canMessagesReceivedSignal(QVector<QByteArray>)),
                 this, SLOT(canMessagesReceivedSlot(QVector<QByteArray>)), Qt::QueuedConnection);
+
+
+        connect(m_scriptWindow->m_mainInterfaceThread, SIGNAL(sendDataWithWorkerScriptsSignal(QByteArray)),
+                this, SLOT(sendDataFromMainInterfaceSlot(QByteArray)), Qt::QueuedConnection);
 
         connect(this, SIGNAL(exitScriptCommunicatorSignal()),
                 m_scriptWindow, SLOT(exitScriptCommunicatorSlot()), Qt::QueuedConnection);
@@ -1297,35 +1301,39 @@ void ScriptThread::canMessagesReceivedSlot(QVector<QByteArray> messages)
 
     if(!messages.isEmpty() &&  (m_state == RUNNING))
     {
-        QVector<quint8> types;
-        QVector<quint32> messageIds;
-        QVector<quint32> timestamps;
-        QVector<QVector<unsigned char>> data;
-
-        for(auto el : messages)
+        if(QObject::receivers(SIGNAL(canMessagesReceivedSignal(QVector<quint8>, QVector<quint32>, QVector<quint32>,
+                                                               QVector<QVector<unsigned char>>))) > 0)
         {
-            QVector<unsigned char> dataVector;
+            QVector<quint8> types;
+            QVector<quint32> messageIds;
+            QVector<quint32> timestamps;
+            QVector<QVector<unsigned char>> data;
 
-            for(auto val : el)
+            for(auto el : messages)
             {
-                dataVector.push_back((unsigned char) val);
+                QVector<unsigned char> dataVector;
+
+                for(auto val : el)
+                {
+                    dataVector.push_back((unsigned char) val);
+                }
+                quint8 type = dataVector[0];
+
+                quint32 messageId = (dataVector[1] << 24) + (dataVector[2] << 16) + (dataVector[3] << 8) + (dataVector[4] & 0xff);
+                quint32 timeStamp = (dataVector[5] << 24) + (dataVector[6] << 16) + (dataVector[7] << 8) + (dataVector[8] & 0xff);
+
+                types.push_back(type);
+                messageIds.push_back(messageId);
+                timestamps.push_back(timeStamp);
+
+                //Push the data bytes.
+                data.push_back(dataVector.mid(PCANBasicClass::BYTES_FOR_CAN_TYPE + PCANBasicClass::BYTES_FOR_CAN_ID
+                                              + PCANBasicClass::BYTES_FOR_CAN_TIMESTAMP));
+
             }
-            quint8 type = dataVector[0];
 
-            quint32 messageId = (dataVector[1] << 24) + (dataVector[2] << 16) + (dataVector[3] << 8) + (dataVector[4] & 0xff);
-            quint32 timeStamp = (dataVector[5] << 24) + (dataVector[6] << 16) + (dataVector[7] << 8) + (dataVector[8] & 0xff);
-
-            types.push_back(type);
-            messageIds.push_back(messageId);
-            timestamps.push_back(timeStamp);
-
-            //Push the data bytes.
-            data.push_back(dataVector.mid(PCANBasicClass::BYTES_FOR_CAN_TYPE + PCANBasicClass::BYTES_FOR_CAN_ID
-                                          + PCANBasicClass::BYTES_FOR_CAN_TIMESTAMP));
-
+            emit canMessagesReceivedSignal(types, messageIds, timestamps, data);
         }
-
-        emit canMessagesReceivedSignal(types, messageIds, timestamps, data);
     }
 
 }
@@ -1341,13 +1349,16 @@ void ScriptThread::dataReceivedSlot(QByteArray data)
 {
     if(m_state == RUNNING)
     {
-        QVector<unsigned char> dataVector;
-
-        for(auto val : data)
+        if(QObject::receivers(SIGNAL(dataReceivedSignal(QVector<unsigned char>))) > 0)
         {
-            dataVector.push_back((unsigned char) val);
+            QVector<unsigned char> dataVector;
+
+            for(auto val : data)
+            {
+                dataVector.push_back((unsigned char) val);
+            }
+            emit dataReceivedSignal(dataVector);
         }
-        emit dataReceivedSignal(dataVector);
     }
 
 }
@@ -2799,61 +2810,19 @@ void ScriptThread::sendReceivedDataToMainInterface(QVector<unsigned char> data)
 void ScriptThread::sendDataFromMainInterfaceSlot(const QByteArray data)
 {
 
-    QScriptValue scriptArray = m_scriptEngine->newArray(data.size());
-    for(int i = 0; i < data.size(); i++)
+    if(m_state == RUNNING)
     {
-        scriptArray.setProperty(i, QScriptValue(m_scriptEngine, data[i]));
-    }
-
-    QScriptValue result = sendDataFromMainInterfaceFunction.call(QScriptValue(), QScriptValueList() << scriptArray);
-
-    if(!result.toBool())
-    {
-        QObject::disconnect(m_scriptWindow->m_mainInterfaceThread, SIGNAL(sendDataWithWorkerScriptsSignal(QByteArray)),
-                this, SLOT(sendDataFromMainInterfaceSlot(QByteArray)));
-
-        messageBox("Critical", m_scriptFileName, "send data from main interface failed");
-    }
-}
-
-/**
- * Registers for send data from the main interface. If registered then the script function
- * sendDataFromMainInterface is called which must send the data with the scriptinterface(s).
- *
- * @param register
- *      True for register and false for deregister.
- * @return
- *      True on success (fails only if the script function sendDataFromMainInterface can not be found).
- */
-bool ScriptThread::registerForSendDataFromMainInterface(bool shallRegister)
-{
-    bool result = true;
-
-    if(shallRegister)
-    {
-        sendDataFromMainInterfaceFunction = m_scriptEngine->evaluate("sendDataFromMainInterface");
-
-        if (sendDataFromMainInterfaceFunction.isError())
-        {//The script has no sendDataFromMainInterface function
-
-            result = false;
-        }
-        else
+        if(QObject::receivers(SIGNAL(sendDataFromMainInterfaceSignal(QVector<unsigned char>))) > 0)
         {
-            result = true;
+            QVector<unsigned char> dataVector;
 
-            connect(m_scriptWindow->m_mainInterfaceThread, SIGNAL(sendDataWithWorkerScriptsSignal(QByteArray)),
-                    this, SLOT(sendDataFromMainInterfaceSlot(QByteArray)), Qt::QueuedConnection);
+            for(auto val : data)
+            {
+                dataVector.push_back((unsigned char) val);
+            }
+            emit sendDataFromMainInterfaceSignal(dataVector);
         }
     }
-    else
-    {
-        sendDataFromMainInterfaceFunction = QScriptValue();
-        QObject::disconnect(m_scriptWindow->m_mainInterfaceThread, SIGNAL(sendDataWithWorkerScriptsSignal(QByteArray)),
-                this, SLOT(sendDataFromMainInterfaceSlot(QByteArray)));
-    }
-
-    return result;
 }
 
 /**

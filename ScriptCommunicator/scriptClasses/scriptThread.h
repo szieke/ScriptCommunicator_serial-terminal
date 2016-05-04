@@ -502,10 +502,6 @@ public:
     ///worker scripts via the dataReceivedSignal.
     Q_INVOKABLE void sendReceivedDataToMainInterface(QVector<unsigned char> data);
 
-    ///Registers for send data from the main interface. If registered then the script function
-    ///sendDataFromMainInterface is called which must send the data with the scriptinterface(s).
-    Q_INVOKABLE bool registerForSendDataFromMainInterface(bool register shallRegister);
-
     ///Returns the tread state.
     ThreadSate getThreadState(){return m_state;}
 
@@ -533,6 +529,9 @@ public:
 
 signals:
 
+    ///Is emitted if the main interface shall send data.
+    ///Scripts can connect a function to this signal.
+    void sendDataFromMainInterfaceSignal(QVector<unsigned char> data);
 
     ///Is emitted if a string in the global string map has been changed.
     ///Scripts can connect a function to this signal.
