@@ -1,3 +1,11 @@
+/***************************************************************************************
+This script send all data which shall be sent with the main interface to an additional TCP client.
+All data which has been received with the additional TCP client will be sent to the main interface
+(this data will be added to the standard consoles, the logs and worker scripts can received this data 
+via scriptThread.dataReceivedSignal) .
+****************************************************************************************/
+
+
 //Is called if the user has pressed the connect button.
 function ConnectButtonPressed()
 {
@@ -89,15 +97,11 @@ function dataReceivedAdditionalInterface()
 	
 	if(isConnected)
 	{
-		if(UI_ShowAscii.isChecked())
+		if(UI_ShowAscii.isChecked() || UI_ShowHex.isChecked())
 		{
-			g_consoleData += "<span style=\"color:#00ff00;\">" + UI_TextEdit.replaceNonHtmlChars(scriptThread.byteArrayToString(data).replace("\r\n", "\n")) + "</span>";
+			addConsoleData(data, true);
 		}
 			
-		else if(UI_ShowHex.isChecked())
-		{
-			g_consoleData += "<span style=\"color:#00ff00;\">"  + scriptThread.byteArrayToHexString(data) + "</span>";
-		}
 		if(UI_SendToMainInterface.isChecked())
 		{
 			scriptThread.sendReceivedDataToMainInterface(data);
@@ -115,19 +119,13 @@ function sendDataFromMainInterface(data)
 		{
 			//Call ConnectButtonPressed to diconnect the additional interface.
 			ConnectButtonPressed();
-			UI_TextEdit.append("TCP " + instanceNumber, "tcpClient.write failed");
+			UI_TextEdit.append("TCP " + instanceNumber + " tcpClient.write failed");
 		}
 		else
 		{
-			if(UI_ShowAscii.isChecked())
+			if(UI_ShowAscii.isChecked() || UI_ShowHex.isChecked())
 			{
-				//Add the data to the save console data.
-				g_consoleData += "<span style=\"color:#ff0000;\">"  + UI_TextEdit.replaceNonHtmlChars(scriptThread.byteArrayToString(data)) + "</span>";
-			}
-			else if(UI_ShowHex.isChecked())
-			{
-				//Add the data to the save console data.
-				g_consoleData += "<span style=\"color:#ff0000;\">"  + scriptThread.byteArrayToHexString(data) + "</span>";
+				addConsoleData(data, false);
 			}
 		}
 	}
@@ -177,11 +175,6 @@ function saveUiSettings()
 	}
 }
 
-//Is called if the user has pressed the clear button.
-function CleartButtonPressed()
-{
-	UI_TextEdit.clear();
-}
 
 //Hide the dialog (the tab will be removed from the dialog therefore the dialog is not needed).
 UI_Dialog.hide();
@@ -206,7 +199,6 @@ do
 }while(resultArray[0] == 1)
 
 var lastTcpClientErrorString = "";
-var g_consoleData = "";
 var g_instanceName = "TCP " + instanceNumber;
 var g_settingsFileName = "uiSettings_" + g_instanceName +".txt";
 g_settingsFileName = g_settingsFileName.replace(/ /g, '_');
@@ -233,7 +225,7 @@ var tcpClient = undefined;
 
 var isConnected = false;
 UI_ConnectButton.clickedSignal.connect(ConnectButtonPressed);
-UI_ClearButton.clickedSignal.connect(CleartButtonPressed);
+UI_ClearButton.clickedSignal.connect(ClearButtonPressed);
 
 var consoleTimer = scriptThread.createTimer()
 consoleTimer.timeout.connect(updateConsole);

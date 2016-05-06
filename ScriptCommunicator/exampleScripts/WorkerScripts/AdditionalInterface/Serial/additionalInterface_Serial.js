@@ -1,43 +1,62 @@
 /***************************************************************************************
-This script send all data which shall be sent with the main interface to an additional UDP socket.
-All data which has been received with the additional UDP socket will be sent to the main interface
+This script send all data which shall be sent with the main interface to an additional serial port.
+All data which has been received with the additional serial port will be sent to the main interface
 (this data will be added to the standard consoles, the logs and worker scripts can received this data 
 via scriptThread.dataReceivedSignal) .
 ****************************************************************************************/
-
 
 //Is called if the user has pressed the connect button.
 function ConnectButtonPressed()
 {
 	if(!isConnected)
 	{	
-		if(udpSocket.bind(UI_SocketOwnPort.text()))
+		serialPort.setDTR(true);
+		serialPort.setPortName(UI_SerialPortInfoListBox.currentText());
+		if (serialPort.open())
 		{
-			isConnected = true;
-			UI_ConnectButton.setText("disconnect");
-			UI_SocketDestinationPort.setEnabled(false);
-			UI_SocketDestinationAddress.setEnabled(false);
-			UI_SocketOwnPort.setEnabled(false);
+			if (serialPort.setBaudRate(Number(UI_BaudRateBox.currentText()))
+			 && serialPort.setDataBits(Number(UI_DataBitsBox.currentText()))
+			 && serialPort.setParity(UI_ParityBox.currentText())
+			 && serialPort.setStopBits(UI_StopBitsBox.currentText())
+			 && serialPort.setFlowControl(UI_FlowControlBox.currentText()))
+			 {
+				isConnected = true;
+				UI_ConnectButton.setText("disconnect");
+
+				serialPort.setRTS(true);
+	
+				UI_BaudRateBox.setEnabled(false);
+				UI_DataBitsBox.setEnabled(false);
+				UI_ParityBox.setEnabled(false);
+				UI_StopBitsBox.setEnabled(false);
+				UI_FlowControlBox.setEnabled(false);
+				UI_SerialPortInfoListBox.setEnabled(false);
+			 }
 		}
 		else
 		{
-			scriptThread.messageBox("Critical", "error", "could not bind socket to port: " + UI_SocketOwnPort.text()); 
+			serialPort.close();
+			isConnectedSecondInterface = false;
+			scriptThread.messageBox("Critical", 'serial port open error', 'could not open serial port: ' + UI_SerialPortInfoListBox.currentText())
 		}
 	}
 	else
 	{
-		udpSocket.close();
+		serialPort.close();
 		isConnected = false;
 		UI_ConnectButton.setText("connect");
-		UI_SocketDestinationPort.setEnabled(true);
-		UI_SocketDestinationAddress.setEnabled(true);
-		UI_SocketOwnPort.setEnabled(true);
+		UI_BaudRateBox.setEnabled(true);
+		UI_DataBitsBox.setEnabled(true);
+		UI_ParityBox.setEnabled(true);
+		UI_StopBitsBox.setEnabled(true);
+		UI_FlowControlBox.setEnabled(true);
+		UI_SerialPortInfoListBox.setEnabled(true);
 	}
 }
 //Is called if the additional interface has received data.
 function dataReceivedAdditionalInterface()
 {
-	var data  = udpSocket.readAll();
+	var data  = serialPort.readAll();
 	
 	if(isConnected)
 	{
@@ -59,11 +78,11 @@ function sendDataFromMainInterface(data)
 	if(isConnected)
 	{
 		//Send the data with the additional interface.
-		if(udpSocket.write(data, UI_SocketDestinationAddress.text() , UI_SocketDestinationPort.text()) != data.length)
+		if(serialPort.write(data) != data.length)
 		{
 			//Call ConnectButtonPressed to diconnect the additional interface.
 			ConnectButtonPressed();
-			UI_TextEdit.append("UDP " + instanceNumber + " udpSocket.write failed");
+			UI_TextEdit.append("Serial " + instanceNumber + " serialPort.write failed");
 		}
 		else
 		{
@@ -87,13 +106,13 @@ function loadUiSettings()
 		var settings = scriptThread.readFile(g_settingsFileName);
 		var stringArray = settings.split("\r\n");
 		
-		UI_SocketOwnPort.setText(getValueOfStringArray(stringArray, "UI_SocketOwnPort"));
-		UI_SocketDestinationAddress.setText(getValueOfStringArray(stringArray, "UI_SocketDestinationAddress"));
-		UI_SocketDestinationPort.setText(getValueOfStringArray(stringArray, "UI_SocketDestinationPort"));
-		UI_ShowAscii.setChecked(getValueOfStringArray(stringArray, "UI_ShowAscii") == 'true');
-		UI_ShowHex.setChecked(getValueOfStringArray(stringArray, "UI_ShowHex") == 'true');
-		UI_ShowNothing.setChecked(getValueOfStringArray(stringArray, "UI_ShowNothing") == 'true');
-		UI_SendToMainInterface.setChecked(getValueOfStringArray(stringArray, "UI_SendToMainInterface") == 'true');
+		UI_SerialPortInfoListBox.setCurrentText(getValueOfStringArray(stringArray, "UI_SerialPortInfoListBox"));
+		UI_BaudRateBox.setCurrentText(getValueOfStringArray(stringArray, "UI_BaudRateBox"));
+		UI_DataBitsBox.setCurrentText(getValueOfStringArray(stringArray, "UI_DataBitsBox"));
+		UI_StopBitsBox.setCurrentText(getValueOfStringArray(stringArray, "UI_StopBitsBox"));
+		UI_ParityBox.setCurrentText(getValueOfStringArray(stringArray, "UI_ParityBox"));
+		UI_FlowControlBox.setCurrentText(getValueOfStringArray(stringArray, "UI_FlowControlBox"));
+	
 	}	
 }
 
@@ -104,14 +123,13 @@ function saveUiSettings()
 	
 	try
 	{
-		settings += "UI_SocketOwnPort=" + UI_SocketOwnPort.text() + "\r\n";
-		settings += "UI_SocketDestinationAddress=" + UI_SocketDestinationAddress.text() + "\r\n";
-		settings += "UI_SocketDestinationPort=" + UI_SocketDestinationPort.text() + "\r\n";
+		settings += "UI_SerialPortInfoListBox=" + UI_SerialPortInfoListBox.currentText() + "\r\n";
+		settings += "UI_BaudRateBox=" + UI_BaudRateBox.currentText() + "\r\n";
+		settings += "UI_DataBitsBox=" + UI_DataBitsBox.currentText() + "\r\n";
+		settings += "UI_StopBitsBox=" + UI_StopBitsBox.currentText() + "\r\n";
+		settings += "UI_ParityBox=" + UI_ParityBox.currentText() + "\r\n";
+		settings += "UI_FlowControlBox=" + UI_FlowControlBox.currentText() + "\r\n";
 
-		settings += "UI_ShowAscii=" + UI_ShowAscii.isChecked() + "\r\n";
-		settings += "UI_ShowHex=" + UI_ShowHex.isChecked() + "\r\n";
-		settings += "UI_ShowNothing=" + UI_ShowNothing.isChecked() + "\r\n";
-		settings += "UI_SendToMainInterface=" + UI_SendToMainInterface.isChecked() + "\r\n";
 		
 		scriptThread.writeFile(g_settingsFileName, true, settings, true);
 	}
@@ -130,7 +148,7 @@ scriptThread.appendTextToConsole('script has started');
 
 //The instance number of the current script.
 var instanceNumber = 1;
-var g_prefix = "TCP";
+var g_prefix = "Serial";
 
 //Get the insstance number of the current script.
 do
@@ -148,12 +166,20 @@ do
 
 
 var g_consoleData = "";
-var g_instanceName = "UDP " + instanceNumber;
+var g_instanceName = "Serial " + instanceNumber;
 var g_settingsFileName = "uiSettings_" + g_instanceName +".txt";
 g_settingsFileName = g_settingsFileName.replace(/ /g, '_');
 
 //Load the script with the helper functions.
 scriptThread.loadScript("../Common/helper.js");
+
+//Add the available serial ports.
+var availablePorts = scriptThread.availableSerialPorts();
+for(var i = 0; i < availablePorts.length; i++)
+{
+	UI_SerialPortInfoListBox.addItem(availablePorts[i]);
+}
+
 
 //Load the saved settings.
 loadUiSettings();
@@ -170,8 +196,8 @@ UI_TabWidget.setTabText(0, g_instanceName);
 scriptThread.addTabsToMainWindow(UI_TabWidget)
 scriptThread.sendDataFromMainInterfaceSignal.connect(sendDataFromMainInterface)
 
-var udpSocket = scriptThread.createUdpSocket()
-udpSocket.readyReadSignal.connect(dataReceivedAdditionalInterface);
+var serialPort = scriptThread.createSerialPort();
+serialPort.readyReadSignal.connect(dataReceivedAdditionalInterface);
 
 var isConnected = false;
 UI_ConnectButton.clickedSignal.connect(ConnectButtonPressed);
