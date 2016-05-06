@@ -502,6 +502,10 @@ public:
     ///worker scripts via the dataReceivedSignal.
     Q_INVOKABLE void sendReceivedDataToMainInterface(QVector<unsigned char> data);
 
+    ///Checks if the version of ScriptCommunicator is equal/greater then the version in minVersion.
+    ///The format of minVersion is: 'major'.'minor' (e.g. 04.11).
+    Q_INVOKABLE bool checkScriptCommunicatorVersion(QString minVersion);
+
     ///Returns the tread state.
     ThreadSate getThreadState(){return m_state;}
 

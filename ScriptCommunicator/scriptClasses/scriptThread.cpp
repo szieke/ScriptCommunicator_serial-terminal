@@ -2803,6 +2803,47 @@ void ScriptThread::sendReceivedDataToMainInterface(QVector<unsigned char> data)
 }
 
 /**
+ * Checks if the version of ScriptCommunicator is equal/greater then the version in minVersion.
+ * The format of minVersion is: 'major'.'minor' (e.g. 04.11).
+ * @param minVersion
+ *      The minimum version.
+ * @return
+ *      True if equal or greater.
+ */
+bool ScriptThread::checkScriptCommunicatorVersion(QString minVersion)
+{
+    bool result = false;
+
+    if(!minVersion.isEmpty())
+    {
+        QStringList tmpList = MainWindow::VERSION.split(".");
+        quint32 currentMajor = tmpList[0].toUInt();
+        quint32 currentMinor = tmpList[1].toUInt();
+
+        tmpList = minVersion.split(".");
+        if(tmpList.length() == 2)
+        {
+            quint32 neededMajor = tmpList[0].toUInt();
+            quint32 neededMinor = tmpList[1].toUInt();
+
+            if(neededMajor < currentMajor)
+            {
+                result = true;
+            }
+            else if(neededMajor == currentMajor)
+            {
+                if(neededMinor <= currentMinor)
+                {
+                    result = true;
+                }
+            }
+        }
+    }
+
+    return result;
+}
+
+/**
  * Sends the send data from the main interface.
  * @param data
  *      The data.

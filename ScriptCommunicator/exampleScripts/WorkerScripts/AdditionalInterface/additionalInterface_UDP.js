@@ -1,35 +1,19 @@
-
-
-//Is called if this script shall be exited.
-function stopScript() 
-{
-	//Remove the entry.
-	scriptThread.getGlobalUnsignedNumber("UDP_INTERFACE_INSTANCE_" + instanceNumber, true);
-    scriptThread.appendTextToConsole("script has been stopped");
-}
-
-//Is called if the dialog is closed.
-function UI_DialogFinished(e)
-{
-	scriptThread.stopScript()
-}
-
+//Is called if the user has pressed the connect button.
 function ConnectButtonPressed()
 {
 	if(!isConnected)
 	{	
-		if(udpSocket.bind(UI_socketOwnPort.text()))
+		if(udpSocket.bind(UI_SocketOwnPort.text()))
 		{
 			isConnected = true;
 			UI_ConnectButton.setText("disconnect");
-			UI_socketDestinationPort.setEnabled(false);
-			UI_socketDestinationAddress.setEnabled(false);
-			UI_socketOwnPort.setEnabled(false);
-
+			UI_SocketDestinationPort.setEnabled(false);
+			UI_SocketDestinationAddress.setEnabled(false);
+			UI_SocketOwnPort.setEnabled(false);
 		}
 		else
 		{
-			scriptThread.messageBox("Critical", "error", "could not bind socket to port: " + UI_socketOwnPort.text()); 
+			scriptThread.messageBox("Critical", "error", "could not bind socket to port: " + UI_SocketOwnPort.text()); 
 		}
 	}
 	else
@@ -37,13 +21,13 @@ function ConnectButtonPressed()
 		udpSocket.close();
 		isConnected = false;
 		UI_ConnectButton.setText("connect");
-		UI_socketDestinationPort.setEnabled(true);
-		UI_socketDestinationAddress.setEnabled(true);
-		UI_socketOwnPort.setEnabled(true);
+		UI_SocketDestinationPort.setEnabled(true);
+		UI_SocketDestinationAddress.setEnabled(true);
+		UI_SocketOwnPort.setEnabled(true);
 	}
 }
-
-function dataReceived()
+//Is called if the additional interface has received data.
+function dataReceivedAdditionalInterface()
 {
 	var data  = udpSocket.readAll();
 	
@@ -64,12 +48,15 @@ function dataReceived()
 	}
 }
 
+//Is called if the main interface shall send data.
 function sendDataFromMainInterface(data)
 {
 	if(isConnected)
 	{
-		if(udpSocket.write(data, UI_socketDestinationAddress.text() , UI_socketDestinationPort.text()) != data.length)
+		//Send the data with the additional interface.
+		if(udpSocket.write(data, UI_SocketDestinationAddress.text() , UI_SocketDestinationPort.text()) != data.length)
 		{
+			//Call ConnectButtonPressed to diconnect the additional interface.
 			ConnectButtonPressed();
 			UI_TextEdit.append("UDP " + instanceNumber, "udpSocket.write failed");
 		}
@@ -77,10 +64,12 @@ function sendDataFromMainInterface(data)
 		{
 			if(UI_ShowAscii.isChecked())
 			{
+				//Add the data to the save console data.
 				g_consoleData += "<span style=\"color:#ff0000;\">"  + UI_TextEdit.replaceNonHtmlChars(scriptThread.byteArrayToString(data)) + "</span>";
 			}
 			else if(UI_ShowHex.isChecked())
 			{
+				//Add the data to the save console data.
 				g_consoleData += "<span style=\"color:#ff0000;\">"  + scriptThread.byteArrayToHexString(data) + "</span>";
 			}
 		}
@@ -91,35 +80,8 @@ function sendDataFromMainInterface(data)
 	}
 }
 
-function updateConsole()
-{
-	if(g_consoleData.length > 0)
-	{
-		if(g_consoleData.length > 50000)
-		{
-			g_consoleData = g_consoleData.substring(g_consoleData.length - 30000);
-			UI_TextEdit.clear();
-		}
-			
-		var list = g_consoleData.split("<br>")
-		if(list.length == 1)
-		{
-			UI_TextEdit.insertHtml(g_consoleData);
-		}
-		else
-		{
-			UI_TextEdit.insertHtml(list[0]);
-		
-			for(var i = 1; i < list.length; i++)
-			{
-				UI_TextEdit.append(list[i]);
-			}
-		}
-		g_consoleData = "";
-	}
 
-}
-
+//Is called if the user has pressed the clear button.
 function CleartButtonPressed()
 {
 	UI_TextEdit.clear();
@@ -129,10 +91,11 @@ function CleartButtonPressed()
 UI_Dialog.hide();
 
 scriptThread.appendTextToConsole('script has started');
-UI_Dialog.finishedSignal.connect(UI_DialogFinished);
 
+//The instance number of the current script.
 var instanceNumber = 1;
 
+//Get the insstance number of the current script.
 do
 {
 	var resultArray = scriptThread.getGlobalUnsignedNumber("UDP_INTERFACE_INSTANCE_" + instanceNumber);
@@ -148,17 +111,30 @@ do
 
 
 var g_consoleData = "";
+var g_instanceName = "UDP " + instanceNumber;
+var g_settingsFileName = "uiSettings_" + g_instanceName +".txt";
+g_settingsFileName = g_settingsFileName.replace(/ /g, '_');
 
+//Load the script with the helper functions.
+scriptThread.loadScript("helper.js");
 
-UI_ToolBox.setItemText(0, "UDP " + instanceNumber);
+//Load the saved settings.
+loadUiSettings();
+
+//Check the version of ScriptCommunicator.
+checkVersion();
+
+UI_Dialog.finishedSignal.connect(UI_DialogFinished);
+
+UI_ToolBox.setItemText(0, g_instanceName);
 scriptThread.addToolBoxPagesToMainWindow(UI_ToolBox);
 
-UI_TabWidget.setTabText(0, "UDP " + instanceNumber);
+UI_TabWidget.setTabText(0, g_instanceName);
 scriptThread.addTabsToMainWindow(UI_TabWidget)
 scriptThread.sendDataFromMainInterfaceSignal.connect(sendDataFromMainInterface)
 
 var udpSocket = scriptThread.createUdpSocket()
-udpSocket.readyReadSignal.connect(dataReceived);
+udpSocket.readyReadSignal.connect(dataReceivedAdditionalInterface);
 
 var isConnected = false;
 UI_ConnectButton.clickedSignal.connect(ConnectButtonPressed);

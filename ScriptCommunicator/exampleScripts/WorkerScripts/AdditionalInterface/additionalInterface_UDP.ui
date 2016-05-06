@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>779</width>
-    <height>468</height>
+    <width>502</width>
+    <height>464</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -139,8 +139,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>377</width>
-        <height>423</height>
+        <width>198</width>
+        <height>419</height>
        </rect>
       </property>
       <attribute name="label">
@@ -148,7 +148,7 @@
       </attribute>
       <layout class="QGridLayout" name="gridLayout">
        <item row="7" column="0">
-        <widget class="QLineEdit" name="socketOwnPort">
+        <widget class="QLineEdit" name="SocketOwnPort">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -184,7 +184,7 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QLineEdit" name="socketDestinationPort">
+        <widget class="QLineEdit" name="SocketDestinationPort">
          <property name="enabled">
           <bool>true</bool>
          </property>
@@ -204,7 +204,7 @@
         </widget>
        </item>
        <item row="4" column="0">
-        <widget class="QLineEdit" name="socketDestinationAddress">
+        <widget class="QLineEdit" name="SocketDestinationAddress">
          <property name="enabled">
           <bool>true</bool>
          </property>
