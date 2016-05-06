@@ -35,11 +35,11 @@ function dataReceivedAdditionalInterface()
 	{
 		if(UI_ShowAscii.isChecked())
 		{
-			g_consoleData += UI_TextEdit.replaceNonHtmlChars(scriptThread.byteArrayToString(data).replace("\r\n", "\n"));
+			g_consoleData += "<span style=\"color:#00ff00;\">"  + UI_TextEdit.replaceNonHtmlChars(scriptThread.byteArrayToString(data).replace("\r\n", "\n")) + "</span>";
 		}
 		else if(UI_ShowHex.isChecked())
 		{
-			g_consoleData += scriptThread.byteArrayToHexString(data);
+			g_consoleData += "<span style=\"color:#00ff00;\">"  + scriptThread.byteArrayToHexString(data) + "</span>";
 		}
 		if(UI_SendToMainInterface.isChecked())
 		{
@@ -80,6 +80,47 @@ function sendDataFromMainInterface(data)
 	}
 }
 
+//Loads the saved user interface settings.
+function loadUiSettings()
+{
+	if(scriptThread.checkFileExists(g_settingsFileName))
+	{
+		var settings = scriptThread.readFile(g_settingsFileName);
+		var stringArray = settings.split("\r\n");
+		
+		UI_SocketOwnPort.setText(getValueOfStringArray(stringArray, "UI_SocketOwnPort"));
+		UI_SocketDestinationAddress.setText(getValueOfStringArray(stringArray, "UI_SocketDestinationAddress"));
+		UI_SocketDestinationPort.setText(getValueOfStringArray(stringArray, "UI_SocketDestinationPort"));
+		UI_ShowAscii.setChecked(getValueOfStringArray(stringArray, "UI_ShowAscii") == 'true');
+		UI_ShowHex.setChecked(getValueOfStringArray(stringArray, "UI_ShowHex") == 'true');
+		UI_ShowNothing.setChecked(getValueOfStringArray(stringArray, "UI_ShowNothing") == 'true');
+		UI_SendToMainInterface.setChecked(getValueOfStringArray(stringArray, "UI_SendToMainInterface") == 'true');
+	}	
+}
+
+//Saves the user interface settings.
+function saveUiSettings()
+{
+	var settings = "";
+	
+	try
+	{
+		settings += "UI_SocketOwnPort=" + UI_SocketOwnPort.text() + "\r\n";
+		settings += "UI_SocketDestinationAddress=" + UI_SocketDestinationAddress.text() + "\r\n";
+		settings += "UI_SocketDestinationPort=" + UI_SocketDestinationPort.text() + "\r\n";
+
+		settings += "UI_ShowAscii=" + UI_ShowAscii.isChecked() + "\r\n";
+		settings += "UI_ShowHex=" + UI_ShowHex.isChecked() + "\r\n";
+		settings += "UI_ShowNothing=" + UI_ShowNothing.isChecked() + "\r\n";
+		settings += "UI_SendToMainInterface=" + UI_SendToMainInterface.isChecked() + "\r\n";
+		
+		scriptThread.writeFile(g_settingsFileName, true, settings, true);
+	}
+	catch(e)
+	{
+		scriptThread.messageBox("Critical", "exception in saveUiSettings", e.toString());
+	}
+}
 
 //Is called if the user has pressed the clear button.
 function CleartButtonPressed()
@@ -94,14 +135,15 @@ scriptThread.appendTextToConsole('script has started');
 
 //The instance number of the current script.
 var instanceNumber = 1;
+var g_prefix = "TCP";
 
 //Get the insstance number of the current script.
 do
 {
-	var resultArray = scriptThread.getGlobalUnsignedNumber("UDP_INTERFACE_INSTANCE_" + instanceNumber);
+	var resultArray = scriptThread.getGlobalUnsignedNumber(g_prefix + "_INTERFACE_INSTANCE_" + instanceNumber);
 	if(resultArray[0] == 0)
 	{
-		scriptThread.setGlobalUnsignedNumber("UDP_INTERFACE_INSTANCE_" + instanceNumber , instanceNumber);
+		scriptThread.setGlobalUnsignedNumber(g_prefix + "_INTERFACE_INSTANCE_" + instanceNumber , instanceNumber);
 	}
 	else
 	{
@@ -116,7 +158,7 @@ var g_settingsFileName = "uiSettings_" + g_instanceName +".txt";
 g_settingsFileName = g_settingsFileName.replace(/ /g, '_');
 
 //Load the script with the helper functions.
-scriptThread.loadScript("helper.js");
+scriptThread.loadScript("../Common/helper.js");
 
 //Load the saved settings.
 loadUiSettings();

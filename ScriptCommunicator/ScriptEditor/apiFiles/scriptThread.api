@@ -103,6 +103,8 @@ scriptThread::getScriptCommunicatorFolder(void):QString \nReturns the ScriptComm
 scriptThread::getUserDocumentsFolder(void):QString \nReturns the directory containing user document files.
 scriptThread::addTabsToMainWindow(ScriptTabWidget* tabWidget):bool \nAdds script tabs to the main window.\nNote: This function fails in command-line mode.
 scriptThread::addToolBoxPagesToMainWindow(ScriptToolBox* scriptToolBox):bool \nAdds script toolbox pages to the main window (all pages are removed from toolBox).\nNote: This function fails in command-line mode.
+scriptThread::sendReceivedDataToMainInterface(QVector<unsigned char> data)\nSends received data (received with an script internal interface) to the main interface.\nThis data will be shown as received data in the consoles, the log and will be received by worker scripts via the dataReceivedSignal.
+scriptThread::checkScriptCommunicatorVersion(QString minVersion):bool \nChecks if the version of ScriptCommunicator is equal/greater then the version in minVersion.\nThe format of minVersion is: 'major'.'minor' (e.g. 04.11).
 scriptThread::globalStringChangedSignal.connect(QString name, QString string)\nIs emitted if a string in the global string map has been changed.
 scriptThread::globalDataArrayChangedSignal.connect(QString name, QVector<unsigned char> data)\nIs emitted if a data vector in the global string data vector has been changed.
 scriptThread::globalUnsignedChangedSignal.connect(QString name, quint32 number)\nIs emitted if an unsigned number in the global unsigned number map has been changed
@@ -110,4 +112,4 @@ scriptThread::globalSignedChangedSignal.connect(QString name, qint32 number)\nIs
 scriptThread::globalRealChangedSignal.connect(QString name, double number)\nIs emitted if a real number in the global real number map has been changed
 scriptThread::dataReceivedSignal.connect(QVector<unsigned char> data)\nThis signal is emitted if data has been received with the main interface (only if the main interface is not a can interface, \nuse canMessagesReceivedSignal if the main interface is a can interface).
 scriptThread::canMessagesReceivedSignal.connect(QVector<quint8> types, QVector<quint32> messageIds, QVector<quint32> timestamps, QVector<QVector<unsigned char>>  data)\nThis signal is emitted if a can message (or several) has been received with the main interface.	
-					  								 
+scriptThread::sendDataFromMainInterfaceSignal(QVector<unsigned char> data)\nIs emitted if the main interface shall send data.\nScripts can use this signal to send the data with an additional interface.		

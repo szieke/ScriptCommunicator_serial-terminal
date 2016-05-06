@@ -534,6 +534,7 @@ public:
 signals:
 
     ///Is emitted if the main interface shall send data.
+    ///Scripts can use this signal to send the data with an additional interface.
     ///Scripts can connect a function to this signal.
     void sendDataFromMainInterfaceSignal(QVector<unsigned char> data);
 

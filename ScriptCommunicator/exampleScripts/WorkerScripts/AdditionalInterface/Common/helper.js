@@ -6,7 +6,7 @@ This script file contains helper function for the additionl interface scripts.
 function stopScript() 
 {
 	//Remove the entry.
-	scriptThread.getGlobalUnsignedNumber("UDP_INTERFACE_INSTANCE_" + instanceNumber, true);
+	scriptThread.getGlobalUnsignedNumber(g_prefix + "_INTERFACE_INSTANCE_" + instanceNumber, true);
 	saveUiSettings();
 	scriptThread.appendTextToConsole("script stopped");
 }
@@ -51,47 +51,6 @@ function UI_DialogFinished()
 	scriptThread.stopScript()
 }
 
-//Loads the saved user interface settings.
-function loadUiSettings()
-{
-	if(scriptThread.checkFileExists(g_settingsFileName))
-	{
-		var settings = scriptThread.readFile(g_settingsFileName);
-		var stringArray = settings.split("\r\n");
-		
-		UI_SocketOwnPort.setText(getValueOfStringArray(stringArray, "UI_SocketOwnPort"));
-		UI_SocketDestinationAddress.setText(getValueOfStringArray(stringArray, "UI_SocketDestinationAddress"));
-		UI_SocketDestinationPort.setText(getValueOfStringArray(stringArray, "UI_SocketDestinationPort"));
-		UI_ShowAscii.setChecked(getValueOfStringArray(stringArray, "UI_ShowAscii") == 'true');
-		UI_ShowHex.setChecked(getValueOfStringArray(stringArray, "UI_ShowHex") == 'true');
-		UI_ShowNothing.setChecked(getValueOfStringArray(stringArray, "UI_ShowNothing") == 'true');
-		UI_SendToMainInterface.setChecked(getValueOfStringArray(stringArray, "UI_SendToMainInterface") == 'true');
-	}	
-}
-
-//Saves the user interface settings.
-function saveUiSettings()
-{
-	var settings = "";
-	
-	try
-	{
-		settings += "UI_SocketOwnPort=" + UI_SocketOwnPort.text() + "\r\n";
-		settings += "UI_SocketDestinationAddress=" + UI_SocketDestinationAddress.text() + "\r\n";
-		settings += "UI_SocketDestinationPort=" + UI_SocketDestinationPort.text() + "\r\n";
-
-		settings += "UI_ShowAscii=" + UI_ShowAscii.isChecked() + "\r\n";
-		settings += "UI_ShowHex=" + UI_ShowHex.isChecked() + "\r\n";
-		settings += "UI_ShowNothing=" + UI_ShowNothing.isChecked() + "\r\n";
-		settings += "UI_SendToMainInterface=" + UI_SendToMainInterface.isChecked() + "\r\n";
-		
-		scriptThread.writeFile(g_settingsFileName, true, settings, true);
-	}
-	catch(e)
-	{
-		scriptThread.messageBox("Critical", "exception in saveUiSettings", e.toString());
-	}
-}
 
 //Returns a value from stringArray (values are stored in a key/value string,
 //eg. 'UI_dataBitsBox=8')
