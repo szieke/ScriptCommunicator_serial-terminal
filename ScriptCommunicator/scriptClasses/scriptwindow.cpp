@@ -1381,8 +1381,6 @@ void ScriptWindow::startScriptThread(int selectedRow, bool withDebugger)
             }
             else
             {
-                m_userInterface->tableWidget->item(selectedRow,COLUMN_SCRIPT_THREAD_STATUS)->setText("not running");
-
                 QMessageBox::critical(this, "error starting script", "could not open " +
                                       m_userInterface->tableWidget->item(selectedRow, COLUMN_UI_PATH)->text());
 
