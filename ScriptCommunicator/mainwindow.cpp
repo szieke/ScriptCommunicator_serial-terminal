@@ -1792,6 +1792,25 @@ void MainWindow::setWidgetBackgroundColorFromString(QString colorString, QWidget
 }
 
 /**
+ * Sets the font of a console.
+ * @param fontFamily
+ *      The font family.
+ * @param fontSize
+ *      The font size.
+ * @param textEdit
+ *      The console.
+ */
+void MainWindow::setConsoleFont(QString fontFamily, QString fontSize, QTextEdit* textEdit)
+{
+    QFont font = textEdit->font();
+    font.setFamily(fontFamily);
+    bool success;
+    qint32 size = fontSize.toInt(&success);
+    font.setPointSize(size);
+    textEdit->setFont(font);
+}
+
+/**
  * Sets the text color of a widget.
  * @param colorString
  *      The text color.
@@ -1957,12 +1976,7 @@ void MainWindow::inititializeTab(void)
 
         setWidgetBackgroundColorFromString(currentSettings->consoleBackgroundColor, m_userInterface->historyTextEdit);
         setWidgetTextColorFromString(currentSettings->consoleReceiveColor, m_userInterface->historyTextEdit);
-        QFont font = m_userInterface->historyTextEdit->font();
-        font.setFamily(currentSettings->stringConsoleFont);
-        bool success;
-        qint32 size = currentSettings->stringConsoleFontSize.toInt(&success);
-        font.setPointSize(size);
-        m_userInterface->historyTextEdit->setFont(font);
+        setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->historyTextEdit);
 
 
         int index = m_userInterface->tabWidget->currentIndex();
@@ -1979,6 +1993,7 @@ void MainWindow::inititializeTab(void)
             m_userInterface->tabWidget->addTab( m_userInterface->tabMixed, "Mixed");
             setWidgetBackgroundColorFromString(currentSettings->consoleBackgroundColor, m_userInterface->ReceiveTextEditMixed);
             setWidgetTextColorFromString(currentSettings->consoleReceiveColor, m_userInterface->ReceiveTextEditMixed);
+            setConsoleFont("Courier new", currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditMixed);
         }
 
 
@@ -1987,6 +2002,7 @@ void MainWindow::inititializeTab(void)
             m_userInterface->tabWidget->addTab( m_userInterface->tabAscii, "Ascii");
             setWidgetBackgroundColorFromString(currentSettings->consoleBackgroundColor, m_userInterface->ReceiveTextEditAscii);
             setWidgetTextColorFromString(currentSettings->consoleReceiveColor, m_userInterface->ReceiveTextEditAscii);
+            setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditAscii);
         }
 
 
@@ -1995,6 +2011,7 @@ void MainWindow::inititializeTab(void)
             m_userInterface->tabWidget->addTab( m_userInterface->tabHex, "Hex");
             setWidgetBackgroundColorFromString(currentSettings->consoleBackgroundColor, m_userInterface->ReceiveTextEditHex);
             setWidgetTextColorFromString(currentSettings->consoleReceiveColor, m_userInterface->ReceiveTextEditHex);
+            setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditHex);
         }
 
         if(currentSettings->showDecimalInConsole)
@@ -2002,6 +2019,7 @@ void MainWindow::inititializeTab(void)
             m_userInterface->tabWidget->addTab( m_userInterface->tabDecimal, "Dec");
             setWidgetBackgroundColorFromString(currentSettings->consoleBackgroundColor, m_userInterface->ReceiveTextEditDecimal);
             setWidgetTextColorFromString(currentSettings->consoleReceiveColor, m_userInterface->ReceiveTextEditDecimal);
+            setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditDecimal);
         }
 
         if(currentSettings->showBinaryConsole)
@@ -2009,6 +2027,7 @@ void MainWindow::inititializeTab(void)
             m_userInterface->tabWidget->addTab( m_userInterface->tabBinary, "Binary");
             setWidgetBackgroundColorFromString(currentSettings->consoleBackgroundColor, m_userInterface->ReceiveTextEditBinary);
             setWidgetTextColorFromString(currentSettings->consoleReceiveColor, m_userInterface->ReceiveTextEditBinary);
+            setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditBinary);
         }
 
         if(currentSettings->consoleShowCustomConsole)
@@ -2016,6 +2035,7 @@ void MainWindow::inititializeTab(void)
             m_userInterface->tabWidget->addTab( m_userInterface->tabCustom, "Custom");
             setWidgetBackgroundColorFromString(currentSettings->consoleBackgroundColor, m_userInterface->ReceiveTextEditCustom);
             setWidgetTextColorFromString(currentSettings->consoleReceiveColor, m_userInterface->ReceiveTextEditCustom);
+            setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditCustom);
         }
 
         if(currentSettings->showCanTab)

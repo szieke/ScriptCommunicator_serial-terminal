@@ -479,17 +479,8 @@ void MainWindowHandleData::calculateConsoleData()
     /******calculate the HTML data*********/
 
     m_consoleData.htmlMessageAndTimestamp = QString("<span style=\"color:#" + currentSettings->consoleMessageAndTimestampColor + ";\">");
-
     m_consoleData.htmlReceived = QString("<span style=\"color:#" + currentSettings->consoleReceiveColor + ";\">");
-
     m_consoleData.htmlSend = QString("<span style=\"color:#" + currentSettings->consoleSendColor + ";\">");
-
-
-    m_consoleData.htmlMixedMessageAndTimestamp = QString("<span style=\"color:#" + currentSettings->consoleMessageAndTimestampColor + ";\">");
-
-    m_consoleData.htmlMixedReceived = QString("<span style=\"color:#" + currentSettings->consoleReceiveColor + ";\">");
-
-    m_consoleData.htmlMixedSend = QString("<span style=\"color:#" + currentSettings->consoleSendColor + ";\">");
 }
 
 /**
@@ -669,8 +660,6 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                                             bool isTimeStamp, bool isFromCan, bool isNewLine)
 {
     QString* html = 0;
-    QString* htmlMixed = 0;
-
     QByteArray* dataArray = &data;
     QByteArray canArray;
 
@@ -681,7 +670,7 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
     if(isNewLine)
     {
         QString tmpString = QString::fromLocal8Bit(data);
-        tmpString.replace("\n", "<<br>>");
+        tmpString.replace("\n", "<br>");
 
         if(currentSettings->showDecimalInConsole)m_consoleDataBufferDec.append(tmpString);
         if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(tmpString);
@@ -691,32 +680,20 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
     else
     {
 
-
-
         if(isTimeStamp || isUserMessage)
         {
             html = &m_consoleData.htmlMessageAndTimestamp;
-            htmlMixed = &m_consoleData.htmlMixedMessageAndTimestamp;
         }
         else
         {
-            if(isSend)
-            {
-                html = &m_consoleData.htmlSend;
-                htmlMixed = &m_consoleData.htmlMixedSend;
-            }
-            else
-            {
-                html = &m_consoleData.htmlReceived;
-                htmlMixed = &m_consoleData.htmlMixedReceived;
-            }
+            html =  (isSend) ? &m_consoleData.htmlSend : &m_consoleData.htmlReceived;
         }
 
         if(currentSettings->showAsciiInConsole)m_consoleDataBufferAscii.append(*html);
         if(currentSettings->showDecimalInConsole)m_consoleDataBufferDec.append(*html);
         if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(*html);
         if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(*html);
-        if(currentSettings->showMixedConsole)m_consoleDataBufferMixed.append(*htmlMixed);
+        if(currentSettings->showMixedConsole)m_consoleDataBufferMixed.append(*html);
 
         if(isUserMessage || isTimeStamp)
         {
@@ -813,7 +790,7 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
             {
                 if(!currentSettings->showDecimalInConsole || m_consoleData.mixedData.bytesPerDecimal == 1)
                 {
-                    m_consoleDataBufferMixed.append(canInformation + createMixedConsoleString(*dataArray, isFromCan && currentSettings->showCanMetaInformationInConsole, htmlMixed) + QString("</span>"));
+                    m_consoleDataBufferMixed.append(canInformation + createMixedConsoleString(*dataArray, isFromCan && currentSettings->showCanMetaInformationInConsole) + QString("</span>"));
                 }
                 else
                 {
@@ -830,7 +807,7 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                         m_mixedConsoleByteBuffer.clear();
                     }
 
-                    m_consoleDataBufferMixed.append(canInformation + createMixedConsoleString(tmpData, isFromCan && currentSettings->showCanMetaInformationInConsole, htmlMixed) + QString("</span>"));
+                    m_consoleDataBufferMixed.append(canInformation + createMixedConsoleString(tmpData, isFromCan && currentSettings->showCanMetaInformationInConsole) + QString("</span>"));
                 }
             }
 

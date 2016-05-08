@@ -537,6 +537,9 @@ private:
     ///Sets the text color of a widget.
     void setWidgetTextColorFromString(QString colorString, QWidget *widget);
 
+    ///Sets the font of a console.
+    void setConsoleFont(QString fontFamily, QString fontSize, QTextEdit* textEdit);
+
     ///Shows the number of received and sent bytes.
     void showNumberOfReceivedAndSentBytes(void);
 

@@ -103,16 +103,6 @@ typedef struct
     ///The HTML data for sent data.
     QString htmlSend;
 
-    ///The HTML data for time stamps and user messages in the mixed console.
-    QString htmlMixedMessageAndTimestamp;
-
-    ///The HTML data for received data in the mixed console.
-    QString htmlMixedReceived;
-
-    ///The HTML data for sent data in the mixed console.
-    QString htmlMixedSend;
-
-
 }ConsoleData;
 
 
