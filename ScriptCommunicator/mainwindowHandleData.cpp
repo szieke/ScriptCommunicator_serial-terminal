@@ -478,24 +478,18 @@ void MainWindowHandleData::calculateConsoleData()
 
     /******calculate the HTML data*********/
 
-    m_consoleData.htmlMessageAndTimestamp = QString("<span style=\"font-family:'") + currentSettings->stringConsoleFont +
-            QString("';font-size:") + currentSettings->stringConsoleFontSize + QString("pt;color:#" + currentSettings->consoleMessageAndTimestampColor + ";\">");
+    m_consoleData.htmlMessageAndTimestamp = QString("<span style=\"color:#" + currentSettings->consoleMessageAndTimestampColor + ";\">");
 
-    m_consoleData.htmlReceived = QString("<span style=\"font-family:'") + currentSettings->stringConsoleFont +
-            QString("';font-size:") + currentSettings->stringConsoleFontSize + QString("pt;color:#" + currentSettings->consoleReceiveColor + ";\">");
+    m_consoleData.htmlReceived = QString("<span style=\"color:#" + currentSettings->consoleReceiveColor + ";\">");
 
-    m_consoleData.htmlSend = QString("<span style=\"font-family:'") + currentSettings->stringConsoleFont +
-            QString("';font-size:") + currentSettings->stringConsoleFontSize + QString("pt;color:#" + currentSettings->consoleSendColor + ";\">");
+    m_consoleData.htmlSend = QString("<span style=\"color:#" + currentSettings->consoleSendColor + ";\">");
 
 
-    m_consoleData.htmlMixedMessageAndTimestamp = QString("<span style=\"font-family:'") + "Courier new" +
-            QString("';font-size:") + currentSettings->stringConsoleFontSize + QString("pt;color:#" + currentSettings->consoleMessageAndTimestampColor + ";\">");
+    m_consoleData.htmlMixedMessageAndTimestamp = QString("<span style=\"color:#" + currentSettings->consoleMessageAndTimestampColor + ";\">");
 
-    m_consoleData.htmlMixedReceived = QString("<span style=\"font-family:'") + "Courier new" +
-            QString("';font-size:") + currentSettings->stringConsoleFontSize + QString("pt;color:#" + currentSettings->consoleReceiveColor + ";\">");
+    m_consoleData.htmlMixedReceived = QString("<span style=\"color:#" + currentSettings->consoleReceiveColor + ";\">");
 
-    m_consoleData.htmlMixedSend = QString("<span style=\"font-family:'") + "Courier new" +
-            QString("';font-size:") + currentSettings->stringConsoleFontSize + QString("pt;color:#" + currentSettings->consoleSendColor + ";\">");
+    m_consoleData.htmlMixedSend = QString("<span style=\"color:#" + currentSettings->consoleSendColor + ";\">");
 }
 
 /**
@@ -684,173 +678,186 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
     QString canInformation;
     if(data.isEmpty()) return;
 
-
-    if(isTimeStamp || isUserMessage)
+    if(isNewLine)
     {
-        html = &m_consoleData.htmlMessageAndTimestamp;
-        htmlMixed = &m_consoleData.htmlMixedMessageAndTimestamp;
+        QString tmpString = QString::fromLocal8Bit(data);
+        tmpString.replace("\n", "<<br>>");
+
+        if(currentSettings->showDecimalInConsole)m_consoleDataBufferDec.append(tmpString);
+        if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(tmpString);
+        if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(tmpString);
+        if(currentSettings->showAsciiInConsole)m_consoleDataBufferAscii.append(tmpString);
     }
     else
     {
-        if(isSend)
+
+
+
+        if(isTimeStamp || isUserMessage)
         {
-            html = &m_consoleData.htmlSend;
-            htmlMixed = &m_consoleData.htmlMixedSend;
+            html = &m_consoleData.htmlMessageAndTimestamp;
+            htmlMixed = &m_consoleData.htmlMixedMessageAndTimestamp;
         }
         else
         {
-            html = &m_consoleData.htmlReceived;
-            htmlMixed = &m_consoleData.htmlMixedReceived;
-        }
-    }
-
-    if(currentSettings->showAsciiInConsole)m_consoleDataBufferAscii.append(*html);
-    if(currentSettings->showDecimalInConsole)m_consoleDataBufferDec.append(*html);
-    if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(*html);
-    if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(*html);
-    if(currentSettings->showMixedConsole)m_consoleDataBufferMixed.append(*htmlMixed);
-
-    if(isUserMessage || isTimeStamp || isNewLine)
-    {
-        QString tmpString = QString::fromLocal8Bit(data);
-        tmpString.replace("<", "&lt;");
-        tmpString.replace(">", "&gt;");
-        tmpString.replace("\n", "<br>");
-        tmpString.replace(" ", "&nbsp;");
-
-        if(currentSettings->showDecimalInConsole)m_consoleDataBufferDec.append(tmpString + QString("</span>"));
-        if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(tmpString + QString("</span>"));
-        if(currentSettings->showMixedConsole && !isNewLine)m_consoleDataBufferMixed.append(tmpString + QString("</span>"));
-        if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(tmpString + QString("</span>"));
-        if(currentSettings->showAsciiInConsole)m_consoleDataBufferAscii.append(tmpString + QString("</span>"));
-    }
-    else
-    {
-        if(isFromCan)
-        {
-            canArray = QByteArray(data);
-
-            if(currentSettings->showCanMetaInformationInConsole)
+            if(isSend)
             {
-                quint8 type = canArray[0];
-                QString typeString;
+                html = &m_consoleData.htmlSend;
+                htmlMixed = &m_consoleData.htmlMixedSend;
+            }
+            else
+            {
+                html = &m_consoleData.htmlReceived;
+                htmlMixed = &m_consoleData.htmlMixedReceived;
+            }
+        }
 
-                QByteArray idArray = canArray.mid(PCANBasicClass::BYTES_FOR_CAN_TYPE, PCANBasicClass::BYTES_FOR_CAN_ID);
-                int length = idArray.length();
-                for(int i = length; i < PCANBasicClass::BYTES_FOR_CAN_ID; i++)
+        if(currentSettings->showAsciiInConsole)m_consoleDataBufferAscii.append(*html);
+        if(currentSettings->showDecimalInConsole)m_consoleDataBufferDec.append(*html);
+        if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(*html);
+        if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(*html);
+        if(currentSettings->showMixedConsole)m_consoleDataBufferMixed.append(*htmlMixed);
+
+        if(isUserMessage || isTimeStamp)
+        {
+            QString tmpString = QString::fromLocal8Bit(data);
+            tmpString.replace("<", "&lt;");
+            tmpString.replace(">", "&gt;");
+            tmpString.replace("\n", "<br>");
+            tmpString.replace(" ", "&nbsp;");
+
+            if(currentSettings->showDecimalInConsole)m_consoleDataBufferDec.append(tmpString + QString("</span>"));
+            if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(tmpString + QString("</span>"));
+            if(currentSettings->showMixedConsole)m_consoleDataBufferMixed.append(tmpString + QString("</span>"));
+            if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(tmpString + QString("</span>"));
+            if(currentSettings->showAsciiInConsole)m_consoleDataBufferAscii.append(tmpString + QString("</span>"));
+        }
+        else
+        {
+            if(isFromCan)
+            {
+                canArray = QByteArray(data);
+
+                if(currentSettings->showCanMetaInformationInConsole)
                 {
-                    idArray.push_front((char)0);
+                    quint8 type = canArray[0];
+                    QString typeString;
+
+                    QByteArray idArray = canArray.mid(PCANBasicClass::BYTES_FOR_CAN_TYPE, PCANBasicClass::BYTES_FOR_CAN_ID);
+                    int length = idArray.length();
+                    for(int i = length; i < PCANBasicClass::BYTES_FOR_CAN_ID; i++)
+                    {
+                        idArray.push_front((char)0);
+                    }
+                    quint32 messageId = ((quint8)idArray[0] << 24)+ ((quint8)idArray[1] << 16) +
+                            ((quint8)idArray[2] << 8) + ((quint8)idArray[3] & 0xff);
+                    if(type <= PCAN_MESSAGE_RTR){messageId = messageId & 0x7ff;}
+                    else{messageId = messageId & 0x1fffffff;}
+
+
+                    QString messageIdString = QString::number(messageId, 16);
+                    QString leadingZeros;
+                    for(int i = 0; i < (8 - messageIdString.size()); i++)
+                    {
+                        leadingZeros += "0";
+                    }
+                    messageIdString = leadingZeros + messageIdString;
+
+                    if(type == PCAN_MESSAGE_STANDARD){typeString = "std";}
+                    else if(type == PCAN_MESSAGE_RTR){typeString = "rtr";}
+                    else if(type == PCAN_MESSAGE_EXTENDED){typeString = "ext";}
+                    else if(type == (PCAN_MESSAGE_EXTENDED + PCAN_MESSAGE_RTR)){typeString = "ert";}
+                    else
+                    {
+                        typeString = QString("%1").arg(type) + " (valid range is 0-3)";
+                    }
+
+                    canInformation = "<br>id: " +  messageIdString + " type: " + typeString + "   ";
                 }
-                quint32 messageId = ((quint8)idArray[0] << 24)+ ((quint8)idArray[1] << 16) +
-                        ((quint8)idArray[2] << 8) + ((quint8)idArray[3] & 0xff);
-                if(type <= PCAN_MESSAGE_RTR){messageId = messageId & 0x7ff;}
-                else{messageId = messageId & 0x1fffffff;}
 
+                if(isSend){canArray.remove(0, PCANBasicClass::BYTES_METADATA_SEND);}
+                else{canArray.remove(0, PCANBasicClass::BYTES_METADATA_RECEIVE);}
+                dataArray = &canArray;
 
-                QString messageIdString = QString::number(messageId, 16);
-                QString leadingZeros;
-                for(int i = 0; i < (8 - messageIdString.size()); i++)
+            }
+
+            if(currentSettings->showDecimalInConsole)
+            {
+                QByteArray tmpData;
+                QByteArray* usedArray;
+                if(!m_decimalConsoleByteBuffer.isEmpty())
                 {
-                    leadingZeros += "0";
+                    tmpData = m_decimalConsoleByteBuffer + *dataArray;
+                    usedArray = &tmpData;
                 }
-                messageIdString = leadingZeros + messageIdString;
-
-                if(type == PCAN_MESSAGE_STANDARD){typeString = "std";}
-                else if(type == PCAN_MESSAGE_RTR){typeString = "rtr";}
-                else if(type == PCAN_MESSAGE_EXTENDED){typeString = "ext";}
-                else if(type == (PCAN_MESSAGE_EXTENDED + PCAN_MESSAGE_RTR)){typeString = "ert";}
                 else
                 {
-                    typeString = QString("%1").arg(type) + " (valid range is 0-3)";
+                    usedArray = dataArray;
                 }
-
-                canInformation = "<br>id: " +  messageIdString + " type: " + typeString + "   ";
-            }
-
-            if(isSend){canArray.remove(0, PCANBasicClass::BYTES_METADATA_SEND);}
-            else{canArray.remove(0, PCANBasicClass::BYTES_METADATA_RECEIVE);}
-            dataArray = &canArray;
-
-        }
-
-        if(currentSettings->showDecimalInConsole)
-        {
-            QByteArray tmpData;
-            QByteArray* usedArray;
-            if(!m_decimalConsoleByteBuffer.isEmpty())
-            {
-                tmpData = m_decimalConsoleByteBuffer + *dataArray;
-                usedArray = &tmpData;
-            }
-            else
-            {
-                usedArray = dataArray;
-            }
-            m_consoleDataBufferDec.append(canInformation + MainWindow::byteArrayToNumberString(*usedArray, false, false, false, true, true, currentSettings->consoleDecimalsType, currentSettings->targetEndianess)
-                                          + " " + QString("</span>"));
-            qint32 tmp = usedArray->length() % m_consoleData.mixedData.bytesPerDecimal;
-            if(tmp != 0)
-            {
-                m_decimalConsoleByteBuffer = usedArray->right(tmp);
-            }
-            else
-            {
-                m_decimalConsoleByteBuffer.clear();
-            }
-        }
-        if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(canInformation + MainWindow::byteArrayToNumberString(*dataArray, false, true, false) + " " + QString("</span>"));
-        if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(canInformation + MainWindow::byteArrayToNumberString(*dataArray, true, false, false) + " " + QString("</span>"));
-
-        if(currentSettings->showMixedConsole)
-        {
-            if(!currentSettings->showDecimalInConsole || m_consoleData.mixedData.bytesPerDecimal == 1)
-            {
-                m_consoleDataBufferMixed.append(canInformation + createMixedConsoleString(*dataArray, isFromCan && currentSettings->showCanMetaInformationInConsole) + QString("</span>"));
-            }
-            else
-            {
-                QByteArray tmpData = m_mixedConsoleByteBuffer + *dataArray;
-
-                qint32 tmp = tmpData.length() % m_consoleData.mixedData.bytesPerDecimal;
+                m_consoleDataBufferDec.append(canInformation + MainWindow::byteArrayToNumberString(*usedArray, false, false, false, true, true, currentSettings->consoleDecimalsType, currentSettings->targetEndianess)
+                                              + " " + QString("</span>"));
+                qint32 tmp = usedArray->length() % m_consoleData.mixedData.bytesPerDecimal;
                 if(tmp != 0)
                 {
-                    m_mixedConsoleByteBuffer = tmpData.mid(tmpData.length() - tmp, tmp);
-                    tmpData.remove(tmpData.length() - tmp, tmp);
+                    m_decimalConsoleByteBuffer = usedArray->right(tmp);
                 }
                 else
                 {
-                    m_mixedConsoleByteBuffer.clear();
+                    m_decimalConsoleByteBuffer.clear();
+                }
+            }
+            if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(canInformation + MainWindow::byteArrayToNumberString(*dataArray, false, true, false) + " " + QString("</span>"));
+            if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(canInformation + MainWindow::byteArrayToNumberString(*dataArray, true, false, false) + " " + QString("</span>"));
+
+            if(currentSettings->showMixedConsole)
+            {
+                if(!currentSettings->showDecimalInConsole || m_consoleData.mixedData.bytesPerDecimal == 1)
+                {
+                    m_consoleDataBufferMixed.append(canInformation + createMixedConsoleString(*dataArray, isFromCan && currentSettings->showCanMetaInformationInConsole, htmlMixed) + QString("</span>"));
+                }
+                else
+                {
+                    QByteArray tmpData = m_mixedConsoleByteBuffer + *dataArray;
+
+                    qint32 tmp = tmpData.length() % m_consoleData.mixedData.bytesPerDecimal;
+                    if(tmp != 0)
+                    {
+                        m_mixedConsoleByteBuffer = tmpData.mid(tmpData.length() - tmp, tmp);
+                        tmpData.remove(tmpData.length() - tmp, tmp);
+                    }
+                    else
+                    {
+                        m_mixedConsoleByteBuffer.clear();
+                    }
+
+                    m_consoleDataBufferMixed.append(canInformation + createMixedConsoleString(tmpData, isFromCan && currentSettings->showCanMetaInformationInConsole, htmlMixed) + QString("</span>"));
+                }
+            }
+
+            if(currentSettings->showAsciiInConsole)
+            {
+
+                //Replace the binary 0 (for the ascii console).
+                dataArray->replace(0, 255);
+
+                QString tmpString;
+                for(auto el : QString::fromLocal8Bit(*dataArray))
+                {
+                    if (el == '<')tmpString += "&lt;";
+                    else if (el == '>')tmpString += "&gt;";
+                    else if (el == ' ')tmpString += "&nbsp;";
+                    else if (el == '\n')tmpString += "";
+                    else if (el == '\r')tmpString += "";
+                    else if (el < 33 || el > 126) tmpString += 255;
+                    else tmpString += el;
                 }
 
-                m_consoleDataBufferMixed.append(canInformation + createMixedConsoleString(tmpData, isFromCan && currentSettings->showCanMetaInformationInConsole) + QString("</span>"));
-
+                m_consoleDataBufferAscii.append(canInformation + tmpString + QString("</span>"));
             }
         }
 
-        if(currentSettings->showAsciiInConsole)
-        {
-
-            //Replace the binary 0 (for the ascii console).
-            dataArray->replace(0, 255);
-
-            QString tmpString;
-            for(auto el : QString::fromLocal8Bit(*dataArray))
-            {
-                if (el == '<')tmpString += "&lt;";
-                else if (el == '>')tmpString += "&gt;";
-                else if (el == ' ')tmpString += "&nbsp;";
-                else if (el == '\n')tmpString += "";
-                else if (el == '\r')tmpString += "";
-                else if (el < 33 || el > 126) tmpString += 255;
-                else tmpString += el;
-            }
-
-            m_consoleDataBufferAscii.append(canInformation + tmpString + QString("</span>"));
-        }
+        //Note: data/dataArray is modified during the creation of dataStringAscii (see above), therefore data/dataArray must not be used.
     }
-
-    //Note: data/dataArray is modified during the creation of dataStringAscii (see above), therefore data/dataArray must not be used.
-
 }
 
 /**
