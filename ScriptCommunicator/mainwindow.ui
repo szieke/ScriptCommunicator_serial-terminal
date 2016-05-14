@@ -993,7 +993,7 @@ p, li { white-space: pre-wrap; }
         <string/>
        </property>
        <property name="currentIndex">
-        <number>2</number>
+        <number>1</number>
        </property>
        <property name="tabSpacing">
         <number>6</number>
@@ -1003,8 +1003,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>239</width>
-          <height>513</height>
+          <width>93</width>
+          <height>93</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1048,7 +1048,7 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>239</width>
+          <width>243</width>
           <height>513</height>
          </rect>
         </property>
@@ -1097,6 +1097,19 @@ to send a sequence double click on it</string>
              </property>
             </widget>
            </item>
+           <item>
+            <spacer name="horizontalSpacer_6">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
           </layout>
          </item>
          <item>
@@ -1109,7 +1122,7 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>239</width>
+          <width>243</width>
           <height>513</height>
          </rect>
         </property>
@@ -1335,8 +1348,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>239</width>
-          <height>513</height>
+          <width>139</width>
+          <height>271</height>
          </rect>
         </property>
         <attribute name="label">
