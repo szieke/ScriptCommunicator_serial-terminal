@@ -4523,8 +4523,6 @@ bool MainWindow::createConfig(bool isCallFromButton)
             m_searchConsole->m_lastSearchString.clear();
             m_userInterface->findWhatComboBox->clear();
             m_sendWindow->unloadFileSlot();
-            m_sendWindow->setCurrentCyclicScript("");
-            m_sendWindow->setCurrentSendString("");
             m_scriptWindow->unloadConfigSlot();
             m_scriptWindow->getCreateSceFileDialog()->unloadConfigSlot();
 
@@ -4540,6 +4538,14 @@ bool MainWindow::createConfig(bool isCallFromButton)
             connect(m_sendWindow, SIGNAL(configHasToBeSavedSignal()),this, SLOT(configHasToBeSavedSlot()));
             connect(m_scriptWindow, SIGNAL(configHasToBeSavedSignal()),this, SLOT(configHasToBeSavedSlot()));
             connect(m_scriptWindow->getCreateSceFileDialog(), SIGNAL(configHasToBeSavedSignal()),this, SLOT(configHasToBeSavedSlot()));
+
+            m_sendWindow->setCurrentCyclicScript("");
+            m_sendWindow->setCurrentSendString("");
+
+            Settings currentSettings = *m_settingsDialog->settings();
+            currentSettings.consoleScript = "";
+            currentSettings.logScript = "";
+            m_settingsDialog->setAllSettingsSlot(currentSettings, true);
 
 
             newConfigUsed = true;
