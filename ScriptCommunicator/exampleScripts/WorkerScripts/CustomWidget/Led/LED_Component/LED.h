@@ -72,6 +72,9 @@ public slots:
     void setInput(int value);
     void setAlphaForOff(int value);
 
+    //QtDesigner sometimes sets the visible property to false (a bug in QtDesigner?) therefore setVisible is ignored here.
+    void setVisible(bool visible){(void) visible; QWidget::setVisible(true);}
+
 public:
     int heightForWidth(int width) const;
     QSize sizeHint() const;
