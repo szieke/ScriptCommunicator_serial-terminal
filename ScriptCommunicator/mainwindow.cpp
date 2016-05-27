@@ -4512,20 +4512,34 @@ bool MainWindow::createConfig(bool isCallFromButton)
             saveMainConfigFileList(list);
 
 
-            m_mainConfigFile = tmpFileName;
-            m_mainConfigLockFile.setFileName(m_mainConfigFile + ".lock");
-            m_mainConfigLockFile.open(QIODevice::WriteOnly);
-            m_configLockFileTimer.start(2000);
+            saveSettings();
 
-            m_isFirstProgramStart = true;
-            loadSettings();
-            inititializeTab();
+            disconnect(m_sendWindow, SIGNAL(configHasToBeSavedSignal()),this, SLOT(configHasToBeSavedSlot()));
+            disconnect(m_scriptWindow, SIGNAL(configHasToBeSavedSignal()),this, SLOT(configHasToBeSavedSlot()));
+            disconnect(m_scriptWindow->getCreateSceFileDialog(), SIGNAL(configHasToBeSavedSignal()),this, SLOT(configHasToBeSavedSlot()));
 
+            m_handleData->m_sendHistory.clear();
+            m_userInterface->historyTextEdit->clear();
+            m_searchConsole->m_lastSearchString.clear();
+            m_userInterface->findWhatComboBox->clear();
             m_sendWindow->unloadFileSlot();
             m_sendWindow->setCurrentCyclicScript("");
             m_sendWindow->setCurrentSendString("");
             m_scriptWindow->unloadConfigSlot();
             m_scriptWindow->getCreateSceFileDialog()->unloadConfigSlot();
+
+            m_mainConfigFile = tmpFileName;
+            m_mainConfigLockFile.setFileName(m_mainConfigFile + ".lock");
+            m_mainConfigLockFile.open(QIODevice::WriteOnly);
+            m_configLockFileTimer.start(2000);
+
+            m_isFirstProgramStart = false;
+            loadSettings();
+            inititializeTab();
+
+            connect(m_sendWindow, SIGNAL(configHasToBeSavedSignal()),this, SLOT(configHasToBeSavedSlot()));
+            connect(m_scriptWindow, SIGNAL(configHasToBeSavedSignal()),this, SLOT(configHasToBeSavedSlot()));
+            connect(m_scriptWindow->getCreateSceFileDialog(), SIGNAL(configHasToBeSavedSignal()),this, SLOT(configHasToBeSavedSlot()));
 
 
             newConfigUsed = true;

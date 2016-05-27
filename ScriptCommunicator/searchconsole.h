@@ -12,6 +12,7 @@ class SearchConsole;
 class SearchConsole : public QObject
 {
     Q_OBJECT
+    friend class MainWindow;
 
 public:
     explicit SearchConsole(MainWindow* mainWindow);
