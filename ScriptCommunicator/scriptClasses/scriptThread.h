@@ -506,6 +506,9 @@ public:
     ///The format of minVersion is: 'major'.'minor' (e.g. 04.11).
     Q_INVOKABLE bool checkScriptCommunicatorVersion(QString minVersion);
 
+    ///Returns and prints (if printInScriptWindowConsole is true) all functions and properties of an object in the script window console.
+    Q_INVOKABLE QStringList getAllObjectPropertiesAndFunctions(QScriptValue object, bool printInScriptWindowConsole=false);
+
     ///Returns the tread state.
     ThreadSate getThreadState(){return m_state;}
 

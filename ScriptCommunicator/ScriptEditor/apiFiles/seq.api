@@ -24,3 +24,4 @@ seq::showGetIntDialog(QString title, QString label, int initialValue, int min, i
 seq::showGetDoubleDialog(QString title, QString label, double initialValue, double min, double max, int decimals, QWidget* parent=0):QList<double> \nConvenience function to get a floating point number from the user.\nShows a QInputDialog::getDouble dialog (spinbox).
 seq::showColorDialog(quint8 initInitalRed=255, quint8 initInitalGreen=255, quint8 initInitalBlue=255, quint8 initInitalAlpha=255, bool alphaIsEnabled=false, QWidget* parent=0):QList<int> \nConvenience function to get color settings from the user.
 seq::setBlockTime(quint32 blockTime):void \nSets the script block time.\nNote: After this execution time (sendData and the script main function (all outside a function))\nthe script is regarded as blocked and will be stopped.
+seq::getAllObjectPropertiesAndFunctions(QScriptValue object):QStringList \nReturns all functions and properties of an object.

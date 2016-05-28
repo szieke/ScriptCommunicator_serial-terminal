@@ -335,14 +335,10 @@ void SequenceScriptThread::executeScriptSlot(QString* sendScript, QByteArray* se
             if((*scriptEngineWrapper)->scriptEngine->hasUncaughtException())
             {
                 QScriptValue exception = (*scriptEngineWrapper)->scriptEngine->uncaughtException();
-                 m_dialogIsShown = true;
+                m_dialogIsShown = true;
                 QWidget *parent = (m_sendWindow->isVisible()) ? static_cast<QWidget *>(m_sendWindow) : static_cast<QWidget *>(m_mainWindow);
-                m_standardDialogs->messageBox("Critical", "error",
-                                              QString::fromLatin1("%0: %1: %2")
-                                                   .arg(*sendScript)
-                                              .arg(exception.property("lineNumber").toInt32())
-                                              .arg(exception.toString()), parent);
-                 m_dialogIsShown = false;
+                m_scriptFileObject->showExceptionInMessageBox(exception, *sendScript, SCRIPT_TYPE_SEQUENCE, parent);
+                m_dialogIsShown = false;
             }
 
         }
@@ -752,6 +748,26 @@ QList<int> SequenceScriptThread::showColorDialog(quint8 initInitalRed, quint8 in
     return result;
 }
 
+
+/**
+ * Returns all functions and properties of an object.
+ * @param object
+ *      The object.
+ * @return
+ *      All functions and properties of the object.
+ */
+QStringList SequenceScriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object)
+{
+    QStringList resultList;
+    QScriptValueIterator it(object);
+    while (it.hasNext())
+    {
+        it.next();
+        resultList.append(it.name());
+    }
+    return resultList;
+}
+
 /**
  * This function shows a yes/no dialog.
  * @param icon
@@ -784,6 +800,7 @@ bool SequenceScriptThread::showYesNoDialog(QString icon, QString title, QString 
 SequenceScriptEngineWrapper* SequenceScriptThread::loadScript(QString scriptPath)
 {
 
+    m_scriptFileObject->setScriptFileName(scriptPath);
     SequenceScriptEngineWrapper* scriptEngineWrapper= 0;
     QFile scriptFile(scriptPath);
     if(!scriptFile.open(QIODevice::ReadOnly))
@@ -847,10 +864,7 @@ SequenceScriptEngineWrapper* SequenceScriptThread::loadScript(QString scriptPath
         {
             m_dialogIsShown = true;
             QWidget *parent = (m_sendWindow->isVisible()) ? static_cast<QWidget *>(m_sendWindow) : static_cast<QWidget *>(m_mainWindow);
-            m_standardDialogs->messageBox("Critical", scriptPath, QString::fromLatin1("%0:%1: %2")
-                                          .arg(scriptPath)
-                                          .arg(result.property("lineNumber").toInt32())
-                                          .arg(result.toString()), parent);
+            m_scriptFileObject->showExceptionInMessageBox(result, scriptPath, SCRIPT_TYPE_SEQUENCE, parent);
             m_dialogIsShown = false;
             delete scriptEngineWrapper;
             scriptEngineWrapper = 0;

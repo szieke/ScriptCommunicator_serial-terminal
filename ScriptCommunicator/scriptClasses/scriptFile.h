@@ -9,6 +9,14 @@
 
 class ScriptWindow;
 
+typedef enum
+{
+    SCRIPT_TYPE_WORKER,//worker script
+    SCRIPT_TYPE_CUSTOM,//custom log/console script
+    SCRIPT_TYPE_SEQUENCE//sequence script
+
+}ScriptType;
+
 class ScriptFile : public QObject
 {
     Q_OBJECT
@@ -66,8 +74,11 @@ public:
     ///Converts a relative path into an absolute path.
     QString createAbsolutePath(QString fileName);
 
+    ///Shows a script exception with a message box to the user.
+    void showExceptionInMessageBox(QScriptValue exception, QString scriptPath, ScriptType scriptType, QWidget *parent);
+
     ///Loads/includes one script (QtScript has no built in include mechanism).
-    bool loadScript(QString scriptPath, bool isRelativePath, QScriptEngine* scriptEngine, QWidget* parent);
+    bool loadScript(QString scriptPath, ScriptType scriptType, bool isRelativePath, QScriptEngine* scriptEngine, QWidget* parent);
 
     ///Sets the script file name (path).
     void setScriptFileName(QString scriptFileName){m_scriptFileName = scriptFileName;}

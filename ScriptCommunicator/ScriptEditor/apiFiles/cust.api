@@ -23,3 +23,4 @@ cust::getCurrentVersion(void):QString \nReturns the current version of ScriptCom
 cust::setBlockTime(quint32 blockTime):void \nSets the script block time.\nNote: After this execution time (createString and the script main function (all outside a function))\nthe script is regarded as blocked and will be terminated.
 cust::createXmlReader(void):ScriptXmlReader \nCreates a XML reader.
 cust::createXmlWriter(void):ScriptXmlWriter \nCreates a XML writer.
+cust::getAllObjectPropertiesAndFunctions(QScriptValue object):QStringList \nReturns all functions and properties of an object.

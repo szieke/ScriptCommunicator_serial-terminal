@@ -222,9 +222,54 @@ QString ScriptFile::createAbsolutePath(QString fileName)
 }
 
 /**
+ * Shows a script exception with a message box to the user.
+ * @param exception
+ *      The script exception.
+ * @param scriptPath
+ *      The script path.
+ * @param parent
+ *      The parent window.
+ */
+void ScriptFile::showExceptionInMessageBox(QScriptValue exception, QString scriptPath, ScriptType scriptType, QWidget *parent)
+{
+    if(exception.toString().contains("[undefined] is not a function"))
+    {
+        QString scriptObject;
+        if(scriptType == SCRIPT_TYPE_WORKER)
+        {
+            scriptObject = "scriptThread";
+        }
+        else if(scriptType == SCRIPT_TYPE_CUSTOM)
+        {
+            scriptObject = "cust";
+        }
+        else
+        {
+            scriptObject = "seq";
+        }
+        emit showMessageBoxSignal(QMessageBox::Critical, scriptPath,
+                                  QString::fromLatin1("%0:%1: %2")
+                                  .arg(scriptPath)
+                                  .arg(exception.property("lineNumber").toInt32())
+                                  .arg(exception.toString() + "\n\nNote: All functions and properties of an object can be"
+                                                           " determined with " + scriptObject + ".getAllObjectPropertiesAndFunctions."), QMessageBox::Ok, parent);
+    }
+    else
+    {
+        emit showMessageBoxSignal(QMessageBox::Critical, scriptPath,
+                                  QString::fromLatin1("%0:%1: %2")
+                                  .arg(scriptPath)
+                                  .arg(exception.property("lineNumber").toInt32())
+                                  .arg(exception.toString()), QMessageBox::Ok, parent);
+    }
+}
+
+/**
  * Loads/includes one script (QtScript has no built in include mechanism).
  * @param scriptPath
  *      The script path.
+ * @param scriptType
+ *      The script type.
  * @param isRelativePath
  *      True of scriptPath is a relative path.
  * @param scriptEngine
@@ -232,7 +277,7 @@ QString ScriptFile::createAbsolutePath(QString fileName)
  * @return
  *      True on success.
  */
-bool ScriptFile::loadScript(QString scriptPath, bool isRelativePath, QScriptEngine* scriptEngine, QWidget *parent)
+bool ScriptFile::loadScript(QString scriptPath, ScriptType scriptType, bool isRelativePath, QScriptEngine* scriptEngine, QWidget *parent)
 {
     bool hasSucceded = true;
 
@@ -264,13 +309,18 @@ bool ScriptFile::loadScript(QString scriptPath, bool isRelativePath, QScriptEngi
         // If any Error, Display line number and error in a message box.
         if (result.isError())
         {
+            QString str;
+            QScriptValueIterator it(result);
+            while (it.hasNext())
+            {
+                it.next();
+                str += it.name() + "\n";
+            }
+
             emit disableMouseEventsSignal();
             emit enableMouseEventsSignal();
-            emit showMessageBoxSignal(QMessageBox::Critical, scriptPath,
-                                      QString::fromLatin1("%0:%1: %2")
-                                      .arg(scriptPath)
-                                      .arg(result.property("lineNumber").toInt32())
-                                      .arg(result.toString()), QMessageBox::Ok, parent);
+            showExceptionInMessageBox(result, scriptPath, scriptType, parent);
+
             hasSucceded = false;
         }
 

@@ -495,13 +495,9 @@ void ScriptThread::run()
 
                 if(m_scriptEngine->hasUncaughtException())
                 {//In stopScript an error has been occured.
-                    QScriptValue exception = m_scriptEngine->uncaughtException();
-                    messageBox("Critical", m_scriptFileName,
-                                         QString::fromLatin1("%0:%1: %2")
-                                         .arg(m_scriptFileName)
-                                         .arg(exception.property("lineNumber").toInt32())
-                                         .arg(exception.toString()));
 
+                    QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
+                    m_scriptFileObject->showExceptionInMessageBox(m_scriptEngine->uncaughtException(), m_scriptFileName, SCRIPT_TYPE_WORKER, parent);
                 }
             }
 
@@ -1266,12 +1262,8 @@ void ScriptThread::pauseTimerSlot()
  */
 void ScriptThread::scriptSignalHandlerSlot(const QScriptValue & exception)
 {
-    messageBox("Critical", m_scriptFileName,
-               QString::fromLatin1("%0:%1: %2")
-               .arg(m_scriptFileName)
-               .arg(exception.property("lineNumber").toInt32())
-               .arg(exception.toString()));
-
+    QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
+    m_scriptFileObject->showExceptionInMessageBox(exception, m_scriptFileName, SCRIPT_TYPE_WORKER, parent);
     stopScript();
 }
 
@@ -1287,7 +1279,7 @@ void ScriptThread::scriptSignalHandlerSlot(const QScriptValue & exception)
 bool ScriptThread::loadScript(QString scriptPath, bool isRelativePath)
 {
      QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
-    return m_scriptFileObject->loadScript(scriptPath, isRelativePath, m_scriptEngine, parent);
+    return m_scriptFileObject->loadScript(scriptPath, SCRIPT_TYPE_WORKER, isRelativePath, m_scriptEngine, parent);
 }
 
 /**
@@ -2800,6 +2792,37 @@ void ScriptThread::sendReceivedDataToMainInterface(QVector<unsigned char> data)
 {
     QByteArray array = QByteArray(reinterpret_cast<const char*>(data.constData()), data.length());
     m_scriptWindow->m_mainInterfaceThread->dataReceived(array);
+}
+
+/**
+ * Returns and prints (if printInScriptWindowConsole is true) all functions and properties of an object in the script window console.
+ * @param object
+ *      The object.
+ * @param printInScriptWindowConsole
+ *      True if the result shall be printed in the script window console.
+ * @return
+ *      All functions and properties of the object.
+ */
+QStringList ScriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object, bool printInScriptWindowConsole)
+{
+    QStringList resultList;
+    QString resultString;
+    QScriptValueIterator it(object);
+    while (it.hasNext())
+    {
+        it.next();
+        if(printInScriptWindowConsole)
+        {
+            resultString += it.name() + "\n";
+        }
+        resultList.append(it.name());
+    }
+
+    if(printInScriptWindowConsole)
+    {
+        emit appendTextToConsoleSignal(resultString, true);
+    }
+    return resultList;
 }
 
 /**

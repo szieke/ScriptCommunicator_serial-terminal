@@ -311,10 +311,26 @@ void CustomConsoleLogThread::loadCustomScriptSlot(QString scriptPath, bool* hasS
             {
                 QScriptValue exception = m_scriptEngine->uncaughtException();
 
-                emit showMessageBoxSignal(QMessageBox::Critical, "error", QString::fromLatin1("%0: %1: %2")
-                                          .arg(scriptPath)
-                                     .arg(exception.property("lineNumber").toInt32())
-                                     .arg(exception.toString()), QMessageBox::Ok);
+
+                if(exception.toString().contains("[undefined] is not a function"))
+                {
+
+
+                    emit showMessageBoxSignal(QMessageBox::Critical, "error", QString::fromLatin1("%0:%1: %2")
+                                              .arg(scriptPath)
+                                              .arg(exception.property("lineNumber").toInt32())
+                                              .arg(exception.toString() + "\n\nNote: All functions and properties of an object can be"
+                                                                       " determined with cust.getAllObjectPropertiesAndFunctions."), QMessageBox::Ok);
+              }
+                else
+                {
+                    emit showMessageBoxSignal(QMessageBox::Critical, "error", QString::fromLatin1("%0: %1: %2")
+                                              .arg(scriptPath)
+                                         .arg(exception.property("lineNumber").toInt32())
+                                         .arg(exception.toString()), QMessageBox::Ok);
+                }
+
+
             }
 
         }
@@ -384,9 +400,20 @@ void CustomConsoleLogThread::executeScriptSlot(QByteArray* data, QString* timeSt
         {
             *result = "<br>";
         }
-        *result += QString::fromLatin1("Exception in line %0: %1")
-                .arg(exception.property("lineNumber").toInt32())
-                .arg(exception.toString());;
+        if(exception.toString().contains("[undefined] is not a function"))
+        {
+            *result += QString::fromLatin1("Exception in line %0: %1")
+                    .arg(exception.property("lineNumber").toInt32())
+                    .arg(exception.toString() + QString((isLog) ? "\n" : "<br>") +
+                    "Note: All functions and properties of an object can be"
+                    " determined with cust.getAllObjectPropertiesAndFunctions.");
+        }
+        else
+        {
+            *result += QString::fromLatin1("Exception in line %0: %1")
+                    .arg(exception.property("lineNumber").toInt32())
+                    .arg(exception.toString());
+        }
     }
     m_consoleLogObject->m_scriptFunctionIsFinished = true;
 }
@@ -478,6 +505,26 @@ QScriptValue CustomConsoleLogThread::createXmlWriter()
 {
     ScriptXmlWriter* reader =  new ScriptXmlWriter(m_scriptFileObject, this);
     return m_scriptEngine->newQObject(reader, QScriptEngine::ScriptOwnership);
+}
+
+
+/**
+ * Returns all functions and properties of an object.
+ * @param object
+ *      The object.
+ * @return
+ *      All functions and properties of the object.
+ */
+QStringList CustomConsoleLogThread::getAllObjectPropertiesAndFunctions(QScriptValue object)
+{
+    QStringList resultList;
+    QScriptValueIterator it(object);
+    while (it.hasNext())
+    {
+        it.next();
+        resultList.append(it.name());
+    }
+    return resultList;
 }
 
 /**

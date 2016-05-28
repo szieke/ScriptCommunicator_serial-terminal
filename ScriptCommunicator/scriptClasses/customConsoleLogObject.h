@@ -96,7 +96,7 @@ public:
 
     ///Loads/includes one script (QtScript has no built in include mechanism).
     Q_INVOKABLE bool loadScript(QString scriptPath, bool isRelativePath=true)
-    {return m_scriptFileObject->loadScript(scriptPath, isRelativePath, m_scriptEngine, m_mainWindow);}
+    {return m_scriptFileObject->loadScript(scriptPath, SCRIPT_TYPE_CUSTOM, isRelativePath, m_scriptEngine, m_mainWindow);}
 
     ///Reads a text file and returns the content.
     Q_INVOKABLE QString readFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1)
@@ -173,6 +173,9 @@ public:
 
     ///Creates a XML writer.
     Q_INVOKABLE QScriptValue createXmlWriter();
+
+    ///Returns all functions and properties of an object.
+    Q_INVOKABLE QStringList getAllObjectPropertiesAndFunctions(QScriptValue object);
 
     ///The default value for m_blockTime.
     static const quint32 DEFAULT_BLOCK_TIME= 10000;

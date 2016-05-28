@@ -39,7 +39,7 @@
 #include <mainwindow.h>
 #include <QScriptEngineDebugger>
 #include <scriptHelper.h>
-
+#include "scriptFile.h"
 #include "crc.h"
 #include "settingsdialog.h"
 #include "scriptStandardDialogs.h"
@@ -185,6 +185,9 @@ public:
     ///the script is regarded as blocked and will be stopped.
     Q_INVOKABLE void setBlockTime(quint32 blockTime){m_blockTime = blockTime;}
 
+    ///Returns all functions and properties of an object.
+    Q_INVOKABLE QStringList getAllObjectPropertiesAndFunctions(QScriptValue object);
+
     ///The default value for m_blockTime.
     static const quint32 DEFAULT_BLOCK_TIME= 10000;
 
@@ -220,6 +223,9 @@ protected:
 
         m_standardDialogs = new ScriptStandardDialogs(this);
         m_standardDialogs->intSignals(m_mainWindow->getScriptWindow(), m_runsInDebugger);
+
+        m_scriptFileObject = new ScriptFile(this, "");
+        m_scriptFileObject->intSignals(m_mainWindow->getScriptWindow(), m_runsInDebugger);
 
         if(!m_runsInDebugger)
         {
@@ -261,6 +267,9 @@ private:
 
     ///The debug window.
     QMainWindow *m_debugWindow;
+
+    ///The script file object.
+    ScriptFile* m_scriptFileObject;
 
 };
 ///Table view class which holds the sequences in the send window.
