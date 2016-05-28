@@ -1,7 +1,7 @@
 <project>
     <shortName>ScriptCommunicator</shortName>
     <fullName>ScriptCommunicator</fullName>
-    <version>04.11</version>
+    <version>04.12</version>
     <leftImage>C:/ScriptCommunicator/ScriptCommunicator_Github/ScriptCommunicator/images/installersby_tiny.png</leftImage>
     <logoImage>C:/ScriptCommunicator/ScriptCommunicator_Github/ScriptCommunicator/images/main_32x32.png</logoImage>
     <componentList>
