@@ -507,6 +507,9 @@ UI_socketsTypeComboBox.currentTextChangedSignal.connect(textFromGuiElementChange
 
 UI_clearConsoleButton.clickedSignal.connect(UI_clearConsoleButtonClicked)
 
+UI_socketPortLineEdit.addIntValidator(0, 65536);
+UI_socketUdpOwnPortLineEdit.addIntValidator(0, 65536);
+
 
 loadUiSettings();
 
