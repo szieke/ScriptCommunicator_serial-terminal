@@ -1709,8 +1709,10 @@ void ScriptWindow::exitScriptCommunicatorSlot(void)
  *      The text which has to be appended to the console.
  * @param newLine
  *      True if a new line should be appended.
+ * @param bringToForeground
+ *      Trueif the script window shall be set to foreground.
  */
-void ScriptWindow::appendTextToConsoleSlot(QString text, bool newLine)
+void ScriptWindow::appendTextToConsoleSlot(QString text, bool newLine, bool bringToForeground)
 {
     if(newLine)
     {
@@ -1721,6 +1723,20 @@ void ScriptWindow::appendTextToConsoleSlot(QString text, bool newLine)
         m_userInterface->scriptConsole->insertPlainText(text);
     }
     limtCharsInTextEditSlot(m_userInterface->scriptConsole, MAX_CHARS_IN_CONSOLE);
+
+    if(bringToForeground)
+    {
+        if(isVisible())
+        {
+            setWindowState( (windowState() & ~Qt::WindowMinimized) | Qt::WindowActive);
+        }
+        else
+        {
+            show();
+        }
+        raise();  // for MacOS
+        activateWindow(); // for Windows
+    }
 }
 
 

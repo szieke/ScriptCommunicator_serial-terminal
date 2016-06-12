@@ -87,8 +87,8 @@ void CustomConsoleLogObject::createThread(bool debug)
                 m_mainWindow, SLOT(showMessageBoxSlot(QMessageBox::Icon,QString,QString,QMessageBox::StandardButtons)),
                 Qt::QueuedConnection);
 
-        connect(this, SIGNAL(executeScriptSignal(QByteArray*,QString*,bool,bool,bool,bool,QString*)),
-                m_script, SLOT(executeScriptSlot(QByteArray*,QString*,bool,bool,bool,bool,QString*)), Qt::QueuedConnection);
+        connect(this, SIGNAL(executeScriptSignal(QByteArray*,QString*,bool,bool,bool,bool,QString*,bool*)),
+                m_script, SLOT(executeScriptSlot(QByteArray*,QString*,bool,bool,bool,bool,QString*,bool*)), Qt::QueuedConnection);
 
         connect(this, SIGNAL(loadCustomScriptSignal(QString,bool*)),
                 m_script, SLOT(loadCustomScriptSlot(QString,bool*)), Qt::QueuedConnection);
@@ -115,11 +115,11 @@ void CustomConsoleLogObject::createThread(bool debug)
 void CustomConsoleLogObject::terminateThread()
 {
     //Disconnect all external signals.
-    disconnect(this, SIGNAL(executeScriptSignal(QByteArray*,QString*,bool,bool,bool,bool,QString*)),
-            m_script, SLOT(executeScriptSlot(QByteArray*,QString*,bool,bool,bool,bool,QString*)));
+    disconnect(this, SIGNAL(executeScriptSignal(QByteArray*,QString*,bool,bool,bool,bool,QString*,bool*)),
+               m_script, SLOT(executeScriptSlot(QByteArray*,QString*,bool,bool,bool,bool,QString*,bool*)));
 
     disconnect(this, SIGNAL(loadCustomScriptSignal(QString,bool*)),
-            m_script, SLOT(loadCustomScriptSlot(QString,bool*)));
+               m_script, SLOT(loadCustomScriptSlot(QString,bool*)));
 
 
     QApplication::removePostedEvents(m_script);
@@ -139,7 +139,7 @@ bool CustomConsoleLogObject::scriptHasBeenLoaded()
     {
         result = (m_script->m_scriptEngine == 0) ? false : true;
     }
-  return result;
+    return result;
 
 }
 
@@ -157,21 +157,21 @@ void CustomConsoleLogObject::unloadCustomScript(void)
         }
         else
         {
-             m_script->exit();
-             quint32 counter = 0;
+            m_script->exit();
+            quint32 counter = 0;
 
-             do
-             {
-                 counter++;
-                 if(counter > 2000)
-                 {
-                     break;
-                 }
-                 QThread::msleep(1);
-                 QCoreApplication::processEvents();
+            do
+            {
+                counter++;
+                if(counter > 2000)
+                {
+                    break;
+                }
+                QThread::msleep(1);
+                QCoreApplication::processEvents();
 
 
-             }while(m_script->isRunning());
+            }while(m_script->isRunning());
         }
 
         m_script->deleteLater();
@@ -309,28 +309,7 @@ void CustomConsoleLogThread::loadCustomScriptSlot(QString scriptPath, bool* hasS
 
             if(m_scriptEngine->hasUncaughtException())
             {
-                QScriptValue exception = m_scriptEngine->uncaughtException();
-
-
-                if(exception.toString().contains("[undefined] is not a function"))
-                {
-
-
-                    emit showMessageBoxSignal(QMessageBox::Critical, "error", QString::fromLatin1("%0:%1: %2")
-                                              .arg(scriptPath)
-                                              .arg(exception.property("lineNumber").toInt32())
-                                              .arg(exception.toString() + "\n\nNote: All functions and properties of an object can be"
-                                                                       " determined with cust.getAllObjectPropertiesAndFunctions."), QMessageBox::Ok);
-              }
-                else
-                {
-                    emit showMessageBoxSignal(QMessageBox::Critical, "error", QString::fromLatin1("%0: %1: %2")
-                                              .arg(scriptPath)
-                                         .arg(exception.property("lineNumber").toInt32())
-                                         .arg(exception.toString()), QMessageBox::Ok);
-                }
-
-
+                m_scriptFileObject->showExceptionInMessageBox(m_scriptEngine->uncaughtException(), scriptPath, m_scriptEngine, m_mainWindow);
             }
 
         }
@@ -354,13 +333,16 @@ void CustomConsoleLogThread::loadCustomScriptSlot(QString scriptPath, bool* hasS
  *      The isFromCan argument for the 'createString' function.
  * @param isLog
  *      The isLog argument for the 'createString' function.
+ *  * @param errorOccured
+ *      True if an error has occured.
  * @param result
  *      The result (the created string).
  */
 void CustomConsoleLogThread::executeScriptSlot(QByteArray* data, QString* timeStamp,
-                                           bool isSend, bool isUserMessage, bool isFromCan, bool isLog,
-                                           QString* result)
+                                               bool isSend, bool isUserMessage, bool isFromCan, bool isLog,
+                                               QString* result, bool* errorOccured)
 {
+    *errorOccured = false;
     QScriptValue scriptArray = m_scriptEngine->newArray(data->size());
     for(int i = 0; i < data->size(); i++)
     {
@@ -390,30 +372,8 @@ void CustomConsoleLogThread::executeScriptSlot(QByteArray* data, QString* timeSt
 
     if(m_scriptEngine->hasUncaughtException())
     {
-        QScriptValue exception = m_scriptEngine->uncaughtException();
-
-        if(isLog)
-        {
-            *result = "\n";
-        }
-        else
-        {
-            *result = "<br>";
-        }
-        if(exception.toString().contains("[undefined] is not a function"))
-        {
-            *result += QString::fromLatin1("Exception in line %0: %1")
-                    .arg(exception.property("lineNumber").toInt32())
-                    .arg(exception.toString() + QString((isLog) ? "\n" : "<br>") +
-                    "Note: All functions and properties of an object can be"
-                    " determined with cust.getAllObjectPropertiesAndFunctions.");
-        }
-        else
-        {
-            *result += QString::fromLatin1("Exception in line %0: %1")
-                    .arg(exception.property("lineNumber").toInt32())
-                    .arg(exception.toString());
-        }
+        *errorOccured = true;
+        m_scriptFileObject->showExceptionInMessageBox(m_scriptEngine->uncaughtException(), m_scriptPath, m_scriptEngine, m_mainWindow);
     }
     m_consoleLogObject->m_scriptFunctionIsFinished = true;
 }
@@ -432,14 +392,18 @@ void CustomConsoleLogThread::executeScriptSlot(QByteArray* data, QString* timeSt
  *      True if the data is from CAN.
  * @param isLog
  *      True if this call is for the custom log (false=custom console).
+ *  * @param errorOccured
+ *      True if an error has occured.
  * @return
  *      The created string (result from the 'createString' call.
  *      If the call fails then a error message will be returned.
  */
 QString CustomConsoleLogObject::callScriptFunction(QByteArray* data, QString& timeStamp,
-                                  bool isSend, bool isUserMessage, bool isFromCan, bool isLog)
+                                                   bool isSend, bool isUserMessage, bool isFromCan,
+                                                   bool isLog, bool* errorOccured)
 {
     QString result;
+    *errorOccured = false;
 
     if(!m_script->getRunsInDebugger())
     {
@@ -449,7 +413,7 @@ QString CustomConsoleLogObject::callScriptFunction(QByteArray* data, QString& ti
             m_scriptFunctionIsFinished = false;
             QDateTime callTime = QDateTime::currentDateTime();
 
-            emit executeScriptSignal(data, &timeStamp, isSend, isUserMessage, isFromCan, isLog, &result);
+            emit executeScriptSignal(data, &timeStamp, isSend, isUserMessage, isFromCan, isLog, &result, errorOccured);
             while(!m_scriptFunctionIsFinished)
             {
                 QThread::usleep(1);
@@ -459,6 +423,7 @@ QString CustomConsoleLogObject::callScriptFunction(QByteArray* data, QString& ti
                     m_scriptIsBlocked = true;
                     terminateThread();
                     createThread(false);
+                    *errorOccured = true;
                     break;
                 }
             }
@@ -479,7 +444,7 @@ QString CustomConsoleLogObject::callScriptFunction(QByteArray* data, QString& ti
     }
     else
     {
-        m_script->executeScriptSlot(data, &timeStamp, isSend, isUserMessage, isFromCan, isLog, &result);
+        m_script->executeScriptSlot(data, &timeStamp, isSend, isUserMessage, isFromCan, isLog, &result,errorOccured);
     }
 
     return result;

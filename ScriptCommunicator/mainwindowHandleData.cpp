@@ -186,23 +186,19 @@ void MainWindowHandleData::appendDataToStoredData(QByteArray &data, bool isSend,
     {
         if((!isSend && currentSettings->writeReceivedDataInToLog) || (isSend && currentSettings->writeSendDataInToLog) || isUserMessage)
         {
-            if(m_customLogObject->scriptHasBeenLoaded() || m_customLogObject->scriptIsBlocked())
-            {
-                QString timeStamp = QDateTime::currentDateTime().toString(currentSettings->consoleTimestampFormat).toLocal8Bit();
-                m_customLogString += m_customLogObject->callScriptFunction(&data, timeStamp, isSend, isUserMessage, isFromCan, true);
+            bool errorOccured;
+            QString timeStamp = QDateTime::currentDateTime().toString(currentSettings->consoleTimestampFormat).toLocal8Bit();
+            m_customLogString += m_customLogObject->callScriptFunction(&data, timeStamp, isSend, isUserMessage, isFromCan, true, &errorOccured);
 
-            }
-            else
+            if(errorOccured)
             {
-                if(currentSettings->logScript.isEmpty())
-                {
-                    m_customLogString += "\nno script given";
-                }
-                else
-                {
-                    m_customLogString += "\nthe script contains an error (uncheck and then check the custom log check box to reload the script))";
-                }
+                Settings settings = *m_settingsDialog->settings();
+                settings.logGenerateCustomLog = false;
+                settings.logDebugCustomLog = false;
+                m_settingsDialog->setAllSettingsSlot(settings, false);
             }
+
+
         }
     }
 
@@ -212,26 +208,24 @@ void MainWindowHandleData::appendDataToStoredData(QByteArray &data, bool isSend,
 
         if(currentSettings->consoleShowCustomConsole)
         {
+            bool errorOccured;
+            QString timeStamp = QDateTime::currentDateTime().toString(currentSettings->consoleTimestampFormat).toLocal8Bit();
+            QString result = m_customConsoleObject->callScriptFunction(&data, timeStamp, isSend, isUserMessage, isFromCan, false, &errorOccured);
 
-            if(m_customConsoleObject->scriptHasBeenLoaded() || m_customConsoleObject->scriptIsBlocked())
+            if(errorOccured)
             {
-                QString timeStamp = QDateTime::currentDateTime().toString(currentSettings->consoleTimestampFormat).toLocal8Bit();
-                QString result = m_customConsoleObject->callScriptFunction(&data, timeStamp, isSend, isUserMessage, isFromCan, false);
-                m_customConsoleStrings.append(result);
-                m_numberOfBytesInCustomConsoleStrings += result.length();
+                Settings settings = *m_settingsDialog->settings();
+                settings.consoleShowCustomConsole = false;
+                settings.consoleDebugCustomConsole= false;
+                m_settingsDialog->setAllSettingsSlot(settings, false);
+                m_mainWindow->inititializeTab();
             }
             else
             {
-                if(currentSettings->consoleScript.isEmpty())
-                {
-                    m_customConsoleStrings.append("<br>no script given");
-                }
-                else
-                {
-                    m_customConsoleStrings.append("<br>the script contains an error (uncheck and then check the custom console check box to reload the script))");
-                }
-                m_numberOfBytesInCustomConsoleStrings += m_customConsoleStrings.last().length();
+                m_customConsoleStrings.append(result);
+                m_numberOfBytesInCustomConsoleStrings += result.length();
             }
+
 
             if ((m_numberOfBytesInCustomConsoleStrings > (currentSettings->maxCharsInConsole * 2)))
             {

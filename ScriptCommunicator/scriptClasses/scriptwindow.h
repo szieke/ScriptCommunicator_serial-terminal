@@ -197,7 +197,7 @@ public slots:
     void exitScriptCommunicatorSlot(void);
 
     ///This slot function append text to the console.
-    void appendTextToConsoleSlot(QString text, bool newLine=true);
+    void appendTextToConsoleSlot(QString text, bool newLine=true, bool bringToForeground=false);
 
     ///This slot function has to be called the state of one script thread has changed.
     void threadStateChangedSlot(ThreadSate state, ScriptThread* thread);

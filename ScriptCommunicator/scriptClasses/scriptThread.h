@@ -91,7 +91,7 @@ public:
     void installsCustomWidget(QObject* child, QScriptEngine* scriptEngine);
 
     ///Appends text to the script window console.
-    Q_INVOKABLE void appendTextToConsole(QString string, bool newLine=true){ emit appendTextToConsoleSignal(string, newLine);}
+    Q_INVOKABLE void appendTextToConsole(QString string, bool newLine=true, bool bringToForeground=false){ emit appendTextToConsoleSignal(string, newLine,bringToForeground);}
 
     ///Converts a byte array which contains ascii characters into a ascii string (QString).
     Q_INVOKABLE QString byteArrayToString(QVector<unsigned char> data){return ScriptHelper::byteArrayToString(data);}
@@ -509,6 +509,9 @@ public:
     ///Returns and prints (if printInScriptWindowConsole is true) all functions and properties of an object in the script window console.
     Q_INVOKABLE QStringList getAllObjectPropertiesAndFunctions(QScriptValue object, bool printInScriptWindowConsole=false);
 
+    ///Returns and all functions and properties of an object.
+    static void getAllObjectPropertiesAndFunctionsInternal(QScriptValue object, QStringList* resultList, QString* resultString);
+
     ///Returns the tread state.
     ThreadSate getThreadState(){return m_state;}
 
@@ -578,7 +581,7 @@ signals:
 
     ///Is connected with ScriptWindow::appendTextToConsoleSlot (appends text to the console in the script window).
     ///This signal must not be used from script.
-    void appendTextToConsoleSignal(QString text, bool newLine);
+    void appendTextToConsoleSignal(QString text, bool newLine, bool bringToForeground);
 
     ///Is connected with ScriptWindow::threadStateChangedSlot (to signalize the thread state change).
     ///This signal must not be used from script.

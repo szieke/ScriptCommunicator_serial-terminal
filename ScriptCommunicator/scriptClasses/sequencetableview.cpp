@@ -337,7 +337,7 @@ void SequenceScriptThread::executeScriptSlot(QString* sendScript, QByteArray* se
                 QScriptValue exception = (*scriptEngineWrapper)->scriptEngine->uncaughtException();
                 m_dialogIsShown = true;
                 QWidget *parent = (m_sendWindow->isVisible()) ? static_cast<QWidget *>(m_sendWindow) : static_cast<QWidget *>(m_mainWindow);
-                m_scriptFileObject->showExceptionInMessageBox(exception, *sendScript, SCRIPT_TYPE_SEQUENCE, parent);
+                m_scriptFileObject->showExceptionInMessageBox(exception, *sendScript, (*scriptEngineWrapper)->scriptEngine, parent);
                 m_dialogIsShown = false;
             }
 
@@ -864,7 +864,7 @@ SequenceScriptEngineWrapper* SequenceScriptThread::loadScript(QString scriptPath
         {
             m_dialogIsShown = true;
             QWidget *parent = (m_sendWindow->isVisible()) ? static_cast<QWidget *>(m_sendWindow) : static_cast<QWidget *>(m_mainWindow);
-            m_scriptFileObject->showExceptionInMessageBox(result, scriptPath, SCRIPT_TYPE_SEQUENCE, parent);
+            m_scriptFileObject->showExceptionInMessageBox(result, scriptPath, scriptEngineWrapper->scriptEngine, parent);
             m_dialogIsShown = false;
             delete scriptEngineWrapper;
             scriptEngineWrapper = 0;

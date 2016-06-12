@@ -313,8 +313,8 @@ void ScriptThread::run()
         connect(this, SIGNAL(setAllSettingsSignal(Settings&,bool)),
                 m_settingsDialog, SLOT(setAllSettingsSlot(Settings&,bool)), directConnectionType);
 
-        connect(this, SIGNAL(appendTextToConsoleSignal(QString, bool)),
-                m_scriptWindow, SLOT(appendTextToConsoleSlot(QString, bool)), directConnectionType);
+        connect(this, SIGNAL(appendTextToConsoleSignal(QString, bool,bool)),
+                m_scriptWindow, SLOT(appendTextToConsoleSlot(QString, bool,bool)), directConnectionType);
 
         connect(m_scriptWindow->m_mainInterfaceThread, SIGNAL(dataReceivedSignal(QByteArray)),
                 this, SLOT(dataReceivedSlot(QByteArray)), Qt::QueuedConnection);
@@ -497,7 +497,7 @@ void ScriptThread::run()
                 {//In stopScript an error has been occured.
 
                     QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
-                    m_scriptFileObject->showExceptionInMessageBox(m_scriptEngine->uncaughtException(), m_scriptFileName, SCRIPT_TYPE_WORKER, parent);
+                    m_scriptFileObject->showExceptionInMessageBox(m_scriptEngine->uncaughtException(), m_scriptFileName, m_scriptEngine, parent);
                 }
             }
 
@@ -1263,7 +1263,7 @@ void ScriptThread::pauseTimerSlot()
 void ScriptThread::scriptSignalHandlerSlot(const QScriptValue & exception)
 {
     QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
-    m_scriptFileObject->showExceptionInMessageBox(exception, m_scriptFileName, SCRIPT_TYPE_WORKER, parent);
+    m_scriptFileObject->showExceptionInMessageBox(exception, m_scriptFileName, m_scriptEngine, parent);
     stopScript();
 }
 
@@ -1279,7 +1279,7 @@ void ScriptThread::scriptSignalHandlerSlot(const QScriptValue & exception)
 bool ScriptThread::loadScript(QString scriptPath, bool isRelativePath)
 {
      QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
-    return m_scriptFileObject->loadScript(scriptPath, SCRIPT_TYPE_WORKER, isRelativePath, m_scriptEngine, parent);
+    return m_scriptFileObject->loadScript(scriptPath, isRelativePath, m_scriptEngine, parent);
 }
 
 /**
@@ -2795,6 +2795,34 @@ void ScriptThread::sendReceivedDataToMainInterface(QVector<unsigned char> data)
 }
 
 /**
+ * @brief Returns and all functions and properties of an object.
+ * @param object
+ *      The object.
+ * @param resultList
+ *      All functions and properties of the object in a string list. . If not needed then a 0 can be given.
+ * @param resultString
+ *      All functions and properties of the object in a string (separated by \n). If not needed then a 0 can be given.
+ */
+void ScriptThread::getAllObjectPropertiesAndFunctionsInternal(QScriptValue object, QStringList* resultList, QString* resultString)
+{
+    QScriptValueIterator it(object);
+    while (it.hasNext())
+    {
+        it.next();
+
+        if(resultString)
+        {
+            (*resultString) += it.name() + "\n";
+        }
+
+        if(resultList)
+        {
+            resultList->append(it.name());
+        }
+    }
+}
+
+/**
  * Returns and prints (if printInScriptWindowConsole is true) all functions and properties of an object in the script window console.
  * @param object
  *      The object.
@@ -2805,22 +2833,14 @@ void ScriptThread::sendReceivedDataToMainInterface(QVector<unsigned char> data)
  */
 QStringList ScriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object, bool printInScriptWindowConsole)
 {
-    QStringList resultList;
     QString resultString;
-    QScriptValueIterator it(object);
-    while (it.hasNext())
-    {
-        it.next();
-        if(printInScriptWindowConsole)
-        {
-            resultString += it.name() + "\n";
-        }
-        resultList.append(it.name());
-    }
+    QStringList resultList;
+
+    getAllObjectPropertiesAndFunctionsInternal(object, &resultList, printInScriptWindowConsole ? &resultString :  0);
 
     if(printInScriptWindowConsole)
     {
-        emit appendTextToConsoleSignal(resultString, true);
+        emit appendTextToConsoleSignal(resultString, true, false);
     }
     return resultList;
 }

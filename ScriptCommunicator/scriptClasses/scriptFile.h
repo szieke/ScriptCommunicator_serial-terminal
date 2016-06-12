@@ -9,13 +9,6 @@
 
 class ScriptWindow;
 
-typedef enum
-{
-    SCRIPT_TYPE_WORKER,//worker script
-    SCRIPT_TYPE_CUSTOM,//custom log/console script
-    SCRIPT_TYPE_SEQUENCE//sequence script
-
-}ScriptType;
 
 class ScriptFile : public QObject
 {
@@ -24,7 +17,7 @@ public:
     ScriptFile(QObject *parent, QString scriptFileName);
 
     ///Connects all signals.
-    void intSignals(ScriptWindow* scriptWindow, bool runsInDebugger);
+    void intSignals(ScriptWindow* scriptWindow, bool runsInDebugger, bool useBlockingSignals=true);
 
     ///Reads a text file and returns the content.
     QString readFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1);
@@ -75,10 +68,10 @@ public:
     QString createAbsolutePath(QString fileName);
 
     ///Shows a script exception with a message box to the user.
-    void showExceptionInMessageBox(QScriptValue exception, QString scriptPath, ScriptType scriptType, QWidget *parent);
+    void showExceptionInMessageBox(QScriptValue exception, QString scriptPath, QScriptEngine* scriptEngine, QWidget *parent);
 
     ///Loads/includes one script (QtScript has no built in include mechanism).
-    bool loadScript(QString scriptPath, ScriptType scriptType, bool isRelativePath, QScriptEngine* scriptEngine, QWidget* parent);
+    bool loadScript(QString scriptPath, bool isRelativePath, QScriptEngine* scriptEngine, QWidget* parent);
 
     ///Sets the script file name (path).
     void setScriptFileName(QString scriptFileName){m_scriptFileName = scriptFileName;}
@@ -105,6 +98,9 @@ signals:
     ///Enables all mouse events for all windows.
     ///This function must not be used from script.
     void enableMouseEventsSignal(void);
+
+    ///Appends text to the console.
+    void appendTextToConsoleSignal(QString text, bool newLine,bool bringToForeground);
 
 private:
     ///The path of the script which is executed by the thread.

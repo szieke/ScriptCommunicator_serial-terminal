@@ -19,19 +19,22 @@ ScriptFile::ScriptFile(QObject *parent, QString scriptFileName) : QObject(parent
  * @param scriptWindow
  *      Pointer to the script window.
  */
-void ScriptFile::intSignals(ScriptWindow *scriptWindow, bool runsInDebugger)
+void ScriptFile::intSignals(ScriptWindow *scriptWindow, bool runsInDebugger, bool useBlockingSignals)
 {
     Qt::ConnectionType directConnectionType = runsInDebugger ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
     connect(this, SIGNAL(showMessageBoxSignal(QMessageBox::Icon, QString, QString, QMessageBox::StandardButtons, QWidget* )),
             scriptWindow->getMainWindow(), SLOT(showMessageBoxSlot(QMessageBox::Icon, QString, QString, QMessageBox::StandardButtons, QWidget*)),
-            directConnectionType);
+            useBlockingSignals ? directConnectionType : Qt::QueuedConnection);
 
     connect(this, SIGNAL(disableMouseEventsSignal()),
-            scriptWindow->getMainWindow(), SLOT(disableMouseEventsSlot()), directConnectionType);
+            scriptWindow->getMainWindow(), SLOT(disableMouseEventsSlot()), useBlockingSignals ? directConnectionType : Qt::QueuedConnection);
 
     connect(this, SIGNAL(enableMouseEventsSignal()),
-            scriptWindow->getMainWindow(), SLOT(enableMouseEventsSlot()), directConnectionType);
+            scriptWindow->getMainWindow(), SLOT(enableMouseEventsSlot()), useBlockingSignals ? directConnectionType : Qt::QueuedConnection);
+
+    connect(this, SIGNAL(appendTextToConsoleSignal(QString,bool,bool)),
+            scriptWindow, SLOT(appendTextToConsoleSlot(QString,bool,bool)), Qt::QueuedConnection);
 }
 
 /**
@@ -230,37 +233,57 @@ QString ScriptFile::createAbsolutePath(QString fileName)
  * @param parent
  *      The parent window.
  */
-void ScriptFile::showExceptionInMessageBox(QScriptValue exception, QString scriptPath, ScriptType scriptType, QWidget *parent)
+void ScriptFile::showExceptionInMessageBox(QScriptValue exception, QString scriptPath, QScriptEngine* scriptEngine, QWidget *parent)
 {
-    if(exception.toString().contains("[undefined] is not a function"))
+    QString textToShow;
+    QString functionsAndProperies;
+
+
+    QString exceptionString = exception.toString();
+    if(exceptionString.contains("[undefined] is not a function") ||
+       exceptionString.contains("[undefined] is not an object"))
     {
-        QString scriptObject;
-        if(scriptType == SCRIPT_TYPE_WORKER)
+        QStringList list = exceptionString.split("'");
+        bool errorOcured = true;
+
+        if(list.length() >= 2)
         {
-            scriptObject = "scriptThread";
+            list = list[1].split(".");
+            QScriptValue object = scriptEngine->evaluate(list[0]);
+            if(!object.isError())
+            {
+                ScriptThread::getAllObjectPropertiesAndFunctionsInternal(object, 0, &functionsAndProperies);
+
+                if(!functionsAndProperies.isEmpty())
+                {
+                    functionsAndProperies = "\n\n\nFunctions and properies of " + list[0] + ":\n" + functionsAndProperies;
+
+                    textToShow = exceptionString + "\n\nNote: If the OK button is pressed then all functions" +
+                                                   " and properties of " + list[0] + " will be shown in the script window.";
+                    errorOcured = false;
+                }
+            }
         }
-        else if(scriptType == SCRIPT_TYPE_CUSTOM)
+
+        if(errorOcured)
         {
-            scriptObject = "cust";
+            textToShow = exceptionString;
         }
-        else
-        {
-            scriptObject = "seq";
-        }
-        emit showMessageBoxSignal(QMessageBox::Critical, scriptPath,
-                                  QString::fromLatin1("%0:%1: %2")
-                                  .arg(scriptPath)
-                                  .arg(exception.property("lineNumber").toInt32())
-                                  .arg(exception.toString() + "\n\nNote: All functions and properties of an object can be"
-                                                           " determined with " + scriptObject + ".getAllObjectPropertiesAndFunctions."), QMessageBox::Ok, parent);
     }
     else
     {
-        emit showMessageBoxSignal(QMessageBox::Critical, scriptPath,
-                                  QString::fromLatin1("%0:%1: %2")
-                                  .arg(scriptPath)
-                                  .arg(exception.property("lineNumber").toInt32())
-                                  .arg(exception.toString()), QMessageBox::Ok, parent);
+        textToShow = exceptionString;
+    }
+
+    emit showMessageBoxSignal(QMessageBox::Critical, scriptPath,
+                              QString::fromLatin1("%0:%1: %2")
+                              .arg(scriptPath)
+                              .arg(exception.property("lineNumber").toInt32())
+                              .arg(textToShow), QMessageBox::Ok, parent);
+
+    if(!functionsAndProperies.isEmpty())
+    {
+        appendTextToConsoleSignal(functionsAndProperies, true, true);
     }
 }
 
@@ -277,7 +300,7 @@ void ScriptFile::showExceptionInMessageBox(QScriptValue exception, QString scrip
  * @return
  *      True on success.
  */
-bool ScriptFile::loadScript(QString scriptPath, ScriptType scriptType, bool isRelativePath, QScriptEngine* scriptEngine, QWidget *parent)
+bool ScriptFile::loadScript(QString scriptPath, bool isRelativePath, QScriptEngine* scriptEngine, QWidget *parent)
 {
     bool hasSucceded = true;
 
@@ -319,7 +342,7 @@ bool ScriptFile::loadScript(QString scriptPath, ScriptType scriptType, bool isRe
 
             emit disableMouseEventsSignal();
             emit enableMouseEventsSignal();
-            showExceptionInMessageBox(result, scriptPath, scriptType, parent);
+            showExceptionInMessageBox(result, scriptPath, scriptEngine, parent);
 
             hasSucceded = false;
         }
@@ -668,7 +691,7 @@ bool ScriptFile::zipFiles(const QString& fileName, const QList<QStringList> file
         if (!inFile.open(QIODevice::ReadOnly)){return false;}
 
         if (!zipFile.open(QIODevice::WriteOnly, QuaZipNewInfo(el[1], fileInfo.fileName()),
-                NULL, 0,Z_DEFLATED, Z_DEFAULT_COMPRESSION)){return false;}
+                          NULL, 0,Z_DEFLATED, Z_DEFAULT_COMPRESSION)){return false;}
 
         qint64 readData = 0;
         while(inFile.size() > readData)

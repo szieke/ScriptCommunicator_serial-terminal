@@ -96,7 +96,7 @@ public:
 
     ///Loads/includes one script (QtScript has no built in include mechanism).
     Q_INVOKABLE bool loadScript(QString scriptPath, bool isRelativePath=true)
-    {return m_scriptFileObject->loadScript(scriptPath, SCRIPT_TYPE_CUSTOM, isRelativePath, m_scriptEngine, m_mainWindow);}
+    {return m_scriptFileObject->loadScript(scriptPath, isRelativePath, m_scriptEngine, m_mainWindow);}
 
     ///Reads a text file and returns the content.
     Q_INVOKABLE QString readFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1)
@@ -218,7 +218,7 @@ public slots:
 
      ///Executes the script function 'createString'.
     void executeScriptSlot(QByteArray* data, QString* timeStamp,
-                       bool isSend, bool isUserMessage, bool isFromCan, bool isLog, QString* result);
+                       bool isSend, bool isUserMessage, bool isFromCan, bool isLog, QString* result, bool *errorOccured);
 
     ///Loads a custom console/log script.
     void loadCustomScriptSlot(QString scriptPath, bool* hasSucceeded);
@@ -241,7 +241,7 @@ protected:
         m_createString = new QScriptValue(0);
         m_scriptSql = new ScriptSql();
         m_scriptFileObject = new ScriptFile(this, m_scriptPath);
-        m_scriptFileObject->intSignals(m_mainWindow->getScriptWindow(), m_runsInDebugger);
+        m_scriptFileObject->intSignals(m_mainWindow->getScriptWindow(), m_runsInDebugger, false);
 
         if(!m_runsInDebugger)
         {
@@ -303,7 +303,7 @@ public:
     void unloadCustomScript(void);
 
     ///Calls the script function 'createString' in the script thread.
-    QString callScriptFunction(QByteArray *data, QString& timeStamp, bool isSend, bool isUserMessage, bool isFromCan, bool isLog);
+    QString callScriptFunction(QByteArray *data, QString& timeStamp, bool isSend, bool isUserMessage, bool isFromCan, bool isLog, bool *errorOccured);
 
     ///Returns true if a script has been loaded successfully.
     bool scriptHasBeenLoaded();
@@ -327,7 +327,7 @@ signals:
     ///Signal for executing the script function 'createString'.
     void executeScriptSignal(QByteArray* data, QString* timeStamp,
                            bool isSend, bool isUserMessage, bool isFromCan, bool isLog,
-                           QString* result);
+                           QString* result, bool* errorOccured);
 
     ///Signal for loading a custom console/log script.
     void loadCustomScriptSignal(QString scriptPath, bool* hasSucceeded);
