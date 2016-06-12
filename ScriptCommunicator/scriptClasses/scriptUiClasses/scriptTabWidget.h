@@ -57,7 +57,10 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() + ";";
+        return ScriptWidget::getPublicScriptElements() +
+                ";void setTabText(int index, QString text);QString tabText(int index);"
+                "void setCurrentIndex(int index);int currentIndex(void);"
+                "currentTabChangedSignal(int index)";
     }
 
     ///Sets the tab text.

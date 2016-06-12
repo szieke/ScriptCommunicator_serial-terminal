@@ -512,10 +512,12 @@ public:
     ///The format of minVersion is: 'major'.'minor' (e.g. 04.11).
     Q_INVOKABLE bool checkScriptCommunicatorVersion(QString minVersion);
 
-    ///Returns and prints (if printInScriptWindowConsole is true) all functions and properties of an object in the script window console.
+    ///Returns and prints (if printInScriptWindowConsole is true) all functions, signals and properties of an object in the script window console.
+    ///Note: Only ScriptCommunicator classes are supported. Calling this function with a QtScript built-in class (e.g. Array) will result
+    ///in an empty list.
     Q_INVOKABLE QStringList getAllObjectPropertiesAndFunctions(QScriptValue object, bool printInScriptWindowConsole=false);
 
-    ///Returns and all functions and properties of an object.
+    ///Returns and all functions, signals and properties of an object.
     static void getAllObjectPropertiesAndFunctionsInternal(QScriptValue object, QStringList* resultList, QString* resultString);
 
     ///Returns the tread state.

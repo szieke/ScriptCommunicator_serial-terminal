@@ -30,10 +30,12 @@
 #include "scriptWidget.h"
 #include "plotwindow.h"
 
+
 ///This wrapper class is used to access a PlotWindow object from a script.
 class ScriptPlotWindow : public ScriptWidget
 {
     Q_OBJECT
+
 public:
     explicit ScriptPlotWindow(PlotWindow* plotWindow, ScriptThread *scriptThread, ScriptWindow *scriptWindow) : ScriptWidget(plotWindow, scriptThread, scriptWindow),
         m_plotWindow(plotWindow)
@@ -87,6 +89,17 @@ public:
         delete m_plotWindow;
     }
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ScriptWidget::getPublicScriptElements() +
+               ";int addGraph(QString color, QString penStyle, QString name);void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue);"
+               "void addDataToGraph(int graphIndex, double x, double y);void setAxisLabels(QString xAxisLabel, QString yAxisLabel);"
+               "void showLegend(bool show);void clearGraphs(void);void removeAllGraphs(void);"
+               "void showHelperElements(bool showXRange, bool showYRange, bool showUpdate, bool showSave, bool showLoad, bool showClear, bool showGraphVisibility, quint32 graphVisibilityMaxSize=80, bool showLegend=true);"
+               "void setMaxDataPointsPerGraph(qint32 maxDataPointsPerGraph);void setUpdateInterval(quint32 updateInterval);"
+               "plotMousePressSignal(double xValue, double yValue, quint32 mouseButton);clearButtonPressedSignal(void)";
+    }
 
     ///This function adds a graph to the diagram.
     Q_INVOKABLE int addGraph(QString color, QString penStyle, QString name)
@@ -135,6 +148,7 @@ Q_SIGNALS:
     void plotMousePressSignal(double xValue, double yValue, quint32 mouseButton);
 
     ///Is emitted if the user clicks the clear button.
+    ///Scripts can connect to this signal.
     void clearButtonPressedSignal(void);
 
     ///Is emitted in clearGraphs.

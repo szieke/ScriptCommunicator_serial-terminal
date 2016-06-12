@@ -94,7 +94,16 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ";";
+        return "void setText(int column, QString text);QString text(int column);"
+               "void setItemIcon(int column, QString iconFileName);void addChild(ScriptTreeWidgetItem* child);"
+               "int childCount(void);void insertChild (int index, ScriptTreeWidgetItem* child);"
+               "ScriptTreeWidgetItem* takeChild (int index);void deleteItem(void);"
+               "int indexOfChild(ScriptTreeWidgetItem* child);void sortChildren(int column, bool ascendingOrder);"
+               "ScriptTreeWidgetItem* parent(void);int columnCount(void);"
+               "void setBackgroundColor(int column, QString color);void setForegroundColor(int column, QString color);"
+               "bool isExpanded(void);void setExpanded(bool expand);"
+               "void setData (int column, quint8 role, QString value);QString data(int column, quint8 role);"
+               "void setDisabled(bool disabled);bool isDisabled(void)";
     }
 
     ///Sets the text to be displayed in the given column to the given text.
@@ -200,19 +209,19 @@ public:
 
 signals:
     ///This signal is emitted in expandItem.
-    ///Scripts can connect a function to this signal.
+    ///This signal is private and must not be used inside a script.
     void expandItemSignal(QTreeWidgetItem* item, bool expand);
 
     ///This signal is emitted in expandItem.
-    ///Scripts can connect a function to this signal.
+    ///This signal is private and must not be used inside a script.
     void deleteTreeWidgetItemSignal(QTreeWidgetItem* item);
 
     ///This signal is emitted in insertChild.
-    ///Scripts can connect a function to this signal.
+    ///This signal is private and must not be used inside a script.
     void insertChildSignal(int index, QTreeWidgetItem* rootItem, QTreeWidgetItem* child);
 
     ///This signal is emitted in setItemIcon.
-    ///Scripts can connect a function to this signal.
+    ///This signal is private and must not be used inside a script.
     void setItemIconSignal(QTreeWidgetItem* item , int column, QString iconFileName);
 
     ///This signal is emitted in setText.
@@ -220,23 +229,23 @@ signals:
     void setTextSignal(int column, QString text, QTreeWidgetItem* item);
 
     ///This signal is emitted in takeChild.
-    ///Scripts can connect a function to this signal.
+    ///This signal is private and must not be used inside a script.
     void takeChildSignal(int index, QTreeWidgetItem** child, QTreeWidgetItem* item);
 
     ///This signal is emitted in sortChildren.
-    ///Scripts can connect a function to this signal.
+    ///This signal is private and must not be used inside a script.
     void sortChildrenSignal(int column, bool ascendingOrder, QTreeWidgetItem* item);
 
     ///This signal is emitted in setBackgroundColor.
-    ///Scripts can connect a function to this signal.
+    ///This signal is private and must not be used inside a script.
     void setBackgroundColorSignal(int column, QString color, QTreeWidgetItem* item);
 
     ///This signal is emitted in setForegroundColor.
-    ///Scripts can connect a function to this signal.
+    ///This signal is private and must not be used inside a script.
     void setForegroundColorSignal(int column, QString color, QTreeWidgetItem* item);
 
     ///This signal is emitted in setDisabled.
-    ///Scripts can connect a function to this signal.
+    ///This signal is private and must not be used inside a script.
     void setDisabledSignal(bool disabled, QTreeWidgetItem* item);
 
 private:

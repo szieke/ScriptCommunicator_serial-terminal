@@ -27,11 +27,15 @@
 
 #include <QObject>
 #include "PCANBasicClass.h"
+#include "scriptObject.h"
 
 ///This wrapper class is used to access a pcan interface from a script.
-class ScriptPcan : public QObject
+class ScriptPcan : public QObject, public ScriptObject
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 public:
     explicit ScriptPcan(QObject *parent = 0) : QObject(parent), m_pcan(this)
     {
@@ -41,6 +45,16 @@ public:
          connect(&m_pcan, SIGNAL(readyRead()),this, SLOT(stub_readyReadSlot()));
     }
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return "bool open(quint8 channel, quint32 baudrate, bool busOffAutoReset, bool powerSupply);"
+                "void close(void);bool setFilter(bool filterExtended, quint32 filterFrom, quint32 filterTo);"
+                "bool sendCanMessage(quint8 type, quint32 canId, QVector<unsigned char> data);"
+                "bool isConnected(void);QString getStatusString(void);quint32 getCurrentStatus(void);"
+                "QList<quint8> getCanParameter(quint8 parameter);bool setCanParameter(quint8 parameter, quint8 data);"
+                "canMessagesReceivedSignal(QVector<quint8> types, QVector<quint32> messageIds, QVector<quint32> timestamps, QVector<QVector<unsigned char>> data)";
+    }
 
     /**
      * Opens a pcan interface.

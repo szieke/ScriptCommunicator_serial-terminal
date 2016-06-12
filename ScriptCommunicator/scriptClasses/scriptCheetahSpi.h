@@ -27,14 +27,26 @@
 
 #include <QObject>
 #include "cheetahspi.h"
+#include "scriptObject.h"
 
 ///This wrapper class is used to access a CheetahSpi object from a script.
-class ScriptCheetahSpi : public QObject
+class ScriptCheetahSpi : public QObject, public ScriptObject
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 public:
     explicit ScriptCheetahSpi(QObject *parent = 0) : QObject(parent), m_interface(this)
     {
+    }
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return "QString detectDevices(void);bool connect(quint32 port, qint16 mode, quint32 baudrate);"
+                "void disconnect(void);bool sendReceiveData(QVector<unsigned char> sendData, quint8 chipSelect);"
+                "QVector<unsigned char> readAll(void)";
     }
 
     ///Returns a string which contains informations about all detected devices.

@@ -104,7 +104,21 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() + ";";
+        return ScriptWidget::getPublicScriptElements() +
+                ";ScriptTreeWidgetItem* createScriptTreeWidgetItem(void);void setHeaderLabels (QStringList labels);"
+                "void setColumnWidth(int column, int size);int getColumnWidth(int column);"
+                "void addTopLevelItem (ScriptTreeWidgetItem* item);void insertTopLevelItem (int index, ScriptTreeWidgetItem* item);"
+                "int topLevelItemCount(void);ScriptTreeWidgetItem* invisibleRootItem(void);"
+                "ScriptTreeWidgetItem* itemAbove(ScriptTreeWidgetItem* item);ScriptTreeWidgetItem* itemBelow(ScriptTreeWidgetItem* item);"
+                "ScriptTreeWidgetItem* takeTopLevelItem(int index);ScriptTreeWidgetItem* topLevelItem(int index);"
+                "void resizeColumnToContents(int column);int columnCount(void);"
+                "void setColumnCount(int columns);void expandItem(ScriptTreeWidgetItem* item);"
+                "void expandAll(void);void setCurrentItem (ScriptTreeWidgetItem* item);"
+                "ScriptTreeWidgetItem* currentItem(void);void sortItems(int column, bool ascendingOrder=true);"
+                "currentItemChangedSignal(ScriptTreeWidgetItem *current, ScriptTreeWidgetItem *previous);itemClickedSignal(ScriptTreeWidgetItem *item, int column);"
+                "itemDoubleClickedSignal(ScriptTreeWidgetItem *item, int column);setColumnWidthSignal(int column, int size, QTreeWidget* tree);"
+                "resizeColumnToContentsSignal(int column, QTreeWidget* tree);expandItemSignal(QTreeWidgetItem* item, bool expand);"
+                "expandAllSignal(QTreeWidget* tree)";
     }
 
     ///Creates a script tree widget item.
@@ -291,7 +305,7 @@ signals:
     void takeTopLevelItemSignal(int index, QTreeWidgetItem** item, QTreeWidget* tree);
 
 
-public Q_SLOTS:
+private Q_SLOTS:
 
     ///This slot function is called if an item has been clicked.
     void stub_itemClicked(QTreeWidgetItem* item, int column)
@@ -326,9 +340,6 @@ public Q_SLOTS:
         emit currentItemChangedSignal(scriptCurrentItem, scriptPrevioustItem);
     }
 
-
-
-private:
 
 private:
     ///The wrapped tree widget.

@@ -8,6 +8,7 @@
 #include <QScriptEngine>
 #include <QBuffer>
 #include <QXmlStreamWriter>
+#include "scriptObject.h"
 
 class ScriptFile;
 
@@ -15,9 +16,12 @@ class ScriptFile;
 ///Note: All function are working on an internal XML buffer.
 ///The function writteBufferToFile must be used to write the content of the internal XML buffer
 ///to a file.
-class ScriptXmlWriter : public QObject, protected QScriptable
+class ScriptXmlWriter : public QObject, protected QScriptable, public ScriptObject
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 public:
 
     ScriptXmlWriter(ScriptFile* scriptFileObject, QObject *parent = 0) : QObject(parent),
@@ -34,6 +38,23 @@ public:
     {
         (void)scriptEngine;
         qRegisterMetaType<ScriptXmlWriter*>("ScriptXmlWriter*");
+    }
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return "bool writeBufferToFile(QString fileName, bool isRelativePath=true);QString getInternalBuffer(void);"
+               "void clearInternalBuffer(void);void setCodec(QString codecName);"
+               "void setAutoFormatting(bool autoFormatting);bool autoFormatting(void);"
+               "void setAutoFormattingIndent(int spacesOrTabs);int autoFormattingIndent(void);"
+               "void writeStartDocument(QString version='1.0');void writeStartDocument(bool standalone, QString version='1.0');"
+               "void writeEndDocument(void);void writeNamespace(QString namespaceUri, QString prefix = '');"
+               "void writeDefaultNamespace(const QString namespaceUri);void writeStartElement(QString name, QString namespaceUri='');"
+               "void writeEmptyElement(QString name, QString namespaceUri="");void writeTextElement(QString name, QString text, QString namespaceUri='');"
+               "void writeEndElement(void);void writeAttribute(QString name, QString value, QString namespaceUri='');"
+               "void writeCDATA(QString text);void writeCharacters(QString text);"
+               "void writeComment(QString text);void writeDTD(QString dtd);void writeEntityReference(QString name);"
+               "void writeProcessingInstruction(QString target, QString data = '')";
     }
 
     ///Writes the internal XML Buffer to a file.
@@ -151,14 +172,23 @@ private:
 };
 
 ///This class represents a xml attributte.
-class ScriptXmlAttribute : public QObject, protected QScriptable
+class ScriptXmlAttribute : public QObject, protected QScriptable, public ScriptObject
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 public:
     ScriptXmlAttribute(QString name, QString value, QObject *parent = 0) : QObject(parent),
         m_name(name), m_value(value)
     {
 
+    }
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return "QString value(void);QString name(void)";
     }
 
     ///Returns the value of the attribute.
@@ -175,12 +205,24 @@ private:
 };
 
 ///Represents a xml element.
-class ScriptXmlElement : public QObject, protected QScriptable
+class ScriptXmlElement : public QObject, protected QScriptable, public ScriptObject
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 public:
     ScriptXmlElement(const QDomNode& node, QObject *parent = 0) : QObject(parent), m_node(node)
     {
+    }
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return "QString elementName(void);QList<ScriptXmlElement*> childElements(void);"
+                "QStringList childTextElements(void);QStringList childCDataElements(void);"
+                "QStringList childCommentElements(void);QList<ScriptXmlAttribute*> attributes(void);"
+                "QString attributeValue(QString attrName)";
     }
 
     ///Returns the name of this element.
@@ -210,11 +252,22 @@ private:
 };
 
 ///Class for reading a xml file.
-class ScriptXmlReader : public QObject, protected QScriptable
+class ScriptXmlReader : public QObject, protected QScriptable, public ScriptObject
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 public:
     explicit ScriptXmlReader(ScriptFile* scriptFileObject, QObject *parent = 0);
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return "qint32 readFile(QString fileName, bool isRelativePath=true);"
+                "QList<ScriptXmlElement*> elementsByTagName(QString name);"
+                "ScriptXmlElement *getRootElement(void)";
+    }
 
     ///Reads and parses a xml file. The parsed xml file is stored internally.
     Q_INVOKABLE qint32 readFile(QString fileName, bool isRelativePath=true);
@@ -238,10 +291,6 @@ public:
         qScriptRegisterSequenceMetaType<QList<ScriptXmlElement*>>(scriptEngine);
         qScriptRegisterSequenceMetaType<QList<ScriptXmlAttribute*>>(scriptEngine);
     }
-
-signals:
-
-public slots:
 
 private:
 

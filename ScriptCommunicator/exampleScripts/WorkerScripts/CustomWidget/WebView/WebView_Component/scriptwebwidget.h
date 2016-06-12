@@ -145,6 +145,12 @@ public:
 class ScriptWebWidget : public QObject
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    ///Note: ScriptCommunicator uses this property for showing more information
+    ///during an exception.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+
 public:
     ScriptWebWidget(QObject* scriptThread, QWidget* webView, bool scriptRunsInDebugger) :
         QObject(scriptThread), m_webView(static_cast<QWebView*> (webView))
@@ -186,6 +192,25 @@ public:
         connect(slotObject, SIGNAL(callWorkerScriptWithResultSignal(QVariant,QVariant*,bool*)), this, SLOT(callWorkerScriptWithResultSignal_stub(QVariant,QVariant*,bool*)), Qt::QueuedConnection);
         connect(slotObject, SIGNAL(callWorkerScriptSignal(QVariant)), this, SLOT(callWorkerScriptSignal_stub(QVariant)), Qt::QueuedConnection);
 
+    }
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    ///Note: ScriptCommunicator uses this property/function for showing more information
+    ///during an exception.
+    virtual QString getPublicScriptElements(void)
+    {
+        return "void load(QString url);QString url(void);bool findText(QString subString, quint32 options = 0);"
+               "bool hasSelection(void);bool isModified(void);quint32 renderHints(void);"
+               "void setRenderHint(quint32 hints);QString selectedHtml(void);QString selectedText(void);"
+               "void setHtml(QString html, QString baseUrl="");void setTextSizeMultiplier(qreal factor);"
+               "qreal textSizeMultiplier(void);QString title(void);void setZoomFactor(qreal factor);"
+               "qreal zoomFactor(void);void back(void);void forward(void);void reload(void);"
+               "void stop(void);QVariant evaluateJavaScript(QString script);void print(QString printDialogTitle = 'Print');"
+               "loadFinishedSignal(bool ok);loadProgressSignal(int progress);loadStartedSignal(void);"
+               "selectionChangedSignal(void);statusBarMessageSignal(QString text);titleChangedSignal(QString text);"
+               "urlChangedSignal(QString text);callWorkerScriptWithResultSignal(QVariant params, ResultClass* resultObject);"
+               "callWorkerScriptSignal(QVariant params)"
+;
     }
 
     ///Loads the specified url and displays it.

@@ -30,12 +30,16 @@
 #include <mainInterfaceThread.h>
 #include <QNetworkProxy>
 #include <scriptSerialPort.h>
+#include "scriptObject.h"
 
 
 ///This wrapper class is used to access a QTcpSocket (tcp client) object from a script.
-class ScriptTcpClient: public QObject
+class ScriptTcpClient: public QObject, public ScriptObject
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 
 public:
     ScriptTcpClient(QTcpSocket* socket, QObject *parent, MainInterfaceThread* interfaceThread) :
@@ -58,6 +62,19 @@ public:
     }
     virtual ~ScriptTcpClient()
     {
+    }
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return "void connectToHost(QString hostAdress, quint16 port);void close(void);"
+               "bool isReadable(void);quint64 bytesAvailable(void);QVector<unsigned char> readAll(void);"
+               "qint64 write( QVector<unsigned char> dataVector);qint64 writeString(QString string);"
+               "bool isOpen(void);QString getErrorString(void);void enableMainInterfaceRouting(void);"
+               "void disableMainInterfaceRouting();void setProxy(QString proxyType = 'NO_PROXY', QString proxyUserName= '', QString proxyPassword = '', QString proxyIpAddress = '', quint16 proxyPort = 0);"
+               "bool canReadLine(void);QString readLine(bool removeNewLine=true, bool removeCarriageReturn=true);"
+               "QStringList readAllLines(bool removeNewLine=true, bool removeCarriageReturn=true);connectedSignal(void);"
+               "disconnectedSignal(void);readyReadSignal(void);errorSignal(int error)";
     }
 
     ///This function connects the socket to a tcp server.

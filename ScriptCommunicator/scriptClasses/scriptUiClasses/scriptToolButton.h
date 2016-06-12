@@ -55,11 +55,13 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() + ";";
+        return ScriptWidget::getPublicScriptElements() +
+                ";void setText(QString text);QString text(void);"
+                "void setIcon(QString iconFileName);clickedSignal(void)";
     }
 
     ///Sets the button text.
-    Q_INVOKABLE void setText(const QString text){emit setTextSignal(text, m_button);}
+    Q_INVOKABLE void setText(QString text){emit setTextSignal(text, m_button);}
 
     ///Returns the button text.
     Q_INVOKABLE QString text(void){return m_button->text();}
@@ -70,14 +72,14 @@ public:
 Q_SIGNALS:
     ///This signal is emitted if the user presses the button.
     ///Scripts can connect a function to this signal.
-    void clickedSignal();
+    void clickedSignal(void);
 
     ///This signal is emitted in setItemIcon.
-    ///Scripts can connect a function to this signal.
+    ///This signal is private and must not be used inside a script.
     void setItemIconSignal(QAbstractButton* button, QString iconFileName);
 
     ///This signal is emitted in setText.
-    ///Scripts can connect a function to this signal.
+    ///This signal is private and must not be used inside a script.
     void setTextSignal(QString text, QToolButton* button);
 
 private slots:

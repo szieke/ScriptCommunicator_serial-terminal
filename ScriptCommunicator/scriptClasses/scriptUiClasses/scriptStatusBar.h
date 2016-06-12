@@ -47,7 +47,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() + ";";
+        return ScriptWidget::getPublicScriptElements() + ";void showMessage(QString text, int duration)";
     }
 
     ///Shows a message in the status bar.

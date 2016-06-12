@@ -129,6 +129,11 @@ class  ScriptLed : public QObject
 {
     Q_OBJECT
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    ///Note: ScriptCommunicator uses this property for showing more information
+    ///during an exception.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+
 public:
     ScriptLed(QObject* scriptThread, QWidget* led, bool scriptRunsInDebugger) : QObject(scriptThread), m_led(static_cast<LED*>(led))
     {
@@ -148,7 +153,16 @@ public:
 
     }
 
-    Q_INVOKABLE void toggleState(){emit toggleStateSignal();}
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    ///Note: ScriptCommunicator uses this property/function for showing more information
+    ///during an exception.
+    virtual QString getPublicScriptElements(void)
+    {
+        return "void toggleState(void);void setFlashing(bool flashing);"
+                "void setState(bool state);void stateChangedSlot(bool state);stateChangedSignal(bool state)";
+    }
+
+    Q_INVOKABLE void toggleState(void){emit toggleStateSignal();}
     Q_INVOKABLE void setFlashing(bool flashing){emit setFlashingeSignal(flashing);}
     Q_INVOKABLE void setState(bool state){emit setStateSignal(state);}
 
@@ -160,11 +174,16 @@ public:
 
 
 signals:
-    //Signals visible for worker scripts.
-    void toggleStateSignal();
+
+    ///Is emitted if the state of the led has been changed.
+    void stateChangedSignal(bool state);
+
+
+    ///This signals are private and must not be used inside a script.
+    void toggleStateSignal(void);
     void setFlashingeSignal(bool flashing);
     void setStateSignal(bool state);
-    void stateChangedSignal(bool state);// return
+
 
 private:
     LED* m_led;

@@ -29,11 +29,15 @@
 #include <QtSerialPort/QSerialPort>
 #include <QVector>
 #include <mainInterfaceThread.h>
+#include "scriptObject.h"
 
 ///This wrapper class is used to access a QSerialPort object from a script.
-class ScriptSerialPort : public QObject
+class ScriptSerialPort : public QObject, public ScriptObject
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 public:
     explicit ScriptSerialPort(QObject *parent, MainInterfaceThread* interfaceThread) :
         QObject(parent), m_serialPort(), m_mainInterfaceThread(interfaceThread), m_interfaceIsPaused(false)
@@ -53,6 +57,26 @@ public:
     }
     virtual ~ScriptSerialPort()
     {
+    }
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return "void setDTR(bool set);void setRTS(bool set);void setPortName(const QString &name);"
+               "QString portName(void);bool setBaudRate(qint32 baudRate);qint32 baudRate(void);"
+               "bool setDataBits(quint32 dataBits);quint32 dataBits(void);"
+               "bool setParity(QString parityString);QString parity(void);bool setStopBits(QString stopBitsString);"
+               "QString stopBits(void);bool setFlowControl(QString flowString);QString flowControl(void);"
+               "QString errorString(void);bool open(void);void close(void);quint32 getSerialPortSignals(void);"
+               "bool isOpen(void);qint64 bytesAvailable(void);QVector<unsigned char> readAll();"
+               "qint64 write(QVector<unsigned char>dataVector);qint64 writeString(QString string);"
+               "qint64 bytesToWrite(void);bool waitForBytesWritten(int msecs);void enableMainInterfaceRouting();"
+               "void disableMainInterfaceRouting();bool canReadLine(void);QString readLine(bool removeNewLine=true, bool removeCarriageReturn=true);"
+               "QStringList readAllLines(bool removeNewLine=true, bool removeCarriageReturn=true);"
+               "QString readLineInternally(QIODevice* ioDevice, bool removeNewLine=true, bool removeCarriageReturn=true);"
+               "QStringList readAllLinesInternally(QIODevice* ioDevice, bool removeNewLine=true, bool removeCarriageReturn=true);"
+               "readyReadSignal(void)"
+;
     }
 
     ///Sets the DTR pin.

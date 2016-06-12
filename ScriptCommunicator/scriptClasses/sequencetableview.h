@@ -43,6 +43,7 @@
 #include "crc.h"
 #include "settingsdialog.h"
 #include "scriptStandardDialogs.h"
+#include "scriptObject.h"
 
 class SendThread;
 class SendWindow;
@@ -81,16 +82,40 @@ public:
 
 };
 
-class SequenceScriptThread : public QThread
+class SequenceScriptThread : public QThread, public ScriptObject
 {
     Q_OBJECT
     friend class SequenceTableView;
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 
 public:
     SequenceScriptThread( SendWindow* sendWindow, MainWindow* mainWindow,  SequenceTableView* sequencteTable, bool runsInDebugger) : QThread(0), m_sendWindow(sendWindow),
     m_mainWindow(mainWindow), m_sequencteTable(sequencteTable), m_blockTime(DEFAULT_BLOCK_TIME), m_dialogIsShown(false),
     m_scriptFunctionIsFinished(true), m_standardDialogs(0), m_runsInDebugger(runsInDebugger), m_debugger(0), m_debugWindow(0){}
     virtual ~SequenceScriptThread(){}
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return "QString byteArrayToString(QVector<unsigned char> data);QString byteArrayToHexString(QVector<unsigned char> data);"
+               "QVector<unsigned char> stringToArray(QString str);QVector<unsigned char> addStringToArray(QVector<unsigned char> array, QString str);"
+               "quint8 calculateCrc8(QVector<unsigned char> data);quint16 calculateCrc16(QVector<unsigned char> data);"
+               "quint32 calculateCrc32(QVector<unsigned char> data);quint64 calculateCrc64(QVector<unsigned char> data);"
+               "void setGlobalString(QString name, QString string);QString getGlobalString(QString name, bool removeValue=false);"
+               "void setGlobalDataArray(QString name, QVector<unsigned char> data);QVector<unsigned char> getGlobalDataArray(QString name, bool removeValue=false);"
+               "void setGlobalUnsignedNumber(QString name, quint32 number);QList<quint32> getGlobalUnsignedNumber(QString name,bool removeValue=false);"
+               "void setGlobalSignedNumber(QString name, qint32 number);QList<qint32> getGlobalSignedNumber(QString name,bool removeValue=false);"
+               "QString getCurrentVersion(void);void messageBox(QString icon, QString title, QString text);"
+               "bool showYesNoDialog(QString icon, QString title, QString text);QString showTextInputDialog(QString title, QString label, QString displayedText='');"
+               "QString showMultiLineTextInputDialog(QString title, QString label, QString displayedText='');"
+               "QString showGetItemDialog(QString title, QString label, QStringList displayedItems, int currentItemIndex=0, bool editable=false);"
+               "QList<int> showGetIntDialog(QString title, QString label, int initialValue, int min, int max, int step);"
+               "QList<double> showGetDoubleDialog(QString title, QString label, double initialValue, double min, double max, int decimals);"
+               "QList<int> showColorDialog(quint8 initInitalRed=255, quint8 initInitalGreen=255, quint8 initInitalBlue=255, quint8 initInitalAlpha=255, bool alphaIsEnabled=false);"
+               "void setBlockTime(quint32 blockTime);QStringList getAllObjectPropertiesAndFunctions(QScriptValue object)";
+    }
 
     ///Converts a byte array which contains ascii characters into a ascii string (QString).
     Q_INVOKABLE QString byteArrayToString(QVector<unsigned char> data){return ScriptHelper::byteArrayToString(data);}

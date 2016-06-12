@@ -31,11 +31,15 @@
 #include <mainInterfaceThread.h>
 #include <QNetworkProxy>
 #include <QScriptable>
+#include "scriptObject.h"
 
 ///This wrapper class is used to access a QTcpServer object from a script.
-class ScriptTcpServer : public QObject, protected QScriptable
+class ScriptTcpServer : public QObject, protected QScriptable, public ScriptObject
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 public:
     explicit ScriptTcpServer(QObject *parent, MainInterfaceThread* interfaceThread) : QObject(parent),
         m_mainInterfaceThread(interfaceThread), m_interfaceIsPaused(false)
@@ -48,6 +52,14 @@ public:
          connect(&m_tcpServer, SIGNAL(newConnection()),this, SLOT(stub_newConnectionSlot()));
 
          connect(parent, SIGNAL(pauseAllCreatedInterfaces(bool)),this, SLOT(pauseInterfaceSlot(bool)));
+    }
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return "bool listen(quint16 port);bool isListening(void);void setMaxPendingConnections(int numConnections);"
+               "int maxPendingConnections(void);void close();bool hasPendingConnections(void);"
+               "QScriptValue nextPendingConnection(void);newConnectionSignal(void)";
     }
 
     ///Call this function to start listening for new connections.

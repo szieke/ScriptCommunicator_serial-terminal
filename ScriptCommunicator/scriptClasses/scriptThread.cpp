@@ -262,7 +262,7 @@ QString ScriptThread::getPublicScriptElements(void)
            "globalRealChangedSignal.connect(QString name, double number);"
            "dataReceivedSignal.connect(QVector<unsigned char> data);"
            "canMessagesReceivedSignal.connect(QVector<quint8> types, QVector<quint32> messageIds, QVector<quint32> timestamps, QVector<QVector<unsigned char>>  data);"
-           "sendDataFromMainInterfaceSignal(QVector<unsigned char> data);";
+           "sendDataFromMainInterfaceSignal(QVector<unsigned char> data)";
 }
 
 ///Sets the priority of the script thread (which executes the current script).
@@ -2916,11 +2916,11 @@ void ScriptThread::sendReceivedDataToMainInterface(QVector<unsigned char> data)
 }
 
 /**
- * @brief Returns and all functions and properties of an object.
+ * @brief Returns and all functions, signals and properties of an object.
  * @param object
  *      The object.
  * @param resultList
- *      All functions and properties of the object in a string list. . If not needed then a 0 can be given.
+ *      All functions and properties of the object in a string list. If not needed then a 0 can be given.
  * @param resultString
  *      All functions and properties of the object in a string (separated by \n). If not needed then a 0 can be given.
  */
@@ -2959,7 +2959,10 @@ void ScriptThread::getAllObjectPropertiesAndFunctionsInternal(QScriptValue objec
 }
 
 /**
- * Returns and prints (if printInScriptWindowConsole is true) all functions and properties of an object in the script window console.
+ * Returns and prints (if printInScriptWindowConsole is true) all functions, signals and properties of an object in the script window console.
+ * Note: Only ScriptCommunicator classes are supported. Calling this function with a QtScript built-in class (e.g. Array) will result
+ * in an empty list.
+ *
  * @param object
  *      The object.
  * @param printInScriptWindowConsole
@@ -2974,7 +2977,7 @@ QStringList ScriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object
 
     getAllObjectPropertiesAndFunctionsInternal(object, &resultList, printInScriptWindowConsole ? &resultString :  0);
 
-    if(printInScriptWindowConsole)
+    if(printInScriptWindowConsole && !resultString.isEmpty())
     {
         emit appendTextToConsoleSignal(resultString, true, false);
     }

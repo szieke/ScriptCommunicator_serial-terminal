@@ -30,11 +30,15 @@
 #include "scriptTcpClient.h"
 #include <QNetworkProxy>
 #include <scriptSerialPort.h>
+#include "scriptObject.h"
 
 ///This wrapper class is used to access a QUdpSocket object from a script.
-class ScriptUdpSocket: public QObject
+class ScriptUdpSocket: public QObject, public ScriptObject
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 
 public:
     ScriptUdpSocket(QObject* parent, MainInterfaceThread* interfaceThread) : QObject(parent),
@@ -51,6 +55,18 @@ public:
                 m_mainInterfaceThread, SLOT(sendDataSlot(const QByteArray, uint)));
 
         connect(parent, SIGNAL(pauseAllCreatedInterfaces(bool)),this, SLOT(pauseInterfaceSlot(bool)));
+    }
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return "bool bind(quint16 port);void close(void);bool hasPendingDatagrams(void);"
+               "QVector<unsigned char> readDatagram(void);QVector<unsigned char> readAll(void);"
+               "quint64 write(QVector<unsigned char> data, QString hostAdress, quint16 hostPort);"
+               "qint64 writeString(QString string, QString hostAdress, quint16 hostPort);"
+               "bool isOpen(void);void enableMainInterfaceRouting(QString routingHostAddress, quint16 routingHostPort);"
+               "void disableMainInterfaceRouting(void);bool canReadLine(void);QString readLine(bool removeNewLine=true, bool removeCarriageReturn=true);"
+               "QStringList readAllLines(bool removeNewLine=true, bool removeCarriageReturn=true);readyReadSignal(void)";
     }
 
     ///Binds the socket to the port.

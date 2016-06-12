@@ -52,7 +52,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ";";
+        return "QList<int> sizes(void);void setSizes (QList<int> list)";
     }
 
     ///Returns a list of the size parameters of all the widgets in this splitter.
@@ -72,6 +72,8 @@ public:
 
 
 Q_SIGNALS:
+    ///Is emitted by the setSizes function.
+    ///This signal is private and must not be used inside a script.
     void setSplitterSizes (QSplitter* splitter, QList<int>& list);
 private:
     ///The wrapped splitter.

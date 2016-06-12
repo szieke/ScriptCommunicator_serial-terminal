@@ -36,16 +36,21 @@
 #include "scriptXml.h"
 #include <QScriptEngineDebugger>
 #include <scriptHelper.h>
+#include "scriptObject.h"
 
 
 class MainWindow;
 class CustomConsoleLogObject;
 
 ///Thrread which executes the custom console/log script.
-class CustomConsoleLogThread : public QThread
+class CustomConsoleLogThread : public QThread, public ScriptObject
 {
     Q_OBJECT
     friend class CustomConsoleLogObject;
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+
 
 public:
     CustomConsoleLogThread(CustomConsoleLogObject* consoleLogObject, MainWindow* mainWindow,
@@ -73,7 +78,26 @@ public:
 
         }
     }
-
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return "QString byteArrayToString(QVector<unsigned char> data);QString byteArrayToHexString(QVector<unsigned char> data);"
+               "QVector<unsigned char> stringToArray(QString str);QVector<unsigned char> addStringToArray(QVector<unsigned char> array, QString str);"
+               "QString getScriptFolder(void);bool loadScript(QString scriptPath, bool isRelativePath=true);"
+               "QString readFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1);"
+               "QVector<unsigned char> readBinaryFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1);"
+               "qint64 getFileSize(QString path, bool isRelativePath=true);bool checkFileExists(QString path, bool isRelativePath=true);"
+               "bool checkDirectoryExists(QString directory, bool isRelativePath=true);bool createDirectory(QString directory, bool isRelativePath=true);"
+               "bool renameDirectory(QString directory, QString newName);bool renameFile(QString path, QString newName);"
+               "bool deleteFile(QString path, bool isRelativePath=true);bool deleteDirectory(QString directory, bool isRelativePath=true);"
+               "bool deleteDirectoryRecursively(QString directory, bool isRelativePath=true);"
+               "QStringList readDirectory(QString directory, bool isRelativePath=true, bool recursive=true, bool returnFiles=true, bool returnDirectories=true);"
+               "bool writeFile(QString path, bool isRelativePath, QString content, bool replaceFile, qint64 startPosition=-1);"
+               "bool writeBinaryFile(QString path, bool isRelativePath, QVector<unsigned char> content, bool replaceFile, qint64 startPosition=-1);"
+               "QString createAbsolutePath(QString fileName);QString getCurrentVersion(void);"
+               "void setBlockTime(quint32 blockTime);QScriptValue createXmlReader();QScriptValue createXmlWriter();"
+               "QStringList getAllObjectPropertiesAndFunctions(QScriptValue object)";
+    }
 
     ///Converts a byte array which contains ascii characters into a ascii string (QString).
     Q_INVOKABLE QString byteArrayToString(QVector<unsigned char> data){return ScriptHelper::byteArrayToString(data);}

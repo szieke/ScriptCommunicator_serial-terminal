@@ -170,7 +170,24 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() + ";";
+        return ScriptWidget::getPublicScriptElements() +
+                ";void setCellIcon(int row, int column, QString iconFileName);void setVerticalHeaderLabel(int row, QString text);"
+                "void setHorizontalHeaderLabel(int column, QString text);void setCellEditable(int row, int column, bool editable);"
+                "void setRowCount(int rows);int rowCount(void);"
+                "void setColumnCount(int columns);void setCellBackgroundColor(QString color, int row, int column);"
+                "void setCellForegroundColor(QString color, int row, int column);void resizeColumnToContents(int column);"
+                "void resizeRowToContents(int row);void setRowHeight(int row, int height);"
+                "int rowHeight(int row);void setColumnWidth(int column, int width);"
+                "int columnWidth(int column);int frameWidth(void);"
+                "int verticalHeaderWidth(void);int verticalScrollBarWidth(void);"
+                "bool isVerticalScrollBarVisible(void);void sortItems(int column, bool ascendingOrder=true);"
+                "void rowsCanBeMovedByUser(bool canBeMoved);QVector<ScriptTableCellPosition> getAllSelectedCells(void);"
+                "bool insertWidget(int row, int column, QString type);QScriptValue getWidget(int row, int column);"
+                "void insertRow(int row);void insertColumn(int column);"
+                "void removeRow(int row);void removeColumn(int column);"
+                "void clear(void);cellPressedSignal(int row, int column);cellClickedSignal(int row, int column);"
+                "cellDoubleClickedSignal(int row, int column);cellChangedSignal(int row, int column);"
+                "horizontalHeaderSectionResizedSignal(int logicalIndex, int oldSize, int newSize);cellSelectionChangedSignal(void)";
     }
 
     ///Returns the text of one cell.
@@ -507,43 +524,6 @@ public Q_SLOTS:
     ///This slot function clears the table (removes all cells).
     void clear(void){m_tableWidget->clear();}
 
-    ///With this function the user can move the selected row up or down
-    ///(while holding the left mouse button at the row and moving the mouse up and/or down).
-    void stub_cellEnteredSlot(int row, int column)
-    {
-        int rowsel;
-
-        if(m_rowsCanBeMovedByUser)
-        {
-
-            //Stop from entering again.
-            m_rowsCanBeMovedByUser = false;
-
-            if(m_tableWidget->currentIndex().row()<row)
-            {
-                //the position of the selected row has to be decremented
-                rowsel=row-1;
-            }
-            else if(m_tableWidget->currentIndex().row()>row)
-            {
-                //the position of the selected row has to be decremented
-                rowsel=row+1;
-            }
-            else
-            {   //the position of the selected row is not changed
-                rowsel = row;
-            }
-
-            if(rowsel != row)
-            {//the selected row has to change his position with an other row
-
-                emit cellEnteredSignal(row, rowsel, column, m_tableWidget);
-            }
-
-            m_rowsCanBeMovedByUser = true;
-        }
-    }
-
 
 Q_SIGNALS:
 
@@ -662,6 +642,44 @@ private Q_SLOTS:
 
     ///This slot function is called if the current selection has been changed.
     void stub_itemSelectionChanged(void){emit cellSelectionChangedSignal();}
+
+
+    ///With this function the user can move the selected row up or down
+    ///(while holding the left mouse button at the row and moving the mouse up and/or down).
+    void stub_cellEnteredSlot(int row, int column)
+    {
+        int rowsel;
+
+        if(m_rowsCanBeMovedByUser)
+        {
+
+            //Stop from entering again.
+            m_rowsCanBeMovedByUser = false;
+
+            if(m_tableWidget->currentIndex().row()<row)
+            {
+                //the position of the selected row has to be decremented
+                rowsel=row-1;
+            }
+            else if(m_tableWidget->currentIndex().row()>row)
+            {
+                //the position of the selected row has to be decremented
+                rowsel=row+1;
+            }
+            else
+            {   //the position of the selected row is not changed
+                rowsel = row;
+            }
+
+            if(rowsel != row)
+            {//the selected row has to change his position with an other row
+
+                emit cellEnteredSignal(row, rowsel, column, m_tableWidget);
+            }
+
+            m_rowsCanBeMovedByUser = true;
+        }
+    }
 private:
     ///The wrapped table widget.
     QTableWidget* m_tableWidget;

@@ -47,6 +47,7 @@
 #include "scriptwindow.h"
 #include <QScriptEngineDebugger>
 
+
 //Global sequence data maps (sequences can store data here).
 static QMap<QString, QString> g_stringMap;
 static QMap<QString, QVector<unsigned char>> g_dataMap;

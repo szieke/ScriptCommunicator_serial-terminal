@@ -16,15 +16,19 @@
 #include <QSqlDriver>
 #include <QScriptValueIterator>
 #include "scriptHelper.h"
+#include "scriptObject.h"
 
 class ScriptSqlIndex;
 
 
-class  ScriptSqlField : public QObject
+class  ScriptSqlField : public QObject, public ScriptObject
 {
     Q_OBJECT
     friend class ScriptSqlIndex;
     friend class ScriptSqlRecord;
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 
 public:
 
@@ -37,6 +41,19 @@ public:
     }
 
     ~ScriptSqlField(){}
+
+    virtual QString getPublicScriptElements(void)
+    {
+        return "void setValue(QVariant value);QVariant value(void);void setName(QString name);QString name();"
+        "bool isNull(void);void setReadOnly(bool readOnly);bool isReadOnly(void);void clear(void);"
+        "quint32 type(void);bool isAutoValue(void);void setType(QVariant::Type type);"
+        "void setRequiredStatus(quint32 status);void setRequired(bool required);"
+        "void setLength(int fieldLength);void setPrecision(int precision);"
+        "void setDefaultValue(QVariant value);void setSqlType(int type);"
+        "void setGenerated(bool gen);void setAutoValue(bool autoVal);"
+        "quint32 requiredStatus(void);int length(void);int precision(void);QVariant defaultValue(void);"
+        "int typeID(void);bool isGenerated(void);bool isValid(void)";
+    }
 
     Q_INVOKABLE void setValue(QVariant value)
     {
@@ -89,9 +106,12 @@ private:
     QSqlField m_field;
 };
 
-class  ScriptSqlRecord : public QObject, protected QScriptable
+class  ScriptSqlRecord : public QObject, protected QScriptable, public ScriptObject
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 
 public:
     ScriptSqlRecord(const QSqlRecord& other) : QObject(0), m_record(other){}
@@ -103,6 +123,19 @@ public:
     }
 
     ~ScriptSqlRecord(){}
+
+    virtual QString getPublicScriptElements(void)
+    {
+        return "QVariant value(int i);QVariant value(QString name);void setValue(int i, QVariant val);"
+               "void setValue(QString name, QVariant val);void setNull(int i);void setNull(QString name);"
+               "bool isNull(int i);bool isNull(QString name);int indexOf(QString name);"
+               "QString fieldName(int i);QScriptValue field(int i);QScriptValue field(QString name);"
+               "bool isGenerated(int i);bool isGenerated(QString name);void setGenerated(QString name, bool generated);"
+               "void setGenerated(int i, bool generated);void append(ScriptSqlField* field);"
+               "void replace(int pos, ScriptSqlField* field);void insert(int pos, ScriptSqlField* field);"
+               "void remove(int pos);bool isEmpty(void);bool contains(QString name);"
+               "void clear(void);void clearValues(void);int count(void);QScriptValue keyValues(ScriptSqlRecord* keyFields)";
+    }
 
     Q_INVOKABLE QVariant value(int i)
     {
@@ -174,9 +207,13 @@ private:
     QSqlRecord m_record;
 };
 
-class  ScriptSqlIndex : public QObject
+class  ScriptSqlIndex : public QObject, public ScriptObject
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+
 public:
     ScriptSqlIndex(QSqlIndex index) : QObject(0),m_index(index){ }
     ~ScriptSqlIndex(){}
@@ -187,10 +224,18 @@ public:
         return *this;
     }
 
+    virtual QString getPublicScriptElements(void)
+    {
+        return "void setCursorName(QString cursorName);QString cursorName(void);"
+                "void setName(QString name);QString name(void);"
+                "void append(ScriptSqlField* field);void append(ScriptSqlField* field, bool desc);"
+                "bool isDescending(int i);void setDescending(int i, bool desc)";
+    }
+
     Q_INVOKABLE void setCursorName(QString cursorName){m_index.setCursorName(cursorName);}
-    Q_INVOKABLE QString cursorName(){ return m_index.cursorName(); }
+    Q_INVOKABLE QString cursorName(void){ return m_index.cursorName(); }
     Q_INVOKABLE void setName(QString name){m_index.setName(name);}
-    Q_INVOKABLE QString name() { return m_index.name(); }
+    Q_INVOKABLE QString name(void) { return m_index.name(); }
 
     Q_INVOKABLE void append(ScriptSqlField* field){m_index.append(field->m_field);}
     Q_INVOKABLE void append(ScriptSqlField* field, bool desc){m_index.append(field->m_field,desc);}
@@ -203,9 +248,13 @@ private:
 };
 
 
-class  ScriptSqlError : public QObject
+class  ScriptSqlError : public QObject, public ScriptObject
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+
 public:
 
     ScriptSqlError(const QSqlError& other) : QObject(0), m_error(other) {}
@@ -217,21 +266,32 @@ public:
 
     ~ScriptSqlError(){}
 
-    Q_INVOKABLE QString driverText(){return m_error.driverText();}
-    Q_INVOKABLE QString databaseText(){return m_error.databaseText();}
-    Q_INVOKABLE /*QSqlError::ErrorType*/ quint32 type(){return (quint32)m_error.type();}
-    Q_INVOKABLE QString nativeErrorCode(){return m_error.nativeErrorCode();}
-    Q_INVOKABLE QString text(){return m_error.text();}
-    Q_INVOKABLE bool isValid(){return m_error.isValid();}
+    virtual QString getPublicScriptElements(void)
+    {
+        return "QString driverText(void);QString databaseText(void);"
+                "quint32 type(void);QString nativeErrorCode(void);"
+                "QString text(void);bool isValid(void)";
+    }
+
+    Q_INVOKABLE QString driverText(void){return m_error.driverText();}
+    Q_INVOKABLE QString databaseText(void){return m_error.databaseText();}
+    Q_INVOKABLE /*QSqlError::ErrorType*/ quint32 type(void){return (quint32)m_error.type();}
+    Q_INVOKABLE QString nativeErrorCode(void){return m_error.nativeErrorCode();}
+    Q_INVOKABLE QString text(void){return m_error.text();}
+    Q_INVOKABLE bool isValid(void){return m_error.isValid();}
 private:
 
     QSqlError m_error;
 };
 
 
-class  ScriptSqlQuery : public QObject, protected QScriptable
+class  ScriptSqlQuery : public QObject, protected QScriptable, public ScriptObject
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+
 public:
 
     ScriptSqlQuery(const QSqlQuery& other) : QObject(0), m_query(other){}
@@ -242,6 +302,23 @@ public:
     }
 
     ~ScriptSqlQuery(){}
+
+    virtual QString getPublicScriptElements(void)
+    {
+        return "bool isValid(void); bool isActive(void);bool isNull(int field);bool isNull(QString name);"
+               "int at(void);QString lastQuery(void);int numRowsAffected(void);QScriptValue lastError(void);"
+               "bool isSelect(void);int size(void);bool isForwardOnly(void);QScriptValue record(void);"
+               "void setForwardOnly(bool forward);bool exec(QString query);QVariant value(int i);"
+               "QVariant value(QString name);void setNumericalPrecisionPolicy(quint32 precisionPolicy);"
+               "quint32 numericalPrecisionPolicy(void);bool seek(int i, bool relative = false);bool next(void);"
+               "bool previous(void);bool first(void);bool last(void);void clear(void); bool exec(void);"
+               "bool execBatch(quint32 mode = (quint32)QSqlQuery::ValuesAsRows);bool prepare(QString query);"
+               "void bindValue(QString placeholder, QVariant val, quint32 type = (quint32)QSql::In);"
+               "void bindValue(int pos, QVariant val, quint32 type = (quint32)QSql::In);"
+               "void addBindValue(QVariant val, quint32 type = (quint32)QSql::In);QVariant boundValue(QString placeholder);"
+               "QVariant boundValue(int pos);ScriptMap boundValues(void);QString executedQuery(void);"
+               "QVariant lastInsertId(void);void finish(void);bool nextResult(void)";
+    }
 
     Q_INVOKABLE bool isValid(){return m_query.isValid();}
     Q_INVOKABLE bool isActive(){return m_query.isActive();}
@@ -339,14 +416,31 @@ private:
 
 class ScriptSql;
 
-class ScriptSqlDatabase : public QObject, protected QScriptable
+class ScriptSqlDatabase : public QObject, protected QScriptable, public ScriptObject
 {
     Q_OBJECT
     friend class ScriptSql;
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+
 public:
     explicit ScriptSqlDatabase(QObject *parent = 0) : QObject(parent), m_database(){}
 
     ScriptSqlDatabase(QSqlDatabase db, QObject *parent = 0) : QObject(parent), m_database(db){}
+
+    virtual QString getPublicScriptElements(void)
+    {
+        return "bool open(void);bool open(QString user, QString password);void close(void);bool isOpen(void);"
+               "bool isOpenError(void);QStringList tables(quint32 type = QSql::TableType::Tables);QScriptValue primaryIndex(QString tablename);"
+               "QScriptValue record(QString tablename);QScriptValue exec(QString query = QString());QScriptValue lastError(void);"
+               "bool isValid(void); bool transaction(void);bool commit(void);bool rollback(void);void setDatabaseName(QString name);"
+               "void setUserName(QString name);void setPassword(QString password);void setHostName(QString host);"
+               "void setPort(int p);void setConnectOptions(QString options = QString());QString databaseName(void);"
+               "QString userName(void);QString password(void);QString hostName(void);QString driverName(void);"
+               "int port(void)QString connectOptions(void);QString connectionName(void);"
+               "void setNumericalPrecisionPolicy(quint32 precisionPolicy);quint32 numericalPrecisionPolicy(void)";
+    }
 
     Q_INVOKABLE bool open(){return m_database.open();}
     Q_INVOKABLE bool open(QString user, QString password){return m_database.open(user, password);}
@@ -414,9 +508,12 @@ private:
 
 };
 
-class ScriptSql : public QObject, protected QScriptable
+class ScriptSql : public QObject, protected QScriptable, public ScriptObject
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 public:
     ScriptSql() : QObject(0){}
 
@@ -428,6 +525,18 @@ public:
         qRegisterMetaType<ScriptSqlDatabase*>("ScriptSqlDatabase*");
 
          scriptEngine->globalObject().setProperty("scriptSql", scriptEngine->newQObject(this));
+    }
+
+    virtual QString getPublicScriptElements(void)
+    {
+        return "QScriptValue addDatabase(QString type, QString connectionName = QLatin1String(QSqlDatabase::defaultConnection));"
+               "QScriptValue cloneDatabase(ScriptSqlDatabase* other, QString connectionName);"
+               "QScriptValue database(QString connectionName = QLatin1String(QSqlDatabase::defaultConnection), bool open = true);"
+               "void removeDatabase(QString connectionName);bool contains(QString connectionName = QLatin1String(QSqlDatabase::defaultConnection));"
+               "QStringList connectionNames(void);QStringList drivers(void);bool isDriverAvailable(QString name);"
+               "QScriptValue createQuery(ScriptSqlDatabase* dataBase, QString query = QString());"
+               "QScriptValue createField(QString fieldName = QString(), quint32 type = (quint32)QVariant::Invalid);"
+               "QScriptValue createRecord(void)";
     }
 
     /**
