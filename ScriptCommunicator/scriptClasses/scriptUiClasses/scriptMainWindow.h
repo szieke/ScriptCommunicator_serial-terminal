@@ -49,7 +49,11 @@ public:
 
     }
 
-
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ScriptWidget::getPublicScriptElements() + ";finishedSignal(void)";
+    }
 
 Q_SIGNALS:
     ///This signal is emitted if the user presses the button.

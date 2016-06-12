@@ -53,6 +53,12 @@ public:
         connect(m_spinBox, SIGNAL(valueChanged(int)),this, SLOT(stub_valueChangedSlot(int)));
     }
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ScriptWidget::getPublicScriptElements() + ";";
+    }
+
     ///Sets the spin box's minimum and maximum values to minimum and maximum respectively.
     Q_INVOKABLE void setRange(int minimum, int maximum){emit setRangeSignal(minimum, maximum, m_spinBox);}
 

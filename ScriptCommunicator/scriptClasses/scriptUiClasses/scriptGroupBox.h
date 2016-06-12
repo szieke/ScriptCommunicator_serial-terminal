@@ -57,6 +57,14 @@ public:
 
     }
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ScriptWidget::getPublicScriptElements() +
+                ";void setTitle(QString title);QString title(void);"
+                "ScriptPlotWidget* addPlotWidget(void);QScriptValue addCanvas2DWidget(void)";
+    }
+
     ///Sets the group box title.
     Q_INVOKABLE void setTitle(QString title){emit setTitleSignal(title, m_box);}
 
@@ -64,7 +72,7 @@ public:
     Q_INVOKABLE QString title(void){return m_box->title();}
 
     ///Adds a plot widget to the group box
-    Q_INVOKABLE ScriptPlotWidget* addPlotWidget()
+    Q_INVOKABLE ScriptPlotWidget* addPlotWidget(void)
     {
         QHBoxLayout* layout = 0;
         ScriptPlotWidget* widget = 0;
@@ -75,7 +83,7 @@ public:
     }
 
     ///Adds a Canvas2D object to the group box.
-    Q_INVOKABLE QScriptValue addCanvas2DWidget()
+    Q_INVOKABLE QScriptValue addCanvas2DWidget(void)
     {
         Context2D* context = new Context2D();
         QContext2DCanvas* widget;

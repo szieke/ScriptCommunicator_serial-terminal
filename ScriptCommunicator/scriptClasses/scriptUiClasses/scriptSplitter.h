@@ -28,11 +28,13 @@
 #include <QObject>
 
 #include "scriptWidget.h"
+#include "scriptObject.h"
 
 ///This wrapper class is used to access a QSplitter object (located in a script gui/ui-file) from a script.
-class ScriptSplitter : public QObject
+class ScriptSplitter : public QObject, public ScriptObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 public:
     explicit ScriptSplitter(QSplitter* splitter, ScriptThread *scriptThread) :
         QObject(scriptThread), m_splitter(splitter)
@@ -45,6 +47,12 @@ public:
         connect(this, SIGNAL(setSplitterSizes(QSplitter*,QList<int>&)), scriptThread->getScriptWindow(),
                 SLOT(setSplitterSizesSlot(QSplitter*,QList<int>&)), directConnectionType);
 
+    }
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ";";
     }
 
     ///Returns a list of the size parameters of all the widgets in this splitter.

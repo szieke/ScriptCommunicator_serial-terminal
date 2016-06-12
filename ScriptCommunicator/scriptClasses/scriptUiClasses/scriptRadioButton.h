@@ -51,6 +51,12 @@ public:
 
     }
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ScriptWidget::getPublicScriptElements() + ";";
+    }
+
     ///Sets the radio button text.
     Q_INVOKABLE void setText(const QString text){emit setTextSignal(text, m_radioButton);}
 

@@ -49,6 +49,12 @@ public:
 
     }
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ScriptWidget::getPublicScriptElements() + ";";
+    }
+
     ///Resets the progress bar. The progress bar rewinds and shows no progress.
     Q_INVOKABLE void reset(void){emit resetSignal();}
 

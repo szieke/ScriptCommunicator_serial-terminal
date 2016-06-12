@@ -48,6 +48,12 @@ public:
 
     }
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ScriptWidget::getPublicScriptElements() + ";";
+    }
+
     ///Sets the time.
     Q_INVOKABLE void setTime(QString timeString)
     {

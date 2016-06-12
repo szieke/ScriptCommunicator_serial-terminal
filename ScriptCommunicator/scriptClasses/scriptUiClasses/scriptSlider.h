@@ -47,6 +47,11 @@ public:
         connect(m_slider, SIGNAL(valueChanged(int)),this, SLOT(stub_valueChangedSlot(int)));
     }
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ScriptWidget::getPublicScriptElements() + ";";
+    }
 
     ///Sets the slider's minimum to min and its maximum to max.
     Q_INVOKABLE void setRange(int min, int max){emit setRangeSignal(min, max);}

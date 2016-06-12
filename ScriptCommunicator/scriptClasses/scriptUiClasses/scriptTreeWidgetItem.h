@@ -28,12 +28,13 @@
 #include <QTableWidget>
 #include <QDebug>
 #include "scriptWidget.h"
-
+#include "scriptObject.h"
 
 ///This wrapper class is used to access a QTreeWidgetItem object (located in a script gui/ui-file) from a script.
-class ScriptTreeWidgetItem : public QObject
+class ScriptTreeWidgetItem : public QObject, public ScriptObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 
 public:
     ScriptTreeWidgetItem(QTreeWidgetItem* treeWidgetItem, ScriptThread *scriptThread, QObject* parent) :
@@ -89,6 +90,12 @@ public:
     ///The data role of user data.
     static const int SET_DATA_USER_ROLE = SCRIPT_ITEM_POINTER_DATA_ROLE + 1;
 
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ";";
+    }
 
     ///Sets the text to be displayed in the given column to the given text.
     Q_INVOKABLE void setText(int column, QString text){emit setTextSignal(column, text, m_treeWidgetItem);}

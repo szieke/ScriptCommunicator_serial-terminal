@@ -46,6 +46,13 @@ public:
 
     }
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ScriptWidget::getPublicScriptElements() +
+                ";void setText(QString text);QString text(void)";
+    }
+
     ///Sets the label text.
     Q_INVOKABLE void setText(QString text){emit setTextSignal(text);}
 

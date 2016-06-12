@@ -43,7 +43,11 @@ public:
         connect(m_dialog, SIGNAL(finished(int)), this, SLOT(stub_finishedSlot(int)), Qt::QueuedConnection);
     }
 
-
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ScriptWidget::getPublicScriptElements() + ";finishedSignal(void)";
+    }
 
 Q_SIGNALS:
     ///This signal is emitted if the user presses the button.

@@ -48,6 +48,14 @@ public:
 
     }
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ScriptWidget::getPublicScriptElements() +
+                ";void setDate(QString dateString);QString getDate(void);"
+                "void setDisplayFormat(QString format);QString getDisplayFormat(void);dateChangedSignal(QString date)";
+    }
+
     ///Sets the date.
     Q_INVOKABLE void setDate(QString dateString)
     {

@@ -167,7 +167,11 @@ public:
 
     }
 
-
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ScriptWidget::getPublicScriptElements() + ";";
+    }
 
     ///Returns the text of one cell.
     Q_INVOKABLE QString getText(int row, int column)

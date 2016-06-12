@@ -219,7 +219,8 @@ HEADERS += \
     quazip/quazipfileinfo.h \
     quazip/quazipnewinfo.h \
     quazip/unzip.h \
-    quazip/zip.h
+    quazip/zip.h \
+    scriptClasses/scriptObject.h
 
 FORMS += \
     mainwindow.ui \

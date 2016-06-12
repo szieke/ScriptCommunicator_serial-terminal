@@ -60,6 +60,11 @@ public:
 
     }
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ScriptWidget::getPublicScriptElements() + ";";
+    }
 
     ///Returns the vertical scroll bar value.
     Q_INVOKABLE int verticalScrollBarValue(void){return m_textEdit->verticalScrollBar()->value();}

@@ -101,6 +101,11 @@ public:
 
     }
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ScriptWidget::getPublicScriptElements() + ";";
+    }
 
     ///Creates a script tree widget item.
     Q_INVOKABLE ScriptTreeWidgetItem* createScriptTreeWidgetItem(void)

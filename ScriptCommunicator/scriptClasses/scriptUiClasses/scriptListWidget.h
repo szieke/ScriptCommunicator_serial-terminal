@@ -77,8 +77,22 @@ public:
 
     }
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ScriptWidget::getPublicScriptElements() +
+                ";void insertNewItem(int row, QString itemText, QString iconFileName);int rowCount(void);"
+                "void removeItem(int row);int currentSelectedRow(void);"
+                "void setCurrentRow(int row);void clear(void);"
+                "void seItemBackgroundColor(int row, QString color);void setItemForegroundColor(int row, QString color);"
+                "QString getItemText(int row);void setItemText(int row, QString text);"
+                "void setItemIcon(int row, QString iconFileName);void sortItems(bool ascendingOrder=true);"
+                "currentRowChangedSignal(int currentRow);itemClickedSignal(int row);"
+                "itemDoubleClickedSignal(int row)";
+    }
+
     ///Inserts a new list item.
-    Q_INVOKABLE void insertNewItem (int row, QString itemText, QString iconFileName)
+    Q_INVOKABLE void insertNewItem(int row, QString itemText, QString iconFileName)
     {
         if(m_list->count() < (int)row)
         {

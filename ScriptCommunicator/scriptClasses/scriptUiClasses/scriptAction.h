@@ -28,11 +28,13 @@
 #include <QObject>
 
 #include "scriptWidget.h"
+#include "scriptObject.h"
 
 ///This wrapper class is used to access a QAction object (located in a script gui/ui-file) from a script.
-class ScriptAction : public QObject
+class ScriptAction : public QObject, public ScriptObject
 {
     Q_OBJECT
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 public:
     explicit ScriptAction(QAction* action, ScriptThread *scriptThread) :
         QObject(scriptThread), m_action(action)
@@ -48,6 +50,12 @@ public:
                 SLOT(setActionTextSlot(QString,QAction*)), directConnectionType);
         connect(this, SIGNAL(setCheckStateSignal(bool,QAction*)), scriptThread->getScriptWindow(), SLOT(setActionCheckStateSlot(bool,QAction*)));
 
+    }
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return "void setText(const QString text);QString text(void);"
+                "void setChecked(bool checked);bool isChecked(void);clickedSignal(void)";
     }
 
     ///Sets the action text.
@@ -65,7 +73,7 @@ public:
 Q_SIGNALS:
     ///This signal is emitted if the user presses the action.
     ///Scripts can connect a function to this signal.
-    void clickedSignal();
+    void clickedSignal(void);
 
     ///Is emitted in setText.
     ///This signal is private and must not be used inside a script.

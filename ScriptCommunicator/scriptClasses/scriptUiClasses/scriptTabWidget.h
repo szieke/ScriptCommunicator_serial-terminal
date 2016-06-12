@@ -54,6 +54,12 @@ public:
 
     }
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ScriptWidget::getPublicScriptElements() + ";";
+    }
+
     ///Sets the tab text.
     Q_INVOKABLE void setTabText(int index, QString text){emit setTabWidgetTabTextSignal(index, text, m_tabWidget);}
 

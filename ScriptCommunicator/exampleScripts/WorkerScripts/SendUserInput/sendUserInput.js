@@ -28,7 +28,7 @@ function sendSequence()
 scriptThread.appendTextToConsole('script has started');
 UI_Dialog.finishedSignal.connect(UI_DialogFinished);
 
-UI_SendButton.clickedSignal.connect(sendSequence)
+UI_SendButton.clickedSignals.connect(sendSequence)
 
 
 

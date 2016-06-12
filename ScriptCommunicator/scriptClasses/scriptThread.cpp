@@ -144,6 +144,127 @@ ScriptThread::~ScriptThread()
 
 }
 
+///Returns a semicolon separated list with all public functions, signals and properties.
+QString ScriptThread::getPublicScriptElements(void)
+{
+    return "void appendTextToConsole(QString string, bool newLine=true);"
+           "QString byteArrayToString(QVector<unsigned char> data);"
+           "QString byteArrayToHexString(QVector<unsigned char> data);"
+           "QVector<unsigned char> stringToArray(QString str);"
+           "QVector<unsigned char> addStringToArray(QVector<unsigned char> array, QString str);"
+           "void sleepFromScript(quint32 timeMs);"
+           "ScriptUdpSocket createUdpSocket(void);"
+           "ScriptTcpServer createTcpServer(void);"
+           "ScriptTcpClient createTcpClient(void);"
+           "ScriptTimer createTimer(void);"
+           "ScriptSerialPort createSerialPort(void);"
+           "ScriptSpiInterface createCheetahSpiInterface(void);"
+           "ScriptPcanInterface createPcanInterface(void);"
+           "ScriptPlotWindow createPlotWindow(void);"
+           "ScriptXmlReader createXmlReader(void);"
+           "ScriptXmlWriter createXmlWriter(void);"
+           "QString readFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1);"
+           "QVector<unsigned char> readBinaryFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1);"
+           "qint64 getFileSize(QString path, bool isRelativePath=true);"
+           "bool checkFileExists(QString path, bool isRelativePath=true);"
+           "bool checkDirectoryExists(QString directory, bool isRelativePath=true);"
+           "bool createDirectory(QString directory, bool isRelativePath=true);"
+           "bool renameDirectory(QString directory, QString newName);"
+           "bool renameFile(QString path, QString newName);"
+           "bool deleteFile(QString path, bool isRelativePath=true);"
+           "bool deleteDirectory(QString directory, bool isRelativePath=true);"
+           "bool deleteDirectoryRecursively(QString directory, bool isRelativePath=true);"
+           "QStringList readDirectory(QString directory, bool isRelativePath=true, bool recursive=true, bool returnFiles=true, bool returnDirectories=true);"
+           "bool writeFile(QString path, bool isRelativePath, QString content, bool replaceFile, qint64 startPosition=-1);"
+           "bool writeBinaryFile(QString path, bool isRelativePath, QVector<unsigned char> content, bool replaceFile, qint64 startPosition=-1);"
+           "QString createAbsolutePath(QString fileName);"
+           "QString getScriptFolder(void);"
+           "bool loadScript(QString scriptPath, bool isRelativePath=true);"
+           "bool zipDirectory(QString fileName, QString sourceDirName, QString comment="");"
+           "bool zipFiles(QString fileName, QVariantList fileList, QString comment="");"
+           "bool extractZipFile(QString fileName, QString destinationDirectory);"
+           "bool loadLibrary(QString path, bool isRelativePath=true);"
+           "bool sendDataArray(QVector<unsigned char> data, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false);"
+           "bool sendCanMessage(quint8 type, quint32 canId, QVector<unsigned char> data, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false);"
+           "bool sendString(QString string, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false);"
+           "bool isConnected(void);"
+           "bool isConnectedWithCan(void);"
+           "void disconnect(void);"
+           "bool connectPcan(quint8 channel, quint32 baudrate, quint32 connectTimeout = 2000, bool busOffAutoReset = true, bool powerSupply = false, bool filterExtended = true, quint32 filterFrom = 0, quint32 filterTo = 0x1fffffff);"
+           "void setSerialPortPins(bool setRTS, bool setDTR);"
+           "bool connectSerialPort(QString name, qint32 baudRate = 115200, quint32 connectTimeout= 1000, quint32 dataBits = 8, QString parity = 'None', QString stopBits = '1', QString flowControl = 'None');"
+           "bool connectSocket(bool isTcp, bool isServer, QString ip, quint32 partnerPort, quint32 ownPort, quint32 connectTimeout = 5000);"
+           "bool connectCheetahSpi(quint32 port, qint16 mode, quint32 baudrate, quint8 chipSelectBits = 1, quint32 connectTimeout = 1000);"
+           "void stopScript(void);"
+           "bool createProcessDetached(QString program, QStringList arguments, QString  workingDirectory);"
+           "int createProcess(QString program, QStringList arguments);"
+           "ScriptProcess createProcessAsynchronous(QString program, QStringList arguments, int startWaitTime=30000, QString workingDirectory="");"
+           "bool waitForFinishedProcess(ScriptProcess process, int waitTime=30000);"
+           "int getProcessExitCode(ScriptProcess process);"
+           "void killProcess(ScriptProcess process);"
+           "void terminateProcess(ScriptProcess process);"
+           "bool writeToProcessStdin(ScriptProcess process, QVector<unsigned char> data, int waitTime=30000);"
+           "QVector<unsigned char> readAllStandardOutputFromProcess(ScriptProcess process, bool isBlocking=false, quint8 blockByte='\n', qint32 blockTime=30000);"
+           "QVector<unsigned char> readAllStandardErrorFromProcess(ScriptProcess process, bool isBlocking=false,quint8 blockByte='\n', qint32 blockTime=30000);"
+           "bool loadUserInterfaceFile(QString path, bool isRelativePath=true, bool showAfterLoading = true);"
+           "bool scriptShallExit(void);"
+           "QStringList getLocalIpAdress(void);"
+           "QString showFileDialog(bool isSaveDialog, QString caption, QString dir, QString filter, QWidget* parent=0);"
+           "QString showDirectoryDialog(QString caption, QString dir, QWidget* parent=0);"
+           "void messageBox(QString icon, QString title, QString text, QWidget* parent=0);"
+           "bool showYesNoDialog(QString icon, QString title, QString text, QWidget* parent=0);"
+           "QString showTextInputDialog(QString title, QString label, QString displayedText="", QWidget* parent=0);"
+           "QString showMultiLineTextInputDialog(QString title, QString label, QString displayedText="", QWidget* parent=0);"
+           "QString showGetItemDialog(QString title, QString label, QStringList displayedItems, int currentItemIndex=0, bool editable=false, QWidget* parent=0);"
+           "QList<int> showGetIntDialog(QString title, QString label, int initialValue, int min, int max, int step, QWidget* parent=0);"
+           "QList<double> showGetDoubleDialog(QString title, QString label, double initialValue, double min, double max, int decimals, QWidget* parent=0);"
+           "QList<int> showColorDialog(quint8 initInitalRed=255, quint8 initInitalGreen=255, quint8 initInitalBlue=255, quint8 initInitalAlpha=255, bool alphaIsEnabled=false, QWidget* parent=0);"
+           "quint8 calculateCrc8(const QVector<unsigned char> data);"
+           "quint16 calculateCrc16(const QVector<unsigned char> data);"
+           "quint32 calculateCrc32(const QVector<unsigned char> data);"
+           "quint64 calculateCrc64(const QVector<unsigned char> data);"
+           "bool showReceivedDataInConsoles(bool show);"
+           "bool showTransmitDataInConsoles(bool show);"
+           "void addMessageToLogAndConsoles(QString text, bool forceTimeStamp=false);"
+           "void setGlobalString(QString name, QString string);"
+           "QString getGlobalString(QString name, bool removeValue=false);"
+           "void setGlobalDataArray(QString name, QVector<unsigned char> data);"
+           "QVector<unsigned char> getGlobalDataArray(QString name, bool removeValue=false);"
+           "void setGlobalUnsignedNumber(QString name, quint32 number);"
+           "QList<quint32> getGlobalUnsignedNumber(QString name,bool removeValue=false);"
+           "void setGlobalSignedNumber(QString name, qint32 number);"
+           "QList<qint32> getGlobalSignedNumber(QString name,bool removeValue=false);"
+           "void setGlobalRealNumber(QString name, double number);"
+           "QList<double> getGlobalRealNumber(QString name, bool removeValue=false);"
+           "bool setScriptThreadPriority(QString priority);"
+           "QString getCurrentVersion(void);"
+           "void exitScriptCommunicator(void);"
+           "void setBlockTime(quint32 blockTime);"
+           "bool setScriptState(quint8 state, QString scriptTableEntryName);"
+           "QString getScriptTableName(void);"
+           "QString currentCpuArchitecture(void);"
+           "QString productType(void);"
+           "QString productVersion(void);"
+           "QStringList availableSerialPorts(void);"
+           "QStringList getScriptArguments(void);"
+           "QStringList getScriptArguments(void);"
+           "QString getScriptCommunicatorFolder(void);"
+           "QString getUserDocumentsFolder(void);"
+           "bool addTabsToMainWindow(ScriptTabWidget* tabWidget);"
+           "bool addToolBoxPagesToMainWindow(ScriptToolBox* scriptToolBox);"
+           "void sendReceivedDataToMainInterface(QVector<unsigned char> data);"
+           "bool checkScriptCommunicatorVersion(QString minVersion);"
+           "QStringList getAllObjectPropertiesAndFunctions(QScriptValue object, bool printInScriptWindowConsole=false);"
+           "globalStringChangedSignal.connect(QString name, QString string);"
+           "globalDataArrayChangedSignal.connect(QString name, QVector<unsigned char> data);"
+           "globalUnsignedChangedSignal.connect(QString name, quint32 number);"
+           "globalSignedChangedSignal.connect(QString name, qint32 number);"
+           "globalRealChangedSignal.connect(QString name, double number);"
+           "dataReceivedSignal.connect(QVector<unsigned char> data);"
+           "canMessagesReceivedSignal.connect(QVector<quint8> types, QVector<quint32> messageIds, QVector<quint32> timestamps, QVector<QVector<unsigned char>>  data);"
+           "sendDataFromMainInterfaceSignal(QVector<unsigned char> data);";
+}
+
 ///Sets the priority of the script thread (which executes the current script).
 ///Possible values are:
 ///- LowestPriority
@@ -2805,19 +2926,34 @@ void ScriptThread::sendReceivedDataToMainInterface(QVector<unsigned char> data)
  */
 void ScriptThread::getAllObjectPropertiesAndFunctionsInternal(QScriptValue object, QStringList* resultList, QString* resultString)
 {
-    QScriptValueIterator it(object);
-    while (it.hasNext())
+
+    QVariant elements = object.toQObject()->property("publicScriptElements");
+    if(elements.isValid())
     {
-        it.next();
+        for(auto el : elements.toString().split(";"))
+        {
+            if(resultString)
+            {
+                (*resultString) += el + "\n";
+            }
+
+            if(resultList)
+            {
+                resultList->append(el);
+            }
+        }
+    }
+    else
+    {
 
         if(resultString)
         {
-            (*resultString) += it.name() + "\n";
+            resultString->clear();
         }
 
         if(resultList)
         {
-            resultList->append(it.name());
+            resultList->clear();
         }
     }
 }

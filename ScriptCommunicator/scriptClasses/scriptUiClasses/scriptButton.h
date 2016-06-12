@@ -53,6 +53,13 @@ public:
 
     }
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void)
+    {
+        return ScriptWidget::getPublicScriptElements() + ";void setText(const QString text);"
+                "QString text(void);void setIcon(QString iconFileName);clickedSignal(void)";
+    }
+
     ///Sets the button text.
     Q_INVOKABLE void setText(const QString text){emit setTextSignal(text, m_button);}
 
@@ -65,7 +72,7 @@ public:
 Q_SIGNALS:
     ///This signal is emitted if the user presses the button.
     ///Scripts can connect a function to this signal.
-    void clickedSignal();
+    void clickedSignal(void);
 
     ///This signal is emitted in setItemIcon.
     ///This signal is private and must not be used inside a script.

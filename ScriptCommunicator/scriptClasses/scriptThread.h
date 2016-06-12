@@ -41,6 +41,7 @@
 #include <scriptHelper.h>
 #include <QStandardPaths>
 #include <QToolBox>
+#include "scriptObject.h"
 
 
 class ScriptWidget;
@@ -70,16 +71,21 @@ typedef enum
 class ScriptThread;
 
 ///The class executes the scripts.
-class ScriptThread : public QThread
+class ScriptThread : public QThread, public ScriptObject
 {
     Q_OBJECT
     friend class ScriptWindow;
+
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 
 public:
     ScriptThread(ScriptWindow* scriptWindow, quint32 sendId, QString scriptName, QWidget *scriptUi, SettingsDialog *settingsDialog,
                  bool scriptRunsInDebugger);
 
     virtual ~ScriptThread();
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void);
 
     ///Installs obj and all child objects from obj. This objects can be accessed from the script.
     void installAllChilds(QObject* obj, QScriptEngine* scriptEngine, bool firstObj = false);
