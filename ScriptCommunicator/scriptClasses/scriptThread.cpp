@@ -2927,7 +2927,13 @@ void ScriptThread::sendReceivedDataToMainInterface(QVector<unsigned char> data)
 void ScriptThread::getAllObjectPropertiesAndFunctionsInternal(QScriptValue object, QStringList* resultList, QString* resultString)
 {
 
-    QVariant elements = object.toQObject()->property("publicScriptElements");
+    QObject* objPointer = object.toQObject();
+    QVariant elements;
+
+    if(objPointer)
+    {
+        elements = objPointer->property("publicScriptElements");
+    }
     if(elements.isValid())
     {
         for(auto el : elements.toString().split(";"))
