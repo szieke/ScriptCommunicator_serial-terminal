@@ -1,0 +1,13 @@
+#ifndef SCRIPTOBJECT_H
+#define SCRIPTOBJECT_H
+
+#include <QObject>
+
+class ScriptObject
+{
+public:
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void) = 0;
+};
+
+#endif // SCRIPTOBJECT_H
