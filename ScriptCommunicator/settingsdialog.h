@@ -101,7 +101,7 @@ typedef struct
 typedef struct
 {
     quint16 partnerPort;
-    QString adress;
+    QString address;
     quint16 ownPort;
     QString socketType;
     quint8 proxySettings;

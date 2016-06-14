@@ -48,7 +48,7 @@
  *      Pointer to the main window.
  */
 MainInterfaceThread::MainInterfaceThread(MainWindow* mainWindow):m_exit(false),
-    m_serial(0),m_tcpServer(0),m_tcpServerSocket(0),m_tcpClientSocket(0),
+    m_serial(0),m_tcpServer(0),m_tcpServerSockets(),m_tcpClientSocket(0),
     m_udpServerSocket(0), m_udpClientSocket(0), m_cheetahSpi(0), m_isConnected(false), m_showAdditionalInformationTimer(0), m_pcanInterface(0),
     m_numberOfSentBytes(0), m_lastNumberOfSentBytes(0), m_numberOfReceivedBytes(0),m_lastNumberOfReceivedBytes(0),  m_dataRateTimer(0)
 {
@@ -101,15 +101,44 @@ void MainInterfaceThread::serialPortReceivedDataSlot(void)
  */
 void MainInterfaceThread::tcpServerSocketOnDisconnectedSlot(void)
 {
-    disconnect(m_tcpServerSocket, SIGNAL(disconnected()));
-    disconnect(m_tcpServerSocket, SIGNAL(readyRead()));
+    QTcpSocket* socket = static_cast<QTcpSocket*>(sender());
+    disconnect(socket, SIGNAL(disconnected()));
+    disconnect(socket, SIGNAL(readyRead()));
 
     m_isConnected = false;
 
-    m_tcpServerSocket->deleteLater();
-    m_tcpServerSocket = 0;
+    socket->deleteLater();
 
-    connectDataConnectionSlot(m_currentGlobalSettings, true);
+    for(int i = 0; i < m_tcpServerSockets.length(); i++)
+    {
+        if(socket == m_tcpServerSockets[i])
+        {
+            m_tcpServerSockets.remove(i);
+            break;
+        }
+    }
+
+    if(m_tcpServerSockets.length() == 0)
+    {
+        connectDataConnectionSlot(m_currentGlobalSettings, true);
+    }
+    else
+    {
+        QString tmp = "connected to";
+
+        for(int i = 0; i < m_tcpServerSockets.length(); i++)
+        {
+            if(i > 0)
+            {
+                tmp +=" |";
+            }
+            tmp += QString(" address:%1 port:%2").arg(
+                        socket->peerAddress().toString()).arg(
+                        socket->peerPort());
+        }
+        emit dataConnectionStatusSignal(true, tmp, false);
+        emit showAdditionalConnectionInformationSignal("");
+    }
 }
 
 /**
@@ -117,9 +146,10 @@ void MainInterfaceThread::tcpServerSocketOnDisconnectedSlot(void)
  */
 void MainInterfaceThread::tcpServerSocketOnReadyReadSlot(void)
 {
-    if(m_tcpServerSocket->isReadable())
+    QTcpSocket* socket = static_cast<QTcpSocket*>(sender());
+    if(socket->isReadable())
     {
-        QByteArray data = m_tcpServerSocket->readAll();
+        QByteArray data = socket->readAll();
         dataReceived(data);
     }
 }
@@ -168,26 +198,30 @@ bool MainInterfaceThread::isConnectedWithCan()
 void MainInterfaceThread::tcpServerOnNewConnectionSlot(void)
 {
     QTcpSocket* socket = m_tcpServer->nextPendingConnection();
-    m_tcpServer->close();
+    //m_tcpServer->close();
 
-    if(m_tcpServerSocket == 0)
+
+    m_tcpServerSockets.append(socket);
+
+    connect(socket, SIGNAL(disconnected()),this, SLOT(tcpServerSocketOnDisconnectedSlot()));
+    connect(socket, SIGNAL(readyRead()),this, SLOT(tcpServerSocketOnReadyReadSlot()));
+
+    m_isConnected = true;
+    QString tmp = "connected to";
+
+    for(int i = 0; i < m_tcpServerSockets.length(); i++)
     {
-        m_tcpServerSocket = socket;
-
-        connect(m_tcpServerSocket, SIGNAL(disconnected()),this, SLOT(tcpServerSocketOnDisconnectedSlot()));
-        connect(m_tcpServerSocket, SIGNAL(readyRead()),this, SLOT(tcpServerSocketOnReadyReadSlot()));
-
-        m_isConnected = true;
-        emit dataConnectionStatusSignal(true, tr("connected to adress:%1  port:%2").arg(
-                                            socket->peerAddress().toString()).arg(
-                                            socket->peerPort()), false);
-        emit showAdditionalConnectionInformationSignal("");
+        if(i > 0)
+        {
+            tmp +=" |";
+        }
+        tmp += QString(" address:%1 port:%2").arg(
+                    socket->peerAddress().toString()).arg(
+                    socket->peerPort());
     }
-    else
-    {
-        socket->close();
-        delete socket;
-    }
+    emit dataConnectionStatusSignal(true, tmp, false);
+    emit showAdditionalConnectionInformationSignal("");
+
 }
 
 /**
@@ -222,8 +256,8 @@ void MainInterfaceThread::tcpClientSocketOnConnectedSlot(void)
     connect(m_tcpClientSocket, SIGNAL(readyRead()),this, SLOT(tcpClientSocketOnReadyReadSlot()));
 
     m_isConnected = true;
-    emit dataConnectionStatusSignal(true, tr("connected to adress:%1  port:%2").arg(
-                                        m_currentGlobalSettings.socketSettings.adress).arg(
+    emit dataConnectionStatusSignal(true, tr("connected to address:%1  port:%2").arg(
+                                        m_currentGlobalSettings.socketSettings.address).arg(
                                         m_currentGlobalSettings.socketSettings.partnerPort), false);
     emit showAdditionalConnectionInformationSignal("");
     emit setConnectionButtonsSignal(true);
@@ -433,9 +467,10 @@ void MainInterfaceThread::exitThreadSlot()
     m_serial->close();
     m_tcpClientSocket->close();
     m_tcpServer->close();
-    if(m_tcpServerSocket != 0)
+    for(int i = 0; i < m_tcpServerSockets.length(); i++)
     {
-        m_tcpServerSocket->close();
+        m_tcpServerSockets[i]->blockSignals(true);
+        m_tcpServerSockets[i]->close();
 
     }
     m_udpServerSocket->close();
@@ -496,10 +531,13 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
 
     m_tcpClientSocket->close();
 
-    if(m_tcpServerSocket != 0)
+    for(int i = 0; i < m_tcpServerSockets.length(); i++)
     {
-        m_tcpServerSocket->close();
+        m_tcpServerSockets[i]->blockSignals(true);
+        m_tcpServerSockets[i]->close();
+        m_tcpServerSockets[i]->deleteLater();
     }
+    m_tcpServerSockets.clear();
     m_tcpServer->close();
 
     m_udpServerSocket->close();
@@ -572,15 +610,15 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
         else if(m_currentGlobalSettings.connectionType == CONNECTION_TYPE_TCP_CLIENT)
         {
             m_isConnected = false;
-            emit dataConnectionStatusSignal(false, tr("connecting to adress:%1  port:%2")
-                                            .arg( m_currentGlobalSettings.socketSettings.adress)
+            emit dataConnectionStatusSignal(false, tr("connecting to address:%1  port:%2")
+                                            .arg( m_currentGlobalSettings.socketSettings.address)
                                             .arg(m_currentGlobalSettings.socketSettings.partnerPort), false);
             emit showAdditionalConnectionInformationSignal("");
 
             emit setConnectionButtonsSignal(false);
             m_tcpClientSocket->setProxy(createProxy());
-            QHostAddress adress(m_currentGlobalSettings.socketSettings.adress);
-            m_tcpClientSocket->connectToHost(adress, m_currentGlobalSettings.socketSettings.partnerPort);
+            QHostAddress address(m_currentGlobalSettings.socketSettings.address);
+            m_tcpClientSocket->connectToHost(address, m_currentGlobalSettings.socketSettings.partnerPort);
 
 
         }
@@ -829,12 +867,15 @@ bool MainInterfaceThread::sendDataWithTheMainInterface(const QByteArray &data, b
             for(int i = 0; i < data.length(); i += 50000)
             {
                 QByteArray subArray = data.mid(i, 50000);
-                if(subArray.size() != m_tcpServerSocket->write(subArray))
+                for(int i = 0; i < m_tcpServerSockets.length(); i++)
                 {
-                    success = false;
-                    break;
+                    if(subArray.size() != m_tcpServerSockets[i]->write(subArray))
+                    {
+                        success = false;
+                        break;
+                    }
+                    (void)m_tcpServerSockets[i]->waitForBytesWritten();
                 }
-                (void)m_tcpServerSocket->waitForBytesWritten();
             }
 
         }//
@@ -846,7 +887,7 @@ bool MainInterfaceThread::sendDataWithTheMainInterface(const QByteArray &data, b
                 qint64 bytesToWrite = ((i + MainInterfaceThread::UDP_MAX_SEND_SIZE) < data.length()) ? MainInterfaceThread::UDP_MAX_SEND_SIZE :
                                                                                                        data.length() - i;
 
-                qint64 tmp = m_udpServerSocket->writeDatagram(&constData[i], bytesToWrite, QHostAddress(m_currentGlobalSettings.socketSettings.adress),
+                qint64 tmp = m_udpServerSocket->writeDatagram(&constData[i], bytesToWrite, QHostAddress(m_currentGlobalSettings.socketSettings.address),
                                                               m_currentGlobalSettings.socketSettings.partnerPort);
                 if(bytesToWrite != tmp)
                 {

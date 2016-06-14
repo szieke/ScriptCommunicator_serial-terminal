@@ -219,7 +219,7 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->connectionTypeComboBox, SIGNAL(currentTextChanged(QString)),
             this, SLOT(conectionTypeChangesSlot(QString)));
 
-    connect(m_userInterface->socketAdressLineEdit, SIGNAL(textChanged(QString)),
+    connect(m_userInterface->socketAddressLineEdit, SIGNAL(textChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
 
     connect(m_userInterface->socketPartnerPortLineEdit, SIGNAL(textChanged(QString)),
@@ -925,7 +925,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
         m_userInterface->connectionTypeComboBox->setCurrentText("socket");
     }
 
-    m_userInterface->socketAdressLineEdit->setText(settings.socketSettings.adress);
+    m_userInterface->socketAddressLineEdit->setText(settings.socketSettings.address);
     m_userInterface->socketPartnerPortLineEdit->setText(QString("%1").arg(settings.socketSettings.partnerPort));
     m_userInterface->socketOwnPortLineEdit->setText(QString("%1").arg(settings.socketSettings.ownPort));
     if(!settings.socketSettings.socketType.isEmpty())
@@ -1372,7 +1372,7 @@ void SettingsDialog::initializeInterfaceTabs(void)
     {
         m_userInterface->connectionTypeComboBox->setEnabled(true);
         m_userInterface->socketsTypeComboBox->setEnabled(true);
-        m_userInterface->socketAdressLineEdit->setEnabled(true);
+        m_userInterface->socketAddressLineEdit->setEnabled(true);
         m_userInterface->socketOwnPortLineEdit->setEnabled(true);
         m_userInterface->serialPortInfoListBox->setEnabled(true);
         m_userInterface->baudRateBox->setEnabled(true);
@@ -1405,7 +1405,7 @@ void SettingsDialog::initializeInterfaceTabs(void)
         if(m_userInterface->socketsTypeComboBox->currentText() == "TCP server")
         {
             m_userInterface->socketPartnerPortLineEdit->setEnabled(false);
-            m_userInterface->socketAdressLineEdit->setEnabled(false);
+            m_userInterface->socketAddressLineEdit->setEnabled(false);
 
         }
         else
@@ -1448,7 +1448,7 @@ void SettingsDialog::initializeInterfaceTabs(void)
         m_userInterface->connectionTypeComboBox->setEnabled(false);
         m_userInterface->socketsTypeComboBox->setEnabled(false);
         m_userInterface->socketPartnerPortLineEdit->setEnabled(false);
-        m_userInterface->socketAdressLineEdit->setEnabled(false);
+        m_userInterface->socketAddressLineEdit->setEnabled(false);
         m_userInterface->socketOwnPortLineEdit->setEnabled(false);
         m_userInterface->serialPortInfoListBox->setEnabled(false);
         m_userInterface->baudRateBox->setEnabled(false);
@@ -1967,7 +1967,7 @@ void SettingsDialog::updateSettings()
         m_currentSettings.connectionType = CONNECTION_TYPE_CHEETAH_SPI_MASTER;
     }
 
-    m_currentSettings.socketSettings.adress = m_userInterface->socketAdressLineEdit->text();
+    m_currentSettings.socketSettings.address = m_userInterface->socketAddressLineEdit->text();
     m_currentSettings.socketSettings.partnerPort = m_userInterface->socketPartnerPortLineEdit->text().toUInt();
     m_currentSettings.socketSettings.ownPort = m_userInterface->socketOwnPortLineEdit->text().toUInt();
     m_currentSettings.socketSettings.socketType = m_userInterface->socketsTypeComboBox->currentText();

@@ -203,8 +203,8 @@ private:
     ///Pointer to the tcp server.
     QTcpServer* m_tcpServer;
 
-    ///Pointer to the tcp sever socket.
-    QTcpSocket* m_tcpServerSocket;
+    ///Pointer to the tcp sever sockets.
+    QVector<QTcpSocket*> m_tcpServerSockets;
 
     ///Pointer to the tcp client socket.
     QTcpSocket* m_tcpClientSocket;

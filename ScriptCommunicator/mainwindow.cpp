@@ -1312,7 +1312,7 @@ void MainWindow::loadSettings()
 
                         currentSettings.connectionType = static_cast<ConnectionType>(node.attributes().namedItem("connectionType").nodeValue().toUInt());
                         currentSettings.socketSettings.partnerPort = node.attributes().namedItem("partnerPort").nodeValue().toUInt();
-                        currentSettings.socketSettings.adress = node.attributes().namedItem("adress").nodeValue();
+                        currentSettings.socketSettings.address = node.attributes().namedItem("address").nodeValue();
                         currentSettings.socketSettings.ownPort = node.attributes().namedItem("ownPort").nodeValue().toUInt();
                         currentSettings.socketSettings.socketType = node.attributes().namedItem("socketType").nodeValue();
 
@@ -2265,7 +2265,7 @@ void MainWindow::saveSettings()
                 std::map<QString, QString> consoleSetting =
                 {std::make_pair(QString("connectionType"), QString("%1").arg(currentSettings->connectionType)),
                  std::make_pair(QString("partnerPort"), QString("%1").arg(currentSettings->socketSettings.partnerPort)),
-                 std::make_pair(QString("adress"), currentSettings->socketSettings.adress),
+                 std::make_pair(QString("address"), currentSettings->socketSettings.address),
                  std::make_pair(QString("ownPort"), QString("%1").arg(currentSettings->socketSettings.ownPort)),
                  std::make_pair(QString("socketType"), QString("%1").arg(currentSettings->socketSettings.socketType)),
 

@@ -1708,7 +1708,7 @@ bool ScriptThread::connectSocket(bool isTcp, bool isServer, QString ip, quint32 
         settings.socketSettings.socketType = "Udp socket";
     }
 
-    settings.socketSettings.adress = ip;
+    settings.socketSettings.address = ip;
     settings.socketSettings.ownPort = ownPort;
     settings.socketSettings.partnerPort = partnerPort;
     emit setAllSettingsSignal(settings, false);
