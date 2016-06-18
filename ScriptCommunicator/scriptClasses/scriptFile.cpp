@@ -233,7 +233,7 @@ QString ScriptFile::createAbsolutePath(QString fileName)
  * @param parent
  *      The parent window.
  */
-void ScriptFile::showExceptionInMessageBox(QScriptValue exception, QString scriptPath, QScriptEngine* scriptEngine, QWidget *parent)
+void ScriptFile::showExceptionInMessageBox(QScriptValue exception, QString scriptPath, QScriptEngine* scriptEngine, QWidget *parent, ScriptWindow *scriptWindow)
 {
     QString textToShow;
     QString functionsAndProperies;
@@ -258,8 +258,8 @@ void ScriptFile::showExceptionInMessageBox(QScriptValue exception, QString scrip
                 {
                     functionsAndProperies = "\n\n\nFunctions and properies of " + list[0] + ":\n" + functionsAndProperies;
 
-                    textToShow = exceptionString + "\n\nNote: If the OK button is pressed then all functions" +
-                                                   " and properties of " + list[0] + " will be shown in the script window.";
+                    textToShow = exceptionString + "\n\nNote: All functions" +
+                                                   " and properties of " + list[0] + " are shown in the script window console.";
                     errorOcured = false;
                 }
             }
@@ -275,15 +275,22 @@ void ScriptFile::showExceptionInMessageBox(QScriptValue exception, QString scrip
         textToShow = exceptionString;
     }
 
+
+    if((scriptWindow != 0) && !functionsAndProperies.isEmpty())
+    {
+        emit appendTextToConsoleSignal(functionsAndProperies, true, true);
+        parent = scriptWindow;
+    }
+
     emit showMessageBoxSignal(QMessageBox::Critical, scriptPath,
                               QString::fromLatin1("%0:%1: %2")
                               .arg(scriptPath)
                               .arg(exception.property("lineNumber").toInt32())
                               .arg(textToShow), QMessageBox::Ok, parent);
 
-    if(!functionsAndProperies.isEmpty())
+    if((scriptWindow == 0) && !functionsAndProperies.isEmpty())
     {
-        appendTextToConsoleSignal(functionsAndProperies, true, true);
+        emit appendTextToConsoleSignal(functionsAndProperies, true, true);
     }
 }
 
@@ -300,7 +307,7 @@ void ScriptFile::showExceptionInMessageBox(QScriptValue exception, QString scrip
  * @return
  *      True on success.
  */
-bool ScriptFile::loadScript(QString scriptPath, bool isRelativePath, QScriptEngine* scriptEngine, QWidget *parent)
+bool ScriptFile::loadScript(QString scriptPath, bool isRelativePath, QScriptEngine* scriptEngine, QWidget *parent, ScriptWindow *scriptWindow)
 {
     bool hasSucceded = true;
 
@@ -342,7 +349,7 @@ bool ScriptFile::loadScript(QString scriptPath, bool isRelativePath, QScriptEngi
 
             emit disableMouseEventsSignal();
             emit enableMouseEventsSignal();
-            showExceptionInMessageBox(result, scriptPath, scriptEngine, parent);
+            showExceptionInMessageBox(result, scriptPath, scriptEngine, parent, scriptWindow);
 
             hasSucceded = false;
         }
