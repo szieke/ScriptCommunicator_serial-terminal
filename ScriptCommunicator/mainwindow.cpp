@@ -1311,13 +1311,13 @@ void MainWindow::loadSettings()
                         QDomNode node = nodeList.at(0);
 
                         currentSettings.connectionType = static_cast<ConnectionType>(node.attributes().namedItem("connectionType").nodeValue().toUInt());
-                        currentSettings.socketSettings.partnerPort = node.attributes().namedItem("partnerPort").nodeValue().toUInt();
-                        currentSettings.socketSettings.address = node.attributes().namedItem("address").nodeValue();
+                        currentSettings.socketSettings.destinationPort = node.attributes().namedItem("destinationPort").nodeValue().toUInt();
+                        currentSettings.socketSettings.destinationIpAddress = node.attributes().namedItem("destinationIpAddress").nodeValue();
                         currentSettings.socketSettings.ownPort = node.attributes().namedItem("ownPort").nodeValue().toUInt();
                         currentSettings.socketSettings.socketType = node.attributes().namedItem("socketType").nodeValue();
 
                         currentSettings.socketSettings.proxySettings = node.attributes().namedItem("proxySettings").nodeValue().toUInt();
-                        currentSettings.socketSettings.proxyAddress = node.attributes().namedItem("proxyAddress").nodeValue();
+                        currentSettings.socketSettings.proxyIpAddress = node.attributes().namedItem("proxyIpAddress").nodeValue();
                         currentSettings.socketSettings.proxyPort = node.attributes().namedItem("proxyPort").nodeValue().toUInt();
                         currentSettings.socketSettings.proxyUserName = node.attributes().namedItem("proxyUserName").nodeValue();
                         currentSettings.socketSettings.proxyPassword = node.attributes().namedItem("proxyPassword").nodeValue();
@@ -2264,13 +2264,13 @@ void MainWindow::saveSettings()
             {//socket
                 std::map<QString, QString> consoleSetting =
                 {std::make_pair(QString("connectionType"), QString("%1").arg(currentSettings->connectionType)),
-                 std::make_pair(QString("partnerPort"), QString("%1").arg(currentSettings->socketSettings.partnerPort)),
-                 std::make_pair(QString("address"), currentSettings->socketSettings.address),
+                 std::make_pair(QString("destinationPort"), QString("%1").arg(currentSettings->socketSettings.destinationPort)),
+                 std::make_pair(QString("destinationIpAddress"), currentSettings->socketSettings.destinationIpAddress),
                  std::make_pair(QString("ownPort"), QString("%1").arg(currentSettings->socketSettings.ownPort)),
                  std::make_pair(QString("socketType"), QString("%1").arg(currentSettings->socketSettings.socketType)),
 
                  std::make_pair(QString("proxySettings"), QString("%1").arg(currentSettings->socketSettings.proxySettings)),
-                 std::make_pair(QString("proxyAddress"), currentSettings->socketSettings.proxyAddress),
+                 std::make_pair(QString("proxyIpAddress"), currentSettings->socketSettings.proxyIpAddress),
                  std::make_pair(QString("proxyPort"), QString("%1").arg(currentSettings->socketSettings.proxyPort)),
                  std::make_pair(QString("proxyUserName"), currentSettings->socketSettings.proxyUserName),
                  std::make_pair(QString("proxyPassword"), currentSettings->socketSettings.proxyPassword),
@@ -4233,7 +4233,7 @@ void MainWindow::checkForUpdatesSlot()
 
     QNetworkProxy proxy = ScriptTcpClient::createProxy(type, settings.socketSettings.proxyUserName,
                                                        settings.socketSettings.proxyPassword,
-                                                       settings.socketSettings.proxyAddress,
+                                                       settings.socketSettings.proxyIpAddress,
                                                        settings.socketSettings.proxyPort);
 
     m_userInterface->actionCheckForUpdates->setEnabled(false);

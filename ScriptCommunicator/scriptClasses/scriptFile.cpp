@@ -275,6 +275,8 @@ void ScriptFile::showExceptionInMessageBox(QScriptValue exception, QString scrip
         textToShow = exceptionString;
     }
 
+    emit disableMouseEventsSignal();
+    emit enableMouseEventsSignal();
 
     if((scriptWindow != 0) && !functionsAndProperies.isEmpty())
     {
@@ -346,9 +348,6 @@ bool ScriptFile::loadScript(QString scriptPath, bool isRelativePath, QScriptEngi
                 it.next();
                 str += it.name() + "\n";
             }
-
-            emit disableMouseEventsSignal();
-            emit enableMouseEventsSignal();
             showExceptionInMessageBox(result, scriptPath, scriptEngine, parent, scriptWindow);
 
             hasSucceded = false;

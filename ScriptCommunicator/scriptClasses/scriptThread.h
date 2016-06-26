@@ -270,7 +270,7 @@ public:
 
     ///Connects the main interface (UDP or TCP socket).
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
-    Q_INVOKABLE bool connectSocket(bool isTcp, bool isServer, QString ip, quint32 partnerPort, quint32 ownPort, quint32 connectTimeout = 5000);
+    Q_INVOKABLE bool connectSocket(bool isTcp, bool isServer, QString ip, quint32 destinationPort, quint32 ownPort, quint32 connectTimeout = 5000);
 
     ///Connects the main interface (cheetah spi).
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
@@ -516,6 +516,12 @@ public:
     ///Note: Only ScriptCommunicator classes are supported. Calling this function with a QtScript built-in class (e.g. Array) will result
     ///in an empty list.
     Q_INVOKABLE QStringList getAllObjectPropertiesAndFunctions(QScriptValue object, bool printInScriptWindowConsole=false);
+
+    ///Returns the serial port settings of the main interface.
+    Q_INVOKABLE QScriptValue getMainInterfaceSerialPortSettings(void);
+
+    ///Returns the socket (UDP, TCP client/server) settings of the main interface.
+    Q_INVOKABLE QScriptValue getMainInterfaceSocketSettings(void);
 
     ///Returns and all functions, signals and properties of an object.
     static void getAllObjectPropertiesAndFunctionsInternal(QScriptValue object, QStringList* resultList, QString* resultString);

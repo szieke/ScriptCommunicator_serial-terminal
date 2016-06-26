@@ -257,8 +257,8 @@ void MainInterfaceThread::tcpClientSocketOnConnectedSlot(void)
 
     m_isConnected = true;
     emit dataConnectionStatusSignal(true, tr("connected to address:%1  port:%2").arg(
-                                        m_currentGlobalSettings.socketSettings.address).arg(
-                                        m_currentGlobalSettings.socketSettings.partnerPort), false);
+                                        m_currentGlobalSettings.socketSettings.destinationIpAddress).arg(
+                                        m_currentGlobalSettings.socketSettings.destinationPort), false);
     emit showAdditionalConnectionInformationSignal("");
     emit setConnectionButtonsSignal(true);
 }
@@ -376,7 +376,7 @@ QNetworkProxy MainInterfaceThread::createProxy()
 
     QNetworkProxy proxy = ScriptTcpClient::createProxy(type, m_currentGlobalSettings.socketSettings.proxyUserName,
                                                        m_currentGlobalSettings.socketSettings.proxyPassword,
-                                                        m_currentGlobalSettings.socketSettings.proxyAddress,
+                                                        m_currentGlobalSettings.socketSettings.proxyIpAddress,
                                                         m_currentGlobalSettings.socketSettings.proxyPort);
 
     return proxy;
@@ -611,14 +611,14 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
         {
             m_isConnected = false;
             emit dataConnectionStatusSignal(false, tr("connecting to address:%1  port:%2")
-                                            .arg( m_currentGlobalSettings.socketSettings.address)
-                                            .arg(m_currentGlobalSettings.socketSettings.partnerPort), false);
+                                            .arg( m_currentGlobalSettings.socketSettings.destinationIpAddress)
+                                            .arg(m_currentGlobalSettings.socketSettings.destinationPort), false);
             emit showAdditionalConnectionInformationSignal("");
 
             emit setConnectionButtonsSignal(false);
             m_tcpClientSocket->setProxy(createProxy());
-            QHostAddress address(m_currentGlobalSettings.socketSettings.address);
-            m_tcpClientSocket->connectToHost(address, m_currentGlobalSettings.socketSettings.partnerPort);
+            QHostAddress address(m_currentGlobalSettings.socketSettings.destinationIpAddress);
+            m_tcpClientSocket->connectToHost(address, m_currentGlobalSettings.socketSettings.destinationPort);
 
 
         }
@@ -887,8 +887,8 @@ bool MainInterfaceThread::sendDataWithTheMainInterface(const QByteArray &data, b
                 qint64 bytesToWrite = ((i + MainInterfaceThread::UDP_MAX_SEND_SIZE) < data.length()) ? MainInterfaceThread::UDP_MAX_SEND_SIZE :
                                                                                                        data.length() - i;
 
-                qint64 tmp = m_udpServerSocket->writeDatagram(&constData[i], bytesToWrite, QHostAddress(m_currentGlobalSettings.socketSettings.address),
-                                                              m_currentGlobalSettings.socketSettings.partnerPort);
+                qint64 tmp = m_udpServerSocket->writeDatagram(&constData[i], bytesToWrite, QHostAddress(m_currentGlobalSettings.socketSettings.destinationIpAddress),
+                                                              m_currentGlobalSettings.socketSettings.destinationPort);
                 if(bytesToWrite != tmp)
                 {
                     success = false;

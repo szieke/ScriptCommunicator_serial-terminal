@@ -925,15 +925,15 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
         m_userInterface->connectionTypeComboBox->setCurrentText("socket");
     }
 
-    m_userInterface->socketAddressLineEdit->setText(settings.socketSettings.address);
-    m_userInterface->socketPartnerPortLineEdit->setText(QString("%1").arg(settings.socketSettings.partnerPort));
+    m_userInterface->socketAddressLineEdit->setText(settings.socketSettings.destinationIpAddress);
+    m_userInterface->socketPartnerPortLineEdit->setText(QString("%1").arg(settings.socketSettings.destinationPort));
     m_userInterface->socketOwnPortLineEdit->setText(QString("%1").arg(settings.socketSettings.ownPort));
     if(!settings.socketSettings.socketType.isEmpty())
     {
         m_userInterface->socketsTypeComboBox->setCurrentText(settings.socketSettings.socketType);
     }
 
-    m_userInterface->proxyAddressLineEdit->setText(settings.socketSettings.proxyAddress);
+    m_userInterface->proxyAddressLineEdit->setText(settings.socketSettings.proxyIpAddress);
     m_userInterface->proxyPortLineEdit->setText(QString("%1").arg(settings.socketSettings.proxyPort));
     m_userInterface->proxyUserNameLineEdit->setText(settings.socketSettings.proxyUserName);
     m_userInterface->proxyPasswordLineEdit->setText(settings.socketSettings.proxyPassword);
@@ -1967,12 +1967,12 @@ void SettingsDialog::updateSettings()
         m_currentSettings.connectionType = CONNECTION_TYPE_CHEETAH_SPI_MASTER;
     }
 
-    m_currentSettings.socketSettings.address = m_userInterface->socketAddressLineEdit->text();
-    m_currentSettings.socketSettings.partnerPort = m_userInterface->socketPartnerPortLineEdit->text().toUInt();
+    m_currentSettings.socketSettings.destinationIpAddress = m_userInterface->socketAddressLineEdit->text();
+    m_currentSettings.socketSettings.destinationPort = m_userInterface->socketPartnerPortLineEdit->text().toUInt();
     m_currentSettings.socketSettings.ownPort = m_userInterface->socketOwnPortLineEdit->text().toUInt();
     m_currentSettings.socketSettings.socketType = m_userInterface->socketsTypeComboBox->currentText();
 
-    m_currentSettings.socketSettings.proxyAddress = m_userInterface->proxyAddressLineEdit->text();
+    m_currentSettings.socketSettings.proxyIpAddress = m_userInterface->proxyAddressLineEdit->text();
     m_currentSettings.socketSettings.proxyPort = m_userInterface->proxyPortLineEdit->text().toUInt();
     m_currentSettings.socketSettings.proxyUserName = m_userInterface->proxyUserNameLineEdit->text();
     m_currentSettings.socketSettings.proxyPassword = m_userInterface->proxyPasswordLineEdit->text();

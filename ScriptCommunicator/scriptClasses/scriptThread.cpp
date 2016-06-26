@@ -193,7 +193,7 @@ QString ScriptThread::getPublicScriptElements(void)
            "bool connectPcan(quint8 channel, quint32 baudrate, quint32 connectTimeout = 2000, bool busOffAutoReset = true, bool powerSupply = false, bool filterExtended = true, quint32 filterFrom = 0, quint32 filterTo = 0x1fffffff);"
            "void setSerialPortPins(bool setRTS, bool setDTR);"
            "bool connectSerialPort(QString name, qint32 baudRate = 115200, quint32 connectTimeout= 1000, quint32 dataBits = 8, QString parity = 'None', QString stopBits = '1', QString flowControl = 'None');"
-           "bool connectSocket(bool isTcp, bool isServer, QString ip, quint32 partnerPort, quint32 ownPort, quint32 connectTimeout = 5000);"
+           "bool connectSocket(bool isTcp, bool isServer, QString ip, quint32 destinationPort, quint32 ownPort, quint32 connectTimeout = 5000);"
            "bool connectCheetahSpi(quint32 port, qint16 mode, quint32 baudrate, quint8 chipSelectBits = 1, quint32 connectTimeout = 1000);"
            "void stopScript(void);"
            "bool createProcessDetached(QString program, QStringList arguments, QString  workingDirectory);"
@@ -262,7 +262,8 @@ QString ScriptThread::getPublicScriptElements(void)
            "globalRealChangedSignal.connect(QString name, double number);"
            "dataReceivedSignal.connect(QVector<unsigned char> data);"
            "canMessagesReceivedSignal.connect(QVector<quint8> types, QVector<quint32> messageIds, QVector<quint32> timestamps, QVector<QVector<unsigned char>>  data);"
-           "sendDataFromMainInterfaceSignal(QVector<unsigned char> data)";
+           "sendDataFromMainInterfaceSignal(QVector<unsigned char> data);getMainInterfaceSerialPortSettings(void);"
+            "getMainInterfaceSocketSettings(void)";
 }
 
 ///Sets the priority of the script thread (which executes the current script).
@@ -1688,7 +1689,7 @@ void ScriptThread::waitForMainInterfaceToConnect(quint32 connectTimeout)
  * @return
  *      True on success.
  */
-bool ScriptThread::connectSocket(bool isTcp, bool isServer, QString ip, quint32 partnerPort, quint32 ownPort, quint32 connectTimeout)
+bool ScriptThread::connectSocket(bool isTcp, bool isServer, QString ip, quint32 destinationPort, quint32 ownPort, quint32 connectTimeout)
 {
     bool succeeded = false;
 
@@ -1708,9 +1709,9 @@ bool ScriptThread::connectSocket(bool isTcp, bool isServer, QString ip, quint32 
         settings.socketSettings.socketType = "Udp socket";
     }
 
-    settings.socketSettings.address = ip;
+    settings.socketSettings.destinationIpAddress = ip;
     settings.socketSettings.ownPort = ownPort;
-    settings.socketSettings.partnerPort = partnerPort;
+    settings.socketSettings.destinationPort = destinationPort;
     emit setAllSettingsSignal(settings, false);
     emit connectDataConnectionSignal(settings, true);
 
@@ -2988,6 +2989,49 @@ QStringList ScriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object
         emit appendTextToConsoleSignal(resultString, true, false);
     }
     return resultList;
+}
+
+/**
+ * Returns the serial port settings of the main interface.
+ * @return
+ *      The serial port settings.
+ */
+QScriptValue ScriptThread::getMainInterfaceSerialPortSettings(void)
+{
+    const Settings* settings = m_settingsDialog->settings();
+    QScriptValue ret = m_scriptEngine->newObject();
+
+    ret.setProperty("name", settings->serialPort.name);
+    ret.setProperty("baudRate", settings->serialPort.baudRate);
+    ret.setProperty("dataBits", settings->serialPort.dataBits);
+    ret.setProperty("parity", settings->serialPort.stringParity);
+    ret.setProperty("stopBits", settings->serialPort.stringStopBits);
+    ret.setProperty("flowControl", settings->serialPort.stringFlowControl);
+    ret.setProperty("rts", settings->serialPort.setRTS);
+    ret.setProperty("dtr", settings->serialPort.setDTR);
+    return ret;
+}
+
+/**
+ * Returns the socket (UDP, TCP client/server) settings of the main interface.
+ * @return
+ *      The socket settings.
+ */
+QScriptValue ScriptThread::getMainInterfaceSocketSettings(void)
+{
+    const Settings* settings = m_settingsDialog->settings();
+    QScriptValue ret = m_scriptEngine->newObject();
+
+    ret.setProperty("destinationPort", settings->socketSettings.destinationPort);
+    ret.setProperty("destinationIpAddress", settings->socketSettings.destinationIpAddress);
+    ret.setProperty("ownPort", settings->socketSettings.ownPort);
+    ret.setProperty("socketType", settings->socketSettings.socketType);
+    ret.setProperty("proxySettings", settings->socketSettings.proxySettings);
+    ret.setProperty("proxyIpAddress", settings->socketSettings.proxyIpAddress);
+    ret.setProperty("proxyPort", settings->socketSettings.proxyPort);
+    ret.setProperty("proxyUserName", settings->socketSettings.proxyUserName);
+    ret.setProperty("proxyPassword", settings->socketSettings.proxyPassword);
+    return ret;
 }
 
 /**

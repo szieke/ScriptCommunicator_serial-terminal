@@ -100,12 +100,12 @@ typedef struct
 ///Settings for a socket.
 typedef struct
 {
-    quint16 partnerPort;
-    QString address;
+    quint16 destinationPort;
+    QString destinationIpAddress;
     quint16 ownPort;
     QString socketType;
     quint8 proxySettings;
-    QString proxyAddress;
+    QString proxyIpAddress;
     quint16 proxyPort;
     QString proxyUserName;
     QString proxyPassword;
