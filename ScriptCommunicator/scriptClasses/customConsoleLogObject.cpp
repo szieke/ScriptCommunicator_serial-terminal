@@ -30,6 +30,7 @@
 #include <QApplication>
 #include <QAction>
 
+
 ///Is set to true if a thread has been terminated.
 ///This variabke is used un the main function.
 extern bool g_aThreadHasBeenTerminated;
@@ -309,7 +310,8 @@ void CustomConsoleLogThread::loadCustomScriptSlot(QString scriptPath, bool* hasS
 
             if(m_scriptEngine->hasUncaughtException())
             {
-                m_scriptFileObject->showExceptionInMessageBox(m_scriptEngine->uncaughtException(), scriptPath, m_scriptEngine, m_mainWindow);
+                m_scriptFileObject->showExceptionInMessageBox(m_scriptEngine->uncaughtException(), scriptPath, m_scriptEngine,
+                                                              m_mainWindow, m_mainWindow->getScriptWindow());
             }
 
         }
@@ -373,7 +375,8 @@ void CustomConsoleLogThread::executeScriptSlot(QByteArray* data, QString* timeSt
     if(m_scriptEngine->hasUncaughtException())
     {
         *errorOccured = true;
-        m_scriptFileObject->showExceptionInMessageBox(m_scriptEngine->uncaughtException(), m_scriptPath, m_scriptEngine, m_mainWindow);
+        m_scriptFileObject->showExceptionInMessageBox(m_scriptEngine->uncaughtException(), m_scriptPath, m_scriptEngine,
+                                                      m_mainWindow, m_mainWindow->getScriptWindow());
     }
     m_consoleLogObject->m_scriptFunctionIsFinished = true;
 }

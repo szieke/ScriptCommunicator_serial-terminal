@@ -68,10 +68,11 @@ public:
     QString createAbsolutePath(QString fileName);
 
     ///Shows a script exception with a message box to the user.
-    void showExceptionInMessageBox(QScriptValue exception, QString scriptPath, QScriptEngine* scriptEngine, QWidget *parent);
+    void showExceptionInMessageBox(QScriptValue exception, QString scriptPath, QScriptEngine* scriptEngine, QWidget *parent,
+                                   ScriptWindow* scriptWindow);
 
     ///Loads/includes one script (QtScript has no built in include mechanism).
-    bool loadScript(QString scriptPath, bool isRelativePath, QScriptEngine* scriptEngine, QWidget* parent);
+    bool loadScript(QString scriptPath, bool isRelativePath, QScriptEngine* scriptEngine, QWidget* parent, ScriptWindow* scriptWindow);
 
     ///Sets the script file name (path).
     void setScriptFileName(QString scriptFileName){m_scriptFileName = scriptFileName;}

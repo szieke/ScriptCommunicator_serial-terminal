@@ -37,6 +37,7 @@
 #include <QScriptEngineDebugger>
 #include <scriptHelper.h>
 #include "scriptObject.h"
+#include "scriptwindow.h"
 
 
 class MainWindow;
@@ -120,7 +121,7 @@ public:
 
     ///Loads/includes one script (QtScript has no built in include mechanism).
     Q_INVOKABLE bool loadScript(QString scriptPath, bool isRelativePath=true)
-    {return m_scriptFileObject->loadScript(scriptPath, isRelativePath, m_scriptEngine, m_mainWindow);}
+    {return m_scriptFileObject->loadScript(scriptPath, isRelativePath, m_scriptEngine, m_mainWindow, m_mainWindow->getScriptWindow());}
 
     ///Reads a text file and returns the content.
     Q_INVOKABLE QString readFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1)
