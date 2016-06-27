@@ -559,10 +559,10 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
             if (m_serial->open(QIODevice::ReadWrite))
             {
                 if (m_serial->setBaudRate(m_currentGlobalSettings.serialPort.baudRate)
-                        && m_serial->setDataBits(static_cast<QSerialPort::DataBits>(m_currentGlobalSettings.serialPort.stringDataBits.toUInt()))
-                        && m_serial->setParity(static_cast<QSerialPort::Parity>(m_currentGlobalSettings.serialPort.stringParity.toUInt()))
-                        && m_serial->setStopBits(static_cast<QSerialPort::StopBits>(m_currentGlobalSettings.serialPort.stringStopBits.toUInt()))
-                        && m_serial->setFlowControl(static_cast<QSerialPort::FlowControl>(m_currentGlobalSettings.serialPort.stringFlowControl.toUInt())))
+                        && m_serial->setDataBits(m_currentGlobalSettings.serialPort.dataBits)
+                        && m_serial->setParity(m_currentGlobalSettings.serialPort.parity)
+                        && m_serial->setStopBits(m_currentGlobalSettings.serialPort.stopBits)
+                        && m_serial->setFlowControl(m_currentGlobalSettings.serialPort.flowControl))
                 {
                     m_isConnected = true;
 
