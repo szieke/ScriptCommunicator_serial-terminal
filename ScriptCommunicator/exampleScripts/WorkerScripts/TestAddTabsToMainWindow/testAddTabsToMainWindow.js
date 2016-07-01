@@ -31,6 +31,15 @@ function timerElapsed()
 	}
 }
 
+function mainWindowLockScrollingClicked(isChecked)
+{
+	UI_TextEdit1.lockScrolling(isChecked);
+}
+function mainWindowClearConsoleClicked()
+{
+	UI_TextEdit1.clear();
+}
+
 scriptThread.appendTextToConsole('script has started');
 
 
@@ -49,6 +58,9 @@ if(scriptThread.addTabsToMainWindow(UI_TabWidget))
 	UI_ProgressBar.setMaximum(100);
 
 	UI_StartButton.clickedSignal.connect(start)
+	
+	scriptThread.mainWindowLockScrollingClickedSignal.connect(mainWindowLockScrollingClicked);
+	scriptThread.mainWindowClearConsoleClickedSignal.connect(mainWindowClearConsoleClicked);
 
 	scriptThread.messageBox("Information", "Information", "The tab from the dialog has been added to the main window");
 }

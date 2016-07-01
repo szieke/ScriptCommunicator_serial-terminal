@@ -115,4 +115,6 @@ scriptThread::globalSignedChangedSignal.connect(QString name, qint32 number)\nIs
 scriptThread::globalRealChangedSignal.connect(QString name, double number)\nIs emitted if a real number in the global real number map has been changed
 scriptThread::dataReceivedSignal.connect(QVector<unsigned char> data)\nThis signal is emitted if data has been received with the main interface (only if the main interface is not a can interface, \nuse canMessagesReceivedSignal if the main interface is a can interface).
 scriptThread::canMessagesReceivedSignal.connect(QVector<quint8> types, QVector<quint32> messageIds, QVector<quint32> timestamps, QVector<QVector<unsigned char>>  data)\nThis signal is emitted if a can message (or several) has been received with the main interface.	
-scriptThread::sendDataFromMainInterfaceSignal(QVector<unsigned char> data)\nIs emitted if the main interface shall send data.\nScripts can use this signal to send the main interface data with an additional interface.		
+scriptThread::sendDataFromMainInterfaceSignal.connect(QVector<unsigned char> data)\nIs emitted if the main interface shall send data.\nScripts can use this signal to send the main interface data with an additional interface.		
+scriptThread::mainWindowClearConsoleClickedSignal.connect(void)\nIs emitted if the clear console button in the main window is pressed.
+scriptThread::mainWindowLockScrollingClickedSignal.connect(bool isChecked)\nIs emitted if the lock scrolling button in the main window is pressed.

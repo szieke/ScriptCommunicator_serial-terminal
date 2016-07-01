@@ -4082,19 +4082,6 @@ QTextEdit* MainWindow::getConsoleFromCurrentTab(void)
 void MainWindow::tabIndexChangedSlot(int index)
 {
     (void) index;
-    QTextEdit* textEdit = getConsoleFromCurrentTab();
-    if(textEdit)
-    {//The current tab has a console.
-
-        m_userInterface->actionLockScrolling->setEnabled(true);
-        m_userInterface->actionClear->setEnabled(true);
-    }
-    else
-    {
-        m_userInterface->actionLockScrolling->setEnabled(false);
-        m_userInterface->actionClear->setEnabled(false);
-    }
-
     m_searchConsole->activateDeactiveSearchButton();
 }
 

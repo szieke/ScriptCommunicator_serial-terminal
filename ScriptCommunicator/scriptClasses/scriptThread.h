@@ -553,6 +553,14 @@ public:
 
 signals:
 
+    ///Is emitted if the clear console button in the main window is pressed.
+    ///Scripts can connect a function to this signal.
+    void mainWindowClearConsoleClickedSignal(void);
+
+    ///Is emitted if the lock scrolling button in the main window is pressed.
+    ///Scripts can connect a function to this signal.
+    void mainWindowLockScrollingClickedSignal(bool isChecked);
+
     ///Is emitted if the main interface shall send data.
     ///Scripts can use this signal to send the data with an additional interface.
     ///Scripts can connect a function to this signal.
@@ -715,6 +723,12 @@ private slots:
 
     ///Sends the send data from the main interface.
     void sendDataFromMainInterfaceSlot(const QByteArray data);
+
+    ///Is called if the clear console button in the main window is pressed.
+    void mainWindowClearConsoleSlot(void){emit mainWindowClearConsoleClickedSignal();}
+
+    ///Is called if the lock scrolling button in the main window is pressed.
+    void mainWindowLockScrollingSlot(bool isChecked){emit mainWindowLockScrollingClickedSignal(isChecked);}
 
 #ifdef Q_OS_MAC
     ///Debug timer slot (checks if the script is suspended by the debugger or is running).

@@ -71,6 +71,7 @@
 #include "scriptXml.h"
 #include <QScriptEngineDebugger>
 #include <QSerialPortInfo>
+#include "ui_mainwindow.h"
 
 
 
@@ -412,6 +413,12 @@ void ScriptThread::run()
 
         connect(this, SIGNAL(addTabsToMainWindowSignal(QTabWidget*)),
                 m_scriptWindow->m_mainWindow, SLOT(addTabsToMainWindowSlot(QTabWidget*)), Qt::QueuedConnection);
+
+        connect(m_scriptWindow->m_mainWindow->getUserInterface()->actionClear, SIGNAL(triggered()),
+                this, SLOT(mainWindowClearConsoleSlot()), Qt::QueuedConnection);
+
+        connect(m_scriptWindow->m_mainWindow->getUserInterface()->actionLockScrolling, SIGNAL(toggled(bool)),
+                this, SLOT(mainWindowLockScrollingSlot(bool)), Qt::QueuedConnection);
 
         connect(this, SIGNAL(addToolBoxPagesToMainWindowSignal(QToolBox*)),
                 m_scriptWindow->m_mainWindow, SLOT(addToolBoxPagesToMainWindowSlot(QToolBox*)), Qt::QueuedConnection);

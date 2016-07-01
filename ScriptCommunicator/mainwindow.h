@@ -242,6 +242,10 @@ public:
     ///Removes all script tabs and tool box pages for one script thread.
     void removeAllTabsAndToolBoxPages(QObject *scriptThread);
 
+    ///Returns the user interface.
+    Ui::MainWindow * getUserInterface(void){ return m_userInterface;}
+
+
 signals:
     ///With this signal the main window requests the main interface thread to connect with the man interface interface.
     ///This signal is connected to the MainInterfaceThread::connectDataConnectionSlot slot.
