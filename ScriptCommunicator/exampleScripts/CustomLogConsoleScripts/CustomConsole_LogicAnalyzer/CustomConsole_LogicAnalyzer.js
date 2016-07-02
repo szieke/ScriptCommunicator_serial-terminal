@@ -100,3 +100,5 @@ function createString(data, timeStamp, type, isLog)
 
 	return resultString;
 }
+
+cust.appendTextToConsole("CustomConsole_LogicAnalyzer.js started", true, false);

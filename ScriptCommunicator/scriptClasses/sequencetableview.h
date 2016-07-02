@@ -44,6 +44,7 @@
 #include "settingsdialog.h"
 #include "scriptStandardDialogs.h"
 #include "scriptObject.h"
+#include "scriptwindow.h"
 
 class SendThread;
 class SendWindow;
@@ -99,7 +100,8 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "QString byteArrayToString(QVector<unsigned char> data);QString byteArrayToHexString(QVector<unsigned char> data);"
+        return "void appendTextToConsole(QString string, bool newLine=true, bool bringToForeground=false);"
+               "QString byteArrayToString(QVector<unsigned char> data);QString byteArrayToHexString(QVector<unsigned char> data);"
                "QVector<unsigned char> stringToArray(QString str);QVector<unsigned char> addStringToArray(QVector<unsigned char> array, QString str);"
                "quint8 calculateCrc8(QVector<unsigned char> data);quint16 calculateCrc16(QVector<unsigned char> data);"
                "quint32 calculateCrc32(QVector<unsigned char> data);quint64 calculateCrc64(QVector<unsigned char> data);"
@@ -116,6 +118,9 @@ public:
                "QList<int> showColorDialog(quint8 initInitalRed=255, quint8 initInitalGreen=255, quint8 initInitalBlue=255, quint8 initInitalAlpha=255, bool alphaIsEnabled=false);"
                "void setBlockTime(quint32 blockTime);QStringList getAllObjectPropertiesAndFunctions(QScriptValue object)";
     }
+
+    ///Appends text to the script window console.
+    Q_INVOKABLE void appendTextToConsole(QString string, bool newLine=true, bool bringToForeground=false){ emit appendTextToConsoleSignal(string, newLine,bringToForeground);}
 
     ///Converts a byte array which contains ascii characters into a ascii string (QString).
     Q_INVOKABLE QString byteArrayToString(QVector<unsigned char> data){return ScriptHelper::byteArrayToString(data);}
@@ -224,6 +229,10 @@ public:
 
 signals:
 
+    ///Is connected with ScriptWindow::appendTextToConsoleSlot (appends text to the console in the script window).
+    ///This signal must not be used from script.
+    void appendTextToConsoleSignal(QString text, bool newLine, bool bringToForeground);
+
 public slots:
     ///Executes a script before sending the data.
     void executeScriptSlot(QString* sendScript, QByteArray* sendData, SequenceScriptEngineWrapper** scriptEngineWrapper);
@@ -251,6 +260,10 @@ protected:
 
         m_scriptFileObject = new ScriptFile(this, "");
         m_scriptFileObject->intSignals(m_mainWindow->getScriptWindow(), m_runsInDebugger);
+
+        Qt::ConnectionType directConnectionType = m_runsInDebugger ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
+        QObject::connect(this, SIGNAL(appendTextToConsoleSignal(QString, bool,bool)),
+                m_mainWindow->getScriptWindow(), SLOT(appendTextToConsoleSlot(QString, bool,bool)), directConnectionType);
 
         if(!m_runsInDebugger)
         {

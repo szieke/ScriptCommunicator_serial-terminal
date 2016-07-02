@@ -66,3 +66,5 @@ function createString(data, timeStamp, type, isLog)
 	}
 	return resultString;
 }
+
+cust.appendTextToConsole("CustomLogAndConsole_Ascii.js started", true, false);

@@ -22,5 +22,8 @@ function sendData(data)
 		//The sequence will not be sent if an empty array is returned.
 		data = Array();
 	}
+	
+	seq.appendTextToConsole("sequenceSendScriptWithDialog.js send: " + data, true, false);
+	
 	return data;
 }

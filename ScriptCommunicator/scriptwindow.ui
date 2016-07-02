@@ -355,7 +355,7 @@
      <string>script</string>
     </property>
     <addaction name="actionAddScript"/>
-    <addaction name="actionCreateScript"/>
+    <addaction name="actionNewScript"/>
     <addaction name="actionEditScript"/>
     <addaction name="actionEditUi"/>
     <addaction name="separator"/>
@@ -461,12 +461,12 @@
     <string>remove script</string>
    </property>
   </action>
-  <action name="actionCreateScript">
+  <action name="actionNewScript">
    <property name="text">
-    <string>create worker script</string>
+    <string>new worker script</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+C</string>
+    <string>Ctrl+N</string>
    </property>
   </action>
   <action name="actionMoveUp">

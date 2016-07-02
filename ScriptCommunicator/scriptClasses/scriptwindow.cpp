@@ -155,7 +155,7 @@ ScriptWindow::ScriptWindow(MainWindow* mainWindow, MainInterfaceThread *thread, 
     connect(m_userInterface->actionSaveConfigAs, SIGNAL(triggered()), this, SLOT(saveConfigAsSlot()));
     connect(m_userInterface->actionCreateSceFile, SIGNAL(triggered()), this, SLOT(createSceFileSlot()));
 
-    connect(m_userInterface->actionCreateScript, SIGNAL(triggered()), this, SLOT(createScriptSlot()));
+    connect(m_userInterface->actionNewScript, SIGNAL(triggered()), this, SLOT(newScriptSlot()));
     connect(m_userInterface->actionEditScript, SIGNAL(triggered()), this, SLOT(editScriptButtonPressedSlot()));
     connect(m_userInterface->actionEditUi, SIGNAL(triggered()), this, SLOT(editUiSlot()));
     connect(m_userInterface->actionRemoveUi, SIGNAL(triggered()), this, SLOT(removeUi()));
@@ -180,7 +180,7 @@ ScriptWindow::ScriptWindow(MainWindow* mainWindow, MainInterfaceThread *thread, 
         m_userInterface->actionSaveConfig->setEnabled(false);
         m_userInterface->actionSaveConfigAs->setEnabled(false);
 
-        m_userInterface->actionCreateScript->setEnabled(false);
+        m_userInterface->actionNewScript->setEnabled(false);
         m_userInterface->actionEditScript->setEnabled(false);
         m_userInterface->actionEditUi->setEnabled(false);
         m_userInterface->actionRemoveUi->setEnabled(false);
@@ -1427,9 +1427,9 @@ void ScriptWindow::startScriptThread(int selectedRow, bool withDebugger)
 }
 
 /**
- * This slot function created a script.
+ * This slot function creates a new script.
  */
-void ScriptWindow::createScriptSlot(void)
+void ScriptWindow::newScriptSlot(void)
 {
     QString templateScriptFileName = QFileDialog::getOpenFileName(this, tr("Select worker script template"),
                                                                   MainWindow::getScriptCommunicatorFilesFolder() + "/templates/workerScriptTemplates",
@@ -1629,8 +1629,8 @@ void ScriptWindow::itemSelectionChangedSlot(void)
 
         if(m_userInterface->tableWidget->item(selectedRow, COLUMN_UI_PATH)->text().size() == 0)
         {
-            m_userInterface->actionEditUi->setText("create ui");
-            m_userInterface->actionEditUi->setShortcut(QKeySequence("Ctrl+Shift+C"));
+            m_userInterface->actionEditUi->setText("new ui");
+            m_userInterface->actionEditUi->setShortcut(QKeySequence("Ctrl+Shift+N"));
             m_userInterface->actionRemoveUi->setEnabled(false);
         }
         else
@@ -1710,7 +1710,7 @@ void ScriptWindow::exitScriptCommunicatorSlot(void)
  * @param newLine
  *      True if a new line should be appended.
  * @param bringToForeground
- *      Trueif the script window shall be set to foreground.
+ *      True if the script window shall be on top of all windows.
  */
 void ScriptWindow::appendTextToConsoleSlot(QString text, bool newLine, bool bringToForeground)
 {

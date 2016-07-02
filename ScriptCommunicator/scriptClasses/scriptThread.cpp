@@ -148,7 +148,7 @@ ScriptThread::~ScriptThread()
 ///Returns a semicolon separated list with all public functions, signals and properties.
 QString ScriptThread::getPublicScriptElements(void)
 {
-    return "void appendTextToConsole(QString string, bool newLine=true);"
+    return "void appendTextToConsole(QString string, bool newLine=true, bool bringToForeground=false);"
            "QString byteArrayToString(QVector<unsigned char> data);"
            "QString byteArrayToHexString(QVector<unsigned char> data);"
            "QVector<unsigned char> stringToArray(QString str);"
@@ -264,7 +264,8 @@ QString ScriptThread::getPublicScriptElements(void)
            "dataReceivedSignal.connect(QVector<unsigned char> data);"
            "canMessagesReceivedSignal.connect(QVector<quint8> types, QVector<quint32> messageIds, QVector<quint32> timestamps, QVector<QVector<unsigned char>>  data);"
            "sendDataFromMainInterfaceSignal(QVector<unsigned char> data);getMainInterfaceSerialPortSettings(void);"
-            "getMainInterfaceSocketSettings(void)";
+           "getMainInterfaceSocketSettings(void);mainWindowClearConsoleClickedSignal(void);"
+           "mainWindowLockScrollingClickedSignal(bool isChecked)";
 }
 
 ///Sets the priority of the script thread (which executes the current script).

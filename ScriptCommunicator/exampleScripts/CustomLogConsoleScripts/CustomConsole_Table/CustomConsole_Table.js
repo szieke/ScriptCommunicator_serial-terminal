@@ -54,3 +54,4 @@ function createString(data, timeStamp, type, isLog)
 }
 
 var storedData = Array()
+cust.appendTextToConsole("CustomConsole_Table.js started", true, false);

@@ -213,8 +213,8 @@ public slots:
 
 private slots:
 
-    ///This slot function created a script.
-    void createScriptSlot(void);
+    ///This slot function creates a new script.
+    void newScriptSlot(void);
 
     ///Slot function for the start button.
     void startButtonPressedSlot(void);

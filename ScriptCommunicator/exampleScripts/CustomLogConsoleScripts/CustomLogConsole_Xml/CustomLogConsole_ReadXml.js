@@ -52,6 +52,8 @@ function createString(data, timeStamp, type, isLog)
 	return resultString;
 }
 
+cust.appendTextToConsole("CustomLogConsole_ReadXml.js started", true, false);
+
 var outString  = "";
 var xmlReader = cust.createXmlReader();
 if(xmlReader.readFile("testRead.xml") == 0)

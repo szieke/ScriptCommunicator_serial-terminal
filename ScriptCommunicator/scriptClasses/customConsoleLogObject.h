@@ -100,6 +100,9 @@ public:
                "QStringList getAllObjectPropertiesAndFunctions(QScriptValue object)";
     }
 
+    ///Appends text to the script window console.
+    Q_INVOKABLE void appendTextToConsole(QString string, bool newLine=true, bool bringToForeground=false){ emit appendTextToConsoleSignal(string, newLine,bringToForeground);}
+
     ///Converts a byte array which contains ascii characters into a ascii string (QString).
     Q_INVOKABLE QString byteArrayToString(QVector<unsigned char> data){return ScriptHelper::byteArrayToString(data);}
 
@@ -237,7 +240,12 @@ public:
 
 signals:
     ///The main interface thread emits this signal to show a QMessageBox dialog in the main window.
+    ///This signal must not be used from script.
     void showMessageBoxSignal(QMessageBox::Icon icon, QString title, QString text, QMessageBox::StandardButtons buttons);
+
+    ///Is connected with ScriptWindow::appendTextToConsoleSlot (appends text to the console in the script window).
+    ///This signal must not be used from script.
+    void appendTextToConsoleSignal(QString text, bool newLine, bool bringToForeground);
 
 public slots:
 
@@ -267,6 +275,9 @@ protected:
         m_scriptSql = new ScriptSql();
         m_scriptFileObject = new ScriptFile(this, m_scriptPath);
         m_scriptFileObject->intSignals(m_mainWindow->getScriptWindow(), m_runsInDebugger, false);
+
+        connect(this, SIGNAL(appendTextToConsoleSignal(QString, bool,bool)),
+                        m_mainWindow->getScriptWindow(), SLOT(appendTextToConsoleSlot(QString, bool,bool)), Qt::QueuedConnection);
 
         if(!m_runsInDebugger)
         {

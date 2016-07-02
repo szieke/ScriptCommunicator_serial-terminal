@@ -70,5 +70,7 @@ function sendData(data)
 		data = seq.addStringToArray(data, " color:" + parseInt(resultArray[1]) + "," + parseInt(resultArray[2]) + "," + parseInt(resultArray[3]) + "," + parseInt(resultArray[4]));
 	}
 	
+	seq.appendTextToConsole("sequenceSendTestAllDialogs.js send: " + data, true, false);
+	
 	return data;
 }

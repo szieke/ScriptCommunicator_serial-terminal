@@ -28,6 +28,8 @@ function sendData(data)
 	counter++;
 	//Store the new counter value.
 	seq.setGlobalUnsignedNumber("Counter", counter);
+	
+	seq.appendTextToConsole("sequenceSendScript.js send: " + data, true, false);
 		
 	return data;
 }

@@ -1,3 +1,4 @@
+cust::appendTextToConsole(QString string, bool newLine=true, bool bringToForeground=false):void \nAppends text to the script window console.
 cust::byteArrayToString(QVector<unsigned char> data):QString \nConverts a byte array which contains ascii characters into a ascii string (QString).
 cust::byteArrayToHexString(QVector<unsigned char> data):QString \nConverts a byte array into a hex string.
 cust::stringToArray(QString str):QVector<unsigned char> \nConverts an ascii string into a byte array.

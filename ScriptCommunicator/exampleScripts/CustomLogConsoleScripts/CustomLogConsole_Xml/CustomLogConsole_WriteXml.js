@@ -52,6 +52,8 @@ function createString(data, timeStamp, type, isLog)
 	return resultString;
 }
 
+cust.appendTextToConsole("CustomLogConsole_WriteXml.js started", true, false);
+
 var outString  = "";
 var xmlWriter = cust.createXmlWriter();
 xmlWriter.setCodec("UTF-8");
