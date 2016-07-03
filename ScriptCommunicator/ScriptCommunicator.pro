@@ -7,6 +7,8 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 CONFIG += c++11
 
 QMAKE_CXXFLAGS += -Wno-int-to-pointer-cast
+QMAKE_CXXFLAGS +=-Wno-write-strings
+
 TARGET = ScriptCommunicator
 TEMPLATE = app
 QT += xml

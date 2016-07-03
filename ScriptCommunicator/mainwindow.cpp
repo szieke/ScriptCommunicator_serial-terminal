@@ -2562,6 +2562,14 @@ void MainWindow::htmLogActivatedSlot(bool activated)
                 currentSettings.htmlLogFile = false;
                 m_settingsDialog->setAllSettingsSlot(currentSettings, false);
             }
+            else
+            {
+                if(m_handleData->m_htmlLogFile.size() == 0)
+                {
+                    m_handleData->m_HtmlLogFileStream << "<style>body {background-color:" +
+                                                         QString(MainWindowHandleData::LOG_BACKGROUND_COLOR)  + ";}</style>";
+                }
+            }
         }
     }
     else

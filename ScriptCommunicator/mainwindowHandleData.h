@@ -151,6 +151,18 @@ public:
     ///Cancel send the history.
     void cancelSendHistory(void);
 
+    ///The color of timestamps and user messages in the HTML log.
+    static constexpr char* LOG_TIMESTAMP_AND_MESSAGE_COLOR = "#7c0000";
+
+    ///The color of the sent data in the HTML log.
+    static constexpr char* LOG_SEND_COLOR = "#7c0000";
+
+    ///The color of the received data in the HTML log.
+    static constexpr char* LOG_RECEIVE_COLOR = "#000000";
+
+    ///The background color in the HTML log.
+    static constexpr char* LOG_BACKGROUND_COLOR = "#efefef";
+
 signals:
     ///This signal is emitted for sending data with the main interface.
     void sendDataWithTheMainInterfaceSignal(const QByteArray data, uint id);

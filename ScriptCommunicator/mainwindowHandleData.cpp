@@ -992,21 +992,21 @@ void MainWindowHandleData::appendDataToLog(const QByteArray &data, bool isSend, 
                 QString color;
                 if(isTimeStamp)
                 {
-                    color = "#7c0000";
+                    color = LOG_TIMESTAMP_AND_MESSAGE_COLOR;
                 }
                 else if(isUserMessage)
                 {
-                    color = "#7c0000";
+                    color = LOG_TIMESTAMP_AND_MESSAGE_COLOR;
                 }
                 else
                 {
                     if(isSend)
                     {
-                        color = "#7c0000";
+                        color = LOG_SEND_COLOR;
                     }
                     else
                     {
-                        color = "#000000";
+                        color = LOG_RECEIVE_COLOR;
                     }
                 }
 
