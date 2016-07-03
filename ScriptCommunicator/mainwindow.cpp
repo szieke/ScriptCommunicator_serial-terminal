@@ -46,7 +46,7 @@
 #include "scriptTcpClient.h"
 
 ///The current version of ScriptCommunicator.
-const QString MainWindow::VERSION = "04.14";
+const QString MainWindow::VERSION = "04.13";
 
 #ifdef Q_OS_WIN32
 const QString MainWindow::INIT_MAIN_CONFIG_FILE = "initialSettingsWin.xml";
