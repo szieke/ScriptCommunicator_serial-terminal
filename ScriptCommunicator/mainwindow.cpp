@@ -4111,15 +4111,40 @@ void MainWindow::saveConsoleSlot()
 
             QStringList tmpList = tmpFileName.split(".");
             QString consoleContent;
+            bool isHtml = false;
 
             if(tmpList.size() > 1)
             {
-                consoleContent = (tmpList[1] == "txt") ? textEdit->toPlainText() :
-                                                         textEdit->toHtml();
+                if(tmpList[1] == "txt")
+                {
+                    consoleContent = textEdit->toPlainText();
+                     isHtml = false;
+                }
+                else
+                {
+                    consoleContent = textEdit->toHtml();
+                    isHtml = true;
+                }
             }
             else
             {
                 consoleContent = textEdit->toHtml();
+                isHtml = true;
+            }
+
+            if(isHtml)
+            {
+                //Write the background color, the font family and the font size into the HTML string.
+                QPalette palette = textEdit->palette();
+                QFont font = textEdit->font();
+                int index = consoleContent.indexOf("<head>");
+
+                //Write the style tag after the head tag.
+                consoleContent.insert(index + 6, QString("<style>body {background-color:%1;color:%2;font-family:%3;font-size:%4;}</style>")
+                                      .arg(palette.color(QPalette::Base).name(QColor::HexRgb))
+                                      .arg(palette.color(QPalette::Text).name(QColor::HexRgb))
+                                      .arg(font.family())
+                                      .arg(font.pointSize()));
             }
 
             QFile file(tmpFileName);
