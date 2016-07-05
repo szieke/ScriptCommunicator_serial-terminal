@@ -39,14 +39,23 @@ public:
     explicit ScriptMainWindow(QMainWindow* window, ScriptThread *scriptThread) :
         ScriptWidget(window, scriptThread, scriptThread->getScriptWindow()), m_window(window), m_wasVisible(window->isVisible())
     {
+        m_timer = new QTimer();
+        m_timer->setInterval(500);
+        m_timer->start();
+
+        m_timer->moveToThread(scriptThread->getScriptWindow()->thread());
+
         //connect the necessary signals with the wrapper slots (in this slots the
         //events of the wrapper class are generated, the script can connect to this
         //wrapper events)
-        connect(&m_timer, SIGNAL(timeout()), this, SLOT(checkIfClosedTimerFunctionSlot()));
+        connect(m_timer, SIGNAL(timeout()), this, SLOT(checkIfClosedTimerFunctionSlot()));
 
-        m_timer.setInterval(500);
-        m_timer.start();
+    }
 
+    virtual ~ScriptMainWindow()
+    {
+        m_timer->stop();
+        m_timer->deleteLater();
     }
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
@@ -95,7 +104,7 @@ private:
     bool m_wasVisible;
 
     ///This timer calls checkIfClosedTimerFunctionSlot.
-    QTimer m_timer;
+    QTimer* m_timer;
 };
 
 #endif // SCRIPTMAINWINDOW_H
