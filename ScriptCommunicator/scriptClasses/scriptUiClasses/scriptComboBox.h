@@ -43,10 +43,8 @@ public:
 
         Qt::ConnectionType directConnectionType = scriptThread->runsInDebugger() ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
-        connect(m_comboBox, SIGNAL(currentTextChanged(QString)),
-                this, SLOT(stub_currentTextChanged(QString)));
-        connect(m_comboBox, SIGNAL(currentIndexChanged(int)),
-                this, SLOT(stub_currentIndexChanged(int)));
+        connect(m_comboBox, SIGNAL(currentTextChanged(QString)), this, SIGNAL(currentTextChangedSignal(QString)));
+        connect(m_comboBox, SIGNAL(currentIndexChanged(int)), this, SIGNAL(currentIndexChangedSignal(int)));
 
 
         connect(this, SIGNAL(addItemSignal(QString,QComboBox*)), scriptThread->getScriptWindow(),
@@ -174,14 +172,6 @@ Q_SIGNALS:
 
 private:
     QComboBox* m_comboBox;
-
-private Q_SLOTS:
-
-    ///This slot function is called if the text of the current selected item has been changed.
-    void stub_currentTextChanged(const QString& text){emit currentTextChangedSignal(text);}
-
-    ///This slot function is called if the index of the current selected item has been changed.
-    void stub_currentIndexChanged(int index){emit currentIndexChangedSignal(index);}
 
 };
 

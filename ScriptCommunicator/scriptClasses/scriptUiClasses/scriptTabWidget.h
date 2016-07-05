@@ -48,8 +48,7 @@ public:
         connect(this, SIGNAL(setCurrentIndexSignal(int,QTabWidget*)), scriptThread->getScriptWindow(),
                 SLOT(setCurrentIndexSlot(int, QTabWidget*)), directConnectionType);
 
-        connect(m_tabWidget, SIGNAL(currentChanged(int)), this,
-                SLOT(stub_currentTabChangedSlot(int)), Qt::QueuedConnection);
+        connect(m_tabWidget, SIGNAL(currentChanged(int)), this, SIGNAL(currentTabChangedSignal(int)), Qt::QueuedConnection);
 
 
     }
@@ -91,11 +90,6 @@ Q_SIGNALS:
     ///This signal is private and must not be used inside a script.
     void setCurrentIndexSignal(int index, QTabWidget* tabWidget);
 
-
-private slots:
-    ///This slot function is called if the current tab has been changed.
-    ///In this slot function the current item changed signal is generated
-    void stub_currentTabChangedSlot(int index){emit currentTabChangedSignal(index);}
 private:
     ///The wrapped push button.
     QTabWidget* m_tabWidget;

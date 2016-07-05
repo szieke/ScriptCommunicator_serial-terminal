@@ -70,7 +70,7 @@ public:
                 SLOT(setItemTextSlot(QString,QListWidgetItem*)), directConnectionType);
 
 
-        connect(m_list, SIGNAL(currentRowChanged(int)), this, SLOT(stub_currentRowChanged(int)), Qt::QueuedConnection);
+        connect(m_list, SIGNAL(currentRowChanged(int)), this, SIGNAL(currentRowChangedSignal(int)), Qt::QueuedConnection);
         connect(m_list, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(stub_itemClicked(QListWidgetItem*)), Qt::QueuedConnection);
         connect(m_list, SIGNAL(itemDoubleClicked(QListWidgetItem*)), this, SLOT(stub_itemDoubleClicked(QListWidgetItem*)), Qt::QueuedConnection);
 
@@ -236,8 +236,6 @@ Q_SIGNALS:
 
 public Q_SLOTS:
 
-    ///This slot function is called if the current row selection has been changed.
-    void stub_currentRowChanged(int currentRow){emit currentRowChangedSignal(currentRow);}
 
     ///This slot function is called if a row has been clicked.
     void stub_itemClicked(QListWidgetItem* item){emit itemClickedSignal(m_list->row(item));}

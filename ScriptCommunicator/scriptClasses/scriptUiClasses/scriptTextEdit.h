@@ -44,7 +44,7 @@ public:
         //wrapper events)
         Qt::ConnectionType directConnectionType = scriptThread->runsInDebugger() ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
-        connect(m_textEdit, SIGNAL(textChanged()), this, SLOT(stub_textChangedSlot()));
+        connect(m_textEdit, SIGNAL(textChanged()), this, SIGNAL(textChangedSignal()));
         connect(this, SIGNAL(limtCharsInTextEditSignal(QTextEdit*,int)),
                 scriptWindow, SLOT(limtCharsInTextEditSlot(QTextEdit*,int)), directConnectionType);
         connect(this, SIGNAL(setPlainTextSignal(QString)),m_textEdit, SLOT(setPlainText(QString)), directConnectionType);
@@ -172,10 +172,6 @@ Q_SIGNALS:
     ///This signal is private and must not be used inside a script.
     void writeTextSignal(QTextEdit* textEdit, QString text, bool insertHtml, bool insertText,
                          bool append, bool isLocked, quint32 maxChars, bool atTheEnd);
-
-private Q_SLOTS:
-    ///This slot function is called if the text of the text edit has been changed.
-    void stub_textChangedSlot(){ emit textChangedSignal();}
 
 private:
 

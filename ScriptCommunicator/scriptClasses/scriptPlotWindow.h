@@ -64,8 +64,7 @@ public:
         connect(this, SIGNAL(showLegendSignal(bool)),
                 m_plotWindow->getWidget(), SLOT(showLegendSlot(bool)), Qt::QueuedConnection);
 
-        connect(m_plotWindow, SIGNAL(closedSignal()),
-                this, SLOT(stub_closedSlot()), Qt::QueuedConnection);
+        connect(m_plotWindow, SIGNAL(closedSignal()), this, SIGNAL(closedSignal()), Qt::QueuedConnection);
 
         connect(m_plotWindow->getWidget(), SIGNAL(clearButtonPressedSignal()),
                 this, SLOT(clearButtonPressedSlot()), Qt::QueuedConnection);
@@ -207,8 +206,6 @@ public slots:
     }
 
 private Q_SLOTS:
-    ///This slot function is called if the plot window has been close.
-    void stub_closedSlot(){ emit closedSignal();}
 
     ///This function clears the plot widget.
     ///It is called if the clear button is pressed.

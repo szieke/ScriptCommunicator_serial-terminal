@@ -44,7 +44,7 @@ public:
 
         connect(this, SIGNAL(setRangeSignal(int,int)),m_slider, SLOT(setRange(int,int)), directConnectionType);
         connect(this, SIGNAL(setValueSignal(int)),m_slider, SLOT(setValue(int)), directConnectionType);
-        connect(m_slider, SIGNAL(valueChanged(int)),this, SLOT(stub_valueChangedSlot(int)));
+        connect(m_slider, SIGNAL(valueChanged(int)),this, SIGNAL(valueChangedSignal(int)));
     }
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
@@ -79,9 +79,6 @@ Q_SIGNALS:
     ///This signal is private and must not be used inside a script.
     void setValueSignal(int value);
 
-private Q_SLOTS:
-    ///This slot function is called if the value of the slider has been changed.
-    void stub_valueChangedSlot(int value){ emit valueChangedSignal(value);}
 
 private:
     ///The wrapped progress bar.

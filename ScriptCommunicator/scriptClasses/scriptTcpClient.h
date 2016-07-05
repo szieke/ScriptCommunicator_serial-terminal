@@ -50,8 +50,8 @@ public:
         //connect the necessary signals with the wrapper slots (in this slots the
         //events of the wrapper class are generated, the script can connect to this
         //wrapper events)
-        connect(m_tcpSocket, SIGNAL(connected()),this, SLOT(stub_connectedSlot()));
-        connect(m_tcpSocket, SIGNAL(disconnected()),this, SLOT(stub_disconnectedSlot()));
+        connect(m_tcpSocket, SIGNAL(connected()),this, SIGNAL(connectedSignal()));
+        connect(m_tcpSocket, SIGNAL(disconnected()),this, SIGNAL(disconnectedSignal()));
         connect(m_tcpSocket, SIGNAL(readyRead()),this, SLOT(stub_readyReadSlot()));
         connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),this, SLOT(stub_errorSlot(QAbstractSocket::SocketError)));
 
@@ -239,11 +239,6 @@ signals:
     void sendDataWithMainInterfaceSignal(const QByteArray data, uint id);
 
 private slots:
-    ///This slot function is called if the connection has been established.
-    void stub_connectedSlot(void){emit connectedSignal();}
-
-    ///This slot function is called if the connection has been disconnected.
-    void stub_disconnectedSlot(void){emit disconnectedSignal();}
 
     ///This slot function is called if data can be read from the socket (if data has been received).
     void stub_readyReadSlot(void)

@@ -43,7 +43,7 @@ public:
 
         Qt::ConnectionType directConnectionType = scriptThread->runsInDebugger() ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
-        connect(m_button, SIGNAL(clicked()), this, SLOT(stub_clickedSlot()), Qt::QueuedConnection);
+        connect(m_button, SIGNAL(clicked()), this, SIGNAL(clickedSignal()), Qt::QueuedConnection);
 
         connect(this, SIGNAL(setItemIconSignal(QAbstractButton*,QString)), scriptThread->getScriptWindow(),
                 SLOT(setItemIconSlot(QAbstractButton*,QString)), Qt::QueuedConnection);
@@ -82,11 +82,6 @@ Q_SIGNALS:
     ///This signal is private and must not be used inside a script.
     void setTextSignal(const QString text, QPushButton* button);
 
-private slots:
-
-    ///This slot function is called if the user clicks the button.
-    ///In this slot function the clicked signal is generated
-    void stub_clickedSlot(void){emit clickedSignal();}
 
 private:
     ///The wrapped push button.

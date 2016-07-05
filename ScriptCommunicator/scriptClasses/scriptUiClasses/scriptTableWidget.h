@@ -98,11 +98,13 @@ public:
 
         Qt::ConnectionType directConnectionType = scriptThread->runsInDebugger() ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
-        connect(m_tableWidget, SIGNAL(cellPressed(int, int)), this, SLOT(stub_cellPressed(int, int)));
-        connect(m_tableWidget, SIGNAL(cellClicked(int, int)), this, SLOT(stub_cellClicked(int, int)));
-        connect(m_tableWidget, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(stub_cellDoubleClicked(int, int)));
-        connect(m_tableWidget, SIGNAL(cellChanged(int, int)), this, SLOT(stub_cellChanged(int, int)));
-        connect(m_tableWidget->horizontalHeader(), SIGNAL(sectionResized(int, int, int)), this, SLOT(stub_horizontalHeaderSectionResized(int, int, int)));
+        connect(m_tableWidget, SIGNAL(cellPressed(int, int)), this, SIGNAL(cellPressedSignal(int, int)));
+        connect(m_tableWidget, SIGNAL(cellClicked(int, int)), this, SIGNAL(cellClickedSignal(int, int)));
+        connect(m_tableWidget, SIGNAL(cellDoubleClicked(int, int)), this, SIGNAL(cellDoubleClickedSignal(int, int)));
+        connect(m_tableWidget, SIGNAL(cellChanged(int, int)), this, SIGNAL(cellChangedSignal(int, int)));
+        connect(m_tableWidget->horizontalHeader(), SIGNAL(sectionResized(int, int, int)), this, SIGNAL(horizontalHeaderSectionResizedSignal(int, int, int)));
+        connect(m_tableWidget, SIGNAL(itemSelectionChanged()), this, SIGNAL(cellSelectionChangedSignal()), Qt::QueuedConnection);
+        connect(m_tableWidget, SIGNAL(cellEntered(int, int)), this, SLOT(stub_cellEnteredSlot(int, int)), Qt::DirectConnection);
 
         connect(this, SIGNAL(resizeColumnToContentsSignal(int,QTableWidget*)), scriptThread->getScriptWindow(),
                 SLOT(resizeColumnToContentsSlot(int,QTableWidget*)), directConnectionType);
@@ -151,14 +153,10 @@ public:
         connect(this, SIGNAL(setCellIconSignal(QTableWidgetItem*,QString)), scriptThread->getScriptWindow(),
                 SLOT(setItemIconSlot(QTableWidgetItem*,QString)), directConnectionType);
 
-
-        connect(m_tableWidget, SIGNAL(cellEntered(int, int)), this, SLOT(stub_cellEnteredSlot(int, int)), Qt::DirectConnection);
-
         connect(this, SIGNAL(cellEnteredSignal(int,int,int,QTableWidget*)), scriptThread->getScriptWindow(),
                 SLOT(cellEnteredSlot(int,int,int,QTableWidget*)), Qt::DirectConnection);
 
-        connect(m_tableWidget, SIGNAL(itemSelectionChanged()), this,
-                SLOT(stub_itemSelectionChanged()), Qt::QueuedConnection);
+
 
     }
 
@@ -623,25 +621,6 @@ Q_SIGNALS:
 
 
 private Q_SLOTS:
-
-    ///This slot function is called if the user has pressed a cell.
-    void stub_cellPressed(int row, int column){emit cellPressedSignal(row, column);}
-
-    ///This slot function is called if the user has clicked a cell.
-    void stub_cellClicked(int row, int column){emit cellClickedSignal(row, column);}
-
-    ///This slot function is called if the user has double clicked a cell.
-    void stub_cellDoubleClicked(int row, int column){emit cellDoubleClickedSignal(row, column);}
-
-    ///This slot function is called if a cell has been changed.
-    void stub_cellChanged(int row, int column){emit cellChangedSignal(row, column);}
-
-    ///This slot function is called if a horizontal header section is resized.
-    ///The section's logical number is specified by logicalIndex, the old size by oldSize, and the new size by newSize.
-    void stub_horizontalHeaderSectionResized(int logicalIndex, int oldSize, int newSize){emit horizontalHeaderSectionResizedSignal(logicalIndex,oldSize, newSize);}
-
-    ///This slot function is called if the current selection has been changed.
-    void stub_itemSelectionChanged(void){emit cellSelectionChangedSignal();}
 
 
     ///With this function the user can move the selected row up or down

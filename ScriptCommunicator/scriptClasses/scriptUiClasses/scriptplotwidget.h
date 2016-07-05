@@ -179,7 +179,7 @@ public slots:
     void showHelperElementsSlot(bool showXRange, bool showYRange, bool showUpdate, bool showSave,  bool showLoad, bool showClear, bool showGraphVisibility,
                                 quint32 graphVisibilityMaxSize, bool showLegend);
 
-private  slots:
+private slots:
 
     ///This function adjusts the borders of diagram and replots all graphs.
     ///It is called periodically by m_plotTimer.

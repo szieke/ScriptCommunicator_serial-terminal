@@ -41,7 +41,7 @@ public:
         //wrapper events)
         Qt::ConnectionType directConnectionType = scriptThread->runsInDebugger() ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
-        connect(m_radioButton, SIGNAL(clicked(bool)), this, SLOT(stub_clickedSlot(bool)));
+        connect(m_radioButton, SIGNAL(clicked(bool)), this, SIGNAL(clickedSignal(bool)));
 
         connect(this, SIGNAL(setTextSignal(QString,QRadioButton*)),scriptThread->getScriptWindow(),
                 SLOT(setTextSlot(QString,QRadioButton*)), directConnectionType);
@@ -84,11 +84,6 @@ Q_SIGNALS:
     ///This signal is private and must not be used inside a script.
     void setCheckedSignal(bool checked, QRadioButton* button);
 
-private slots:
-
-    ///This slot function is called if the user clicks the check box.
-    ///In this slot function the clicked signal is generated
-    void stub_clickedSlot(bool checked){emit clickedSignal(checked);}
 private:
     ///The wrapped check box.
     QRadioButton* m_radioButton;

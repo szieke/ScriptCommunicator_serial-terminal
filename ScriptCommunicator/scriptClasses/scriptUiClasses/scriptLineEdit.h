@@ -45,7 +45,7 @@ public:
         //wrapper events)
         Qt::ConnectionType directConnectionType = scriptThread->runsInDebugger() ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
-        connect(m_lineEdit, SIGNAL(textChanged(const QString&)),this, SLOT(stub_textChanged(const QString&)));
+        connect(m_lineEdit, SIGNAL(textChanged(const QString&)),this, SIGNAL(textChangedSignal(const QString&)));
 
         connect(this, SIGNAL(setTextSignal(QString)),m_lineEdit, SLOT(setText(QString)), directConnectionType);
 
@@ -116,11 +116,6 @@ Q_SIGNALS:
     ///This signal is used to add a validator the line edit.
     ///This signal is private and must not be used inside a script.
     void addValidatorSignal(QValidator* validator, QLineEdit* lineEdit);
-
-private Q_SLOTS:
-
-    ///This slot function is called if the text of the line edit has been changed.
-    void stub_textChanged(const QString& text){emit textChangedSignal(text);}
 
 private:
 

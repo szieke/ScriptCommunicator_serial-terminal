@@ -40,7 +40,7 @@ public:
         //connect the necessary signals with the wrapper slots (in this slots the
         //events of the wrapper class are generated, the script can connect to this
         //wrapper events)
-        connect(m_dialog, SIGNAL(finished(int)), this, SLOT(stub_finishedSlot(int)), Qt::QueuedConnection);
+        connect(m_dialog, SIGNAL(finished(int)), this, SIGNAL(finishedSignal()), Qt::QueuedConnection);
     }
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
@@ -67,15 +67,6 @@ public slots:
         }
     }
 
-private slots:
-
-    ///This slot function is called if the user clicks closes the dialog.
-    ///In this slot function the clicked signal is generated
-    void stub_finishedSlot(int result)
-    {
-        (void)result;
-        emit finishedSignal();
-    }
 private:
     ///The wrapped dialog.
     QDialog* m_dialog;

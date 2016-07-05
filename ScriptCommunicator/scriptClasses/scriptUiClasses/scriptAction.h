@@ -46,7 +46,7 @@ public:
         //wrapper events)
         Qt::ConnectionType directConnectionType = scriptThread->runsInDebugger() ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
-        connect(m_action, SIGNAL(triggered()), this, SLOT(stub_triggeredSlot()));
+        connect(m_action, SIGNAL(triggered()), this, SIGNAL(clickedSignal()));
 
         connect(this, SIGNAL(setTextSignal(QString, QAction*)), scriptThread->getScriptWindow(),
                 SLOT(setActionTextSlot(QString,QAction*)), directConnectionType);
@@ -85,11 +85,6 @@ Q_SIGNALS:
     ///This signal is private and must not be used inside a script.
     void setCheckStateSignal(bool checked, QAction* action);
 
-private slots:
-
-    ///This slot function is called if the user clicks the action.
-    ///In this slot function the clicked signal is generated
-    void stub_triggeredSlot(void){emit clickedSignal();}
 private:
     ///The wrapped action.
     QAction* m_action;

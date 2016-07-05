@@ -42,7 +42,7 @@ public:
 
         Qt::ConnectionType directConnectionType = scriptThread->runsInDebugger() ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
-        connect(m_checkBox, SIGNAL(clicked(bool)), this, SLOT(stub_clickedSlot(bool)));
+        connect(m_checkBox, SIGNAL(clicked(bool)), this, SIGNAL(clickedSignal(bool)));
 
         connect(this, SIGNAL(setTextSignal(QString,QCheckBox*)), scriptThread->getScriptWindow(),
                 SLOT(setTextSlot(QString,QCheckBox*)), directConnectionType);
@@ -86,12 +86,6 @@ Q_SIGNALS:
     ///Is emitted in setChecked.
     ///This signal is private and must not be used inside a script.
     void setCheckedSignal(bool checked, QCheckBox* box);
-
-private slots:
-
-    ///This slot function is called if the user clicks the check box.
-    ///In this slot function the clicked signal is generated
-    void stub_clickedSlot(bool checked){emit clickedSignal(checked);}
 
 private:
     ///The wrapped check box.

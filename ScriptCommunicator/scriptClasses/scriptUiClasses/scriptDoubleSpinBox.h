@@ -53,7 +53,7 @@ public:
         connect(this, SIGNAL(setSingleStepSignal(double,QDoubleSpinBox*)),scriptThread->getScriptWindow(),
                 SLOT(setSingleStepSlot(double,QDoubleSpinBox*)), directConnectionType);
 
-        connect(m_spinBox, SIGNAL(valueChanged(double)),this, SLOT(stub_valueChangedSlot(double)));
+        connect(m_spinBox, SIGNAL(valueChanged(double)),this, SIGNAL(valueChangedSignal(double)));
     }
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
@@ -112,9 +112,6 @@ Q_SIGNALS:
     ///This signal is private and must not be used inside a script.
     void setSingleStepSignal(double value, QDoubleSpinBox* spinBox);
 
-private Q_SLOTS:
-    ///This slot function is called if the value of the spin box has been changed.
-    void stub_valueChangedSlot(double value){ emit valueChangedSignal(value);}
 private:
     ///The wrapped progress bar.
     QDoubleSpinBox* m_spinBox;

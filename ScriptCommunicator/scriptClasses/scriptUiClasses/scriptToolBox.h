@@ -48,8 +48,7 @@ public:
         connect(this, SIGNAL(setCurrentIndexSignal(int,QToolBox*)), scriptThread->getScriptWindow(),
                 SLOT(setCurrentIndex(int,QToolBox*)), directConnectionType);
 
-        connect(m_box, SIGNAL(currentChanged(int)), this,
-                SLOT(stub_currentItemChangedSlot(int)), Qt::QueuedConnection);
+        connect(m_box, SIGNAL(currentChanged(int)), this, SIGNAL(currentItemChangedSignal(int)), Qt::QueuedConnection);
 
 
     }
@@ -89,12 +88,6 @@ Q_SIGNALS:
     ///This signal is emitted in setCurrentIndex.
     ///This signal is private and must not be used inside a script.
     void setCurrentIndexSignal(int index, QToolBox* box);
-
-private slots:
-
-    ///This slot function is called if the current item has been changed.
-    ///In this slot function the current item changed signal is generated
-    void stub_currentItemChangedSlot(int index){emit currentItemChangedSignal(index);}
 
 private:
     ///The wrapped tool box.
