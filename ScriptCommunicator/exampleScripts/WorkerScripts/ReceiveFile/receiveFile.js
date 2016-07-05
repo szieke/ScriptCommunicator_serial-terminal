@@ -122,7 +122,7 @@ scriptThread.dataReceivedSignal.connect(dataReceivedSlot);
 scriptThread.canMessagesReceivedSignal.connect(canMessagesReceived);
 UI_InformationLabel.setText("bytes written: " + bytesWritten);
 var timer = scriptThread.createTimer();
-timer.timeout.connect(TimerSlot);
+timer.timeoutSignal.connect(TimerSlot);
 timer.start(200);
 
 

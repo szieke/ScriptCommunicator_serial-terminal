@@ -106,7 +106,7 @@ if(!scriptThread.connectPcan(1, 1000))
 scriptThread.canMessagesReceivedSignal.connect(canMessagesReceived);
 
 var SendTimer = scriptThread.createTimer();
-SendTimer.timeout.connect(sendMessages);
+SendTimer.timeoutSignal.connect(sendMessages);
 //SendTimer.start(20);
 SendTimer.start(500);
 
@@ -125,7 +125,7 @@ if(!pcan2.setFilter(true, 0, 0x1fffffffff))
 
 
 var statusTimer = scriptThread.createTimer();
-statusTimer.timeout.connect(statusTimerSlot);
+statusTimer.timeoutSignal.connect(statusTimerSlot);
 statusTimer.start(500);
 
 //PCAN_CHANNEL_IDENTIFYING=0x15

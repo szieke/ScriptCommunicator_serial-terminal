@@ -51,7 +51,7 @@ if(scriptThread.addTabsToMainWindow(UI_TabWidget))
 {
 	//Create a timer which sets the value of the progress bar.
 	var timer = scriptThread.createTimer();
-	timer.timeout.connect(timerElapsed);
+	timer.timeoutSignal.connect(timerElapsed);
 
 	var g_currentProgressValue = 0;
 	UI_ProgressBar.setMinimum(0);

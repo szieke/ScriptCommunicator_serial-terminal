@@ -475,7 +475,7 @@ for(var i = 0; i < availablePorts.length; i++)
 
 var consoleBuffer = ""
 var consoleTimer = scriptThread.createTimer()
-consoleTimer.timeout.connect(updateConsole);
+consoleTimer.timeoutSignal.connect(updateConsole);
 consoleTimer.start(200);
 
 var serialPort = scriptThread.createSerialPort();

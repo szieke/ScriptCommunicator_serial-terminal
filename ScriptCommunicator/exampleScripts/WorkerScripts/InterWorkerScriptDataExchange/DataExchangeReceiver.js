@@ -61,7 +61,7 @@ function globalRealChanged(name, number)
 
 scriptThread.appendTextToConsole("script data exchange receiver started");
 var timer = scriptThread.createTimer();
-timer.timeout.connect(TimeOut);
+timer.timeoutSignal.connect(TimeOut);
 timer.start(1000);
 
 scriptThread.globalStringChangedSignal.connect(globalStringChanged);

@@ -204,7 +204,7 @@ UI_ConnectButton.clickedSignal.connect(ConnectButtonPressed);
 UI_ClearButton.clickedSignal.connect(ClearButtonPressed);
 
 var consoleTimer = scriptThread.createTimer()
-consoleTimer.timeout.connect(updateConsole);
+consoleTimer.timeoutSignal.connect(updateConsole);
 consoleTimer.start(200);
 
 

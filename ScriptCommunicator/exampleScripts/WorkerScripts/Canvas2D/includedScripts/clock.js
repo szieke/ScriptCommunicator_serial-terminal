@@ -139,5 +139,5 @@ ctxClock.keyPressSignal.connect(keyPressedClock);
 ctxClock.keyReleaseSignal.connect(keyReleasedClock);
 
 var timerClock = scriptThread.createTimer();
-timerClock.timeout.connect(clock);
+timerClock.timeoutSignal.connect(clock);
 timerClock.start(1000);

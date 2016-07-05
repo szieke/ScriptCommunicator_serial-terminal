@@ -81,5 +81,5 @@ ctxPlasma.keyPressSignal.connect(keyPressedPlasma);
 ctxPlasma.keyReleaseSignal.connect(keyReleasedPlasma);
 
 var timerPlasma = scriptThread.createTimer();
-timerPlasma.timeout.connect(renderPlasma);
+timerPlasma.timeoutSignal.connect(renderPlasma);
 timerPlasma.start(50);

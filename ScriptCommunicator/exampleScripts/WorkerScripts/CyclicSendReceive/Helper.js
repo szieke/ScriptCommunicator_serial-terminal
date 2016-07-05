@@ -101,5 +101,5 @@ UI_tableWidget.horizontalHeaderSectionResizedSignal.connect(tableHorizontalHeade
 
 //Create and connect a timer which cyclically adjust the table column width.
 var tableAdjustWidthTimer = scriptThread.createTimer()
-tableAdjustWidthTimer.timeout.connect(adjustTableColmnWidth)
+tableAdjustWidthTimer.timeoutSignal.connect(adjustTableColmnWidth)
 tableAdjustWidthTimer.start(200);

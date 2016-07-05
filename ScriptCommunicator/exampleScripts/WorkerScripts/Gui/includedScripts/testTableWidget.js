@@ -131,8 +131,8 @@ UI_testReceiveTableWidget.horizontalHeaderSectionResizedSignal.connect(UI_receiv
 //Start a timer which periodically calls adjustTableColmnWidth(if the dialog/table 
 //size has been changed the columns have to be adjusted)
 var tableAdjustWidthTimer = scriptThread.createTimer()
-tableAdjustWidthTimer.timeout.connect(adjustSendTableColmnWidth)
-tableAdjustWidthTimer.timeout.connect(adjustReceiveTableColmnWidth)
+tableAdjustWidthTimer.timeoutSignal.connect(adjustSendTableColmnWidth)
+tableAdjustWidthTimer.timeoutSignal.connect(adjustReceiveTableColmnWidth)
 tableAdjustWidthTimer.start(200);
 
 /******************test widgets in table***************************************/

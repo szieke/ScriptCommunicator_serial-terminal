@@ -72,6 +72,7 @@
 #include <QScriptEngineDebugger>
 #include <QSerialPortInfo>
 #include "ui_mainwindow.h"
+#include "scriptTimer.h"
 
 
 
@@ -691,7 +692,7 @@ QScriptValue ScriptThread::createPcanInterface(void)
  */
 QScriptValue ScriptThread::createTimer(void)
 {
-    QTimer* timer =  new QTimer(this);
+    ScriptTimer* timer =  new ScriptTimer(this);
     return m_scriptEngine->newQObject(timer, QScriptEngine::ScriptOwnership);
 }
 

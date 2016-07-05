@@ -93,7 +93,7 @@ plotWindow2.setWindowPositionAndSize(string);
 
 //start the periodically timer which calls the function timeout
 var timer = scriptThread.createTimer()
-timer.timeout.connect(timeout);
+timer.timeoutSignal.connect(timeout);
 timer.start(100);
 
 

@@ -6,6 +6,12 @@
 class ScriptObject
 {
 public:
+
+    virtual ~ScriptObject(void)
+    {
+
+    }
+
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void) = 0;
 };

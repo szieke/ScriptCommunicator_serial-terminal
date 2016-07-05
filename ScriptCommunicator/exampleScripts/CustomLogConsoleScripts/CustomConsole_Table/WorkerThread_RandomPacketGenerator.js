@@ -23,7 +23,7 @@ function timeout()
 
 //start the periodically timer which calls the function timeout
 var timer = scriptThread.createTimer()
-timer.timeout.connect(timeout);
+timer.timeoutSignal.connect(timeout);
 scriptThread.appendTextToConsole('Timer started ');
 timer.start(1000);
 
