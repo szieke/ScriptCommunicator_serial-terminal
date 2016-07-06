@@ -267,7 +267,7 @@ void MainWindow::tabIndexChangedSlot(int index)
         {
             ui->actionOpenAllIncludedScripts->setEnabled(true);
         }
-
+        static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget())->checkDocumentForUiFiles();
         static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget())->initAutoCompletion(m_allFunction);
     }
     else
@@ -1284,6 +1284,7 @@ void MainWindow::insertAllFunctionInListView()
 
 
     static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget())->setFocus();
+    static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget())->checkDocumentForUiFiles();
     static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget())->initAutoCompletion(m_allFunction);
 
 }

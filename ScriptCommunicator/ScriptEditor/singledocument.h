@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <Qsci/qsciscintilla.h>
+#include <QDomDocument>
 
 class MainWindow;
 
@@ -24,7 +25,19 @@ public:
     ///Initializes the autocompletion.
     void initAutoCompletion(QStringList additionalElements);
 
+    ///Checks if in the current document user interface files are loaded.
+    ///If user interface are loaded then they will be parsed and added to the auto-completion
+    ///list (g_autoCompletionEntries).
+    void checkDocumentForUiFiles(void);
+
 private:
+
+    ///Parses an user interface file (auto-completion).
+    void parseUiFile(QString uiFileName);
+
+    ///Parse a widget list from a user interface file (auto-completion).
+    void parseWidgetList(QDomElement& docElem, bool parseActions);
+
     ///Pointer to the main window.
     MainWindow* m_mainWindow;
 

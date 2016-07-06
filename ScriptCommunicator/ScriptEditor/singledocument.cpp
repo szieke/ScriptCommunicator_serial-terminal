@@ -6,10 +6,12 @@
 #include <QCoreApplication>
 #include <QDirIterator>
 #include <QThread>
-#include <QDomDocument>
+
 
 //Contains all autocompletion entries.
 QMap<QString, QStringList> g_autoCompletionEntries;
+
+QStringList g_parsedUiFiles;
 
 /**
  * Returns the folder ich which the ScriptEditor files
@@ -58,10 +60,18 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
     connect(this, SIGNAL(textChanged()), m_mainWindow, SLOT(documentWasModified()));
 }
 
-void parseWidgetList(QDomElement& docElem, bool parseActions)
+/**
+ * Parse a widget list from a user interface file (auto-completion).
+ * @param docElem
+ *      The QDomElement from the user interface file.
+ * @param parseActions
+ *      If true then all actions will be parsed. If false then all widgets will be parsed.
+ */
+void SingleDocument::parseWidgetList(QDomElement& docElem, bool parseActions)
 {
     QDomNodeList nodeList = docElem.elementsByTagName((parseActions) ? "addaction" : "widget");
-    //Parse all widgets.
+
+    //Parse all widgets or actions.
     for (int i = 0; i < nodeList.size(); i++)
     {
         QDomNode nodeItem = nodeList.at(i);
@@ -93,17 +103,13 @@ void parseWidgetList(QDomElement& docElem, bool parseActions)
 }
 
 /**
- * Sets the document name/path.
- * @param name
- *      The document name.
+ * Parses an user interface file (auto-completion).
+ * @param uiFileName
+ *      The user interface file.
  */
-void SingleDocument::setDocumentName(QString name)
+void SingleDocument::parseUiFile(QString uiFileName)
 {
-    m_documentName = name;initLexer(name);
-
-    //Check if a ui file exist.
-    QString uiFileName = MainWindow::getTheCorrespondingUiFile(m_documentName);
-    if(!uiFileName.isEmpty())
+    if(!g_parsedUiFiles.contains(uiFileName))
     {
         QFile uiFile(uiFileName);
         QDomDocument doc("ui");
@@ -115,12 +121,29 @@ void SingleDocument::setDocumentName(QString name)
                 QDomElement docElem = doc.documentElement();
                 parseWidgetList(docElem, false);
                 parseWidgetList(docElem, true);
-
-
             }
 
             uiFile.close();
         }
+        g_parsedUiFiles.append(uiFileName);
+    }
+}
+
+/**
+ * Sets the document name/path.
+ * @param name
+ *      The document name.
+ */
+void SingleDocument::setDocumentName(QString name)
+{
+    m_documentName = name;
+    initLexer(name);
+
+    //Check if a ui file exist.
+    QString uiFileName = MainWindow::getTheCorrespondingUiFile(m_documentName);
+    if(!uiFileName.isEmpty())
+    {
+        parseUiFile(uiFileName);
     }
 }
 
@@ -182,4 +205,60 @@ void SingleDocument::initAutoCompletion(QStringList additionalElements)
     }
 
 }
+
+/**
+ * Checks if in the current document user interface files are loaded.
+ * If user interface are loaded then they will be parsed and added to the auto-completion
+ * list (g_autoCompletionEntries).
+ */
+void SingleDocument::checkDocumentForUiFiles(void)
+{
+    QString currentText = text();
+    int index;
+
+    index = currentText.indexOf("scriptThread.loadUserInterfaceFile");
+
+    while(index != -1)
+    {
+
+        QString tmpString =  currentText.right(currentText.length() - index);
+        QStringList list = tmpString.split("(");
+        QString uiFile;
+        bool isRelativePath = true;
+
+        if(list.length() == 1)
+        {//( not found.
+            break;
+        }
+
+        list = list[1].split(")");
+
+        if(list.length() == 1)
+        {//) not found.
+            break;
+        }
+
+        list = list[0].split(",");
+        uiFile = list[0];
+        if(list.length() > 1)
+        {
+            isRelativePath = list[1].contains("true") ? true : false;
+        }
+
+
+        uiFile.replace("\"", "");
+        uiFile.replace("'", "");
+
+        if(isRelativePath)
+        {
+            uiFile = QFileInfo(getDocumentName()).absolutePath() + "/" + uiFile;
+        }
+
+        parseUiFile(uiFile);
+        index = currentText.indexOf("scriptThread.loadUserInterfaceFile", index + 1);
+
+    }
+}
+
+
 
