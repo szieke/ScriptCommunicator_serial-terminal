@@ -7,7 +7,7 @@ function stopScript()
 }
 
 //The dialog is closed.
-function UI_DialogFinished(e)
+function dialogFinished(e)
 {
 	scriptThread.stopScript()
 }
@@ -26,6 +26,6 @@ function sendSequence()
 }
 
 scriptThread.appendTextToConsole('script has started');
-UI_Dialog.finishedSignal.connect(UI_DialogFinished);
+UI_Dialog.finishedSignal.connect(dialogFinished);
 
 UI_SendButton.clickedSignal.connect(sendSequence)

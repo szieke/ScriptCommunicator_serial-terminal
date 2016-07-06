@@ -6,7 +6,7 @@ function stopScript()
 }
 
 //Is called if the dialog is closed.
-function UI_DialogFinished(e)
+function dialogFinished(e)
 {
 	scriptThread.stopScript()
 }
@@ -36,7 +36,7 @@ function printPage()
 }
 
 scriptThread.appendTextToConsole('script has started');
-UI_Dialog.finishedSignal.connect(UI_DialogFinished);
+UI_Dialog.finishedSignal.connect(dialogFinished);
 
 UI_LoadPushButton.clickedSignal.connect(loadPage)
 UI_PrintPushButton.clickedSignal.connect(printPage)

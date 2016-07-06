@@ -4,7 +4,7 @@ ScriptCommunicator global worker script data.
 Note: Woker scripts can exchange data with ScriptCommunicator global variables.
 ***************************************************************************/
 
-function TimeOut()
+function timeOut()
 {
 	var string = scriptThread.getGlobalString("String");
 	if(string.length > 0)
@@ -61,7 +61,7 @@ function globalRealChanged(name, number)
 
 scriptThread.appendTextToConsole("script data exchange receiver started");
 var timer = scriptThread.createTimer();
-timer.timeoutSignal.connect(TimeOut);
+timer.timeoutSignal.connect(timeOut);
 timer.start(1000);
 
 scriptThread.globalStringChangedSignal.connect(globalStringChanged);

@@ -17,7 +17,7 @@ function stopScript()
 	scriptThread.getGlobalRealNumber("RealNumber", true);
 }
 
-function TimeOut()
+function timeOut()
 {
 	counter++;
 	scriptThread.setGlobalString("String", counter.toString());
@@ -41,5 +41,5 @@ function TimeOut()
 var counter = 0;
 scriptThread.appendTextToConsole("script data exchange receiver started");
 var timer = scriptThread.createTimer()
-timer.timeoutSignal.connect(TimeOut)
+timer.timeoutSignal.connect(timeOut)
 timer.start(1000);

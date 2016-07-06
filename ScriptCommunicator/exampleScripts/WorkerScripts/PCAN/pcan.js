@@ -11,7 +11,7 @@ function stopScript()
 }
 
 //The dialog is closed.
-function UI_DialogFinished(e)
+function dialogFinished(e)
 {
 	scriptThread.stopScript()
 }
@@ -95,7 +95,7 @@ function statusTimerSlot()
 
 scriptThread.appendTextToConsole('script has started');
 
-UI_Dialog.finishedSignal.connect(UI_DialogFinished);
+UI_Dialog.finishedSignal.connect(dialogFinished);
 
 scriptThread.disconnect()
 if(!scriptThread.connectPcan(1, 1000))

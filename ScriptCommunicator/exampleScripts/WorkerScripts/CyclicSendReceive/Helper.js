@@ -6,7 +6,7 @@ function stopScript()
 }
 
 //Is called if the user closes the user interface.
-function UI_DialogFinished(e)
+function dialogFinished(e)
 {
 	scriptThread.stopScript()
 }
@@ -94,7 +94,7 @@ function adjustTableColmnWidth()
 }
 
 scriptThread.appendTextToConsole('script has started');
-UI_Dialog.finishedSignal.connect(UI_DialogFinished);
+UI_Dialog.finishedSignal.connect(dialogFinished);
 
 //Connect the section resized signal (to adjust the table column width).
 UI_tableWidget.horizontalHeaderSectionResizedSignal.connect(tableHorizontalHeaderSectionResizedSignal);

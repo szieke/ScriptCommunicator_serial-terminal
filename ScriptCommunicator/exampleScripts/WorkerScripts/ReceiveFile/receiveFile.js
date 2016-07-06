@@ -9,7 +9,7 @@ function stopScript()
 }
 
 //The dialog is closed.
-function UI_DialogFinished(e)
+function dialogFinished(e)
 {
 	scriptThread.stopScript()
 }
@@ -40,7 +40,7 @@ function ClearFilePushButtonClickedSlot()
 	}
 
 }
-function UI_OpenFilePushButtonClickedSlot()
+function openFilePushButtonClickedSlot()
 {
 	var path = scriptThread.showFileDialog (true, "Open File", "","Files (*)")
 	if(path != "")
@@ -100,7 +100,7 @@ function writteData()
 	}
 	timer.start(200);
 }
-function TimerSlot()
+function timerSlot()
 {
 	if(receivedData.length != 0)
 	{
@@ -115,14 +115,14 @@ scriptThread.appendTextToConsole('script receive file started');
 var bytesWritten = 0;
 var receivedData = Array();
 
-UI_ReceiveFileDialog.finishedSignal.connect(UI_DialogFinished);
-UI_OpenFilePushButton.clickedSignal.connect(UI_OpenFilePushButtonClickedSlot)
+UI_ReceiveFileDialog.finishedSignal.connect(dialogFinished);
+UI_OpenFilePushButton.clickedSignal.connect(openFilePushButtonClickedSlot)
 UI_ClearFilePushButton.clickedSignal.connect(ClearFilePushButtonClickedSlot)
 scriptThread.dataReceivedSignal.connect(dataReceivedSlot);
 scriptThread.canMessagesReceivedSignal.connect(canMessagesReceived);
 UI_InformationLabel.setText("bytes written: " + bytesWritten);
 var timer = scriptThread.createTimer();
-timer.timeoutSignal.connect(TimerSlot);
+timer.timeoutSignal.connect(timerSlot);
 timer.start(200);
 
 

@@ -9,13 +9,13 @@ function stopScript()
 }
 
 //The dialog is closed.
-function UI_DialogFinished(e)
+function dialogFinished(e)
 {	
 	scriptThread.stopScript()
 }
 
 
-function UI_SendFilePushButtonClickedSlot()
+function sendFilePushButtonClickedSlot()
 {
 	if(scriptThread.isConnected())
 	{
@@ -91,7 +91,7 @@ function UI_SendFilePushButtonClickedSlot()
 	}
 }
 	
-function UI_OpenFilePushButtonClickedSlot()
+function openFilePushButtonClickedSlot()
 {
 	var path = scriptThread.showFileDialog (false, "Open File", "","Files (*)")
 	if(path != "")
@@ -104,9 +104,9 @@ function UI_OpenFilePushButtonClickedSlot()
 
 scriptThread.appendTextToConsole('script send file started');
 
-UI_SendFileDialog.finishedSignal.connect(UI_DialogFinished);
-UI_OpenFilePushButton.clickedSignal.connect(UI_OpenFilePushButtonClickedSlot)
-UI_SendFilePushButton.clickedSignal.connect(UI_SendFilePushButtonClickedSlot)
+UI_SendFileDialog.finishedSignal.connect(dialogFinished);
+UI_OpenFilePushButton.clickedSignal.connect(openFilePushButtonClickedSlot)
+UI_SendFilePushButton.clickedSignal.connect(sendFilePushButtonClickedSlot)
 UI_SendFileProgressBar.setRange(0, 100);
 UI_SendFileProgressBar.setValue(0);
 

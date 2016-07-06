@@ -18,7 +18,7 @@ function getParameterByName(name, line)
 }
 
 //Is called if the user closes the dialog.
-function UI_DialogFinished(e)
+function dialogFinished(e)
 {
 	scriptThread.stopScript()
 }
@@ -127,13 +127,13 @@ function sendAnswerToClient(serverClient,customRefreshRate)
 	serverClient.writeString(hrd+pl);	
 }
 //The value of the refresh rate has been changed.
-function UI_spinBoxValueChanged(value)
+function spinBoxValueChanged(value)
 {
 	HTMLPageRefreshRate = UI_spinBox.value();
 }
 
 //The value of the server port has been changed.
-function UI_spinBox2ValueChanged(value)
+function spinBox2ValueChanged(value)
 {	
 	var port = UI_spinBox_2.value();
     tcpServer.close();
@@ -147,15 +147,15 @@ var HTMLPageRefreshRate = 1;
 UI_Dialog.setWindowFlags(0x00040000 | 0x00000100 | 0x00004000); // ontop, not resizable, with minimize button
 UI_Dialog.show();
 UI_Dialog.setWindowTitle("uHTTPServer");
-UI_Dialog.finishedSignal.connect(UI_DialogFinished);
+UI_Dialog.finishedSignal.connect(dialogFinished);
 
 UI_spinBox_2.setRange(8080,8100);
 UI_spinBox_2.setValue(8080);
-UI_spinBox_2.valueChangedSignal.connect(UI_spinBox2ValueChanged);
+UI_spinBox_2.valueChangedSignal.connect(spinBox2ValueChanged);
 
 UI_spinBox.setRange(0,5);
 UI_spinBox.setValue(HTMLPageRefreshRate);
-UI_spinBox.valueChangedSignal.connect(UI_spinBoxValueChanged);
+UI_spinBox.valueChangedSignal.connect(spinBoxValueChanged);
 
 var tcpServer = scriptThread.createTcpServer();
 tcpServer.setMaxPendingConnections(maxPendingConnections);

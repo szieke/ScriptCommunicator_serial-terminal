@@ -11,7 +11,7 @@ function stopScript()
 }
 
 //The dialog is closed.
-function UI_DialogFinished(e)
+function dialogFinished(e)
 {
 	scriptThread.stopScript()
 }
@@ -30,7 +30,7 @@ function sendDataArray(data)
 }
 
 //the user has pressed the button
-function UI_pushButtonClicked()
+function pushButtonClicked()
 {
 	var array = UI_lineEdit.text().split(" ");
 	var byteArray = Array();
@@ -79,8 +79,8 @@ function main(fileName)
 		scriptThread.loadLibrary(fileName);
 		UI_lineEdit.setText("1 2 3 4 5 6 7 8 9");
 		
-		UI_Dialog.finishedSignal.connect(UI_DialogFinished);
-				UI_pushButton.clickedSignal.connect(UI_pushButtonClicked)
+		UI_Dialog.finishedSignal.connect(dialogFinished);
+				UI_pushButton.clickedSignal.connect(pushButtonClicked)
 	}
 	else
 	{

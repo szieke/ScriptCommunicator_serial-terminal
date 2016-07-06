@@ -1,5 +1,5 @@
 //Is called if the dialog is closed.
-function UI_DialogFinished(e)
+function dialogFinished(e)
 {
 	scriptThread.stopScript()
 }
@@ -48,7 +48,7 @@ function sendPage()
 	
 }
 
-function UI_horizontalSliderValueChanged(value)
+function horizontalSliderValueChanged(value)
 {
 	if (this == UI_horizontalSlider) UI_webView.evaluateJavaScript("document.getElementById('slider1').setAttribute('width',test("+value+"))");
 	else if (this == UI_horizontalSlider_2) UI_webView.evaluateJavaScript("document.getElementById('slider2').setAttribute('width',test("+value+"))");
@@ -101,7 +101,7 @@ function callWorkerScript(value)
 UI_Dialog.setWindowTitle("webKit evaluateJavaScript Example");
 //UI_Dialog.setWindowFlags( 0x00000100 | 0x00004000); //not resizable, with minimize button
 UI_Dialog.show();
-UI_Dialog.finishedSignal.connect(UI_DialogFinished);
+UI_Dialog.finishedSignal.connect(dialogFinished);
 var outPutFrom_callWorkerScriptWithResult = "";
 
 try
@@ -109,10 +109,10 @@ try
 	//Test if the script web view has been loaded.
 	UI_webView.hasSelection();
 	
-	UI_horizontalSlider.valueChangedSignal.connect(UI_horizontalSlider,UI_horizontalSliderValueChanged);
-	UI_horizontalSlider_2.valueChangedSignal.connect(UI_horizontalSlider_2,UI_horizontalSliderValueChanged);
-	UI_horizontalSlider_3.valueChangedSignal.connect(UI_horizontalSlider_3,UI_horizontalSliderValueChanged);
-	UI_horizontalSlider_4.valueChangedSignal.connect(UI_horizontalSlider_4,UI_horizontalSliderValueChanged);
+	UI_horizontalSlider.valueChangedSignal.connect(UI_horizontalSlider,horizontalSliderValueChanged);
+	UI_horizontalSlider_2.valueChangedSignal.connect(UI_horizontalSlider_2,horizontalSliderValueChanged);
+	UI_horizontalSlider_3.valueChangedSignal.connect(UI_horizontalSlider_3,horizontalSliderValueChanged);
+	UI_horizontalSlider_4.valueChangedSignal.connect(UI_horizontalSlider_4,horizontalSliderValueChanged);
     
 	UI_webView.callWorkerScriptWithResultSignal.connect(callWorkerScriptWithResult);
 	UI_webView.callWorkerScriptSignal.connect(callWorkerScript);

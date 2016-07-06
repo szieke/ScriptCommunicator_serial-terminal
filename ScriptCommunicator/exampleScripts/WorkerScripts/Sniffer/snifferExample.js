@@ -17,12 +17,12 @@ function stopScript()
 }
 
 //Is called if the dialog is closed.
-function UI_DialogFinished(e)
+function dialogFinished(e)
 {
 	scriptThread.stopScript()
 }
 
-function UI_clearConsoleButtonClicked()
+function clearConsoleButtonClicked()
 {
 	UI_scriptConsole.clear();
 }
@@ -302,7 +302,7 @@ function loadUiSettings()
 	}	
 }
 
-function UI_connectButtonPressed()
+function connectButtonPressed()
 {
 	if(UI_connectionTypeComboBox.currentText() == "serial port")
 	{
@@ -498,14 +498,14 @@ var isConnectedSecondInterface = false;
 var connectionType = "INVALID";
 scriptThread.dataReceivedSignal.connect(dataReceivedSlot);
 
-UI_SettingsDialog.finishedSignal.connect(UI_DialogFinished);
+UI_SettingsDialog.finishedSignal.connect(dialogFinished);
 UI_disconnectButton.clickedSignal.connect(secondInterfaceDisconnectedSlot)
-UI_connectButton.clickedSignal.connect(UI_connectButtonPressed)
+UI_connectButton.clickedSignal.connect(connectButtonPressed)
 
 UI_connectionTypeComboBox.currentTextChangedSignal.connect(textFromGuiElementChanged)
 UI_socketsTypeComboBox.currentTextChangedSignal.connect(textFromGuiElementChanged)
 
-UI_clearConsoleButton.clickedSignal.connect(UI_clearConsoleButtonClicked)
+UI_clearConsoleButton.clickedSignal.connect(clearConsoleButtonClicked)
 
 UI_socketPortLineEdit.addIntValidator(0, 65536);
 UI_socketUdpOwnPortLineEdit.addIntValidator(0, 65536);
