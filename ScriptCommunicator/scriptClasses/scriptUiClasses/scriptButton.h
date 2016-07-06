@@ -61,7 +61,7 @@ public:
     }
 
     ///Sets the button text.
-    Q_INVOKABLE void setText(const QString text){emit setTextSignal(text, m_button);}
+    Q_INVOKABLE void setText(QString text){emit setTextSignal(text, m_button);}
 
     ///Returns the button text.
     Q_INVOKABLE QString text(void){return m_button->text();}

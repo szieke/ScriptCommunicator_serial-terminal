@@ -1,0 +1,32 @@
+QLabel::setEnabled(bool isEnabled):void \nEnables or disables the widget.
+QLabel::update(void):void \nUpdates the widget.
+QLabel::repaint(void):void \nRepaints the widget.
+QLabel::show(void):void \nShows the widget.
+QLabel::void close(void) \nCloses the widget.
+QLabel::hide(void):void \nHides the widget.
+QLabel::setWindowTitle(QString title)_void \nSets the window title.
+QLabel::windowPositionAndSize(void):QString \nReturns the window size and position (Pixel).The return string has following format:\n"top left x, top left y, width, height"
+QLabel::setWindowPositionAndSize(QString positionAndSize):void \nSets the position and the size of a window). String format:\n"top left x, top left y, width, height".
+QLabel::setBackgroundColor(QString color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+QLabel::setWindowTextColor(QString color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+QLabel::setTextColor(QString color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+QLabel::setPaletteColor(QString palette, QString color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+QLabel::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+QLabel::setToolTip(QString text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+QLabel::isVisible(void):bool \nReturn true, if the widget is visible.
+QLabel::raise(void):void \nRaises this widget to the top of the parent widget's stack.
+QLabel::lower(void):void \nLowers the widget to the bottom of the parent widget's stack.
+QLabel::setWindowFlags(quint32 flags):void \nSets the window flags.\nNote: ScriptWidget::show must be called after a setWindowFlags call.
+QLabel::clearWindowFlags(quint32 flags):void \nClears the given window flags.\nNote: ScriptWidget::show must be called after a clearWindowFlags call.
+QLabel::windowFlags(void):quint32 \nReturns the window flags.
+QLabel::setFocus(void):void \nGives the keyboard input focus to this widget.
+QLabel::width(void):int \nReturns the width of the widget excluding any window frame.
+QLabel::height(void):int \nReturns the height of the widget excluding any window frame.
+QLabel::getWidgetPointer(void):QWidget* \nReturns the widget pointer.
+QLabel::setAdditionalData(int key, QString data):void \nSets/stores an additional data entry.
+QLabel::getAdditionalData(int key):QString \nReturns an additional data entry.
+QLabel::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
+QLabel::getClassName(void):QString \nReturns the class name of this object.
+QLabel::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+QLabel::setText(QString text):void \nSets the label text.
+QLabel::text(void):QString \nReturns the label text.

@@ -50,7 +50,7 @@ public:
     }
 
 Q_SIGNALS:
-    ///This signal is emitted if the user presses the button.
+    ///This signal is emitted if the user closes the dialog.
     ///Scripts can connect a function to this signal.
     void finishedSignal(void);
 
