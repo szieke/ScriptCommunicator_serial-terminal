@@ -132,7 +132,7 @@ public:
 
     ///Adds a column in the header for each item in the labels list, and sets the label for each column.
     ///Note that setHeaderLabels() won't remove existing columns.
-    Q_INVOKABLE void setHeaderLabels (QStringList labels){emit setHeaderLabelsSignal(labels, m_treeWidget);}
+    Q_INVOKABLE void setHeaderLabels(QStringList labels){emit setHeaderLabelsSignal(labels, m_treeWidget);}
 
     ///Sets the width of a column.
     Q_INVOKABLE void setColumnWidth(int column, int size){emit setColumnWidthSignal(column, size, m_treeWidget);}

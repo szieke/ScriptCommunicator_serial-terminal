@@ -71,7 +71,7 @@ public:
     ///Returns the group box title.
     Q_INVOKABLE QString title(void){return m_box->title();}
 
-    ///Adds a plot widget to the group box
+    ///Adds a plot widget to the group box.
     Q_INVOKABLE ScriptPlotWidget* addPlotWidget(void)
     {
         QHBoxLayout* layout = 0;

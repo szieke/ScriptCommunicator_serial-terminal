@@ -61,7 +61,7 @@ public:
     ///Sets the slider's current value.
     Q_INVOKABLE void setValue(int value){emit setValueSignal(value);}
 
-    ///Returns  the slider's current value.
+    ///Returns the slider's current value.
     Q_INVOKABLE int value(void){return m_slider->value();}
 
 

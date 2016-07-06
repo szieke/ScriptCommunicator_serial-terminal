@@ -6,6 +6,6 @@ scriptSql::contains(QString connectionName = QLatin1String(QSqlDatabase::default
 scriptSql::connectionNames():QStringList \nReturns a list containing the names of all connections.
 scriptSql::drivers():QStringList \nReturns a list of all the available database drivers.
 scriptSql::isDriverAvailable(QString name):bool \nReturns true if a driver called name is available; otherwise returns false.
-scriptSql::createQuery(ScriptSqlDatabase* dataBase, QString query = QString()):ScriptSqlQuery \nCreates a ScriptSqlQuery object using the SQL query and the current database.
+scriptSql::createQuery(ScriptSqlDatabase dataBase, QString query = QString()):ScriptSqlQuery \nCreates a ScriptSqlQuery object using the SQL query and the current database.
 scriptSql::createField(QString fieldName = QString(), quint32 type = (quint32)QVariant::Invalid):ScriptSqlField \nCreates a ScriptSqlField object.
 scriptSql::createRecord(void):ScriptSqlRecord \nCreates a ScriptSqlRecord object.

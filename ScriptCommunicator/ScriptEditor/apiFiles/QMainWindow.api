@@ -1,0 +1,31 @@
+QMainWindow::setEnabled(bool isEnabled):void \nEnables or disables the widget.
+QMainWindow::update(void):void \nUpdates the widget.
+QMainWindow::repaint(void):void \nRepaints the widget.
+QMainWindow::show(void):void \nShows the widget.
+QMainWindow::close(void):void \nCloses the widget.
+QMainWindow::hide(void):void \nHides the widget.
+QMainWindow::setWindowTitle(QString title)_void \nSets the window title.
+QMainWindow::windowPositionAndSize(void):QString \nReturns the window size and position (Pixel).The return string has following format:\n"top left x, top left y, width, height"
+QMainWindow::setWindowPositionAndSize(QString positionAndSize):void \nSets the position and the size of a window). String format:\n"top left x, top left y, width, height".
+QMainWindow::setBackgroundColor(QString color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+QMainWindow::setWindowTextColor(QString color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+QMainWindow::setTextColor(QString color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+QMainWindow::setPaletteColor(QString palette, QString color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+QMainWindow::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+QMainWindow::setToolTip(QString text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+QMainWindow::isVisible(void):bool \nReturn true, if the widget is visible.
+QMainWindow::raise(void):void \nRaises this widget to the top of the parent widget's stack.
+QMainWindow::lower(void):void \nLowers the widget to the bottom of the parent widget's stack.
+QMainWindow::setWindowFlags(quint32 flags):void \nSets the window flags.\nNote: ScriptWidget::show must be called after a setWindowFlags call.
+QMainWindow::clearWindowFlags(quint32 flags):void \nClears the given window flags.\nNote: ScriptWidget::show must be called after a clearWindowFlags call.
+QMainWindow::windowFlags(void):quint32 \nReturns the window flags.
+QMainWindow::setFocus(void):void \nGives the keyboard input focus to this widget.
+QMainWindow::width(void):int \nReturns the width of the widget excluding any window frame.
+QMainWindow::height(void):int \nReturns the height of the widget excluding any window frame.
+QMainWindow::getWidgetPointer(void):QWidget* \nReturns the widget pointer.
+QMainWindow::setAdditionalData(int key, QString data):void \nSets/stores an additional data entry.
+QMainWindow::getAdditionalData(int key):QString \nReturns an additional data entry.
+QMainWindow::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
+QMainWindow::getClassName(void):QString \nReturns the class name of this object.
+QMainWindow::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+QMainWindow::finishedSignal.connect(void) \nThis signal is emitted if the user closes the dialog.

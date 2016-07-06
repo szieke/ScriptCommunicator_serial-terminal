@@ -1,0 +1,24 @@
+QSpinBox::setEnabled(bool isEnabled):void \nEnables or disables the widget.
+QSpinBox::hide(void):void \nHides the widget.
+QSpinBox::show(void):void \nShows the widget.
+QSpinBox::setBackgroundColor(QString color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+QSpinBox::setWindowTextColor(QString color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+QSpinBox::setTextColor(QString color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+QSpinBox::setPaletteColor(QString palette, QString color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+QSpinBox::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+QSpinBox::setToolTip(QString text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+QSpinBox::isVisible(void):bool \nReturn true, if the widget is visible.
+QSpinBox::setFocus(void):void \nGives the keyboard input focus to this widget.
+QSpinBox::width(void):int \nReturns the width of the widget excluding any window frame.
+QSpinBox::height(void):int \nReturns the height of the widget excluding any window frame.
+QSpinBox::setAdditionalData(int key, QString data):void \nSets/stores an additional data entry.
+QSpinBox::getAdditionalData(int key):QString \nReturns an additional data entry.
+QSpinBox::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
+QSpinBox::getClassName(void):QString \nReturns the class name of this object.
+QSpinBox::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+QSpinBox::setRange(int minimum, int maximum):void \nSets the spin box's minimum and maximum values to minimum and maximum respectively.
+QSpinBox::setValue(int value):void \nSets the spin box's current value.
+QSpinBox::value(void):int \nReturns the spin box's current value.
+QSpinBox::setSingleStep(int value):void \nIf the user uses the arrows to change the spin box's value the value will be\nincremented/decremented by the amount of the single step. The default value is 1.\nSetting a single step value of less than 0 does nothing.
+QSpinBox::singleStep(void):int \nReturns the single step value.
+QSpinBox::valueChangedSignal.connect(int currentValue) \nThis signal is emitted if the value of the spin box has been changed.

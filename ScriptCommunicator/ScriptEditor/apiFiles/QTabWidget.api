@@ -1,0 +1,24 @@
+QTabWidget::setEnabled(bool isEnabled):void \nEnables or disables the widget.
+QTabWidget::hide(void):void \nHides the widget.
+QTabWidget::show(void):void \nShows the widget.
+QTabWidget::setBackgroundColor(QString color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+QTabWidget::setWindowTextColor(QString color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+QTabWidget::setTextColor(QString color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+QTabWidget::setPaletteColor(QString palette, QString color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+QTabWidget::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+QTabWidget::setToolTip(QString text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+QTabWidget::isVisible(void):bool \nReturn true, if the widget is visible.
+QTabWidget::setFocus(void):void \nGives the keyboard input focus to this widget.
+QTabWidget::width(void):int \nReturns the width of the widget excluding any window frame.
+QTabWidget::height(void):int \nReturns the height of the widget excluding any window frame.
+QTabWidget::setAdditionalData(int key, QString data):void \nSets/stores an additional data entry.
+QTabWidget::getAdditionalData(int key):QString \nReturns an additional data entry.
+QTabWidget::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
+QTabWidget::getClassName(void):QString \nReturns the class name of this object.
+QTabWidget::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+QTabWidget::setTabText(int index, QString text):void \nSets the tab text.
+QTabWidget::tabText(int index):QString \nReturns the tab text.
+QTabWidget::setCurrentIndex(int index):void \nSets the current tab index.
+QTabWidget::currentIndex(void):int \nReturns the current tab index.
+QTabWidget::currentTabChangedSignal.connect(int index) \nThis signal is emitted if the current tab has been changed.
+

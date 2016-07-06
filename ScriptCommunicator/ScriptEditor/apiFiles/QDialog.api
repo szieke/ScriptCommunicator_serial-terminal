@@ -2,7 +2,7 @@ QDialog::setEnabled(bool isEnabled):void \nEnables or disables the widget.
 QDialog::update(void):void \nUpdates the widget.
 QDialog::repaint(void):void \nRepaints the widget.
 QDialog::show(void):void \nShows the widget.
-QDialog::void close(void) \nCloses the widget.
+QDialog::close(void):void \nCloses the widget.
 QDialog::hide(void):void \nHides the widget.
 QDialog::setWindowTitle(QString title)_void \nSets the window title.
 QDialog::windowPositionAndSize(void):QString \nReturns the window size and position (Pixel).The return string has following format:\n"top left x, top left y, width, height"

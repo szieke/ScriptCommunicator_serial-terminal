@@ -8,7 +8,8 @@
 #include <QThread>
 #include <QDomDocument>
 
-QMap<QString, QStringList> g_apiFiles;
+//Contains all autocompletion entries.
+QMap<QString, QStringList> g_autoCompletionEntries;
 
 /**
  * Returns the folder ich which the ScriptEditor files
@@ -30,7 +31,7 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
     QsciScintilla(parent), m_mainWindow(mainWindow), m_documentName("")
 {
 
-    if(g_apiFiles.isEmpty())
+    if(g_autoCompletionEntries.isEmpty())
     {
         QDirIterator it(getScriptEditorFilesFolder()+ "/apiFiles", QStringList() << "*.api", QDir::Files, QDirIterator::Subdirectories);
         while (it.hasNext())
@@ -45,7 +46,7 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
                 while(!singleEntry.isEmpty())
                 {
                     //Add the current line to the api map.
-                    g_apiFiles[fileName] << QString(singleEntry).replace("\\n", "\n");
+                    g_autoCompletionEntries[fileName] << QString(singleEntry).replace("\\n", "\n");
                     singleEntry = in.readLine();
                 }
             }
@@ -55,6 +56,40 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
     }
 
     connect(this, SIGNAL(textChanged()), m_mainWindow, SLOT(documentWasModified()));
+}
+
+void parseWidgetList(QDomElement& docElem, bool parseActions)
+{
+    QDomNodeList nodeList = docElem.elementsByTagName((parseActions) ? "addaction" : "widget");
+    //Parse all widgets.
+    for (int i = 0; i < nodeList.size(); i++)
+    {
+        QDomNode nodeItem = nodeList.at(i);
+        QString className = (parseActions) ? "QAction" : nodeItem.attributes().namedItem("class").nodeValue();
+        QString objectName = nodeItem.attributes().namedItem("name").nodeValue();
+
+        if(!g_autoCompletionEntries.contains(objectName))
+        {//The object is not in g_autoCompletionEntries.
+
+            //Open the corresponding api file.
+            QFile file(getScriptEditorFilesFolder()+ "/apiFiles/" + className + ".api");
+            if (file.open(QFile::ReadOnly))
+            {
+                QTextStream in(&file);
+                QString singleEntry = in.readLine();
+
+                while(!singleEntry.isEmpty())
+                {
+                    singleEntry.replace(className + "::", "UI_" + objectName + "::");
+
+                    //Add the current line to the api map.
+                    g_autoCompletionEntries[objectName] << QString(singleEntry).replace("\\n", "\n");
+                    singleEntry = in.readLine();
+                }
+                file.close();
+            }
+        }
+    }
 }
 
 /**
@@ -78,33 +113,10 @@ void SingleDocument::setDocumentName(QString name)
             if (doc.setContent(&uiFile))
             {
                 QDomElement docElem = doc.documentElement();
-                QDomNodeList nodeList = docElem.elementsByTagName("widget");
+                parseWidgetList(docElem, false);
+                parseWidgetList(docElem, true);
 
-                //Parse all widgets.
-                for (int i = 0; i < nodeList.size(); i++)
-                {
-                    QDomNode nodeItem = nodeList.at(i);
-                    QString className = nodeItem.attributes().namedItem("class").nodeValue();
-                    QString objectName = nodeItem.attributes().namedItem("name").nodeValue();
 
-                    //Open the corresponding api file.
-                    QFile file(getScriptEditorFilesFolder()+ "/apiFiles/" + className + ".api");
-                    if (file.open(QFile::ReadOnly))
-                    {
-                        QTextStream in(&file);
-                        QString singleEntry = in.readLine();
-
-                        while(!singleEntry.isEmpty())
-                        {
-                            singleEntry.replace(className + "::", "UI_" + objectName + "::");
-
-                            //Add the current line to the api map.
-                            g_apiFiles[objectName] << QString(singleEntry).replace("\\n", "\n");
-                            singleEntry = in.readLine();
-                        }
-                        file.close();
-                    }
-                }
             }
 
             uiFile.close();
@@ -154,7 +166,7 @@ void SingleDocument::initAutoCompletion(QStringList additionalElements)
         QsciAPIs* apis = static_cast<QsciAPIs*>(lexer()->apis());
         apis->clear();
         QMap<QString, QStringList>::iterator i;
-        for (i = g_apiFiles.begin(); i != g_apiFiles.end(); ++i)
+        for (i = g_autoCompletionEntries.begin(); i != g_autoCompletionEntries.end(); ++i)
         {
             for(auto el : i.value())
             {
