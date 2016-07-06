@@ -1,3 +1,4 @@
+scriptThread::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
 scriptThread::appendTextToConsole(QString string, bool newLine=true, bool bringToForeground=false):void \nAppends text to the script window console.
 scriptThread::byteArrayToString(QVector<unsigned char> data):QString \nConverts a byte array which contains ascii characters into a ascii string (QString).
 scriptThread::byteArrayToHexString(QVector<unsigned char> data):QString \nConverts a byte array into a hex string.

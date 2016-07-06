@@ -28,7 +28,7 @@
 #include <QMenu>
 #include <QFileDialog>
 #include <QBuffer>
-#include<QDomDocument>
+#include <QDomDocument>
 #include "plotwindow.h"
 #include "scriptComboBox.h"
 #include "scriptLineEdit.h"

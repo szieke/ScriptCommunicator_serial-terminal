@@ -9,19 +9,19 @@ function stopScript()
 }
 
 //the user has changed the item index
-function UI_toolBoxCurrentItemChangedSignal(index)
+function toolBoxCurrentItemChangedSignal(index)
 {
 	UI_testTextEdit.append("UI_toolBoxCurrentItemChangedSignal: " + index);
 }
 
 //the user has changed the tab index
-function UI_currentTabChangedSignal(index)
+function currentTabChangedSignal(index)
 {
 	UI_testTextEdit.append("UI_currentTabChangedSignal: " + index);
 }
 
 //the user has changed the date
-function UI_calendarSelectionChangedSignal(date)
+function calendarSelectionChangedSignal(date)
 {
 	UI_testTextEdit.append("UI_calendarSelectionChangedSignal: " + date + " ; " + UI_calendar.getSelectedDate());
 
@@ -30,7 +30,7 @@ function UI_calendarSelectionChangedSignal(date)
 	UI_dateEdit.blockSignals(false);	
 }
 //the user has changed the date
-function UI_dateEditDateChanged(date)
+function dateEditDateChanged(date)
 {
 	UI_testTextEdit.append("UI_dateEditDateChanged: " + date + "  " + UI_dateEdit.getDate());
 	UI_calendar.setSelectedDate(date);
@@ -38,7 +38,7 @@ function UI_dateEditDateChanged(date)
 
 
 //the user has changed the date and/or the time
-function UI_dateTimeEditTimeChanged(dateTime)
+function dateTimeEditTimeChanged(dateTime)
 {
 
 	UI_testTextEdit.append("UI_dateTimeEditTimeChanged: " + dateTime + "  " + UI_dateTimeEdit.getDateTime());	
@@ -49,14 +49,14 @@ function UI_dateTimeEditTimeChanged(dateTime)
 
 
 //the user has changed the time
-function UI_timeEditTimeChanged(time)
+function timeEditTimeChanged(time)
 {
 	UI_testTextEdit.append("UI_timeEditTimeChanged: " + time + "  " + UI_timeEdit.getTime());	
 }
 
 
 //the user has pressed the create process detached button
-function UI_createProcessDetachedPushButtonClicked()
+function createProcessDetachedPushButtonClicked()
 {
 	UI_testTextEdit.append("UI_createProcessDetachedPushButtonClicked");
 	if(!scriptThread.createProcessDetached(UI_createProcessProgramLineEdit.text(), 
@@ -68,7 +68,7 @@ function UI_createProcessDetachedPushButtonClicked()
 
 }
 //the user has changed the line edit text
-function UI_createProcessPushButtonClicked()
+function createProcessPushButtonClicked()
 {
 	UI_testTextEdit.append("UI_createProcessPushButtonClicked");
 	if(0 != scriptThread.createProcess(UI_createProcessProgramLineEdit.text(), 
@@ -84,13 +84,13 @@ function UI_createProcessPushButtonClicked()
 
 
 //the user has closed the dialog
-function UI_DialogFinished(e)
+function DialogFinished(e)
 {
 	UI_testTextEdit.append("UI_DialogFinished");
 	scriptThread.stopScript()
 }
 
-function UI_NewElementsButtonButtonClicked()
+function NewElementsButtonButtonClicked()
 {
 	
 	var input = scriptThread.showTextInputDialog("Enter name", "item name", "newItem", UI_Dialog.getWidgetPointer())
@@ -116,7 +116,7 @@ function UI_NewElementsButtonButtonClicked()
 	}
 }
 
-function UI_secondDialogOkButtonClicked()
+function secondDialogOkButtonClicked()
 {
 	UI_testTextEdit.append("UI_secondDialogOkButtonClicked: " + UI_secondDialogLineEdit.text());
 }
@@ -166,15 +166,15 @@ scriptThread.writeFile("testFileFromGuiExample.txt", true, "test file content\r\
 
 
 UI_Dialog.setWindowTitle("example gui used by script and created with QtDesigner");
-UI_Dialog.finishedSignal.connect(UI_DialogFinished);
+UI_Dialog.finishedSignal.connect(DialogFinished);
 	
 
 //test the script label
 UI_createProcessProgramLabel.setText(UI_createProcessProgramLabel.text());
 
 /****************create process***********************************/
-UI_createProcessDetached.clickedSignal.connect(UI_createProcessDetachedPushButtonClicked)
-UI_createProcess.clickedSignal.connect(UI_createProcessPushButtonClicked)
+UI_createProcessDetached.clickedSignal.connect(createProcessDetachedPushButtonClicked)
+UI_createProcess.clickedSignal.connect(createProcessPushButtonClicked)
 UI_createProcessProgramLineEdit.setText("C:/Users/internet/Desktop/npp.6.6.9.bin/notepad++.exe");
 UI_createProcessArgumentsLineEdit.setText("C:\\Users\\internet\\Desktop\\npp.6.6.9.bin\\stylers.xml;C:\\Users\\internet\\Desktop\\npp.6.6.9.bin\\session.xml");
 /***********************************************************************/
@@ -182,35 +182,35 @@ UI_createProcessArgumentsLineEdit.setText("C:\\Users\\internet\\Desktop\\npp.6.6
 /****************tabWidget************************/
 UI_tabWidget1.setTabText(1, UI_tabWidget1.tabText(1));
 UI_tabWidget1.setCurrentIndex(UI_tabWidget1.currentIndex() + 1);
-UI_tabWidget1.currentTabChangedSignal.connect(UI_currentTabChangedSignal);
+UI_tabWidget1.currentTabChangedSignal.connect(currentTabChangedSignal);
 
 /****************tool box***********************************/
 UI_toolBox.setItemText(1, UI_toolBox.itemText(1));
 UI_toolBox.setCurrentIndex(UI_toolBox.currentIndex() + 1);
-UI_toolBox.currentItemChangedSignal.connect(UI_toolBoxCurrentItemChangedSignal);
+UI_toolBox.currentItemChangedSignal.connect(toolBoxCurrentItemChangedSignal);
 
 /****************time / date / calendar************************/
 UI_timeEdit.setDisplayFormat("hh:mm:ss");
 UI_timeEdit.setTime("10:09:08");
-UI_timeEdit.timeChangedSignal.connect(UI_timeEditTimeChanged);
+UI_timeEdit.timeChangedSignal.connect(timeEditTimeChanged);
 
 UI_dateEdit.setDisplayFormat("dd.MM.yyyy");
 UI_dateEdit.setDate("01.02.2014");
-UI_dateEdit.dateChangedSignal.connect(UI_dateEditDateChanged);
+UI_dateEdit.dateChangedSignal.connect(dateEditDateChanged);
 
 UI_calendar.setDateFormat("dd.MM.yyyy");
 UI_calendar.setDateRange("01.01.2014", "01.01.2016");
 UI_calendar.setSelectedDate("01.02.2015");
-UI_calendar.selectionChangedSignal.connect(UI_calendarSelectionChangedSignal);
+UI_calendar.selectionChangedSignal.connect(calendarSelectionChangedSignal);
 
 
 UI_dateTimeEdit.setDisplayFormat("dd.MM.yyyy hh:mm:ss");
 UI_dateTimeEdit.setDateTime("01.01.2016 10:09:08");
-UI_dateTimeEdit.dateTimeChangedSignal.connect(UI_dateTimeEditTimeChanged);
+UI_dateTimeEdit.dateTimeChangedSignal.connect(dateTimeEditTimeChanged);
 /***********************************************************************/
 
 //new elements
-UI_NewElementsButton.clickedSignal.connect(UI_NewElementsButtonButtonClicked)
+UI_NewElementsButton.clickedSignal.connect(NewElementsButtonButtonClicked)
 UI_NewElementsButton.setIcon(scriptThread.createAbsolutePath("icons/new.png"));
 		
 //test text edit, checkbox, radio button
@@ -239,7 +239,7 @@ if(!scriptThread.loadUserInterfaceFile("secondDialog.ui", true, false))
 else
 {
 	UI_secondDialogLineEdit.setText("item text");
-	UI_secondDialogOkButton.clickedSignal.connect(UI_secondDialogOkButtonClicked)
+	UI_secondDialogOkButton.clickedSignal.connect(secondDialogOkButtonClicked)
 	UI_secondDialog.show();
 	
 	/********************test splitter****************************************/
@@ -263,5 +263,4 @@ else
 	
 	scriptThread.setScriptThreadPriority("NormalPriority");
 }	
-
 

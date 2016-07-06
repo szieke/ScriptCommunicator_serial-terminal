@@ -6,6 +6,7 @@
 #include <QCoreApplication>
 #include <QDirIterator>
 #include <QThread>
+#include <QDomDocument>
 
 QMap<QString, QStringList> g_apiFiles;
 
@@ -43,6 +44,7 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
 
                 while(!singleEntry.isEmpty())
                 {
+                    //Add the current line to the api map.
                     g_apiFiles[fileName] << QString(singleEntry).replace("\\n", "\n");
                     singleEntry = in.readLine();
                 }
@@ -51,9 +53,64 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
         }
 
     }
+
     connect(this, SIGNAL(textChanged()), m_mainWindow, SLOT(documentWasModified()));
 }
 
+/**
+ * Sets the document name/path.
+ * @param name
+ *      The document name.
+ */
+void SingleDocument::setDocumentName(QString name)
+{
+    m_documentName = name;initLexer(name);
+
+    //Check if a ui file exist.
+    QString uiFileName = MainWindow::getTheCorrespondingUiFile(m_documentName);
+    if(!uiFileName.isEmpty())
+    {
+        QFile uiFile(uiFileName);
+        QDomDocument doc("ui");
+
+        if (uiFile.open(QFile::ReadOnly))
+        {
+            if (doc.setContent(&uiFile))
+            {
+                QDomElement docElem = doc.documentElement();
+                QDomNodeList nodeList = docElem.elementsByTagName("widget");
+
+                //Parse all widgets.
+                for (int i = 0; i < nodeList.size(); i++)
+                {
+                    QDomNode nodeItem = nodeList.at(i);
+                    QString className = nodeItem.attributes().namedItem("class").nodeValue();
+                    QString objectName = nodeItem.attributes().namedItem("name").nodeValue();
+
+                    //Open the corresponding api file.
+                    QFile file(getScriptEditorFilesFolder()+ "/apiFiles/" + className + ".api");
+                    if (file.open(QFile::ReadOnly))
+                    {
+                        QTextStream in(&file);
+                        QString singleEntry = in.readLine();
+
+                        while(!singleEntry.isEmpty())
+                        {
+                            singleEntry.replace(className + "::", "UI_" + objectName + "::");
+
+                            //Add the current line to the api map.
+                            g_apiFiles[objectName] << QString(singleEntry).replace("\\n", "\n");
+                            singleEntry = in.readLine();
+                        }
+                        file.close();
+                    }
+                }
+            }
+
+            uiFile.close();
+        }
+    }
+}
 
 /**
  * Initializes the lexer.

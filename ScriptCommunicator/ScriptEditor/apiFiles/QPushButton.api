@@ -1,0 +1,5 @@
+QPushButton::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+QPushButton::setText(const QString text):void \nSets the button text.
+QPushButton::text(void):QString \nReturns the button text.
+QPushButton::setIcon(QString iconFileName):void \nSets the icon of the button.
+QPushButton::clickedSignal.connect(void) \nThis signal is emitted if the user presses the button.

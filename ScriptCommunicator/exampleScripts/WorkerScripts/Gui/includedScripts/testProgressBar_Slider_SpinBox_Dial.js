@@ -14,7 +14,7 @@ function progressBarDoubleSpinBoxValueChanged(value)
 }
 
 //the user has changed the slider value
-function UI_horizontalSliderValueChanged(value)
+function horizontalSliderValueChanged(value)
 {
 	UI_progressBar.setValue((value));
 	UI_verticalSlider.setValue((value));
@@ -23,13 +23,13 @@ function UI_horizontalSliderValueChanged(value)
 }
 
 //the user has changed the dial value
-function UI_dialValueChanged(value)
+function dialValueChanged(value)
 {
 	UI_progressBar.setValue((value));
 }
 
 //the user has changed the line edit text
-function UI_progressBarLineEditTextChangedSlot(text)
+function progressBarLineEditTextChangedSlot(text)
 {
 	UI_testTextEdit.append("UI_progressBarLineEditTextChangedSlot");
 	UI_progressBar.setValue(text);
@@ -39,13 +39,13 @@ UI_progressBar.setMinimum(0);
 UI_progressBar.setMaximum(100);
 UI_progressBar.setValue(10);
 UI_progressBarLineEdit.addIntValidator(0, 100);
-UI_progressBarLineEdit.textChangedSignal.connect(UI_progressBarLineEditTextChangedSlot)
+UI_progressBarLineEdit.textChangedSignal.connect(progressBarLineEditTextChangedSlot)
 
-UI_horizontalSlider.valueChangedSignal.connect(UI_horizontalSliderValueChanged);
+UI_horizontalSlider.valueChangedSignal.connect(horizontalSliderValueChanged);
 UI_horizontalSlider.setRange(0,100);
 UI_horizontalSlider.setValue(0);
 
-UI_dial.valueChangedSignal.connect(UI_dialValueChanged);
+UI_dial.valueChangedSignal.connect(dialValueChanged);
 UI_dial.setRange(0,100);
 UI_dial.setValue(0);
 

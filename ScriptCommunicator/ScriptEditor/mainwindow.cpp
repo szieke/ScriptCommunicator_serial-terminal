@@ -182,7 +182,7 @@ void MainWindow::tabCloseRequestedSlot(int index)
  * @return
  *      The ui file un success. An empty string if not the ui file has not been found.
  */
-QString MainWindow::getTheCorrespondingUiFileExists(QString scriptFile)
+QString MainWindow::getTheCorrespondingUiFile(QString scriptFile)
 {
     QString uiFile;
     qint32 pos = scriptFile.lastIndexOf(".");
@@ -215,7 +215,7 @@ void MainWindow::enableDisableActionEditUI()
     {
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
 
-        QString uiFile = getTheCorrespondingUiFileExists(textEditor->getDocumentName());
+        QString uiFile = getTheCorrespondingUiFile(textEditor->getDocumentName());
         if(uiFile.isEmpty())
         {
             ui->actionEditUI->setEnabled(false);
@@ -391,7 +391,7 @@ void MainWindow::startDesigner(QString uiFile)
 void MainWindow::editUiSlot()
 {
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-    QString uiFile = getTheCorrespondingUiFileExists(textEditor->getDocumentName());
+    QString uiFile = getTheCorrespondingUiFile(textEditor->getDocumentName());
 
     int ret = QMessageBox::question(this, tr("Edit user interface"), "Edit the ui in text mode?",
                                    QMessageBox::Yes | QMessageBox::Default,

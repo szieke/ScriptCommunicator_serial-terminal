@@ -86,6 +86,10 @@ public:
     ///The internal script editor version.
     static const quint32 INTERNAL_VERSION = 1;
 
+
+    ///Returns the corresponding ui file for a script.
+    static QString getTheCorrespondingUiFile(QString scriptFile);
+
 protected:
     ///Close event.
     void closeEvent(QCloseEvent *event);
@@ -172,9 +176,6 @@ private:
 
     ///Initializes all actions.
     void initActions();
-
-    ///Returns the corresponding ui file for a script.
-    QString getTheCorrespondingUiFileExists(QString scriptFile);
 
     ///Enables or dissbles the edit ui action.
     void enableDisableActionEditUI();

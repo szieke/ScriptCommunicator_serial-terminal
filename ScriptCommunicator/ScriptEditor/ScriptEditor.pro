@@ -7,7 +7,12 @@ CONFIG += qt warn_off thread exceptions
 # Scintilla namespace rather than pollute the global namespace.
 #DEFINES += SCI_NAMESPACE
 
-QT       += widgets printsupport gui
+QT += widgets
+QT += xml
+QT += printsupport
+QT += gui
+
+
 RC_FILE = images/ScriptEditor.rc
 macx:QT += macextras
 CONFIG += c++11

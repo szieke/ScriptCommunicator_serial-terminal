@@ -1,0 +1,16 @@
+QFontComboBox::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+QFontComboBox::addItem(const QString text):void \nAdds one item to the combo box.
+QFontComboBox::insertItem(int index, const QString text):void \nInserts one item into the combo box.
+QFontComboBox::removeItem(int index):void \nRemoves one item from the combo box.
+QFontComboBox::setEditable(bool editable):void \nSets the editable property of the combo box.\nIf the editable property is true, then the text of the selected item can be changed.
+QFontComboBox::isEditable(void):bool \nReturns true if the combo box is editable.\nIf the editable property is true, then the text of the selected item can be changed.
+QFontComboBox::currentIndex(void):int \nReturns the index of the current selected item.
+QFontComboBox::currentText(void):QString \nReturns the text of the current selected item.
+QFontComboBox::itemText(int index):QString \nReturns the item (identified by index) text.
+QFontComboBox::setItemText(int index, const QString text):void \nSets the item (identified by index) text.
+QFontComboBox::setCurrentText(const QString text):void \nSets the text of the current selected item.
+QFontComboBox::setCurrentIndex(int index):void \nSets the index of the current selected item.
+QFontComboBox::count(void):int \nReturns the number of items in the combo box.  
+QFontComboBox::clear(void):void \nClears the combo box and removes all items.
+QFontComboBox::currentTextChangedSignal.connect(QString newText) \nThis signal is emitted if the text of the current selected item has been changed\n(new index or the text has been modified).
+QFontComboBox::currentIndexChangedSignal.connect(int currentSelectedIndex) \nThis signal is emitted if the current selected index has been changed.

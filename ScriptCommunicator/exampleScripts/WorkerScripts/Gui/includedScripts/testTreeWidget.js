@@ -1,15 +1,15 @@
 
-function UI_treeWidgetItemClicked(item, column)
+function treeWidgetItemClicked(item, column)
 {
 	UI_testTextEdit.append("UI_treeWidgetItemClicked: " + item.text(column));
 }
 
-function UI_treeWidgetItemDoubleClicked(item, column)
+function treeWidgetItemDoubleClicked(item, column)
 {
 	UI_testTextEdit.append("UI_treeWidgetItemDoubleClicked: " + item.text(column));
 }
 
-function UI_currentItemChanged(current, previous)
+function currentItemChanged(current, previous)
 {
 	if(previous != null)
 		UI_testTextEdit.append("UI_currentItemChanged: " + current.text(0) + "  " + previous.text(0));
@@ -101,8 +101,8 @@ UI_treeWidget.expandAll();
 
 UI_treeWidget.sortItems(0);
 
-UI_treeWidget.itemClickedSignal.connect(UI_treeWidgetItemClicked);
-UI_treeWidget.itemDoubleClickedSignal.connect(UI_treeWidgetItemDoubleClicked);
-UI_treeWidget.currentItemChangedSignal.connect(UI_currentItemChanged);
+UI_treeWidget.itemClickedSignal.connect(treeWidgetItemClicked);
+UI_treeWidget.itemDoubleClickedSignal.connect(treeWidgetItemDoubleClicked);
+UI_treeWidget.currentItemChangedSignal.connect(currentItemChanged);
 
 

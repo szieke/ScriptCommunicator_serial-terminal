@@ -1,13 +1,13 @@
 
-function UI_listWidgetCurrentRowChanged(currentRow)
+function listWidgetCurrentRowChanged(currentRow)
 {
 	UI_testTextEdit.append("UI_listWidgetCurrentRowChanged: " + currentRow);
 }
-function UI_listWidgetItemClicked(currentRow)
+function listWidgetItemClicked(currentRow)
 {
 	UI_testTextEdit.append("UI_listWidgetItemClicked: " + currentRow);
 }
-function UI_listWidgetItemDoubleClicked(currentRow)
+function listWidgetItemDoubleClicked(currentRow)
 {
 	UI_testTextEdit.append("UI_listWidgetItemDoubleClicked: " + currentRow);
 }
@@ -30,7 +30,7 @@ UI_sendListWidget.setItemForegroundColor(UI_sendListWidget.rowCount() - 1, "blue
 
 UI_sendListWidget.sortItems();
 
-UI_sendListWidget.currentRowChangedSignal.connect(UI_listWidgetCurrentRowChanged);
-UI_sendListWidget.itemClickedSignal.connect(UI_listWidgetItemClicked);
-UI_sendListWidget.itemDoubleClickedSignal.connect(UI_listWidgetItemDoubleClicked);
+UI_sendListWidget.currentRowChangedSignal.connect(listWidgetCurrentRowChanged);
+UI_sendListWidget.itemClickedSignal.connect(listWidgetItemClicked);
+UI_sendListWidget.itemDoubleClickedSignal.connect(listWidgetItemDoubleClicked);
 

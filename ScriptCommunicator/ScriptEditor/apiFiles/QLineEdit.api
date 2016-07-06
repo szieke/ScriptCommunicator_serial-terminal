@@ -1,0 +1,10 @@
+QLineEdit::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+QLineEdit::text(void):QString \nReturns the text of the line exit.
+QLineEdit::isReadOnly(void):bool \nReturns true of the line edit is editable.
+QLineEdit::setReadOnly(bool readOnly):void \nSets the editable property of the line edit.
+QLineEdit::addIntValidator(int bottom, int top):void \nAdds an int validator to the line edit\n(this ensures that the line edit contains only integer).
+QLineEdit::addDoubleValidator(double bottom, double top, int decimals):void \nAdds an double validator to the line edit\n(this ensures that the line edit contains only double values).
+QLineEdit::void addRexpExValidator(QString pattern, bool caseSensitiv) \nAdds an regular expression validator to the line edit\n(this ensures that the line edit contains only the allowed values which are specified in the pattern).
+QLineEdit::setText(QString text):void \nSets the text of the line edit.
+QLineEdit::clear(void):void \nClears the line edit.
+QLineEdit::textChangedSignal.connect(QString currentText) \nThis signal is emitted if the text of the line edit has been changed.
