@@ -25,12 +25,15 @@ public:
     ///Initializes the autocompletion.
     void initAutoCompletion(QStringList additionalElements);
 
+private:
+
     ///Checks if in the current document user interface files are loaded.
     ///If user interface are loaded then they will be parsed and added to the auto-completion
     ///list (g_autoCompletionEntries).
-    void checkDocumentForUiFiles(void);
+    void checkDocumentForUiFiles(QString currentText);
 
-private:
+    void checkDocumentForDynamicObjects(QString currentText);
+
 
     ///Parses an user interface file (auto-completion).
     void parseUiFile(QString uiFileName);

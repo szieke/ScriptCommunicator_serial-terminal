@@ -60,6 +60,34 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
     connect(this, SIGNAL(textChanged()), m_mainWindow, SLOT(documentWasModified()));
 }
 
+
+void addObjectToAutoCompletionList(QString& objectName, QString& className, bool isGuiElement)
+{
+    if(!objectName.isEmpty() && !g_autoCompletionEntries.contains(objectName))
+    {//The object is not in g_autoCompletionEntries.
+
+        QString autoCompletionName = isGuiElement ? "UI_" + objectName : objectName;
+
+        //Open the corresponding api file.
+        QFile file(getScriptEditorFilesFolder()+ "/apiFiles/" + className + ".api");
+        if (file.open(QFile::ReadOnly))
+        {
+            QTextStream in(&file);
+            QString singleEntry = in.readLine();
+
+            while(!singleEntry.isEmpty())
+            {
+                singleEntry.replace(className + "::", autoCompletionName + "::");
+
+                //Add the current line to the api map.
+                g_autoCompletionEntries[objectName] << QString(singleEntry).replace("\\n", "\n");
+                singleEntry = in.readLine();
+            }
+            file.close();
+        }
+    }
+}
+
 /**
  * Parse a widget list from a user interface file (auto-completion).
  * @param docElem
@@ -78,27 +106,7 @@ void SingleDocument::parseWidgetList(QDomElement& docElem, bool parseActions)
         QString className = (parseActions) ? "QAction" : nodeItem.attributes().namedItem("class").nodeValue();
         QString objectName = nodeItem.attributes().namedItem("name").nodeValue();
 
-        if(!g_autoCompletionEntries.contains(objectName))
-        {//The object is not in g_autoCompletionEntries.
-
-            //Open the corresponding api file.
-            QFile file(getScriptEditorFilesFolder()+ "/apiFiles/" + className + ".api");
-            if (file.open(QFile::ReadOnly))
-            {
-                QTextStream in(&file);
-                QString singleEntry = in.readLine();
-
-                while(!singleEntry.isEmpty())
-                {
-                    singleEntry.replace(className + "::", "UI_" + objectName + "::");
-
-                    //Add the current line to the api map.
-                    g_autoCompletionEntries[objectName] << QString(singleEntry).replace("\\n", "\n");
-                    singleEntry = in.readLine();
-                }
-                file.close();
-            }
-        }
+        addObjectToAutoCompletionList(objectName, className, true);
     }
 }
 
@@ -183,6 +191,22 @@ void SingleDocument::initLexer(QString script)
  */
 void SingleDocument::initAutoCompletion(QStringList additionalElements)
 {
+    QString currentText = text();
+
+    //Remove all '/**/' comments.
+    QRegExp comment("/\\*(.|[\r\n])*\\*/");
+    comment.setMinimal(true);
+    comment.setPatternSyntax(QRegExp::RegExp);
+    currentText.replace(comment, " ");
+
+    //Remove all '//' comments.
+    comment.setMinimal(false);
+    comment.setPattern("//[^\n]*");
+    currentText.remove(comment);
+
+
+    checkDocumentForUiFiles(currentText);
+    checkDocumentForDynamicObjects(currentText);
 
     if(lexer() && lexer()->apis())
     {
@@ -206,14 +230,80 @@ void SingleDocument::initAutoCompletion(QStringList additionalElements)
 
 }
 
+
+static inline void removeAllLeft(QString& text, QString character)
+{
+    int index = text.indexOf(character);
+    if(index != -1)
+    {
+        text = text.right((text.length() - index) - 1);
+    }
+}
+
+static inline void searchSingleType(QString className, QString searchString, QStringList& lines)
+{
+    int index;
+    for(int i = 0; i < lines.length();i++)
+    {
+        index = lines[i].indexOf(searchString);
+        if(index != -1)
+        {
+            QString objectName =  lines[i].left(index);
+
+            index = lines[i].indexOf("=");
+            if(index != -1)
+            {
+                objectName = lines[i].left(index);
+            }
+
+            removeAllLeft(objectName, "{");
+            removeAllLeft(objectName, ")");
+            addObjectToAutoCompletionList(objectName, className, false);
+        }
+    }
+}
+
+void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
+{
+    currentText.replace("var ", "");
+    currentText.replace(" ", "");
+
+    QRegExp regexp("[\n;]");
+    QStringList lines = currentText.split(regexp);
+
+    searchSingleType("ScriptUdpSocket", "=scriptThread.createUdpSocket", lines);
+    searchSingleType("ScriptTcpServer", "=scriptThread.createTcpServer", lines);
+    searchSingleType("ScriptTcpClient", "=scriptThread.createTcpClient", lines);
+    searchSingleType("ScriptTimer", "=scriptThread.createTimer", lines);
+    searchSingleType("ScriptSerialPort", "=scriptThread.createSerialPort", lines);
+    searchSingleType("ScriptCheetahSpi", "=scriptThread.createCheetahSpiInterface", lines);
+    searchSingleType("ScriptPcanInterface", "=scriptThread.createPcanInterface", lines);
+    searchSingleType("ScriptPlotWindow", "=scriptThread.createPlotWindow", lines);
+
+    searchSingleType("ScriptPlotWidget", ".addPlotWidget", lines);
+    searchSingleType("ScriptCanvas2DWidget", ".addCanvas2DWidget", lines);
+
+    searchSingleType("ScriptXmlReader", "=scriptThread.createXmlReader", lines);
+    searchSingleType("ScriptXmlWriter", "=scriptThread.createXmlWriter", lines);
+    searchSingleType("ScriptXmlReader", "=cust.createXmlReader", lines);
+    searchSingleType("ScriptXmlWriter", "=cust.createXmlWriter", lines);
+    searchSingleType("ScriptSqlDatabase", "=scriptSql.addDatabase", lines);
+    searchSingleType("ScriptSqlDatabase", "=scriptSql.cloneDatabase", lines);
+    searchSingleType("ScriptSqlDatabase", "=scriptSql.database", lines);
+    searchSingleType("ScriptSqlQuery", "=scriptSql.createQuery", lines);
+    searchSingleType("ScriptSqlField", "=scriptSql.createField", lines);
+    searchSingleType("ScriptSqlRecord", "=scriptSql.createRecord", lines);
+
+    //ToDo: für ScriptTreeWidgetItem ein API File anlegen
+}
+
 /**
  * Checks if in the current document user interface files are loaded.
  * If user interface are loaded then they will be parsed and added to the auto-completion
  * list (g_autoCompletionEntries).
  */
-void SingleDocument::checkDocumentForUiFiles(void)
+void SingleDocument::checkDocumentForUiFiles(QString currentText)
 {
-    QString currentText = text();
     int index;
 
     index = currentText.indexOf("scriptThread.loadUserInterfaceFile");
