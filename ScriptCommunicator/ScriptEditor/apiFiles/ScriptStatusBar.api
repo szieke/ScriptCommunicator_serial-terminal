@@ -1,0 +1,20 @@
+ScriptStatusBar::setEnabled(bool isEnabled):void \nEnables or disables the widget.
+ScriptStatusBar::hide(void):void \nHides the widget.
+ScriptStatusBar::show(void):void \nShows the widget.
+ScriptStatusBar::setBackgroundColor(QString color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptStatusBar::setWindowTextColor(QString color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptStatusBar::setTextColor(QString color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptStatusBar::setPaletteColor(QString palette, QString color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptStatusBar::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptStatusBar::setToolTip(QString text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptStatusBar::isVisible(void):bool \nReturn true, if the widget is visible.
+ScriptStatusBar::setFocus(void):void \nGives the keyboard input focus to this widget.
+ScriptStatusBar::width(void):int \nReturns the width of the widget excluding any window frame.
+ScriptStatusBar::height(void):int \nReturns the height of the widget excluding any window frame.
+ScriptStatusBar::setAdditionalData(int key, QString data):void \nSets/stores an additional data entry.
+ScriptStatusBar::getAdditionalData(int key):QString \nReturns an additional data entry.
+ScriptStatusBar::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
+ScriptStatusBar::getClassName(void):QString \nReturns the class name of this object.
+ScriptStatusBar::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptStatusBar::showMessage(QString text, int duration):void \nShows a message in the status bar.
+

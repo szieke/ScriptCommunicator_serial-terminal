@@ -1,0 +1,30 @@
+ScriptWidget::setEnabled(bool isEnabled):void \nEnables or disables the widget.
+ScriptWidget::update(void):void \nUpdates the widget.
+ScriptWidget::repaint(void):void \nRepaints the widget.
+ScriptWidget::show(void):void \nShows the widget.
+ScriptWidget::void close(void) \nCloses the widget.
+ScriptWidget::hide(void):void \nHides the widget.
+ScriptWidget::setWindowTitle(QString title)_void \nSets the window title.
+ScriptWidget::windowPositionAndSize(void):QString \nReturns the window size and position (Pixel).The return string has following format:\n"top left x, top left y, width, height"
+ScriptWidget::setWindowPositionAndSize(QString positionAndSize):void \nSets the position and the size of a window). String format:\n"top left x, top left y, width, height".
+ScriptWidget::setBackgroundColor(QString color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptWidget::setWindowTextColor(QString color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptWidget::setTextColor(QString color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptWidget::setPaletteColor(QString palette, QString color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptWidget::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptWidget::setToolTip(QString text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptWidget::isVisible(void):bool \nReturn true, if the widget is visible.
+ScriptWidget::raise(void):void \nRaises this widget to the top of the parent widget's stack.
+ScriptWidget::lower(void):void \nLowers the widget to the bottom of the parent widget's stack.
+ScriptWidget::setWindowFlags(quint32 flags):void \nSets the window flags.\nNote: ScriptWidget::show must be called after a setWindowFlags call.
+ScriptWidget::clearWindowFlags(quint32 flags):void \nClears the given window flags.\nNote: ScriptWidget::show must be called after a clearWindowFlags call.
+ScriptWidget::windowFlags(void):quint32 \nReturns the window flags.
+ScriptWidget::setFocus(void):void \nGives the keyboard input focus to this widget.
+ScriptWidget::width(void):int \nReturns the width of the widget excluding any window frame.
+ScriptWidget::height(void):int \nReturns the height of the widget excluding any window frame.
+ScriptWidget::getWidgetPointer(void):ScriptWidget* \nReturns the widget pointer.
+ScriptWidget::setAdditionalData(int key, QString data):void \nSets/stores an additional data entry.
+ScriptWidget::getAdditionalData(int key):QString \nReturns an additional data entry.
+ScriptWidget::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
+ScriptWidget::getClassName(void):QString \nReturns the class name of this object.
+ScriptWidget::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.

@@ -1,0 +1,35 @@
+ScriptTextEdit::setEnabled(bool isEnabled):void \nEnables or disables the widget.
+ScriptTextEdit::hide(void):void \nHides the widget.
+ScriptTextEdit::show(void):void \nShows the widget.
+ScriptTextEdit::setBackgroundColor(QString color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptTextEdit::setWindowTextColor(QString color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptTextEdit::setTextColor(QString color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptTextEdit::setPaletteColor(QString palette, QString color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptTextEdit::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptTextEdit::setToolTip(QString text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptTextEdit::isVisible(void):bool \nReturn true, if the widget is visible.
+ScriptTextEdit::setFocus(void):void \nGives the keyboard input focus to this widget.
+ScriptTextEdit::width(void):int \nReturns the width of the widget excluding any window frame.
+ScriptTextEdit::height(void):int \nReturns the height of the widget excluding any window frame.
+ScriptTextEdit::setAdditionalData(int key, QString data):void \nSets/stores an additional data entry.
+ScriptTextEdit::getAdditionalData(int key):QString \nReturns an additional data entry.
+ScriptTextEdit::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
+ScriptTextEdit::getClassName(void):QString \nReturns the class name of this object.
+ScriptTextEdit::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptTextEdit::verticalScrollBarValue(void):int \nReturns the vertical scroll bar value.
+ScriptTextEdit::verticalScrollBarSetValue(int value):void \nSets the vertical scroll bar value.
+ScriptTextEdit::toPlainText(void):QString \nReturns the content of the text edit as plain text.
+ScriptTextEdit::toHtml(void):QString \nReturns the content of the text edit as html.
+ScriptTextEdit::setMaxChars(int maxChars):void \nSets the max. number of chars in the text edit.
+ScriptTextEdit::replaceNonHtmlChars(QString text):QString \nReplaces the characters '\n',' ', '<' and '>' to their html representation.
+ScriptTextEdit::moveTextPositionToEnd(void):void \nMoves the curser to the end of the text edit.
+ScriptTextEdit::setFontPointSize(qreal fontSize):void \nSets font size.
+ScriptTextEdit::setFontFamily(QString fontFamily):void \nSets font family.
+ScriptTextEdit::clear(void):void \nSlears the text edit.
+ScriptTextEdit::insertPlainText(QString text, bool atTheEnd=true):void \nInserts plain text into the text edit.
+ScriptTextEdit::insertHtml(QString htmlString, bool atTheEnd=true):void \nInserts HTML text into the text edit.
+ScriptTextEdit::append(QString text):void \nAppends text at the end of text edit (includes a new line) and moves the cursor to the end of the text.
+ScriptTextEdit::setPlainText(QString text):void \nSets the text of the text edit (plain text).
+ScriptTextEdit::setText(QString text):void \nSets the text of the text edit.
+ScriptTextEdit::lockScrolling(bool lock):void \nLocks or unlocks the scrolling of the vertical scroll bar.
+ScriptTextEdit::textChangedSignal.connect(void) \nThis signal is emitted if the text of the text edit has been changed.

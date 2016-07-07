@@ -1,0 +1,33 @@
+ScriptListWidget::setEnabled(bool isEnabled):void \nEnables or disables the widget.
+ScriptListWidget::hide(void):void \nHides the widget.
+ScriptListWidget::show(void):void \nShows the widget.
+ScriptListWidget::setBackgroundColor(QString color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptListWidget::setWindowTextColor(QString color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptListWidget::setTextColor(QString color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptListWidget::setPaletteColor(QString palette, QString color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptListWidget::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptListWidget::setToolTip(QString text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptListWidget::isVisible(void):bool \nReturn true, if the widget is visible.
+ScriptListWidget::setFocus(void):void \nGives the keyboard input focus to this widget.
+ScriptListWidget::width(void):int \nReturns the width of the widget excluding any window frame.
+ScriptListWidget::height(void):int \nReturns the height of the widget excluding any window frame.
+ScriptListWidget::setAdditionalData(int key, QString data):void \nSets/stores an additional data entry.
+ScriptListWidget::getAdditionalData(int key):QString \nReturns an additional data entry.
+ScriptListWidget::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
+ScriptListWidget::getClassName(void):QString \nReturns the class name of this object.
+ScriptListWidget::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptListWidget::insertNewItem(int row, QString itemText, QString iconFileName):void \nInserts a new list item.
+ScriptListWidget::rowCount(void):int \nReturns the number of rows in the list widget.
+ScriptListWidget::removeItem(int row):void \nRemoves a item from the list widget.
+ScriptListWidget::currentSelectedRow(void):int \nReturns the current selected row.
+ScriptListWidget::setCurrentRow(int row):void \nSets the current selected row.
+ScriptListWidget::clear(void):void \nClears the list widget.
+ScriptListWidget::seItemBackgroundColor(int row, QString color):void \nSets the background color of an item.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptListWidget::setItemForegroundColor(int row, QString color):void \nSets the foreground color of an item.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptListWidget::getItemText(int row):QString \nReturns the item text.
+ScriptListWidget::setItemText(int row, QString text):void \nSets the item text.
+ScriptListWidget::setItemIcon(int row, QString iconFileName):void \nSets the item icon.
+ScriptListWidget::sortItems(bool ascendingOrder=true):void \nSorts the items in the widget in the specified order(true=AscendingOrder,\nfalse=DescendingOrder).
+ScriptListWidget::currentRowChangedSignal.connect(int currentRow) \nThis signal is emitted if the current row selection has been changed.
+ScriptListWidget::itemClickedSignal.connect(int row) \nThis signal is emitted if a row has been clicked.
+ScriptListWidget::itemDoubleClickedSignal.connect(int row) \nThis signal is emitted if a row has been double clicked.

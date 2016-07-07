@@ -1,0 +1,23 @@
+ScriptDateEdit::setEnabled(bool isEnabled):void \nEnables or disables the widget.
+ScriptDateEdit::hide(void):void \nHides the widget.
+ScriptDateEdit::show(void):void \nShows the widget.
+ScriptDateEdit::setBackgroundColor(QString color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptDateEdit::setWindowTextColor(QString color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptDateEdit::setTextColor(QString color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptDateEdit::setPaletteColor(QString palette, QString color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptDateEdit::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptDateEdit::setToolTip(QString text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptDateEdit::isVisible(void):bool \nReturn true, if the widget is visible.
+ScriptDateEdit::setFocus(void):void \nGives the keyboard input focus to this widget.
+ScriptDateEdit::width(void):int \nReturns the width of the widget excluding any window frame.
+ScriptDateEdit::height(void):int \nReturns the height of the widget excluding any window frame.
+ScriptDateEdit::setAdditionalData(int key, QString data):void \nSets/stores an additional data entry.
+ScriptDateEdit::getAdditionalData(int key):QString \nReturns an additional data entry.
+ScriptDateEdit::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
+ScriptDateEdit::getClassName(void):QString \nReturns the class name of this object.
+ScriptDateEdit::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptDateEdit::setDate(QString dateString):void \nSets the date.
+ScriptDateEdit::getDate(void):QString \nReturns the date.
+ScriptDateEdit::setDisplayFormat(QString format):void \nSets the display format.
+ScriptDateEdit::getDisplayFormat(void):QString \nReturns the display format.
+ScriptDateEdit::dateChangedSignal.connect(QString date) \nThis signal is emitted if the value of the date edit has been changed.

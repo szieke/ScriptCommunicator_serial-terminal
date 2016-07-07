@@ -1,0 +1,22 @@
+ScriptButton::setEnabled(bool isEnabled):void \nEnables or disables the widget.
+ScriptButton::hide(void):void \nHides the widget.
+ScriptButton::show(void):void \nShows the widget.
+ScriptButton::setBackgroundColor(QString color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptButton::setWindowTextColor(QString color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptButton::setTextColor(QString color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptButton::setPaletteColor(QString palette, QString color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptButton::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptButton::setToolTip(QString text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptButton::isVisible(void):bool \nReturn true, if the widget is visible.
+ScriptButton::setFocus(void):void \nGives the keyboard input focus to this widget.
+ScriptButton::width(void):int \nReturns the width of the widget excluding any window frame.
+ScriptButton::height(void):int \nReturns the height of the widget excluding any window frame.
+ScriptButton::setAdditionalData(int key, QString data):void \nSets/stores an additional data entry.
+ScriptButton::getAdditionalData(int key):QString \nReturns an additional data entry.
+ScriptButton::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
+ScriptButton::getClassName(void):QString \nReturns the class name of this object.
+ScriptButton::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptButton::setText(const QString text):void \nSets the button text.
+ScriptButton::text(void):QString \nReturns the button text.
+ScriptButton::setIcon(QString iconFileName):void \nSets the icon of the button.
+ScriptButton::clickedSignal.connect(void) \nThis signal is emitted if the user presses the button.

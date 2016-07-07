@@ -1,6 +1,0 @@
-QAction::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
-QAction::setText(const QString text):void \nSets the action text.
-QAction::text(void):QString \nReturns the action text.
-QAction::setChecked(bool checked):void \nSets the checked state of the action.
-QAction::isChecked(void):bool \nReturns true of the action is checked.
-QAction::clickedSignal.connect(void) \nThis signal is emitted if the user presses the action.

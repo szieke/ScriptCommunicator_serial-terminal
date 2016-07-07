@@ -1,0 +1,6 @@
+ScriptAction::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptAction::setText(const QString text):void \nSets the action text.
+ScriptAction::text(void):QString \nReturns the action text.
+ScriptAction::setChecked(bool checked):void \nSets the checked state of the action.
+ScriptAction::isChecked(void):bool \nReturns true of the action is checked.
+ScriptAction::clickedSignal.connect(void) \nThis signal is emitted if the user presses the action.

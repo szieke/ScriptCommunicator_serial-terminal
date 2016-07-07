@@ -106,6 +106,126 @@ void SingleDocument::parseWidgetList(QDomElement& docElem, bool parseActions)
         QString className = (parseActions) ? "QAction" : nodeItem.attributes().namedItem("class").nodeValue();
         QString objectName = nodeItem.attributes().namedItem("name").nodeValue();
 
+        if(className == QString("QComboBox"))
+        {
+            className = "ScriptComboBox";
+        }
+        else if(className == QString("QFontComboBox"))
+        {
+            className = "ScriptFontComboBox";
+        }
+        else if(className == QString("QLineEdit"))
+        {
+            className = "ScriptLineEdit";
+        }
+        else if(className == QString("QTableWidget"))
+        {
+            className = "ScriptTableWidget";
+        }
+        else if(className == QString("QTextEdit"))
+        {
+            className = "ScriptTextEdit";
+        }
+        else if(className == QString("QCheckBox"))
+        {
+            className = "ScriptCheckBox";
+        }
+        else if(className == QString("QPushButton"))
+        {
+            className = "ScriptButton";
+        }
+        else if(className == QString("QToolButton"))
+        {
+            className = "ScriptToolButton";
+        }
+        else if(className == QString("QWidget"))
+        {
+            className = "ScriptWidget";
+        }
+        else if(className == QString("QDialog"))
+        {
+            className = "ScriptDialog";
+        }
+        else if(className == QString("QProgressBar"))
+        {
+            className = "ScriptProgressBar";
+        }
+        else if(className == QString("QLabel"))
+        {
+            className = "ScriptLabel";
+        }
+        else if(className == QString("QSlider"))
+        {
+            className = "ScriptSlider";
+        }
+        else if(className == QString("QDial"))
+        {
+            className = "ScriptDial";
+        }
+        else if(className == QString("QMainWindow"))
+        {
+            className = "ScriptMainWindow";
+        }
+        else if(className == QString("QAction"))
+        {
+            className = "ScriptAction";
+        }
+        else if(className == QString("QStatusBar"))
+        {
+            className = "ScriptComboBox";
+        }
+        else if(className == QString("QTabWidget"))
+        {
+            className = "ScriptTabWidget";
+        }
+        else if(className == QString("QGroupBox"))
+        {
+            className = "ScriptGroupBox";
+        }
+        else if(className == QString("QRadioButton"))
+        {
+            className = "ScriptRadioButton";
+        }
+        else if(className == QString("QSpinBox"))
+        {
+            className = "ScriptSpinBox";
+        }
+        else if(className == QString("QDoubleSpinBox"))
+        {
+            className = "ScriptDoubleSpinBox";
+        }
+        else if(className == QString("QTimeEdit"))
+        {
+            className = "ScriptTimeEdit";
+        }
+        else if(className == QString("QDateEdit"))
+        {
+            className = "ScriptDateEdit";
+        }
+        else if(className == QString("QDateTimeEdit"))
+        {
+            className = "ScriptDateTimeEdit";
+        }
+        else if(className == QString("QListWidget"))
+        {
+            className = "ScriptListWidget";
+        }
+        else if(className == QString("QTreeWidget"))
+        {
+            className = "ScriptTreeWidget";
+        }
+        else if(className == QString("QSplitter"))
+        {
+            className = "ScriptSplitter";
+        }
+        else if(className == QString("QToolBox"))
+        {
+            className = "ScriptToolBox";
+        }
+        else if(className == QString("QCalendarWidget"))
+        {
+            className = "ScriptCalendarWidget";
+        }
         addObjectToAutoCompletionList(objectName, className, true);
     }
 }
@@ -293,8 +413,6 @@ void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
     searchSingleType("ScriptSqlQuery", "=scriptSql.createQuery", lines);
     searchSingleType("ScriptSqlField", "=scriptSql.createField", lines);
     searchSingleType("ScriptSqlRecord", "=scriptSql.createRecord", lines);
-
-    //ToDo: für ScriptTreeWidgetItem ein API File anlegen
 }
 
 /**
