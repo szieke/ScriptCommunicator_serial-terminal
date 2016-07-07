@@ -75,8 +75,7 @@ public:
                "QStringList readAllLines(bool removeNewLine=true, bool removeCarriageReturn=true);"
                "QString readLineInternally(QIODevice* ioDevice, bool removeNewLine=true, bool removeCarriageReturn=true);"
                "QStringList readAllLinesInternally(QIODevice* ioDevice, bool removeNewLine=true, bool removeCarriageReturn=true);"
-               "readyReadSignal(void)"
-;
+               "readyReadSignal(void)";
     }
 
     ///Sets the DTR pin.

@@ -1,0 +1,32 @@
+ScriptSerialPort::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptSerialPort::setDTR(bool set):void \nSets the DTR pin.
+ScriptSerialPort::setRTS(bool set):void \nSets the RTS pin.
+ScriptSerialPort::setPortName(const QString &name):void \nSets the serial port name.
+ScriptSerialPort::portName(void):QString \nReturns the serial port name.
+ScriptSerialPort::setBaudRate(qint32 baudRate):bool \nSets the baudrate.
+ScriptSerialPort::baudRate(void):qint32 \nReturns the baudrate.
+ScriptSerialPort::setDataBits(quint32 dataBits):bool \nSets the number of data bits.
+ScriptSerialPort::dataBits(void):quint32 \nReturns the number of data bits.
+ScriptSerialPort::setParity(QString parityString):bool \nSets the parity. Possible values are:\n- None\n- Even\n- Odd\n- Space\n- Mark
+ScriptSerialPort::parity(void):QString \nReturns the parity. Possible values are:\n- None\n- Even\n- Odd\n- Space\n- Mark\n- Unknown
+ScriptSerialPort::setStopBits(QString stopBitsString):bool \nSets the number of stop bits. Possible values are:\n- 1\n- 1.5\n- 2
+ScriptSerialPort::stopBits(void):QString \nReturns the number of stop bits. Possible values are:\n- 1\n- 1.5\n- 2
+ScriptSerialPort::setFlowControl(QString flowString):bool \nSets the flow control. Possible values are:\n- RTS/CTS\n- XON/XOFF\n- None
+ScriptSerialPort::flowControl(void):QString \nReturns the flow control. Possible values are:\n- RTS/CTS\n- XON/XOFF\n- None
+ScriptSerialPort::errorString(void):QString \nReturns the error string from the serial port (contains additional information\nin the case of an error).
+ScriptSerialPort::open(void):bool \nOpens the serial port.
+ScriptSerialPort::close(void):void \nCloses the serial port.
+ScriptSerialPort::getSerialPortSignals(void):quint32 \nReturns the state of the serial port signals (pins).\nThe signals are bit coded:\nNoSignal = 0x00,\nDataTerminalReadySignal = 0x04,\nDataCarrierDetectSignal = 0x08,\nDataSetReadySignal = 0x10,\nRingIndicatorSignal = 0x20,\nRequestToSendSignal = 0x40,\nClearToSendSignal = 0x80
+ScriptSerialPort::isOpen(void):bool \nReturns true if the serial port is open.
+ScriptSerialPort::bytesAvailable(void):qint64 \nReturns the number of bytes which are available for reading.
+ScriptSerialPort::readAll(void):QVector<unsigned char> \nReturns all available received bytes.
+ScriptSerialPort::write(QVector<unsigned char>dataVector):qint64 \nWrites data to the serial port. Returns the number of written bytes.
+ScriptSerialPort::writeString(QString string):qint64 \nWrites a string to the serial port. Returns the number of written bytes.
+ScriptSerialPort::bytesToWrite(void):qint64 \nReturns the number of bytes which are not written yet.
+ScriptSerialPort::waitForBytesWritten(int msecs):bool \nThis function waits until all bytes have been written (sent) or the time in msec has been elapsed.
+ScriptSerialPort::enableMainInterfaceRouting(void):void \nEnables the main interface routing (all data from the main interface is send with this socket and\nall received (with this socket) data is sent with the main interace).
+ScriptSerialPort::disableMainInterfaceRouting(void):void \nDisables the main interface routing.
+ScriptSerialPort::canReadLine(void):bool \nThis function checks if a data line (ends with EOL ('\n')) is ready to be read.
+ScriptSerialPort::readLine(bool removeNewLine=true, bool removeCarriageReturn=true):QString \nThis function reads a line (a line ends with a '\n') of ASCII characters.\nIf removeNewLine is true then the '\n' will not returned (is removed from the received line).\nIf removeCarriageReturn is true then a '\r' in front of '\n' will also not returned.\nNote: If no new data line is ready for reading this functions returns an empty string.
+ScriptSerialPort::readAllLines(bool removeNewLine=true, bool removeCarriageReturn=true):QStringList \nThis function reads all available lines (a line ends with a '\n') of ASCII characters.\nIf removeNewLine is true then the '\n' will not returned (is removed from the received line).\nIf removeCarriageReturn is true then a '\r' in front of '\n' will also not returned.\nNote: If no new data line is ready for reading this functions returns an empty list.
+ScriptSerialPort::readyReadSignal.connect(void) \nThis signal is emitted if data is available for reading (if data has been received).

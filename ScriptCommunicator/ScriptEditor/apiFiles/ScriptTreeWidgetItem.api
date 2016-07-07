@@ -22,7 +22,7 @@ ScriptTreeWidgetItem::setItemIcon(int column, QString iconFileName):void \nSets 
 ScriptTreeWidgetItem::addChild(ScriptTreeWidgetItem child):void \nAppends the child item to the list of children.
 ScriptTreeWidgetItem::childCount(void):int \nReturns the number of child items.
 ScriptTreeWidgetItem::insertChild (int index, ScriptTreeWidgetItem child):void \nInserts the child item at index in the list of children.\nIf the child has already been inserted somewhere else it won't be inserted again.
-ScriptTreeWidgetItem:: takeChild (int index):ScriptTreeWidgetItem \nRemoves the item at index and returns it, otherwise return null.
+ScriptTreeWidgetItem::takeChild (int index):ScriptTreeWidgetItem \nRemoves the item at index and returns it, otherwise return null.
 ScriptTreeWidgetItem::deleteItem(void):void \nDeletes the current item.
 ScriptTreeWidgetItem::indexOfChild(ScriptTreeWidgetItem child):int \nReturns the index of the given child in the item's list of children.
 ScriptTreeWidgetItem::sortChildren(int column, bool ascendingOrder):void \nSorts the children of the item using the given order(true=AscendingOrder,\nfalse=DescendingOrder) by the values in the given column.

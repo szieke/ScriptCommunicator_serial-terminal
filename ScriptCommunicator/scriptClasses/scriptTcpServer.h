@@ -99,7 +99,7 @@ public:
     }
 
 
- signals:
+signals:
     ///This signal is emitted if a new connection has been established.
     ///Scripts can connect a function to this signal.
     void newConnectionSignal(void);

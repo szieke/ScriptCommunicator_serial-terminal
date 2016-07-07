@@ -121,7 +121,7 @@ public:
     Q_INVOKABLE QString getErrorString(void){return m_tcpSocket->errorString();}
 
     ///Enables the main interface routing (all data from the main interface is send with this socket and
-    ///all received (with this socket) data is sent with the main interace).
+    ///all received (with this socket) data is sent with the main interface).
     Q_INVOKABLE void enableMainInterfaceRouting()
     {
         connect(m_tcpSocket, SIGNAL(readyRead()),this, SLOT(tcpClientSocketOnReadyReadSlot()));
