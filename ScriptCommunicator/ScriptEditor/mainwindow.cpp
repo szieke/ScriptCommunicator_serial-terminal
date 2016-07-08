@@ -63,7 +63,7 @@ MainWindow* getMainWindow()
  * @param script
  *      The file which should be loaded.
  */
-MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow)
+MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTimer()
 {
     ui->setupUi(this);
 
@@ -94,6 +94,7 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow)
     connect(m_findDialog->ui->findPushButton, SIGNAL(clicked()), this, SLOT(findButtonSlot()));
     connect(m_findDialog->ui->replacePushButton, SIGNAL(clicked()), this, SLOT(replaceButtonSlot()));
     connect(m_findDialog->ui->replaceAllPushButton, SIGNAL(clicked()), this, SLOT(replaceAllButtonSlot()));
+    connect(&m_parseTimer, SIGNAL(timeout()), this, SLOT(parseTimeout()));
 
     m_findDialog->ui->findWhatComboBox->setAutoCompletion(false);
     m_findDialog->ui->replaceComboBox->setAutoCompletion(false);
@@ -1080,6 +1081,13 @@ QString MainWindow::createNewDocumentTitle(void)
     return newTitle;
 }
 
+void MainWindow::parseTimeout(void)
+{
+    m_parseTimer.stop();
+    SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
+    textEditor->initAutoCompletion(m_allFunction);
+}
+
 /**
  * Checks if the current script file has been changed. If the files has been changed
  * it displays this in the window title.
@@ -1111,6 +1119,12 @@ void MainWindow::documentWasModified()
     {
          ui->documentsTabWidget->setTabText(ui->documentsTabWidget->currentIndex(), shownName);
     }
+
+    if(!m_parseTimer.isActive())
+    {
+        m_parseTimer.start(1000);
+    }
+
 }
 
 /**

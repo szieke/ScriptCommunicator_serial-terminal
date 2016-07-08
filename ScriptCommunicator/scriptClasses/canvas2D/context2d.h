@@ -201,7 +201,7 @@ public:
     ///Returns the current alpha value applied to rendering operations.
     qreal globalAlpha() const;
 
-    ///Returns the current the current composition operation.
+    ///Returns the current composition operation.
     QString globalCompositeOperation() const;
 
     ///Returns the current color or style to use for the lines around shapes.
@@ -405,16 +405,15 @@ public slots:
     ///Returns the height of the canvas widget.
     int height() const;
 
-    ///Sets the size of the canvas widget.
-    ///This slot must not be used by script.
-    void setSize(int width, int height);
-
     ///Save the canvas widget to an image file.
     bool saveToFile(QString fileName, QString imageType="");
 
     ///Opens a print dialog and prints the canvas widget.
     void print(QString printDialogTitle="");
 
+    ///Sets the size of the canvas widget.
+    ///This slot must not be used by script.
+    void setSize(int width, int height);
 
 signals:
 

@@ -152,7 +152,7 @@ public:
     ///Writes a DTD section. The dtd represents the entire doctypedecl production from the XML 1.0 specification.
     Q_INVOKABLE void writeDTD(QString dtd){m_xmlWriter.writeDTD(dtd);}
 
-    ///Writes the entity reference name to the internal buffer, as "name;".
+    ///Writes the entity reference name to the internal buffer, as "name".
     Q_INVOKABLE void writeEntityReference(QString name){m_xmlWriter.writeEntityReference(name);}
 
     ///Writes an XML processing instruction with target and data, where data must not contain the sequence "?>".

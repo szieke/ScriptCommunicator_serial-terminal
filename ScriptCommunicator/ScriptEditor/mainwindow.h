@@ -170,6 +170,8 @@ private slots:
     ///Open all included action slot.
     void openAllIncludedScriptsSlot();
 
+    void parseTimeout(void);
+
 private:
 
     Ui::MainWindow *ui;
@@ -223,6 +225,8 @@ private:
 
     ///All function which are displayed in the function list.
     QStringList m_allFunction;
+
+    QTimer m_parseTimer;
 
 };
 

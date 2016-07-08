@@ -58,6 +58,7 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
     }
 
     connect(this, SIGNAL(textChanged()), m_mainWindow, SLOT(documentWasModified()));
+
 }
 
 
@@ -405,8 +406,6 @@ void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
 
     searchSingleType("ScriptXmlReader", "=scriptThread.createXmlReader", lines);
     searchSingleType("ScriptXmlWriter", "=scriptThread.createXmlWriter", lines);
-    searchSingleType("ScriptXmlReader", "=cust.createXmlReader", lines);
-    searchSingleType("ScriptXmlWriter", "=cust.createXmlWriter", lines);
     searchSingleType("ScriptSqlDatabase", "=scriptSql.addDatabase", lines);
     searchSingleType("ScriptSqlDatabase", "=scriptSql.cloneDatabase", lines);
     searchSingleType("ScriptSqlDatabase", "=scriptSql.database", lines);
