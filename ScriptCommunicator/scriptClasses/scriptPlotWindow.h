@@ -150,6 +150,10 @@ Q_SIGNALS:
     ///Scripts can connect to this signal.
     void clearButtonPressedSignal(void);
 
+    ///This signal is emitted if the plot window has been closed.
+    ///Scripts can connect a function to this signal.
+    void closedSignal(void);
+
     ///Is emitted in clearGraphs.
     ///This signal is private and must not be used inside a script.
     void clearGraphsSignal(void);
@@ -174,7 +178,6 @@ Q_SIGNALS:
     ///This signal is private and must not be used inside a script.
     void showFromScriptSignal();
 
-
     ///Is connected with PlotWindow::showFromScript (Sets the axis labels).
     ///This signal is private and must not be used inside a script.
     void setAxisLabelsSignal(QString xAxisLabel, QString yAxisLabel);
@@ -182,10 +185,6 @@ Q_SIGNALS:
     ///Is connected with PlotWindow::showLegendSlot (shows or hides the plot legend).
     ///This signal is private and must not be used inside a script.
     void showLegendSignal(bool show);
-
-    ///This signal is emitted if the plot window has been closed.
-    ///Scripts can connect a function to this signal.
-    void closedSignal(void);
 
     ///Is emitted in showHelperElements.
     ///This signal is private and must not be used inside a script.

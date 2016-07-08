@@ -1,0 +1,43 @@
+ScriptPlotWindow::setEnabled(bool isEnabled):void \nEnables or disables the widget.
+ScriptPlotWindow::update(void):void \nUpdates the widget.
+ScriptPlotWindow::repaint(void):void \nRepaints the widget.
+ScriptPlotWindow::show(void):void \nShows the widget.
+ScriptPlotWindow::close(void):void \nCloses the widget.
+ScriptPlotWindow::hide(void):void \nHides the widget.
+ScriptPlotWindow::setWindowTitle(QString title)_void \nSets the window title.
+ScriptPlotWindow::windowPositionAndSize(void):QString \nReturns the window size and position (Pixel).The return string has following format:\n"top left x, top left y, width, height"
+ScriptPlotWindow::setWindowPositionAndSize(QString positionAndSize):void \nSets the position and the size of a window). String format:\n"top left x, top left y, width, height".
+ScriptPlotWindow::setBackgroundColor(QString color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptPlotWindow::setWindowTextColor(QString color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptPlotWindow::setTextColor(QString color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptPlotWindow::setPaletteColor(QString palette, QString color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptPlotWindow::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptPlotWindow::setToolTip(QString text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptPlotWindow::isVisible(void):bool \nReturn true, if the widget is visible.
+ScriptPlotWindow::raise(void):void \nRaises this widget to the top of the parent widget's stack.
+ScriptPlotWindow::lower(void):void \nLowers the widget to the bottom of the parent widget's stack.
+ScriptPlotWindow::setWindowFlags(quint32 flags):void \nSets the window flags.\nNote: ScriptWidget::show must be called after a setWindowFlags call.
+ScriptPlotWindow::clearWindowFlags(quint32 flags):void \nClears the given window flags.\nNote: ScriptWidget::show must be called after a clearWindowFlags call.
+ScriptPlotWindow::windowFlags(void):quint32 \nReturns the window flags.
+ScriptPlotWindow::setFocus(void):void \nGives the keyboard input focus to this widget.
+ScriptPlotWindow::width(void):int \nReturns the width of the widget excluding any window frame.
+ScriptPlotWindow::height(void):int \nReturns the height of the widget excluding any window frame.
+ScriptPlotWindow::getWidgetPointer(void):QWidget* \nReturns the widget pointer.
+ScriptPlotWindow::setAdditionalData(int key, QString data):void \nSets/stores an additional data entry.
+ScriptPlotWindow::getAdditionalData(int key):QString \nReturns an additional data entry.
+ScriptPlotWindow::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
+ScriptPlotWindow::getClassName(void):QString \nReturns the class name of this object.
+ScriptPlotWindow::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptPlotWindow::addGraph(QString color, QString penStyle, QString name):int \nThis function adds a graph to the diagram.
+ScriptPlotWindow::setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue):void \nThe slot function sets the initial ranges of the diagram.
+ScriptPlotWindow::addDataToGraph(int graphIndex, double x, double y):void \nThis slot function adds one point to a graph.
+ScriptPlotWindow::setAxisLabels(QString xAxisLabel, QString yAxisLabel):void \nSets the axis label.
+ScriptPlotWindow::showLegend(bool show):void \nThis function shows or hides the diagram legend.
+ScriptPlotWindow::clearGraphs(void):void \nThis function clears the data of all graphs.
+ScriptPlotWindow::removeAllGraphs(void):void \nThis function removes all graphs.
+ScriptPlotWindow::showHelperElements(bool showXRange, bool showYRange, bool showUpdate, bool showSave, bool showLoad, bool showClear, bool showGraphVisibility, quint32 graphVisibilityMaxSize=80, bool showLegend=true):void \nSets the visibility of several plot widget elements.
+ScriptPlotWindow::setMaxDataPointsPerGraph(qint32 maxDataPointsPerGraph):void \nSets tThe max. number of data points per graph (the default is 10.000.000).
+ScriptPlotWindow::setUpdateInterval(quint32 updateInterval):void \nSets the update-interval.
+ScriptPlotWindow::plotMousePressSignal.connect(double xValue, double yValue, quint32 mouseButton) \nIs emitted if the user press a mouse button inside the plot.\nNote: mouseButton has the type Qt::MouseButton.
+ScriptPlotWindow::clearButtonPressedSignal.connect(void) \nIs emitted if the user clicks the clear button.
+ScriptPlotWindow::closedSignal.connect(void) \nThis signal is emitted if the plot window has been closed.
