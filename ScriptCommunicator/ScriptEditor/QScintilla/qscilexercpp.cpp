@@ -110,7 +110,7 @@ int QsciLexerCPP::braceStyle() const
 // Return the string of characters that comprise a word.
 const char *QsciLexerCPP::wordCharacters() const
 {
-    return "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_#";
+    return "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_#[]";
 }
 
 

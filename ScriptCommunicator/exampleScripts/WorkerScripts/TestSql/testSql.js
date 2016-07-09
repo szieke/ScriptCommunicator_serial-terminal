@@ -145,7 +145,7 @@ function createTableAndInsertByteArray(name)
 	{
 		id += 1;
 		scriptThread.appendTextToConsole('new id: ' + id);
-		sqlString
+	
 		sqlQuery.prepare("INSERT INTO " + name + "_byte (id, value) VALUES (:id, :value);");
 		sqlQuery.bindValue(":id", id);
 		sqlQuery.bindValue(":value", Array(id + 1, id + 2, id + 3, id + 4, id + 5));

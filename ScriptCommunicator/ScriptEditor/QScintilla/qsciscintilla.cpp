@@ -56,7 +56,7 @@ const char userSeparator = '\x04';
 static const int defaultFoldMarginWidth = 14;
 
 // The default set of characters that make up a word.
-static const char *defaultWordChars = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+static const char *defaultWordChars = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789[]";
 
 
 // The ctor.
@@ -282,7 +282,7 @@ void QsciScintilla::handleCharAdded(int ch)
     if (!isCallTipActive() && acSource != AcsNone)
         if (isStartChar(ch))
             startAutoCompletion(acSource, false, use_single == AcusAlways);
-        else if (acThresh >= 1 && isWordCharacter(ch))
+        else if (acThresh >= 1 && (isWordCharacter(ch) || ch == ']'))
             startAutoCompletion(acSource, true, use_single == AcusAlways);
 }
 
@@ -531,6 +531,11 @@ QStringList QsciScintilla::apiContext(int pos, int &context_start,
         else
         {
             QString word = getWord(pos);
+            int index = word.indexOf("[");
+            if(index != -1)
+            {
+                word = word.left(index);
+            }
 
             if (word.isEmpty() || expecting == Separator)
                 break;

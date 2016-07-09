@@ -730,7 +730,7 @@ QStringList QsciAPIs::callTips(const QStringList &context, int commas,
         // Find everywhere the function name appears in the APIs.
         const WordIndexList *wil = wordIndexOf(fname);
 
-        if((wil == 0) && new_context.count() == 4)
+        if((new_context.count() == 4) && (new_context[2] == "connect"))
         {//signal connect
             fname = new_context[1] + "." + new_context[2];
             wil = wordIndexOf(fname);

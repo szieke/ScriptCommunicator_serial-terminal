@@ -77,10 +77,14 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
 
 void addObjectToAutoCompletionList(QString& objectName, QString& className, bool isGuiElement)
 {
-    if(!objectName.isEmpty() && !g_autoCompletionEntries.contains(objectName))
-    {//The object is not in g_autoCompletionEntries.
-
+    if(!objectName.isEmpty())
+    {
         QString autoCompletionName = isGuiElement ? "UI_" + objectName : objectName;
+
+        if(g_autoCompletionEntries.contains(autoCompletionName))
+        {
+            g_autoCompletionEntries.remove(autoCompletionName);
+        }
 
         //Open the corresponding api file.
         QFile file(getScriptEditorFilesFolder()+ "/apiFiles/" + className + ".api");
@@ -92,9 +96,11 @@ void addObjectToAutoCompletionList(QString& objectName, QString& className, bool
             while(!singleEntry.isEmpty())
             {
                 singleEntry.replace(className + "::", autoCompletionName + "::");
+                singleEntry.replace("\\n", "\n");
 
                 //Add the current line to the api map.
-                g_autoCompletionEntries[objectName] << QString(singleEntry).replace("\\n", "\n");
+                g_autoCompletionEntries[autoCompletionName] << singleEntry;
+
                 singleEntry = in.readLine();
             }
             file.close();
@@ -113,6 +119,22 @@ void addObjectToAutoCompletionList(QString& objectName, QString& className, bool
             g_creatorObjects[autoCompletionName] = className;
         }
         else if(className == "ScriptXmlReader")
+        {
+            g_creatorObjects[autoCompletionName] = className;
+        }
+        else if(className == "ScriptXmlElement")
+        {
+            g_creatorObjects[autoCompletionName] = className;
+        }
+        else if(className == "ScriptSqlDatabase")
+        {
+            g_creatorObjects[autoCompletionName] = className;
+        }
+        else if(className == "ScriptSqlQuery")
+        {
+            g_creatorObjects[autoCompletionName] = className;
+        }
+        else if(className == "ScriptSqlRecord")
         {
             g_creatorObjects[autoCompletionName] = className;
         }
@@ -355,7 +377,6 @@ void SingleDocument::initAutoCompletion(QStringList additionalElements)
     comment.setPattern("//[^\n]*");
     currentText.remove(comment);
 
-
     checkDocumentForUiFiles(currentText);
     checkDocumentForDynamicObjects(currentText);
 
@@ -568,6 +589,20 @@ void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
     currentText.replace(" ", "");
     currentText.replace("\t", "");
 
+    int index1 = 0;
+    int index2 = 0;
+
+    while(index1 != -1)
+    {
+        index1 = currentText.indexOf("[");
+        index2 = currentText.indexOf("]", index1);
+
+        if((index1 != -1) && (index2 != -1))
+        {
+            currentText.remove(index1, (index2 - index1) + 1);
+        }
+    }
+
     QRegExp regexp("[\n;]");
     QStringList lines = currentText.split(regexp);
 
@@ -617,6 +652,29 @@ void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
         else if(i.value() == "ScriptXmlReader")
         {
             searchSingleType("ScriptXmlElement", "=" + i.key() + ".getRootElement", lines);
+            searchSingleType("ScriptXmlElement", "=" + i.key() + ".elementsByTagName", lines);
+        }
+        else if(i.value() == "ScriptXmlElement")
+        {
+            searchSingleType("ScriptXmlElement", "=" + i.key() + ".childElements", lines);
+            searchSingleType("ScriptXmlAttribute", "=" + i.key() + ".attributes", lines);
+        }
+        else if(i.value() == "ScriptSqlQuery")
+        {
+            searchSingleType("ScriptSqlError", "=" + i.key() + ".lastError", lines);
+            searchSingleType("ScriptSqlRecord", "=" + i.key() + ".record", lines);
+        }
+        else if(i.value() == "ScriptSqlRecord")
+        {
+            searchSingleType("ScriptSqlField", "=" + i.key() + ".field", lines);
+            searchSingleType("ScriptSqlRecord", "=" + i.key() + ".keyValues", lines);
+        }
+        else if(i.value() == "ScriptSqlDatabase")
+        {
+            searchSingleType("ScriptSqlIndex", "=" + i.key() + ".primaryIndex", lines);
+            searchSingleType("ScriptSqlRecord", "=" + i.key() + ".record", lines);
+            searchSingleType("ScriptSqlQuery", "=" + i.key() + ".exec", lines);
+            searchSingleType("ScriptSqlError", "=" + i.key() + ".lastError", lines);
         }
     }
 
