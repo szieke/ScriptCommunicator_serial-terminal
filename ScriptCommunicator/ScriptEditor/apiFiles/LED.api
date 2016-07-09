@@ -1,0 +1,6 @@
+LED::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+LED::toggleState(void):void
+LED::setFlashing(bool flashing):void
+LED::setState(bool state)void
+LED::stateChangedSlot(bool state):void
+LED::stateChangedSignal.connect(bool state) \nIs emitted if the state of the led has been changed.
