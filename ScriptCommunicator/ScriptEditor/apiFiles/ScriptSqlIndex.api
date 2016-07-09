@@ -1,0 +1,9 @@
+ScriptSqlIndex::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptSqlIndex::setCursorName(QString cursorName):void
+ScriptSqlIndex::cursorName(void):QString
+ScriptSqlIndex::setName(QString name):void
+ScriptSqlIndex::name(void):QString
+ScriptSqlIndex::append(ScriptSqlField* field):void
+ScriptSqlIndex::append(ScriptSqlField* field, bool desc):void
+ScriptSqlIndex::isDescending(int i):bool
+ScriptSqlIndex::setDescending(int i, bool desc):void

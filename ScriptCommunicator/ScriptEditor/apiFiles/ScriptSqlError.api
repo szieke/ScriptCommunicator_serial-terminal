@@ -1,0 +1,7 @@
+ScriptSqlError::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptSqlError::driverText(void):QString
+ScriptSqlError::databaseText(void):QString
+ScriptSqlError::type(void):quint32 \nQSqlError::ErrorType
+ScriptSqlError::nativeErrorCode(void):QString
+ScriptSqlError::text(void):QString
+ScriptSqlError::isValid(void):bool

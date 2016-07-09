@@ -1,0 +1,27 @@
+ScriptSqlRecord::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptSqlRecord::value(int i):QVariant
+ScriptSqlRecord::value(QString name):QVariant
+ScriptSqlRecord::setValue(int i, QVariant val):void
+ScriptSqlRecord::setValue(QString name, QVariant val):void
+ScriptSqlRecord::setNull(int i):void
+ScriptSqlRecord::setNull(QString name):void
+ScriptSqlRecord::isNull(int i):bool
+ScriptSqlRecord::isNull(QString name):bool
+ScriptSqlRecord::indexOf(QString name):int
+ScriptSqlRecord::fieldName(int i):QString
+ScriptSqlRecord::field(int i):ScriptSqlField
+ScriptSqlRecord::field(QString name):ScriptSqlField
+ScriptSqlRecord::isGenerated(int i):bool
+ScriptSqlRecord::isGenerated(QString name):bool
+ScriptSqlRecord::setGenerated(QString name, bool generated):void
+ScriptSqlRecord::setGenerated(int i, bool generated):void
+ScriptSqlRecord::append(ScriptSqlField* field):void
+ScriptSqlRecord::replace(int pos, ScriptSqlField* field):void
+ScriptSqlRecord::insert(int pos, ScriptSqlField* field):void
+ScriptSqlRecord::remove(int pos):void
+ScriptSqlRecord::isEmpty():bool
+ScriptSqlRecord::contains(QString name):bool
+ScriptSqlRecord::clear():void
+ScriptSqlRecord::clearValues():void
+ScriptSqlRecord::count():int
+ScriptSqlRecord::keyValues(ScriptSqlRecord keyFields):ScriptSqlRecord

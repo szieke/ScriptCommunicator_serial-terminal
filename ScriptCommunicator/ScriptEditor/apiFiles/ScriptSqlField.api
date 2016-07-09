@@ -1,0 +1,27 @@
+ScriptSqlField::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptSqlField::setValue(QVariant value):void
+ScriptSqlField::value(void):QVariant
+ScriptSqlField::setName(QString name):void
+ScriptSqlField::name(void):QString
+ScriptSqlField::isNull(void):bool
+ScriptSqlField::setReadOnly(bool readOnly):void
+ScriptSqlField::isReadOnly(void):bool
+ScriptSqlField::clear(void):void
+ScriptSqlField::type(void):quint32 \nQVariant::Type
+ScriptSqlField::isAutoValue(void):bool
+ScriptSqlField::setType(QVariant::Type type):void
+ScriptSqlField::setRequiredStatus(quint32 status):void
+ScriptSqlField::setRequired(bool required):void
+ScriptSqlField::setLength(int fieldLength):void
+ScriptSqlField::setPrecision(int precision):void
+ScriptSqlField::setDefaultValue(QVariant value):void
+ScriptSqlField::setSqlType(int type):void
+ScriptSqlField::setGenerated(bool gen):void
+ScriptSqlField::setAutoValue(bool autoVal):void
+ScriptSqlField::requiredStatus(void):quint32 \nQSqlField::RequiredStatus
+ScriptSqlField::length(void):int
+ScriptSqlField::precision(void):int
+ScriptSqlField::defaultValue(void):QVariant
+ScriptSqlField::typeID(void):int
+ScriptSqlField::isGenerated(void):bool
+ScriptSqlField::isValid(void):bool

@@ -1,0 +1,38 @@
+ScriptSqlQuery::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptSqlQuery::isValid(void):bool
+ScriptSqlQuery::isActive(void):bool
+ScriptSqlQuery::isNull(int field):bool
+ScriptSqlQuery::isNull(QString name):bool
+ScriptSqlQuery::at(void):int
+ScriptSqlQuery::lastQuery(void):QString
+ScriptSqlQuery::numRowsAffected(void):int
+ScriptSqlQuery::lastError(void):ScriptSqlError
+ScriptSqlQuery::isSelect(void):bool
+ScriptSqlQuery::size(void):int
+ScriptSqlQuery::isForwardOnly(void):bool
+ScriptSqlQuery::record(void):ScriptSqlRecord
+ScriptSqlQuery::setForwardOnly(bool forward):void
+ScriptSqlQuery::exec(QString query):bool
+ScriptSqlQuery::value(int i):QVariant
+ScriptSqlQuery::value(QString name):QVariant
+ScriptSqlQuery::setNumericalPrecisionPolicy(quint32 precisionPolicy):void \nQSql::NumericalPrecisionPolicy
+ScriptSqlQuery::numericalPrecisionPolicy(void):quint32 \nQSql::NumericalPrecisionPolicy
+ScriptSqlQuery::seek(int i, bool relative = false):bool
+ScriptSqlQuery::next(void):bool
+ScriptSqlQuery::previous(void):bool
+ScriptSqlQuery::first(void):bool
+ScriptSqlQuery::last(void):bool
+ScriptSqlQuery::clear()void
+ScriptSqlQuery::exec(void):bool
+ScriptSqlQuery::execBatch(quint32 mode = (quint32)QSqlQuery::ValuesAsRows):bool
+ScriptSqlQuery::prepare(QString query):bool
+ScriptSqlQuery::bindValue(QString placeholder, QVariant val, quint32 type = (quint32)QSql::In):void
+ScriptSqlQuery::bindValue(int pos, QVariant val, quint32 type = (quint32)QSql::In):void
+ScriptSqlQuery::addBindValue(QVariant val, quint32 type = (quint32)QSql::In):void
+ScriptSqlQuery::boundValue(QString placeholder):QVariant
+ScriptSqlQuery::boundValue(int pos):QVariant
+ScriptSqlQuery::boundValues(void):ScriptMap
+ScriptSqlQuery::executedQuery(void):QString
+ScriptSqlQuery::lastInsertId(void):QVariant
+ScriptSqlQuery::finish(void):void
+ScriptSqlQuery::nextResult(void):bool

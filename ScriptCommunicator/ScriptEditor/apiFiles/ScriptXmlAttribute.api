@@ -1,0 +1,3 @@
+ScriptXmlAttribute::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptXmlAttribute::value(void):QString \nReturns the value of the attribute.
+ScriptXmlAttribute::name(void):QString \nReturns the name of the attribute.

@@ -23,6 +23,7 @@ typedef struct
 
 QMap<QString, QVector<TableWidgetSubObject>> g_tableWidgetObjects;
 
+
 QStringList g_parsedUiFiles;
 
 /**
@@ -101,7 +102,19 @@ void addObjectToAutoCompletionList(QString& objectName, QString& className, bool
 
         if(className == "ScriptTableWidget")
         {
-            g_creatorObjects[objectName] = className;
+            g_creatorObjects[autoCompletionName] = className;
+        }
+        else if(className == "ScriptTreeWidget")
+        {
+            g_creatorObjects[autoCompletionName] = className;
+        }
+        else if(className == "ScriptTreeWidgetItem")
+        {
+            g_creatorObjects[autoCompletionName] = className;
+        }
+        else if(className == "ScriptXmlReader")
+        {
+            g_creatorObjects[autoCompletionName] = className;
         }
     }
 }
@@ -553,6 +566,7 @@ void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
 {
     currentText.replace("var ", "");
     currentText.replace(" ", "");
+    currentText.replace("\t", "");
 
     QRegExp regexp("[\n;]");
     QStringList lines = currentText.split(regexp);
@@ -584,6 +598,25 @@ void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
         if(i.value() == "ScriptTableWidget")
         {
             parseTableWidetInsert(i.key(), lines);
+        }
+        else if(i.value() == "ScriptTreeWidget")
+        {
+            searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".createScriptTreeWidgetItem", lines);
+            searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".invisibleRootItem", lines);
+            searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".itemAbove", lines);
+            searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".itemBelow", lines);
+            searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".takeTopLevelItem", lines);
+            searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".topLevelItem", lines);
+            searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".currentItem", lines);
+        }
+        else if(i.value() == "ScriptTreeWidgetItem")
+        {
+            searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".takeChild", lines);
+            searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".parent", lines);
+        }
+        else if(i.value() == "ScriptXmlReader")
+        {
+            searchSingleType("ScriptXmlElement", "=" + i.key() + ".getRootElement", lines);
         }
     }
 

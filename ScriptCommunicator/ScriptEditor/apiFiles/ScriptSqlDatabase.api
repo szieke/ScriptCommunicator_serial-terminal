@@ -1,0 +1,31 @@
+ScriptSqlDatabase::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptSqlDatabase::open(void):bool
+ScriptSqlDatabase::open(QString user, QString password):bool
+ScriptSqlDatabase::close(void):void
+ScriptSqlDatabase::isOpen(void):bool
+ScriptSqlDatabase::isOpenError(void):bool
+ScriptSqlDatabase::tables(quint32 type = QSql::TableType::Tables):QStringList
+ScriptSqlDatabase::primaryIndex(QString tablename):ScriptSqlIndex
+ScriptSqlDatabase::record(QString tablename):ScriptSqlRecord
+ScriptSqlDatabase::exec(QString query = QString()):ScriptSqlQuery
+ScriptSqlDatabase::lastError(void):ScriptSqlError
+ScriptSqlDatabase::isValid(void):bool
+ScriptSqlDatabase::transaction(void):bool
+ScriptSqlDatabase::commit(void):bool
+ScriptSqlDatabase::rollback(void):bool
+ScriptSqlDatabase::setDatabaseName(QString name):void
+ScriptSqlDatabase::setUserName(QString name):void
+ScriptSqlDatabase::setPassword(QString password):void
+ScriptSqlDatabase::setHostName(QString host):void
+ScriptSqlDatabase::setPort(int p):void
+ScriptSqlDatabase::setConnectOptions(QString options = QString()):void
+ScriptSqlDatabase::databaseName(void):QString
+ScriptSqlDatabase::userName(void):QString
+ScriptSqlDatabase::password(void):QString
+ScriptSqlDatabase::hostName(void):QString
+ScriptSqlDatabase::driverName(void):QString
+ScriptSqlDatabase::port(void):int
+ScriptSqlDatabase::connectOptions(void):QString
+ScriptSqlDatabase::connectionName(void):QString
+ScriptSqlDatabase::setNumericalPrecisionPolicy(quint32 precisionPolicy):void \nQSql::NumericalPrecisionPolicy
+ScriptSqlDatabase::numericalPrecisionPolicy(void):quint32 \nQSql::NumericalPrecisionPolicy
