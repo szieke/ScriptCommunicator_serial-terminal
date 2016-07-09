@@ -11,6 +11,18 @@
 //Contains all autocompletion entries.
 QMap<QString, QStringList> g_autoCompletionEntries;
 
+//Contains all Objects which can create other objects.
+QMap<QString, QString> g_creatorObjects;
+
+typedef struct
+{
+    int row;
+    int column;
+    QString className;
+}TableWidgetSubObject;
+
+QMap<QString, QVector<TableWidgetSubObject>> g_tableWidgetObjects;
+
 QStringList g_parsedUiFiles;
 
 /**
@@ -85,6 +97,11 @@ void addObjectToAutoCompletionList(QString& objectName, QString& className, bool
                 singleEntry = in.readLine();
             }
             file.close();
+        }
+
+        if(className == "ScriptTableWidget")
+        {
+            g_creatorObjects[objectName] = className;
         }
     }
 }
@@ -384,6 +401,154 @@ static inline void searchSingleType(QString className, QString searchString, QSt
     }
 }
 
+void searchSingleTableSubWidgets(QString objectName, QVector<TableWidgetSubObject> subObjects, QStringList lines)
+{
+    int index;
+    QString searchString = objectName+ ".getWidget";
+    for(int i = 0; i < lines.length();i++)
+    {
+
+        index = lines[i].indexOf(searchString);
+        if(index != -1)
+        {
+            QString objectName =  lines[i].left(index);
+
+            index = lines[i].indexOf("=");
+            if(index != -1)
+            {
+                objectName = lines[i].left(index);
+            }
+
+            removeAllLeft(objectName, "{");
+            removeAllLeft(objectName, ")");
+
+            index = lines[i].indexOf("(", index);
+            int endIndex = lines[i].indexOf(")", index);
+            if((index != -1) && (endIndex != -1))
+            {
+                QString args = lines[i].mid(index + 1, endIndex - (index + 1));
+                QStringList list = args.split(",");
+                if(list.length() >= 2)
+                {
+                    bool isOk;
+                    int row = list[0].toUInt(&isOk);
+                    int column = list[1].toUInt(&isOk);
+
+                    for(int j = 0; j < subObjects.length(); j++)
+                    {
+                        if((row == subObjects[j].row) && (column == subObjects[j].column))
+                        {
+                            addObjectToAutoCompletionList(objectName, subObjects[j].className, false);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+void parseTableWidetInsert(const QString objectName, QStringList lines)
+{
+
+    int index;
+    for(int i = 0; i < lines.length();i++)
+    {
+        QString searchString = objectName + ".insertWidget";
+
+        index = lines[i].indexOf(searchString);
+        if(index != -1)
+        {
+
+            index = lines[i].indexOf("(", index);
+            int endIndex = lines[i].indexOf(")", index);
+            if((index != -1) && (endIndex != -1))
+            {
+                QString args = lines[i].mid(index + 1, endIndex - (index + 1));
+                QStringList list = args.split(",");
+                if(list.length() >= 3)
+                {
+                    bool isOk;
+                    list[2].replace("\"","");
+                    TableWidgetSubObject subObject = {list[0].toUInt(&isOk),list[1].toUInt(&isOk), list[2]};
+
+
+                    if(subObject.className  == QString("LineEdit"))
+                    {
+                        subObject.className  = "ScriptLineEdit";
+                    }
+                    else if(subObject.className == QString("ComboBox"))
+                    {
+                        subObject.className  = "ScriptComboBox";
+                    }
+                    else if(subObject.className  == QString("Button"))
+                    {
+                        subObject.className  = "ScriptButton";
+                    }
+                    else if(subObject.className  == QString("CheckBox"))
+                    {
+                        subObject.className  = "ScriptCheckBox";
+                    }
+                    else if(subObject.className  == QString("SpinBox"))
+                    {
+                        subObject.className  = "ScriptSpinBox";
+                    }
+                    else if(subObject.className  == QString("DoubleSpinBox"))
+                    {
+                        subObject.className  = "ScriptDoubleSpinBox";
+                    }
+                    else if(subObject.className  == QString("VerticalSlider"))
+                    {
+                        subObject.className  = "ScriptSlider";
+                    }
+                    else if(subObject.className  == QString("HorizontalSlider"))
+                    {
+                        subObject.className  = "ScriptSlider";
+                    }
+                    else if(subObject.className  == QString("TimeEdit"))
+                    {
+                        subObject.className  = "ScriptTimeEdit";
+                    }
+                    else if(subObject.className  == QString("DateEdit"))
+                    {
+                        subObject.className  = "ScriptDateEdit";
+                    }
+                    else if(subObject.className  == QString("DateTimeEdit"))
+                    {
+                        subObject.className  = "ScriptDateTimeEdit";
+                    }
+                    else if(subObject.className  == QString("CalendarWidget"))
+                    {
+                        subObject.className  = "ScriptCalendarWidget";
+                    }
+                    else if(subObject.className  == QString("TextEdit"))
+                    {
+                        subObject.className  = "ScriptTextEdit";
+                    }
+                    else if(subObject.className  == QString("Dial"))
+                    {
+                        subObject.className  = "ScriptDial";
+                    }
+
+                    if(g_tableWidgetObjects.contains(objectName))
+                    {
+                        g_tableWidgetObjects[objectName].append(subObject);
+                    }
+                    else
+                    {
+                        QVector<TableWidgetSubObject> vect;
+                        vect.append(subObject);
+
+                        g_tableWidgetObjects[objectName] = vect;
+                    }
+
+
+                }
+            }
+
+        }
+    }
+}
+
 void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
 {
     currentText.replace("var ", "");
@@ -412,6 +577,29 @@ void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
     searchSingleType("ScriptSqlQuery", "=scriptSql.createQuery", lines);
     searchSingleType("ScriptSqlField", "=scriptSql.createField", lines);
     searchSingleType("ScriptSqlRecord", "=scriptSql.createRecord", lines);
+
+    QMap<QString, QString>::iterator i;
+    for (i = g_creatorObjects.begin(); i != g_creatorObjects.end(); ++i)
+    {
+        if(i.value() == "ScriptTableWidget")
+        {
+            parseTableWidetInsert(i.key(), lines);
+        }
+    }
+
+    QStringList keys = g_tableWidgetObjects.keys();
+    for(int i = 0; i < keys.length(); i++)
+    {
+        searchSingleTableSubWidgets(keys[i], g_tableWidgetObjects.value(keys[i]), lines);
+    }
+#if 0
+    QMap<QString, QVector<TableWidgetSubObject>> iter;
+    for (iter = g_tableWidgetObjects.begin(); iter != g_tableWidgetObjects.end(); ++iter)
+    {
+        searchSingleTableSubWidgets(iter.key(), iter.value(), lines);
+    }
+#endif
+
 }
 
 /**
