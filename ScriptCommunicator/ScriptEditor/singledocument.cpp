@@ -10,6 +10,7 @@
 
 //Contains all autocompletion entries.
 QMap<QString, QStringList> g_autoCompletionEntries;
+QMap<QString, QStringList> g_autoCompletionApiFiles;
 
 //Contains all Objects which can create other objects.
 QMap<QString, QString> g_creatorObjects;
@@ -24,7 +25,9 @@ typedef struct
 QMap<QString, QVector<TableWidgetSubObject>> g_tableWidgetObjects;
 
 
-QStringList g_parsedUiFiles;
+QStringList g_foundUiFiles;
+
+QStringList g_parsedFiles;
 
 /**
  * Returns the folder ich which the ScriptEditor files
@@ -46,7 +49,7 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
     QsciScintilla(parent), m_mainWindow(mainWindow), m_documentName("")
 {
 
-    if(g_autoCompletionEntries.isEmpty())
+    if(g_autoCompletionApiFiles.isEmpty())
     {
         QDirIterator it(getScriptEditorFilesFolder()+ "/apiFiles", QStringList() << "*.api", QDir::Files, QDirIterator::Subdirectories);
         while (it.hasNext())
@@ -61,7 +64,7 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
                 while(!singleEntry.isEmpty())
                 {
                     //Add the current line to the api map.
-                    g_autoCompletionEntries[fileName] << QString(singleEntry).replace("\\n", "\n");
+                    g_autoCompletionApiFiles[fileName] << QString(singleEntry).replace("\\n", "\n");
                     singleEntry = in.readLine();
                 }
             }
@@ -290,10 +293,13 @@ void SingleDocument::parseWidgetList(QDomElement& docElem, bool parseActions)
  */
 void SingleDocument::parseUiFile(QString uiFileName)
 {
-    if(!g_parsedUiFiles.contains(uiFileName))
+
+    QFile uiFile(uiFileName);
+    QDomDocument doc("ui");
+
+    if(!g_parsedFiles.contains(uiFileName))
     {
-        QFile uiFile(uiFileName);
-        QDomDocument doc("ui");
+        g_parsedFiles.append(uiFileName);
 
         if (uiFile.open(QFile::ReadOnly))
         {
@@ -305,9 +311,13 @@ void SingleDocument::parseUiFile(QString uiFileName)
             }
 
             uiFile.close();
+            if(!g_foundUiFiles.contains(uiFileName))
+            {
+                g_foundUiFiles.append(uiFileName);
+            }
         }
-        g_parsedUiFiles.append(uiFileName);
     }
+
 }
 
 /**
@@ -362,9 +372,8 @@ void SingleDocument::initLexer(QString script)
  * @param additionalElements
  *      Additional elements for the autocompletion api.
  */
-void SingleDocument::initAutoCompletion(QStringList additionalElements)
+void SingleDocument::initAutoCompletion(QStringList additionalElements, QString currentText)
 {
-    QString currentText = text();
 
     //Remove all '/**/' comments.
     QRegExp comment("/\\*(.|[\r\n])*\\*/");
@@ -377,7 +386,24 @@ void SingleDocument::initAutoCompletion(QStringList additionalElements)
     comment.setPattern("//[^\n]*");
     currentText.remove(comment);
 
+    currentText.replace("var ", "");
+    currentText.replace(" ", "");
+    currentText.replace("\t", "");
+
+    g_autoCompletionEntries.clear();
+    g_creatorObjects.clear();
+    g_tableWidgetObjects.clear();
+    g_parsedFiles.clear();
+    g_autoCompletionEntries = g_autoCompletionApiFiles;
+
+    for(auto el : g_foundUiFiles)
+    {
+        parseUiFile(el);
+    }
     checkDocumentForUiFiles(currentText);
+    checkDocumentForDynamicObjects(currentText);
+
+    //Call again to get all objects created by dynamic objects.
     checkDocumentForDynamicObjects(currentText);
 
     if(lexer() && lexer()->apis())
@@ -585,10 +611,6 @@ void parseTableWidetInsert(const QString objectName, QStringList lines)
 
 void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
 {
-    currentText.replace("var ", "");
-    currentText.replace(" ", "");
-    currentText.replace("\t", "");
-
     int index1 = 0;
     int index2 = 0;
 

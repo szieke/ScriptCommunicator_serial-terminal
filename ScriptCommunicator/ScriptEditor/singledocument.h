@@ -23,7 +23,7 @@ public:
     QString getDocumentName(void){return m_documentName;}
 
     ///Initializes the autocompletion.
-    void initAutoCompletion(QStringList additionalElements);
+    void initAutoCompletion(QStringList additionalElements, QString currentText);
 
 private:
 

@@ -268,7 +268,7 @@ void MainWindow::tabIndexChangedSlot(int index)
         {
             ui->actionOpenAllIncludedScripts->setEnabled(true);
         }
-        static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget())->initAutoCompletion(m_allFunction);
+        m_parseTimer.start(1000);
     }
     else
     {
@@ -593,6 +593,8 @@ void MainWindow::showEvent(QShowEvent *event)
  */
 void MainWindow::closeEvent(QCloseEvent *event)
 {
+    m_parseTimer.stop();
+
     bool cancelled = false;
     for(quint32 i = 0; i < ui->documentsTabWidget->count(); i++)
     {
@@ -1084,8 +1086,15 @@ QString MainWindow::createNewDocumentTitle(void)
 void MainWindow::parseTimeout(void)
 {
     m_parseTimer.stop();
+    QString completText;
+
+    for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+    {
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
+        completText += textEditor->text();
+    }
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-    textEditor->initAutoCompletion(m_allFunction);
+    textEditor->initAutoCompletion(m_allFunction, completText);
 }
 
 /**
@@ -1297,7 +1306,7 @@ void MainWindow::insertAllFunctionInListView()
 
 
     static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget())->setFocus();
-    static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget())->initAutoCompletion(m_allFunction);
+    m_parseTimer.start(1000);
 
 }
 
