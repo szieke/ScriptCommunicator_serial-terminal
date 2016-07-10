@@ -17,7 +17,7 @@ ScriptTreeWidget::blockSignals(bool block):bool \nIf block is true, signals emit
 ScriptTreeWidget::getClassName(void):String \nReturns the class name of this object.
 ScriptTreeWidget::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptTreeWidget::createScriptTreeWidgetItem(void):ScriptTreeWidgetItem \nCreates a script tree widget item.
-ScriptTreeWidget::setHeaderLabels(StringList labels):void \nAdds a column in the header for each item in the labels list, and sets the label for each column.\nNote that setHeaderLabels() won't remove existing columns.
+ScriptTreeWidget::setHeaderLabels(Array<String> labels):void \nAdds a column in the header for each item in the labels list, and sets the label for each column.\nNote that setHeaderLabels() won't remove existing columns.
 ScriptTreeWidget::setColumnWidth(int column, int size):void \nSets the width of a column.
 ScriptTreeWidget::getColumnWidth(int column):int \nReturns the width of a column.
 ScriptTreeWidget::addTopLevelItem(ScriptTreeWidgetItem item):void \nAppends the item as a top-level item in the widget.

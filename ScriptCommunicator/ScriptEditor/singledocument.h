@@ -33,7 +33,7 @@ private:
     void checkDocumentForUiFiles(QString currentText);
 
     ///Searches all danmically created objects.
-    void checkDocumentForDynamicObjects(QString currentText);
+    void checkDocumentForDynamicObjects(QString currentText, bool isSecondPass);
 
     ///Parses an user interface file (auto-completion).
     void parseUiFile(QString uiFileName);

@@ -16,7 +16,7 @@ cust::renameFile(String path, String newName):bool \nRenames a file.
 cust::deleteFile(String path, bool isRelativePath=true):bool \nDeletes a file.
 cust::deleteDirectory(String directory, bool isRelativePath=true):bool \nDeletes a directory (must be empty).
 cust::deleteDirectoryRecursively(String directory, bool isRelativePath=true):bool \nIf a file or directory cannot be removed, deleteDirectoryRecursively() keeps going and attempts to delete as many files and sub-directories as possible, then returns false. If the directory was already removed, the method returns true (expected result already reached).
-cust::readDirectory(String directory, bool isRelativePath=true, bool recursive=true, bool returnFiles=true, bool returnDirectories=true):StringList \nReads the content of a directory and his sub directories.
+cust::readDirectory(String directory, bool isRelativePath=true, bool recursive=true, bool returnFiles=true, bool returnDirectories=true):Array<String> \nReads the content of a directory and his sub directories.
 cust::writeFile(String path, bool isRelativePath, String content, bool replaceFile, qint64 startPosition=-1):bool \nWrites a text file (if replaceFile is true, the existing file is overwritten, else the content is appended).
 cust::writeBinaryFile(String path, bool isRelativePath, Array<unsigned char> content, bool replaceFile, qint64 startPosition=-1):bool \nWrites a binary file (if replaceFile is true, the existing file is overwritten, else the content is appended).
 cust::createAbsolutePath(String fileName):String \nConverts a relative path into an absolute path.
@@ -24,4 +24,4 @@ cust::getCurrentVersion(void):String \nReturns the current version of ScriptComm
 cust::setBlockTime(quint32 blockTime):void \nSets the script block time.\nNote: After this execution time (createString and the script main function (all outside a function))\nthe script is regarded as blocked and will be terminated.
 cust::createXmlReader(void):ScriptXmlReader \nCreates a XML reader.
 cust::createXmlWriter(void):ScriptXmlWriter \nCreates a XML writer.
-cust::getAllObjectPropertiesAndFunctions(QScriptValue object):StringList \nReturns all functions and properties of an object.
+cust::getAllObjectPropertiesAndFunctions(QScriptValue object):Array<String> \nReturns all functions and properties of an object.

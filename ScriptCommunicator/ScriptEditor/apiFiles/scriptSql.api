@@ -3,8 +3,8 @@ scriptSql::cloneDatabase(ScriptSqlDatabase other, String connectionName):ScriptS
 scriptSql::database(String connectionName = QLatin1String(QSqlDatabase::defaultConnection), bool open = true):ScriptSqlDatabase \nAddsReturns the database connection called connectionName. The database connection must have been\npreviously added with addDatabase(). If open is true (the default) and the database connection is not\nalready open it is opened now. If no connectionName is specified the default connection is used.\nIf connectionName does not exist in the list of databases, an invalid connection is returned.
 scriptSql::removeDatabase(String connectionName):void \nRemoves the database connection connectionName from the list of database connections.\nWarning: There should be no open queries on the database connection when this function is called,\notherwise a resource leak will occur.
 scriptSql::contains(String connectionName = QLatin1String(QSqlDatabase::defaultConnection)):bool \nReturns true if the list of database connections contains connectionName; otherwise returns false.
-scriptSql::connectionNames():StringList \nReturns a list containing the names of all connections.
-scriptSql::drivers():StringList \nReturns a list of all the available database drivers.
+scriptSql::connectionNames():Array<String> \nReturns a list containing the names of all connections.
+scriptSql::drivers():Array<String> \nReturns a list of all the available database drivers.
 scriptSql::isDriverAvailable(String name):bool \nReturns true if a driver called name is available; otherwise returns false.
 scriptSql::createQuery(ScriptSqlDatabase dataBase, String query = String()):ScriptSqlQuery \nCreates a ScriptSqlQuery object using the SQL query and the current database.
 scriptSql::createField(String fieldName = String(), quint32 type = (quint32)QVariant::Invalid):ScriptSqlField \nCreates a ScriptSqlField object.

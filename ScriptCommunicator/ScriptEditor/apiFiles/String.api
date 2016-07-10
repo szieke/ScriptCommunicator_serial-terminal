@@ -6,11 +6,11 @@ String::concat([string1 [, string2 [, ...]]]):String \nJoins two or more strings
 String::indexOf(searchString ,position):int \nReturns the position of the first found occurrence of a specified value in a string.
 String::lastIndexOf(searchString, position):int \nReturns the position of the last found occurrence of a specified value in a string.
 String::localeCompare(that):int \nCompares two strings in the current locale.
-String::match(regexp):StringList \nSearches a string for a match against a regular expression, and returns the matches
+String::match(regexp):Array<String> \nSearches a string for a match against a regular expression, and returns the matches
 String::replace(searchValue, replaceValue):String \nSearches a string for a specified value, or a regular expression,\nand returns a new string where the specified values are replaced\nNote: If you are replacing a value (and not a regular expression), only the first instance of the value will be replaced.\nTo replace all occurrences of a specified value, use the global (g) modifier.\nExample: str.replace(/blue/g, "red")
 String::search(regexp):int \nSearches a string for a specified value, or regular expression, and returns the position of the match.
 String::slice(start, end):String \nExtracts a part of a string and returns a new string.
-String::split(separator, limit):StringList \nSplits a string into an array of substrings.
+String::split(separator, limit):Array<String> \nSplits a string into an array of substrings.
 String::substring(start, end):String \nExtracts the characters from a string, beginning at a specified start position, and through the specified number of character
 String::toLowerCase(void):String \nConverts a string to lowercase letters.
 String::toLocaleLowerCase(void) \nConverts a string to lowercase letters, according to the host's locale.

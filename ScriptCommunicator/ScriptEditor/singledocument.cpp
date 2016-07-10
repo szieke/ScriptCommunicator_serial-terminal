@@ -459,10 +459,10 @@ void SingleDocument::initAutoCompletion(QStringList additionalElements, QStringL
             parseUiFile(el);
         }
         checkDocumentForUiFiles(currentText);
-        checkDocumentForDynamicObjects(currentText);
+        checkDocumentForDynamicObjects(currentText, false);
 
         //Call again to get all objects created by dynamic objects.
-        checkDocumentForDynamicObjects(currentText);
+        checkDocumentForDynamicObjects(currentText, true);
     }
 
     if(lexer() && lexer()->apis())
@@ -704,7 +704,7 @@ void parseTableWidetInsert(const QString objectName, QStringList lines)
  * @param currentText
  *      The text in which shall be searched.
  */
-void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
+void SingleDocument::checkDocumentForDynamicObjects(QString currentText, bool isSecondPass)
 {
     int index1 = 0;
     int index2 = 0;
@@ -723,35 +723,39 @@ void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
     QRegExp regexp("[\n;]");
     QStringList lines = currentText.split(regexp);
 
-    searchSingleType("ScriptUdpSocket", "=scriptThread.createUdpSocket", lines);
-    searchSingleType("ScriptTcpServer", "=scriptThread.createTcpServer", lines);
+    if(!isSecondPass)
+    {
+        searchSingleType("ScriptUdpSocket", "=scriptThread.createUdpSocket", lines);
+        searchSingleType("ScriptTcpServer", "=scriptThread.createTcpServer", lines);
+        searchSingleType("ScriptTimer", "=scriptThread.createTimer", lines);
+        searchSingleType("ScriptSerialPort", "=scriptThread.createSerialPort", lines);
+        searchSingleType("ScriptCheetahSpi", "=scriptThread.createCheetahSpiInterface", lines);
+        searchSingleType("ScriptPcanInterface", "=scriptThread.createPcanInterface", lines);
+        searchSingleType("ScriptPlotWindow", "=scriptThread.createPlotWindow", lines);
+
+        searchSingleType("ScriptPlotWidget", ".addPlotWidget", lines);
+        searchSingleType("ScriptCanvas2DWidget", ".addCanvas2DWidget", lines);
+
+        searchSingleType("ScriptXmlReader", "=scriptThread.createXmlReader", lines);
+        searchSingleType("ScriptXmlWriter", "=scriptThread.createXmlWriter", lines);
+        searchSingleType("ScriptSqlDatabase", "=scriptSql.addDatabase", lines);
+        searchSingleType("ScriptSqlDatabase", "=scriptSql.cloneDatabase", lines);
+        searchSingleType("ScriptSqlDatabase", "=scriptSql.database", lines);
+        searchSingleType("ScriptSqlQuery", "=scriptSql.createQuery", lines);
+        searchSingleType("ScriptSqlField", "=scriptSql.createField", lines);
+        searchSingleType("ScriptSqlRecord", "=scriptSql.createRecord", lines);
+    }
+
     searchSingleType("ScriptTcpClient", "=scriptThread.createTcpClient", lines);
-    searchSingleType("ScriptTimer", "=scriptThread.createTimer", lines);
-    searchSingleType("ScriptSerialPort", "=scriptThread.createSerialPort", lines);
-    searchSingleType("ScriptCheetahSpi", "=scriptThread.createCheetahSpiInterface", lines);
-    searchSingleType("ScriptPcanInterface", "=scriptThread.createPcanInterface", lines);
-    searchSingleType("ScriptPlotWindow", "=scriptThread.createPlotWindow", lines);
-
-    searchSingleType("ScriptPlotWidget", ".addPlotWidget", lines);
-    searchSingleType("ScriptCanvas2DWidget", ".addCanvas2DWidget", lines);
-
-    searchSingleType("ScriptXmlReader", "=scriptThread.createXmlReader", lines);
-    searchSingleType("ScriptXmlWriter", "=scriptThread.createXmlWriter", lines);
-    searchSingleType("ScriptSqlDatabase", "=scriptSql.addDatabase", lines);
-    searchSingleType("ScriptSqlDatabase", "=scriptSql.cloneDatabase", lines);
-    searchSingleType("ScriptSqlDatabase", "=scriptSql.database", lines);
-    searchSingleType("ScriptSqlQuery", "=scriptSql.createQuery", lines);
-    searchSingleType("ScriptSqlField", "=scriptSql.createField", lines);
-    searchSingleType("ScriptSqlRecord", "=scriptSql.createRecord", lines);
 
     QMap<QString, QString>::iterator i;
     for (i = g_creatorObjects.begin(); i != g_creatorObjects.end(); ++i)
     {
-        if(i.value() == "ScriptTableWidget")
+        if(i.value() == "ScriptTableWidget" && !isSecondPass)
         {
             parseTableWidetInsert(i.key(), lines);
         }
-        else if(i.value() == "ScriptTreeWidget")
+        else if(i.value() == "ScriptTreeWidget" && !isSecondPass)
         {
             searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".createScriptTreeWidgetItem", lines);
             searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".invisibleRootItem", lines);
@@ -766,7 +770,7 @@ void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
             searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".takeChild", lines);
             searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".parent", lines);
         }
-        else if(i.value() == "ScriptXmlReader")
+        else if(i.value() == "ScriptXmlReader" && !isSecondPass)
         {
             searchSingleType("ScriptXmlElement", "=" + i.key() + ".getRootElement", lines);
             searchSingleType("ScriptXmlElement", "=" + i.key() + ".elementsByTagName", lines, true);
@@ -786,25 +790,28 @@ void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
             searchSingleType("ScriptSqlField", "=" + i.key() + ".field", lines);
             searchSingleType("ScriptSqlRecord", "=" + i.key() + ".keyValues", lines);
         }
-        else if(i.value() == "ScriptSqlDatabase")
+        else if(i.value() == "ScriptSqlDatabase" && !isSecondPass)
         {
             searchSingleType("ScriptSqlIndex", "=" + i.key() + ".primaryIndex", lines);
             searchSingleType("ScriptSqlRecord", "=" + i.key() + ".record", lines);
             searchSingleType("ScriptSqlQuery", "=" + i.key() + ".exec", lines);
             searchSingleType("ScriptSqlError", "=" + i.key() + ".lastError", lines);
         }
-        else if(i.value() == "ScriptTcpServer")
+        else if(i.value() == "ScriptTcpServer" && !isSecondPass)
         {
             searchSingleType("ScriptTcpClient", "=" + i.key() + ".nextPendingConnection", lines);
         }
     }
 
-    searchSingleType("Dummy", "=", lines);
-
-    QStringList keys = g_tableWidgetObjects.keys();
-    for(int i = 0; i < keys.length(); i++)
+    if(!isSecondPass)
     {
-        searchSingleTableSubWidgets(keys[i], g_tableWidgetObjects.value(keys[i]), lines);
+        searchSingleType("Dummy", "=", lines);
+
+        QStringList keys = g_tableWidgetObjects.keys();
+        for(int i = 0; i < keys.length(); i++)
+        {
+            searchSingleTableSubWidgets(keys[i], g_tableWidgetObjects.value(keys[i]), lines);
+        }
     }
 
 

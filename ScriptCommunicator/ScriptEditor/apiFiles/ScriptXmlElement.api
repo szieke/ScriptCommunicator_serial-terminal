@@ -1,8 +1,8 @@
 ScriptXmlElement::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptXmlElement::elementName(void):String \nReturns the name of this element.
 ScriptXmlElement::childElements(void):QList<ScriptXmlElement> \nReturns all child elements.
-ScriptXmlElement::childTextElements(void):StringList \nReturns all child text elements (includes the CDATA elements).
-ScriptXmlElement::childCDataElements(void):StringList \nReturns all child CDATA elements.
-ScriptXmlElement::childCommentElements(void):StringList \nReturns all child comment elements.
+ScriptXmlElement::childTextElements(void):Array<String> \nReturns all child text elements (includes the CDATA elements).
+ScriptXmlElement::childCDataElements(void):Array<String> \nReturns all child CDATA elements.
+ScriptXmlElement::childCommentElements(void):Array<String> \nReturns all child comment elements.
 ScriptXmlElement::attributes(void):QList<ScriptXmlAttribute> \nReturns all attributes of this element.
 ScriptXmlElement::attributeValue(String attrName):String \nReturns an attribute value. The attribute is identified by attrName.

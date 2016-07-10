@@ -4,7 +4,7 @@ ScriptSqlDatabase::open(String user, String password):bool
 ScriptSqlDatabase::close(void):void
 ScriptSqlDatabase::isOpen(void):bool
 ScriptSqlDatabase::isOpenError(void):bool
-ScriptSqlDatabase::tables(quint32 type = QSql::TableType::Tables):StringList
+ScriptSqlDatabase::tables(quint32 type = QSql::TableType::Tables):Array<String>
 ScriptSqlDatabase::primaryIndex(String tablename):ScriptSqlIndex
 ScriptSqlDatabase::record(String tablename):ScriptSqlRecord
 ScriptSqlDatabase::exec(String query = String()):ScriptSqlQuery
