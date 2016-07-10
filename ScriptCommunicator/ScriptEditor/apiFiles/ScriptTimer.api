@@ -1,4 +1,4 @@
-ScriptTimer::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptTimer::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptTimer::setSingleShot(bool singleShot):void \nSets the timer to single-shot or non-single-shot.\nA single-shot timer fires only once, non-single-shot timers fire every interval milliseconds.
 ScriptTimer::isSingleShot(void):bool \nReturns true if the timer is a single-shot timer.
 ScriptTimer::setInterval(int msec):void \nSets the timer interval.

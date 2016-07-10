@@ -1,31 +1,31 @@
-QWebView::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
-QWebView::load(QString url):void \nLoads the specified url and displays it.
-QWebView::url(void):QString \nReturns the url of the web page currently viewed.
-QWebView::findText(QString subString, quint32 options = 0):bool \nFinds the specified string, subString, in the page, using the given options.\nIf the HighlightAllOccurrences flag is passed, the function will highlight all occurrences\nthat exist in the page. All subsequent calls will extend the highlight, rather than replace it,\nwith occurrences of the new string.\nIf the HighlightAllOccurrences flag is not passed, the function will select an occurrence and\nall subsequent calls will replace the current occurrence with the next one.\nTo clear the selection, just pass an empty string.\nReturns true if subString was found; otherwise returns false.\nNote: options has the type QWebPage::FindFlags.
+QWebView::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
+QWebView::load(String url):void \nLoads the specified url and displays it.
+QWebView::url(void):String \nReturns the url of the web page currently viewed.
+QWebView::findText(String subString, quint32 options = 0):bool \nFinds the specified string, subString, in the page, using the given options.\nIf the HighlightAllOccurrences flag is passed, the function will highlight all occurrences\nthat exist in the page. All subsequent calls will extend the highlight, rather than replace it,\nwith occurrences of the new string.\nIf the HighlightAllOccurrences flag is not passed, the function will select an occurrence and\nall subsequent calls will replace the current occurrence with the next one.\nTo clear the selection, just pass an empty string.\nReturns true if subString was found; otherwise returns false.\nNote: options has the type QWebPage::FindFlags.
 QWebView::hasSelection(void):bool \nReturns whether this page contains selected content or not.
 QWebView::isModified(void):bool \nReturns whether the document was modified by the user.
 QWebView::renderHints(void):quint32 \nReturns the default render hints (QPainter::RenderHints) for the view.\nThese hints are used to initialize QPainter before painting the Web page.
 QWebView::setRenderHint(quint32 hints):void \nSets the given render hints on the painter if on is true; otherwise clears the render hints.
-QWebView::selectedHtml(void):QString \nReturns the HTML currently selected.\nBy default, this property contains an empty string.
-QWebView::selectedText(void):QString \nReturns the text currently selected.\nBy default, this property contains an empty string.
-QWebView::setHtml(QString html, QString baseUrl=""):void \nSets the content of the web view to the specified html.\nExternal objects such as stylesheets or images referenced in the HTML document are located relative\nto baseUrl.\nThe html is loaded immediately; external objects are loaded asynchronously.\nWhen using this method, WebKit assumes that external resources such as JavaScript programs or style\nsheets are encoded in UTF-8 unless otherwise specified. For example, the encoding of an external script\ncan be specified through the charset attribute of the HTML script tag. Alternatively, the encoding can also\nbe specified by the web server.
+QWebView::selectedHtml(void):String \nReturns the HTML currently selected.\nBy default, this property contains an empty string.
+QWebView::selectedText(void):String \nReturns the text currently selected.\nBy default, this property contains an empty string.
+QWebView::setHtml(String html, String baseUrl=""):void \nSets the content of the web view to the specified html.\nExternal objects such as stylesheets or images referenced in the HTML document are located relative\nto baseUrl.\nThe html is loaded immediately; external objects are loaded asynchronously.\nWhen using this method, WebKit assumes that external resources such as JavaScript programs or style\nsheets are encoded in UTF-8 unless otherwise specified. For example, the encoding of an external script\ncan be specified through the charset attribute of the HTML script tag. Alternatively, the encoding can also\nbe specified by the web server.
 QWebView::setTextSizeMultiplier(qreal factor):void \nSets the value of the multiplier used to scale the text in a Web page to the factor.
 QWebView::textSizeMultiplier(void):qreal \nReturns the zoom factor for the view.
-QWebView::title(void):QString \nReturns the title of the web page currently viewed.
+QWebView::title(void):String \nReturns the title of the web page currently viewed.
 QWebView::setZoomFactor(qreal factor):void \nSets the zoom factor for the view.
 QWebView::zoomFactor(void):qreal \nReturns the zoom factor for the view.
 QWebView::back(void):void \nLoads the previous document in the list of documents built by navigating links.\nDoes nothing if there is no previous document.
 QWebView::forward(void):void \nLoads the next document in the list of documents built by navigating links. Does nothing if there is no next document.
 QWebView::reload(void):void \nReloads the current document.
 QWebView::stop(void):void \nStops loading the document.
-QWebView::evaluateJavaScript(QString script):QVariant \nExecutes a javascript inside the web view.
-QWebView::print(QString printDialogTitle = "Print"):void \nOpens a print dialog.
+QWebView::evaluateJavaScript(String script):QVariant \nExecutes a javascript inside the web view.
+QWebView::print(String printDialogTitle = "Print"):void \nOpens a print dialog.
 QWebView::loadFinishedSignal.connect(bool ok); \nThis signal is emitted when a load of the page is finished. ok will\nindicate whether the load was successful or any error occurred.
 QWebView::loadProgressSignal.connect(int progress) \nThis signal is emitted every time an element in the web page completes loading and the overall loading progress advances.
 QWebView::loadStartedSignal.connect(void) \nThis signal is emitted when a new load of the page is started.
 QWebView::selectionChangedSignal.connect(void) \nThis signal is emitted whenever the selection changes.
-QWebView::statusBarMessageSignal.connect(QString text) \nThis signal is emitted when the status bar text is changed by the page.
-QWebView::titleChangedSignal.connect(QString text) \nThis signal is emitted whenever the title of the main frame changes.
-QWebView::urlChangedSignal.connect(QString text) \nThis signal is emitted when the url of the view changes.
+QWebView::statusBarMessageSignal.connect(String text) \nThis signal is emitted when the status bar text is changed by the page.
+QWebView::titleChangedSignal.connect(String text) \nThis signal is emitted whenever the title of the main frame changes.
+QWebView::urlChangedSignal.connect(String text) \nThis signal is emitted when the url of the view changes.
 QWebView::callWorkerScriptWithResultSignal.connect(QVariant params, ResultClass resultObject) \nThis signal is emitted when the webView calls the webView.callWorkerScriptWithResult(QVariant) routine.\nNote: The connected slot function blocks the WebView. Therefore no time consuming or blocking operations should be performed.
 QWebView::callWorkerScriptSignal.connect(QVariant params) \nThis signal is emitted when the webView calls the webView.callWorkerScript(QVariant) routine.\nNote: The connected slot function does not block the WebView. Therefore time consuming or blocking operations can be performed.

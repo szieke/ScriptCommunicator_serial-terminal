@@ -1,0 +1,22 @@
+Array::toString():String \nConverts an array to a string, and returns the result.
+Array::toLocaleString():String \nConverts an array to a local string, and returns the result.
+Array::concat([item1 [, item2 [, ...]]]):Array \nJoins two or more arrays, and returns a copy of the joined arrays.
+Array::join(separator):String \nJoins all elements of an array into a string.
+Array::pop():element \nRemoves the last element of an array, and returns that element.
+Array::push([item1 [, item2 [, ...]]]):int \nAdds new elements to the end of an array, and returns the new length.
+Array::reverse():void \nReverses the order of the elements in an array.
+Array::shift():element \nRemoves the first element of an array, and returns that element.
+Array::slice(start, end):Array \nSelects a part of an array, and returns the new array.
+Array::sort(comparefn):void \nSorts the elements of an array.
+Array::splice(start, deleteCount[, item1 [, item2 [, ...]]]):Array  \nAdds/Removes elements from an array.
+Array::unshift([item1 [, item2 [, ...]]]):int \nAdds new elements to the beginning of an array, and returns the new length.
+Array::indexOf(searchElement [, fromIndex]):int \nSearch the array for an element and returns its position.
+Array::lastIndexOf(searchElement [, fromIndex]):int \nSearch the array for an element, starting at the end, and returns its position.
+Array::every(callbackfn [, thisArg]):bool \nChecks if every element in an array pass a test.
+Array::some(callbackfn [, thisArg]):bool \nChecks if any of the elements in an array pass a test.
+Array::forEach(callbackfn [, thisArg]):void \nCalls a function for each array element.
+Array::map(callbackfn [, thisArg]):Array \nCreates a new array with the result of calling a function for each array element
+Array::filter(callbackfn [, thisArg]):Array  \nCreates a new array with every element in an array that pass a test.
+Array::reduce(callbackfn [, initialValue]):value \nReduce the values of an array to a single value (going left-to-right).
+Array::reduceRight(callbackfn [, initialValue]):value \nReduce the values of an array to a single value (going right-to-left).
+Array::isArray() \nReturns true if an object is an array, false if it is not.

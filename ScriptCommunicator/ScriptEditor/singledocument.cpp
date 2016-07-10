@@ -96,7 +96,7 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
  * @param isGuiElement
  *      True if the object is a GUI element.
  */
-static void addObjectToAutoCompletionList(QString& objectName, QString& className, bool isGuiElement)
+static void addObjectToAutoCompletionList(QString& objectName, QString& className, bool isGuiElement, bool isArray=false)
 {
     QString autoCompletionName = isGuiElement ? "UI_" + objectName : objectName;
 
@@ -119,24 +119,41 @@ static void addObjectToAutoCompletionList(QString& objectName, QString& classNam
                 }
         }
 
-        //Open the corresponding api file.
-        QFile file(getScriptEditorFilesFolder()+ "/apiFiles/" + className + ".api");
-        if (file.open(QFile::ReadOnly))
+        if (g_autoCompletionApiFiles.contains(className + ".api"))
         {
-            QTextStream in(&file);
-            QString singleEntry = in.readLine();
+            QStringList list = g_autoCompletionApiFiles[className + ".api"];
 
-            while(!singleEntry.isEmpty())
+            if(!isArray)
             {
-                singleEntry.replace(className + "::", autoCompletionName + "::");
-                singleEntry.replace("\\n", "\n");
+                for(auto singleEntry : list)
+                {
+                    singleEntry.replace(className + "::", autoCompletionName + "::");
 
-                //Add the current line to the api map.
-                g_autoCompletionEntries[autoCompletionName] << singleEntry;
-
-                singleEntry = in.readLine();
+                    //Add the current line to the api map.
+                    g_autoCompletionEntries[autoCompletionName] << singleEntry;
+                }
             }
-            file.close();
+            else
+            {
+                for(auto singleEntry : list)
+                {
+
+                    singleEntry.replace(className + "::", autoCompletionName + "[" + "::");
+
+                    //Add the current line to the api map.
+                    g_autoCompletionEntries[autoCompletionName + "["] << singleEntry;
+                }
+
+                QStringList arrayList = g_autoCompletionApiFiles["Array.api"];
+                for(auto singleEntry : arrayList)
+                {
+                    singleEntry.replace("Array::", autoCompletionName + "::");
+
+                    //Add the current line to the api map.
+                    g_autoCompletionEntries[autoCompletionName] << singleEntry;
+                }
+            }
+
         }
         else
         {
@@ -495,7 +512,7 @@ static inline void removeAllLeft(QString& text, QString character)
  * @param lines
  *      The lines in which shall be searched.
  */
-static inline void searchSingleType(QString className, QString searchString, QStringList& lines)
+static inline void searchSingleType(QString className, QString searchString, QStringList& lines, bool isArray=false)
 {
     int index;
     for(int i = 0; i < lines.length();i++)
@@ -513,7 +530,7 @@ static inline void searchSingleType(QString className, QString searchString, QSt
 
             removeAllLeft(objectName, "{");
             removeAllLeft(objectName, ")");
-            addObjectToAutoCompletionList(objectName, className, false);
+            addObjectToAutoCompletionList(objectName, className, false, isArray);
         }
     }
 }
@@ -752,12 +769,12 @@ void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
         else if(i.value() == "ScriptXmlReader")
         {
             searchSingleType("ScriptXmlElement", "=" + i.key() + ".getRootElement", lines);
-            searchSingleType("ScriptXmlElement", "=" + i.key() + ".elementsByTagName", lines);
+            searchSingleType("ScriptXmlElement", "=" + i.key() + ".elementsByTagName", lines, true);
         }
         else if(i.value() == "ScriptXmlElement")
         {
-            searchSingleType("ScriptXmlElement", "=" + i.key() + ".childElements", lines);
-            searchSingleType("ScriptXmlAttribute", "=" + i.key() + ".attributes", lines);
+            searchSingleType("ScriptXmlElement", "=" + i.key() + ".childElements", lines, true);
+            searchSingleType("ScriptXmlAttribute", "=" + i.key() + ".attributes", lines, true);
         }
         else if(i.value() == "ScriptSqlQuery")
         {

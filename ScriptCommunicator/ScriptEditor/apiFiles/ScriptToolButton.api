@@ -1,22 +1,22 @@
 ScriptToolButton::setEnabled(bool isEnabled):void \nEnables or disables the widget.
 ScriptToolButton::hide(void):void \nHides the widget.
 ScriptToolButton::show(void):void \nShows the widget.
-ScriptToolButton::setBackgroundColor(QString color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptToolButton::setWindowTextColor(QString color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptToolButton::setTextColor(QString color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptToolButton::setPaletteColor(QString palette, QString color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptToolButton::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-ScriptToolButton::setToolTip(QString text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptToolButton::setBackgroundColor(String color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptToolButton::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptToolButton::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptToolButton::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptToolButton::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptToolButton::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptToolButton::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptToolButton::setFocus(void):void \nGives the keyboard input focus to this widget.
 ScriptToolButton::width(void):int \nReturns the width of the widget excluding any window frame.
 ScriptToolButton::height(void):int \nReturns the height of the widget excluding any window frame.
-ScriptToolButton::setAdditionalData(int key, QString data):void \nSets/stores an additional data entry.
-ScriptToolButton::getAdditionalData(int key):QString \nReturns an additional data entry.
+ScriptToolButton::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
+ScriptToolButton::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptToolButton::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
-ScriptToolButton::getClassName(void):QString \nReturns the class name of this object.
-ScriptToolButton::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
-ScriptToolButton::setText(QString text):void \nSets the button text.
-ScriptToolButton::text(void):QString \nReturns the button text.
-ScriptToolButton::setIcon(QString iconFileName):void \nSets the icon of the button.
+ScriptToolButton::getClassName(void):String \nReturns the class name of this object.
+ScriptToolButton::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptToolButton::setText(String text):void \nSets the button text.
+ScriptToolButton::text(void):String \nReturns the button text.
+ScriptToolButton::setIcon(String iconFileName):void \nSets the icon of the button.
 ScriptToolButton::clickedSignal.connect(void) \nThis signal is emitted if the user presses the button.

@@ -1,23 +1,23 @@
 ScriptToolBox::setEnabled(bool isEnabled):void \nEnables or disables the widget.
 ScriptToolBox::hide(void):void \nHides the widget.
 ScriptToolBox::show(void):void \nShows the widget.
-ScriptToolBox::setBackgroundColor(QString color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptToolBox::setWindowTextColor(QString color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptToolBox::setTextColor(QString color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptToolBox::setPaletteColor(QString palette, QString color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptToolBox::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-ScriptToolBox::setToolTip(QString text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptToolBox::setBackgroundColor(String color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptToolBox::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptToolBox::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptToolBox::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptToolBox::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptToolBox::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptToolBox::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptToolBox::setFocus(void):void \nGives the keyboard input focus to this widget.
 ScriptToolBox::width(void):int \nReturns the width of the widget excluding any window frame.
 ScriptToolBox::height(void):int \nReturns the height of the widget excluding any window frame.
-ScriptToolBox::setAdditionalData(int key, QString data):void \nSets/stores an additional data entry.
-ScriptToolBox::getAdditionalData(int key):QString \nReturns an additional data entry.
+ScriptToolBox::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
+ScriptToolBox::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptToolBox::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
-ScriptToolBox::getClassName(void):QString \nReturns the class name of this object.
-ScriptToolBox::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
-ScriptToolBox::setItemText(int index, QString text):void \nSets the item text.
-ScriptToolBox::itemText(int index):QString \nReturns the item text.
+ScriptToolBox::getClassName(void):String \nReturns the class name of this object.
+ScriptToolBox::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptToolBox::setItemText(int index, String text):void \nSets the item text.
+ScriptToolBox::itemText(int index):String \nReturns the item text.
 ScriptToolBox::setCurrentIndex(int index):void \nSets the current item index.
 ScriptToolBox::currentIndex(void):int \nReturns the current item index.
 ScriptToolBox::currentItemChangedSignal.connect(int index) \nThis signal is emitted if the current item has been changed.

@@ -1,9 +1,9 @@
-scriptThread::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
-scriptThread::appendTextToConsole(QString string, bool newLine=true, bool bringToForeground=false):void \nAppends text to the script window console.
-scriptThread::byteArrayToString(QVector<unsigned char> data):QString \nConverts a byte array which contains ascii characters into a ascii string (QString).
-scriptThread::byteArrayToHexString(QVector<unsigned char> data):QString \nConverts a byte array into a hex string.
-scriptThread::stringToArray(QString str):QVector<unsigned char> \nConverts an ascii string into a byte array.
-scriptThread::addStringToArray(QVector<unsigned char> array, QString str):QVector<unsigned char> \nAdds an ascii string to a byte array.
+scriptThread::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
+scriptThread::appendTextToConsole(String string, bool newLine=true, bool bringToForeground=false):void \nAppends text to the script window console.
+scriptThread::byteArrayToString(Array<unsigned char> data):String \nConverts a byte array which contains ascii characters into a ascii string (String).
+scriptThread::byteArrayToHexString(Array<unsigned char> data):String \nConverts a byte array into a hex string.
+scriptThread::stringToArray(String str):Array<unsigned char> \nConverts an ascii string into a byte array.
+scriptThread::addStringToArray(Array<unsigned char> array, String str):Array<unsigned char> \nAdds an ascii string to a byte array.
 scriptThread::sleepFromScript(quint32 timeMs):void \nForces the script thread to sleep for ms milliseconds.
 scriptThread::createUdpSocket(void):ScriptUdpSocket \nCreates an UDP socket.
 scriptThread::createTcpServer(void):ScriptTcpServer \nCreates a TCP server.
@@ -15,107 +15,107 @@ scriptThread::createPcanInterface(void):ScriptPcanInterface \nCreates a pcan int
 scriptThread::createPlotWindow(void):ScriptPlotWindow \nCreates a plot window.
 scriptThread::createXmlReader(void):ScriptXmlReader \nCreates a XML reader.
 scriptThread::createXmlWriter(void):ScriptXmlWriter \nCreates a XML writer.
-scriptThread::readFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1):QString \nReads a text file and returns the content.
-scriptThread::readBinaryFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1):QVector<unsigned char> \nReads a binary file and returns the content.
-scriptThread::getFileSize(QString path, bool isRelativePath=true):qint64 \nReturns the size of a file.
-scriptThread::checkFileExists(QString path, bool isRelativePath=true):bool \nChecks if a file exists.
-scriptThread::checkDirectoryExists(QString directory, bool isRelativePath=true):bool \nChecks if a directory exists.
-scriptThread::createDirectory(QString directory, bool isRelativePath=true):bool \nCreates a directory.
-scriptThread::renameDirectory(QString directory, QString newName):bool \nRenames a directory.
-scriptThread::renameFile(QString path, QString newName):bool \nRenames a file.
-scriptThread::deleteFile(QString path, bool isRelativePath=true):bool \nDeletes a file.
-scriptThread::deleteDirectory(QString directory, bool isRelativePath=true):bool \nDeletes a directory (must be empty).
-scriptThread::deleteDirectoryRecursively(QString directory, bool isRelativePath=true):bool \nIf a file or directory cannot be removed, deleteDirectoryRecursively() keeps going and attempts to delete as many files and sub-directories as possible, then returns false. If the directory was already removed, the method returns true (expected result already reached).
-scriptThread::readDirectory(QString directory, bool isRelativePath=true, bool recursive=true, bool returnFiles=true, bool returnDirectories=true):QStringList \nReads the content of a directory and his sub directories.
-scriptThread::writeFile(QString path, bool isRelativePath, QString content, bool replaceFile, qint64 startPosition=-1):bool \nWrites a text file (if replaceFile is true, the existing file is overwritten, else the content is appended).
-scriptThread::writeBinaryFile(QString path, bool isRelativePath, QVector<unsigned char> content, bool replaceFile, qint64 startPosition=-1):bool \nWrites a binary file (if replaceFile is true, the existing file is overwritten, else the content is appended).
-scriptThread::createAbsolutePath(QString fileName):QString \nConverts a relative path into an absolute path.
-scriptThread::getScriptFolder(void):QString \nReturns the folder in which the script resides.
-scriptThread::loadScript(QString scriptPath, bool isRelativePath=true):bool \nLoads/includes one script (QtScript has no built in include mechanism).
-scriptThread::zipDirectory(QString fileName, QString sourceDirName, QString comment=""):bool \nZips a directory.
-scriptThread::zipFiles(QString fileName, QVariantList fileList, QString comment=""):bool \nAdds files to a zip file.
-scriptThread::extractZipFile(QString fileName, QString destinationDirectory):bool \nExtracts a zip file.
-scriptThread::loadLibrary(QString path, bool isRelativePath=true):bool \nLoads a dynamic link library and calls the init function (void init(QScriptEngine* engine)). With this function a script can extend his functionality.
-scriptThread::sendDataArray(QVector<unsigned char> data, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false):bool \nSends a data array (QVector) with the main interface (in MainInterfaceThread).
-scriptThread::sendCanMessage(quint8 type, quint32 canId, QVector<unsigned char> data, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false):bool \nSends a can message with the main interface (in MainInterfaceThread). f more then 8 data bytes are given several can messages with the same can id will be sent.
-scriptThread::sendString(QString string, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false):bool \nSends a string (QString) with the main interface (in MainInterfaceThread).
+scriptThread::readFile(String path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1):String \nReads a text file and returns the content.
+scriptThread::readBinaryFile(String path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1):Array<unsigned char> \nReads a binary file and returns the content.
+scriptThread::getFileSize(String path, bool isRelativePath=true):qint64 \nReturns the size of a file.
+scriptThread::checkFileExists(String path, bool isRelativePath=true):bool \nChecks if a file exists.
+scriptThread::checkDirectoryExists(String directory, bool isRelativePath=true):bool \nChecks if a directory exists.
+scriptThread::createDirectory(String directory, bool isRelativePath=true):bool \nCreates a directory.
+scriptThread::renameDirectory(String directory, String newName):bool \nRenames a directory.
+scriptThread::renameFile(String path, String newName):bool \nRenames a file.
+scriptThread::deleteFile(String path, bool isRelativePath=true):bool \nDeletes a file.
+scriptThread::deleteDirectory(String directory, bool isRelativePath=true):bool \nDeletes a directory (must be empty).
+scriptThread::deleteDirectoryRecursively(String directory, bool isRelativePath=true):bool \nIf a file or directory cannot be removed, deleteDirectoryRecursively() keeps going and attempts to delete as many files and sub-directories as possible, then returns false. If the directory was already removed, the method returns true (expected result already reached).
+scriptThread::readDirectory(String directory, bool isRelativePath=true, bool recursive=true, bool returnFiles=true, bool returnDirectories=true):StringList \nReads the content of a directory and his sub directories.
+scriptThread::writeFile(String path, bool isRelativePath, String content, bool replaceFile, qint64 startPosition=-1):bool \nWrites a text file (if replaceFile is true, the existing file is overwritten, else the content is appended).
+scriptThread::writeBinaryFile(String path, bool isRelativePath, Array<unsigned char> content, bool replaceFile, qint64 startPosition=-1):bool \nWrites a binary file (if replaceFile is true, the existing file is overwritten, else the content is appended).
+scriptThread::createAbsolutePath(String fileName):String \nConverts a relative path into an absolute path.
+scriptThread::getScriptFolder(void):String \nReturns the folder in which the script resides.
+scriptThread::loadScript(String scriptPath, bool isRelativePath=true):bool \nLoads/includes one script (QtScript has no built in include mechanism).
+scriptThread::zipDirectory(String fileName, String sourceDirName, String comment=""):bool \nZips a directory.
+scriptThread::zipFiles(String fileName, QVariantList fileList, String comment=""):bool \nAdds files to a zip file.
+scriptThread::extractZipFile(String fileName, String destinationDirectory):bool \nExtracts a zip file.
+scriptThread::loadLibrary(String path, bool isRelativePath=true):bool \nLoads a dynamic link library and calls the init function (void init(QScriptEngine* engine)). With this function a script can extend his functionality.
+scriptThread::sendDataArray(Array<unsigned char> data, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false):bool \nSends a data array (Array) with the main interface (in MainInterfaceThread).
+scriptThread::sendCanMessage(quint8 type, quint32 canId, Array<unsigned char> data, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false):bool \nSends a can message with the main interface (in MainInterfaceThread). f more then 8 data bytes are given several can messages with the same can id will be sent.
+scriptThread::sendString(String string, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false):bool \nSends a string (String) with the main interface (in MainInterfaceThread).
 scriptThread::isConnected(void):bool \nReturns true if the main interface is connected.
 scriptThread::isConnectedWithCan(void):bool \nReturns true if the main interface is a can interface (and is connected).
 scriptThread::disconnect(void):void \nDisconnects the main interface.
 scriptThread::connectPcan(quint8 channel, quint32 baudrate, quint32 connectTimeout = 2000, bool busOffAutoReset = true, bool powerSupply = false, bool filterExtended = true, quint32 filterFrom = 0, quint32 filterTo = 0x1fffffff):bool \nConnects the main interface (PCAN).Note: A successful call will modify the corresponding settings in the settings dialog.
 scriptThread::setSerialPortPins(bool setRTS, bool setDTR):void \nSets the serial port (main interface) RTS and DTR pins.
-scriptThread::connectSerialPort(QString name, qint32 baudRate = 115200, quint32 connectTimeout= 1000, quint32 dataBits = 8, QString parity = "None", QString stopBits = "1", QString flowControl = "None"):bool \nConnects the main interface (serial port).\nNote: A successful call will modify the corresponding settings in the settings dialog.
-scriptThread::connectSocket(bool isTcp, bool isServer, QString ip, quint32 destinationPort, quint32 ownPort, quint32 connectTimeout = 5000):bool \nConnects the main interface (UDP or TCP socket).\nNote: A successful call will modify the corresponding settings in the settings dialog.
+scriptThread::connectSerialPort(String name, qint32 baudRate = 115200, quint32 connectTimeout= 1000, quint32 dataBits = 8, String parity = "None", String stopBits = "1", String flowControl = "None"):bool \nConnects the main interface (serial port).\nNote: A successful call will modify the corresponding settings in the settings dialog.
+scriptThread::connectSocket(bool isTcp, bool isServer, String ip, quint32 destinationPort, quint32 ownPort, quint32 connectTimeout = 5000):bool \nConnects the main interface (UDP or TCP socket).\nNote: A successful call will modify the corresponding settings in the settings dialog.
 scriptThread::connectCheetahSpi(quint32 port, qint16 mode, quint32 baudrate, quint8 chipSelectBits = 1, quint32 connectTimeout = 1000):bool \nConnects the main interface (cheetah spi).\nNote: A successful call will modify the corresponding settings in the settings dialog.
 scriptThread::stopScript(void):void \nThis function stops the current script thread.
-scriptThread::createProcessDetached(QString program, QStringList arguments, QString  workingDirectory):bool \nStarts the program program with the arguments arguments in a new process, and detaches from it. Returns true on success, otherwise returns false.\nIf the calling process exits, the detached process will continue to run unaffected.The process will be started in the directory workingDirectory.\nIf workingDirectory is empty, the working directory is inherited from the calling process.
-scriptThread::createProcess(QString program, QStringList arguments):int \nStarts the program program with the arguments arguments in a new process, waits for it to finish, and then returns the exit code of the process.\nThe environment and working directory are inherited from the calling process.
-scriptThread::createProcessAsynchronous(QString program, QStringList arguments, int startWaitTime=30000, QString workingDirectory=""): ScriptProcess \nStarts the program program with the arguments arguments in a new process.\nAny data the new process writes to the console is forwarded to the return process object.\nThe environment and working directory are inherited from the calling process.\nNote: Blocks until the process has been created or until startWaitTime milliseconds have passed (-1=infinite).
+scriptThread::createProcessDetached(String program, StringList arguments, String  workingDirectory):bool \nStarts the program program with the arguments arguments in a new process, and detaches from it. Returns true on success, otherwise returns false.\nIf the calling process exits, the detached process will continue to run unaffected.The process will be started in the directory workingDirectory.\nIf workingDirectory is empty, the working directory is inherited from the calling process.
+scriptThread::createProcess(String program, StringList arguments):int \nStarts the program program with the arguments arguments in a new process, waits for it to finish, and then returns the exit code of the process.\nThe environment and working directory are inherited from the calling process.
+scriptThread::createProcessAsynchronous(String program, StringList arguments, int startWaitTime=30000, String workingDirectory=""): ScriptProcess \nStarts the program program with the arguments arguments in a new process.\nAny data the new process writes to the console is forwarded to the return process object.\nThe environment and working directory are inherited from the calling process.\nNote: Blocks until the process has been created or until startWaitTime milliseconds have passed (-1=infinite).
 scriptThread::waitForFinishedProcess(ScriptProcess process, int waitTime=30000):bool \nBlocks until the process has finished or until msecs milliseconds have passed (-1=infinite).
 scriptThread::getProcessExitCode(ScriptProcess process):int \nReturns the exit code of process.
 scriptThread::killProcess(ScriptProcess process):void \nKills the current process, causing it to exit immediately.
 scriptThread::terminateProcess(ScriptProcess process):void \nAttempts to terminate the process.\nThe process may not exit as a result of calling this function (it is given the chance to prompt the user for any unsaved files, etc).
-scriptThread::writeToProcessStdin(ScriptProcess process, QVector<unsigned char> data, int waitTime=30000):bool \nWrite data to the standard input of process. Returns true on success.\nNote: Blocks until the writing is finished or until msecs milliseconds have passed (-1=infinite).
-scriptThread::readAllStandardOutputFromProcess(ScriptProcess process, bool isBlocking=false, quint8 blockByte='\n', qint32 blockTime=30000):QVector<unsigned char> \nThis function returns all data available from the standard output of process.\nNote: If isBlocking is true then this function blocks until the blockByte has been received or\nblockTime has elapsed (-1=infinite).
-scriptThread::readAllStandardErrorFromProcess(ScriptProcess process, bool isBlocking=false,quint8 blockByte='\n', qint32 blockTime=30000):QVector<unsigned char> \nThis function returns all data available from the standard error of process.\nNote: If isBlocking is true then this function blocks until the blockByte has been received or\nblockTime has elapsed (-1=infinite).
-scriptThread::loadUserInterfaceFile(QString path, bool isRelativePath=true, bool showAfterLoading = true):bool \nLoads an user interface file.\nNote: If an user interface was already loaded then the old user interface will be unloaded.
+scriptThread::writeToProcessStdin(ScriptProcess process, Array<unsigned char> data, int waitTime=30000):bool \nWrite data to the standard input of process. Returns true on success.\nNote: Blocks until the writing is finished or until msecs milliseconds have passed (-1=infinite).
+scriptThread::readAllStandardOutputFromProcess(ScriptProcess process, bool isBlocking=false, quint8 blockByte='\n', qint32 blockTime=30000):Array<unsigned char> \nThis function returns all data available from the standard output of process.\nNote: If isBlocking is true then this function blocks until the blockByte has been received or\nblockTime has elapsed (-1=infinite).
+scriptThread::readAllStandardErrorFromProcess(ScriptProcess process, bool isBlocking=false,quint8 blockByte='\n', qint32 blockTime=30000):Array<unsigned char> \nThis function returns all data available from the standard error of process.\nNote: If isBlocking is true then this function blocks until the blockByte has been received or\nblockTime has elapsed (-1=infinite).
+scriptThread::loadUserInterfaceFile(String path, bool isRelativePath=true, bool showAfterLoading = true):bool \nLoads an user interface file.\nNote: If an user interface was already loaded then the old user interface will be unloaded.
 scriptThread::scriptShallExit(void):bool \nReturns true if the script shall exit.
-scriptThread::getLocalIpAdress(void):QStringList \nReturns all IP addresses found on the host machine.
-scriptThread::showFileDialog(bool isSaveDialog, QString caption, QString dir, QString filter, QWidget* parent=0):QString \nWrapper for QFileDialog::getSaveFileName and QFileDialog::getOpenFileName.
-scriptThread::showDirectoryDialog(QString caption, QString dir, QWidget* parent=0):QString \nWrapper for QFileDialog::getExistingDirectory.
-scriptThread::messageBox(QString icon, QString title, QString text, QWidget* parent=0):void \nShows a message box.
-scriptThread::showYesNoDialog(QString icon, QString title, QString text, QWidget* parent=0):bool \nShows a yes/no dialog.
-scriptThread::showTextInputDialog(QString title, QString label, QString displayedText="", QWidget* parent=0):QString \nConvenience function to get a string from the user.\nShows a QInputDialog::getText dialog (line edit).
-scriptThread::showMultiLineTextInputDialog(QString title, QString label, QString displayedText="", QWidget* parent=0):QString \nConvenience function to get a multiline string from the user.\nShows a QInputDialog::getMultiLineText dialog (plain text edit).
-scriptThread::showGetItemDialog(QString title, QString label, QStringList displayedItems, int currentItemIndex=0, bool editable=false, QWidget* parent=0):QString \nConvenience function to let the user select an item from a string list.\nShows a QInputDialog::getItem dialog (combobox).
-scriptThread::showGetIntDialog(QString title, QString label, int initialValue, int min, int max, int step, QWidget* parent=0):QList<int> \nConvenience function to get an integer input from the user.\nShows a QInputDialog::getInt dialog (spinbox).
-scriptThread::showGetDoubleDialog(QString title, QString label, double initialValue, double min, double max, int decimals, QWidget* parent=0):QList<double> \nConvenience function to get a floating point number from the user.\nShows a QInputDialog::getDouble dialog (spinbox).
+scriptThread::getLocalIpAdress(void):StringList \nReturns all IP addresses found on the host machine.
+scriptThread::showFileDialog(bool isSaveDialog, String caption, String dir, String filter, QWidget* parent=0):String \nWrapper for QFileDialog::getSaveFileName and QFileDialog::getOpenFileName.
+scriptThread::showDirectoryDialog(String caption, String dir, QWidget* parent=0):String \nWrapper for QFileDialog::getExistingDirectory.
+scriptThread::messageBox(String icon, String title, String text, QWidget* parent=0):void \nShows a message box.
+scriptThread::showYesNoDialog(String icon, String title, String text, QWidget* parent=0):bool \nShows a yes/no dialog.
+scriptThread::showTextInputDialog(String title, String label, String displayedText="", QWidget* parent=0):String \nConvenience function to get a string from the user.\nShows a QInputDialog::getText dialog (line edit).
+scriptThread::showMultiLineTextInputDialog(String title, String label, String displayedText="", QWidget* parent=0):String \nConvenience function to get a multiline string from the user.\nShows a QInputDialog::getMultiLineText dialog (plain text edit).
+scriptThread::showGetItemDialog(String title, String label, StringList displayedItems, int currentItemIndex=0, bool editable=false, QWidget* parent=0):String \nConvenience function to let the user select an item from a string list.\nShows a QInputDialog::getItem dialog (combobox).
+scriptThread::showGetIntDialog(String title, String label, int initialValue, int min, int max, int step, QWidget* parent=0):QList<int> \nConvenience function to get an integer input from the user.\nShows a QInputDialog::getInt dialog (spinbox).
+scriptThread::showGetDoubleDialog(String title, String label, double initialValue, double min, double max, int decimals, QWidget* parent=0):QList<double> \nConvenience function to get a floating point number from the user.\nShows a QInputDialog::getDouble dialog (spinbox).
 scriptThread::showColorDialog(quint8 initInitalRed=255, quint8 initInitalGreen=255, quint8 initInitalBlue=255, quint8 initInitalAlpha=255, bool alphaIsEnabled=false, QWidget* parent=0):QList<int> \nConvenience function to get color settings from the user.
-scriptThread::calculateCrc8(const QVector<unsigned char> data):quint8 \nCalculates a crc8.
-scriptThread::calculateCrc16(const QVector<unsigned char> data):quint16 \nCalculates a crc16.
-scriptThread::calculateCrc32(const QVector<unsigned char> data):quint32 \nCalculates a crc32.
-scriptThread::calculateCrc64(const QVector<unsigned char> data):quint64 \nCalculates a crc64.
+scriptThread::calculateCrc8(Array<unsigned char> data):quint8 \nCalculates a crc8.
+scriptThread::calculateCrc16(Array<unsigned char> data):quint16 \nCalculates a crc16.
+scriptThread::calculateCrc32(Array<unsigned char> data):quint32 \nCalculates a crc32.
+scriptThread::calculateCrc64(Array<unsigned char> data):quint64 \nCalculates a crc64.
 scriptThread::showReceivedDataInConsoles(bool show):bool \nScripts can switch on/off the adding of received data in the consoles (for fast data transfers).
 scriptThread::showTransmitDataInConsoles(bool show):bool \nScripts can switch on/off the adding of transmitted data in the consoles (for fast data transfers).
-scriptThread::addMessageToLogAndConsoles(QString text, bool forceTimeStamp=false):void \nAdds a message into the log and the consoles (if they are active).
-scriptThread::setGlobalString(QString name, QString string):void \nSets a string in the global string map (Scripts can exchange data with this map).
-scriptThread::getGlobalString(QString name, bool removeValue=false):QString \nReturns a string from the global string map (Scripts can exchange data with this map).\nNote: Returns an empty string if name is not in the map.
-scriptThread::setGlobalDataArray(QString name, QVector<unsigned char> data):void \nSets a data vector in the global data vector map (Scripts can exchange data with this map).
-scriptThread::getGlobalDataArray(QString name, bool removeValue=false):QVector<unsigned char> \nReturns a data vector from the global data vector map (Scripts can exchange data with this map).\nNote: Returns an empty data vector if name is not in the map.
-scriptThread::setGlobalUnsignedNumber(QString name, quint32 number):void \nSets a unsigned number in the global unsigned number map Scripts can exchange data with this map).
-scriptThread::getGlobalUnsignedNumber(QString name,bool removeValue=false):QList<quint32> \nReturns a unsigned number from the global unsigned number map (Scripts can exchange data with this map).\nThe first element is the result status (1=name found, 0=name not found). The second element is the read value.
-scriptThread::setGlobalSignedNumber(QString name, qint32 number):void \nSets a signed number in the global signed number map (Scripts can exchange data with this map).
-scriptThread::getGlobalSignedNumber(QString name,bool removeValue=false):QList<qint32> \nReturns a signed number from the global signed number map (Scripts can exchange data with this map).\nThe first element is the result status (1=name found, 0=name not found). The second element is the read value.
-scriptThread::setGlobalRealNumber(QString name, double number):void \nSets a real number in the global real number map (Scripts can exchange data with this map).
-scriptThread::getGlobalRealNumber(QString name, bool removeValue=false):QList<double> \nReturns a real number from the global real number map (Scripts can exchange data with this map). \nThe first element is the result status (1=name found, 0=name not found). The second element is the read value.
-scriptThread::setScriptThreadPriority(QString priority):bool \nSets the priority of the script thread (which executes the current script). Possible values are:\n- LowestPriority\n- LowPriority\n- NormalPriority\n- HighPriority\n- HighestPriority\nNote: Per default script threads have LowestPriority.
-scriptThread::getCurrentVersion(void):QString \nReturns the current version of ScriptCommunicator.
+scriptThread::addMessageToLogAndConsoles(String text, bool forceTimeStamp=false):void \nAdds a message into the log and the consoles (if they are active).
+scriptThread::setGlobalString(String name, String string):void \nSets a string in the global string map (Scripts can exchange data with this map).
+scriptThread::getGlobalString(String name, bool removeValue=false):String \nReturns a string from the global string map (Scripts can exchange data with this map).\nNote: Returns an empty string if name is not in the map.
+scriptThread::setGlobalDataArray(String name, Array<unsigned char> data):void \nSets a data vector in the global data vector map (Scripts can exchange data with this map).
+scriptThread::getGlobalDataArray(String name, bool removeValue=false):Array<unsigned char> \nReturns a data vector from the global data vector map (Scripts can exchange data with this map).\nNote: Returns an empty data vector if name is not in the map.
+scriptThread::setGlobalUnsignedNumber(String name, quint32 number):void \nSets a unsigned number in the global unsigned number map Scripts can exchange data with this map).
+scriptThread::getGlobalUnsignedNumber(String name,bool removeValue=false):QList<quint32> \nReturns a unsigned number from the global unsigned number map (Scripts can exchange data with this map).\nThe first element is the result status (1=name found, 0=name not found). The second element is the read value.
+scriptThread::setGlobalSignedNumber(String name, qint32 number):void \nSets a signed number in the global signed number map (Scripts can exchange data with this map).
+scriptThread::getGlobalSignedNumber(String name,bool removeValue=false):QList<qint32> \nReturns a signed number from the global signed number map (Scripts can exchange data with this map).\nThe first element is the result status (1=name found, 0=name not found). The second element is the read value.
+scriptThread::setGlobalRealNumber(String name, double number):void \nSets a real number in the global real number map (Scripts can exchange data with this map).
+scriptThread::getGlobalRealNumber(String name, bool removeValue=false):QList<double> \nReturns a real number from the global real number map (Scripts can exchange data with this map). \nThe first element is the result status (1=name found, 0=name not found). The second element is the read value.
+scriptThread::setScriptThreadPriority(String priority):bool \nSets the priority of the script thread (which executes the current script). Possible values are:\n- LowestPriority\n- LowPriority\n- NormalPriority\n- HighPriority\n- HighestPriority\nNote: Per default script threads have LowestPriority.
+scriptThread::getCurrentVersion(void):String \nReturns the current version of ScriptCommunicator.
 scriptThread::exitScriptCommunicator(void):void \nThis function exits ScriptCommunicator.
 scriptThread::setBlockTime(quint32 blockTime):void \nSets the script block time (ms).\nNote: If the user presses the stop button the script must be exited after this time. If not then the script is\nregarded as blocked and will be terminated.
-scriptThread::setScriptState(quint8 state, QString scriptTableEntryName):bool \nSets the state of a script (running, paused or stopped).\nNote: The script must be in the script table (script window) and a script can not set it's own state.
-scriptThread::getScriptTableName(void):QString \nReturns the script-table (script window) name of the calling script.
-scriptThread::currentCpuArchitecture(void):QString \nReturns the architecture of the CPU that the application is running on, in text format.
-scriptThread::productType(void):QString \nReturns the product name of the operating system this application is running in.
-scriptThread::productVersion(void):QString \nReturns the product version of the operating system in string form.
-scriptThread::availableSerialPorts(void):QStringList \nReturns a list with the name of all available serial ports.
-scriptThread::getScriptArguments(void):QStringList \nReturns the script arguments (command-line argument -A).
-scriptThread::getScriptArguments(void):QStringList \nReturns the script arguments (command-line argument -A).
-scriptThread::getScriptCommunicatorFolder(void):QString \nReturns the ScriptCommunicator program folder.
-scriptThread::getUserDocumentsFolder(void):QString \nReturns the directory containing user document files.
+scriptThread::setScriptState(quint8 state, String scriptTableEntryName):bool \nSets the state of a script (running, paused or stopped).\nNote: The script must be in the script table (script window) and a script can not set it's own state.
+scriptThread::getScriptTableName(void):String \nReturns the script-table (script window) name of the calling script.
+scriptThread::currentCpuArchitecture(void):String \nReturns the architecture of the CPU that the application is running on, in text format.
+scriptThread::productType(void):String \nReturns the product name of the operating system this application is running in.
+scriptThread::productVersion(void):String \nReturns the product version of the operating system in string form.
+scriptThread::availableSerialPorts(void):StringList \nReturns a list with the name of all available serial ports.
+scriptThread::getScriptArguments(void):StringList \nReturns the script arguments (command-line argument -A).
+scriptThread::getScriptArguments(void):StringList \nReturns the script arguments (command-line argument -A).
+scriptThread::getScriptCommunicatorFolder(void):String \nReturns the ScriptCommunicator program folder.
+scriptThread::getUserDocumentsFolder(void):String \nReturns the directory containing user document files.
 scriptThread::addTabsToMainWindow(ScriptTabWidget* tabWidget):bool \nAdds script tabs to the main window.\nNote: This function fails in command-line mode.
 scriptThread::addToolBoxPagesToMainWindow(ScriptToolBox* scriptToolBox):bool \nAdds script toolbox pages to the main window (all pages are removed from toolBox).\nNote: This function fails in command-line mode.
-scriptThread::sendReceivedDataToMainInterface(QVector<unsigned char> data):void \nSends received data (received with an script internal interface) to the main interface.\nThis data will be shown as received data in the consoles, the log and will be received by worker scripts via the dataReceivedSignal.
-scriptThread::checkScriptCommunicatorVersion(QString minVersion):bool \nChecks if the version of ScriptCommunicator is equal/greater then the version in minVersion.\nThe format of minVersion is: 'major'.'minor' (e.g. 04.11).
-scriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object, bool printInScriptWindowConsole=false):QStringList \nReturns and prints (if printInScriptWindowConsole is true) all functions and properties of an object in the script window console.
+scriptThread::sendReceivedDataToMainInterface(Array<unsigned char> data):void \nSends received data (received with an script internal interface) to the main interface.\nThis data will be shown as received data in the consoles, the log and will be received by worker scripts via the dataReceivedSignal.
+scriptThread::checkScriptCommunicatorVersion(String minVersion):bool \nChecks if the version of ScriptCommunicator is equal/greater then the version in minVersion.\nThe format of minVersion is: 'major'.'minor' (e.g. 04.11).
+scriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object, bool printInScriptWindowConsole=false):StringList \nReturns and prints (if printInScriptWindowConsole is true) all functions and properties of an object in the script window console.
 scriptThread::getMainInterfaceSerialPortSettings(void):serialPortSettings \nReturns the serial port settings of the main interface.
 scriptThread::getMainInterfaceSocketSettings(void):socketSettings \nReturns the socket (UDP, TCP client/server) settings of the main interface.
-scriptThread::globalStringChangedSignal.connect(QString name, QString string)\nIs emitted if a string in the global string map has been changed.
-scriptThread::globalDataArrayChangedSignal.connect(QString name, QVector<unsigned char> data)\nIs emitted if a data vector in the global string data vector has been changed.
-scriptThread::globalUnsignedChangedSignal.connect(QString name, quint32 number)\nIs emitted if an unsigned number in the global unsigned number map has been changed
-scriptThread::globalSignedChangedSignal.connect(QString name, qint32 number)\nIs emitted if a signed number in the global signed number map has been changed
-scriptThread::globalRealChangedSignal.connect(QString name, double number)\nIs emitted if a real number in the global real number map has been changed
-scriptThread::dataReceivedSignal.connect(QVector<unsigned char> data)\nThis signal is emitted if data has been received with the main interface (only if the main interface is not a can interface, \nuse canMessagesReceivedSignal if the main interface is a can interface).
-scriptThread::canMessagesReceivedSignal.connect(QVector<quint8> types, QVector<quint32> messageIds, QVector<quint32> timestamps, QVector<QVector<unsigned char>>  data)\nThis signal is emitted if a can message (or several) has been received with the main interface.	
-scriptThread::sendDataFromMainInterfaceSignal.connect(QVector<unsigned char> data)\nIs emitted if the main interface shall send data.\nScripts can use this signal to send the main interface data with an additional interface.		
+scriptThread::globalStringChangedSignal.connect(String name, String string)\nIs emitted if a string in the global string map has been changed.
+scriptThread::globalDataArrayChangedSignal.connect(String name, Array<unsigned char> data)\nIs emitted if a data vector in the global string data vector has been changed.
+scriptThread::globalUnsignedChangedSignal.connect(String name, quint32 number)\nIs emitted if an unsigned number in the global unsigned number map has been changed
+scriptThread::globalSignedChangedSignal.connect(String name, qint32 number)\nIs emitted if a signed number in the global signed number map has been changed
+scriptThread::globalRealChangedSignal.connect(String name, double number)\nIs emitted if a real number in the global real number map has been changed
+scriptThread::dataReceivedSignal.connect(Array<unsigned char> data)\nThis signal is emitted if data has been received with the main interface (only if the main interface is not a can interface, \nuse canMessagesReceivedSignal if the main interface is a can interface).
+scriptThread::canMessagesReceivedSignal.connect(Array<quint8> types, Array<quint32> messageIds, Array<quint32> timestamps, Array<Array<unsigned char>>  data)\nThis signal is emitted if a can message (or several) has been received with the main interface.	
+scriptThread::sendDataFromMainInterfaceSignal.connect(Array<unsigned char> data)\nIs emitted if the main interface shall send data.\nScripts can use this signal to send the main interface data with an additional interface.		
 scriptThread::mainWindowClearConsoleClickedSignal.connect(void)\nIs emitted if the clear console button in the main window is pressed.
 scriptThread::mainWindowLockScrollingClickedSignal.connect(bool isChecked)\nIs emitted if the lock scrolling button in the main window is pressed.

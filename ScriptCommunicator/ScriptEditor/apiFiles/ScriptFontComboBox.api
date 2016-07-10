@@ -1,33 +1,33 @@
 ScriptFontComboBox::setEnabled(bool isEnabled):void \nEnables or disables the widget.
 ScriptFontComboBox::hide(void):void \nHides the widget.
 ScriptFontComboBox::show(void):void \nShows the widget.
-ScriptFontComboBox::setBackgroundColor(QString color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptFontComboBox::setWindowTextColor(QString color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptFontComboBox::setTextColor(QString color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptFontComboBox::setPaletteColor(QString palette, QString color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptFontComboBox::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-ScriptFontComboBox::setToolTip(QString text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptFontComboBox::setBackgroundColor(String color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptFontComboBox::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptFontComboBox::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptFontComboBox::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptFontComboBox::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptFontComboBox::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptFontComboBox::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptFontComboBox::setFocus(void):void \nGives the keyboard input focus to this widget.
 ScriptFontComboBox::width(void):int \nReturns the width of the widget excluding any window frame.
 ScriptFontComboBox::height(void):int \nReturns the height of the widget excluding any window frame.
-ScriptFontComboBox::setAdditionalData(int key, QString data):void \nSets/stores an additional data entry.
-ScriptFontComboBox::getAdditionalData(int key):QString \nReturns an additional data entry.
+ScriptFontComboBox::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
+ScriptFontComboBox::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptFontComboBox::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
-ScriptFontComboBox::getClassName(void):QString \nReturns the class name of this object.
-ScriptFontComboBox::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
-ScriptFontComboBox::addItem(const QString text):void \nAdds one item to the combo box.
-ScriptFontComboBox::insertItem(int index, const QString text):void \nInserts one item into the combo box.
+ScriptFontComboBox::getClassName(void):String \nReturns the class name of this object.
+ScriptFontComboBox::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptFontComboBox::addItem(const String text):void \nAdds one item to the combo box.
+ScriptFontComboBox::insertItem(int index, const String text):void \nInserts one item into the combo box.
 ScriptFontComboBox::removeItem(int index):void \nRemoves one item from the combo box.
 ScriptFontComboBox::setEditable(bool editable):void \nSets the editable property of the combo box.\nIf the editable property is true, then the text of the selected item can be changed.
 ScriptFontComboBox::isEditable(void):bool \nReturns true if the combo box is editable.\nIf the editable property is true, then the text of the selected item can be changed.
 ScriptFontComboBox::currentIndex(void):int \nReturns the index of the current selected item.
-ScriptFontComboBox::currentText(void):QString \nReturns the text of the current selected item.
-ScriptFontComboBox::itemText(int index):QString \nReturns the item (identified by index) text.
-ScriptFontComboBox::setItemText(int index, const QString text):void \nSets the item (identified by index) text.
-ScriptFontComboBox::setCurrentText(const QString text):void \nSets the text of the current selected item.
+ScriptFontComboBox::currentText(void):String \nReturns the text of the current selected item.
+ScriptFontComboBox::itemText(int index):String \nReturns the item (identified by index) text.
+ScriptFontComboBox::setItemText(int index, const String text):void \nSets the item (identified by index) text.
+ScriptFontComboBox::setCurrentText(const String text):void \nSets the text of the current selected item.
 ScriptFontComboBox::setCurrentIndex(int index):void \nSets the index of the current selected item.
 ScriptFontComboBox::count(void):int \nReturns the number of items in the combo box.  
 ScriptFontComboBox::clear(void):void \nClears the combo box and removes all items.
-ScriptFontComboBox::currentTextChangedSignal.connect(QString newText) \nThis signal is emitted if the text of the current selected item has been changed\n(new index or the text has been modified).
+ScriptFontComboBox::currentTextChangedSignal.connect(String newText) \nThis signal is emitted if the text of the current selected item has been changed\n(new index or the text has been modified).
 ScriptFontComboBox::currentIndexChangedSignal.connect(int currentSelectedIndex) \nThis signal is emitted if the current selected index has been changed.

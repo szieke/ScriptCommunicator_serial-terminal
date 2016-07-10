@@ -1,8 +1,8 @@
-ScriptSqlField::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptSqlField::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptSqlField::setValue(QVariant value):void
 ScriptSqlField::value(void):QVariant
-ScriptSqlField::setName(QString name):void
-ScriptSqlField::name(void):QString
+ScriptSqlField::setName(String name):void
+ScriptSqlField::name(void):String
 ScriptSqlField::isNull(void):bool
 ScriptSqlField::setReadOnly(bool readOnly):void
 ScriptSqlField::isReadOnly(void):bool

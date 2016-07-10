@@ -7,10 +7,6 @@ decodeURI(uri)\nThe decodeURI() \nThis function is used to decode a URI.
 decodeURIComponent(uri)\nThe decodeURIComponent() \nThis function decodes a URI component.
 encodeURI(uri)\nThe encodeURI() \nThis function is used to encode a URI.\nThis function encodes special characters, except: , / ? : @ & = + $ # (Use encodeURIComponent() to encode these characters).
 encodeURIComponent(uri)\nThe encodeURIComponent() \nThis function encodes a URI component.\nThis function encodes special characters. In addition, it encodes the following characters: , / ? : @ & = + $ #
-Date::now() \nReturns the number of milliseconds elapsed since 1 January 1970 00:00:00 UTC.
-Date::parse(string) \nThis method parses a string representation of a date, and returns the number of milliseconds since January 1,\n1970, 00:00:00 UTC or NaN if the string is unrecognised or contains illegal date values (e.g. 2015-02-31)
-Date::UTC(year, month [, date [, hours [, minutes [, seconds [, ms]]]]]) \nThis method parses a string representation of a date, and returns the number of milliseconds since January 1,\n1970, 00:00:00 UTC or NaN if the string is unrecognised or contains illegal date values (e.g. 2015-02-31)
-Array::isArray() \nReturns true if an object is an array, false if it is not.
 JSON::parse(text [, reveiver]) \nParses a string as JSON, optionally transforming the value produced by parsing.
 JSON::stringify(value [, replacer [, space]]) \nConverts a JavaScript value to a JSON string, optionally replacing values if a replacer function is specified,\nor optionally including only the specified properties if a replacer array is specified.
 Math::E \nThis property represents the base of natural logarithms, e, approximately 2.718.
@@ -39,4 +35,3 @@ Math::round(x) \Returns the value of a number rounded to the nearest integer.
 Math::sin(x) \nReturns the sine of a number.
 Math::sqrt(x) \nReturns the square root of a number.
 Math::tan(x) \nReturns the tangent of a number.
-String::fromCharCode([char0 [, char1 [,...]]]) \nReturns a string created by using the specified sequence of Unicode values.

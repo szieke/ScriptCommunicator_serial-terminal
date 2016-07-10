@@ -1,15 +1,15 @@
-ScriptUdpSocket::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptUdpSocket::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptUdpSocket::bind(quint16 port):bool \nBinds the socket to the port.
 ScriptUdpSocket::close(void):void \nCloses the socket.
 ScriptUdpSocket::hasPendingDatagrams(void):bool \nReturns true if a received datagram can be read from the socket.
-ScriptUdpSocket::readDatagram(void):QVector<unsigned char> \nReturns the data from one received datagram.
-ScriptUdpSocket::readAll(void):QVector<unsigned char> \nReads all received datagrams (the data from the single datagrams are\ninserted in one unsigned char vector)
-ScriptUdpSocket::write(QVector<unsigned char> data, QString hostAdress, quint16 hostPort):quint64 \nWrites data to the socket. Returns the number of written bytes.
-ScriptUdpSocket::writeString(QString string, QString hostAdress, quint16 hostPort):qint64 \nWrites a string to the socket. Returns the number of written bytes.
+ScriptUdpSocket::readDatagram(void):Array<unsigned char> \nReturns the data from one received datagram.
+ScriptUdpSocket::readAll(void):Array<unsigned char> \nReads all received datagrams (the data from the single datagrams are\ninserted in one unsigned char vector)
+ScriptUdpSocket::write(Array<unsigned char> data, String hostAdress, quint16 hostPort):quint64 \nWrites data to the socket. Returns the number of written bytes.
+ScriptUdpSocket::writeString(String string, String hostAdress, quint16 hostPort):qint64 \nWrites a string to the socket. Returns the number of written bytes.
 ScriptUdpSocket::isOpen(void):bool \nReturns true if the UDP socket is open/listening.
-ScriptUdpSocket::enableMainInterfaceRouting(QString routingHostAddress, quint16 routingHostPort):void \nEnables the main interface routing (all data from the main interface is send with this socket and\nall received (with this socket) data is sent with the main interace).
+ScriptUdpSocket::enableMainInterfaceRouting(String routingHostAddress, quint16 routingHostPort):void \nEnables the main interface routing (all data from the main interface is send with this socket and\nall received (with this socket) data is sent with the main interace).
 ScriptUdpSocket::disableMainInterfaceRouting(void):void \nDisables the main interface routing.
 ScriptUdpSocket::canReadLine(void):bool \nThis function checks if a data line (ends with EOL ('\n')) is ready to be read.
-ScriptUdpSocket::readLine(bool removeNewLine=true, bool removeCarriageReturn=true):QString \nThis function reads a line (a line ends with a '\n') of ASCII characters.\nIf removeNewLine is true then the '\n' will not returned (is removed from the received line).\nIf removeCarriageReturn is true then a '\r' in front of '\n' will also not returned.\nNote: If no new data line is ready for reading this functions returns an empty string.
-ScriptUdpSocket::QStringList readAllLines(bool removeNewLine=true, bool removeCarriageReturn=true) \nThis function reads all available lines (a line ends with a '\n') of ASCII characters.\nIf removeNewLine is true then the '\n' will not returned (is removed from the received line).\nIf removeCarriageReturn is true then a '\r' in front of '\n' will also not returned.\nNote: If no new data line is ready for reading this functions returns an empty list.
+ScriptUdpSocket::readLine(bool removeNewLine=true, bool removeCarriageReturn=true):String \nThis function reads a line (a line ends with a '\n') of ASCII characters.\nIf removeNewLine is true then the '\n' will not returned (is removed from the received line).\nIf removeCarriageReturn is true then a '\r' in front of '\n' will also not returned.\nNote: If no new data line is ready for reading this functions returns an empty string.
+ScriptUdpSocket::StringList readAllLines(bool removeNewLine=true, bool removeCarriageReturn=true) \nThis function reads all available lines (a line ends with a '\n') of ASCII characters.\nIf removeNewLine is true then the '\n' will not returned (is removed from the received line).\nIf removeCarriageReturn is true then a '\r' in front of '\n' will also not returned.\nNote: If no new data line is ready for reading this functions returns an empty list.
 ScriptUdpSocket::readyReadSignal.connect(void) \nThis signal is emitted if data can be read from the socket (if a datagram has been received).

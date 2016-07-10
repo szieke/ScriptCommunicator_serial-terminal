@@ -1,26 +1,26 @@
-ScriptSqlRecord::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptSqlRecord::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptSqlRecord::value(int i):QVariant
-ScriptSqlRecord::value(QString name):QVariant
+ScriptSqlRecord::value(String name):QVariant
 ScriptSqlRecord::setValue(int i, QVariant val):void
-ScriptSqlRecord::setValue(QString name, QVariant val):void
+ScriptSqlRecord::setValue(String name, QVariant val):void
 ScriptSqlRecord::setNull(int i):void
-ScriptSqlRecord::setNull(QString name):void
+ScriptSqlRecord::setNull(String name):void
 ScriptSqlRecord::isNull(int i):bool
-ScriptSqlRecord::isNull(QString name):bool
-ScriptSqlRecord::indexOf(QString name):int
-ScriptSqlRecord::fieldName(int i):QString
+ScriptSqlRecord::isNull(String name):bool
+ScriptSqlRecord::indexOf(String name):int
+ScriptSqlRecord::fieldName(int i):String
 ScriptSqlRecord::field(int i):ScriptSqlField
-ScriptSqlRecord::field(QString name):ScriptSqlField
+ScriptSqlRecord::field(String name):ScriptSqlField
 ScriptSqlRecord::isGenerated(int i):bool
-ScriptSqlRecord::isGenerated(QString name):bool
-ScriptSqlRecord::setGenerated(QString name, bool generated):void
+ScriptSqlRecord::isGenerated(String name):bool
+ScriptSqlRecord::setGenerated(String name, bool generated):void
 ScriptSqlRecord::setGenerated(int i, bool generated):void
 ScriptSqlRecord::append(ScriptSqlField* field):void
 ScriptSqlRecord::replace(int pos, ScriptSqlField* field):void
 ScriptSqlRecord::insert(int pos, ScriptSqlField* field):void
 ScriptSqlRecord::remove(int pos):void
 ScriptSqlRecord::isEmpty():bool
-ScriptSqlRecord::contains(QString name):bool
+ScriptSqlRecord::contains(String name):bool
 ScriptSqlRecord::clear():void
 ScriptSqlRecord::clearValues():void
 ScriptSqlRecord::count():int

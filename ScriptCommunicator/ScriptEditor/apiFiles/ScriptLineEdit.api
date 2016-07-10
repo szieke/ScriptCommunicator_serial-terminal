@@ -1,27 +1,27 @@
 ScriptLineEdit::setEnabled(bool isEnabled):void \nEnables or disables the widget.
 ScriptLineEdit::hide(void):void \nHides the widget.
 ScriptLineEdit::show(void):void \nShows the widget.
-ScriptLineEdit::setBackgroundColor(QString color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptLineEdit::setWindowTextColor(QString color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptLineEdit::setTextColor(QString color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptLineEdit::setPaletteColor(QString palette, QString color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptLineEdit::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-ScriptLineEdit::setToolTip(QString text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptLineEdit::setBackgroundColor(String color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptLineEdit::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptLineEdit::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptLineEdit::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptLineEdit::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptLineEdit::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptLineEdit::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptLineEdit::setFocus(void):void \nGives the keyboard input focus to this widget.
 ScriptLineEdit::width(void):int \nReturns the width of the widget excluding any window frame.
 ScriptLineEdit::height(void):int \nReturns the height of the widget excluding any window frame.
-ScriptLineEdit::setAdditionalData(int key, QString data):void \nSets/stores an additional data entry.
-ScriptLineEdit::getAdditionalData(int key):QString \nReturns an additional data entry.
+ScriptLineEdit::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
+ScriptLineEdit::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptLineEdit::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
-ScriptLineEdit::getClassName(void):QString \nReturns the class name of this object.
-ScriptLineEdit::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
-ScriptLineEdit::text(void):QString \nReturns the text of the line exit.
+ScriptLineEdit::getClassName(void):String \nReturns the class name of this object.
+ScriptLineEdit::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptLineEdit::text(void):String \nReturns the text of the line exit.
 ScriptLineEdit::isReadOnly(void):bool \nReturns true of the line edit is editable.
 ScriptLineEdit::setReadOnly(bool readOnly):void \nSets the editable property of the line edit.
 ScriptLineEdit::addIntValidator(int bottom, int top):void \nAdds an int validator to the line edit\n(this ensures that the line edit contains only integer).
 ScriptLineEdit::addDoubleValidator(double bottom, double top, int decimals):void \nAdds an double validator to the line edit\n(this ensures that the line edit contains only double values).
-ScriptLineEdit::void addRexpExValidator(QString pattern, bool caseSensitiv) \nAdds an regular expression validator to the line edit\n(this ensures that the line edit contains only the allowed values which are specified in the pattern).
-ScriptLineEdit::setText(QString text):void \nSets the text of the line edit.
+ScriptLineEdit::void addRexpExValidator(String pattern, bool caseSensitiv) \nAdds an regular expression validator to the line edit\n(this ensures that the line edit contains only the allowed values which are specified in the pattern).
+ScriptLineEdit::setText(String text):void \nSets the text of the line edit.
 ScriptLineEdit::clear(void):void \nClears the line edit.
-ScriptLineEdit::textChangedSignal.connect(QString currentText) \nThis signal is emitted if the text of the line edit has been changed.
+ScriptLineEdit::textChangedSignal.connect(String currentText) \nThis signal is emitted if the text of the line edit has been changed.

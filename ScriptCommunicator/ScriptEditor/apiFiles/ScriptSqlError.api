@@ -1,7 +1,7 @@
-ScriptSqlError::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
-ScriptSqlError::driverText(void):QString
-ScriptSqlError::databaseText(void):QString
+ScriptSqlError::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptSqlError::driverText(void):String
+ScriptSqlError::databaseText(void):String
 ScriptSqlError::type(void):quint32 \nQSqlError::ErrorType
-ScriptSqlError::nativeErrorCode(void):QString
-ScriptSqlError::text(void):QString
+ScriptSqlError::nativeErrorCode(void):String
+ScriptSqlError::text(void):String
 ScriptSqlError::isValid(void):bool

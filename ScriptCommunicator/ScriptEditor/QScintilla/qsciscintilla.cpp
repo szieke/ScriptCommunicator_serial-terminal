@@ -534,7 +534,7 @@ QStringList QsciScintilla::apiContext(int pos, int &context_start,
             int index = word.indexOf("[");
             if(index != -1)
             {
-                word = word.left(index);
+                word = word.left(index + 1);
             }
 
             if (word.isEmpty() || expecting == Separator)

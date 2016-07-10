@@ -1,23 +1,23 @@
 ScriptCheckBox::setEnabled(bool isEnabled):void \nEnables or disables the widget.
 ScriptCheckBox::hide(void):void \nHides the widget.
 ScriptCheckBox::show(void):void \nShows the widget.
-ScriptCheckBox::setBackgroundColor(QString color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptCheckBox::setWindowTextColor(QString color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptCheckBox::setTextColor(QString color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptCheckBox::setPaletteColor(QString palette, QString color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptCheckBox::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-ScriptCheckBox::setToolTip(QString text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptCheckBox::setBackgroundColor(String color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptCheckBox::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptCheckBox::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptCheckBox::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptCheckBox::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptCheckBox::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptCheckBox::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptCheckBox::setFocus(void):void \nGives the keyboard input focus to this widget.
 ScriptCheckBox::width(void):int \nReturns the width of the widget excluding any window frame.
 ScriptCheckBox::height(void):int \nReturns the height of the widget excluding any window frame.
-ScriptCheckBox::setAdditionalData(int key, QString data):void \nSets/stores an additional data entry.
-ScriptCheckBox::getAdditionalData(int key):QString \nReturns an additional data entry.
+ScriptCheckBox::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
+ScriptCheckBox::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptCheckBox::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
-ScriptCheckBox::getClassName(void):QString \nReturns the class name of this object.
-ScriptCheckBox::getPublicScriptElements(void):QString \nReturns a semicolon separated list with all public functions, signals and properties.
-ScriptCheckBox::setText(const QString text):void \nSets the check box text.
-ScriptCheckBox::text(void):QString \nReturns the check box text.
+ScriptCheckBox::getClassName(void):String \nReturns the class name of this object.
+ScriptCheckBox::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptCheckBox::setText(const String text):void \nSets the check box text.
+ScriptCheckBox::text(void):String \nReturns the check box text.
 ScriptCheckBox::setChecked(bool checked):void \nSets the checked state of the check box.
 ScriptCheckBox::isChecked(void):bool \nReturns true of the check box is checked.
 ScriptCheckBox::clickedSignal.connect(bool checked) \nThis signal is emitted if the user presses the check box.
