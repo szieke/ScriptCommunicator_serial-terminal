@@ -98,13 +98,25 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
  */
 static void addObjectToAutoCompletionList(QString& objectName, QString& className, bool isGuiElement)
 {
+    QString autoCompletionName = isGuiElement ? "UI_" + objectName : objectName;
+
+
     if(!objectName.isEmpty())
     {
-        QString autoCompletionName = isGuiElement ? "UI_" + objectName : objectName;
 
         if(g_autoCompletionEntries.contains(autoCompletionName))
         {
-            g_autoCompletionEntries.remove(autoCompletionName);
+                bool isSimpleVariable = ((g_autoCompletionEntries[autoCompletionName].length() == 1) &&
+                                         (g_autoCompletionEntries[autoCompletionName][0] == autoCompletionName));
+
+                if(isSimpleVariable)
+                {
+                    g_autoCompletionEntries.remove(autoCompletionName);
+                }
+                else
+                {
+                    return;
+                }
         }
 
         //Open the corresponding api file.
@@ -126,6 +138,11 @@ static void addObjectToAutoCompletionList(QString& objectName, QString& classNam
             }
             file.close();
         }
+        else
+        {
+            g_autoCompletionEntries[autoCompletionName] << autoCompletionName;
+        }
+
 
         if(className == "ScriptTableWidget")
         {
@@ -394,23 +411,8 @@ void SingleDocument::initLexer(QString script)
  * @param additionalElements
  *      Additional elements for the autocompletion api.
  */
-void SingleDocument::initAutoCompletion(QStringList additionalElements, QString currentText)
+void SingleDocument::initAutoCompletion(QStringList additionalElements, QStringList textList)
 {
-
-    //Remove all '/**/' comments.
-    QRegExp comment("/\\*(.|[\r\n])*\\*/");
-    comment.setMinimal(true);
-    comment.setPatternSyntax(QRegExp::RegExp);
-    currentText.replace(comment, " ");
-
-    //Remove all '//' comments.
-    comment.setMinimal(false);
-    comment.setPattern("//[^\n]*");
-    currentText.remove(comment);
-
-    currentText.replace("var ", "");
-    currentText.replace(" ", "");
-    currentText.replace("\t", "");
 
     g_autoCompletionEntries.clear();
     g_creatorObjects.clear();
@@ -418,15 +420,33 @@ void SingleDocument::initAutoCompletion(QStringList additionalElements, QString 
     g_parsedFiles.clear();
     g_autoCompletionEntries = g_autoCompletionApiFiles;
 
-    for(auto el : g_foundUiFiles)
+    for(auto currentText : textList)
     {
-        parseUiFile(el);
-    }
-    checkDocumentForUiFiles(currentText);
-    checkDocumentForDynamicObjects(currentText);
+        //Remove all '/**/' comments.
+        QRegExp comment("/\\*(.|[\r\n])*\\*/");
+        comment.setMinimal(true);
+        comment.setPatternSyntax(QRegExp::RegExp);
+        currentText.replace(comment, " ");
 
-    //Call again to get all objects created by dynamic objects.
-    checkDocumentForDynamicObjects(currentText);
+        //Remove all '//' comments.
+        comment.setMinimal(false);
+        comment.setPattern("//[^\n]*");
+        currentText.remove(comment);
+
+        currentText.replace("var ", "");
+        currentText.replace(" ", "");
+        currentText.replace("\t", "");
+
+        for(auto el : g_foundUiFiles)
+        {
+            parseUiFile(el);
+        }
+        checkDocumentForUiFiles(currentText);
+        checkDocumentForDynamicObjects(currentText);
+
+        //Call again to get all objects created by dynamic objects.
+        checkDocumentForDynamicObjects(currentText);
+    }
 
     if(lexer() && lexer()->apis())
     {
@@ -761,6 +781,8 @@ void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
             searchSingleType("ScriptTcpClient", "=" + i.key() + ".nextPendingConnection", lines);
         }
     }
+
+    searchSingleType("Dummy", "=", lines);
 
     QStringList keys = g_tableWidgetObjects.keys();
     for(int i = 0; i < keys.length(); i++)

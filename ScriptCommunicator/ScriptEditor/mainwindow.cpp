@@ -1089,16 +1089,21 @@ QString MainWindow::createNewDocumentTitle(void)
 void MainWindow::parseTimeout(void)
 {
     m_parseTimer.stop();
-    QString completText;
+    QStringList completeText;
+
+    SingleDocument* currentEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
+    completeText.append(currentEditor->text());
 
     //Get the text of all open documents.
     for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
     {
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
-        completText += textEditor->text();
+        if(currentEditor != textEditor)
+        {
+            completeText.append(textEditor->text());
+        }
     }
-    SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-    textEditor->initAutoCompletion(m_allFunction, completText);
+    currentEditor->initAutoCompletion(m_allFunction, completeText);
 }
 
 /**
