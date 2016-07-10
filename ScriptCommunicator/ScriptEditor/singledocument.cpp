@@ -9,12 +9,15 @@
 
 
 //Contains all autocompletion entries.
-QMap<QString, QStringList> g_autoCompletionEntries;
-QMap<QString, QStringList> g_autoCompletionApiFiles;
+static QMap<QString, QStringList> g_autoCompletionEntries;
+
+//Conatins all parsed api files.
+static QMap<QString, QStringList> g_autoCompletionApiFiles;
 
 //Contains all Objects which can create other objects.
-QMap<QString, QString> g_creatorObjects;
+static QMap<QString, QString> g_creatorObjects;
 
+//Object created by ScriptTable::InsertWidget.
 typedef struct
 {
     int row;
@@ -22,12 +25,14 @@ typedef struct
     QString className;
 }TableWidgetSubObject;
 
-QMap<QString, QVector<TableWidgetSubObject>> g_tableWidgetObjects;
+//Conatins all objects created by ScriptTable::InsertWidget.
+static QMap<QString, QVector<TableWidgetSubObject>> g_tableWidgetObjects;
 
+//Caintains all found ui files.
+static QStringList g_foundUiFiles;
 
-QStringList g_foundUiFiles;
-
-QStringList g_parsedFiles;
+//Caintains all parsed ui files.
+static QStringList g_parsedFiles;
 
 /**
  * Returns the folder ich which the ScriptEditor files
@@ -44,13 +49,20 @@ QString getScriptEditorFilesFolder(void)
 #endif
 }
 
-
+/**
+ * Constructor.
+ * @param mainWindow
+ *      Pointer to the main window.
+ * @param parent
+ *      The parent.
+ */
 SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
     QsciScintilla(parent), m_mainWindow(mainWindow), m_documentName("")
 {
 
     if(g_autoCompletionApiFiles.isEmpty())
     {
+        //Parse all api files.
         QDirIterator it(getScriptEditorFilesFolder()+ "/apiFiles", QStringList() << "*.api", QDir::Files, QDirIterator::Subdirectories);
         while (it.hasNext())
         {
@@ -70,15 +82,21 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
             }
             file.close();
         }
-
     }
 
     connect(this, SIGNAL(textChanged()), m_mainWindow, SLOT(documentWasModified()));
-
 }
 
-
-void addObjectToAutoCompletionList(QString& objectName, QString& className, bool isGuiElement)
+/**
+ * Adds on obect to the auto-completion list.
+ * @param objectName
+ *      The object name.
+ * @param className
+ *      The class name.
+ * @param isGuiElement
+ *      True if the object is a GUI element.
+ */
+static void addObjectToAutoCompletionList(QString& objectName, QString& className, bool isGuiElement)
 {
     if(!objectName.isEmpty())
     {
@@ -138,6 +156,10 @@ void addObjectToAutoCompletionList(QString& objectName, QString& className, bool
             g_creatorObjects[autoCompletionName] = className;
         }
         else if(className == "ScriptSqlRecord")
+        {
+            g_creatorObjects[autoCompletionName] = className;
+        }
+        else if(className == "ScriptTcpServer")
         {
             g_creatorObjects[autoCompletionName] = className;
         }
@@ -428,7 +450,13 @@ void SingleDocument::initAutoCompletion(QStringList additionalElements, QString 
 
 }
 
-
+/**
+ * Removes in text all left of character.
+ * @param text
+ *      The string.
+ * @param character
+ *      The character.
+ */
 static inline void removeAllLeft(QString& text, QString character)
 {
     int index = text.indexOf(character);
@@ -438,6 +466,15 @@ static inline void removeAllLeft(QString& text, QString character)
     }
 }
 
+/**
+ * Searches a single object type.
+ * @param className
+ *      The class name.
+ * @param searchString
+ *      The search sring.
+ * @param lines
+ *      The lines in which shall be searched.
+ */
 static inline void searchSingleType(QString className, QString searchString, QStringList& lines)
 {
     int index;
@@ -461,6 +498,15 @@ static inline void searchSingleType(QString className, QString searchString, QSt
     }
 }
 
+/**
+ * Searches objects which are returned by a ScriptTableWidget.
+ * @param objectName
+ *      The object name of the ScriptTableWidget.
+ * @param subObjects
+ *      All objects which have been created by the current ScriptTableWidget (ScriptTableWidget::insertWidget).
+ * @param lines
+ *      The lines in which shall be searched.
+ */
 void searchSingleTableSubWidgets(QString objectName, QVector<TableWidgetSubObject> subObjects, QStringList lines)
 {
     int index;
@@ -494,6 +540,7 @@ void searchSingleTableSubWidgets(QString objectName, QVector<TableWidgetSubObjec
                     int row = list[0].toUInt(&isOk);
                     int column = list[1].toUInt(&isOk);
 
+                    //Search the corresponding widget in subObjects.
                     for(int j = 0; j < subObjects.length(); j++)
                     {
                         if((row == subObjects[j].row) && (column == subObjects[j].column))
@@ -507,9 +554,15 @@ void searchSingleTableSubWidgets(QString objectName, QVector<TableWidgetSubObjec
     }
 }
 
+/**
+ * Searches all ScriptTableWidget::insertWidgets calls of a specific ScriptTableWidget object.
+ * @param objectName
+ *      The name of the current ScriptTableWidget.
+ * @param lines
+ *      The lines in which shall be searched.
+ */
 void parseTableWidetInsert(const QString objectName, QStringList lines)
 {
-
     int index;
     for(int i = 0; i < lines.length();i++)
     {
@@ -609,6 +662,11 @@ void parseTableWidetInsert(const QString objectName, QStringList lines)
     }
 }
 
+/**
+ * Searches all danmically created objects.
+ * @param currentText
+ *      The text in which shall be searched.
+ */
 void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
 {
     int index1 = 0;
@@ -698,6 +756,10 @@ void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
             searchSingleType("ScriptSqlQuery", "=" + i.key() + ".exec", lines);
             searchSingleType("ScriptSqlError", "=" + i.key() + ".lastError", lines);
         }
+        else if(i.value() == "ScriptTcpServer")
+        {
+            searchSingleType("ScriptTcpClient", "=" + i.key() + ".nextPendingConnection", lines);
+        }
     }
 
     QStringList keys = g_tableWidgetObjects.keys();
@@ -705,13 +767,7 @@ void SingleDocument::checkDocumentForDynamicObjects(QString currentText)
     {
         searchSingleTableSubWidgets(keys[i], g_tableWidgetObjects.value(keys[i]), lines);
     }
-#if 0
-    QMap<QString, QVector<TableWidgetSubObject>> iter;
-    for (iter = g_tableWidgetObjects.begin(); iter != g_tableWidgetObjects.end(); ++iter)
-    {
-        searchSingleTableSubWidgets(iter.key(), iter.value(), lines);
-    }
-#endif
+
 
 }
 

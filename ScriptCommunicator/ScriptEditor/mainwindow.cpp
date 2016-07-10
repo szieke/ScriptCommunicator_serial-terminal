@@ -1083,11 +1083,15 @@ QString MainWindow::createNewDocumentTitle(void)
     return newTitle;
 }
 
+/**
+ * Is called if the parse timer times out.
+ */
 void MainWindow::parseTimeout(void)
 {
     m_parseTimer.stop();
     QString completText;
 
+    //Get the text of all open documents.
     for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
     {
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());

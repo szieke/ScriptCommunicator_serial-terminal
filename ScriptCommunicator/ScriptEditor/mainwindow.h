@@ -170,10 +170,12 @@ private slots:
     ///Open all included action slot.
     void openAllIncludedScriptsSlot();
 
+    ///Is called if the parse timer times out.
     void parseTimeout(void);
 
 private:
 
+    ///The user interface.
     Ui::MainWindow *ui;
 
     ///Initializes all actions.
@@ -226,6 +228,7 @@ private:
     ///All function which are displayed in the function list.
     QStringList m_allFunction;
 
+    ///The parse timer.
     QTimer m_parseTimer;
 
 };
