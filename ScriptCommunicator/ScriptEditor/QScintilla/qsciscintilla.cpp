@@ -531,16 +531,18 @@ QStringList QsciScintilla::apiContext(int pos, int &context_start,
         else
         {
             QString word = getWord(pos);
-            int index = word.indexOf("[");
-            if(index != -1)
-            {
-                word = word.left(index + 1);
-            }
-
             if (word.isEmpty() || expecting == Separator)
                 break;
 
             words.prepend(word);
+            int index = word.indexOf("[");
+            if(index != -1)
+            {
+                word = word.left(index + 1);
+                words.prepend(word);
+            }
+
+
             good_pos = pos;
             expecting = Separator;
 

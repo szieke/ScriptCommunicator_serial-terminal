@@ -23,7 +23,7 @@ public:
     QString getDocumentName(void){return m_documentName;}
 
     ///Initializes the autocompletion.
-    void initAutoCompletion(QStringList additionalElements, QStringList textList);
+    void initAutoCompletion(QStringList additionalElements, QString &currentText);
 
 private:
 
@@ -33,7 +33,7 @@ private:
     void checkDocumentForUiFiles(QString currentText);
 
     ///Searches all danmically created objects.
-    void checkDocumentForDynamicObjects(QString currentText, bool isSecondPass);
+    void checkDocumentForDynamicObjects(QStringList &lines, QStringList& linesWithBrackets, QString& currentText, int passNumber);
 
     ///Parses an user interface file (auto-completion).
     void parseUiFile(QString uiFileName);

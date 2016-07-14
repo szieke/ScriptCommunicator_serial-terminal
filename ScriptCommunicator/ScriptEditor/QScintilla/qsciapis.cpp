@@ -464,7 +464,14 @@ void QsciAPIs::updateAutoCompletionList(const QStringList &context,
         QStringList with_context;
 
         if (new_context.last().isEmpty())
+        {
             lastCompleteWord(new_context[new_context.count() - 2], with_context, unambig);
+
+            if(with_context.isEmpty())
+            {
+                lastCompleteWord(new_context[0], with_context, unambig);
+            }
+        }
         else
             lastPartialWord(new_context.last(), with_context, unambig);
 
@@ -477,11 +484,26 @@ void QsciAPIs::updateAutoCompletionList(const QStringList &context,
 
             if(noc.contains("("))
             {
-                 isOk = noc.contains("(" + context[0] + ")") ? true : false;
+                for(auto el : context)
+                {
+                    isOk = noc.contains("(" + el + ")") ? true : false;
+                    if(isOk)
+                    {
+                        break;
+                    }
+                }
+
             }
             else
             {
-                isOk = noc.contains(context[0]) ? true : false;
+                for(auto el : context)
+                {
+                     isOk = noc.contains(el) ? true : false;
+                    if(isOk)
+                    {
+                        break;
+                    }
+                }
             }
 
 
