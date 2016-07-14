@@ -1,20 +1,20 @@
-Array::setEnabled(bool isEnabled):void \nEnables or disables the widget.
-Array::hide(void):void \nHides the widget.
-Array::show(void):void \nShows the widget.
-Array::setBackgroundColor(String color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-Array::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-Array::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-Array::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-Array::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-Array::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
-Array::isVisible(void):bool \nReturn true, if the widget is visible.
-Array::setFocus(void):void \nGives the keyboard input focus to this widget.
-Array::width(void):int \nReturns the width of the widget excluding any window frame.
-Array::height(void):int \nReturns the height of the widget excluding any window frame.
-Array::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
-Array::getAdditionalData(int key):String \nReturns an additional data entry.
-Array::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
-Array::getClassName(void):String \nReturns the class name of this object.
-Array::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
-Array::setText(String text):void \nSets the label text.
-Array::text(void):String \nReturns the label text.
+ScriptLabel::setEnabled(bool isEnabled):void \nEnables or disables the widget.
+ScriptLabel::hide(void):void \nHides the widget.
+ScriptLabel::show(void):void \nShows the widget.
+ScriptLabel::setBackgroundColor(String color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptLabel::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptLabel::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptLabel::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptLabel::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptLabel::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptLabel::isVisible(void):bool \nReturn true, if the widget is visible.
+ScriptLabel::setFocus(void):void \nGives the keyboard input focus to this widget.
+ScriptLabel::width(void):int \nReturns the width of the widget excluding any window frame.
+ScriptLabel::height(void):int \nReturns the height of the widget excluding any window frame.
+ScriptLabel::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
+ScriptLabel::getAdditionalData(int key):String \nReturns an additional data entry.
+ScriptLabel::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
+ScriptLabel::getClassName(void):String \nReturns the class name of this object.
+ScriptLabel::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
+ScriptLabel::setText(String text):void \nSets the label text.
+ScriptLabel::text(void):String \nReturns the label text.

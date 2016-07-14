@@ -39,8 +39,8 @@ Date::setUTCMonth(month [, date]):void \nSets the month of a date object, accord
 Date::setFullYear(year [, month [, date]]):void \nSets the year of a date object.
 Date::setUTCFullYear(year [, month [, date]]):void \nSets the year of a date object, according to universal time.
 Date::toUTCString(void):String \nConverts a Date object to a string, according to universal time.
-Date::toISOString(void):QString Converts a Date object into a string, using the ISO standard.
-Date::toJSON(void):QString \nReturns the date as a string, formatted as a JSON date.
+Date::toISOString(void):String Converts a Date object into a string, using the ISO standard.
+Date::toJSON(void):String \nReturns the date as a string, formatted as a JSON date.
 Date::now() \nReturns the number of milliseconds elapsed since 1 January 1970 00:00:00 UTC.
 Date::parse(string) \nThis method parses a string representation of a date, and returns the number of milliseconds since January 1,\n1970, 00:00:00 UTC or NaN if the string is unrecognised or contains illegal date values (e.g. 2015-02-31)
 Date::UTC(year, month [, date [, hours [, minutes [, seconds [, ms]]]]]) \nThis method parses a string representation of a date, and returns the number of milliseconds since January 1,\n1970, 00:00:00 UTC or NaN if the string is unrecognised or contains illegal date values (e.g. 2015-02-31)

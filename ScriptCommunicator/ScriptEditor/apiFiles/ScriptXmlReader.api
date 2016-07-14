@@ -1,4 +1,4 @@
 ScriptXmlReader::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptXmlReader::readFile(String fileName, bool isRelativePath=true):qint32 \nReads and parses a xml file. The parsed xml file is stored internally.
-ScriptXmlReader::elementsByTagName(String name):QList<ScriptXmlElement> \nReturns a list containing all xml elements with the name 'name'.\nNote: The xml root element is not included.
+ScriptXmlReader::elementsByTagName(String name):Array<ScriptXmlElement> \nReturns a list containing all xml elements with the name 'name'.\nNote: The xml root element is not included.
 ScriptXmlReader::getRootElement(void):ScriptXmlElement \nReturns the root xml element.
