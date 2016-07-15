@@ -4142,6 +4142,10 @@ void MainWindow::saveConsoleSlot()
 
             if(isHtml)
             {
+                //QTextEdit returns Spaces as 160 (toHtml()).
+                consoleContent.replace(160, ' ');
+
+
                 //Write the background color, the font family and the font size into the HTML string.
                 QPalette palette = textEdit->palette();
                 QFont font = textEdit->font();
