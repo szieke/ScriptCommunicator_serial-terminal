@@ -16,8 +16,8 @@ ScriptPlotWidget::getAdditionalData(int key):String \nReturns an additional data
 ScriptPlotWidget::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptPlotWidget::getClassName(void):String \nReturns the class name of this object.
 ScriptPlotWidget::addGraph(String color, String penStyle, String name):int \nThis function adds a graph to the diagram.
-ScriptPlotWidget::setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue):void \nThe slot function sets the initial ranges of the diagram.
-ScriptPlotWidget::addDataToGraph(int graphIndex, double x, double y):void \nThis slot function adds one point to a graph.
+ScriptPlotWidget::setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue):void \nThis function sets the initial ranges of the diagram.
+ScriptPlotWidget::addDataToGraph(int graphIndex, double x, double y):void \nThis function adds one point to a graph.
 ScriptPlotWidget::setAxisLabels(String xAxisLabel, String yAxisLabel):void \nSets the axis label.
 ScriptPlotWidget::showLegend(bool show):void \nThis function shows or hides the diagram legend.
 ScriptPlotWidget::clearGraphs(void):void \nThis function clears the data of all graphs.
