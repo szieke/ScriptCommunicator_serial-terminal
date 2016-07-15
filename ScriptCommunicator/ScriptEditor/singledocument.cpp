@@ -21,6 +21,9 @@ static QMap<QString, QString> g_creatorObjects;
 //Conatins all String Objects.
 QVector<QString> g_stringList;
 
+//Conatins all Objects with a unknown type.
+QVector<QString> g_unknownTypeObjects;
+
 //Conatins all Array Objects.
 QVector<QString> g_arrayList;
 
@@ -107,7 +110,7 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
  * @param isGuiElement
  *      True if the object is a GUI element.
  */
-static void addObjectToAutoCompletionList(QString& objectName, QString& className, bool isGuiElement, bool isArray=false)
+static void addObjectToAutoCompletionList(QString& objectName, QString& className, bool isGuiElement, bool isArray=false, bool replaceExistingEntry=false)
 {
     QString autoCompletionName = isGuiElement ? "UI_" + objectName : objectName;
 
@@ -117,23 +120,19 @@ static void addObjectToAutoCompletionList(QString& objectName, QString& classNam
 
         if(g_autoCompletionEntries.contains(autoCompletionName))
         {
-                bool isSimpleVariable = ((g_autoCompletionEntries[autoCompletionName].length() == 1) &&
-                                         (g_autoCompletionEntries[autoCompletionName][0] == autoCompletionName) ||
-                        (g_autoCompletionEntries[autoCompletionName + "["].length() == 1) &&
-                        (g_autoCompletionEntries[autoCompletionName + "["][0] == autoCompletionName));
-
-                if(isSimpleVariable)
-                {
-                    g_autoCompletionEntries.remove(autoCompletionName);
-                    g_autoCompletionEntries.remove(autoCompletionName + "[");
-                }
-                else
-                {
-                    return;
-                }
+            if(replaceExistingEntry)
+            {
+                g_autoCompletionEntries.remove(autoCompletionName);
+            }
+            else
+            {
+                return;
+            }
         }
-
-        g_objectAddedToCompletionList = true;
+        else
+        {
+            g_objectAddedToCompletionList = true;
+        }
 
         if(!isArray)
         {
@@ -151,7 +150,10 @@ static void addObjectToAutoCompletionList(QString& objectName, QString& classNam
             }
             else
             {
-                g_autoCompletionEntries[autoCompletionName] << autoCompletionName;
+                if(!g_unknownTypeObjects.contains(autoCompletionName))
+                {
+                    g_unknownTypeObjects.append(autoCompletionName);
+                }
             }
         }
         else
@@ -172,7 +174,10 @@ static void addObjectToAutoCompletionList(QString& objectName, QString& classNam
             }
             else
             {
-                g_autoCompletionEntries[autoCompletionName + "["] << autoCompletionName;
+                if(!g_unknownTypeObjects.contains(autoCompletionName + "["))
+                {
+                    g_unknownTypeObjects.append(autoCompletionName + "[");
+                }
             }
 
             QStringList arrayList = g_autoCompletionApiFiles["Array.api"];
@@ -443,6 +448,76 @@ void SingleDocument::initLexer(QString script)
 
 }
 
+
+/**
+ * Removes in text all left of character.
+ * @param text
+ *      The string.
+ * @param character
+ *      The character.
+ */
+static inline void removeAllLeft(QString& text, QString character)
+{
+    int index = text.indexOf(character);
+    if(index != -1)
+    {
+        text = text.right((text.length() - index) - 1);
+    }
+}
+
+/**
+ * Searches a single object type.
+ * @param className
+ *      The class name.
+ * @param searchString
+ *      The search sring.
+ * @param lines
+ *      The lines in which shall be searched.
+ */
+static inline void searchSingleType(QString className, QString searchString, QStringList& lines, bool isArray=false,
+                                    bool withOutDotsAndBracked= false, bool replaceExistingEntry=false, bool matchExact = false)
+{
+    int index;
+    for(int i = 0; i < lines.length();i++)
+    {
+        index = lines[i].indexOf(searchString);
+        if(index != -1)
+        {
+            if(withOutDotsAndBracked)
+            {
+                if(lines[i].indexOf(".", index) != -1)
+                {
+                    continue;
+                }
+                if(lines[i].indexOf("[", index) != -1)
+                {
+                    continue;
+                }
+            }
+
+            if(matchExact)
+            {
+                if(lines[i].length() != (index + searchString.length()))
+                {
+                    continue;
+                }
+            }
+            QString objectName =  lines[i].left(index);
+
+            index = lines[i].indexOf("=");
+            if(index != -1)
+            {
+                objectName = lines[i].left(index);
+            }
+
+            removeAllLeft(objectName, "{");
+            removeAllLeft(objectName, ")");
+
+            addObjectToAutoCompletionList(objectName, className, false, isArray, replaceExistingEntry);
+        }
+    }
+}
+
 /**
  * Initializes the autocompletion.
  * @param additionalElements
@@ -458,7 +533,7 @@ void SingleDocument::initAutoCompletion(QStringList additionalElements, QString&
     g_stringList.clear();
     g_arrayList.clear();
     g_tableWidgets.clear();
-    g_autoCompletionEntries = g_autoCompletionApiFiles;
+    g_unknownTypeObjects.clear();
     QRegExp regexp("[\n;]");
 
     //Remove all '/**/' comments.
@@ -475,6 +550,7 @@ void SingleDocument::initAutoCompletion(QStringList additionalElements, QString&
     currentText.replace("var ", "");
     currentText.replace(" ", "");
     currentText.replace("\t", "");
+    currentText.replace("\r", "");
 
      QStringList linesWithBrackets = currentText.split(regexp);
 
@@ -514,9 +590,33 @@ void SingleDocument::initAutoCompletion(QStringList additionalElements, QString&
         g_objectAddedToCompletionList = false;
 
         //Call several times to get all objects created by dynamic objects.
-        checkDocumentForDynamicObjects(lines, linesWithBrackets, currentText, counter);
+        checkDocumentForCustomDynamicObjects(lines, linesWithBrackets, currentText, counter);
         counter++;
     }while(g_objectAddedToCompletionList);
+
+
+    counter = 1;
+    do
+    {
+        g_objectAddedToCompletionList = false;
+
+        //Call several times to get all objects created by dynamic objects.
+        checkDocumentForStandardDynamicObjects(lines, linesWithBrackets, currentText, counter);
+        counter++;
+    }while(g_objectAddedToCompletionList);
+
+
+    //Search all objects with an unknwon type.
+    searchSingleType("Dummy", "=", lines);
+
+
+    for(auto el : g_unknownTypeObjects)
+    {
+        if(!g_autoCompletionEntries.contains(el))
+        {
+            g_autoCompletionEntries[el] << el;
+        }
+    }
 
 
     //Initialize the api.
@@ -533,6 +633,14 @@ void SingleDocument::initAutoCompletion(QStringList additionalElements, QString&
             }
         }
 
+        for (i = g_autoCompletionApiFiles.begin(); i != g_autoCompletionApiFiles.end(); ++i)
+        {
+            for(auto el : i.value())
+            {
+                apis->add(el);
+            }
+        }
+
         for(auto el : additionalElements)
         {
             apis->add(el);
@@ -542,65 +650,7 @@ void SingleDocument::initAutoCompletion(QStringList additionalElements, QString&
 
 }
 
-/**
- * Removes in text all left of character.
- * @param text
- *      The string.
- * @param character
- *      The character.
- */
-static inline void removeAllLeft(QString& text, QString character)
-{
-    int index = text.indexOf(character);
-    if(index != -1)
-    {
-        text = text.right((text.length() - index) - 1);
-    }
-}
 
-/**
- * Searches a single object type.
- * @param className
- *      The class name.
- * @param searchString
- *      The search sring.
- * @param lines
- *      The lines in which shall be searched.
- */
-static inline void searchSingleType(QString className, QString searchString, QStringList& lines, bool isArray=false, bool withOutDotsAndBracked= false)
-{
-    int index;
-    for(int i = 0; i < lines.length();i++)
-    {
-        index = lines[i].indexOf(searchString);
-        if(index != -1)
-        {
-            if(withOutDotsAndBracked)
-            {
-                if(lines[i].indexOf(".", index) != -1)
-                {
-                    continue;
-                }
-                if(lines[i].indexOf("[", index) != -1)
-                {
-                    continue;
-                }
-            }
-            QString objectName =  lines[i].left(index);
-
-            index = lines[i].indexOf("=");
-            if(index != -1)
-            {
-                objectName = lines[i].left(index);
-            }
-
-            removeAllLeft(objectName, "{");
-            removeAllLeft(objectName, ")");
-
-            addObjectToAutoCompletionList(objectName, className, false, isArray);
-        }
-    }
-}
 
 /**
  * Searches objects which are returned by a ScriptTableWidget.
@@ -781,11 +831,11 @@ inline void searchForScriptWidgetCommonFunctions(const QString& objectName, QStr
 }
 
 /**
- * Searches all danmically created objects.
+ * Searches all dynamically created objects created by custom objects (like ScriptTimer).
  * @param currentText
  *      The text in which shall be searched.
  */
-void SingleDocument::checkDocumentForDynamicObjects(QStringList& lines, QStringList &linesWithBrackets , QString &currentText, int passNumber)
+void SingleDocument::checkDocumentForCustomDynamicObjects(QStringList& lines, QStringList &linesWithBrackets , QString &currentText, int passNumber)
 {
 
     if(passNumber == 1)
@@ -886,15 +936,6 @@ void SingleDocument::checkDocumentForDynamicObjects(QStringList& lines, QStringL
             searchSingleType("String", "=cust.readDirectory(", lines, true);
             searchSingleType("String", "=cust.getAllObjectPropertiesAndFunctions(", lines, true);
         }
-
-        searchSingleType("Dummy", "=Array(", linesWithBrackets, true);
-        searchSingleType("Dummy", "=newArray(", linesWithBrackets, true);
-
-        searchSingleType("Date", "=Date(", linesWithBrackets);
-        searchSingleType("Date", "=newDate(", linesWithBrackets);
-
-        searchSingleType("String", "=\"", linesWithBrackets);
-        searchSingleType("String", "='", linesWithBrackets);
 
 
         for(auto el : g_tableWidgets)
@@ -1252,7 +1293,28 @@ void SingleDocument::checkDocumentForDynamicObjects(QStringList& lines, QStringL
             searchSingleType("String", "=" + i.key() + ".toJSON(", lines);
         }
 
-        searchSingleType(i.value(), "=" + i.key(), linesWithBrackets, g_arrayList.contains(i.key()), true);
+        searchSingleType(i.value(), "=" + i.key(), linesWithBrackets, g_arrayList.contains(i.key()), true, false, true);
+        searchSingleType(i.value(), "=" + i.key() + "[", linesWithBrackets);
+    }
+}
+
+/**
+ * Searches all dynamically created objects created by standard objects (like String).
+ * @param currentText
+ *      The text in which shall be searched.
+ */
+void SingleDocument::checkDocumentForStandardDynamicObjects(QStringList& lines, QStringList &linesWithBrackets , QString &currentText, int passNumber)
+{
+    if(passNumber == 1)
+    {
+        searchSingleType("Dummy", "=Array(", linesWithBrackets, true);
+        searchSingleType("Dummy", "=newArray(", linesWithBrackets, true);
+
+        searchSingleType("Date", "=Date(", linesWithBrackets);
+        searchSingleType("Date", "=newDate(", linesWithBrackets);
+
+        searchSingleType("String", "=\"", linesWithBrackets);
+        searchSingleType("String", "='", linesWithBrackets);
     }
 
     QVector<QString> tmpList = g_stringList;
@@ -1274,7 +1336,9 @@ void SingleDocument::checkDocumentForDynamicObjects(QStringList& lines, QStringL
         searchSingleType("String", "=" + el + ".trim(", lines);
         searchSingleType("String", "=" + el + ".fromCharCode(", lines);
 
-        searchSingleType("String", "=" + el, linesWithBrackets, g_arrayList.contains(el), true);
+        searchSingleType("String", "=" + el, linesWithBrackets, g_arrayList.contains(el), true, false, true);
+        searchSingleType("String", "=" + el + "[", linesWithBrackets);
+
 
     }
 
@@ -1287,16 +1351,11 @@ void SingleDocument::checkDocumentForDynamicObjects(QStringList& lines, QStringL
         searchSingleType("Dummy", "=" + el + ".map(", lines, true);
         searchSingleType("Dummy", "=" + el + ".filter(", lines, true);
         searchSingleType("Dummy", "=" + el + ".filter(", lines, true);
-        searchSingleType("Dummy", "=" + el, linesWithBrackets, true, true);
+        searchSingleType("Dummy", "=" + el, linesWithBrackets, true, true,false, true);
 
         searchSingleType("String", "=" + el + ".toString(", lines);
         searchSingleType("String", "=" + el + ".toLocaleString(", lines);
         searchSingleType("String", "=" + el + ".join(", lines);
-    }
-
-    if(passNumber == 1)
-    {
-        searchSingleType("Dummy", "=", lines);
     }
 }
 

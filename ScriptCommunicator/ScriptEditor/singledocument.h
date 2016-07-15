@@ -32,8 +32,11 @@ private:
     ///list (g_autoCompletionEntries).
     void checkDocumentForUiFiles(QString currentText);
 
-    ///Searches all danmically created objects.
-    void checkDocumentForDynamicObjects(QStringList &lines, QStringList& linesWithBrackets, QString& currentText, int passNumber);
+    ///Searches all dynamically created objects created by custom objects (like ScriptTimer).
+    void checkDocumentForCustomDynamicObjects(QStringList &lines, QStringList& linesWithBrackets, QString& currentText, int passNumber);
+
+    ///Searches all dynamically created objects created by standard objects (like String).
+    void checkDocumentForStandardDynamicObjects(QStringList &lines, QStringList& linesWithBrackets, QString& currentText, int passNumber);
 
     ///Parses an user interface file (auto-completion).
     void parseUiFile(QString uiFileName);
