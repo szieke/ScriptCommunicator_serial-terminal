@@ -42,7 +42,7 @@ be unchecked and then checked again or the corresponding search button must be p
 function createString(data, timeStamp, type, isLog)
 {
 	
-	var resultString;
+	var resultString = "";
 	
 	resultString = timeStamp;
 	resultString += "type: " + type

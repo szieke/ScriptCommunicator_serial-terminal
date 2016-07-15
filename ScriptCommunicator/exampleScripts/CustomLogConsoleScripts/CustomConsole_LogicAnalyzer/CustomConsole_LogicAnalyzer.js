@@ -48,14 +48,15 @@ var imageFolder = cust.getScriptFolder() + "/Media"
 function createString(data, timeStamp, type, isLog)
 {
 	
-	var resultString;
+	var resultString = "";
 	var HTMLContent = "";
 	var lastBit = " ";
+	var bitArray = Array();
 	
 	for(var i = 0; i < data.length; i++)
 	{
 		//Convert the current byte to a bit array.
-		var bitArray = numToBinaryArray( data[i] );
+		bitArray = numToBinaryArray( data[i] );
 
 		if (i==0) 
 		{

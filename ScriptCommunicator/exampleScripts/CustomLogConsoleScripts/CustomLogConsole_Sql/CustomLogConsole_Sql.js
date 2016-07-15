@@ -46,7 +46,6 @@ function createTableAndInsertData(name)
 	if(id != -1)
 	{
 		id += 1;
-		sqlString
 		sqlQuery.exec("INSERT INTO " + name + " (id, name) VALUES (" + id + ", 'John" + id +"')" )
 		if (!sqlQuery.isActive()) 
 		{
