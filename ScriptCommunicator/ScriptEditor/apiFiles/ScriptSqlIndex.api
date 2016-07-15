@@ -1,4 +1,3 @@
-ScriptSqlIndex::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptSqlIndex::setCursorName(String cursorName):void
 ScriptSqlIndex::cursorName(void):String
 ScriptSqlIndex::setName(String name):void

@@ -1,4 +1,3 @@
-ScriptCheetahSpi::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptCheetahSpi::detectDevices(void):String \nReturns a string which contains informations about all detected devices.
 ScriptCheetahSpi::connect(quint32 port, qint16 mode, quint32 baudrate):bool \nConnects to a cheetah spi interface (the baudrate is in kHz).
 ScriptCheetahSpi::disconnect(void):void \nDisconnects from the cheetah spi interface.

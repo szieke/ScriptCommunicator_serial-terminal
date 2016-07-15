@@ -1,4 +1,3 @@
-ScriptSqlField::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptSqlField::setValue(QVariant value):void
 ScriptSqlField::value(void):QVariant
 ScriptSqlField::setName(String name):void

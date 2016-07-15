@@ -15,7 +15,6 @@ ScriptGroupBox::setAdditionalData(int key, String data):void \nSets/stores an ad
 ScriptGroupBox::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptGroupBox::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptGroupBox::getClassName(void):String \nReturns the class name of this object.
-ScriptGroupBox::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptGroupBox::setTitle(String title):void \nSets the group box title.
 ScriptGroupBox::title(void):String \nReturns the group box title.
 ScriptGroupBox::addPlotWidget(void):ScriptPlotWidget \nAdds a plot widget to the group box.

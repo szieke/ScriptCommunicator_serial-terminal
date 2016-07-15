@@ -1,4 +1,3 @@
-ScriptUdpSocket::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptUdpSocket::bind(quint16 port):bool \nBinds the socket to the port.
 ScriptUdpSocket::close(void):void \nCloses the socket.
 ScriptUdpSocket::hasPendingDatagrams(void):bool \nReturns true if a received datagram can be read from the socket.

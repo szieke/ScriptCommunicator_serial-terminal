@@ -1,4 +1,3 @@
-ScriptPcanInterface::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptPcanInterface::open(quint8 channel, quint32 baudrate, bool busOffAutoReset, bool powerSupply):bool \nOpens a pcan interface.\nPossible values for baudrate are:\n1000, 800, 500, 250, 125,100,95,83,50,47,33,20,10,5.
 ScriptPcanInterface::close(void):void \nCloses the pcan interface.
 ScriptPcanInterface::setFilter(bool filterExtended, quint32 filterFrom, quint32 filterTo):bool \nConfigures the reception filter.

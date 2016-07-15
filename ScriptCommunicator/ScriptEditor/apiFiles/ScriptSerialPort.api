@@ -1,4 +1,3 @@
-ScriptSerialPort::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptSerialPort::setDTR(bool set):void \nSets the DTR pin.
 ScriptSerialPort::setRTS(bool set):void \nSets the RTS pin.
 ScriptSerialPort::setPortName(const String &name):void \nSets the serial port name.

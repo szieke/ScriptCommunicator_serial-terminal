@@ -15,7 +15,6 @@ ScriptRadioButton::setAdditionalData(int key, String data):void \nSets/stores an
 ScriptRadioButton::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptRadioButton::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptRadioButton::getClassName(void):String \nReturns the class name of this object.
-ScriptRadioButton::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptRadioButton::setText(const String text):void \nSets the radio button text.
 ScriptRadioButton::text(void):String \nReturns the radio button text.
 ScriptRadioButton::setChecked(bool checked):void \nSets the checked state of the radio button.

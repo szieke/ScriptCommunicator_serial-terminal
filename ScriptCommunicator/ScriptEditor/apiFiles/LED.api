@@ -1,4 +1,3 @@
-LED::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 LED::toggleState(void):void
 LED::setFlashing(bool flashing):void
 LED::setState(bool state)void

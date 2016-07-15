@@ -1,4 +1,3 @@
-ScriptXmlReader::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 seq::appendTextToConsole(String string, bool newLine=true, bool bringToForeground=false):void \nAppends text to the script window console.
 seq::byteArrayToString(Array<unsigned char> data):String \nConverts a byte array which contains ascii characters into a ascii string (String).
 seq::byteArrayToHexString(Array<unsigned char> data):String \nConverts a byte array into a hex string.

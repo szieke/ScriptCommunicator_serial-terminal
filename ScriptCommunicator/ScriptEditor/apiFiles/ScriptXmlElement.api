@@ -1,4 +1,3 @@
-ScriptXmlElement::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptXmlElement::elementName(void):String \nReturns the name of this element.
 ScriptXmlElement::childElements(void):Array<ScriptXmlElement> \nReturns all child elements.
 ScriptXmlElement::childTextElements(void):Array<String> \nReturns all child text elements (includes the CDATA elements).

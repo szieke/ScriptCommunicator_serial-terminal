@@ -1,4 +1,4 @@
-scriptThread::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
+scriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object):Array<String> \nReturns all functions and properties of an object.
 scriptThread::appendTextToConsole(String string, bool newLine=true, bool bringToForeground=false):void \nAppends text to the script window console.
 scriptThread::byteArrayToString(Array<unsigned char> data):String \nConverts a byte array which contains ascii characters into a ascii string (String).
 scriptThread::byteArrayToHexString(Array<unsigned char> data):String \nConverts a byte array into a hex string.
@@ -105,7 +105,6 @@ scriptThread::addTabsToMainWindow(ScriptTabWidget* tabWidget):bool \nAdds script
 scriptThread::addToolBoxPagesToMainWindow(ScriptToolBox* scriptToolBox):bool \nAdds script toolbox pages to the main window (all pages are removed from toolBox).\nNote: This function fails in command-line mode.
 scriptThread::sendReceivedDataToMainInterface(Array<unsigned char> data):void \nSends received data (received with an script internal interface) to the main interface.\nThis data will be shown as received data in the consoles, the log and will be received by worker scripts via the dataReceivedSignal.
 scriptThread::checkScriptCommunicatorVersion(String minVersion):bool \nChecks if the version of ScriptCommunicator is equal/greater then the version in minVersion.\nThe format of minVersion is: 'major'.'minor' (e.g. 04.11).
-scriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object, bool printInScriptWindowConsole=false):Array<String> \nReturns and prints (if printInScriptWindowConsole is true) all functions and properties of an object in the script window console.
 scriptThread::getMainInterfaceSerialPortSettings(void):serialPortSettings \nReturns the serial port settings of the main interface.
 scriptThread::getMainInterfaceSocketSettings(void):socketSettings \nReturns the socket (UDP, TCP client/server) settings of the main interface.
 scriptThread::globalStringChangedSignal.connect(String name, String string)\nIs emitted if a string in the global string map has been changed.

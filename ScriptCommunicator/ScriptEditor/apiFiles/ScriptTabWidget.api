@@ -15,7 +15,6 @@ ScriptTabWidget::setAdditionalData(int key, String data):void \nSets/stores an a
 ScriptTabWidget::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptTabWidget::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptTabWidget::getClassName(void):String \nReturns the class name of this object.
-ScriptTabWidget::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptTabWidget::setTabText(int index, String text):void \nSets the tab text.
 ScriptTabWidget::tabText(int index):String \nReturns the tab text.
 ScriptTabWidget::setCurrentIndex(int index):void \nSets the current tab index.

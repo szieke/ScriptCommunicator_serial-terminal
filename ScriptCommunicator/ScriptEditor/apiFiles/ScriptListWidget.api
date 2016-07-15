@@ -15,7 +15,6 @@ ScriptListWidget::setAdditionalData(int key, String data):void \nSets/stores an 
 ScriptListWidget::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptListWidget::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptListWidget::getClassName(void):String \nReturns the class name of this object.
-ScriptListWidget::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptListWidget::insertNewItem(int row, String itemText, String iconFileName):void \nInserts a new list item.
 ScriptListWidget::rowCount(void):int \nReturns the number of rows in the list widget.
 ScriptListWidget::removeItem(int row):void \nRemoves a item from the list widget.

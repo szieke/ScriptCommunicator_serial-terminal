@@ -1,4 +1,3 @@
-ScriptTcpServer::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptTcpServer::listen(quint16 port):bool \nCall this function to start listening for new connections.
 ScriptTcpServer::isListening(void):bool \nReturns true if the socket is listening for new connections.
 ScriptTcpServer::setMaxPendingConnections(int numConnections):void \nSet the max. pending connections.

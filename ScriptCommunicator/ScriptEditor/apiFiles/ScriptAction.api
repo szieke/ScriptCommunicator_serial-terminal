@@ -1,4 +1,3 @@
-ScriptAction::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptAction::setText(const String text):void \nSets the action text.
 ScriptAction::text(void):String \nReturns the action text.
 ScriptAction::setChecked(bool checked):void \nSets the checked state of the action.

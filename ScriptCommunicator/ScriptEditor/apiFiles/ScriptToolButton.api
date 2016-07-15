@@ -15,7 +15,6 @@ ScriptToolButton::setAdditionalData(int key, String data):void \nSets/stores an 
 ScriptToolButton::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptToolButton::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptToolButton::getClassName(void):String \nReturns the class name of this object.
-ScriptToolButton::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptToolButton::setText(String text):void \nSets the button text.
 ScriptToolButton::text(void):String \nReturns the button text.
 ScriptToolButton::setIcon(String iconFileName):void \nSets the icon of the button.

@@ -1,4 +1,3 @@
-ScriptTcpClient::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptTcpClient::connectToHost(String hostAdress, quint16 port):void \nThis function connects the socket to a tcp server.
 ScriptTcpClient::close(void):void \nThis function closes the socket.
 ScriptTcpClient::isReadable(void):bool \nReturns true if data can be read from the socket (if data has been received).

@@ -1,4 +1,3 @@
-ScriptXmlWriter::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptXmlWriter::writeBufferToFile(String fileName, bool isRelativePath=true):bool \nWrites the internal XML Buffer to a file.
 ScriptXmlWriter::getInternalBuffer(void):String \nReturns the content of the internal buffer.
 ScriptXmlWriter::clearInternalBuffer(void):void \nClears the internal buffer.

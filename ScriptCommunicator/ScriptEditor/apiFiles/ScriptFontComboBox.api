@@ -15,7 +15,6 @@ ScriptFontComboBox::setAdditionalData(int key, String data):void \nSets/stores a
 ScriptFontComboBox::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptFontComboBox::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptFontComboBox::getClassName(void):String \nReturns the class name of this object.
-ScriptFontComboBox::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptFontComboBox::addItem(const String text):void \nAdds one item to the combo box.
 ScriptFontComboBox::insertItem(int index, const String text):void \nInserts one item into the combo box.
 ScriptFontComboBox::removeItem(int index):void \nRemoves one item from the combo box.

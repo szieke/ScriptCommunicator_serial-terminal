@@ -1,3 +1,2 @@
-ScriptXmlAttribute::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptXmlAttribute::value(void):String \nReturns the value of the attribute.
 ScriptXmlAttribute::name(void):String \nReturns the name of the attribute.

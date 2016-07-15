@@ -1,4 +1,3 @@
-ScriptSqlRecord::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptSqlRecord::value(int i):QVariant
 ScriptSqlRecord::value(String name):QVariant
 ScriptSqlRecord::setValue(int i, QVariant val):void

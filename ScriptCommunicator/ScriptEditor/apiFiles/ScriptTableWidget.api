@@ -15,7 +15,6 @@ ScriptTableWidget::setAdditionalData(int key, String data):void \nSets/stores an
 ScriptTableWidget::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptTableWidget::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptTableWidget::getClassName(void):String \nReturns the class name of this object.
-ScriptTableWidget::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptTableWidget::getText(int row, int column):String \nReturns the text of one cell.
 ScriptTableWidget::setCellIcon(int row, int column, String iconFileName):void \nSets the icon of a single cell.
 ScriptTableWidget::setVerticalHeaderLabel(int row, String text):void \nSets a vertical header label.

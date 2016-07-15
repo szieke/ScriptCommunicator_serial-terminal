@@ -1,4 +1,3 @@
-ScriptSqlError::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptSqlError::driverText(void):String
 ScriptSqlError::databaseText(void):String
 ScriptSqlError::type(void):quint32 \nQSqlError::ErrorType

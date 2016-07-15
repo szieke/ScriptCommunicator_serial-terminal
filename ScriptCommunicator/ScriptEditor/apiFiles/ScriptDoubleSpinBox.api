@@ -15,7 +15,6 @@ ScriptDoubleSpinBox::setAdditionalData(int key, String data):void \nSets/stores 
 ScriptDoubleSpinBox::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptDoubleSpinBox::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptDoubleSpinBox::getClassName(void):String \nReturns the class name of this object.
-ScriptDoubleSpinBox::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptDoubleSpinBox::setRange(double minimum, double maximum):void \nSets the spin box's minimum and maximum values to minimum and maximum respectively.
 ScriptDoubleSpinBox::setValue(double value):void \nSets the spin box's current value.
 ScriptDoubleSpinBox::value(void):double \nReturns the spin box's current value.

@@ -18,3 +18,4 @@ String::toUpperCase(void):String \nConverts a string to uppercase letters.
 String::toLocaleUpperCase(void):String \nConverts a string to uppercase letters, according to the host's locale.
 String::trim(void):String \nRemoves whitespace from both ends of a string.
 String::fromCharCode([char0 [, char1 [,...]]]):String \nReturns a string created by using the specified sequence of Unicode values.
+String::length() \nRead property.\nReturns the length of the array.

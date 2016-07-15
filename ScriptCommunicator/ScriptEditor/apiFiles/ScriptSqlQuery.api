@@ -1,4 +1,3 @@
-ScriptSqlQuery::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
 ScriptSqlQuery::isValid(void):bool
 ScriptSqlQuery::isActive(void):bool
 ScriptSqlQuery::isNull(int field):bool
