@@ -751,7 +751,7 @@ void parseTableWidetInsert(const QString objectName, QStringList lines)
                 {
                     bool isOk;
                     list[2].replace("\"","");
-                    TableWidgetSubObject subObject = {list[0].toUInt(&isOk),list[1].toUInt(&isOk), list[2]};
+                    TableWidgetSubObject subObject = {(int)list[0].toUInt(&isOk), (int)list[1].toUInt(&isOk), list[2]};
 
 
                     if(subObject.className  == QString("LineEdit"))
