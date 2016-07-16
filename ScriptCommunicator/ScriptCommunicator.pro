@@ -52,7 +52,6 @@ SOURCES += \
     scriptClasses/scriptSlots.cpp \
     scriptClasses/customConsoleLogObject.cpp \
     searchconsole.cpp \
-    scriptClasses/scriptUiClasses/scriptplotwidget.cpp \
     scriptClasses/sequencetableview.cpp \
     scriptClasses/scriptsqldatabase.cpp \
     mainwindowHandleData.cpp \
@@ -108,7 +107,8 @@ SOURCES += \
     quazip/zLib/uncompr.c \
     quazip/zLib/zutil.c \
     quazip/unzip.c \
-    quazip/zip.c
+    quazip/zip.c \
+    scriptClasses/scriptUiClasses/scriptPlotwidget.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -164,7 +164,7 @@ HEADERS += \
     scriptClasses/scriptUiClasses/scriptTimeEdit.h \
     scriptClasses/customConsoleLogObject.h \
     searchconsole.h \
-    scriptClasses/scriptUiClasses/scriptplotwidget.h \
+    scriptClasses/scriptUiClasses/scriptPlotwidget.h \
     scriptClasses/sequencetableview.h \
     scriptClasses/scriptsqldatabase.h \
     scriptClasses/scriptHelper.h \

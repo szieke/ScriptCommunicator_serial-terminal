@@ -28,7 +28,7 @@
 #include <QObject>
 
 #include "scriptWidget.h"
-#include "scriptplotwidget.h"
+#include "scriptPlotwidget.h"
 
 #include "context2d.h"
 #include "qcontext2dcanvas.h"

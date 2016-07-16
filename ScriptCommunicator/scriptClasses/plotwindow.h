@@ -27,7 +27,7 @@
 
 #include <QMainWindow>
 #include "qcustomplot.h"
-#include "scriptplotwidget.h"
+#include "scriptPlotwidget.h"
 
 namespace Ui {
 class PlotWindow;
