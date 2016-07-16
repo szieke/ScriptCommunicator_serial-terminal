@@ -129,16 +129,13 @@ static void addObjectToAutoCompletionList(QString& objectName, QString& classNam
                 return;
             }
         }
-        else
-        {
-            g_objectAddedToCompletionList = true;
-        }
 
         if(!isArray)
         {
             if (g_autoCompletionApiFiles.contains(className + ".api"))
             {
                 QStringList list = g_autoCompletionApiFiles[className + ".api"];
+                g_objectAddedToCompletionList = true;
 
                 for(auto singleEntry : list)
                 {
@@ -158,6 +155,7 @@ static void addObjectToAutoCompletionList(QString& objectName, QString& classNam
         }
         else
         {
+            g_objectAddedToCompletionList = true;
 
             if (g_autoCompletionApiFiles.contains(className + ".api"))
             {
