@@ -514,7 +514,8 @@ static inline void searchSingleType(QString className, QString searchString, QSt
             bool containsInvalidChars = false;
             for(auto character : objectName)
             {
-                if(!character.isLetterOrNumber() && (character != '_'))
+                if(!character.isLetterOrNumber() && (character != '_') && (character != '[')
+                        && (character != ']'))
                 {
                     containsInvalidChars = true;
                     break;
