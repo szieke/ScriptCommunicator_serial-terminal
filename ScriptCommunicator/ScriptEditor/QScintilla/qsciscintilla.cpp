@@ -262,7 +262,7 @@ void QsciScintilla::handleCharAdded(int ch)
         int line;
         int index;
         getCursorPosition(&line, &index);
-        char* buffer = new char[10000];
+        char* buffer = new char[20000];
         int currentLine = line - 1;
         int count = SendScintilla(SCI_GETLINE, currentLine, buffer);
         int linePos = 0;

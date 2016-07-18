@@ -36,7 +36,7 @@ private:
     void checkDocumentForCustomDynamicObjects(QStringList &lines, QStringList& linesWithBrackets, QString& currentText, int passNumber);
 
     ///Searches all dynamically created objects created by standard objects (like String).
-    void checkDocumentForStandardDynamicObjects(QStringList &lines, QStringList& linesWithBrackets, QString& currentText, int passNumber);
+    void checkDocumentForStandardDynamicObjects(QStringList &lines, QStringList& linesWithBrackets, int passNumber);
 
     ///Parses an user interface file (auto-completion).
     void parseUiFile(QString uiFileName);

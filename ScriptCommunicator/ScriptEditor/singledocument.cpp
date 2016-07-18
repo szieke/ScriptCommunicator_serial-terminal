@@ -532,23 +532,15 @@ static inline void searchSingleType(QString className, QString searchString, QSt
     }
 }
 
+
 /**
- * Initializes the autocompletion.
- * @param additionalElements
- *      Additional elements for the autocompletion api.
+ * Removes all unnecessary characters (e.g. comments).
+ * @param currentText
+ *      The text.
  */
-void SingleDocument::initAutoCompletion(QStringList additionalElements, QString& currentText)
+static void removeAllUnnecessaryCharacters(QString& currentText)
 {
 
-    g_autoCompletionEntries.clear();
-    g_creatorObjects.clear();
-    g_tableWidgetObjects.clear();
-    g_parsedFiles.clear();
-    g_stringList.clear();
-    g_arrayList.clear();
-    g_tableWidgets.clear();
-    g_unknownTypeObjects.clear();
-    QRegExp regexp("[\n;]");
 
     //Remove all '/**/' comments.
     QRegExp comment("/\\*(.|[\r\n])*\\*/");
@@ -565,9 +557,17 @@ void SingleDocument::initAutoCompletion(QStringList additionalElements, QString&
     currentText.replace(" ", "");
     currentText.replace("\t", "");
     currentText.replace("\r", "");
+}
 
-     QStringList linesWithBrackets = currentText.split(regexp);
 
+
+/**
+ * Removes all square brackets and all between them.
+ * @param currentText
+ *      The text.
+ */
+static void removeAllBetweenSquareBrackets(QString& currentText)
+{
     int index1 = 0;
     int index2 = 0;
     bool textRemoved = true;
@@ -586,8 +586,41 @@ void SingleDocument::initAutoCompletion(QStringList additionalElements, QString&
             textRemoved = false;
         }
     }
+}
 
-    QStringList lines = currentText.split(regexp);
+/**
+ * Initializes the autocompletion.
+ * @param additionalElements
+ *      Additional elements for the autocompletion api.
+ */
+void SingleDocument::initAutoCompletion(QStringList additionalElements, QString& currentText)
+{
+
+
+    //Clear all parsed objects (all but g_autoCompletionApiFiles).
+    g_autoCompletionEntries.clear();
+    g_creatorObjects.clear();
+    g_tableWidgetObjects.clear();
+    g_parsedFiles.clear();
+    g_stringList.clear();
+    g_arrayList.clear();
+    g_tableWidgets.clear();
+    g_unknownTypeObjects.clear();
+
+
+    QRegExp splitRegexp("[\n;]");
+
+    //Remove all unnecessary characters (e.g. comments).
+    removeAllUnnecessaryCharacters(currentText);
+
+    //Get all lines (with square brackets).
+    QStringList linesWithBrackets = currentText.split(splitRegexp);
+
+    //Remove all brackets and all between them.
+    removeAllBetweenSquareBrackets(currentText);
+
+    //Get all lines (without square brackets).
+    QStringList lines = currentText.split(splitRegexp);
 
     //Parse all found user interface files (check for changes).
     for(auto el : g_foundUiFiles)
@@ -615,15 +648,16 @@ void SingleDocument::initAutoCompletion(QStringList additionalElements, QString&
         g_objectAddedToCompletionList = false;
 
         //Call several times to get all objects created by dynamic objects.
-        checkDocumentForStandardDynamicObjects(lines, linesWithBrackets, currentText, counter);
+        checkDocumentForStandardDynamicObjects(lines, linesWithBrackets, counter);
         counter++;
     }while(g_objectAddedToCompletionList);
 
 
-    //Search all objects with an unknwon type.
+    //Search all objects with an unknown type.
     searchSingleType("Dummy", "=", lines);
 
 
+    //Add all objects with an uknown type.
     for(auto el : g_unknownTypeObjects)
     {
         if(!g_autoCompletionEntries.contains(el))
@@ -1310,7 +1344,7 @@ void SingleDocument::checkDocumentForCustomDynamicObjects(QStringList& lines, QS
  * @param currentText
  *      The text in which shall be searched.
  */
-void SingleDocument::checkDocumentForStandardDynamicObjects(QStringList& lines, QStringList &linesWithBrackets , QString &currentText, int passNumber)
+void SingleDocument::checkDocumentForStandardDynamicObjects(QStringList& lines, QStringList &linesWithBrackets, int passNumber)
 {
     if(passNumber == 1)
     {
