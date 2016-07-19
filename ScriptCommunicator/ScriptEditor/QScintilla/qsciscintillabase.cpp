@@ -397,7 +397,11 @@ void QsciScintillaBase::keyPressEvent(QKeyEvent *e)
 
     QString text = e->text();
 
-    if (!text.isEmpty() && text[0].isPrint())
+    if((modifiers & SCMOD_CTRL) && (text == " "))
+    {
+        autoCompleteFromAPIs();
+    }
+    else if (!text.isEmpty() && text[0].isPrint())
     {
         ScintillaBytes bytes = textAsBytes(text);
         sci->AddCharUTF(bytes.data(), bytes.length());

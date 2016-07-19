@@ -344,8 +344,7 @@ void QsciScintilla::handleCharAdded(int ch)
     // start character.  If it is then create a new list which will be a subset
     // of the current one.  The case where it isn't a start character seems to
     // be handled correctly elsewhere.
-    if (isListActive() && isStartChar(ch)
-            )
+    if (isListActive() && isStartChar(ch))
     {
         cancelList();
         startAutoCompletion(acSource, false, use_single == AcusAlways);

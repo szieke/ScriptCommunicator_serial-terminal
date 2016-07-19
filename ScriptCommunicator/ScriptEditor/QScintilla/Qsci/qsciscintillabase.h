@@ -3589,6 +3589,13 @@ protected:
     //! \internal Convert encoded bytes to a QString.
     QString bytesAsText(const char *bytes) const;
 
+public slots:
+    //! Display an auto-completion list based on any installed APIs, the
+    //! current contents of the document and the characters immediately to the
+    //! left of the cursor.
+    //!
+    //! \sa autoCompleteFromAPIs(), autoCompleteFromDocument()
+    virtual void autoCompleteFromAPIs() = 0;
 private slots:
     void handleVSb(int value);
     void handleHSb(int value);
