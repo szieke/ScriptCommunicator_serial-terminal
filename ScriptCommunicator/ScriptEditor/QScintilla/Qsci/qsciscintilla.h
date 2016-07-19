@@ -2083,7 +2083,7 @@ private:
     void gotoMatchingBrace(bool select);
 
     void startAutoCompletion(AutoCompletionSource acs, bool checkThresh,
-            bool choose_single);
+            bool choose_single, bool forceList=false);
 
     int adjustedCallTipPosition(int ctshift) const;
     bool getSeparator(int &pos) const;

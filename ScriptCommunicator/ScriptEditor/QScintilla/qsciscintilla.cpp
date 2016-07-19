@@ -760,108 +760,130 @@ bool QsciScintilla::isStartChar(char ch) const
 
 // Possibly start auto-completion.
 void QsciScintilla::startAutoCompletion(AutoCompletionSource acs,
-        bool checkThresh, bool choose_single)
+        bool checkThresh, bool choose_single, bool forceList)
 {
+
     int start, ignore;
-    QStringList context = apiContext(SendScintilla(SCI_GETCURRENTPOS), start,
-            ignore);
-
-    if (context.isEmpty())
-        return;
-
-    // Get the last word's raw data and length.
-    ScintillaBytes s = textAsBytes(context.last());
-    const char *last_data = ScintillaBytesConstData(s);
-    int last_len = s.length();
-
-    if (checkThresh && last_len < acThresh)
-        return;
+    int last_len = 0;
+    char *last_data = "";
+    QsciAbstractAPIs *apis = lex->apis();
 
     // Generate the string representing the valid words to select from.
     QStringList wlist;
 
-    if ((acs == AcsAll || acs == AcsAPIs) && !lex.isNull())
-    {
-        QsciAbstractAPIs *apis = lex->apis();
+    QStringList context = apiContext(SendScintilla(SCI_GETCURRENTPOS), start,
+            ignore);
 
+    if(forceList && context.isEmpty())
+    {//CTRL+Shift pressed with no word-character ahead the cursor.
         if (apis)
-            apis->updateAutoCompletionList(context, wlist);
-    }
-
-    if (acs == AcsAll || acs == AcsDocument)
-    {
-        int sflags = SCFIND_WORDSTART;
-
-        if (!SendScintilla(SCI_AUTOCGETIGNORECASE))
-            sflags |= SCFIND_MATCHCASE;
-
-        SendScintilla(SCI_SETSEARCHFLAGS, sflags);
-
-        int pos = 0;
-        int dlen = SendScintilla(SCI_GETLENGTH);
-        int caret = SendScintilla(SCI_GETCURRENTPOS);
-        int clen = caret - start;
-        char *orig_context = new char[clen + 1];
-
-        SendScintilla(SCI_GETTEXTRANGE, start, caret, orig_context);
-
-        for (;;)
         {
-            int fstart;
-
-            SendScintilla(SCI_SETTARGETSTART, pos);
-            SendScintilla(SCI_SETTARGETEND, dlen);
-
-            if ((fstart = SendScintilla(SCI_SEARCHINTARGET, clen, orig_context)) < 0)
-                break;
-
-            // Move past the root part.
-            pos = fstart + clen;
-
-            // Skip if this is the context we are auto-completing.
-            if (pos == caret)
-                continue;
-
-            // Get the rest of this word.
-            QString w = last_data;
-
-            while (pos < dlen)
+            QString wordCaracters = wchars;
+            for(auto el : wordCaracters)
             {
-                char ch = SendScintilla(SCI_GETCHARAT, pos);
-
-                if (!isWordCharacter(ch))
-                    break;
-
-                w += ch;
-                ++pos;
-            }
-
-            // Add the word if it isn't already there.
-            if (!w.isEmpty())
-            {
-                bool keep;
-
-                // If there are APIs then check if the word is already present
-                // as an API word (i.e. with a trailing space).
-                if (acs == AcsAll)
-                {
-                    QString api_w = w;
-                    api_w.append(' ');
-
-                    keep = !wlist.contains(api_w);
-                }
-                else
-                {
-                    keep = true;
-                }
-
-                if (keep && !wlist.contains(w))
-                    wlist.append(w);
+                QStringList tmpList = QStringList(el);
+                apis->updateAutoCompletionList(tmpList, wlist);
             }
         }
-
-        delete []orig_context;
     }
+    if (context.isEmpty() && !forceList)
+    {
+        return;
+    }
+
+    if(!context.isEmpty())
+    {
+        // Get the last word's raw data and length.
+        ScintillaBytes s = textAsBytes(context.last());
+        last_data = s.data();
+        last_len = s.length();
+
+        if (checkThresh && last_len < acThresh)
+            return;
+
+        if ((acs == AcsAll || acs == AcsAPIs) && !lex.isNull())
+        {
+
+            if (apis)
+                apis->updateAutoCompletionList(context, wlist);
+        }
+
+        if (acs == AcsAll || acs == AcsDocument)
+        {
+            int sflags = SCFIND_WORDSTART;
+
+            if (!SendScintilla(SCI_AUTOCGETIGNORECASE))
+                sflags |= SCFIND_MATCHCASE;
+
+            SendScintilla(SCI_SETSEARCHFLAGS, sflags);
+
+            int pos = 0;
+            int dlen = SendScintilla(SCI_GETLENGTH);
+            int caret = SendScintilla(SCI_GETCURRENTPOS);
+            int clen = caret - start;
+            char *orig_context = new char[clen + 1];
+
+            SendScintilla(SCI_GETTEXTRANGE, start, caret, orig_context);
+
+            for (;;)
+            {
+                int fstart;
+
+                SendScintilla(SCI_SETTARGETSTART, pos);
+                SendScintilla(SCI_SETTARGETEND, dlen);
+
+                if ((fstart = SendScintilla(SCI_SEARCHINTARGET, clen, orig_context)) < 0)
+                    break;
+
+                // Move past the root part.
+                pos = fstart + clen;
+
+                // Skip if this is the context we are auto-completing.
+                if (pos == caret)
+                    continue;
+
+                // Get the rest of this word.
+                QString w = last_data;
+
+                while (pos < dlen)
+                {
+                    char ch = SendScintilla(SCI_GETCHARAT, pos);
+
+                    if (!isWordCharacter(ch))
+                        break;
+
+                    w += ch;
+                    ++pos;
+                }
+
+                // Add the word if it isn't already there.
+                if (!w.isEmpty())
+                {
+                    bool keep;
+
+                    // If there are APIs then check if the word is already present
+                    // as an API word (i.e. with a trailing space).
+                    if (acs == AcsAll)
+                    {
+                        QString api_w = w;
+                        api_w.append(' ');
+
+                        keep = !wlist.contains(api_w);
+                    }
+                    else
+                    {
+                        keep = true;
+                    }
+
+                    if (keep && !wlist.contains(w))
+                        wlist.append(w);
+                }
+            }
+
+            delete []orig_context;
+        }
+
+    }//if(!context.isEmpty())
 
     if (wlist.isEmpty())
         return;
@@ -3782,7 +3804,7 @@ void QsciScintilla::autoCompleteFromAll()
 // Explicitly auto-complete from the APIs.
 void QsciScintilla::autoCompleteFromAPIs()
 {
-    startAutoCompletion(AcsAPIs, false, use_single != AcusNever);
+    startAutoCompletion(AcsAPIs, false, use_single != AcusNever, true);
 }
 
 
