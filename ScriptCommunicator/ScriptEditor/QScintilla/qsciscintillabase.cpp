@@ -397,7 +397,7 @@ void QsciScintillaBase::keyPressEvent(QKeyEvent *e)
 
     QString text = e->text();
 
-    if((modifiers & SCMOD_CTRL) && (text == " "))
+    if((modifiers & SCMOD_CTRL) && (key == Qt::Key_Space))
     {
         autoCompleteFromAPIs();
     }
