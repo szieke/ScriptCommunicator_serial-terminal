@@ -29,6 +29,7 @@ public:
     void activateDeactiveSearchButton();
 
 private slots:
+
     ///Button find slot.
     void findButtonClickedSlot(void);
 
@@ -39,6 +40,10 @@ private slots:
     void timerSlot(void);
 
 private:
+
+    ///The max. number of search-strings which are saved (in  m_lastSearchString).
+    static const qint32 MAX_LAST_SEARCH_STRING = 20;
+
     ///Pointer to the main window.
     MainWindow* m_mainWindow;
 

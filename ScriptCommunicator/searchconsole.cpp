@@ -7,7 +7,7 @@
  * @param mainWindow
  *      Pointer to the main window.
  */
-SearchConsole::SearchConsole(MainWindow *mainWindow) : m_mainWindow(mainWindow)
+SearchConsole::SearchConsole(MainWindow *mainWindow) : m_mainWindow(mainWindow), m_resultTimer(), m_lastSearchString()
 {
     connect(&m_resultTimer, SIGNAL(timeout()),this, SLOT(timerSlot()));
     connect(m_mainWindow->m_userInterface->findPushButton, SIGNAL(clicked()),this, SLOT(findButtonClickedSlot()));
@@ -38,11 +38,17 @@ void SearchConsole::timerSlot(void)
  */
 QString SearchConsole::getLastSearchStrings(void)
 {
-    QString string;
+    QString string = "";
 
-    for(auto el : m_lastSearchString)
+    if(!m_lastSearchString.isEmpty())
     {
-        string += el + ";";
+        for(auto el : m_lastSearchString)
+        {
+            string += el + ";";
+        }
+
+        //Remove the last ';'.
+        string.remove(string.length() - 1, 1);
     }
 
     return string;
@@ -55,14 +61,17 @@ QString SearchConsole::getLastSearchStrings(void)
  */
 void SearchConsole::setLastSearchStrings(QString string)
 {
-    QStringList list = string.split(";");
-
-    for(auto el : list)
+    if(!string.isEmpty())
     {
-        if(!el.isEmpty())
+        QStringList list = string.split(";");
+
+        for(auto el : list)
         {
-            m_mainWindow->m_userInterface->findWhatComboBox->insertItem(m_mainWindow->m_userInterface->findWhatComboBox->count(), el);
-            m_lastSearchString.append(el);
+            if(!el.isEmpty())
+            {
+                m_mainWindow->m_userInterface->findWhatComboBox->insertItem(m_mainWindow->m_userInterface->findWhatComboBox->count(), el);
+                m_lastSearchString.append(el);
+            }
         }
     }
 }
@@ -155,7 +164,7 @@ void SearchConsole::findButtonClickedSlot(void)
         m_mainWindow->m_userInterface->findWhatComboBox->insertItem(0, findText);
         m_lastSearchString.push_front(findText);
 
-        if(m_lastSearchString.size() > 20)
+        if(m_lastSearchString.size() > MAX_LAST_SEARCH_STRING)
         {
             m_lastSearchString.removeLast();
             m_mainWindow->m_userInterface->findWhatComboBox->removeItem(m_mainWindow->m_userInterface->findWhatComboBox->count() - 1);
