@@ -1286,7 +1286,14 @@ void ParseThread::parseSlot(QString& currentText, QString activeDocument)
         parseUiFile(el);
     }
 
-    //Find all includes user interface files.
+    //Check if the active document has a ui-file.
+    QString uiFileName = MainWindow::getTheCorrespondingUiFile(activeDocument);
+    if(!uiFileName.isEmpty())
+    {
+        parseUiFile(uiFileName);
+    }
+
+    //Find all included user interface files.
     checkDocumentForUiFiles(currentText, activeDocument);
 
     int counter = 1;
