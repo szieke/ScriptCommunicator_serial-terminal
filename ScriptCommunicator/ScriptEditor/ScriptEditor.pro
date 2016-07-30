@@ -92,7 +92,8 @@ HEADERS      = \
     lexlib/WordList.h \
     findDialog.h \
     mainwindow.h \
-    singledocument.h
+    singledocument.h \
+    parseThread.h
 SOURCES      = main.cpp \
     QScintilla/InputMethod.cpp \
     QScintilla/ListBoxQt.cpp \
@@ -156,7 +157,8 @@ SOURCES      = main.cpp \
     lexers/LexCPP.cpp \
     findDialog.cpp \
     mainwindow.cpp \
-    singledocument.cpp
+    singledocument.cpp \
+    parseThread.cpp
 
 
 RESOURCES    = ScriptEditor.qrc

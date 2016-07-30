@@ -31,6 +31,7 @@
 #include <QShortcut>
 #include "singledocument.h"
 #include <QTreeWidgetItem>
+#include "parseThread.h"
 
 
 namespace Ui {
@@ -90,6 +91,10 @@ public:
     ///Returns the corresponding ui file for a script.
     static QString getTheCorrespondingUiFile(QString scriptFile);
 
+signals:
+    ///Is emitted if the parsing of the source files shall be started.
+    void parseSignal(QString& currentText, QString activeDocument);
+
 protected:
     ///Close event.
     void closeEvent(QCloseEvent *event);
@@ -104,6 +109,11 @@ protected:
     void dropEvent(QDropEvent *event);
 
 private slots:
+
+    ///Is called if the parsing is finished.
+    ///Note: autoCompletionApiFiles contains the auto-completion entries for all parsed files.
+    void parsingFinishedSlot(QMap<QString, QStringList>& autoCompletionEntries, QMap<QString, QStringList>& autoCompletionApiFiles);
+
     ///Opens a new file.
     void open();
 
@@ -230,6 +240,9 @@ private:
 
     ///The parse timer.
     QTimer m_parseTimer;
+
+    ///The parse thread.
+    ParseThread m_parseThread;
 
 };
 

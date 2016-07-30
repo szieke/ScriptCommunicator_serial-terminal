@@ -63,7 +63,7 @@ MainWindow* getMainWindow()
  * @param script
  *      The file which should be loaded.
  */
-MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTimer()
+MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTimer(), m_parseThread(this)
 {
     ui->setupUi(this);
 
@@ -104,11 +104,58 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     m_findShortcut = new QShortcut(QKeySequence(Qt::Key_F3),this);
 
     connect(m_findShortcut, SIGNAL(activated()), this, SLOT(findButtonSlot()));
+
+    m_parseThread.start();
+
+    connect(this, SIGNAL(parseSignal(QString&,QString)), &m_parseThread, SLOT(parseSlot(QString&,QString)));
+    connect(&m_parseThread, SIGNAL(parsingFinishedSignal(QMap<QString,QStringList>&,QMap<QString,QStringList>&)),
+            this, SLOT(parsingFinishedSlot(QMap<QString,QStringList>&,QMap<QString,QStringList>&)));
 }
 
 MainWindow::~MainWindow()
 {
+    m_parseThread.exit();
+    QThread::msleep(10);
     delete ui;
+}
+
+/**
+ * Is called if the parsing is finished.
+ * Note: autoCompletionApiFiles contains the auto-completion entries for all parsed files.
+ * @param autoCompletionEntries
+ *      Contains all auto-completion entries (all but for the parsed api files).
+ * @param autoCompletionApiFiles
+ *      Contains the auto-completion entries for all parsed api files.
+ */
+void MainWindow::parsingFinishedSlot(QMap<QString, QStringList>& autoCompletionEntries, QMap<QString, QStringList>& autoCompletionApiFiles)
+{
+    SingleDocument* currentEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
+    currentEditor->initAutoCompletion(m_allFunction, autoCompletionEntries, autoCompletionApiFiles);
+}
+
+
+/**
+ * Is called if the parse timer times out.
+ */
+void MainWindow::parseTimeout(void)
+{
+    m_parseTimer.stop();
+    QString completeText;
+
+    SingleDocument* currentEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
+    completeText = currentEditor->text();
+
+    //Get the text of all open documents.
+    for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+    {
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
+        if(currentEditor != textEditor)
+        {
+            completeText.append(textEditor->text());
+        }
+    }
+
+    emit parseSignal(completeText, currentEditor->getDocumentName());
 }
 
 /**
@@ -1084,28 +1131,6 @@ QString MainWindow::createNewDocumentTitle(void)
 }
 
 
-/**
- * Is called if the parse timer times out.
- */
-void MainWindow::parseTimeout(void)
-{
-    m_parseTimer.stop();
-    QString completeText;
-
-    SingleDocument* currentEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-    completeText = currentEditor->text();
-
-    //Get the text of all open documents.
-    for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
-    {
-        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
-        if(currentEditor != textEditor)
-        {
-            completeText.append(textEditor->text());
-        }
-    }
-    currentEditor->initAutoCompletion(m_allFunction, completeText);
-}
 
 /**
  * Checks if the current script file has been changed. If the files has been changed
