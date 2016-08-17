@@ -20,7 +20,7 @@ ScriptLineEdit::isReadOnly(void):bool \nReturns true of the line edit is editabl
 ScriptLineEdit::setReadOnly(bool readOnly):void \nSets the editable property of the line edit.
 ScriptLineEdit::addIntValidator(int bottom, int top):void \nAdds an int validator to the line edit\n(this ensures that the line edit contains only integer).
 ScriptLineEdit::addDoubleValidator(double bottom, double top, int decimals):void \nAdds an double validator to the line edit\n(this ensures that the line edit contains only double values).
-ScriptLineEdit::void addRexpExValidator(String pattern, bool caseSensitiv) \nAdds an regular expression validator to the line edit\n(this ensures that the line edit contains only the allowed values which are specified in the pattern).
+ScriptLineEdit::addRexpExValidator(String pattern, bool caseSensitiv) \nAdds an regular expression validator to the line edit\n(this ensures that the line edit contains only the allowed values which are specified in the pattern).
 ScriptLineEdit::setText(String text):void \nSets the text of the line edit.
 ScriptLineEdit::clear(void):void \nClears the line edit.
 ScriptLineEdit::textChangedSignal.connect(String currentText) \nThis signal is emitted if the text of the line edit has been changed.
