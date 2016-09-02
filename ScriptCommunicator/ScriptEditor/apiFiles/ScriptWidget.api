@@ -2,7 +2,7 @@ ScriptWidget::setEnabled(bool isEnabled):void \nEnables or disables the widget.
 ScriptWidget::update(void):void \nUpdates the widget.
 ScriptWidget::repaint(void):void \nRepaints the widget.
 ScriptWidget::show(void):void \nShows the widget.
-ScriptWidget::void close(void) \nCloses the widget.
+ScriptWidget::close(void):void \nCloses the widget.
 ScriptWidget::hide(void):void \nHides the widget.
 ScriptWidget::setWindowTitle(String title)_void \nSets the window title.
 ScriptWidget::windowPositionAndSize(void):String \nReturns the window size and position (Pixel).The return string has following format:\n"top left x, top left y, width, height"
