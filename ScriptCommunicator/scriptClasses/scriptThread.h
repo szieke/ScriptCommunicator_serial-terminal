@@ -379,8 +379,8 @@ public:
     Q_INVOKABLE static quint8 calculateCrc8(const QVector<unsigned char> data){return CRC::calculateCrc8(data);}
 
     ///Calculates a crc8 with a given polynomial.
-    Q_INVOKABLE static quint8 calculateCrc8WithPolynomial(const QVector<unsigned char> data, const unsigned char polynomial)
-                {return CRC::calculateCrc8(data, polynomial);}
+    Q_INVOKABLE static quint8 calculateCrc8WithPolynomial(const QVector<unsigned char> data, const unsigned char polynomial, const unsigned char startValue=0)
+                {return CRC::calculateCrc8(data, polynomial, startValue);}
 
     ///Calculates a crc16.
     Q_INVOKABLE static quint16 calculateCrc16(const QVector<unsigned char> data){return CRC::calculateCrc16(data);}

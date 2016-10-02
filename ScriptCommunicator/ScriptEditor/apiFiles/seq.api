@@ -4,7 +4,7 @@ seq::byteArrayToHexString(Array<unsigned char> data):String \nConverts a byte ar
 seq::stringToArray(String str):Array<unsigned char> \nConverts an ascii string into a byte array.
 seq::addStringToArray(Array<unsigned char> array, String str):Array<unsigned char> \nAdds an ascii string to a byte array.
 seq::calculateCrc8(const Array<unsigned char> data):quint8 \nCalculates a crc8.
-seq::calculateCrc8WithPolynomial(Array<unsigned char> data, unsigned char polynomial):quint8 \nCalculates a crc8 with a given polynomial.
+seq::calculateCrc8WithPolynomial(Array<unsigned char> data, unsigned char polynomial, unsigned char startValue=0):quint8 \nCalculates a crc8 with a given polynomial.
 seq::calculateCrc16(const Array<unsigned char> data):quint16 \nCalculates a crc16.
 seq::calculateCrc32(const Array<unsigned char> data):quint32 \nCalculates a crc32.
 seq::calculateCrc64(const Array<unsigned char> data):quint64 \nCalculates a crc64.

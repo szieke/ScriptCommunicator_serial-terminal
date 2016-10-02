@@ -72,7 +72,7 @@ scriptThread::showGetIntDialog(String title, String label, int initialValue, int
 scriptThread::showGetDoubleDialog(String title, String label, double initialValue, double min, double max, int decimals, QWidget* parent=0):Array<double> \nConvenience function to get a floating point number from the user.\nShows a QInputDialog::getDouble dialog (spinbox).
 scriptThread::showColorDialog(quint8 initInitalRed=255, quint8 initInitalGreen=255, quint8 initInitalBlue=255, quint8 initInitalAlpha=255, bool alphaIsEnabled=false, QWidget* parent=0):Array<int> \nConvenience function to get color settings from the user.
 scriptThread::calculateCrc8(Array<unsigned char> data):quint8 \nCalculates a crc8.
-scriptThread::calculateCrc8WithPolynomial(Array<unsigned char> data, unsigned char polynomial):quint8 \nCalculates a crc8 with a given polynomial.
+scriptThread::calculateCrc8WithPolynomial(Array<unsigned char> data, unsigned char polynomial, unsigned char startValue=0):quint8 \nCalculates a crc8 with a given polynomial.
 scriptThread::calculateCrc16(Array<unsigned char> data):quint16 \nCalculates a crc16.
 scriptThread::calculateCrc32(Array<unsigned char> data):quint32 \nCalculates a crc32.
 scriptThread::calculateCrc64(Array<unsigned char> data):quint64 \nCalculates a crc64.

@@ -103,7 +103,8 @@ public:
         return "void appendTextToConsole(QString string, bool newLine=true, bool bringToForeground=false);"
                "QString byteArrayToString(QVector<unsigned char> data);QString byteArrayToHexString(QVector<unsigned char> data);"
                "QVector<unsigned char> stringToArray(QString str);QVector<unsigned char> addStringToArray(QVector<unsigned char> array, QString str);"
-               "quint8 calculateCrc8(QVector<unsigned char> data);quint8 calculateCrc8WithPolynomial(const QVector<unsigned char> data, const unsigned char polynomial);"
+               "quint8 calculateCrc8(QVector<unsigned char> data);"
+               "quint8 calculateCrc8WithPolynomial(const QVector<unsigned char> data, const unsigned char polynomial, const unsigned char polynomial, const unsigned char startValue=0);"
                "quint16 calculateCrc16(QVector<unsigned char> data);"
                "quint32 calculateCrc32(QVector<unsigned char> data);quint64 calculateCrc64(QVector<unsigned char> data);"
                "void setGlobalString(QString name, QString string);QString getGlobalString(QString name, bool removeValue=false);"
@@ -139,8 +140,8 @@ public:
     Q_INVOKABLE static quint8 calculateCrc8(const QVector<unsigned char> data){return CRC::calculateCrc8(data);}
 
     ///Calculates a crc8 with a given polynomial.
-    Q_INVOKABLE static quint8 calculateCrc8WithPolynomial(const QVector<unsigned char> data, const unsigned char polynomial)
-                {return CRC::calculateCrc8(data, polynomial);}
+    Q_INVOKABLE static quint8 calculateCrc8WithPolynomial(const QVector<unsigned char> data, const unsigned char polynomial, const unsigned char startValue=0)
+                {return CRC::calculateCrc8(data, polynomial,startValue);}
 
     ///Calculates a crc16.
     Q_INVOKABLE static quint16 calculateCrc16(const QVector<unsigned char> data){return CRC::calculateCrc16(data);}

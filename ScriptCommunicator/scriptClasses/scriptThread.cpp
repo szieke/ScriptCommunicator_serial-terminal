@@ -222,7 +222,7 @@ QString ScriptThread::getPublicScriptElements(void)
            "QList<double> showGetDoubleDialog(QString title, QString label, double initialValue, double min, double max, int decimals, QWidget* parent=0);"
            "QList<int> showColorDialog(quint8 initInitalRed=255, quint8 initInitalGreen=255, quint8 initInitalBlue=255, quint8 initInitalAlpha=255, bool alphaIsEnabled=false, QWidget* parent=0);"
            "quint8 calculateCrc8(const QVector<unsigned char> data);"
-           "quint8 calculateCrc8WithPolynomial(const QVector<unsigned char> data, const unsigned char polynomial);"
+           "quint8 calculateCrc8WithPolynomial(const QVector<unsigned char> data, const unsigned char polynomial, , const unsigned char startValue=0);"
            "quint16 calculateCrc16(const QVector<unsigned char> data);"
            "quint32 calculateCrc32(const QVector<unsigned char> data);"
            "quint64 calculateCrc64(const QVector<unsigned char> data);"

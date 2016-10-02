@@ -38,13 +38,15 @@ CRC::CRC()
  *		The data.
  * @param polynomial
  *		The polynomial to be used to calculate the CRC.
+ * @param startValue
+ *      The CRC start value.
  * @return
  *		The calculated crc.
  */
 quint8 CRC::calculateCrc8(const QVector<unsigned char> data,
-                          const unsigned char polynomial)
+                          const unsigned char polynomial, const unsigned char startValue)
 {
-    quint8 crc = 0x00;
+    quint8 crc = startValue;
     const qint32 BITS_PER_BYTE = 8;
 	
 	for( auto val: data )
