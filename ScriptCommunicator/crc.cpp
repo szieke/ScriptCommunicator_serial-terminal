@@ -41,25 +41,21 @@ CRC::CRC()
  * @return
  *		The calculated crc.
  */
- 
- #ifndef CHAR_BIT
- #define CHAR_BIT 8
- #endif
- 
 quint8 CRC::calculateCrc8(const QVector<unsigned char> data,
-											const unsigned char polynomial)
+                          const unsigned char polynomial)
 {
-	quint8 crc = 0x00;	
+    quint8 crc = 0x00;
+    const qint32 BITS_PER_BYTE = 8;
 	
 	for( auto val: data )
 	{
 		crc = crc ^ val;
 		
-		for( qint32 i = 0; i < CHAR_BIT; ++i )
+        for( qint32 i = 0; i < BITS_PER_BYTE; ++i )
 		{
 			if( (crc & 0x80) != 0 )
 			{
-				crc = ((crc << 1) ^ polynomial;
+                crc = ((crc << 1)) ^ polynomial;
 			}
 			else
 			{

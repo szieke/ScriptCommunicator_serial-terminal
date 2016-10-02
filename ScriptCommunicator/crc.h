@@ -33,9 +33,9 @@ class CRC
 public:
     CRC();
 
-	//Calculates a crc8 with a generic polynomial
+    ///Calculates a crc8 with a generic polynomial
 	static quint8 calculateCrc8(const QVector<unsigned char> data,
-											const unsigned char polynomial);
+                                const unsigned char polynomial);
 	
     ///Calculates a crc8.
     static quint8 calculateCrc8(const QVector<unsigned char> data);
