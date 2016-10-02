@@ -33,6 +33,48 @@ CRC::CRC()
 
 
 /**
+ * Calculates a crc8 with a generic polynomial.
+ * @param date
+ *		The data.
+ * @param polynomial
+ *		The polynomial to be used to calculate the CRC.
+ * @return
+ *		The calculated crc.
+ */
+ 
+ #ifndef CHAR_BIT
+ #define CHAR_BIT 8
+ #endif
+ 
+quint8 CRC::calculateCrc8(const QVector<unsigned char> data,
+											const unsigned char polynomial)
+{
+	quint8 crc = 0x00;	
+	
+	for( auto val: data )
+	{
+		crc = crc ^ val;
+		
+		for( qint32 i = 0; i < CHAR_BIT; ++i )
+		{
+			if( (crc & 0x80) != 0 )
+			{
+				crc = ((crc << 1) ^ polynomial;
+			}
+			else
+			{
+				crc = (crc << 1);
+			}
+		}
+	}
+	
+	return crc;	
+} 
+ 
+ 
+ 
+
+/**
  * Calculates a crc8.
  * @param data
  *      The data.
