@@ -55,7 +55,7 @@ void SingleDocument::initLexer(QString script)
 
 
         setAutoCompletionSource(QsciScintilla::AcsAPIs);
-        setAutoCompletionCaseSensitivity(true);
+        setAutoCompletionCaseSensitivity(false);
         setAutoCompletionThreshold(3);
         setAutoIndent(true);
         setIndentationWidth(4);

@@ -192,6 +192,9 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->scriptEditorPathLineEdit, SIGNAL(textChanged(QString)),
             this, SLOT(scriptEditorPathLineEditTextChangedSlot(QString)));
 
+    connect(m_userInterface->useExternalScriptEditorCheckBox, SIGNAL(stateChanged(int)),
+            this, SLOT(stateFromCheckboxChangedSlot(int)));
+
     connect(m_userInterface->consoleShowDecimalCheckBox, SIGNAL(stateChanged(int)),
             this, SLOT(stateFromCheckboxChangedSlot(int)));
 
@@ -722,6 +725,16 @@ void SettingsDialog::searchScriptEditorButtonPressedSlot(void)
 }
 
 /**
+ * Shows the script window.
+ */
+void SettingsDialog::show(void)
+{
+    QWidget::show();
+
+    fillSerialPortListBox();
+}
+
+/**
  * Sets all settings in the gui and the settings struct (m_currentSettings).
  * @param settings
  *      The new settings.
@@ -907,6 +920,8 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     }
 
     m_userInterface->scriptEditorPathLineEdit->setText(settings.scriptEditorPath);
+    m_userInterface->useExternalScriptEditorCheckBox->setChecked(settings.useExternalScriptEditor);
+    m_userInterface->scriptEditorPathLineEdit->setEnabled(m_userInterface->useExternalScriptEditorCheckBox->isChecked());
 
     if(settings.connectionType == CONNECTION_TYPE_SERIAL_PORT)
     {
@@ -1490,6 +1505,37 @@ void SettingsDialog::initializeInterfaceTabs(void)
 
     }
 }
+
+/**
+ * Adds all available serial ports to the serial port list box.
+ */
+void SettingsDialog::fillSerialPortListBox(void)
+{
+    m_userInterface->serialPortInfoListBox->blockSignals(true);
+
+    QString currentText = m_userInterface->serialPortInfoListBox->currentText();
+    bool savedTextIsAvailable = false;
+    //read all serial port informations
+    QVector<QStringList> list = getSerialPortsInfo();
+    m_userInterface->serialPortInfoListBox->clear();
+    for(auto entry : list)
+    {
+        m_userInterface->serialPortInfoListBox->addItem(entry.at(0));
+
+        if(entry.at(0) == currentText)
+        {
+            savedTextIsAvailable = true;
+        }
+    }
+
+    if(savedTextIsAvailable)
+    {
+        m_userInterface->serialPortInfoListBox->setCurrentText(currentText);
+    }
+
+    m_userInterface->serialPortInfoListBox->blockSignals(false);
+}
+
 /**
  * In this event filter function the mouse pressed event for serialPortInfoListBox
  * is intercepted and a scan for available serial port is done.
@@ -1509,31 +1555,7 @@ bool SettingsDialog::eventFilter(QObject *obj, QEvent *event)
     {
         if (event->type() == QEvent::MouseButtonPress)
         {
-
-            m_userInterface->serialPortInfoListBox->blockSignals(true);
-
-            QString currentText = m_userInterface->serialPortInfoListBox->currentText();
-            bool savedTextIsAvailable = false;
-            //read all serial port informations
-            QVector<QStringList> list = getSerialPortsInfo();
-            m_userInterface->serialPortInfoListBox->clear();
-            for(auto entry : list)
-            {
-                m_userInterface->serialPortInfoListBox->addItem(entry.at(0));
-
-                if(entry.at(0) == currentText)
-                {
-                    savedTextIsAvailable = true;
-                }
-            }
-
-            if(savedTextIsAvailable)
-            {
-                m_userInterface->serialPortInfoListBox->setCurrentText(currentText);
-            }
-
-            m_userInterface->serialPortInfoListBox->blockSignals(false);
-
+            fillSerialPortListBox();
         }
     }
 
@@ -1573,6 +1595,9 @@ void SettingsDialog::proxyRadioButtonClickedSlot(void)
 void SettingsDialog::stateFromCheckboxChangedSlot(int state)
 {
     (void) state;
+
+    m_userInterface->scriptEditorPathLineEdit->setEnabled(m_userInterface->useExternalScriptEditorCheckBox->isChecked());
+
     updateSettings();
     emit configHasToBeSavedSignal();
 }
@@ -1938,6 +1963,7 @@ void SettingsDialog::updateSettings()
     }
 
     m_currentSettings.scriptEditorPath = m_userInterface->scriptEditorPathLineEdit->text();
+    m_currentSettings.useExternalScriptEditor = m_userInterface->useExternalScriptEditorCheckBox->isChecked();
 
     if(m_userInterface->connectionTypeComboBox->currentText() == "socket")
     {

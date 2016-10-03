@@ -138,6 +138,9 @@ struct Settings
     ///The path to external script editor.
     QString scriptEditorPath;
 
+    ///True if an external script editor shall be used.
+    bool useExternalScriptEditor;
+
     ///The connection type.
     ConnectionType connectionType;
 
@@ -383,6 +386,9 @@ public:
     ///Updates the settings struct (m_currentSettings).
     void updateSettings();
 
+    ///Shows the script window.
+    void show(void);
+
     ///Updates a decimal type.
     void updatesDecimalsTypes(DecimalType* type, QComboBox *typeBox);
 
@@ -572,6 +578,9 @@ private:
     ///Reads the information from all available serial port.
     QVector<QStringList> getSerialPortsInfo();
     QSignalMapper *mapColorButtons;
+
+    ///Adds all available serial ports to the serial port list box.
+    void fillSerialPortListBox(void);
 
 private:
     ///The user interface.

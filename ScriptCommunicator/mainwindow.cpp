@@ -1592,6 +1592,7 @@ void MainWindow::loadSettings()
                         }
 
                         currentSettings.scriptEditorPath = node.attributes().namedItem("scriptEditorPath").nodeValue();
+                        currentSettings.useExternalScriptEditor = (node.attributes().namedItem("useExternalScriptEditor").nodeValue() == "1") ? true : false;
 
 
                         QList<int> sizes;
@@ -2393,6 +2394,7 @@ void MainWindow::saveSettings()
                 std::map<QString, QString> consoleSetting =
                 {std::make_pair(QString("scriptConfigFileName"), convertToRelativePath(m_mainConfigFile, m_scriptWindow->getCurrentScriptConfigFileName())),
                  std::make_pair(QString("scriptEditorPath"), currentSettings->scriptEditorPath),
+                 std::make_pair(QString("useExternalScriptEditor"),QString("%1").arg(currentSettings->useExternalScriptEditor)),
                  std::make_pair(QString("splitterSize1"), QString("%1").arg(sizes[0])),
                  std::make_pair(QString("splitterSize2"), QString("%1").arg(sizes[1])),
                 };
@@ -3138,7 +3140,14 @@ bool MainWindow::startScriptEditor(QString scriptEditor, QStringList arguments, 
         myProcess->waitForFinished(10000);
         if(myProcess->exitCode() != 0)
         {
-            QMessageBox::critical(parent, "error starting script editor", "could not start: " + scriptEditor);
+            if(scriptEditor.isEmpty())
+            {
+                QMessageBox::critical(parent, "error starting the external script editor", "the path to the external script editor is empty (settings dialog)");
+            }
+            else
+            {
+                QMessageBox::critical(parent, "error starting the external script editor", "could not start: " + scriptEditor);
+            }
             success = false;
         }
     }
@@ -3149,7 +3158,14 @@ bool MainWindow::startScriptEditor(QString scriptEditor, QStringList arguments, 
     //Start the script editor.
     if(!myProcess->startDetached(scriptEditor, arguments))
     {
-        QMessageBox::critical(parent, "error starting script editor", "could not start: " + scriptEditor);
+        if(scriptEditor.isEmpty())
+        {
+            QMessageBox::critical(parent, "error starting script editor", "the path to the external script editor is empty (settings dialog)");
+        }
+        else
+        {
+            QMessageBox::critical(parent, "error starting script editor", "could not start: " + scriptEditor);
+        }
         success = false;
     }
 #endif
@@ -3177,16 +3193,17 @@ void MainWindow::openScriptEditor(QStringList arguments, const Settings* current
     internalScriptEditor = QCoreApplication::applicationDirPath() + "/ScriptEditor.exe";
 #endif
 
-    if(currentSettings->scriptEditorPath.isEmpty())
-    {
-        (void)startScriptEditor(internalScriptEditor, arguments, parent, true);
-    }
-    else
-    {
+    if(currentSettings->useExternalScriptEditor)
+    {//An external editor shall be used.
+
         if(!startScriptEditor(currentSettings->scriptEditorPath, arguments, parent, false))
         {//The external script editor could not be started.
             startScriptEditor(internalScriptEditor, arguments, parent, true);
         }
+    }
+    else
+    {
+        (void)startScriptEditor(internalScriptEditor, arguments, parent, true);
     }
 }
 
