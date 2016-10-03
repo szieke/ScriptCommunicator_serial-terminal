@@ -58,7 +58,7 @@ public:
                            QString scriptPath, bool runsInDebugger) : QThread(0), m_createString(0),
     m_consoleLogObject(consoleLogObject), m_scriptEngine(0), m_scriptSql(0), m_scriptPath(scriptPath),
     m_blockTime(DEFAULT_BLOCK_TIME), m_scriptFileObject(0), m_mainWindow(mainWindow), m_runsInDebugger(runsInDebugger),
-    m_debugger(0), m_debugWindow(0)
+    m_debugger(0), m_debugWindow(0), m_isSuspendedByDebuger(false)
     {
 
     }
@@ -267,6 +267,18 @@ public slots:
             m_debugWindow->activateWindow(); // for Windows
         }
     }
+
+    ///The script is suspended by the debugger.
+    void suspendedByDebuggerSlot();
+
+    ///The script is resumed by the debugger.
+    void resumedByDebuggerSlot();
+
+#ifdef Q_OS_MAC
+    ///Debug timer slot (checks if the script is suspended by the debugger or is running).
+    void debugTimerSlot(void);
+#endif
+
 protected:
     ///The thread main function.
     void run()
@@ -318,6 +330,14 @@ private:
 
     ///The debug window.
     QMainWindow *m_debugWindow;
+
+    ///True if the script is suspended by the debugger.
+    bool m_isSuspendedByDebuger;
+
+#ifdef Q_OS_MAC
+    ///The debug timer (checks if the script is suspended by the debugger or is running).
+    QTimer m_debugTimer;
+#endif
 
 };
 

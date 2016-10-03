@@ -871,8 +871,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>248</width>
-            <height>151</height>
+            <width>828</width>
+            <height>377</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,0,1">
@@ -1111,8 +1111,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>327</width>
-            <height>234</height>
+            <width>828</width>
+            <height>377</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_12" stretch="2,1">
@@ -1384,8 +1384,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>757</width>
-            <height>329</height>
+            <width>828</width>
+            <height>377</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
@@ -1987,8 +1987,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>353</width>
-            <height>278</height>
+            <width>828</width>
+            <height>377</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2223,7 +2223,7 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>718</width>
+            <width>811</width>
             <height>412</height>
            </rect>
           </property>
@@ -2947,7 +2947,14 @@ Note: The reopen buton in the main window is only visible if this option is sele
         </property>
        </widget>
       </item>
-      <item row="0" column="5">
+      <item row="3" column="7">
+       <widget class="QPushButton" name="closeButton">
+        <property name="text">
+         <string>Close</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
        <spacer name="horizontalSpacer_8">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -2960,21 +2967,14 @@ Note: The reopen buton in the main window is only visible if this option is sele
         </property>
        </spacer>
       </item>
-      <item row="2" column="6">
+      <item row="2" column="7">
        <widget class="QPushButton" name="searchScriptEditorPushButton">
         <property name="text">
          <string>search</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="6">
-       <widget class="QPushButton" name="closeButton">
-        <property name="text">
-         <string>Close</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
+      <item row="0" column="2">
        <widget class="QComboBox" name="connectionTypeComboBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -3016,32 +3016,14 @@ Note: The reopen buton in the main window is only visible if this option is sele
         </item>
        </widget>
       </item>
-      <item row="0" column="3">
-       <widget class="QLabel" name="label_26">
-        <property name="toolTip">
-         <string>endianess of the connected device (is used to interpret the decimals
-in the log, the decimal console and the send window)</string>
-        </property>
-        <property name="text">
-         <string>endianness</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="1" colspan="5">
+      <item row="2" column="2" colspan="5">
        <widget class="DragDropLineEdit" name="scriptEditorPathLineEdit">
         <property name="toolTip">
          <string>path to the external script editor</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_24">
-        <property name="text">
-         <string>script editor</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
+      <item row="0" column="5">
        <widget class="QComboBox" name="endianessComboBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -3074,7 +3056,18 @@ in the log, the decimal console and the send window)</string>
         </item>
        </widget>
       </item>
-      <item row="0" column="2">
+      <item row="0" column="4">
+       <widget class="QLabel" name="label_26">
+        <property name="toolTip">
+         <string>endianess of the connected device (is used to interpret the decimals
+in the log, the decimal console and the send window)</string>
+        </property>
+        <property name="text">
+         <string>endianness</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -3089,6 +3082,16 @@ in the log, the decimal console and the send window)</string>
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="useExternalCheckBox">
+        <property name="toolTip">
+         <string>use an external script editor (instead of the integrated)</string>
+        </property>
+        <property name="text">
+         <string>use ext. script editor</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

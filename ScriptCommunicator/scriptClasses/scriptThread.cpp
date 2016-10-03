@@ -111,7 +111,7 @@ ScriptThread::ScriptThread(ScriptWindow* scriptWindow, quint32 sendId, QString s
     m_sendingSucceeded(false), m_shallExit(false), m_shallPause(false) ,m_scriptRunsInDebugger(scriptRunsInDebugger), m_state(INVALID),
     m_pauseTimer(0),m_scriptEngine(0), m_settingsDialog(settingsDialog), m_scriptSql(), m_blockTime(DEFAULT_BLOCK_TIME),
     m_standardDialogs(0), m_scriptFileObject(0), m_isSuspendedByDebuger(false), m_debugger(0), m_debugWindow(0), m_hasMainWindowGuiElements(false),
-    sendDataFromMainInterfaceFunction()
+    sendDataFromMainInterfaceFunction(), m_libraries(0)
 {
     m_scriptWindow = scriptWindow;
 
@@ -138,11 +138,19 @@ ScriptThread::~ScriptThread()
         el->deleteLater();
     }
 
-    //delete all created gui elements (created by the script)
+    //Delete all created gui elements (created by the script).
     for(auto el : m_allCreatedGuiElementsFromScript)
     {
         el->deleteLater();
     }
+
+    //Unload all loaded libraries.
+    for(auto el : m_libraries)
+    {
+        el->unload();
+        el->deleteLater();
+    }
+    m_libraries.clear();
 
 }
 
@@ -344,6 +352,7 @@ void ScriptThread::suspendedByDebuggerSlot()
     m_shallPause = true;
     m_isSuspendedByDebuger = true;
     setThreadState(PAUSED);
+    m_pauseTimer->start();
 }
 
 /**
@@ -499,9 +508,8 @@ void ScriptThread::run()
 
         //start the pause timer
         m_pauseTimer = new QTimer(this);
-        m_pauseTimer->setInterval(200);
+        m_pauseTimer->setInterval(1);
         connect(m_pauseTimer, SIGNAL(timeout()),this, SLOT(pauseTimerSlot()));
-        m_pauseTimer->start();
 
         //get the connection state of the main interface
         m_isConnected = m_scriptWindow->m_mainInterfaceThread->isConnected();
@@ -566,6 +574,11 @@ void ScriptThread::run()
             m_debugger->action(QScriptEngineDebugger::InterruptAction)->trigger();
             m_debugWindow->setWindowTitle(m_scriptFileName);
 
+            connect(&m_debugReceiveTimer, SIGNAL(timeout()),this, SLOT(debugReceiveTimerSlot()));
+            m_debugReceiveTimer.setInterval(20);
+
+
+
 #ifdef Q_OS_MAC
 //Using this debugger signals causes the debugger to block (only on Mac OS X)
 
@@ -573,6 +586,7 @@ void ScriptThread::run()
             m_debugTimer.start(200);
 
 #else
+
             connect(m_debugger, SIGNAL(evaluationSuspended()),
                     this, SLOT(suspendedByDebuggerSlot()), Qt::DirectConnection);
             connect(m_debugger, SIGNAL(evaluationResumed()),
@@ -592,8 +606,7 @@ void ScriptThread::run()
             {
                 while(!m_shallExit)
                 {
-                    QCoreApplication::processEvents();
-                    msleep(1);
+                    QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
                     if(!m_debugWindow->isVisible())
                     {
                         stopScript();
@@ -1286,7 +1299,6 @@ void ScriptThread::debugTimerSlot(void)
 
             QCoreApplication::processEvents();
             setThreadState(RUNNING);
-            m_pauseTimer->start();
 
         }
     }
@@ -1332,8 +1344,7 @@ void ScriptThread::pauseTimerSlot()
         while(m_shallPause && !m_shallExit)
         {
 
-            QCoreApplication::processEvents();
-            QThread::msleep(10);
+            QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
 
             if(m_userInterface[0]->getWidgetPointer() != 0)
             {
@@ -1382,7 +1393,6 @@ void ScriptThread::pauseTimerSlot()
 
         QCoreApplication::processEvents();
         setThreadState(RUNNING);
-        m_pauseTimer->start();
     }
 }
 
@@ -1462,6 +1472,17 @@ void ScriptThread::canMessagesReceivedSlot(QVector<QByteArray> messages)
 
 }
 
+
+/**
+ * Emits the dataReceivedSignal with the saved received data (if the script is running in the script debugger).
+ */
+void ScriptThread::debugReceiveTimerSlot(void)
+{
+    m_debugReceiveTimer.stop();
+    emit dataReceivedSignal(m_savedReceivedData);
+    m_savedReceivedData.clear();
+}
+
 /**
  * Is called, if data from the main interface (MainInterfaceThread) has been received.
  * It converts the received QByteArray into a QVector and emits the dataReceivedSignal.
@@ -1481,7 +1502,18 @@ void ScriptThread::dataReceivedSlot(QByteArray data)
             {
                 dataVector.push_back((unsigned char) val);
             }
-            emit dataReceivedSignal(dataVector);
+            if(m_scriptRunsInDebugger)
+            {
+                m_savedReceivedData.append(dataVector);
+                if(!m_debugReceiveTimer.isActive())
+                {
+                    m_debugReceiveTimer.start();
+                }
+            }
+            else
+            {
+                emit dataReceivedSignal(dataVector);
+            }
         }
     }
 
@@ -2330,25 +2362,28 @@ bool ScriptThread::loadLibrary(QString path, bool isRelativePath)
     {
         path = isRelativePath ? createAbsolutePath(path) : path;
 
-        QLibrary lib(path);
-        if(lib.load())
+        QLibrary* lib = new QLibrary(path);
+        if(lib->load())
         {
 
             typedef void (*initFunction)(QScriptEngine*);
 
-            initFunction func = (initFunction) lib.resolve("init");
+            initFunction func = (initFunction) lib->resolve("init");
             if (func)
             {
                 func(m_scriptEngine);
                 result = true;
+                m_libraries.append(lib);
             }
             else
             {
+                lib->deleteLater();
                 appendTextToConsole(QString("could not init function in library: %1").arg(path));
             }
         }
         else
         {
+            lib->deleteLater();
             appendTextToConsole(QString("could not load library: %1").arg(path));
         }
 

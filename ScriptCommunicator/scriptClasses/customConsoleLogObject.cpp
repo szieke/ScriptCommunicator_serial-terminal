@@ -238,6 +238,46 @@ bool CustomConsoleLogObject::loadCustomScript(QString scriptPath, bool debug)
 }
 
 /**
+ * The script is suspended by the debugger.
+ */
+void CustomConsoleLogThread::suspendedByDebuggerSlot()
+{
+    m_isSuspendedByDebuger = true;
+}
+
+/**
+ * The script is resumed by the debugger.
+ */
+void CustomConsoleLogThread::resumedByDebuggerSlot()
+{
+    m_isSuspendedByDebuger = false;
+}
+
+#ifdef Q_OS_MAC
+/**
+* Debug timer slot (checks if the script is suspended by the debugger or is running).
+*/
+void ScriptThread::debugTimerSlot(void)
+{
+    static QScriptEngineDebugger::DebuggerState state = QScriptEngineDebugger::SuspendedState;
+
+    if(m_debugger->state() != state)
+    {
+        state = m_debugger->state();
+        if(state == QScriptEngineDebugger::RunningState)
+        {//The script is suspended (seems to be a bug on Mac OS X).
+
+            m_isSuspendedByDebuger = true;
+        }
+        else
+        {
+            m_isSuspendedByDebuger = false;
+        }
+    }
+}
+#endif
+
+/**
  * Loads a custom console/log script.
  * @param scriptPath
  *      The script.
@@ -287,6 +327,19 @@ void CustomConsoleLogThread::loadCustomScriptSlot(QString scriptPath, bool* hasS
                 m_debugWindow->setWindowTitle(scriptFile.fileName());
 
                 connect(m_mainWindow, SIGNAL(bringWindowsToFrontSignal()), this, SLOT(bringWindowsToFrontSlot()), Qt::DirectConnection);
+
+#ifdef Q_OS_MAC
+//Using this debugger signals causes the debugger to block (only on Mac OS X)
+
+            connect(&m_debugTimer, SIGNAL(timeout()),this, SLOT(debugTimerSlot()));
+            m_debugTimer.start(200);
+
+#else
+            connect(m_debugger, SIGNAL(evaluationSuspended()),
+                    this, SLOT(suspendedByDebuggerSlot()), Qt::DirectConnection);
+            connect(m_debugger, SIGNAL(evaluationResumed()),
+                    this, SLOT(resumedByDebuggerSlot()), Qt::DirectConnection);
+#endif
             }
 
             //set ScriptContext
@@ -447,7 +500,10 @@ QString CustomConsoleLogObject::callScriptFunction(QByteArray* data, QString& ti
     }
     else
     {
-        m_script->executeScriptSlot(data, &timeStamp, isSend, isUserMessage, isFromCan, isLog, &result,errorOccured);
+        if(!m_script->m_isSuspendedByDebuger)
+        {
+            m_script->executeScriptSlot(data, &timeStamp, isSend, isUserMessage, isFromCan, isLog, &result,errorOccured);
+        }
     }
 
     return result;

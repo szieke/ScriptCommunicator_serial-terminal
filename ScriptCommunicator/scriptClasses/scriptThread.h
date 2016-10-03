@@ -42,6 +42,7 @@
 #include <QStandardPaths>
 #include <QToolBox>
 #include "scriptObject.h"
+#include <QLibrary>
 
 
 class ScriptWidget;
@@ -739,6 +740,9 @@ private slots:
     void debugTimerSlot(void);
 #endif
 
+    ///Emits the dataReceivedSignal with the saved received data (if the script is running in the script debugger).
+    void debugReceiveTimerSlot(void);
+
 private:
 
     ///Contains all created gui elements (creates by the script).
@@ -829,6 +833,15 @@ private:
     ///The debug timer (checks if the script is suspended by the debugger or is running).
     QTimer m_debugTimer;
 #endif
+
+    ///This timer is used to emit the dataReceivedSignal in debugReceiveTimerSlot (if the script is running in the script debugger).
+    QTimer m_debugReceiveTimer;
+
+    ///Contains the saved received data (dataReceivedSlot) if the script is running in the script debugger.
+    QVector<unsigned char> m_savedReceivedData;
+
+    ///Contains all loaded libraries (in loadLibrary).
+    QVector<QLibrary*> m_libraries;
 
 };
 

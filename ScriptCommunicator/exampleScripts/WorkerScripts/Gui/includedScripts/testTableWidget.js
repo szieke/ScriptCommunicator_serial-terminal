@@ -275,7 +275,7 @@ UI_testTextEdit.append("class name: " + UI_tableCalendarWidget1.getClassName());
 UI_testSendTableWidget.resizeColumnToContents(0);
 adjustSendTableColmnWidth();
 UI_testReceiveTableWidget.resizeColumnToContents(0);
-adjustReceiveTableColmnWidth
+adjustReceiveTableColmnWidth();
 
 //wait 100ms
 scriptThread.sleepFromScript(100);

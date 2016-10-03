@@ -4161,12 +4161,10 @@ void MainWindow::saveConsoleSlot()
 
             QFile file(tmpFileName);
 
-            if(file.open(QIODevice::WriteOnly | QIODevice::Text))
+            if(file.open(QIODevice::WriteOnly))
             {
-                QTextStream out(&file);
-
-                out << consoleContent.toLocal8Bit();
-
+                QByteArray data = consoleContent.toLocal8Bit();
+                file.write(data);
                 file.close();
             }
             else
