@@ -353,7 +353,7 @@ void ScriptThread::suspendedByDebuggerSlot()
     m_shallPause = true;
     m_isSuspendedByDebuger = true;
     setThreadState(PAUSED);
-    m_pauseTimer->start();
+    m_pauseTimer->start(1);
 }
 
 /**
@@ -512,7 +512,8 @@ void ScriptThread::run()
 
         //start the pause timer
         m_pauseTimer = new QTimer(this);
-        m_pauseTimer->setInterval(1);
+        m_pauseTimer->setInterval(100);
+        m_pauseTimer->start();
         connect(m_pauseTimer, SIGNAL(timeout()),this, SLOT(pauseTimerSlot()));
 
         //get the connection state of the main interface
@@ -1303,6 +1304,7 @@ void ScriptThread::debugTimerSlot(void)
 
             QCoreApplication::processEvents();
             setThreadState(RUNNING);
+            m_pauseTimer->start(100);
 
         }
     }
@@ -1397,6 +1399,8 @@ void ScriptThread::pauseTimerSlot()
 
         QCoreApplication::processEvents();
         setThreadState(RUNNING);
+
+        m_pauseTimer->start(100);
     }
 }
 

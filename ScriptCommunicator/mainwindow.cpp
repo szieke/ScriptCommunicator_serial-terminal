@@ -331,6 +331,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     connect(m_scriptWindow, SIGNAL(scriptTableHasChangedSignal()),this, SLOT(setUpScriptPageSlot()));
 
     connect(m_userInterface->sequenceListWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)),this, SLOT(sequenceListItemDoubleClickedSlot(QListWidgetItem*)), Qt::QueuedConnection);
+    connect(m_userInterface->workerScriptListWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)),this, SLOT(workerScriptListItemDoubleClickedSlot(QListWidgetItem*)), Qt::QueuedConnection);
     connect(m_userInterface->workerScriptListWidget, SIGNAL(currentRowChanged(int)),this, SLOT(workerScriptsCurrentRowChangedSlot(int)), Qt::QueuedConnection);
     connect(m_userInterface->startWorkerScriptsPushButton, SIGNAL(clicked()),this, SLOT(startScriptButtonPressedSlot()));
     connect(m_userInterface->pauseWorkerScriptPushButton, SIGNAL(clicked()),this, SLOT(pauseScriptButtonPressedSlot()));
@@ -776,6 +777,7 @@ void MainWindow::commandLineModeMinimizeTimerSlot()
 /**
  * Is called if an item in the sequence list has been double clicked.
  * @param item
+ *      The clicked item.
  */
 void MainWindow::sequenceListItemDoubleClickedSlot(QListWidgetItem *item)
 {
@@ -785,6 +787,33 @@ void MainWindow::sequenceListItemDoubleClickedSlot(QListWidgetItem *item)
     {
         m_sendWindow->sendSequence(row, false, this);
     }
+}
+
+/**
+ * Is called if an item in the worker script list has been double clicked.
+ * @param item
+ *      The clicked item.
+ */
+void MainWindow::workerScriptListItemDoubleClickedSlot(QListWidgetItem *item)
+{
+    bool isOK = false;
+    quint32 row = item->data(1).toUInt(&isOK);
+    if(row != 0xffffffff)
+    {
+        if(m_scriptWindow->getScriptState(row) == SUSPENDED_BY_DEBUGGER)
+        {
+            //Do nothing.
+        }
+        else if(m_scriptWindow->getScriptState(row) == RUNNING)
+        {
+            m_scriptWindow->stopScriptThread(row);
+        }
+        else
+        {
+            m_scriptWindow->startScriptThread(row);
+        }
+    }
+
 }
 
 /**

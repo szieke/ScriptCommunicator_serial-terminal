@@ -394,6 +394,9 @@ private slots:
     ///Is called if an item in the sequence list has been double clicked.
     void sequenceListItemDoubleClickedSlot(QListWidgetItem *item);
 
+    ///Is called if an item in the worker script list has been double clicked.
+    void workerScriptListItemDoubleClickedSlot(QListWidgetItem *item);
+
     ///Current data rates slot.
     void dataRateUpdateSlot(quint32 dataRateSend, quint32 dataRateReceive);
 
