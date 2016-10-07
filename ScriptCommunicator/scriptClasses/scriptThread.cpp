@@ -266,6 +266,7 @@ QString ScriptThread::getPublicScriptElements(void)
            "void sendReceivedDataToMainInterface(QVector<unsigned char> data);"
            "bool checkScriptCommunicatorVersion(QString minVersion);"
            "QStringList getAllObjectPropertiesAndFunctions(QScriptValue object, bool printInScriptWindowConsole=false);"
+           "QString getMainWindowTitle(void);void setMainWindowTitle(QString newTitle);"
            "globalStringChangedSignal.connect(QString name, QString string);"
            "globalDataArrayChangedSignal.connect(QString name, QVector<unsigned char> data);"
            "globalUnsignedChangedSignal.connect(QString name, quint32 number);"
@@ -422,6 +423,9 @@ void ScriptThread::run()
 
         connect(this, SIGNAL(setSerialPortPinsSignal(bool,bool)),
                 m_scriptWindow->m_mainWindow, SLOT(setSerialPortPinsSlot(bool,bool)), directConnectionType);
+
+        connect(this, SIGNAL(setMainWindowTitleSignal(QString)),
+                m_scriptWindow->m_mainWindow, SLOT(setWindowTitle(QString)), directConnectionType);
 
         connect(this, SIGNAL(addTabsToMainWindowSignal(QTabWidget*)),
                 m_scriptWindow->m_mainWindow, SLOT(addTabsToMainWindowSlot(QTabWidget*)), Qt::QueuedConnection);
@@ -3079,6 +3083,13 @@ QScriptValue ScriptThread::getMainInterfaceSocketSettings(void)
     return ret;
 }
 
+/**
+ * Returns the title of the main window.
+ */
+QString ScriptThread::getMainWindowTitle(void)
+{
+    return m_scriptWindow->getMainWindow()->windowTitle();
+}
 /**
  * Checks if the version of ScriptCommunicator is equal/greater then the version in minVersion.
  * The format of minVersion is: 'major'.'minor' (e.g. 04.11).

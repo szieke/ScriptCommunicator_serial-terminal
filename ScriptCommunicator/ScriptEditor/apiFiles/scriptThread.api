@@ -108,6 +108,8 @@ scriptThread::sendReceivedDataToMainInterface(Array<unsigned char> data):void \n
 scriptThread::checkScriptCommunicatorVersion(String minVersion):bool \nChecks if the version of ScriptCommunicator is equal/greater then the version in minVersion.\nThe format of minVersion is: 'major'.'minor' (e.g. 04.11).
 scriptThread::getMainInterfaceSerialPortSettings(void):serialPortSettings \nReturns the serial port settings of the main interface.
 scriptThread::getMainInterfaceSocketSettings(void):socketSettings \nReturns the socket (UDP, TCP client/server) settings of the main interface.
+scriptThread::getMainWindowTitle(void):QString \nReturns the title of the main window.
+scriptThread::setMainWindowTitle(QString newTitle):void \nSets the title of the main window.
 scriptThread::globalStringChangedSignal.connect(String name, String string)\nIs emitted if a string in the global string map has been changed.
 scriptThread::globalDataArrayChangedSignal.connect(String name, Array<unsigned char> data)\nIs emitted if a data vector in the global string data vector has been changed.
 scriptThread::globalUnsignedChangedSignal.connect(String name, quint32 number)\nIs emitted if an unsigned number in the global unsigned number map has been changed

@@ -5,6 +5,7 @@ a tab (with custom GUI elements) to the main window.
 //Is called if this script shall be exited.
 function stopScript() 
 {
+	scriptThread.setMainWindowTitle(oldMainWindowText);
     scriptThread.appendTextToConsole("script has been stopped");
 }
 
@@ -70,3 +71,5 @@ else
 	scriptThread.stopScript();
 }
 
+var oldMainWindowText = scriptThread.getMainWindowTitle();
+scriptThread.setMainWindowTitle("ScriptText   " + oldMainWindowText);

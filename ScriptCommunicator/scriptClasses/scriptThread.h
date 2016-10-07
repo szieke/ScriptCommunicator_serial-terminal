@@ -528,6 +528,12 @@ public:
     ///Returns the socket (UDP, TCP client/server) settings of the main interface.
     Q_INVOKABLE QScriptValue getMainInterfaceSocketSettings(void);
 
+    ///Returns the title of the main window.
+    Q_INVOKABLE QString getMainWindowTitle(void);
+
+    ///Sets the title of the main window.
+    Q_INVOKABLE void setMainWindowTitle(QString newTitle){emit setMainWindowTitleSignal(newTitle);}
+
     ///Returns and all functions, signals and properties of an object.
     static void getAllObjectPropertiesAndFunctionsInternal(QScriptValue object, QStringList* resultList, QString* resultString);
 
@@ -674,6 +680,9 @@ signals:
     ///This signal must not be used from script.
     void addDataToMainWindowSendHistorySignal(QByteArray data);
 
+    ///Is connected with MainWindow::setWindowTitle.
+    ///This signal must not be used from script.
+    void setMainWindowTitleSignal(QString newTitle);
 
 protected:
     ///The thread main function.

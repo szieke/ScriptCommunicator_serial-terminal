@@ -602,6 +602,7 @@ void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStri
             searchSingleType("String", "=scriptThread.productVersion(", lines);
             searchSingleType("String", "=scriptThread.getScriptCommunicatorFolder(", lines);
             searchSingleType("String", "=scriptThread.getUserDocumentsFolder(", lines);
+            searchSingleType("String", "=scriptThread.getMainWindowTitle(", lines);
             searchSingleType("ScriptTcpClient", "=scriptThread.createTcpClient(", lines);
         }
 
