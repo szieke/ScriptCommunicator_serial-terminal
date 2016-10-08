@@ -158,10 +158,6 @@ ScriptThread::~ScriptThread()
 QString ScriptThread::getPublicScriptElements(void)
 {
     return "void appendTextToConsole(QString string, bool newLine=true, bool bringToForeground=false);"
-           "QString byteArrayToString(QVector<unsigned char> data);"
-           "QString byteArrayToHexString(QVector<unsigned char> data);"
-           "QVector<unsigned char> stringToArray(QString str);"
-           "QVector<unsigned char> addStringToArray(QVector<unsigned char> array, QString str);"
            "void sleepFromScript(quint32 timeMs);"
            "ScriptUdpSocket createUdpSocket(void);"
            "ScriptTcpServer createTcpServer(void);"
@@ -412,14 +408,10 @@ void ScriptThread::run()
         qRegisterMetaType< QMessageBox::Icon>("QMessageBox::Icon");
         qRegisterMetaType<QMessageBox::StandardButtons>("QMessageBox::StandardButtons");
         qRegisterMetaType<Context2D*>("Context2D*");
-
-
-
-
-
         qRegisterMetaType<QVector<quint8>>("QVector<quint8>");
         qRegisterMetaType<QVector<quint32>>("QVector<quint32>");
         qRegisterMetaType<QVector<QVector<unsigned char>>>("QVector<QVector<unsigned char>>");
+
 
         connect(this, SIGNAL(setSerialPortPinsSignal(bool,bool)),
                 m_scriptWindow->m_mainWindow, SLOT(setSerialPortPinsSlot(bool,bool)), directConnectionType);
@@ -528,6 +520,7 @@ void ScriptThread::run()
         ScriptXmlWriter::registerScriptMetaTypes(m_scriptEngine);
         ScriptTableCellPosition::registerType(m_scriptEngine);
 
+
         qScriptRegisterSequenceMetaType<QVector<unsigned char> >(m_scriptEngine);
         qScriptRegisterSequenceMetaType<QVector<quint8> >(m_scriptEngine);
         qScriptRegisterSequenceMetaType<QVector<quint32> >(m_scriptEngine);
@@ -549,6 +542,7 @@ void ScriptThread::run()
         m_scriptEngine->globalObject().setProperty("scriptThread", m_scriptEngine->newQObject(this));
 
         m_scriptSql.registerScriptMetaTypes(m_scriptEngine);
+        m_converterObject.registerScriptMetaTypes(m_scriptEngine);
 
         m_standardDialogs = new ScriptStandardDialogs(this);
         m_standardDialogs->intSignals(m_scriptWindow, m_scriptRunsInDebugger);
@@ -565,7 +559,7 @@ void ScriptThread::run()
             m_userInterface[0]->show();
         }
 
-        //Must be here (if a script block the main function, then loadScript will block too).
+        //Must be here (if a script blocks the main function, then loadScript will block too).
         setThreadState(RUNNING);
 
 

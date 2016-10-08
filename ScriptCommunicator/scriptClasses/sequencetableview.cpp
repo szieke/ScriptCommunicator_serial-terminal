@@ -835,6 +835,8 @@ SequenceScriptEngineWrapper* SequenceScriptThread::loadScript(QString scriptPath
         //register the script thread object
         scriptEngine->globalObject().setProperty("seq", scriptEngine->newQObject(this));
 
+        m_converterObject.registerScriptMetaTypes(scriptEngine);
+
         if(m_runsInDebugger)
         {
             m_debugger = new QScriptEngineDebugger(this);

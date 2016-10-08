@@ -16,10 +16,7 @@ function sendData(data)
 	}
 
 	//Append the counter value.
-	data.push((counter >> 24) & 0xff);	
-	data.push((counter >> 16) & 0xff);	
-	data.push((counter >> 8) & 0xff);	
-	data.push(counter & 0xff);	
+	data = conv.addUint32ToArray(data, counter, false);
 	
 	//Append a CRC8
 	var crc8 = seq.calculateCrc8(data);
@@ -28,8 +25,8 @@ function sendData(data)
 	counter++;
 	//Store the new counter value.
 	seq.setGlobalUnsignedNumber("Counter", counter);
-	
 	seq.appendTextToConsole("sequenceSendScript.js send: " + data, true, false);
+
 		
 	return data;
 }

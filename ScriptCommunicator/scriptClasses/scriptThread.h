@@ -854,6 +854,9 @@ private:
     ///Contains all loaded libraries (in loadLibrary).
     QVector<QLibrary*> m_libraries;
 
+    ///The script converter object.
+    ScriptConverter m_converterObject;
+
 };
 
 #endif // SCRIPTTHREAD_H

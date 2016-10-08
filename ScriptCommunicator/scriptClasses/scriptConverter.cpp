@@ -101,12 +101,21 @@ QVector<unsigned char> ScriptConverter::addStringToArray(QVector<unsigned char> 
     return array;
 }
 
-uint16_t ScriptConverter::byteArrayToUint16(QVector<unsigned char> data, bool lsb)
+/**
+ * Converts the first Bytes of a byte array to an uint16_t.
+ * @param data
+ *      The byte array.
+ * @param littleEndian
+ *      True if the byte order is little endian (least significant byte first).
+ * @return
+ *      The value.
+ */
+uint32_t ScriptConverter::byteArrayToUint16(QVector<unsigned char> data, bool littleEndian)
 {
     uint16_t value = 0;
     if(data.length() >= 2)
     {
-        if(lsb)
+        if(littleEndian)
         {
             value = data[0] + ((uint16_t)data[1] << 8);
         }
@@ -118,12 +127,21 @@ uint16_t ScriptConverter::byteArrayToUint16(QVector<unsigned char> data, bool ls
     return value;
 }
 
-uint32_t ScriptConverter::byteArrayToUint32(QVector<unsigned char> data, bool lsb)
+/**
+ * Converts the first Bytes of a byte array to an uint32_t.
+ * @param data
+ *      The byte array.
+ * @param littleEndian
+ *      True if the byte order is little endian (least significant byte first).
+ * @return
+ *      The value.
+ */
+uint32_t ScriptConverter::byteArrayToUint32(QVector<unsigned char> data, bool littleEndian)
 {
     uint32_t value = 0;
     if(data.length() >= 2)
     {
-        if(lsb)
+        if(littleEndian)
         {
             value = data[0] + ((uint32_t)data[1] << 8)  + ((uint32_t)data[2] << 16)  + ((uint32_t)data[3] << 24);
         }
@@ -135,13 +153,22 @@ uint32_t ScriptConverter::byteArrayToUint32(QVector<unsigned char> data, bool ls
     return value;
 }
 
-uint64_t ScriptConverter::byteArrayToUint64(QVector<unsigned char> data, bool lsb)
+/**
+ * Converts the first Bytes of a byte array to an uint64_t.
+ * @param data
+ *      The byte array.
+ * @param littleEndian
+ *      True if the byte order is little endian (least significant byte first).
+ * @return
+ *      The value.
+ */
+uint64_t ScriptConverter::byteArrayToUint64(QVector<unsigned char> data, bool littleEndian)
 {
     uint64_t value = 0;
 
     if(data.length() >= 8)
     {
-        if(lsb)
+        if(littleEndian)
         {
             value = data[0] + ((uint64_t)data[1] << 8) + ((uint64_t)data[2] << 16) + ((uint64_t)data[3] << 24)  + ((uint64_t)data[4] << 32)
                      + ((uint64_t)data[5] << 40)  + ((uint64_t)data[6] << 48)  + ((uint64_t)data[7] << 56);
@@ -155,56 +182,243 @@ uint64_t ScriptConverter::byteArrayToUint64(QVector<unsigned char> data, bool ls
     return value;
 }
 
-int16_t ScriptConverter::byteArrayToInt16(QVector<unsigned char> data, bool lsb)
+/**
+ * Converts the first Bytes of a byte array to an int16_t.
+ * @param data
+ *      The byte array.
+ * @param littleEndian
+ *      True if the byte order is little endian (least significant byte first).
+ * @return
+ *      The value.
+ */
+int16_t ScriptConverter::byteArrayToInt16(QVector<unsigned char> data, bool littleEndian)
 {
-    uint16_t value = ScriptConverter::byteArrayToUint16(data, lsb);
+    uint16_t value = ScriptConverter::byteArrayToUint16(data, littleEndian);
     int16_t* result = (int16_t*)&value;
     return *result;
 }
 
-int32_t ScriptConverter::byteArrayToInt32(QVector<unsigned char> data, bool lsb)
+/**
+ * Converts the first Bytes of a byte array to an int32_t.
+ * @param data
+ *      The byte array.
+ * @param littleEndian
+ *      True if the byte order is little endian (least significant byte first).
+ * @return
+ *      The value.
+ */
+int32_t ScriptConverter::byteArrayToInt32(QVector<unsigned char> data, bool littleEndian)
 {
-    uint32_t value = ScriptConverter::byteArrayToUint32(data, lsb);
+    uint32_t value = ScriptConverter::byteArrayToUint32(data, littleEndian);
     int32_t* result = (int32_t*)&value;
     return *result;
 }
 
-int64_t ScriptConverter::byteArrayToInt64(QVector<unsigned char> data, bool lsb)
+/**
+ * Converts the first Bytes of a byte array to an int64_t.
+ * @param data
+ *      The byte array.
+ * @param littleEndian
+ *      True if the byte order is little endian (least significant byte first).
+ * @return
+ *      The value.
+ */
+int64_t ScriptConverter::byteArrayToInt64(QVector<unsigned char> data, bool littleEndian)
 {
-    uint64_t value = ScriptConverter::byteArrayToUint64(data, lsb);
+    uint64_t value = ScriptConverter::byteArrayToUint64(data, littleEndian);
     int64_t* result = (int64_t*)&value;
     return *result;
 }
 
-float ScriptConverter::byteArrayToFloat32(QVector<unsigned char> data, bool lsb)
-{
-    uint32_t value = ScriptConverter::byteArrayToUint32(data, lsb);
-    float* result = (float*)&value;
-    return *result;
-}
-
-double ScriptConverter::byteArrayToFloat64(QVector<unsigned char> data, bool lsb)
-{
-    uint64_t value = ScriptConverter::byteArrayToUint64(data, lsb);
-    float* result = (float*)&value;
-    return *result;
-}
-
-#if 0
 /**
- * Adds an uint16 string to a byte array.
+ * Converts the first Bytes of a byte array to a float32.
+ * @param data
+ *      The byte array.
+ * @param littleEndian
+ *      True if the byte order is little endian (least significant byte first).
+ * @return
+ *      The value.
+ */
+float ScriptConverter::byteArrayToFloat32(QVector<unsigned char> data, bool littleEndian)
+{
+    uint32_t value = ScriptConverter::byteArrayToUint32(data, littleEndian);
+    float* result = (float*)&value;
+    return *result;
+}
+
+/**
+ * Converts the first Bytes of a byte array to a float64.
+ * @param data
+ *      The byte array.
+ * @param littleEndian
+ *      True if the byte order is little endian (least significant byte first).
+ * @return
+ *      The value.
+ */
+double ScriptConverter::byteArrayToFloat64(QVector<unsigned char> data, bool littleEndian)
+{
+    uint64_t value = ScriptConverter::byteArrayToUint64(data, littleEndian);
+    double* result = (double*)&value;
+    return *result;
+}
+
+
+/**
+ * Adds an uint16 to a byte array.
  * @param array
  *      The byte array.
- * @param str
- *      The string
+ * @param value
+ *      The Value
  * @return
  *      The byte array.
  */
-QVector<unsigned char> ScriptConverter::addUint16ToArray(QVector<unsigned char> array , QString str)
+QVector<unsigned char> ScriptConverter::addUint16ToArray(QVector<unsigned char> array, uint16_t value, bool littleEndian)
 {
-     array.append(val);
+    if(littleEndian)
+    {
+        array.append(value & 0xff);
+        array.append((value >> 8) & 0xff);
+    }
+    else
+    {
+        array.append((value >> 8) & 0xff);
+        array.append(value & 0xff);
     }
     return array;
 }
-#endif
 
+/**
+ * Adds an uint32 to a byte array.
+ * @param array
+ *      The byte array.
+ * @param value
+ *      The Value
+ * @return
+ *      The byte array.
+ */
+QVector<unsigned char> ScriptConverter::addUint32ToArray(QVector<unsigned char> array, uint32_t value, bool littleEndian)
+{
+    if(littleEndian)
+    {
+        array.append(value & 0xff);
+        array.append((value >> 8) & 0xff);
+        array.append((value >> 16) & 0xff);
+        array.append((value >> 24) & 0xff);
+    }
+    else
+    {
+        array.append((value >> 24) & 0xff);
+        array.append((value >> 16) & 0xff);
+        array.append((value >> 8) & 0xff);
+        array.append(value & 0xff);
+    }
+    return array;
+}
+
+/**
+ * Adds an uint64 to a byte array.
+ * @param array
+ *      The byte array.
+ * @param value
+ *      The Value
+ * @return
+ *      The byte array.
+ */
+QVector<unsigned char> ScriptConverter::addUint64ToArray(QVector<unsigned char> array, uint64_t value, bool littleEndian)
+{
+    if(littleEndian)
+    {
+        array.append(value & 0xff);
+        array.append((value >> 8) & 0xff);
+        array.append((value >> 16) & 0xff);
+        array.append((value >> 24) & 0xff);
+        array.append((value >> 32) & 0xff);
+        array.append((value >> 40) & 0xff);
+        array.append((value >> 48) & 0xff);
+        array.append((value >> 56) & 0xff);
+    }
+    else
+    {
+        array.append((value >> 56) & 0xff);
+        array.append((value >> 48) & 0xff);
+        array.append((value >> 40) & 0xff);
+        array.append((value >> 32) & 0xff);
+        array.append((value >> 24) & 0xff);
+        array.append((value >> 16) & 0xff);
+        array.append((value >> 8) & 0xff);
+        array.append(value & 0xff);
+    }
+    return array;
+}
+
+/**
+ * Adds an int16 to a byte array.
+ * @param array
+ *      The byte array.
+ * @param value
+ *      The Value
+ * @return
+ *      The byte array.
+ */
+QVector<unsigned char> ScriptConverter::addInt16ToArray(QVector<unsigned char> array, int16_t value, bool littleEndian)
+{
+    return ScriptConverter::addUint16ToArray(array, (uint16_t) value, littleEndian);
+}
+
+/**
+ * Adds an int32 to a byte array.
+ * @param array
+ *      The byte array.
+ * @param value
+ *      The Value
+ * @return
+ *      The byte array.
+ */
+QVector<unsigned char> ScriptConverter::addInt32ToArray(QVector<unsigned char> array, int32_t value, bool littleEndian)
+{
+    return ScriptConverter::addUint32ToArray(array, (uint32_t) value, littleEndian);
+}
+
+/**
+ * Adds an int64 to a byte array.
+ * @param array
+ *      The byte array.
+ * @param value
+ *      The Value
+ * @return
+ *      The byte array.
+ */
+QVector<unsigned char> ScriptConverter::addInt64ToArray(QVector<unsigned char> array, int64_t value, bool littleEndian)
+{
+    return ScriptConverter::addUint64ToArray(array, (uint64_t) value, littleEndian);
+}
+
+/**
+ * Adds an float to a byte array.
+ * @param array
+ *      The byte array.
+ * @param value
+ *      The Value
+ * @return
+ *      The byte array.
+ */
+QVector<unsigned char> ScriptConverter::addFloat32ToArray(QVector<unsigned char> array, float value, bool littleEndian)
+{
+    uint32_t* tmp = (uint32_t*)&value;
+    return ScriptConverter::addUint32ToArray(array, *tmp, littleEndian);
+}
+
+/**
+ * Adds an float64 to a byte array.
+ * @param array
+ *      The byte array.
+ * @param value
+ *      The Value
+ * @return
+ *      The byte array.
+ */
+QVector<unsigned char> ScriptConverter::addFloat64ToArray(QVector<unsigned char> array, double value, bool littleEndian)
+{
+    uint64_t* tmp = (uint64_t*)&value;
+    return ScriptConverter::addUint64ToArray(array, *tmp, littleEndian);
+}

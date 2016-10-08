@@ -1,8 +1,4 @@
 seq::appendTextToConsole(String string, bool newLine=true, bool bringToForeground=false):void \nAppends text to the script window console.
-seq::byteArrayToString(Array<unsigned char> data):String \nConverts a byte array which contains ascii characters into a ascii string (String).
-seq::byteArrayToHexString(Array<unsigned char> data):String \nConverts a byte array into a hex string.
-seq::stringToArray(String str):Array<unsigned char> \nConverts an ascii string into a byte array.
-seq::addStringToArray(Array<unsigned char> array, String str):Array<unsigned char> \nAdds an ascii string to a byte array.
 seq::calculateCrc8(const Array<unsigned char> data):quint8 \nCalculates a crc8.
 seq::calculateCrc8WithPolynomial(Array<unsigned char> data, unsigned char polynomial, unsigned char startValue=0):quint8 \nCalculates a crc8 with a given polynomial.
 seq::calculateCrc16(const Array<unsigned char> data):quint16 \nCalculates a crc16.

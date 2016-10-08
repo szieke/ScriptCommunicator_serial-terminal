@@ -83,9 +83,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "QString byteArrayToString(QVector<unsigned char> data);QString byteArrayToHexString(QVector<unsigned char> data);"
-               "QVector<unsigned char> stringToArray(QString str);QVector<unsigned char> addStringToArray(QVector<unsigned char> array, QString str);"
-               "QString getScriptFolder(void);bool loadScript(QString scriptPath, bool isRelativePath=true);"
+        return "QString getScriptFolder(void);bool loadScript(QString scriptPath, bool isRelativePath=true);"
                "QString readFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1);"
                "QVector<unsigned char> readBinaryFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1);"
                "qint64 getFileSize(QString path, bool isRelativePath=true);bool checkFileExists(QString path, bool isRelativePath=true);"
@@ -334,6 +332,9 @@ private:
 
     ///True if the script is suspended by the debugger.
     bool m_isSuspendedByDebuger;
+
+    ///The script converter object.
+    ScriptConverter m_converterObject;
 
 #ifdef Q_OS_MAC
     ///The debug timer (checks if the script is suspended by the debugger or is running).

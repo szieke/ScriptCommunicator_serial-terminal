@@ -1,8 +1,4 @@
 cust::appendTextToConsole(String string, bool newLine=true, bool bringToForeground=false):void \nAppends text to the script window console.
-cust::byteArrayToString(Array<unsigned char> data):String \nConverts a byte array which contains ascii characters into a ascii string (String).
-cust::byteArrayToHexString(Array<unsigned char> data):String \nConverts a byte array into a hex string.
-cust::stringToArray(String str):Array<unsigned char> \nConverts an ascii string into a byte array.
-cust::addStringToArray(Array<unsigned char> array, String str):Array<unsigned char> \nAdds an ascii string to a byte array.
 cust::getScriptFolder(void):String \nReturns the folder in which the script resides.
 cust::loadScript(String scriptPath, bool isRelativePath=true):bool \nLoads/includes one script (QtScript has no built in include mechanism).
 cust::readFile(String path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1):String \nReads a text file and returns the content.

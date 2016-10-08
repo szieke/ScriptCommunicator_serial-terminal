@@ -567,8 +567,6 @@ void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStri
             searchSingleType("ScriptPlotWindow", "=scriptThread.createPlotWindow(", lines);
             searchSingleType("ScriptXmlReader", "=scriptThread.createXmlReader(", lines);
             searchSingleType("ScriptXmlWriter", "=scriptThread.createXmlWriter(", lines);
-            searchSingleType("Dummy", "=scriptThread.stringToArray(", lines, true);
-            searchSingleType("Dummy", "=scriptThread.addStringToArray(", lines, true);
             searchSingleType("Dummy", "=scriptThread.readBinaryFile(", lines, true);
             searchSingleType("String", "=scriptThread.readDirectory(", lines, true);
             searchSingleType("Dummy", "=scriptThread.readAllStandardOutputFromProcess(", lines, true);
@@ -584,8 +582,6 @@ void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStri
             searchSingleType("String", "=scriptThread.availableSerialPorts(", lines, true);
             searchSingleType("String", "=scriptThread.getScriptArguments(", lines, true);
             searchSingleType("String", "=scriptThread.getAllObjectPropertiesAndFunctions(", lines, true);
-            searchSingleType("String", "=scriptThread.byteArrayToString(", lines);
-            searchSingleType("String", "=scriptThread.byteArrayToHexString(", lines);
             searchSingleType("String", "=scriptThread.readFile(", lines);
             searchSingleType("String", "=scriptThread.createAbsolutePath(", lines);
             searchSingleType("String", "=scriptThread.getScriptFolder(", lines);
@@ -606,12 +602,24 @@ void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStri
             searchSingleType("ScriptTcpClient", "=scriptThread.createTcpClient(", lines);
         }
 
+        if(currentText.contains("=conv."))
+        {
+            searchSingleType("String", "=conv.byteArrayToString(", lines);
+            searchSingleType("String", "=conv.byteArrayToHexString(", lines);
+            searchSingleType("Dummy", "=conv.stringToArray(", lines, true);
+            searchSingleType("Dummy", "=conv.addStringToArray(", lines, true);
+            searchSingleType("Dummy", "=conv.addUint16ToArray(", lines, true);
+            searchSingleType("Dummy", "=conv.addUint32ToArray(", lines, true);
+            searchSingleType("Dummy", "=conv.addUint64ToArray(", lines, true);
+            searchSingleType("Dummy", "=conv.addInt16ToArray(", lines, true);
+            searchSingleType("Dummy", "=conv.addInt32ToArray(", lines, true);
+            searchSingleType("Dummy", "=conv.addInt64ToArray(", lines, true);
+            searchSingleType("Dummy", "=conv.addFloat32ToArray(", lines, true);
+            searchSingleType("Dummy", "=conv.addFloat64ToArray(", lines, true);
+        }
+
         if(currentText.contains("=seq."))
         {
-            searchSingleType("String", "=seq.byteArrayToString(", lines);
-            searchSingleType("String", "=seq.byteArrayToHexString(", lines);
-            searchSingleType("Dummy", "=seq.stringToArray(", lines, true);
-            searchSingleType("Dummy", "=seq.addStringToArray(", lines, true);
             searchSingleType("String", "=seq.getGlobalString(", lines);
             searchSingleType("Dummy", "=seq.getGlobalDataArray(", lines, true);
             searchSingleType("Dummy", "=seq.getGlobalUnsignedNumber(", lines, true);
@@ -641,10 +649,6 @@ void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStri
 
         if(currentText.contains("=cust."))
         {
-            searchSingleType("String", "=cust.byteArrayToString(", lines);
-            searchSingleType("String", "=cust.byteArrayToHexString(", lines);
-            searchSingleType("Dummy", "=cust.stringToArray(", lines, true);
-            searchSingleType("Dummy", "=cust.addStringToArray(", lines, true);
             searchSingleType("String", "=cust.getScriptFolder(", lines);
             searchSingleType("String", "=cust.readFile(", lines);
             searchSingleType("Dummy", "=cust.readBinaryFile(", lines, true);

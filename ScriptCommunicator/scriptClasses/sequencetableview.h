@@ -102,8 +102,6 @@ public:
     virtual QString getPublicScriptElements(void)
     {
         return "void appendTextToConsole(QString string, bool newLine=true, bool bringToForeground=false);"
-               "QString byteArrayToString(QVector<unsigned char> data);QString byteArrayToHexString(QVector<unsigned char> data);"
-               "QVector<unsigned char> stringToArray(QString str);QVector<unsigned char> addStringToArray(QVector<unsigned char> array, QString str);"
                "quint8 calculateCrc8(QVector<unsigned char> data);"
                "quint8 calculateCrc8WithPolynomial(const QVector<unsigned char> data, const unsigned char polynomial, const unsigned char polynomial, const unsigned char startValue=0);"
                "quint16 calculateCrc16(QVector<unsigned char> data);"
@@ -315,6 +313,9 @@ private:
 
     ///The script file object.
     ScriptFile* m_scriptFileObject;
+
+    ///The script converter object.
+    ScriptConverter m_converterObject;
 
 };
 ///Table view class which holds the sequences in the send window.

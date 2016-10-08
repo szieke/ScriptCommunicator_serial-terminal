@@ -1,9 +1,5 @@
 scriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object):Array<String> \nReturns all functions and properties of an object.
 scriptThread::appendTextToConsole(String string, bool newLine=true, bool bringToForeground=false):void \nAppends text to the script window console.
-scriptThread::byteArrayToString(Array<unsigned char> data):String \nConverts a byte array which contains ascii characters into a ascii string (String).
-scriptThread::byteArrayToHexString(Array<unsigned char> data):String \nConverts a byte array into a hex string.
-scriptThread::stringToArray(String str):Array<unsigned char> \nConverts an ascii string into a byte array.
-scriptThread::addStringToArray(Array<unsigned char> array, String str):Array<unsigned char> \nAdds an ascii string to a byte array.
 scriptThread::sleepFromScript(quint32 timeMs):void \nForces the script thread to sleep for ms milliseconds.
 scriptThread::createUdpSocket(void):ScriptUdpSocket \nCreates an UDP socket.
 scriptThread::createTcpServer(void):ScriptTcpServer \nCreates a TCP server.

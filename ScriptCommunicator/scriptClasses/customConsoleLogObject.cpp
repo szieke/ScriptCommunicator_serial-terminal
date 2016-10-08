@@ -311,6 +311,7 @@ void CustomConsoleLogThread::loadCustomScriptSlot(QString scriptPath, bool* hasS
             //Register the custom console/log object.
             m_scriptEngine->globalObject().setProperty("cust", m_scriptEngine->newQObject(this));
             m_scriptSql->registerScriptMetaTypes(m_scriptEngine);
+            m_converterObject.registerScriptMetaTypes(m_scriptEngine);
 
 
             ScriptXmlReader::registerScriptMetaTypes(m_scriptEngine);
