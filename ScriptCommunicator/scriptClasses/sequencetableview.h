@@ -45,6 +45,7 @@
 #include "scriptStandardDialogs.h"
 #include "scriptObject.h"
 #include "scriptwindow.h"
+#include "scriptConverter.h"
 
 class SendThread;
 class SendWindow;
@@ -125,16 +126,16 @@ public:
     Q_INVOKABLE void appendTextToConsole(QString string, bool newLine=true, bool bringToForeground=false){ emit appendTextToConsoleSignal(string, newLine,bringToForeground);}
 
     ///Converts a byte array which contains ascii characters into a ascii string (QString).
-    Q_INVOKABLE QString byteArrayToString(QVector<unsigned char> data){return ScriptHelper::byteArrayToString(data);}
+    Q_INVOKABLE QString byteArrayToString(QVector<unsigned char> data){return ScriptConverter::byteArrayToString(data);}
 
     ///Converts a byte array into a hex string.
-    Q_INVOKABLE QString byteArrayToHexString(QVector<unsigned char> data){return ScriptHelper::byteArrayToHexString(data);}
+    Q_INVOKABLE QString byteArrayToHexString(QVector<unsigned char> data){return ScriptConverter::byteArrayToHexString(data);}
 
     ///Converts an ascii string into a byte array.
-    Q_INVOKABLE QVector<unsigned char> stringToArray(QString str){return ScriptHelper::stringToArray(str);}
+    Q_INVOKABLE QVector<unsigned char> stringToArray(QString str){return ScriptConverter::stringToArray(str);}
 
     ///Adds an ascii string to a byte array.
-    Q_INVOKABLE QVector<unsigned char> addStringToArray(QVector<unsigned char> array, QString str){return ScriptHelper::addStringToArray(array, str);}
+    Q_INVOKABLE QVector<unsigned char> addStringToArray(QVector<unsigned char> array, QString str){return ScriptConverter::addStringToArray(array, str);}
 
     ///Calculates a crc8.
     Q_INVOKABLE static quint8 calculateCrc8(const QVector<unsigned char> data){return CRC::calculateCrc8(data);}

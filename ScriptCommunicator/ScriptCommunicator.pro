@@ -108,7 +108,8 @@ SOURCES += \
     quazip/zLib/zutil.c \
     quazip/unzip.c \
     quazip/zip.c \
-    scriptClasses/scriptUiClasses/scriptPlotwidget.cpp
+    scriptClasses/scriptUiClasses/scriptPlotwidget.cpp \
+    scriptClasses/scriptConverter.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -223,7 +224,8 @@ HEADERS += \
     quazip/unzip.h \
     quazip/zip.h \
     scriptClasses/scriptObject.h \
-    scriptClasses/scriptTimer.h
+    scriptClasses/scriptTimer.h \
+    scriptClasses/scriptConverter.h
 
 FORMS += \
     mainwindow.ui \
