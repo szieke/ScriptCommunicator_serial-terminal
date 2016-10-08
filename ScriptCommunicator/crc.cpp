@@ -22,7 +22,7 @@
 **  Website/Contact: http://sourceforge.net/projects/scriptcommunicator/  **
 ****************************************************************************/
 
-#include <limits.h>
+#include <climits>
 #include "crc.h"
 
 
