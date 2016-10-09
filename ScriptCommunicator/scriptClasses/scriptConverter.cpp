@@ -394,7 +394,7 @@ QVector<unsigned char> ScriptConverter::addInt64ToArray(QVector<unsigned char> a
 }
 
 /**
- * Adds an float to a byte array.
+ * Adds a float to a byte array.
  * @param array
  *      The byte array.
  * @param value
@@ -409,7 +409,7 @@ QVector<unsigned char> ScriptConverter::addFloat32ToArray(QVector<unsigned char>
 }
 
 /**
- * Adds an float64 to a byte array.
+ * Adds a float64 to a byte array.
  * @param array
  *      The byte array.
  * @param value

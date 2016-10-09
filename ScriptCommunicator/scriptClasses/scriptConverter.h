@@ -69,10 +69,10 @@ public:
     ///Converts the first Bytes of a byte array to an int64_t.
     Q_INVOKABLE static int64_t byteArrayToInt64(QVector<unsigned char> data, bool littleEndian);
 
-    ///Converts the first Bytes of a byte array to an float32.
+    ///Converts the first Bytes of a byte array to a float32.
     Q_INVOKABLE static float byteArrayToFloat32(QVector<unsigned char> data, bool littleEndian);
 
-    ///Converts the first Bytes of a byte array to an float64.
+    ///Converts the first Bytes of a byte array to a float64.
     Q_INVOKABLE static double byteArrayToFloat64(QVector<unsigned char> data, bool littleEndian);
 
     ///Adds an ascii string to a byte array.
@@ -96,10 +96,10 @@ public:
     ///Adds an int64 to a byte array.
     Q_INVOKABLE static QVector<unsigned char> addInt64ToArray(QVector<unsigned char> array, int64_t value, bool littleEndian);
 
-    ///Adds an float32 to a byte array.
+    ///Adds a float32 to a byte array.
     Q_INVOKABLE static QVector<unsigned char> addFloat32ToArray(QVector<unsigned char> array, float value, bool littleEndian);
 
-    ///Adds an float64 to a byte array.
+    ///Adds a float64 to a byte array.
     Q_INVOKABLE static QVector<unsigned char> addFloat64ToArray(QVector<unsigned char> array, double value, bool littleEndian);
 };
 

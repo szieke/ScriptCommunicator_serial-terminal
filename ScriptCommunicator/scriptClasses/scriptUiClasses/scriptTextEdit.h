@@ -30,6 +30,19 @@
 #include "mainwindow.h"
 #include "scriptWidget.h"
 
+///The ScriptTextEdit operations which are stored for later processing.
+typedef enum
+{
+    SCRIPT_TEXT_EDIT_OPERATION_CLEAR,
+    SCRIPT_TEXT_EDIT_OPERATION_INSERT_PLAIN_TEXT,
+    SCRIPT_TEXT_EDIT_OPERATION_INSERT_HTML,
+    SCRIPT_TEXT_EDIT_OPERATION_APPEND,
+    SCRIPT_TEXT_EDIT_OPERATION_SET_PLAIN_TEXT,
+    SCRIPT_TEXT_EDIT_OPERATION_SET_TEXT
+
+}ScriptTextEditOperation_t;
+
+
 ///This wrapper class is used to access a QTextEdit object (located in a script gui/ui-file) from a script.
 class ScriptTextEdit : public ScriptWidget
 {
