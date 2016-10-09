@@ -76,7 +76,6 @@ void MainWindowHandleData::updateConsoleAndLog(void)
     while(m_bytesInStoredConsoleData > settings->maxCharsInConsole)
     {
         int diff = m_bytesInStoredConsoleData - settings->maxCharsInConsole;
-
         if(diff >= m_storedConsoleData.at(0).data.length())
         {
             m_bytesInStoredConsoleData -= m_storedConsoleData.at(0).data.length();
@@ -232,7 +231,8 @@ void MainWindowHandleData::appendDataToStoredData(QByteArray &data, bool isSend,
                 while(m_numberOfBytesInCustomConsoleStrings > (currentSettings->maxCharsInConsole * 2))
                 {//Limit the number of bytes in m_customConsoleStrings.
 
-                    if(m_customConsoleStrings.length() > 1)
+                    int diff = m_numberOfBytesInCustomConsoleStrings - (currentSettings->maxCharsInConsole * 2);
+                    if(diff >= m_customConsoleStrings.at(0).length())
                     {
                         m_numberOfBytesInCustomConsoleStrings -= m_customConsoleStrings.first().length();
                         m_customConsoleStrings.removeFirst();
@@ -241,10 +241,7 @@ void MainWindowHandleData::appendDataToStoredData(QByteArray &data, bool isSend,
                     {
                         m_customConsoleStrings.first().remove(0, m_numberOfBytesInCustomConsoleStrings - currentSettings->maxCharsInConsole);
                         m_numberOfBytesInCustomConsoleStrings -= m_numberOfBytesInCustomConsoleStrings - currentSettings->maxCharsInConsole;
-
                     }
-
-
                 }
 
                 if(m_bytesInStoredConsoleData != 0)
@@ -260,7 +257,8 @@ void MainWindowHandleData::appendDataToStoredData(QByteArray &data, bool isSend,
             while(m_bytesInUnprocessedConsoleData > currentSettings->maxCharsInConsole)
             {//m_bytesInUnprocessedConsoleData contains too much data.
 
-                if(m_unprocessedConsoleData.length() > 1)
+                int diff = m_bytesInUnprocessedConsoleData - currentSettings->maxCharsInConsole;
+                if(diff >= m_unprocessedConsoleData.at(0).data.length())
                 {
                     m_bytesInUnprocessedConsoleData -= m_unprocessedConsoleData.first().data.length();
                     m_unprocessedConsoleData.removeFirst();

@@ -13,7 +13,7 @@ function stopScript()
 function start()
 {
 	g_currentProgressValue = 0;
-	timer.start(25);
+	timer.start(10);
 	UI_StartButton.setEnabled(false);
 }
 
@@ -25,7 +25,7 @@ function timerElapsed()
 	UI_ProgressBar.setValue(g_currentProgressValue)
 	UI_TextEdit1.append("progress: " + g_currentProgressValue)
 	
-	if(g_currentProgressValue >= 100)
+	if(g_currentProgressValue >= maxValue)
 	{
 		timer.stop();
 		UI_StartButton.setEnabled(true);
@@ -47,6 +47,8 @@ scriptThread.appendTextToConsole('script has started');
 //Hide the dialog (the tab will be removed from the dialog therefore the dialog is not needed).
 UI_Dialog.hide();
 
+var maxValue = 500;
+
 //Remove the tab from the dialog and add it to the main window.
 if(scriptThread.addTabsToMainWindow(UI_TabWidget))
 {
@@ -56,7 +58,7 @@ if(scriptThread.addTabsToMainWindow(UI_TabWidget))
 
 	var g_currentProgressValue = 0;
 	UI_ProgressBar.setMinimum(0);
-	UI_ProgressBar.setMaximum(100);
+	UI_ProgressBar.setMaximum(maxValue);
 
 	UI_StartButton.clickedSignal.connect(start)
 	
@@ -73,3 +75,4 @@ else
 
 var oldMainWindowText = scriptThread.getMainWindowTitle();
 scriptThread.setMainWindowTitle("ScriptText   " + oldMainWindowText);
+UI_TextEdit1.setUpdateRate(50);

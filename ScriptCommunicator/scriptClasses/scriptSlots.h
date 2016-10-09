@@ -24,6 +24,28 @@
 #include <QListWidgetItem>
 #include <QRadioButton>
 
+///The ScriptTextEdit operations which are stored for later processing.
+typedef enum
+{
+    SCRIPT_TEXT_EDIT_OPERATION_CLEAR,
+    SCRIPT_TEXT_EDIT_OPERATION_INSERT_PLAIN_TEXT,
+    SCRIPT_TEXT_EDIT_OPERATION_INSERT_HTML,
+    SCRIPT_TEXT_EDIT_OPERATION_APPEND,
+    SCRIPT_TEXT_EDIT_OPERATION_SET_PLAIN_TEXT,
+    SCRIPT_TEXT_EDIT_OPERATION_SET_TEXT
+
+}ScriptTextEditOperation_t;
+
+///Contains a stored ScriptTextEditoperation.
+typedef struct
+{
+    ScriptTextEditOperation_t operation;///The stored operation.
+    QString data;///The data of the stored operation.
+    bool atTheEnd;///True if the data shall append.
+
+}ScriptTextEditStoredOperations_t;
+
+
 ///This class contains all helper slots which are called by scripts (to execute code which must
 ///be executed in the main thread).
 ///ScriptWindow derives form this class.
@@ -346,8 +368,8 @@ public slots:
    ///This slot is used to add a validator the line edit.
    void addValidatorSignal(QValidator* validator, QLineEdit* lineEdit);
 
-   ///Writes text to a text edit.
-   void writeTextSlot(QTextEdit* textEdit, QString text, bool insertHtml, bool insertText, bool append, bool isLocked, quint32 maxChars, bool atTheEnd);
+   ///Process stored operations from a ScriptTextEdit.
+   void processStoredOperationsSlot(QTextEdit* textEdit, bool isLocked, quint32 maxChars, QVector<ScriptTextEditStoredOperations_t>* m_storedOperations);
 
 };
 

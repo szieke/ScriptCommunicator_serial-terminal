@@ -31,4 +31,5 @@ ScriptTextEdit::append(String text):void \nAppends text at the end of text edit 
 ScriptTextEdit::setPlainText(String text):void \nSets the text of the text edit (plain text).
 ScriptTextEdit::setText(String text):void \nSets the text of the text edit.
 ScriptTextEdit::lockScrolling(bool lock):void \nLocks or unlocks the scrolling of the vertical scroll bar.
+ScriptTextEdit::setUpdateRate(int updateRate):void \nSets the update rate of the script text edit.
 ScriptTextEdit::textChangedSignal.connect(void) \nThis signal is emitted if the text of the text edit has been changed.

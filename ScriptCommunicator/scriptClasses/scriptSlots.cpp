@@ -796,55 +796,60 @@ void ScriptSlots::addValidatorSignal(QValidator* validator, QLineEdit* lineEdit)
 }
 
 /**
- * Writes text to a text edit.
- * @param textEdit
- *      The text edit.
- * @param text
- *      The text.
- * @param insertHtml
- *      True if insertHtml shall be used.
- * @param insertText
- *      True if insertPlainText shall be used.
- * @param append
- *      True if append shall be used.
- * @param isLocked
- *      True if the scrolling is locked.
- * @param maxChars
- *      The max. characters for the text edit.
- * @param atTheEnd
- *      If true the the text is inserted at the end.
+ * Process stored operations from a ScriptTextEdit.
+ * @param m_storedOperations
+ *      The stored  operations.
  */
-void ScriptSlots::writeTextSlot(QTextEdit* textEdit, QString text, bool insertHtml, bool insertText, bool append,
-                                bool isLocked, quint32 maxChars, bool atTheEnd)
+void ScriptSlots::processStoredOperationsSlot(QTextEdit* textEdit, bool isLocked, quint32 maxChars,
+                                              QVector<ScriptTextEditStoredOperations_t>* m_storedOperations)
 {
-    //Store the scroll bar position.
-    int val = textEdit->verticalScrollBar()->value();
+    int pos = 0;
 
     textEdit->setUpdatesEnabled(false);
 
-    if(atTheEnd)textEdit->moveCursor(QTextCursor::End);
-
-    if(insertHtml)
+    if(isLocked)
     {
-        textEdit->insertHtml(text);
-    }
-    else if(insertText)
-    {
-        textEdit->insertPlainText(text);
-    }
-    else if(append)
-    {
-        textEdit->append(text);
+        //Store the scroll bar position.
+        pos = textEdit->verticalScrollBar()->value();
     }
 
-    if(atTheEnd)textEdit->moveCursor(QTextCursor::End);
+    for(auto el : *m_storedOperations)
+    {
+        if(el.atTheEnd)textEdit->moveCursor(QTextCursor::End);
 
-    MainWindow::limtCharsInTextEdit(textEdit, maxChars);
+        if(el.operation == SCRIPT_TEXT_EDIT_OPERATION_CLEAR)
+        {
+            textEdit->clear();
+        }
+        else if(el.operation == SCRIPT_TEXT_EDIT_OPERATION_INSERT_PLAIN_TEXT)
+        {
+            textEdit->insertPlainText(el.data);
+        }
+        else if(el.operation == SCRIPT_TEXT_EDIT_OPERATION_INSERT_HTML)
+        {
+            textEdit->insertHtml(el.data);
+        }
+        else if(el.operation == SCRIPT_TEXT_EDIT_OPERATION_APPEND)
+        {
+            textEdit->append(el.data);
+        }
+        else if(el.operation == SCRIPT_TEXT_EDIT_OPERATION_SET_PLAIN_TEXT)
+        {
+            textEdit->setPlainText(el.data);
+        }
+        else
+        {//SCRIPT_TEXT_EDIT_OPERATION_SET_TEXT
+
+            textEdit->setText(el.data);
+        }
+
+        MainWindow::limtCharsInTextEdit(textEdit, maxChars);
+    }
 
     if(isLocked)
     {
         //Restore the scroll bar position.
-        textEdit->verticalScrollBar()->setValue(val);
+        textEdit->verticalScrollBar()->setValue(pos);
     }
     else
     {   //Move the scroll bar to the end.
