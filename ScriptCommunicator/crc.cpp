@@ -22,6 +22,7 @@
 **  Website/Contact: http://sourceforge.net/projects/scriptcommunicator/  **
 ****************************************************************************/
 
+#include <climits>
 #include "crc.h"
 
 
@@ -47,13 +48,12 @@ quint8 CRC::calculateCrc8(const QVector<unsigned char> data,
                           const unsigned char polynomial, const unsigned char startValue)
 {
     quint8 crc = startValue;
-    const qint32 BITS_PER_BYTE = 8;
 	
 	for( auto val: data )
 	{
 		crc = crc ^ val;
 		
-        for( qint32 i = 0; i < BITS_PER_BYTE; ++i )
+        for( qint32 i = 0; i < CHAR_BIT; ++i )
 		{
 			if( (crc & 0x80) != 0 )
 			{
