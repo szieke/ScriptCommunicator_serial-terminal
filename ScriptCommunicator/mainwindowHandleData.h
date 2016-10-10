@@ -187,6 +187,9 @@ public slots:
     ///This slot is connected to the MainInterfaceThread::dataReceivedSignal signal.
     void dataReceivedSlot(QByteArray data);
 
+    ///Appends the queued received data to the stored data.
+    void queuedDataReceivedSlot(void);
+
     ///The slot is called if the main interface thread has received data.
     ///This slot is connected to the MainInterfaceThread::dataReceivedSignal signal.
     void canMessagesReceivedSlot(QVector<QByteArray> messages);
@@ -352,6 +355,12 @@ private:
 
     ///Checks if the custom console/log script debug window has been closed.
     QTimer m_checkDebugWindowsIsClosed;
+
+    ///The queued received data.
+    QByteArray m_queuedReceivedData;
+
+    ///The timer for the queued received data.
+    QTimer m_queuedReceivedDataTimer;
 
 };
 

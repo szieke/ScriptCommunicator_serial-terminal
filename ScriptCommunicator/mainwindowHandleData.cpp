@@ -23,13 +23,19 @@ MainWindowHandleData::MainWindowHandleData(MainWindow *mainWindow, SettingsDialo
     m_textLogFile(), m_customLogFile(), m_textLogFileStream(&m_textLogFile), m_customLogFileStream(&m_customLogFile),
     m_bytesInUnprocessedConsoleData(0), m_bytesInStoredConsoleData(0), m_bytesSinceLastNewLineInConsole(0), m_bytesSinceLastNewLineInLog(0),
     m_customLogString(), m_customConsoleObject(0), m_customLogObject(0), m_customConsoleStrings(), m_customConsoleStoredStrings(),
-    m_numberOfBytesInCustomConsoleStrings(0), m_numberOfBytesInCustomConsoleStoredStrings(0), m_historySendIsInProgress(false), m_checkDebugWindowsIsClosed()
+    m_numberOfBytesInCustomConsoleStrings(0), m_numberOfBytesInCustomConsoleStoredStrings(0), m_historySendIsInProgress(false), m_checkDebugWindowsIsClosed(),
+    m_queuedReceivedData(), m_queuedReceivedDataTimer()
 {
     m_customConsoleObject = new CustomConsoleLogObject(m_mainWindow);
     m_customLogObject = new CustomConsoleLogObject(m_mainWindow);
 
     m_updateConsoleAndLogTimer = new QTimer(this);
+    m_updateConsoleAndLogTimer->setSingleShot(true);
     connect(m_updateConsoleAndLogTimer, SIGNAL(timeout()), this, SLOT(updateConsoleAndLog()));
+
+    m_queuedReceivedDataTimer.setSingleShot(true);
+    connect(&m_queuedReceivedDataTimer, SIGNAL(timeout()), this, SLOT(queuedDataReceivedSlot()));
+
 }
 
 /**
@@ -1030,6 +1036,17 @@ void MainWindowHandleData::appendDataToLog(const QByteArray &data, bool isSend, 
 }
 
 /**
+ * Appends the queued received data to the stored data.
+ */
+void MainWindowHandleData::queuedDataReceivedSlot(void)
+{
+    m_queuedReceivedDataTimer.stop();
+    m_receivedBytes += m_queuedReceivedData.size();
+    appendDataToStoredData(m_queuedReceivedData, false, false, m_mainWindow->m_isConnectedWithCan, false);
+    m_queuedReceivedData.clear();
+}
+
+/**
  * The slot is called if the main interface thread has received can messages.
  * This slot is connected to the MainInterfaceThread::canMessageReceivedSignal signal.
  * @param data
@@ -1037,8 +1054,11 @@ void MainWindowHandleData::appendDataToLog(const QByteArray &data, bool isSend, 
  */
 void MainWindowHandleData::dataReceivedSlot(QByteArray data)
 {
-    m_receivedBytes += data.size();
-    appendDataToStoredData(data, false, false, m_mainWindow->m_isConnectedWithCan, false);
+    m_queuedReceivedData.append(data);
+    if(!m_queuedReceivedDataTimer.isActive())
+    {
+        m_queuedReceivedDataTimer.start(1);
+    }
 }
 
 /**

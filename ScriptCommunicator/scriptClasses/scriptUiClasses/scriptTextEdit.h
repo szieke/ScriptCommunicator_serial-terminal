@@ -119,13 +119,7 @@ public Q_SLOTS:
     void setFontFamily(QString fontFamily){emit setFontFamilySignal(fontFamily);}
 
     ///This slot function clears the text edit.
-    void clear(void)
-    {
-        QString tmp;
-        m_bytesInStoredOperations = 0;
-        m_storedOperations.clear();
-        addStoredOperation(SCRIPT_TEXT_EDIT_OPERATION_CLEAR, tmp, false);
-    }
+    void clear(void){QString tmp;addStoredOperation(SCRIPT_TEXT_EDIT_OPERATION_CLEAR, tmp, false);}
 
     ///This slot function inserts plain text into the text edit.
     void insertPlainText(QString text, bool atTheEnd=true){addStoredOperation(SCRIPT_TEXT_EDIT_OPERATION_INSERT_PLAIN_TEXT, text, atTheEnd);}
@@ -199,12 +193,30 @@ private:
     ///Adds a stored operation to m_storedOperations.
     void inline addStoredOperation(ScriptTextEditOperation_t operation, QString& data, bool atTheEnd)
     {
-        m_storedOperations.append({operation, data, atTheEnd});
+
+        if((operation  == SCRIPT_TEXT_EDIT_OPERATION_CLEAR) || (operation  == SCRIPT_TEXT_EDIT_OPERATION_SET_PLAIN_TEXT) ||
+           (operation  == SCRIPT_TEXT_EDIT_OPERATION_SET_TEXT))
+        {
+            m_bytesInStoredOperations = 0;
+            m_storedOperations.clear();
+        }
+
+        if(!m_storedOperations.isEmpty() && (operation != SCRIPT_TEXT_EDIT_OPERATION_APPEND) &&
+           (m_storedOperations.last().operation == operation) && (m_storedOperations.last().atTheEnd == atTheEnd))
+        {
+            //Append the data from the current operation at the data from last operation.
+            m_storedOperations.last().data += data;
+        }
+        else
+        {
+            m_storedOperations.append({operation, data, atTheEnd});
+        }
         m_bytesInStoredOperations += data.length();
 
         if(m_bytesInStoredOperations > m_maxChars)
         {//m_bytesInStoredOperations contains too much data.
 
+            //Limit the size of m_storedOperations.
             while(m_bytesInStoredOperations > m_maxChars)
             {
                 int diff = m_bytesInStoredOperations - m_maxChars;
@@ -219,9 +231,11 @@ private:
                     m_bytesInStoredOperations -= m_bytesInStoredOperations - m_maxChars;
                 }
             }
-
+            //m_storedOperations contains more then m_maxChars, therefore all data in the text edit
+            //can be deleted.
             m_storedOperations.push_front({SCRIPT_TEXT_EDIT_OPERATION_CLEAR, QString(""), true});
         }
+
 
         ///Start the timer if it is stopped.
         if(!m_storedOperationTimer.isActive())
