@@ -201,6 +201,11 @@ void MainWindowHandleData::appendDataToStoredData(QByteArray &data, bool isSend,
                 settings.logGenerateCustomLog = false;
                 settings.logDebugCustomLog = false;
                 m_settingsDialog->setAllSettingsSlot(settings, false);
+
+                if(m_customLogObject->scriptIsBlocked())
+                {
+                    QMessageBox::critical(m_mainWindow, "error in custom log script", settings.consoleScript + " is blocked or overloaded and has been disabled.");
+                }
             }
 
 
@@ -224,6 +229,12 @@ void MainWindowHandleData::appendDataToStoredData(QByteArray &data, bool isSend,
                 settings.consoleDebugCustomConsole= false;
                 m_settingsDialog->setAllSettingsSlot(settings, false);
                 m_mainWindow->inititializeTab();
+
+                if(m_customConsoleObject->scriptIsBlocked())
+                {
+                    QMessageBox::critical(m_mainWindow, "error in custom console script", settings.consoleScript + " is blocked or overloaded and has been disabled.");
+                }
+
             }
             else
             {
@@ -1054,6 +1065,7 @@ void MainWindowHandleData::queuedDataReceivedSlot(void)
  */
 void MainWindowHandleData::dataReceivedSlot(QByteArray data)
 {
+
     m_queuedReceivedData.append(data);
     if(!m_queuedReceivedDataTimer.isActive())
     {
