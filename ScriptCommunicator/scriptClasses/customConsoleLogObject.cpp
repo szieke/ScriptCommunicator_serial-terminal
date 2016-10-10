@@ -257,7 +257,7 @@ void CustomConsoleLogThread::resumedByDebuggerSlot()
 /**
 * Debug timer slot (checks if the script is suspended by the debugger or is running).
 */
-void ScriptThread::debugTimerSlot(void)
+void CustomConsoleLogThread::debugTimerSlot(void)
 {
     static QScriptEngineDebugger::DebuggerState state = QScriptEngineDebugger::SuspendedState;
 
