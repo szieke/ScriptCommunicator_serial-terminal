@@ -2948,7 +2948,7 @@ QString MainWindow::parseApiFile(QString name)
 
             if(list.length() >= 3)
             {
-                if(list.length() > 3)
+                if((list.length() > 3) && (list[2].indexOf("\\n") == -1) )
                 {
                     singleEntry = list[2];
                     list = list[3].split("\\n");
@@ -2960,12 +2960,14 @@ QString MainWindow::parseApiFile(QString name)
                     singleEntry = list[0];
                 }
 
-                if(!result.isEmpty())
-                {
+                if(result.isEmpty())
+                {//The current entry is the first entry.
+
                     result += singleEntry;
                 }
                 else
-                {
+                {//The current entry is not the first entry.
+
                     result += ";" + singleEntry;
                 }
             }
