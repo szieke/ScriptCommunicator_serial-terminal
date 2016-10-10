@@ -57,9 +57,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "bool listen(quint16 port);bool isListening(void);void setMaxPendingConnections(int numConnections);"
-               "int maxPendingConnections(void);void close();bool hasPendingConnections(void);"
-               "QScriptValue nextPendingConnection(void);newConnectionSignal(void)";
+        return MainWindow::parseApiFile("ScriptTcpServer.api");
     }
 
     ///Call this function to start listening for new connections.

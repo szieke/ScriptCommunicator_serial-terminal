@@ -18,25 +18,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "QString byteArrayToString(QVector<unsigned char> data);QString byteArrayToHexString(QVector<unsigned char> data);"
-               "QVector<unsigned char> stringToArray(QString str);"
-                "uint16_t byteArrayToUint16(QVector<unsigned char> data, bool littleEndian);"
-                "uint32_t byteArrayToUint32(QVector<unsigned char> data, bool littleEndian);"
-                "uint64_t byteArrayToUint64(QVector<unsigned char> data, bool littleEndian);"
-                "int16_t byteArrayToInt16(QVector<unsigned char> data, bool littleEndian);"
-                "int32_t byteArrayToInt32(QVector<unsigned char> data, bool littleEndian);"
-                "int64_t byteArrayToInt64(QVector<unsigned char> data, bool littleEndian);"
-                "float byteArrayToFloat32(QVector<unsigned char> data, bool littleEndian);"
-                "double byteArrayToFloat64(QVector<unsigned char> data, bool littleEndian);"
-                "QVector<unsigned char> addStringToArray(QVector<unsigned char> array , QString str);"
-                "QVector<unsigned char> addUint16ToArray(QVector<unsigned char> array, uint16_t value, bool littleEndian);"
-                "QVector<unsigned char> addUint32ToArray(QVector<unsigned char> array, uint32_t value, bool littleEndian);"
-                "QVector<unsigned char> addUint64ToArray(QVector<unsigned char> array, uint64_t value, bool littleEndian);"
-                "QVector<unsigned char> addInt16ToArray(QVector<unsigned char> array, int16_t value, bool littleEndian);"
-                "QVector<unsigned char> addInt32ToArray(QVector<unsigned char> array, int32_t value, bool littleEndian);"
-                "QVector<unsigned char> addInt64ToArray(QVector<unsigned char> array, int64_t value, bool littleEndian);"
-                "QVector<unsigned char> addFloat32ToArray(QVector<unsigned char> array, float value, bool littleEndian);"
-                "QVector<unsigned char> addFloat64ToArray(QVector<unsigned char> array, double value, bool littleEndian);";
+        return MainWindow::parseApiFile("conv.api");
     }
 
     ///Registers all (for this class) necessary meta types.

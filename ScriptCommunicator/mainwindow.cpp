@@ -2927,6 +2927,57 @@ void MainWindow::toggleConnectionSlot(bool connectionStatus)
 }
 
 /**
+ * Parses a API file and returns a semicolon separated list with all public functions, signals and properties.
+ * @param name
+ *      The name of the API file.
+ * @return
+ *      The list.
+ */
+QString MainWindow::parseApiFile(QString name)
+{
+    QString result;
+    QFile file(MainWindow::getScriptCommunicatorFilesFolder() + "/apiFiles/" + name);
+    if (file.open(QFile::ReadOnly))
+    {
+        QTextStream in(&file);
+        QString singleLine = in.readLine();
+        while(!singleLine.isEmpty())
+        {
+            QString singleEntry;
+            QStringList list = singleLine.split(":");
+
+            if(list.length() >= 3)
+            {
+                if(list.length() > 3)
+                {
+                    singleEntry = list[2];
+                    list = list[3].split("\\n");
+                    singleEntry = list[0] + " " + singleEntry;
+                }
+                else
+                {//Signals.
+                    list = list[2].split("\\n");
+                    singleEntry = list[0];
+                }
+
+                if(!result.isEmpty())
+                {
+                    result += singleEntry;
+                }
+                else
+                {
+                    result += ";" + singleEntry;
+                }
+            }
+
+            singleLine = in.readLine();
+        }
+        file.close();
+    }
+    return result;
+}
+
+/**
  * Converts a byte array into his string representation (Byte 1 is converted into char '1'...).
  * @param data
  *      The data.

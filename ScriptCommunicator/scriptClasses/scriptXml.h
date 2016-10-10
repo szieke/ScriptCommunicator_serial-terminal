@@ -43,18 +43,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "bool writeBufferToFile(QString fileName, bool isRelativePath=true);QString getInternalBuffer(void);"
-               "void clearInternalBuffer(void);void setCodec(QString codecName);"
-               "void setAutoFormatting(bool autoFormatting);bool autoFormatting(void);"
-               "void setAutoFormattingIndent(int spacesOrTabs);int autoFormattingIndent(void);"
-               "void writeStartDocument(QString version='1.0');void writeStartDocument(bool standalone, QString version='1.0');"
-               "void writeEndDocument(void);void writeNamespace(QString namespaceUri, QString prefix = '');"
-               "void writeDefaultNamespace(const QString namespaceUri);void writeStartElement(QString name, QString namespaceUri='');"
-               "void writeEmptyElement(QString name, QString namespaceUri="");void writeTextElement(QString name, QString text, QString namespaceUri='');"
-               "void writeEndElement(void);void writeAttribute(QString name, QString value, QString namespaceUri='');"
-               "void writeCDATA(QString text);void writeCharacters(QString text);"
-               "void writeComment(QString text);void writeDTD(QString dtd);void writeEntityReference(QString name);"
-               "void writeProcessingInstruction(QString target, QString data = '')";
+        return MainWindow::parseApiFile("ScriptXmlWriter.api");
     }
 
     ///Writes the internal XML Buffer to a file.
@@ -188,7 +177,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "QString value(void);QString name(void)";
+        return MainWindow::parseApiFile("ScriptXmlAttribute.api");
     }
 
     ///Returns the value of the attribute.
@@ -219,10 +208,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "QString elementName(void);QList<ScriptXmlElement*> childElements(void);"
-                "QStringList childTextElements(void);QStringList childCDataElements(void);"
-                "QStringList childCommentElements(void);QList<ScriptXmlAttribute*> attributes(void);"
-                "QString attributeValue(QString attrName)";
+        return MainWindow::parseApiFile("ScriptXmlElement.api");
     }
 
     ///Returns the name of this element.
@@ -264,9 +250,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "qint32 readFile(QString fileName, bool isRelativePath=true);"
-                "QList<ScriptXmlElement*> elementsByTagName(QString name);"
-                "ScriptXmlElement *getRootElement(void)";
+        return MainWindow::parseApiFile("ScriptXmlReader.api");
     }
 
     ///Reads and parses a xml file. The parsed xml file is stored internally.

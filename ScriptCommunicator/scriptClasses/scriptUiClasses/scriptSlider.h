@@ -50,9 +50,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() +
-                ";void setRange(int min, int max);void setValue(int value);"
-                "int value(void);valueChangedSignal(int value)";
+        return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptSlider.api");
     }
 
     ///Sets the slider's minimum to min and its maximum to max.

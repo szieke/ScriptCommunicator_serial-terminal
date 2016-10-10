@@ -56,9 +56,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() +
-                ";void setItemText(int index, QString text);QString itemText(int index);"
-                "void setCurrentIndex(int index);int currentIndex(void);currentItemChangedSignal(int index)";
+        return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptToolBox.api");
     }
 
     ///Sets the item text.

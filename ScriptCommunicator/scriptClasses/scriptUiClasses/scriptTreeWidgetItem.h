@@ -94,16 +94,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "void setText(int column, QString text);QString text(int column);"
-               "void setItemIcon(int column, QString iconFileName);void addChild(ScriptTreeWidgetItem* child);"
-               "int childCount(void);void insertChild (int index, ScriptTreeWidgetItem* child);"
-               "ScriptTreeWidgetItem* takeChild (int index);void deleteItem(void);"
-               "int indexOfChild(ScriptTreeWidgetItem* child);void sortChildren(int column, bool ascendingOrder);"
-               "ScriptTreeWidgetItem* parent(void);int columnCount(void);"
-               "void setBackgroundColor(int column, QString color);void setForegroundColor(int column, QString color);"
-               "bool isExpanded(void);void setExpanded(bool expand);"
-               "void setData (int column, quint8 role, QString value);QString data(int column, quint8 role);"
-               "void setDisabled(bool disabled);bool isDisabled(void)";
+        return MainWindow::parseApiFile("ScriptTreeWidgetItem.api");
     }
 
     ///Sets the text to be displayed in the given column to the given text.

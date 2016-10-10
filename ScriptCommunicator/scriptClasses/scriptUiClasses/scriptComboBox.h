@@ -76,14 +76,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() +
-                ";void addItem(const QString text);void insertItem(int index, const QString text);"
-                "void removeItem(int index);void setEditable(bool editable);"
-                "bool isEditable(void);int currentIndex(void);"
-                "QString currentText(void);QString itemText(int index);"
-                "void setItemText(int index, const QString text);void setCurrentText(const QString text);"
-                "void setCurrentIndex(int index);int count(void);"
-                "void clear(void);currentTextChangedSignal(QString newText);currentIndexChangedSignal(int currentSelectedIndex)";
+        return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptComboBox.api");
     }
 
     ///Adds one item to the combo box.

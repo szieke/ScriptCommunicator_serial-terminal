@@ -2,6 +2,7 @@
 #define SCRIPTOBJECT_H
 
 #include <QObject>
+#include <mainwindow.h>
 
 class ScriptObject
 {

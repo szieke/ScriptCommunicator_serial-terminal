@@ -56,10 +56,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() +
-        ";void setSelectedDate(QString dateString);QString getSelectedDate(void);"
-        "void setDateFormat(QString format);QString getDateFormat(void);"
-        "void setDateRange(QString min, QString max);selectionChangedSignal(QString date)";
+        return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptCalendarWidget.api");
     }
 
     ///Sets the selected date.

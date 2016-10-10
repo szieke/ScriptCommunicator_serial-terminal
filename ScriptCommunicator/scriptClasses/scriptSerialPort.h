@@ -62,20 +62,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "void setDTR(bool set);void setRTS(bool set);void setPortName(const QString &name);"
-               "QString portName(void);bool setBaudRate(qint32 baudRate);qint32 baudRate(void);"
-               "bool setDataBits(quint32 dataBits);quint32 dataBits(void);"
-               "bool setParity(QString parityString);QString parity(void);bool setStopBits(QString stopBitsString);"
-               "QString stopBits(void);bool setFlowControl(QString flowString);QString flowControl(void);"
-               "QString errorString(void);bool open(void);void close(void);quint32 getSerialPortSignals(void);"
-               "bool isOpen(void);qint64 bytesAvailable(void);QVector<unsigned char> readAll();"
-               "qint64 write(QVector<unsigned char>dataVector);qint64 writeString(QString string);"
-               "qint64 bytesToWrite(void);bool waitForBytesWritten(int msecs);void enableMainInterfaceRouting();"
-               "void disableMainInterfaceRouting();bool canReadLine(void);QString readLine(bool removeNewLine=true, bool removeCarriageReturn=true);"
-               "QStringList readAllLines(bool removeNewLine=true, bool removeCarriageReturn=true);"
-               "QString readLineInternally(QIODevice* ioDevice, bool removeNewLine=true, bool removeCarriageReturn=true);"
-               "QStringList readAllLinesInternally(QIODevice* ioDevice, bool removeNewLine=true, bool removeCarriageReturn=true);"
-               "readyReadSignal(void)";
+        return MainWindow::parseApiFile("ScriptSerialPort.api");
     }
 
     ///Sets the DTR pin.

@@ -60,13 +60,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "bool bind(quint16 port);void close(void);bool hasPendingDatagrams(void);"
-               "QVector<unsigned char> readDatagram(void);QVector<unsigned char> readAll(void);"
-               "quint64 write(QVector<unsigned char> data, QString hostAdress, quint16 hostPort);"
-               "qint64 writeString(QString string, QString hostAdress, quint16 hostPort);"
-               "bool isOpen(void);void enableMainInterfaceRouting(QString routingHostAddress, quint16 routingHostPort);"
-               "void disableMainInterfaceRouting(void);bool canReadLine(void);QString readLine(bool removeNewLine=true, bool removeCarriageReturn=true);"
-               "QStringList readAllLines(bool removeNewLine=true, bool removeCarriageReturn=true);readyReadSignal(void)";
+        return MainWindow::parseApiFile("ScriptUdpSocket.api");
     }
 
     ///Binds the socket to the port.

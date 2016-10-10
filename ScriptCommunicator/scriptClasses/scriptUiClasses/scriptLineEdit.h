@@ -62,11 +62,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() +
-                ";QString text(void);bool isReadOnly(void);"
-                "void setReadOnly(bool readOnly);void addIntValidator(int bottom, int top);"
-                "void addDoubleValidator(double bottom, double top, int decimals);void addRexpExValidator(QString pattern, bool caseSensitiv);"
-                "void setText(QString text);void clear(void);textChangedSignal(QString currentText)";
+        return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptLineEdit.api");
     }
 
     ///Returns the text of the line exit.

@@ -52,7 +52,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "QList<int> sizes(void);void setSizes (QList<int> list)";
+        return MainWindow::parseApiFile("ScriptSplitter.api");
     }
 
     ///Returns a list of the size parameters of all the widgets in this splitter.

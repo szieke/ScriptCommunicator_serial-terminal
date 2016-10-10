@@ -53,6 +53,7 @@
 #include <QScriptable>
 #include "scriptObject.h"
 
+
 // [3]
 class CanvasGradient
 {
@@ -176,27 +177,8 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "globalAlpha;globalCompositeOperation;strokeStyle;fillStyle;lineWidth;"
-                "lineCap;lineJoin;miterLimit;shadowOffsetX;shadowOffsetY;shadowBlur;"
-                "shadowColor;width;height"
-                "void save();void restore();void scale(qreal x, qreal y);void rotate(qreal angle);"
-                "void translate(qreal x, qreal y);void transform(qreal m11, qreal m12, qreal m21, qreal m22, qreal dx, qreal dy);"
-                "void setTransform(qreal m11, qreal m12, qreal m21, qreal m22, qreal dx, qreal dy);"
-                "CanvasGradient createLinearGradient(qreal x0, qreal y0, qreal x1, qreal y1);"
-                "CanvasGradient createRadialGradient(qreal x0, qreal y0, qreal r0, qreal x1, qreal y1, qreal r1);"
-                "void clearRect(qreal x, qreal y, qreal w, qreal h);void fillRect(qreal x, qreal y, qreal w, qreal h);"
-                "void strokeRect(qreal x, qreal y, qreal w, qreal h);void beginPath();void closePath();"
-                "void moveTo(qreal x, qreal y);void lineTo(qreal x, qreal y);void quadraticCurveTo(qreal cpx, qreal cpy, qreal x, qreal y);"
-                "void bezierCurveTo(qreal cp1x, qreal cp1y, qreal cp2x, qreal cp2y, qreal x, qreal y);"
-                "void arcTo(qreal x1, qreal y1, qreal x2, qreal y2, qreal radius);"
-                "void rect(qreal x, qreal y, qreal w, qreal h);void arc(qreal x, qreal y, qreal radius, qreal startAngle, qreal endAngle, bool anticlockwise);"
-                "void fill();void stroke();void clip();bool isPointInPath(qreal x, qreal y) const;void clear();"
-                "void reset();int width();int height();void setSize(int width, int height);bool saveToFile(QString fileName, QString imageType='');"
-                "void print(QString printDialogTitle="");mousePressSignal(int xValue, int yValue, quint32 mouseButton);"
-                "mouseReleasSignal(int xValue, int yValue, quint32 mouseButton);void mouseMoveSignal(int xValue, int yValue);"
-                "keyPressSignal(QString keyText, int keyCode, quint32 modifiers);keyReleaseSignal(QString key, int keyCode, quint32 modifiers)";
+        return MainWindow::parseApiFile("ScriptCanvas2DWidget.api");
     }
-
 
     ///Returns the current alpha value applied to rendering operations.
     qreal globalAlpha() const;

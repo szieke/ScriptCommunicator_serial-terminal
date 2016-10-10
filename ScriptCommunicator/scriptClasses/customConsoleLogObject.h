@@ -83,20 +83,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "QString getScriptFolder(void);bool loadScript(QString scriptPath, bool isRelativePath=true);"
-               "QString readFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1);"
-               "QVector<unsigned char> readBinaryFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1);"
-               "qint64 getFileSize(QString path, bool isRelativePath=true);bool checkFileExists(QString path, bool isRelativePath=true);"
-               "bool checkDirectoryExists(QString directory, bool isRelativePath=true);bool createDirectory(QString directory, bool isRelativePath=true);"
-               "bool renameDirectory(QString directory, QString newName);bool renameFile(QString path, QString newName);"
-               "bool deleteFile(QString path, bool isRelativePath=true);bool deleteDirectory(QString directory, bool isRelativePath=true);"
-               "bool deleteDirectoryRecursively(QString directory, bool isRelativePath=true);"
-               "QStringList readDirectory(QString directory, bool isRelativePath=true, bool recursive=true, bool returnFiles=true, bool returnDirectories=true);"
-               "bool writeFile(QString path, bool isRelativePath, QString content, bool replaceFile, qint64 startPosition=-1);"
-               "bool writeBinaryFile(QString path, bool isRelativePath, QVector<unsigned char> content, bool replaceFile, qint64 startPosition=-1);"
-               "QString createAbsolutePath(QString fileName);QString getCurrentVersion(void);"
-               "void setBlockTime(quint32 blockTime);QScriptValue createXmlReader();QScriptValue createXmlWriter();"
-               "QStringList getAllObjectPropertiesAndFunctions(QScriptValue object)";
+        return MainWindow::parseApiFile("cust.api");
     }
 
     ///Appends text to the script window console.

@@ -151,6 +151,9 @@ public:
     ///The name of the intial main config file.
     static const QString INIT_MAIN_CONFIG_FILE;
 
+    ///Parses a API file and returns a semicolon separated list with all public functions, signals and properties.
+    static QString parseApiFile(QString name);
+
     ///Converts a byte array into his string representation (Byte 1 is converted into char '1'...).
     static QString byteArrayToNumberString(const QByteArray &data, bool isBinary,  bool isHex, bool withFormatBrackets, bool withLeadingZero = true,
                                            bool withSpaces = true, DecimalType decimalType = DECIMAL_TYPE_UINT8, Endianess endianess = LITTLE_ENDIAN_TARGET);

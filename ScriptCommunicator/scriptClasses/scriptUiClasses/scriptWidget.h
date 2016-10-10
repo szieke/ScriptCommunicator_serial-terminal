@@ -97,21 +97,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "void setEnabled(bool isEnabled);void update(void);"
-                "void repaint(void);void show(void);"
-                "void close(void);void hide(void);"
-                "void setWindowTitle(QString title);QString windowPositionAndSize(void);"
-                "void setWindowPositionAndSize(QString positionAndSize);void setBackgroundColor(QString color);"
-                "void setWindowTextColor(QString color);void setTextColor(QString color);"
-                "void setPaletteColor(QString palette, QString color);setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette);"
-                "void setToolTip(QString text, int duration);bool isVisible(void);"
-                "void raise(void);void lower(void));"
-                "void setWindowFlags(quint32 flags);void clearWindowFlags(quint32 flags);"
-                "quint32 windowFlags(void);void setFocus(void);"
-                "int width(void);int height(void);"
-                "QWidget* getWidgetPointer(void);void setAdditionalData(int key, QString data);"
-                "QString getAdditionalData(int key);bool blockSignals(bool block);"
-                "QString getClassName(void)";
+        return MainWindow::parseApiFile("ScriptWidget.api");
     }
 
     ///Enables or disables the widget.

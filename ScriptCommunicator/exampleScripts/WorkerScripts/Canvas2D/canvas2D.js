@@ -41,4 +41,3 @@ UI_SavePushButton.clickedSignal.connect(saveToFile);
 UI_PrintPushButton.clickedSignal.connect(print);
 
 
-

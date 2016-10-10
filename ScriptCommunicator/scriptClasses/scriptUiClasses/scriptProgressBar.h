@@ -52,10 +52,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() +
-                ";void reset(void);void setRange(int minimum, int maximum);"
-                "void setMinimum(int minimum);void setMaximum(int maximum);"
-                "void setValue(int value)";
+        return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptProgressBar.api");
     }
 
     ///Resets the progress bar. The progress bar rewinds and shows no progress.

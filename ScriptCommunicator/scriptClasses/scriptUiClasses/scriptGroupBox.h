@@ -60,9 +60,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() +
-                ";void setTitle(QString title);QString title(void);"
-                "ScriptPlotWidget* addPlotWidget(void);QScriptValue addCanvas2DWidget(void)";
+        return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptGroupBox.api");
     }
 
     ///Sets the group box title.

@@ -29,12 +29,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "int addGraph(QString color, QString penStyle, QString name);void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue);"
-        "void addDataToGraph(int graphIndex, double x, double y);void setAxisLabels(QString xAxisLabel, QString yAxisLabel);"
-        "void showLegend(bool show);void clearGraphs(void);"
-        "void removeAllGraphs(void);void showHelperElements(bool showXRange, bool showYRange, bool showUpdate, bool showSave, bool showLoad, bool showClear, bool showGraphVisibility, quint32 graphVisibilityMaxSize=80, bool showLegend=true);"
-        "void setMaxDataPointsPerGraph(qint32 maxDataPointsPerGraph);void setUpdateInterval(quint32 updateInterval);"
-        "plotMousePressSignal(double xValue, double yValue, quint32 mouseButton);clearButtonPressedSignal(void)";
+        return MainWindow::parseApiFile("ScriptPlotWidget.api");
     }
 
     /**

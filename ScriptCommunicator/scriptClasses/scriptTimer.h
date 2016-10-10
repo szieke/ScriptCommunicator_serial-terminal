@@ -26,9 +26,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "void setSingleShot(bool singleShot);bool isSingleShot(void);"
-                "void setInterval(int msec);int interval(void);void start(int msec);void start(void);"
-                "void stop(void);bool isActive(void);int remainingTime(void);timeoutSignal(void)";
+        return MainWindow::parseApiFile("ScriptTimer.api");
     }
 
 

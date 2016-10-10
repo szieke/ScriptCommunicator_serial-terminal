@@ -59,11 +59,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() +
-                ";void setRange(double minimum, double maximum);void setValue(double value);"
-                "double value(void);void setSingleStep(double value);"
-                "double singleStep(void);void setDecimals(int value);"
-                "int decimals(void);valueChangedSignal(double)";
+        return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptDoubleSpinBox.api");
     }
 
     ///Sets the spin box's minimum and maximum values to minimum and maximum respectively.

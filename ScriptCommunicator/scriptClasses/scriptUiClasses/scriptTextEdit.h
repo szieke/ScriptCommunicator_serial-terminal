@@ -68,16 +68,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() +
-                ";int verticalScrollBarValue(void);void verticalScrollBarSetValue(int value);"
-                "QString toPlainText(void);QString toHtml(void);"
-                "void setMaxChars(int maxChars);QString replaceNonHtmlChars(QString text);"
-                "void moveTextPositionToEnd(void);void setFontPointSize(qreal fontSize);"
-                "void setFontFamily(QString fontFamily);void clear(void);"
-                "void insertPlainText(QString text, bool atTheEnd=true);void insertHtml(QString htmlString, bool atTheEnd=true);"
-                "void append(QString text);void setPlainText(QString text);"
-                "void setText(QString text);void lockScrolling(bool lock);void textChangedSignal(void);"
-                "void setUpdateRate(int updateRate)";
+        return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptTextEdit.api");
     }
 
     ///Returns the vertical scroll bar value.

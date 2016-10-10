@@ -56,8 +56,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return "void setText(const QString text);QString text(void);"
-                "void setChecked(bool checked);bool isChecked(void);clickedSignal(void)";
+        return MainWindow::parseApiFile("ScriptAction.api");
     }
 
     ///Sets the action text.
