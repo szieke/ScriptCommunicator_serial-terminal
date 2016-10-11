@@ -123,11 +123,19 @@ void MainWindowHandleData::updateConsoleAndLog(void)
 
         }
 
-        while((m_numberOfBytesInCustomConsoleStoredStrings > (settings->maxCharsInConsole * 2)) && m_customConsoleStoredStrings.length() > 1)
+        while(m_numberOfBytesInCustomConsoleStoredStrings > (settings->maxCharsInConsole * 2))
         {
-            //Limit the number of bytes in m_customConsoleStoredStrings.
-            m_numberOfBytesInCustomConsoleStoredStrings -= m_customConsoleStoredStrings.first().length();
-            m_customConsoleStoredStrings.removeFirst();
+            int diff = m_numberOfBytesInCustomConsoleStoredStrings - (settings->maxCharsInConsole * 2);
+            if(diff >= m_customConsoleStoredStrings.at(0).length())
+            {
+                m_numberOfBytesInCustomConsoleStoredStrings -= m_customConsoleStoredStrings.first().length();
+                m_customConsoleStoredStrings.removeFirst();
+            }
+            else
+            {
+                m_customConsoleStoredStrings.first().remove(0, m_numberOfBytesInCustomConsoleStoredStrings - settings->maxCharsInConsole);
+                m_numberOfBytesInCustomConsoleStoredStrings -= m_numberOfBytesInCustomConsoleStoredStrings - settings->maxCharsInConsole;
+            }
         }
 
 
