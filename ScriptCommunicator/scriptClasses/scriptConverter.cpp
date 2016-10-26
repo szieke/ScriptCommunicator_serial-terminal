@@ -136,10 +136,10 @@ uint32_t ScriptConverter::byteArrayToUint16(QVector<unsigned char> data, bool li
  * @return
  *      The value.
  */
-uint32_t ScriptConverter::byteArrayToUint32(QVector<unsigned char> data, bool littleEndian)
+uint64_t ScriptConverter::byteArrayToUint32(QVector<unsigned char> data, bool littleEndian)
 {
     uint32_t value = 0;
-    if(data.length() >= 2)
+    if(data.length() >= 4)
     {
         if(littleEndian)
         {

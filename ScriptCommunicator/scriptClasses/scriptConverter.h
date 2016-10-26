@@ -37,7 +37,7 @@ public:
     Q_INVOKABLE static uint32_t byteArrayToUint16(QVector<unsigned char> data, bool littleEndian);
 
     ///Converts the first Bytes of a byte array to an uint32_t.
-    Q_INVOKABLE static uint32_t byteArrayToUint32(QVector<unsigned char> data, bool littleEndian);
+    Q_INVOKABLE static uint64_t byteArrayToUint32(QVector<unsigned char> data, bool littleEndian);
 
     ///Converts the first Bytes of a byte array to an uint64_t.
     Q_INVOKABLE static uint64_t byteArrayToUint64(QVector<unsigned char> data, bool littleEndian);
