@@ -433,7 +433,8 @@ void MainInterfaceThread::sendDataSlot(const QByteArray data, uint id)
     {
         emit sendDataWithWorkerScriptsSignal(data);
 
-        if(sendDataWithTheMainInterface(data, true))
+        bool serialPortSignalBlocked;
+        if(sendDataWithTheMainInterface(data, true, &serialPortSignalBlocked))
         {
             sendingFinishedSignal(true, id);
             sendingFinishedSignal(data, true, id);
@@ -444,6 +445,13 @@ void MainInterfaceThread::sendDataSlot(const QByteArray data, uint id)
                 ///1 Byte type and 4 bytes CAN id.
                 m_numberOfSentBytes -= PCANBasicClass::BYTES_METADATA_SEND;
             }
+
+            if(serialPortSignalBlocked && (m_serial->bytesAvailable() != 0))
+            {//During waitForBytesWritten the serial port receive signal has been blocked. For this reason
+             //serialPortReceivedDataSlot is manually called if bytes have been received.
+                serialPortReceivedDataSlot();
+            }
+
         }
         else
         {
@@ -805,13 +813,15 @@ void MainInterfaceThread::showMessageBox(QMessageBox::Icon icon, QString title, 
  *      The data.
  * @param waitForSendingFinished
  *      If true, the this function blocks until the sending has been finished.
+ * param serialPortSignalBlocked
+ *      True if during waitForBytesWritten the serial port receive signal has been blocked.
  * @return
  *      True for success.
  */
-bool MainInterfaceThread::sendDataWithTheMainInterface(const QByteArray &data, bool waitForSendingFinished)
+bool MainInterfaceThread::sendDataWithTheMainInterface(const QByteArray &data, bool waitForSendingFinished, bool* serialPortSignalBlocked)
 {
     bool success = true;
-    QByteArray receivedData;
+    *serialPortSignalBlocked = false;
 
 
     if(m_isConnected)
@@ -833,6 +843,7 @@ bool MainInterfaceThread::sendDataWithTheMainInterface(const QByteArray &data, b
                         //Block the signals (to prevent that serialPortReceivedDataSlot
                         //is called before dataHasBeenSendSignal).
                         m_serial->blockSignals(true);
+                        *serialPortSignalBlocked = true;
 
                         if(!m_serial->waitForBytesWritten(SEND_TIMEOUT))
                         {
@@ -898,10 +909,15 @@ bool MainInterfaceThread::sendDataWithTheMainInterface(const QByteArray &data, b
         }
         else if(m_currentGlobalSettings.connectionType == CONNECTION_TYPE_CHEETAH_SPI_MASTER)
         {
-
+            QByteArray receivedData;
             if(!m_cheetahSpi->sendReceiveData(data,&receivedData, m_mainWindow->getSettingsDialog()->settings()->cheetahSpi.chipSelect))
             {
                 success = false;
+            }
+
+            if(!receivedData.isEmpty())
+            {
+                dataReceived(receivedData);
             }
         }
         else if(m_currentGlobalSettings.connectionType == CONNECTION_TYPE_PCAN)
@@ -924,17 +940,6 @@ bool MainInterfaceThread::sendDataWithTheMainInterface(const QByteArray &data, b
     else
     {
         success = false;
-    }
-
-    if(m_serial->bytesAvailable() != 0)
-    {//During waitForBytesWritten the signal have been blocked. For this reason
-     //serialPortReceivedDataSlot is manually called if bytes have been received.
-        serialPortReceivedDataSlot();
-    }
-
-    if(!receivedData.isEmpty())
-    {
-        dataReceived(receivedData);
     }
 
     return success;

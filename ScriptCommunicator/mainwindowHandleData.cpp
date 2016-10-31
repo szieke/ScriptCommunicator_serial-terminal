@@ -1060,9 +1060,13 @@ void MainWindowHandleData::appendDataToLog(const QByteArray &data, bool isSend, 
 void MainWindowHandleData::queuedDataReceivedSlot(void)
 {
     m_queuedReceivedDataTimer.stop();
-    m_receivedBytes += m_queuedReceivedData.size();
-    appendDataToStoredData(m_queuedReceivedData, false, false, m_mainWindow->m_isConnectedWithCan, false);
-    m_queuedReceivedData.clear();
+    if(!m_queuedReceivedData.isEmpty())
+    {
+        m_receivedBytes += m_queuedReceivedData.size();
+        appendDataToStoredData(m_queuedReceivedData, false, false, m_mainWindow->m_isConnectedWithCan, false);
+        m_queuedReceivedData.clear();
+    }
+
 }
 
 /**
@@ -1073,7 +1077,6 @@ void MainWindowHandleData::queuedDataReceivedSlot(void)
  */
 void MainWindowHandleData::dataReceivedSlot(QByteArray data)
 {
-
     m_queuedReceivedData.append(data);
     if(!m_queuedReceivedDataTimer.isActive())
     {
@@ -1114,6 +1117,11 @@ void MainWindowHandleData::dataHasBeenSendSlot(QByteArray data, bool success, ui
     (void) id;
     if(success)
     {
+        if(!m_queuedReceivedData.isEmpty())
+        {
+            queuedDataReceivedSlot();
+        }
+
         m_sentBytes += data.size();
 
         if(m_mainWindow->m_isConnectedWithCan)

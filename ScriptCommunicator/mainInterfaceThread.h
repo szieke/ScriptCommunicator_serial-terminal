@@ -188,7 +188,7 @@ private:
    void showMessageBox(QMessageBox::Icon icon, QString title, QString text);
 
     ///Sends data with the main interface.
-    bool sendDataWithTheMainInterface(const QByteArray &data, bool waitForSendingFinished);
+    bool sendDataWithTheMainInterface(const QByteArray &data, bool waitForSendingFinished, bool *serialPortSignalBlocked);
 
     ///If true, then the main interface thread shall exit.
     bool m_exit;
