@@ -139,7 +139,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWindowIsMinimized,
-                        QStringList extraPluginPaths, QStringList scriptArguments);
+                        QStringList extraPluginPaths, QStringList scriptArguments, QString configFile);
     ~MainWindow();
 
     ///Hide pop-up menu on toolbar
@@ -533,7 +533,7 @@ private:
     void saveSettings();
 
     ///Loads the main configuration.
-    void loadSettings();
+    bool loadSettings();
 
     ///Write an XML element and his attributes to the XML stream.
     void writeXmlElement(QXmlStreamWriter& xmlWriter, QString elementName, std::map<QString, QString> &attributes);

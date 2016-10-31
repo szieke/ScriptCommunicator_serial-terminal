@@ -64,6 +64,7 @@ int main(int argc, char *argv[])
     QStringList extraPluginPaths;
     QStringList scriptArguments;
     QStringList extraLibPaths;
+    QString configFile;
     int result = 0;
 
     QStringList scripts;
@@ -96,6 +97,11 @@ int main(int argc, char *argv[])
             {//Extra library path.
 
                 extraLibPaths << currentArg.remove("-L");
+            }
+            else if(currentArg.startsWith("-C"))
+            {//Config file.
+
+                configFile = currentArg.remove("-C");
             }
             else if(currentArg.startsWith("-A"))
             {//Script argument (script can read these arguments withScriptThread::getScriptArguments).
@@ -223,7 +229,8 @@ int main(int argc, char *argv[])
     try
     {
 
-        MainWindow* w = new MainWindow(scripts, withScriptWindow, scriptWindowIsMinimized, extraPluginPaths, scriptArguments);
+        MainWindow* w = new MainWindow(scripts, withScriptWindow, scriptWindowIsMinimized, extraPluginPaths,
+                                       scriptArguments, configFile);
 
         if(scripts.isEmpty())
         {

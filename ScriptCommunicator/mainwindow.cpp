@@ -165,8 +165,11 @@ void SendConsole::wheelEvent(QWheelEvent *event)
  *      True if the script window shall be minimized (command-line mode).
  * @param extraPluginPaths
  *      Extra plug-in search paths.
+ * \param configFile
+ *      The command line config file.
  */
-MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWindowIsMinimized, QStringList extraPluginPaths, QStringList scriptArguments) :
+MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWindowIsMinimized, QStringList extraPluginPaths, QStringList scriptArguments,
+                       QString configFile) :
     QMainWindow(0),
     m_userInterface(new Ui::MainWindow), m_isConnected(false),
     m_sendWindowPositionAndSizeloaded(false), m_scriptWindowPositionAndSizeloaded(false),
@@ -354,18 +357,23 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
         m_mainConfigFileList = getAndCreateProgramUserFolder() + "/mainConfigFileList.txt";
 
-        QStringList list = readMainConfigFileList(false);
-
         QString defaultConfig;
-
-        for(auto el : list)
+        QStringList list = readMainConfigFileList(false);
+        if(configFile.isEmpty())
         {
-            if(el.indexOf("<DEFAULT_CONFIG_FILE>:") != -1)
+            for(auto el : list)
             {
-                defaultConfig = el;
-                defaultConfig.remove("<DEFAULT_CONFIG_FILE>:");
-                break;
+                if(el.indexOf("<DEFAULT_CONFIG_FILE>:") != -1)
+                {
+                    defaultConfig = el;
+                    defaultConfig.remove("<DEFAULT_CONFIG_FILE>:");
+                    break;
+                }
             }
+        }
+        else
+        {
+            defaultConfig = configFile;
         }
 
         if(defaultConfig.isEmpty())
@@ -1114,9 +1122,14 @@ void MainWindow::show(void)
 
 /**
  * Loads the main configuration.
+ *
+ * return
+ *      True on success.
  */
-void MainWindow::loadSettings()
+bool MainWindow::loadSettings()
 {
+    bool result = true;
+
     if(m_commandLineScripts.isEmpty())
     {
 
@@ -1144,13 +1157,19 @@ void MainWindow::loadSettings()
         m_toolBoxSplitterSizesSecond.append(m_toolBoxSplitterSizeSecond);
         m_currentToolBoxIndex = m_userInterface->toolBox->currentIndex();
 
-        if (settingsFile.open(QIODevice::ReadOnly))
+        if (!settingsFile.open(QIODevice::ReadOnly))
+        {
+            QMessageBox::critical(this, "open error", "could not open " + m_mainConfigFile);
+            result = false;
+        }
+        else
         {
             QByteArray content = settingsFile.readAll();
             settingsFile.close();
             if (!doc.setContent(content))
             {
                 QMessageBox::critical(this, "parse error", "could not parse " + m_mainConfigFile);
+                result = false;
             }
             else
             {
@@ -1773,6 +1792,8 @@ void MainWindow::loadSettings()
         m_userInterface->actionReopenAllLogs->setVisible(currentSettings.appendTimestampAtLogFileName);
 
     }
+
+    return result;
 }
 
 /**
