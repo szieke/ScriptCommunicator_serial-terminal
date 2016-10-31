@@ -123,6 +123,7 @@ void MainWindowHandleData::updateConsoleAndLog(void)
 
         }
 
+        //Limit the number of bytes in m_customConsoleStoredStrings.
         while(m_numberOfBytesInCustomConsoleStoredStrings > (settings->maxCharsInConsole * 2))
         {
             int diff = m_numberOfBytesInCustomConsoleStoredStrings - (settings->maxCharsInConsole * 2);
