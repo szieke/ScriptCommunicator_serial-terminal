@@ -3501,7 +3501,7 @@ void MainWindow::openTheManualSlot(void)
         QMessageBox::critical(this, "error", "could not open " + name);
     }
 #else
-    if(!QDesktopServices::openUrl(QUrl(name, QUrl::TolerantMode)))
+    if(!QDesktopServices::openUrl(QUrl(getScriptCommunicatorFilesFolder() + "/" + name, QUrl::TolerantMode)))
     {
         QMessageBox::critical(this, "error", "could not open " + name);
     }
