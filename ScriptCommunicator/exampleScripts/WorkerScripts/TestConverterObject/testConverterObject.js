@@ -36,6 +36,9 @@ array = conv.addUint64ToArray(array, 12345678912345678, true);
 var uint64 = conv.byteArrayToUint64(array, true);
 scriptThread.appendTextToConsole("uint64: " + uint64);
 
+var int8 = conv.unsignedCharToSignedChar(250);
+scriptThread.appendTextToConsole("int8: " + int8);
+
 array = Array();
 array = conv.addInt16ToArray(array, -32123, true);
 var int16 = conv.byteArrayToInt16(array, true);

@@ -34,13 +34,19 @@ public:
     Q_INVOKABLE static QVector<unsigned char> stringToArray(QString str);
 
     ///Converts the first Bytes of a byte array to an uint16_t.
+    ///Note: This functions works only if the return value is uint32_t (and not uint16_t).
     Q_INVOKABLE static uint32_t byteArrayToUint16(QVector<unsigned char> data, bool littleEndian);
 
     ///Converts the first Bytes of a byte array to an uint32_t.
+    ///Note: This functions works only if the return value is uint64_t (and not uint32_t).
     Q_INVOKABLE static uint64_t byteArrayToUint32(QVector<unsigned char> data, bool littleEndian);
 
     ///Converts the first Bytes of a byte array to an uint64_t.
     Q_INVOKABLE static uint64_t byteArrayToUint64(QVector<unsigned char> data, bool littleEndian);
+
+    ///Converts an unsigned char to a signed char (int8_t).
+    ///Note: This functions works only if the return value is int16_t (nd not int8_t).
+    Q_INVOKABLE static int16_t unsignedCharToSignedChar(unsigned char number);
 
     ///Converts the first Bytes of a byte array to an int16_t.
     Q_INVOKABLE static int16_t byteArrayToInt16(QVector<unsigned char> data, bool littleEndian);
