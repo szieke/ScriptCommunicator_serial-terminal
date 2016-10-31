@@ -28,6 +28,101 @@
 #include "colorWidgets/color_dialog.hpp"
 #include "qcontext2dcanvas.h"
 
+
+QWidget* createWidget(QString& type, QWidget* parent, bool insertedInTableWidget)
+{
+    QWidget* widget = NULL;
+
+    if(type == "ComboBox")
+    {
+        QComboBox* el = new QComboBox(parent);
+        if(insertedInTableWidget){el->setFrame(false);}
+        widget = el;
+    }
+    else if(type == "LineEdit")
+    {
+        QLineEdit* el = new QLineEdit(parent);
+        if(insertedInTableWidget){el->setFrame(false);}
+        widget = el;
+    }
+    else if(type == "Button")
+    {
+        QPushButton* el = new QPushButton(parent);
+        widget = el;
+    }
+    else if(type == "CheckBox")
+    {
+        QCheckBox* el = new QCheckBox(parent);
+        widget = el;
+    }
+    else if(type == "SpinBox")
+    {
+        QSpinBox* el = new QSpinBox(parent);
+        if(insertedInTableWidget){el->setFrame(false);}
+        widget = el;
+
+    }
+    else if(type == "DoubleSpinBox")
+    {
+        QDoubleSpinBox* el = new QDoubleSpinBox(parent);
+        if(insertedInTableWidget){el->setFrame(false);}
+        widget = el;
+
+    }
+    else if(type == "VerticalSlider")
+    {
+        QSlider* el = new QSlider(parent);
+        el->setOrientation(Qt::Vertical);
+        widget = el;
+
+    }
+    else if(type == "HorizontalSlider")
+    {
+        QSlider* el = new QSlider(parent);
+        el->setOrientation(Qt::Horizontal);
+        widget = el;
+    }
+    else if(type == "TimeEdit")
+    {
+        QTimeEdit* el = new QTimeEdit(parent);
+        if(insertedInTableWidget){el->setFrame(false);}
+        widget = el;
+
+    }
+    else if(type == "DateEdit")
+    {
+        QDateEdit* el = new QDateEdit(parent);
+        if(insertedInTableWidget){el->setFrame(false);}
+        widget = el;
+    }
+    else if(type == "DateTimeEdit")
+    {
+        QDateTimeEdit* el = new QDateTimeEdit(parent);
+        if(insertedInTableWidget){el->setFrame(false);}
+        widget = el;
+    }
+    else if(type == "TextEdit")
+    {
+        QTextEdit* el = new QTextEdit(parent);
+        widget = el;
+
+    }
+    else if(type == "Dial")
+    {
+        QDial* el = new QDial(parent);
+        widget = el;
+
+    }
+    else if(type == "CalendarWidget")
+    {
+        QCalendarWidget* el = new QCalendarWidget(parent);
+        widget = el;
+
+    }
+
+    return widget;
+}
+
 /**
  * Creates and inserts a script widget into a table cell.
  * @param scriptThread
@@ -60,105 +155,11 @@ void ScriptSlots::insertWidgetInToTableSlot(ScriptThread* scriptThread, QTableWi
     }
     if(item)
     {
-        if(type == "ComboBox")
+        QWidget* widget = createWidget(type, table, true);
+        if(widget)
         {
-            QComboBox* el = new QComboBox(table);
-            el->setFrame(false);
-            table->setCellWidget(row, column, el);
+            table->setCellWidget(row, column, widget);
             *succeeded = true;
-        }
-        else if(type == "LineEdit")
-        {
-            QLineEdit* el = new QLineEdit(table);
-            el->setFrame(false);
-            table->setCellWidget(row, column, el);
-            *succeeded = true;
-        }
-        else if(type == "Button")
-        {
-            QPushButton* el = new QPushButton(table);
-            table->setCellWidget(row, column, el);
-            *succeeded = true;
-        }
-        else if(type == "CheckBox")
-        {
-            QCheckBox* el = new QCheckBox(table);
-            table->setCellWidget(row, column, el);
-            *succeeded = true;
-        }
-        else if(type == "SpinBox")
-        {
-            QSpinBox* el = new QSpinBox(table);
-            el->setFrame(false);
-            table->setCellWidget(row, column, el);
-            *succeeded = true;
-
-        }
-        else if(type == "DoubleSpinBox")
-        {
-            QDoubleSpinBox* el = new QDoubleSpinBox(table);
-            el->setFrame(false);
-            table->setCellWidget(row, column, el);
-            *succeeded = true;
-
-        }
-        else if(type == "VerticalSlider")
-        {
-            QSlider* el = new QSlider(table);
-            el->setOrientation(Qt::Vertical);
-            table->setCellWidget(row, column, el);
-            *succeeded = true;
-
-        }
-        else if(type == "HorizontalSlider")
-        {
-            QSlider* el = new QSlider(table);
-            el->setOrientation(Qt::Horizontal);
-            table->setCellWidget(row, column, el);
-            *succeeded = true;
-        }
-        else if(type == "TimeEdit")
-        {
-            QTimeEdit* el = new QTimeEdit(table);
-            el->setFrame(false);
-            table->setCellWidget(row, column, el);
-            *succeeded = true;
-
-        }
-        else if(type == "DateEdit")
-        {
-            QDateEdit* el = new QDateEdit(table);
-            el->setFrame(false);
-            table->setCellWidget(row, column, el);
-            *succeeded = true;
-        }
-        else if(type == "DateTimeEdit")
-        {
-            QDateTimeEdit* el = new QDateTimeEdit(table);
-            el->setFrame(false);
-            table->setCellWidget(row, column, el);
-            *succeeded = true;
-        }
-        else if(type == "TextEdit")
-        {
-            QTextEdit* el = new QTextEdit(table);
-            table->setCellWidget(row, column, el);
-            *succeeded = true;
-
-        }
-        else if(type == "Dial")
-        {
-            QDial* el = new QDial(table);
-            table->setCellWidget(row, column, el);
-            *succeeded = true;
-
-        }
-        else if(type == "CalendarWidget")
-        {
-            QCalendarWidget* el = new QCalendarWidget(table);
-            table->setCellWidget(row, column, el);
-            *succeeded = true;
-
         }
         else
         {
