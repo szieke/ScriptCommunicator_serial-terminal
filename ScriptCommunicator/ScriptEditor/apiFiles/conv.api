@@ -5,6 +5,7 @@ conv::stringToArray(String str):Array<unsigned char> \nConverts an ascii string 
 conv::byteArrayToUint16(Array<unsigned char> data, bool littleEndian):uint16_t \nConverts the first Bytes of a byte array to an uint16_t.
 conv::byteArrayToUint32(Array<unsigned char> data, bool littleEndian):uint32_t \nConverts the first Bytes of a byte array to an uint32_t.
 conv::byteArrayToUint64(Array<unsigned char> data, bool littleEndian):uint64_t \nConverts the first Bytes of a byte array to an uint64_t.
+conv::unsignedCharToSignedChar(unsigned char number):int8_t \nConverts an unsigned char to a signed char (int8_t).
 conv::byteArrayToInt16(Array<unsigned char> data, bool littleEndian):int16_t \nConverts the first Bytes of a byte array to an int16_t.
 conv::byteArrayToInt32(Array<unsigned char> data, bool littleEndian):int32_t \nConverts the first Bytes of a byte array to an int32_t.
 conv::byteArrayToInt64(Array<unsigned char> data, bool littleEndian):int64_t \nConverts the first Bytes of a byte array to an int64_t.
