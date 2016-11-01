@@ -1,31 +1,31 @@
 ScriptSqlDatabase::getPublicScriptElements(void):String \nReturns a semicolon separated list with all public functions, signals and properties.
-ScriptSqlDatabase::open(void):bool
-ScriptSqlDatabase::open(String user, String password):bool
-ScriptSqlDatabase::close(void):void
-ScriptSqlDatabase::isOpen(void):bool
-ScriptSqlDatabase::isOpenError(void):bool
-ScriptSqlDatabase::tables(quint32 type = QSql::TableType::Tables):Array<String>
-ScriptSqlDatabase::primaryIndex(String tablename):ScriptSqlIndex
-ScriptSqlDatabase::record(String tablename):ScriptSqlRecord
-ScriptSqlDatabase::exec(String query = String()):ScriptSqlQuery
-ScriptSqlDatabase::lastError(void):ScriptSqlError
-ScriptSqlDatabase::isValid(void):bool
-ScriptSqlDatabase::transaction(void):bool
-ScriptSqlDatabase::commit(void):bool
-ScriptSqlDatabase::rollback(void):bool
-ScriptSqlDatabase::setDatabaseName(String name):void
-ScriptSqlDatabase::setUserName(String name):void
-ScriptSqlDatabase::setPassword(String password):void
-ScriptSqlDatabase::setHostName(String host):void
-ScriptSqlDatabase::setPort(int p):void
-ScriptSqlDatabase::setConnectOptions(String options = String()):void
-ScriptSqlDatabase::databaseName(void):String
-ScriptSqlDatabase::userName(void):String
-ScriptSqlDatabase::password(void):String
-ScriptSqlDatabase::hostName(void):String
-ScriptSqlDatabase::driverName(void):String
-ScriptSqlDatabase::port(void):int
-ScriptSqlDatabase::connectOptions(void):String
-ScriptSqlDatabase::connectionName(void):String
-ScriptSqlDatabase::setNumericalPrecisionPolicy(quint32 precisionPolicy):void \nQSql::NumericalPrecisionPolicy
-ScriptSqlDatabase::numericalPrecisionPolicy(void):quint32 \nQSql::NumericalPrecisionPolicy
+ScriptSqlDatabase::open(void):bool \nOpens the database connection using the current connection values.\nReturns true on success; otherwise returns false.\nError information can be retrieved using lastError().
+ScriptSqlDatabase::open(String user, String password):bool \nOpens the database connection using the given user name and password.\nReturns true on success; otherwise returns false.\nError information can be retrieved using lastError().
+ScriptSqlDatabase::close(void):void \nCloses the database connection, freeing any resources acquired, and invalidating any existing ScriptSqlQuery objects that are used with the database.
+ScriptSqlDatabase::isOpen(void):bool \nReturns true if the database connection is currently open; otherwise returns false.
+ScriptSqlDatabase::isOpenError(void):bool \nReturns true if there was an error opening the database connection; otherwise returns false.\nError information can be retrieved using the lastError() function.
+ScriptSqlDatabase::tables(quint32 type = QSql::TableType::Tables):Array<String> \nReturns a list of the database's tables, system tables and views, as specified by the parameter type.
+ScriptSqlDatabase::primaryIndex(String tablename):ScriptSqlIndex \nReturns the primary index for table tablename. If no primary index exists an empty ScriptSqlIndex is returned.
+ScriptSqlDatabase::record(String tablename):ScriptSqlRecord \nReturns a ScriptSqlRecord populated with the names of all the fields in the table (or view) called tablename.\nThe order in which the fields appear in the record is undefined.\nIf no such table (or view) exists, an empty record is returned.
+ScriptSqlDatabase::exec(String query = String()):ScriptSqlQuery \nExecutes a SQL statement on the database and returns a ScriptSqlQuery object.\nUse lastError() to retrieve error information.\nIf query is empty, an empty, invalid query is returned and lastError() is not affected.
+ScriptSqlDatabase::lastError(void):ScriptSqlError \nReturns information about the last error that occurred on the database.
+ScriptSqlDatabase::isValid(void):bool \nReturns true if the ScriptSqlDatabase has a valid driver.
+ScriptSqlDatabase::transaction(void):bool \nBegins a transaction on the database if the driver supports transactions.\nReturns true if the operation succeeded.\nOtherwise it returns false.
+ScriptSqlDatabase::commit(void):bool \nCommits a transaction to the database if the driver supports transactions and a transaction() has been started.\nReturns true if the operation succeeded.\nOtherwise it returns false.
+ScriptSqlDatabase::rollback(void):bool \nRolls back a transaction on the database, if the driver supports transactions and a transaction() has been started.\nReturns true if the operation succeeded.\nOtherwise it returns false.
+ScriptSqlDatabase::setDatabaseName(String name):void \nSets the connection's database name to name.\nTo have effect, the database name must be set before the connection is opened.\nAlternatively, you can close() the connection, set the database name, and call open() again.
+ScriptSqlDatabase::setUserName(String name):void \nSets the connection's user name to name.\nTo have effect, the user name must be set before the connection is opened.\nAlternatively, you can close() the connection, set the user name, and call open() again.
+ScriptSqlDatabase::setPassword(String password):void \nSets the connection's password to password.\nTo have effect, the password must be set before the connection is opened.\nAlternatively, you can close() the connection, set the password, and call open() again.
+ScriptSqlDatabase::setHostName(String host):void \nSets the connection's host name to host.\nTo have effect, the host name must be set before the connection is opened.\nAlternatively, you can close() the connection, set the host name, and call open() again.
+ScriptSqlDatabase::setPort(int p):void \nSets the connection's port number to port.\nTo have effect, the port number must be set before the connection is opened.\nAlternatively, you can close() the connection, set the port number, and call open() again.
+ScriptSqlDatabase::setConnectOptions(String options = String()):void \nSets database-specific options.\nThis must be done before the connection is opened or it has no effect (or you can close() the connection,\ncall this function and open() the connection again).
+ScriptSqlDatabase::databaseName(void):String \nReturns the connection's database name, which may be empty.
+ScriptSqlDatabase::userName(void):String \nReturns the connection's user name; it may be empty.
+ScriptSqlDatabase::password(void):String \nReturns the connection's password.\nIf the password was not set with setPassword(), and if the password was given in the open() call,\nor if no password was used, an empty string is returned.
+ScriptSqlDatabase::hostName(void):String \nReturns the connection's host name; it may be empty.
+ScriptSqlDatabase::driverName(void):String \nReturns the connection's driver name.
+ScriptSqlDatabase::port(void):int \nReturns the connection's port number. The value is undefined if the port number has not been set.
+ScriptSqlDatabase::connectOptions(void):String \nReturns the connection options string used for this connection. The string may be empty.
+ScriptSqlDatabase::connectionName(void):String \nReturns the connection name, which may be empty.
+ScriptSqlDatabase::setNumericalPrecisionPolicy(quint32 precisionPolicy):void \nQSql::NumericalPrecisionPolicy \nSets the default numerical precision policy used by queries created on this database connection to precisionPolicy.
+ScriptSqlDatabase::numericalPrecisionPolicy(void):quint32 \nQSql::NumericalPrecisionPolicy \nReturns the current default precision policy for the database connection.
