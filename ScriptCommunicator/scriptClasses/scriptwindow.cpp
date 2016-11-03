@@ -1648,13 +1648,13 @@ void ScriptWindow::itemSelectionChangedSlot(void)
 
         if(m_userInterface->tableWidget->item(selectedRow, COLUMN_UI_PATH)->text().size() == 0)
         {
-            m_userInterface->actionEditUi->setText("new ui");
+            m_userInterface->actionEditUi->setText("New ui");
             m_userInterface->actionEditUi->setShortcut(QKeySequence("Ctrl+Shift+N"));
             m_userInterface->actionRemoveUi->setEnabled(false);
         }
         else
         {
-            m_userInterface->actionEditUi->setText("edit ui");
+            m_userInterface->actionEditUi->setText("Edit ui");
             m_userInterface->actionEditUi->setShortcut(QKeySequence("Ctrl+Shift+E"));
             m_userInterface->actionRemoveUi->setEnabled(true);
 

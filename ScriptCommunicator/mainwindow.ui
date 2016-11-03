@@ -1003,7 +1003,7 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>93</width>
+          <width>98</width>
           <height>93</height>
          </rect>
         </property>
@@ -1048,7 +1048,7 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>243</width>
+          <width>323</width>
           <height>513</height>
          </rect>
         </property>
@@ -1122,8 +1122,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>243</width>
-          <height>513</height>
+          <width>188</width>
+          <height>301</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1785,7 +1785,7 @@ to send a sequence double click on it</string>
   </action>
   <action name="actionAbout">
    <property name="text">
-    <string>about</string>
+    <string>About</string>
    </property>
   </action>
   <action name="actionLockScrolling">
@@ -1811,7 +1811,7 @@ to send a sequence double click on it</string>
   </action>
   <action name="actionManual">
    <property name="text">
-    <string>manual</string>
+    <string>Manual</string>
    </property>
    <property name="toolTip">
     <string>open the manual</string>
@@ -1834,77 +1834,77 @@ to send a sequence double click on it</string>
   </action>
   <action name="actionCopyConfig">
    <property name="text">
-    <string>copy config</string>
+    <string>Copy config</string>
    </property>
   </action>
   <action name="actionLoadConfig">
    <property name="text">
-    <string>load config</string>
+    <string>Load config</string>
    </property>
   </action>
   <action name="actionLoadPreviosConfig">
    <property name="text">
-    <string>load previous used config</string>
+    <string>Load previous used config</string>
    </property>
   </action>
   <action name="actionDeletePreviousConfigList">
    <property name="text">
-    <string>delete previous used config list</string>
+    <string>Delete previous used config list</string>
    </property>
   </action>
   <action name="actionSetCurrentConfigToDefault">
    <property name="text">
-    <string>set current config to default</string>
+    <string>Set current config to default</string>
    </property>
   </action>
   <action name="actionResetDefaultConfig">
    <property name="text">
-    <string>reset default config</string>
+    <string>Reset default config</string>
    </property>
   </action>
   <action name="actionCreateNewConfig">
    <property name="text">
-    <string>create new config</string>
+    <string>Create new config</string>
    </property>
   </action>
   <action name="actionSaveConsole">
    <property name="text">
-    <string>save console</string>
+    <string>Save console</string>
    </property>
   </action>
   <action name="actionPrintConsole">
    <property name="text">
-    <string>print console</string>
+    <string>Print console</string>
    </property>
   </action>
   <action name="actionSubmitBug">
    <property name="text">
-    <string>report a bug</string>
+    <string>Report a bug</string>
    </property>
   </action>
   <action name="actionRequestFeature">
    <property name="text">
-    <string>feature request</string>
+    <string>Feature request</string>
    </property>
   </action>
   <action name="actionVideo">
    <property name="text">
-    <string>video (youtube)</string>
+    <string>Video (youtube)</string>
    </property>
   </action>
   <action name="actionGetSupport">
    <property name="text">
-    <string>get support</string>
+    <string>Get support</string>
    </property>
   </action>
   <action name="actionEditScript">
    <property name="text">
-    <string>edit sequence script</string>
+    <string>Edit sequence script</string>
    </property>
   </action>
   <action name="actionAddScript">
    <property name="text">
-    <string>add sequence script</string>
+    <string>Add sequence script</string>
    </property>
   </action>
   <action name="actionBringAllToForeground">
@@ -1921,12 +1921,12 @@ to send a sequence double click on it</string>
   </action>
   <action name="actionDebugSequenceScript">
    <property name="text">
-    <string>debug sequence script</string>
+    <string>Debug sequence script</string>
    </property>
   </action>
   <action name="actionCheckForUpdates">
    <property name="text">
-    <string>check for updates (in background)</string>
+    <string>Check for updates (in background)</string>
    </property>
   </action>
   <action name="actionReopenAllLogs">

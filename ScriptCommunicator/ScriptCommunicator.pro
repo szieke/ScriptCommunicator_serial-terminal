@@ -30,7 +30,8 @@ scriptClasses/scriptUiClasses \
 cheetahSpi \
 pcan \
 scriptClasses/canvas2D \
-quazip
+quazip \
+ScriptEditor
 
 RC_FILE = images/ScriptCommunicator.rc
 

@@ -364,7 +364,7 @@
    </property>
    <widget class="QMenu" name="menuScript">
     <property name="title">
-     <string>&amp;script config</string>
+     <string>&amp;Script Config</string>
     </property>
     <addaction name="actionLoadConfig"/>
     <addaction name="actionUnloadConfig"/>
@@ -373,7 +373,7 @@
    </widget>
    <widget class="QMenu" name="menuScript_2">
     <property name="title">
-     <string>&amp;script</string>
+     <string>&amp;Script</string>
     </property>
     <addaction name="actionAddScript"/>
     <addaction name="actionNewScript"/>
@@ -395,7 +395,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionAddScript">
    <property name="text">
-    <string>add worker script</string>
+    <string>Add worker script</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
@@ -406,7 +406,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>remove worker script</string>
+    <string>Remove worker script</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
@@ -414,7 +414,7 @@
   </action>
   <action name="actionLoadConfig">
    <property name="text">
-    <string>load config</string>
+    <string>Load config</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
@@ -422,7 +422,7 @@
   </action>
   <action name="actionSaveConfig">
    <property name="text">
-    <string>save config</string>
+    <string>Save config</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -430,7 +430,7 @@
   </action>
   <action name="actionSaveConfigAs">
    <property name="text">
-    <string>save config as</string>
+    <string>Save config as</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
@@ -438,7 +438,7 @@
   </action>
   <action name="actionUnloadConfig">
    <property name="text">
-    <string>unload config</string>
+    <string>Unload config</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+U</string>
@@ -449,7 +449,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>edit worker script</string>
+    <string>Edit worker script</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+E</string>
@@ -460,7 +460,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>edit user interface</string>
+    <string>Edit user interface</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+E</string>
@@ -471,7 +471,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>remove user interface</string>
+    <string>Remove user interface</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+R</string>
@@ -479,7 +479,7 @@
   </action>
   <action name="actionNewScript">
    <property name="text">
-    <string>new worker script</string>
+    <string>New worker script</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -490,7 +490,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>move up</string>
+    <string>Move up</string>
    </property>
    <property name="toolTip">
     <string>move script-table entry up</string>
@@ -504,7 +504,7 @@
     <bool>false</bool>
    </property>
    <property name="text">
-    <string>move down</string>
+    <string>Move down</string>
    </property>
    <property name="toolTip">
     <string>move scipt-table entry down</string>
@@ -515,7 +515,7 @@
   </action>
   <action name="actionEditAllWorkerScripts">
    <property name="text">
-    <string>edit all worker scripts</string>
+    <string>Edit all worker scripts</string>
    </property>
    <property name="toolTip">
     <string>edit all worker scripts</string>
@@ -526,7 +526,7 @@
   </action>
   <action name="actionCreateSceFile">
    <property name="text">
-    <string>create sce file</string>
+    <string>Create sce file</string>
    </property>
    <property name="toolTip">
     <string>create executable file</string>

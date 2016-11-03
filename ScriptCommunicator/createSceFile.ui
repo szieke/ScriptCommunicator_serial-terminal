@@ -481,7 +481,7 @@
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionLoadConfig">
    <property name="text">
-    <string>load config</string>
+    <string>Load config</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
@@ -489,7 +489,7 @@
   </action>
   <action name="actionSaveConfig">
    <property name="text">
-    <string>save config</string>
+    <string>Save config</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -497,7 +497,7 @@
   </action>
   <action name="actionSaveConfigAs">
    <property name="text">
-    <string>save config as</string>
+    <string>Save config as</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
@@ -505,7 +505,7 @@
   </action>
   <action name="actionUnloadConfig">
    <property name="text">
-    <string>unload config</string>
+    <string>Unload config</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+U</string>
@@ -513,7 +513,7 @@
   </action>
   <action name="actionGenerateFileSce">
    <property name="text">
-    <string>generate file (.sce)</string>
+    <string>Generate file (.sce)</string>
    </property>
    <property name="toolTip">
     <string>generate sce file</string>
@@ -524,7 +524,7 @@
   </action>
   <action name="actionGenerateCompressedFile">
    <property name="text">
-    <string>generate compressed file (.scez)</string>
+    <string>Generate compressed file (.scez)</string>
    </property>
    <property name="toolTip">
     <string>generate scez file</string>

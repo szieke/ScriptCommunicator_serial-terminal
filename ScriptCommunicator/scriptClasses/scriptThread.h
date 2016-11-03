@@ -266,6 +266,18 @@ public:
     ///Sets the serial port (main interface) RTS and DTR pins.
     Q_INVOKABLE void setSerialPortPins(bool setRTS, bool setDTR);
 
+
+    ///Returns the state of the serial port signals (pins).
+    ///The signals are bit coded:
+    ///NoSignal = 0x00,
+    ///DataTerminalReadySignal = 0x04,
+    ///DataCarrierDetectSignal = 0x08,
+    ///DataSetReadySignal = 0x10,
+    ///RingIndicatorSignal = 0x20,
+    ///RequestToSendSignal = 0x40,
+    ///ClearToSendSignal = 0x80,
+    Q_INVOKABLE quint32 getSerialPortSignals(void){uint32_t bits;emit getSerialPortSignalsSignal(&bits);return bits;}
+
     ///Connects the main interface (serial port).
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
     Q_INVOKABLE bool connectSerialPort(QString name, qint32 baudRate = 115200, quint32 connectTimeout= 1000, quint32 dataBits = 8, QString parity = "None",
@@ -536,6 +548,7 @@ public:
     ///Sets the title of the main window.
     Q_INVOKABLE void setMainWindowTitle(QString newTitle){emit setMainWindowTitleSignal(newTitle);}
 
+
     ///Returns and all functions, signals and properties of an object.
     static void getAllObjectPropertiesAndFunctionsInternal(QScriptValue object, QStringList* resultList, QString* resultString);
 
@@ -685,6 +698,10 @@ signals:
     ///Is connected with MainWindow::setWindowTitle.
     ///This signal must not be used from script.
     void setMainWindowTitleSignal(QString newTitle);
+
+    ///Returns the state of the serial port signals (pins).
+    ///This signal must not be used from script.
+    void getSerialPortSignalsSignal(uint32_t* bits);
 
 protected:
     ///The thread main function.
