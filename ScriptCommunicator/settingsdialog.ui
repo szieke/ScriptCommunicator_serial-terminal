@@ -2956,6 +2956,9 @@ Note: The reopen buton in the main window is only visible if this option is sele
       </item>
       <item row="3" column="7">
        <widget class="QPushButton" name="closeButton">
+        <property name="toolTip">
+         <string>Ctrl+X</string>
+        </property>
         <property name="text">
          <string>Close</string>
         </property>

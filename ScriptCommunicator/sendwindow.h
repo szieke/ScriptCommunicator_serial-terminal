@@ -382,6 +382,9 @@ public slots:
     ///Slot function for the edit cyclic send menu.
     void editCyclicSendScriptSlot(void);
 
+    ///Sets the window title.
+    void setTitle(QString extraString);
+
     ///Slot function for the add cyclic send menu.
     void addCyclicSendScriptSlot(void);
 

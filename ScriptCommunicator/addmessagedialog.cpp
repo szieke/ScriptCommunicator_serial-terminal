@@ -31,6 +31,7 @@ AddMessageDialog::AddMessageDialog(QWidget *parent, SettingsDialog *settingsDial
     ui->setupUi(this);
 
     connect(ui->EnterPushButton, SIGNAL(clicked()), this, SLOT(enterButtonClicketSlot()));
+
 }
 
 AddMessageDialog::~AddMessageDialog()

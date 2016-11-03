@@ -1003,7 +1003,7 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>98</width>
+          <width>93</width>
           <height>93</height>
          </rect>
         </property>
@@ -1787,6 +1787,9 @@ to send a sequence double click on it</string>
    <property name="text">
     <string>About</string>
    </property>
+   <property name="toolTip">
+    <string>about</string>
+   </property>
   </action>
   <action name="actionLockScrolling">
    <property name="checkable">
@@ -1836,75 +1839,120 @@ to send a sequence double click on it</string>
    <property name="text">
     <string>Copy config</string>
    </property>
+   <property name="toolTip">
+    <string>copy config</string>
+   </property>
   </action>
   <action name="actionLoadConfig">
    <property name="text">
     <string>Load config</string>
+   </property>
+   <property name="toolTip">
+    <string>load config</string>
    </property>
   </action>
   <action name="actionLoadPreviosConfig">
    <property name="text">
     <string>Load previous used config</string>
    </property>
+   <property name="toolTip">
+    <string>load previous used config</string>
+   </property>
   </action>
   <action name="actionDeletePreviousConfigList">
    <property name="text">
     <string>Delete previous used config list</string>
+   </property>
+   <property name="toolTip">
+    <string>delete previous used config list</string>
    </property>
   </action>
   <action name="actionSetCurrentConfigToDefault">
    <property name="text">
     <string>Set current config to default</string>
    </property>
+   <property name="toolTip">
+    <string>set current config to default</string>
+   </property>
   </action>
   <action name="actionResetDefaultConfig">
    <property name="text">
     <string>Reset default config</string>
+   </property>
+   <property name="toolTip">
+    <string>reset default config</string>
    </property>
   </action>
   <action name="actionCreateNewConfig">
    <property name="text">
     <string>Create new config</string>
    </property>
+   <property name="toolTip">
+    <string>create new config</string>
+   </property>
   </action>
   <action name="actionSaveConsole">
    <property name="text">
     <string>Save console</string>
+   </property>
+   <property name="toolTip">
+    <string>save console</string>
    </property>
   </action>
   <action name="actionPrintConsole">
    <property name="text">
     <string>Print console</string>
    </property>
+   <property name="toolTip">
+    <string>print console</string>
+   </property>
   </action>
   <action name="actionSubmitBug">
    <property name="text">
     <string>Report a bug</string>
+   </property>
+   <property name="toolTip">
+    <string>report a bug</string>
    </property>
   </action>
   <action name="actionRequestFeature">
    <property name="text">
     <string>Feature request</string>
    </property>
+   <property name="toolTip">
+    <string>feature request</string>
+   </property>
   </action>
   <action name="actionVideo">
    <property name="text">
     <string>Video (youtube)</string>
+   </property>
+   <property name="toolTip">
+    <string>video (youtube)</string>
    </property>
   </action>
   <action name="actionGetSupport">
    <property name="text">
     <string>Get support</string>
    </property>
+   <property name="toolTip">
+    <string>get support</string>
+   </property>
   </action>
   <action name="actionEditScript">
    <property name="text">
     <string>Edit sequence script</string>
    </property>
+   <property name="toolTip">
+    <string>edit sequence script</string>
+   </property>
   </action>
   <action name="actionAddScript">
    <property name="text">
     <string>Add sequence script</string>
+   </property>
+   <property name="toolTip">
+    <string>add sequence script</string>
    </property>
   </action>
   <action name="actionBringAllToForeground">
@@ -1923,10 +1971,16 @@ to send a sequence double click on it</string>
    <property name="text">
     <string>Debug sequence script</string>
    </property>
+   <property name="toolTip">
+    <string>debug sequence script</string>
+   </property>
   </action>
   <action name="actionCheckForUpdates">
    <property name="text">
     <string>Check for updates (in background)</string>
+   </property>
+   <property name="toolTip">
+    <string>check for updates (in background)</string>
    </property>
   </action>
   <action name="actionReopenAllLogs">

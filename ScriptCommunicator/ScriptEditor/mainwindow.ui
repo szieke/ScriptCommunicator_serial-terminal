@@ -130,7 +130,7 @@
     <string>Open</string>
    </property>
    <property name="toolTip">
-    <string>Open an existing file</string>
+    <string>open an existing file</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -145,7 +145,7 @@
     <string>Save</string>
    </property>
    <property name="toolTip">
-    <string>Save the document to disk</string>
+    <string>save the document to disk</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -161,10 +161,10 @@
   </action>
   <action name="actionExit">
    <property name="text">
-    <string>Exit</string>
+    <string>quit</string>
    </property>
    <property name="toolTip">
-    <string>Exit the application</string>
+    <string>exit the application</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
@@ -182,7 +182,7 @@
     <string>Cut</string>
    </property>
    <property name="toolTip">
-    <string>Cut the current selection's contents to the clipboard</string>
+    <string>cut the current selection's contents to the clipboard</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+X</string>

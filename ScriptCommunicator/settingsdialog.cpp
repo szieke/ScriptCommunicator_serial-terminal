@@ -34,6 +34,7 @@
 #include <QNetworkInterface>
 #include <QScrollBar>
 #include <QProcess>
+#include <QShortcut>
 #include "colorWidgets/color_dialog.hpp"
 
 QT_USE_NAMESPACE
@@ -82,6 +83,9 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     connect(m_userInterface->cheetahScanPushButton, SIGNAL(clicked()),
             this, SLOT(cheetahScanButtonSlot()));
+
+    QShortcut* shortcut = new QShortcut(QKeySequence("Ctrl+X"), this);
+    QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(close()));
 
     connect(m_userInterface->closeButton, SIGNAL(clicked()),
             this, SLOT(closeButtonPressed()));
@@ -489,6 +493,8 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     m_userInterface->serialPortInfoListBox->setAutoCompletion(false);
     m_userInterface->consoleNewLineAt->setAutoCompletion(false);;
     m_userInterface->logNewLineAt->setAutoCompletion(false);
+
+    setWindowTitle("ScriptCommunicator " + MainWindow::VERSION + " - Settings");
 }
 
 /**

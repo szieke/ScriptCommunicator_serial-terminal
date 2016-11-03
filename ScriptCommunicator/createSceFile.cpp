@@ -24,6 +24,9 @@ CreateSceFile::CreateSceFile(QWidget *parent, QTableWidget *scriptWindowScriptTa
 {
     ui->setupUi(this);
 
+    QShortcut* shortcut = new QShortcut(QKeySequence("Ctrl+X"), this);
+    QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(close()));
+
     connect(ui->selectFile, SIGNAL(clicked()), this, SLOT(selectFileSlot()));
     connect(ui->addFile, SIGNAL(clicked()), this, SLOT(addFileSlot()));
     connect(ui->addFolder, SIGNAL(clicked()), this, SLOT(addFolderSlot()));
@@ -56,6 +59,7 @@ CreateSceFile::CreateSceFile(QWidget *parent, QTableWidget *scriptWindowScriptTa
     ui->minScVersionMinor->setValue(MainWindow::VERSION.split(".")[1].toUInt());
 
     setMenuState();
+    setTitle("");
 }
 
 /**
@@ -1011,6 +1015,16 @@ void CreateSceFile::typeTextChangedSlot(QString text)
 }
 
 /**
+ * Sets the window title.
+ * @param extraString
+ *      The string which is appended at the title.
+ */
+void CreateSceFile::setTitle(QString extraString)
+{
+    setWindowTitle("ScriptCommunicator " + MainWindow::VERSION + " - SCE File Dialog" + extraString);
+}
+
+/**
  * Slot function for the save as config menu.
  */
 void CreateSceFile::saveConfigAsSlot()
@@ -1020,7 +1034,7 @@ void CreateSceFile::saveConfigAsSlot()
     if(!tmpFileName.isEmpty())
     {
         m_configFileName = tmpFileName;
-        setWindowTitle(m_configFileName);
+        setTitle(m_configFileName);
         emit configHasToBeSavedSignal();
         saveCurrentConfig();
     }
@@ -1038,7 +1052,7 @@ void CreateSceFile::unloadConfigSlot()
 
     setGuiElementsToDefault();
     m_configFileName = "";
-    setWindowTitle(m_configFileName);
+    setTitle(m_configFileName);
     emit configHasToBeSavedSignal();
 }
 
@@ -1119,7 +1133,7 @@ void CreateSceFile::saveCurrentConfig(void)
         QMessageBox::critical(this, "save failed", m_configFileName);
 
         m_configFileName = "";
-        setWindowTitle(m_configFileName);
+        setTitle(m_configFileName);
         emit configHasToBeSavedSignal();
     }
 }
@@ -1184,7 +1198,7 @@ void CreateSceFile::loadConfigFile(void)
     if(!m_configFileName.isEmpty())
     {
         setGuiElementsToDefault();
-        setWindowTitle(m_configFileName);
+        setTitle(m_configFileName);
 
         if(!m_configFileName.isEmpty())
         {
@@ -1202,7 +1216,7 @@ void CreateSceFile::loadConfigFile(void)
                         QMessageBox::critical(this, "parse error", "could not parse " + m_configFileName);
 
                         m_configFileName = "";
-                        setWindowTitle(m_configFileName);
+                        setTitle(m_configFileName);
                         emit configHasToBeSavedSignal();
                     }
                 }
@@ -1257,7 +1271,7 @@ void CreateSceFile::loadConfigFile(void)
             QMessageBox::critical(this, "could not open file", m_configFileName);
 
             m_configFileName = "";
-            setWindowTitle(m_configFileName);
+            setTitle(m_configFileName);
             emit configHasToBeSavedSignal();
         }
     }

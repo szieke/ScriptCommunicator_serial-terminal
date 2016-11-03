@@ -149,6 +149,9 @@ ScriptWindow::ScriptWindow(MainWindow* mainWindow, MainInterfaceThread *thread, 
     shortcut = new QShortcut(QKeySequence("Ctrl+3"), this);
     QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(stopButtonPressedSlot()));
 
+    shortcut = new QShortcut(QKeySequence("Ctrl+X"), this);
+    QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(close()));
+
     connect(this->m_userInterface->startPushButton, SIGNAL(clicked()), this, SLOT(startButtonPressedSlot()));
     connect(this->m_userInterface->pausePushButton, SIGNAL(clicked()), this, SLOT(pauseButtonPressedSlot()));
     connect(this->m_userInterface->stopPushButton, SIGNAL(clicked()), this, SLOT(stopButtonPressedSlot()));

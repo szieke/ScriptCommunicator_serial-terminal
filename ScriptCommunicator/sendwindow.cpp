@@ -210,6 +210,9 @@ SendWindow::SendWindow(SettingsDialog *settingsDialog, MainWindow *mainWindow) :
     availTargets << "ascii" << "hex" << "bin" << "uint8" << "uint16" << "uint32" << "int8" << "int16" << "int32";
     m_userInterface->CyclicSendFormat->addItems(availTargets);
 
+    QShortcut* shortcut = new QShortcut(QKeySequence("Ctrl+X"), this);
+    QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(close()));
+
 }
 /**
  * Destructor.
@@ -965,7 +968,7 @@ QStringList SendWindow::getAllSequences(void)
 void SendWindow::loadTableData(void)
 {
 
-    setWindowTitle(m_currentSequenceFileName);
+    setTitle(m_currentSequenceFileName);
 
     m_userInterface->tableWidget->setRowCount(0);
 
@@ -986,7 +989,7 @@ void SendWindow::loadTableData(void)
                     QMessageBox::critical(this, "parse error", "could not parse " + m_currentSequenceFileName);
 
                     m_currentSequenceFileName = "";
-                    setWindowTitle(m_currentSequenceFileName);
+                    setTitle(m_currentSequenceFileName);
                     emit configHasToBeSavedSignal();
                 }
             }
@@ -1081,7 +1084,7 @@ void SendWindow::loadTableData(void)
             QMessageBox::critical(this, "could not open file", m_currentSequenceFileName);
 
             m_currentSequenceFileName = "";
-            setWindowTitle(m_currentSequenceFileName);
+            setTitle(m_currentSequenceFileName);
             emit configHasToBeSavedSignal();
         }
 
@@ -1185,7 +1188,7 @@ void SendWindow::saveTable(void)
         QMessageBox::critical(this, "save failed", m_currentSequenceFileName);
 
         m_currentSequenceFileName = "";
-        setWindowTitle(m_currentSequenceFileName);
+        setTitle(m_currentSequenceFileName);
         emit configHasToBeSavedSignal();
     }
 }
@@ -1202,7 +1205,7 @@ void SendWindow::loadFileSlot(void)
     if(!tmpFileName.isEmpty())
     {
         m_currentSequenceFileName = tmpFileName;
-        setWindowTitle(m_currentSequenceFileName);
+        setTitle(m_currentSequenceFileName);
         emit configHasToBeSavedSignal();
         m_userInterface->tableWidget->setRowCount(0);
         loadTableData();
@@ -1260,6 +1263,16 @@ void SendWindow::checkTableChanged()
 }
 
 /**
+ * Sets the window title.
+ * @param extraString
+ *      The string which is appended at the title.
+ */
+void SendWindow::setTitle(QString extraString)
+{
+    setWindowTitle("ScriptCommunicator " + MainWindow::VERSION + " - Send " + extraString);
+}
+
+/**
  * Slot function for the edit cyclic send menu.
  */
 void SendWindow::editCyclicSendScriptSlot(void)
@@ -1292,7 +1305,7 @@ void SendWindow::unloadFileSlot(void)
     m_userInterface->tableWidget->setRowCount(0);
 
     m_currentSequenceFileName = "";
-    setWindowTitle(m_currentSequenceFileName);
+    setTitle(m_currentSequenceFileName);
     m_currentSequenceFileString = "";
     itemSelectionChangedSlot();
     emit configHasToBeSavedSignal();
@@ -1310,7 +1323,7 @@ void SendWindow::saveAsFileSlot(void)
     if(!tmpFileName.isEmpty())
     {
         m_currentSequenceFileName = tmpFileName;
-        setWindowTitle(m_currentSequenceFileName);
+        setTitle(m_currentSequenceFileName);
         emit configHasToBeSavedSignal();
         saveTable();
     }

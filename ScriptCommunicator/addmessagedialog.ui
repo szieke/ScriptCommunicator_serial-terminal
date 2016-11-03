@@ -52,6 +52,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="ClosePushButton">
+       <property name="toolTip">
+        <string>Ctrl+X</string>
+       </property>
        <property name="text">
         <string>close</string>
        </property>

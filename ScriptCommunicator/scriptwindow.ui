@@ -303,13 +303,13 @@
       <item>
        <widget class="QPushButton" name="clearConsolePushButton">
         <property name="toolTip">
-         <string>Ctrl+Shift+C</string>
+         <string>Ctrl+C</string>
         </property>
         <property name="text">
          <string>clear console</string>
         </property>
         <property name="shortcut">
-         <string>Ctrl+Shift+C</string>
+         <string>Ctrl+C</string>
         </property>
        </widget>
       </item>
@@ -344,6 +344,9 @@
       </item>
       <item>
        <widget class="QPushButton" name="closePushButton">
+        <property name="toolTip">
+         <string>Ctrl+X</string>
+        </property>
         <property name="text">
          <string>close</string>
         </property>
@@ -397,6 +400,9 @@
    <property name="text">
     <string>Add worker script</string>
    </property>
+   <property name="toolTip">
+    <string>add worker script</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
    </property>
@@ -408,6 +414,9 @@
    <property name="text">
     <string>Remove worker script</string>
    </property>
+   <property name="toolTip">
+    <string>remove worker script</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
    </property>
@@ -415,6 +424,9 @@
   <action name="actionLoadConfig">
    <property name="text">
     <string>Load config</string>
+   </property>
+   <property name="toolTip">
+    <string>load config</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+L</string>
@@ -424,6 +436,9 @@
    <property name="text">
     <string>Save config</string>
    </property>
+   <property name="toolTip">
+    <string>save config</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
    </property>
@@ -432,6 +447,9 @@
    <property name="text">
     <string>Save config as</string>
    </property>
+   <property name="toolTip">
+    <string>save config as</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+Shift+S</string>
    </property>
@@ -439,6 +457,9 @@
   <action name="actionUnloadConfig">
    <property name="text">
     <string>Unload config</string>
+   </property>
+   <property name="toolTip">
+    <string>unload config</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+U</string>
@@ -451,6 +472,9 @@
    <property name="text">
     <string>Edit worker script</string>
    </property>
+   <property name="toolTip">
+    <string>edit worker script</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+E</string>
    </property>
@@ -461,6 +485,9 @@
    </property>
    <property name="text">
     <string>Edit user interface</string>
+   </property>
+   <property name="toolTip">
+    <string>edit user interface</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+E</string>
@@ -473,6 +500,9 @@
    <property name="text">
     <string>Remove user interface</string>
    </property>
+   <property name="toolTip">
+    <string>remove user interface</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+Shift+R</string>
    </property>
@@ -480,6 +510,9 @@
   <action name="actionNewScript">
    <property name="text">
     <string>New worker script</string>
+   </property>
+   <property name="toolTip">
+    <string>new worker script</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -526,13 +559,13 @@
   </action>
   <action name="actionCreateSceFile">
    <property name="text">
-    <string>Create sce file</string>
+    <string>open sce file dialog</string>
    </property>
    <property name="toolTip">
     <string>create executable file</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+C</string>
+    <string>Ctrl+O</string>
    </property>
   </action>
  </widget>
