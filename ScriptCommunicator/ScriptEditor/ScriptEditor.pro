@@ -168,4 +168,5 @@ FORMS += \
     findDialog.ui \
     mainwindow.ui
 
-DISTFILES +=
+DISTFILES += \
+    images/font.png

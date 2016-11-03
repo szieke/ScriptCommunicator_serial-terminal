@@ -12,5 +12,6 @@
         <file>images/openScripts.ico</file>
         <file>images/new.ico</file>
         <file>images/designer.ico</file>
+        <file>images/font.png</file>
     </qresource>
 </RCC>

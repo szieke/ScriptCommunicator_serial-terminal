@@ -4356,17 +4356,21 @@ void QsciScintilla::wheelEvent(QWheelEvent* event)
     {
         if (event->delta() > 0)
         {
+            emit zoomInSignal();
+            /*
             QFont font = lexer()->font(0);
             font.setPointSize(font.pointSize() + 1);
-            lexer()->setFont(font, -1);
+            lexer()->setFont(font, -1);*/
 
 
         }
         else if(event->delta()<0)
         {
+            /*
             QFont font = lexer()->font(0);
             font.setPointSize(font.pointSize() - 1);
-            lexer()->setFont(font, -1);
+            lexer()->setFont(font, -1);*/
+            emit zoomOutSignal();
         }
 
         event->accept();

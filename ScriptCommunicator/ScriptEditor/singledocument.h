@@ -17,7 +17,7 @@ public:
     void initLexer(QString script);
 
     ///Sets the document name/path.
-    void setDocumentName(QString name);
+    void setDocumentName(QString name, QFont font);
 
     ///Returns the document name/path.
     QString getDocumentName(void){return m_documentName;}

@@ -82,6 +82,8 @@
     <addaction name="actionFind"/>
     <addaction name="separator"/>
     <addaction name="actionEditUI"/>
+    <addaction name="separator"/>
+    <addaction name="actionSetFont"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -332,6 +334,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+E</string>
+   </property>
+  </action>
+  <action name="actionSetFont">
+   <property name="icon">
+    <iconset resource="ScriptEditor.qrc">
+     <normaloff>:/images/font.png</normaloff>:/images/font.png</iconset>
+   </property>
+   <property name="text">
+    <string>Set font</string>
+   </property>
+   <property name="toolTip">
+    <string>set font</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+F</string>
    </property>
   </action>
  </widget>

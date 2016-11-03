@@ -2000,6 +2000,9 @@ signals:
     //! \sa showUserList()
     void userListActivated(int id, const QString &string);
 
+    void zoomInSignal(void);
+    void zoomOutSignal(void);
+
 protected:
     //! \reimp
     virtual bool event(QEvent *e);

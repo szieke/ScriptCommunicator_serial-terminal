@@ -32,10 +32,11 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
  * @param name
  *      The document name.
  */
-void SingleDocument::setDocumentName(QString name)
+void SingleDocument::setDocumentName(QString name, QFont font)
 {
     m_documentName = name;
     initLexer(name);
+    lexer()->setFont(font, -1);
 }
 
 /**

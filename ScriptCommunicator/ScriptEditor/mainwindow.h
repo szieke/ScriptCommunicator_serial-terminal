@@ -117,6 +117,9 @@ private slots:
     ///Opens a new file.
     void open();
 
+    ///Opens a set font dialog.
+    void setFont();
+
     ///Saves the current script file (under the current file name).
     bool save();
 
@@ -243,6 +246,9 @@ private:
 
     ///The parse thread.
     ParseThread m_parseThread;
+
+    ///The current font.
+    QFont m_currentFont;
 
 };
 

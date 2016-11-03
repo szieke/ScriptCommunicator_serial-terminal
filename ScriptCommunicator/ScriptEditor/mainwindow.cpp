@@ -43,6 +43,7 @@
 #include <QMessageBox>
 #include <QSplitter>
 #include "version.h"
+#include <QFontDialog>
 
 
 #include <Qsci/qsciscintilla.h>
@@ -179,6 +180,9 @@ void MainWindow::addTab(QString script)
 
         connect(textEditor, SIGNAL(copyAvailable(bool)), ui->actionCut, SLOT(setEnabled(bool)));
         connect(textEditor, SIGNAL(copyAvailable(bool)),  ui->actionCopy, SLOT(setEnabled(bool)));
+
+        connect(textEditor, SIGNAL(zoomInSignal()), this, SLOT(zoomInSlot()));
+        connect(textEditor, SIGNAL(zoomOutSignal()), this, SLOT(zoomOutSlot()));
 
 
         if(!script.isEmpty())
@@ -1005,6 +1009,24 @@ void MainWindow::open()
 }
 
 /**
+ * Opens a set font dialog.
+ */
+void MainWindow::setFont()
+{
+    bool ok;
+    m_currentFont = QFontDialog::getFont(&ok, m_currentFont, this);
+    if (ok)
+    {
+        for(quint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+        {
+            SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
+            textEditor->lexer()->setFont(m_currentFont, -1);
+        }
+    }
+
+}
+
+/**
  * Saves the current script file (under the current file name).
  * @return
  *      True on success.
@@ -1044,10 +1066,12 @@ bool MainWindow::saveAs()
  */
 void MainWindow::zoomOutSlot()
 {
-    SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-    QFont font = textEditor->lexer()->font(0);
-    font.setPointSize(font.pointSize() - 1);
-    textEditor->lexer()->setFont(font, -1);
+    m_currentFont.setPointSize(m_currentFont.pointSize() - 1);
+    for(quint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+    {
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
+        textEditor->lexer()->setFont(m_currentFont, -1);
+    }
 }
 
 /**
@@ -1055,10 +1079,12 @@ void MainWindow::zoomOutSlot()
  */
 void MainWindow::zoomInSlot()
 {
-    SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-    QFont font = textEditor->lexer()->font(0);
-    font.setPointSize(font.pointSize() + 1);
-    textEditor->lexer()->setFont(font, -1);
+    m_currentFont.setPointSize(m_currentFont.pointSize() + 1);
+    for(quint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+    {
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
+        textEditor->lexer()->setFont(m_currentFont, -1);
+    }
 }
 
 /**
@@ -1192,6 +1218,8 @@ void MainWindow::initActions()
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newSlot()));
     connect(ui->actionEditUI, SIGNAL(triggered()), this, SLOT(editUiSlot()));
     connect(ui->actionOpenAllIncludedScripts, SIGNAL(triggered()), this, SLOT(openAllIncludedScriptsSlot()));
+    connect(ui->actionSetFont, SIGNAL(triggered()), this, SLOT(setFont()));
+
 }
 
 /**
@@ -1201,13 +1229,19 @@ void MainWindow::readSettings()
 {
     QSettings settings("ScriptCommunicator", QString("ScriptEditor_%1").arg(INTERNAL_VERSION));
 
-    if(settings.contains("pos") && settings.contains("size") && settings.contains("mainSplitter"))
+    if(settings.contains("pos") && settings.contains("size") && settings.contains("mainSplitter") && settings.contains("fontFamily"))
     {
         QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
         QSize size = settings.value("size", QSize(600, 600)).toSize();
         ui->splitter->restoreState(settings.value("mainSplitter").toByteArray());
         resize(size);
         move(pos);
+
+        m_currentFont.setFamily(settings.value("fontFamily", QFont().family()).toString());
+        bool ok;
+        m_currentFont.setPointSize(settings.value("fontPointSize", QFont().pointSize()).toInt(&ok));
+        m_currentFont.setWeight(settings.value("fontWeight", QFont().weight()).toInt(&ok));
+        m_currentFont.setItalic(settings.value("fontItalic", QFont().italic()).toBool());
 
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
         textEditor->lexer()->readSettings(settings);
@@ -1234,6 +1268,10 @@ void MainWindow::writeSettings()
     settings.setValue("pos", pos());
     settings.setValue("size", size());
     settings.setValue("mainSplitter", ui->splitter->saveState());
+    settings.setValue("fontFamily", m_currentFont.family());
+    settings.setValue("fontPointSize", m_currentFont.pointSize());
+    settings.setValue("fontWeight", m_currentFont.weight());
+    settings.setValue("fontItalic", m_currentFont.italic());
 
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
     textEditor->lexer()->writeSettings(settings);
@@ -1414,7 +1452,7 @@ bool MainWindow::saveFile(const QString &fileName)
 void MainWindow::setCurrentFile(const QString &fileName)
 {
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-    textEditor->setDocumentName(fileName);
+    textEditor->setDocumentName(fileName, m_currentFont);
     textEditor->setModified(false);
     setWindowModified(false);
 
