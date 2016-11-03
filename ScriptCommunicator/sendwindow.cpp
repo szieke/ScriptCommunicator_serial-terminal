@@ -210,7 +210,7 @@ SendWindow::SendWindow(SettingsDialog *settingsDialog, MainWindow *mainWindow) :
     availTargets << "ascii" << "hex" << "bin" << "uint8" << "uint16" << "uint32" << "int8" << "int16" << "int32";
     m_userInterface->CyclicSendFormat->addItems(availTargets);
 
-    QShortcut* shortcut = new QShortcut(QKeySequence("Ctrl+X"), this);
+    QShortcut* shortcut = new QShortcut(QKeySequence("Ctrl+Shift+X"), this);
     QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(close()));
 
 }

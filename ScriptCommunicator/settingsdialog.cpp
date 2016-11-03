@@ -84,7 +84,7 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->cheetahScanPushButton, SIGNAL(clicked()),
             this, SLOT(cheetahScanButtonSlot()));
 
-    QShortcut* shortcut = new QShortcut(QKeySequence("Ctrl+X"), this);
+    QShortcut* shortcut = new QShortcut(QKeySequence("Ctrl+Shift+X"), this);
     QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(close()));
 
     connect(m_userInterface->closeButton, SIGNAL(clicked()),

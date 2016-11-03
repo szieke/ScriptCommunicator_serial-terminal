@@ -24,7 +24,7 @@ CreateSceFile::CreateSceFile(QWidget *parent, QTableWidget *scriptWindowScriptTa
 {
     ui->setupUi(this);
 
-    QShortcut* shortcut = new QShortcut(QKeySequence("Ctrl+X"), this);
+    QShortcut* shortcut = new QShortcut(QKeySequence("Ctrl+Shift+X"), this);
     QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(close()));
 
     connect(ui->selectFile, SIGNAL(clicked()), this, SLOT(selectFileSlot()));

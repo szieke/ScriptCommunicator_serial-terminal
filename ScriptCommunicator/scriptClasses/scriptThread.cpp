@@ -318,7 +318,7 @@ void ScriptThread::run()
 
 
         connect(this, SIGNAL(getSerialPortSignalsSignal(uint32_t*)),
-                m_scriptWindow->m_mainInterfaceThread, SLOT(getSerialPortSignals(uint32_t*)), Qt::QueuedConnection);
+                m_scriptWindow->m_mainInterfaceThread, SLOT(getSerialPortSignals(uint32_t*)), directConnectionType);
 
 
         connect(this, SIGNAL(createGuiElementSignal(QString,QObject**, ScriptWindow*, ScriptThread*, QObject*)),

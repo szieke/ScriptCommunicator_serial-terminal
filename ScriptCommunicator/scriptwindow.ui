@@ -303,13 +303,13 @@
       <item>
        <widget class="QPushButton" name="clearConsolePushButton">
         <property name="toolTip">
-         <string>Ctrl+C</string>
+         <string>Ctrl+Shift+C</string>
         </property>
         <property name="text">
          <string>clear console</string>
         </property>
         <property name="shortcut">
-         <string>Ctrl+C</string>
+         <string>Ctrl+Shift+C</string>
         </property>
        </widget>
       </item>
@@ -345,7 +345,7 @@
       <item>
        <widget class="QPushButton" name="closePushButton">
         <property name="toolTip">
-         <string>Ctrl+X</string>
+         <string>Ctrl+Shift+X</string>
         </property>
         <property name="text">
          <string>close</string>
