@@ -29,3 +29,5 @@ scriptThread.appendTextToConsole('script has started');
 UI_Dialog.finishedSignal.connect(dialogFinished);
 
 UI_SendButton.clickedSignal.connect(sendSequence)
+
+scriptThread.appendTextToConsole("serial port signals: " + scriptThread.getSerialPortSignals().toString(16));
