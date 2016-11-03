@@ -111,6 +111,9 @@ public:
     ///Loads the saved script table content from file.
     void loadTableData(void);
 
+    ///Sets the window title.
+    void setTitle(QString extraString);
+
     ///Returns the splitter sizes.
     QList<int> getSplitterSizes(void);
 

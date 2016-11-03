@@ -44,9 +44,10 @@
 #include "searchconsole.h"
 #include "customConsoleLogObject.h"
 #include "scriptTcpClient.h"
+#include "version.h"
 
 ///The current version of ScriptCommunicator.
-const QString MainWindow::VERSION = "04.18";
+const QString MainWindow::VERSION = SCRIPT_COMMUNICATOR_VERSION;
 
 #ifdef Q_OS_WIN32
 const QString MainWindow::INIT_MAIN_CONFIG_FILE = "initialSettingsWin.xml";

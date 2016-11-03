@@ -42,6 +42,7 @@
 #include <QProcess>
 #include <QMessageBox>
 #include <QSplitter>
+#include "version.h"
 
 
 #include <Qsci/qsciscintilla.h>
@@ -304,7 +305,7 @@ void MainWindow::tabIndexChangedSlot(int index)
             ui->actionCopy->setEnabled(false);
         }
         setWindowModified(textEditor->isModified());
-        setWindowTitle(tr("%1 - %2[*]").arg("script editor").arg(textEditor->getDocumentName()));
+        setWindowTitle(tr("ScriptCommunicator %1 - Script Editor %2[*]").arg(SCRIPT_COMMUNICATOR_VERSION).arg(textEditor->getDocumentName()));
 
         QMap<QString, bool> scripts = getAllIncludedScripts(ui->documentsTabWidget->currentIndex());
         if(scripts.isEmpty())
@@ -1441,7 +1442,7 @@ void MainWindow::setCurrentFile(const QString &fileName)
         }
     }
 
-    setWindowTitle(tr("%1 - %2[*]").arg("script editor").arg(windowShownName));
+    setWindowTitle(tr("ScriptCommunicator %1 - Script Editor %2[*]").arg(SCRIPT_COMMUNICATOR_VERSION).arg(windowShownName));
 
     ui->documentsTabWidget->setTabText(ui->documentsTabWidget->currentIndex(), tabShownName);
     insertAllFunctionInListView();

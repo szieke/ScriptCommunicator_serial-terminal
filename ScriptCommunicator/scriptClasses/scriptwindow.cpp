@@ -283,7 +283,7 @@ void ScriptWindow::startCommandLineScripts(void)
     m_userInterface->tableWidget->resizeColumnsToContents();
     resizeTableColumnsSlot();
 
-    setWindowTitle("ScriptCommunicator command-line mode");
+    setTitle("command-line mode");
 
     resizeTableColumnsSlot();
 
@@ -440,12 +440,22 @@ void ScriptWindow::createNewTableRow()
 }
 
 /**
+ * Sets the window title.
+ * @param extraString
+ *      The string which is appended at the title.
+ */
+void ScriptWindow::setTitle(QString extraString)
+{
+    setWindowTitle("ScriptCommunicator " + MainWindow::VERSION + " - Scripts " + extraString);
+}
+
+/**
  * Loads the saved script table content from file.
  */
 void ScriptWindow::loadTableData(void)
 {
 
-    setWindowTitle(m_currentScriptConfigFileName);
+    setTitle(m_currentScriptConfigFileName);
 
     m_userInterface->tableWidget->setRowCount(0);
 
@@ -465,7 +475,7 @@ void ScriptWindow::loadTableData(void)
                     QMessageBox::critical(this, "parse error", "could not parse " + m_currentScriptConfigFileName);
 
                     m_currentScriptConfigFileName = "";
-                    setWindowTitle(m_currentScriptConfigFileName);
+                    setTitle(m_currentScriptConfigFileName);
                     emit configHasToBeSavedSignal();
                 }
             }
@@ -574,7 +584,7 @@ void ScriptWindow::loadTableData(void)
             QMessageBox::critical(this, "could not open file", m_currentScriptConfigFileName);
 
             m_currentScriptConfigFileName = "";
-            setWindowTitle(m_currentScriptConfigFileName);
+            setTitle(m_currentScriptConfigFileName);
             emit configHasToBeSavedSignal();
         }
 
@@ -607,7 +617,7 @@ void ScriptWindow::saveTable(void)
         QMessageBox::critical(this, "save failed", m_currentScriptConfigFileName);
 
         m_currentScriptConfigFileName = "";
-        setWindowTitle(m_currentScriptConfigFileName);
+        setTitle(m_currentScriptConfigFileName);
         emit configHasToBeSavedSignal();
     }
 }
@@ -771,7 +781,7 @@ void ScriptWindow::loadConfigSlot()
     {
         m_currentScriptConfigFileName = tmpFileName;
         emit configHasToBeSavedSignal();
-        setWindowTitle(m_currentScriptConfigFileName);
+        setTitle(m_currentScriptConfigFileName);
         m_userInterface->tableWidget->setRowCount(0);
         loadTableData();
     }
@@ -797,7 +807,7 @@ void ScriptWindow::checkTableChanged()
             else
             {
                 m_currentScriptConfigFileString = "";
-                setWindowTitle(m_currentScriptConfigFileName);
+                setTitle(m_currentScriptConfigFileName);
             }
         }
         else
@@ -817,7 +827,7 @@ void ScriptWindow::unloadConfigSlot()
     m_userInterface->tableWidget->setRowCount(0);
     m_currentScriptConfigFileString = "";
     m_currentScriptConfigFileName = "";
-    setWindowTitle(m_currentScriptConfigFileName);
+    setTitle(m_currentScriptConfigFileName);
     emit configHasToBeSavedSignal();
     emit scriptTableHasChangedSignal();
 }
@@ -947,7 +957,7 @@ void ScriptWindow::saveConfigAsSlot()
     if(!tmpFileName.isEmpty())
     {
         m_currentScriptConfigFileName = tmpFileName;
-        setWindowTitle(m_currentScriptConfigFileName);
+        setTitle(m_currentScriptConfigFileName);
         emit configHasToBeSavedSignal();
         saveTable();
     }

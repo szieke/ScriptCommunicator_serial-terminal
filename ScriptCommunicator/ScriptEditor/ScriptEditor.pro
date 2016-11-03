@@ -93,7 +93,8 @@ HEADERS      = \
     findDialog.h \
     mainwindow.h \
     singledocument.h \
-    parseThread.h
+    parseThread.h \
+    version.h
 SOURCES      = main.cpp \
     QScintilla/InputMethod.cpp \
     QScintilla/ListBoxQt.cpp \
