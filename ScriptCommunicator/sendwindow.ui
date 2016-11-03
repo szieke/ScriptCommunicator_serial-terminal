@@ -343,7 +343,7 @@
    </property>
    <widget class="QMenu" name="menuSequence">
     <property name="title">
-     <string>single sequences</string>
+     <string>&amp;single sequences</string>
     </property>
     <addaction name="action_new"/>
     <addaction name="separator"/>
@@ -362,7 +362,7 @@
    </widget>
    <widget class="QMenu" name="menuConfig">
     <property name="title">
-     <string>config</string>
+     <string>&amp;config</string>
     </property>
     <addaction name="action_save"/>
     <addaction name="actionSave_as"/>
@@ -371,7 +371,7 @@
    </widget>
    <widget class="QMenu" name="menuCyclic_sequence">
     <property name="title">
-     <string>cyclic sequence</string>
+     <string>&amp;cyclic sequence</string>
     </property>
     <addaction name="actionAddCyclicScript"/>
     <addaction name="actionEditCyclicScript"/>

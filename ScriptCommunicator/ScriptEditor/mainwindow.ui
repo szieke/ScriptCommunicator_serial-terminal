@@ -59,11 +59,12 @@
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>&amp;File</string>
     </property>
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="actionOpenAllIncludedScripts"/>
+    <addaction name="actionEditUI"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
     <addaction name="separator"/>
@@ -71,7 +72,7 @@
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
-     <string>Edit</string>
+     <string>&amp;Edit</string>
     </property>
     <addaction name="actionUndo"/>
     <addaction name="actionRedo"/>
@@ -84,7 +85,7 @@
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
-     <string>View</string>
+     <string>&amp;View</string>
     </property>
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>
@@ -151,6 +152,9 @@
   <action name="actionSaveAs">
    <property name="text">
     <string>Save As</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+S</string>
    </property>
   </action>
   <action name="actionExit">
@@ -296,6 +300,9 @@
    <property name="toolTip">
     <string>open all included scripts</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+O</string>
+   </property>
   </action>
   <action name="actionNew">
    <property name="icon">
@@ -318,7 +325,7 @@
      <normaloff>:/images/designer.ico</normaloff>:/images/designer.ico</iconset>
    </property>
    <property name="text">
-    <string>edit UI</string>
+    <string>Edit user interface</string>
    </property>
    <property name="toolTip">
     <string>edit the corresponding user interface file</string>

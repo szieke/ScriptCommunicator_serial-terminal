@@ -461,7 +461,7 @@
    </property>
    <widget class="QMenu" name="menuConfig">
     <property name="title">
-     <string>Config</string>
+     <string>&amp;Config</string>
     </property>
     <addaction name="actionLoadConfig"/>
     <addaction name="actionUnloadConfig"/>
@@ -470,7 +470,7 @@
    </widget>
    <widget class="QMenu" name="menuGenerate">
     <property name="title">
-     <string>Generate</string>
+     <string>&amp;Generate</string>
     </property>
     <addaction name="actionGenerateFileSce"/>
     <addaction name="actionGenerateCompressedFile"/>
@@ -536,14 +536,14 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>DragDropLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header location="global">mainwindow.h</header>
-  </customwidget>
-  <customwidget>
    <class>DragDropTableWidget</class>
    <extends>QTableWidget</extends>
    <header location="global">scriptwindow.h</header>
+  </customwidget>
+  <customwidget>
+   <class>DragDropLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">mainwindow.h</header>
   </customwidget>
  </customwidgets>
  <resources>

@@ -228,8 +228,14 @@
          </disabled>
         </palette>
        </property>
+       <property name="undoRedoEnabled">
+        <bool>false</bool>
+       </property>
        <property name="readOnly">
         <bool>true</bool>
+       </property>
+       <property name="acceptRichText">
+        <bool>false</bool>
        </property>
       </widget>
      </widget>
@@ -241,6 +247,9 @@
         <property name="enabled">
          <bool>false</bool>
         </property>
+        <property name="toolTip">
+         <string>Ctrl+1</string>
+        </property>
         <property name="text">
          <string>start</string>
         </property>
@@ -251,6 +260,9 @@
         <property name="enabled">
          <bool>false</bool>
         </property>
+        <property name="toolTip">
+         <string>Ctrl+2</string>
+        </property>
         <property name="text">
          <string>pause</string>
         </property>
@@ -260,6 +272,9 @@
        <widget class="QPushButton" name="stopPushButton">
         <property name="enabled">
          <bool>false</bool>
+        </property>
+        <property name="toolTip">
+         <string>Ctrl+3</string>
         </property>
         <property name="text">
          <string>stop</string>
@@ -287,8 +302,14 @@
       </item>
       <item>
        <widget class="QPushButton" name="clearConsolePushButton">
+        <property name="toolTip">
+         <string>Ctrl+Shift+C</string>
+        </property>
         <property name="text">
          <string>clear console</string>
+        </property>
+        <property name="shortcut">
+         <string>Ctrl+Shift+C</string>
         </property>
        </widget>
       </item>
@@ -343,7 +364,7 @@
    </property>
    <widget class="QMenu" name="menuScript">
     <property name="title">
-     <string>script config</string>
+     <string>&amp;script config</string>
     </property>
     <addaction name="actionLoadConfig"/>
     <addaction name="actionUnloadConfig"/>
@@ -352,7 +373,7 @@
    </widget>
    <widget class="QMenu" name="menuScript_2">
     <property name="title">
-     <string>script</string>
+     <string>&amp;script</string>
     </property>
     <addaction name="actionAddScript"/>
     <addaction name="actionNewScript"/>
@@ -456,11 +477,6 @@
     <string>Ctrl+Shift+R</string>
    </property>
   </action>
-  <action name="actionRemoveScript">
-   <property name="text">
-    <string>remove script</string>
-   </property>
-  </action>
   <action name="actionNewScript">
    <property name="text">
     <string>new worker script</string>
@@ -514,6 +530,9 @@
    </property>
    <property name="toolTip">
     <string>create executable file</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+C</string>
    </property>
   </action>
  </widget>

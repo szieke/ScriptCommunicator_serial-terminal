@@ -140,6 +140,15 @@ ScriptWindow::ScriptWindow(MainWindow* mainWindow, MainInterfaceThread *thread, 
 
     connect(m_userInterface->tableWidget->horizontalHeader(), SIGNAL(sectionResized(int, int, int)), this, SLOT(resizeTableColumnsSlot()));
 
+    QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+1"), this);
+    QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(startButtonPressedSlot()));
+
+    shortcut = new QShortcut(QKeySequence("Ctrl+2"), this);
+    QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(pauseButtonPressedSlot()));
+
+    shortcut = new QShortcut(QKeySequence("Ctrl+3"), this);
+    QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(stopButtonPressedSlot()));
+
     connect(this->m_userInterface->startPushButton, SIGNAL(clicked()), this, SLOT(startButtonPressedSlot()));
     connect(this->m_userInterface->pausePushButton, SIGNAL(clicked()), this, SLOT(pauseButtonPressedSlot()));
     connect(this->m_userInterface->stopPushButton, SIGNAL(clicked()), this, SLOT(stopButtonPressedSlot()));
@@ -874,7 +883,7 @@ void ScriptWindow::editUiSlot()
     {
         QString program;
 #ifdef Q_OS_LINUX
-        program = "./designer";
+        program = QCoreApplication::applicationDirPath() + "/designer";
 #elif defined Q_OS_MAC
 
         QFileInfo fi("/Applications/Qt Creator.app");
@@ -904,7 +913,7 @@ void ScriptWindow::editUiSlot()
 
         return;
 #else
-        program = "./designer.exe";
+        program = QCoreApplication::applicationDirPath() + "/designer.exe";
 #endif
         QStringList arguments;
         arguments << m_userInterface->tableWidget->item(selectedRow, COLUMN_UI_PATH)->text() ;

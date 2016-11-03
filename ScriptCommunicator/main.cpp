@@ -33,12 +33,25 @@
 #include <QProcess>
 #include <QStandardPaths>
 
+#ifdef Q_OS_WIN32
+#include <Windows.h>
+#endif
+
 ///Is set to true if a thread has been terminated.
 ///This variabke is used un the main function.
 bool g_aThreadHasBeenTerminated = false;
 
 ///The current SCEZ folder.
 QString g_currentScezFolder = "";
+
+#ifdef Q_OS_WIN32
+static void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString &message)
+{
+    (void)type;
+    (void)context;
+    OutputDebugString(reinterpret_cast<const wchar_t *>(message.utf16()));
+}
+#endif
 
 ///Deletes the current SCEZ folder.
 void deleteCurrentScezFolder(void)
@@ -71,6 +84,10 @@ int main(int argc, char *argv[])
     bool withScriptWindow = false;
     bool scriptWindowIsMinimized = true;
     QString minimumScVersion;
+
+#ifdef Q_OS_WIN32
+    qInstallMessageHandler(messageHandler);
+#endif
 
     //Parse all arguments.
     for(int i = 1; i < argc; i++)
