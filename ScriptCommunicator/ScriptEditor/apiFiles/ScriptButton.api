@@ -20,4 +20,8 @@ ScriptButton::setObjectName(String name):void \nSets the name of the current obj
 ScriptButton::setText(const String text):void \nSets the button text.
 ScriptButton::text(void):String \nReturns the button text.
 ScriptButton::setIcon(String iconFileName):void \nSets the icon of the button.
-ScriptButton::clickedSignal.connect(void) \nThis signal is emitted if the user presses the button.
+ScriptButton::setCheckable(bool checkable):void \nSets the checkable property of the button.
+ScriptButton::isCheckable(void):bool \nReturns true if the button is checkable and false if not.
+ScriptButton::isChecked(void):bool \nReturns true if the button is checked and false if not.
+ScriptButton::setChecked(bool checked):void \nChecks or unchecks the button.
+clickedSignal.connect(void) \nThis signal is emitted if the user presses the button.

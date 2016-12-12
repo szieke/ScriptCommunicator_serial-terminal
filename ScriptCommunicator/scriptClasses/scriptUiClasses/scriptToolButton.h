@@ -47,6 +47,8 @@ public:
         connect(this, SIGNAL(setItemIconSignal(QAbstractButton*,QString)), scriptThread->getScriptWindow(),
                 SLOT(setItemIconSlot(QAbstractButton*,QString)), Qt::QueuedConnection);
 
+        connect(this, SIGNAL(setCheckedSignal(bool)), m_button, SLOT(setChecked(bool)), Qt::QueuedConnection);
+
         connect(this, SIGNAL(setTextSignal(QString,QToolButton*)), scriptThread->getScriptWindow(),
                 SLOT(setTextSlot(QString,QToolButton*)), directConnectionType);
 
@@ -67,6 +69,18 @@ public:
     ///Sets the icon of the button.
     Q_INVOKABLE void setIcon(QString iconFileName){emit setItemIconSignal(m_button, iconFileName);}
 
+    ///Sets the checkable property of the button.
+    Q_INVOKABLE void setCheckable(bool checkable){m_button->setCheckable(checkable);}
+
+    ///Returns true if the button is checkable and false if not.
+    Q_INVOKABLE bool isCheckable(void){return m_button->isCheckable();}
+
+    ///Returns true if the button is checked and false if not.
+    Q_INVOKABLE bool isChecked(void){return m_button->isChecked();}
+
+    ///Checks or unchecks the button.
+    Q_INVOKABLE void setChecked(bool checked){emit setCheckedSignal(checked);}
+
 Q_SIGNALS:
     ///This signal is emitted if the user presses the button.
     ///Scripts can connect a function to this signal.
@@ -79,6 +93,10 @@ Q_SIGNALS:
     ///This signal is emitted in setText.
     ///This signal is private and must not be used inside a script.
     void setTextSignal(QString text, QToolButton* button);
+
+    ///This signal is emitted in setChecked.
+    ///This signal is private and must not be used inside a script.
+    void setCheckedSignal(bool checked);
 
 private:
     ///The wrapped tool button.

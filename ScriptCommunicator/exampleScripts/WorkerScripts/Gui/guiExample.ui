@@ -124,6 +124,12 @@
            <property name="text">
             <string>...</string>
            </property>
+           <property name="checkable">
+            <bool>false</bool>
+           </property>
+           <property name="checked">
+            <bool>false</bool>
+           </property>
           </widget>
          </item>
         </layout>
@@ -361,7 +367,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>367</width>
+         <width>354</width>
          <height>245</height>
         </rect>
        </property>
@@ -456,7 +462,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>320</width>
+         <width>337</width>
          <height>255</height>
         </rect>
        </property>

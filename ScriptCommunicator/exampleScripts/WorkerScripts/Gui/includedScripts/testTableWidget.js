@@ -150,7 +150,7 @@ function tableLineEdit1TextChanged(text)
 }
 function tableButton1Clicked()
 {
-	UI_testTextEdit.append("UI_tableButton1Clicked");
+	UI_testTextEdit.append("UI_tableButton1Clicked: " + UI_tableButton1.isCheckable() + "  " + UI_tableButton1.isChecked());
 }
 function tableCheckBoxClicked(checked)
 {
@@ -217,6 +217,8 @@ UI_tableLineEdit1.setAdditionalData(1, 1);
 UI_testSendTableWidget.insertWidget(3, 0, "Button");
 var UI_tableButton1 = UI_testSendTableWidget.getWidget(3, 0)
 UI_tableButton1.clickedSignal.connect(tableButton1Clicked)
+UI_tableButton1.setCheckable(true);
+UI_tableButton1.setChecked(true);
 
 UI_testSendTableWidget.insertWidget(3, 1, "CheckBox");
 var UI_tableCheckBox1 = UI_testSendTableWidget.getWidget(3, 1)

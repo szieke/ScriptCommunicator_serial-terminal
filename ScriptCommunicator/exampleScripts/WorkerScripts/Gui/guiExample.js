@@ -92,7 +92,7 @@ function DialogFinished(e)
 
 function NewElementsButtonButtonClicked()
 {
-	
+	UI_testTextEdit.append("NewElementsButtonButtonClicked: " + this.isCheckable() + "  " + this.isChecked());
 	UI_testTextEdit.append("NewElementsButtonButtonClicked: " + this.getObjectName());
 	UI_testTextEdit.append("NewElementsButtonButtonClicked: " + testButton.getObjectName());
 	UI_testTextEdit.append("NewElementsButtonButtonClicked: " + UI_NewElementsButton.getObjectName());
@@ -215,6 +215,8 @@ UI_dateTimeEdit.dateTimeChangedSignal.connect(dateTimeEditTimeChanged);
 
 //new elements
 UI_NewElementsButton.clickedSignal.connect(UI_NewElementsButton, NewElementsButtonButtonClicked)
+UI_NewElementsButton.setCheckable(true);
+UI_NewElementsButton.setChecked(true);
 var testButton = UI_NewElementsButton;
 UI_NewElementsButton.setObjectName("testButton");
 UI_NewElementsButton.setIcon(scriptThread.createAbsolutePath("icons/new.png"));
