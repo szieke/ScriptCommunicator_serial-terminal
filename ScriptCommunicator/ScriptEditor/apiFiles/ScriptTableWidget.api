@@ -15,6 +15,8 @@ ScriptTableWidget::setAdditionalData(int key, String data):void \nSets/stores an
 ScriptTableWidget::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptTableWidget::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptTableWidget::getClassName(void):String \nReturns the class name of this object.
+ScriptTableWidget::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
+ScriptTableWidget::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
 ScriptTableWidget::getText(int row, int column):String \nReturns the text of one cell.
 ScriptTableWidget::setCellIcon(int row, int column, String iconFileName):void \nSets the icon of a single cell.
 ScriptTableWidget::setVerticalHeaderLabel(int row, String text):void \nSets a vertical header label.

@@ -15,6 +15,8 @@ ScriptRadioButton::setAdditionalData(int key, String data):void \nSets/stores an
 ScriptRadioButton::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptRadioButton::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptRadioButton::getClassName(void):String \nReturns the class name of this object.
+ScriptRadioButton::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
+ScriptRadioButton::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
 ScriptRadioButton::setText(const String text):void \nSets the radio button text.
 ScriptRadioButton::text(void):String \nReturns the radio button text.
 ScriptRadioButton::setChecked(bool checked):void \nSets the checked state of the radio button.

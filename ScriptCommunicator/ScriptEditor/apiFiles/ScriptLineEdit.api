@@ -15,6 +15,8 @@ ScriptLineEdit::setAdditionalData(int key, String data):void \nSets/stores an ad
 ScriptLineEdit::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptLineEdit::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptLineEdit::getClassName(void):String \nReturns the class name of this object.
+ScriptLineEdit::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
+ScriptLineEdit::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
 ScriptLineEdit::text(void):String \nReturns the text of the line exit.
 ScriptLineEdit::isReadOnly(void):bool \nReturns true of the line edit is editable.
 ScriptLineEdit::setReadOnly(bool readOnly):void \nSets the editable property of the line edit.

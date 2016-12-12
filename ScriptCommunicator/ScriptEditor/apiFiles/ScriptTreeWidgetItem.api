@@ -15,6 +15,8 @@ ScriptTreeWidgetItem::setAdditionalData(int key, String data):void \nSets/stores
 ScriptTreeWidgetItem::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptTreeWidgetItem::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptTreeWidgetItem::getClassName(void):String \nReturns the class name of this object.
+ScriptTreeWidgetItem::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
+ScriptTreeWidgetItem::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
 ScriptTreeWidgetItem::setText(int column, String text):void \nSets the text to be displayed in the given column to the given text.
 ScriptTreeWidgetItem::text(int column):String \nReturns the text in the specified column.
 ScriptTreeWidgetItem::setItemIcon(int column, String iconFileName):void \nSets the item icon.

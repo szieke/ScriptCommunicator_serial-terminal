@@ -93,6 +93,10 @@ function DialogFinished(e)
 function NewElementsButtonButtonClicked()
 {
 	
+	UI_testTextEdit.append("NewElementsButtonButtonClicked: " + this.getObjectName());
+	UI_testTextEdit.append("NewElementsButtonButtonClicked: " + testButton.getObjectName());
+	UI_testTextEdit.append("NewElementsButtonButtonClicked: " + UI_NewElementsButton.getObjectName());
+	
 	var input = scriptThread.showTextInputDialog("Enter name", "item name", "newItem", UI_Dialog.getWidgetPointer())
 	
 	if(input != "")
@@ -210,7 +214,9 @@ UI_dateTimeEdit.dateTimeChangedSignal.connect(dateTimeEditTimeChanged);
 /***********************************************************************/
 
 //new elements
-UI_NewElementsButton.clickedSignal.connect(NewElementsButtonButtonClicked)
+UI_NewElementsButton.clickedSignal.connect(UI_NewElementsButton, NewElementsButtonButtonClicked)
+var testButton = UI_NewElementsButton;
+UI_NewElementsButton.setObjectName("testButton");
 UI_NewElementsButton.setIcon(scriptThread.createAbsolutePath("icons/new.png"));
 		
 //test text edit, checkbox, radio button

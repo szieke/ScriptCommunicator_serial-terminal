@@ -15,6 +15,8 @@ ScriptSpinBox::setAdditionalData(int key, String data):void \nSets/stores an add
 ScriptSpinBox::getAdditionalData(int key):String \nReturns an additional data entry.
 ScriptSpinBox::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptSpinBox::getClassName(void):String \nReturns the class name of this object.
+ScriptSpinBox::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
+ScriptSpinBox::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
 ScriptSpinBox::setRange(int minimum, int maximum):void \nSets the spin box's minimum and maximum values to minimum and maximum respectively.
 ScriptSpinBox::setValue(int value):void \nSets the spin box's current value.
 ScriptSpinBox::value(void):int \nReturns the spin box's current value.

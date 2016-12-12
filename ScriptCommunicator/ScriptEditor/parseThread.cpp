@@ -1188,6 +1188,7 @@ void ParseThread::searchForScriptWidgetCommonFunctions(const QString& objectName
 {
     searchSingleType("String", "=" + objectName + ".getAdditionalData(", lines);
     searchSingleType("String", "=" + objectName + ".getClassName(", lines);
+    searchSingleType("String", "=" + objectName + ".getObjectName(", lines);
 }
 
 /**

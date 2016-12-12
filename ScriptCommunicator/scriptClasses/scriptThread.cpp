@@ -747,155 +747,186 @@ void ScriptThread::installsCustomWidget(QObject* child, QScriptEngine* scriptEng
  */
 void ScriptThread::installOneChild(QObject* child, QScriptEngine* scriptEngine)
 {
+    QString objectName = "UI_" + child->objectName();
+
     if((QString(child->metaObject()->className()) == QString("QComboBox")) ||
             (QString(child->metaObject()->className()) == QString("QFontComboBox")))
     {
-        ScriptComboBox* scriptBox = new ScriptComboBox(static_cast<QComboBox*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(scriptBox));
+        ScriptComboBox* element = new ScriptComboBox(static_cast<QComboBox*>(child), this);
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QLineEdit"))
     {
-        ScriptLineEdit* lineEdit = new ScriptLineEdit(static_cast<QLineEdit*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(lineEdit));
+        ScriptLineEdit* element = new ScriptLineEdit(static_cast<QLineEdit*>(child), this);
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QTableWidget"))
     {
-        ScriptTableWidget* tableWidget = new ScriptTableWidget(static_cast<QTableWidget*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(tableWidget));
+        ScriptTableWidget* element = new ScriptTableWidget(static_cast<QTableWidget*>(child), this);
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QTextEdit"))
     {
-        ScriptTextEdit* textEdit = new ScriptTextEdit(static_cast<QTextEdit*>(child), this, m_scriptWindow);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(textEdit));
+        ScriptTextEdit* element = new ScriptTextEdit(static_cast<QTextEdit*>(child), this, m_scriptWindow);
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QCheckBox"))
     {
-        ScriptCheckBox* checkBox = new ScriptCheckBox(static_cast<QCheckBox*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(checkBox));
+        ScriptCheckBox* element = new ScriptCheckBox(static_cast<QCheckBox*>(child), this);
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QPushButton"))
     {
-        ScriptButton* button = new ScriptButton(static_cast<QPushButton*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(button));
+        ScriptButton* element = new ScriptButton(static_cast<QPushButton*>(child), this);
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QToolButton"))
     {
-        ScriptToolButton* button = new ScriptToolButton(static_cast<QToolButton*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(button));
+        ScriptToolButton* element = new ScriptToolButton(static_cast<QToolButton*>(child), this);
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QWidget"))
     {
         ScriptWidget* element = new ScriptWidget(static_cast<QWidget*>(child), this, m_scriptWindow);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QDialog"))
     {
         ScriptDialog* element = new ScriptDialog(static_cast<QDialog*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
 
         connect(m_scriptWindow->m_mainWindow, SIGNAL(bringWindowsToFrontSignal()),element, SLOT(bringWindowsToFrontSlot()), Qt::DirectConnection);
     }
     else if(QString(child->metaObject()->className()) == QString("QProgressBar"))
     {
         ScriptProgressBar* element = new ScriptProgressBar(static_cast<QProgressBar*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QLabel"))
     {
         ScriptLabel* element = new ScriptLabel(static_cast<QLabel*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QSlider"))
     {
         ScriptSlider* element = new ScriptSlider(static_cast<QAbstractSlider*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QDial"))
     {
         ScriptSlider* element = new ScriptSlider(static_cast<QAbstractSlider*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QMainWindow"))
     {
         ScriptMainWindow* element = new ScriptMainWindow(static_cast<QMainWindow*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
 
         connect(m_scriptWindow->m_mainWindow, SIGNAL(bringWindowsToFrontSignal()),element, SLOT(bringWindowsToFrontSlot()), Qt::DirectConnection);
     }
     else if(QString(child->metaObject()->className()) == QString("QAction"))
     {
         ScriptAction* element = new ScriptAction(static_cast<QAction*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QStatusBar"))
     {
         ScriptStatusBar* element = new ScriptStatusBar(static_cast<QStatusBar*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QTabWidget"))
     {
         ScriptTabWidget* element = new ScriptTabWidget(static_cast<QTabWidget*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QGroupBox"))
     {
         ScriptGroupBox* element = new ScriptGroupBox(static_cast<QGroupBox*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QRadioButton"))
     {
         ScriptRadioButton* element = new ScriptRadioButton(static_cast<QRadioButton*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QSpinBox"))
     {
         ScriptSpinBox* element = new ScriptSpinBox(static_cast<QSpinBox*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QDoubleSpinBox"))
     {
         ScriptDoubleSpinBox* element = new ScriptDoubleSpinBox(static_cast<QDoubleSpinBox*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QTimeEdit"))
     {
         ScriptTimeEdit* element = new ScriptTimeEdit(static_cast<QTimeEdit*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QDateEdit"))
     {
         ScriptDateEdit* element = new ScriptDateEdit(static_cast<QDateEdit*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QDateTimeEdit"))
     {
         ScriptDateTimeEdit* element = new ScriptDateTimeEdit(static_cast<QDateTimeEdit*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QListWidget"))
     {
         ScriptListWidget* element = new ScriptListWidget(static_cast<QListWidget*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QTreeWidget"))
     {
         ScriptTreeWidget* element = new ScriptTreeWidget(static_cast<QTreeWidget*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QSplitter"))
     {
         ScriptSplitter* element = new ScriptSplitter(static_cast<QSplitter*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QToolBox"))
     {
         ScriptToolBox* element = new ScriptToolBox(static_cast<QToolBox*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QCalendarWidget"))
     {
         ScriptCalendarWidget* element = new ScriptCalendarWidget(static_cast<QCalendarWidget*>(child), this);
-        scriptEngine->globalObject().setProperty("UI_" + child->objectName(), scriptEngine->newQObject(element));
+        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        element->setObjectName(objectName);
     }
     else if(QString(child->metaObject()->className()) == QString("QTableView"))
     {
