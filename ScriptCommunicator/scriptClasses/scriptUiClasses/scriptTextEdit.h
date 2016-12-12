@@ -59,6 +59,7 @@ public:
         connect(this, SIGNAL(setFontFamilySignal(QString)),m_textEdit, SLOT(setFontFamily(QString)), directConnectionType);
         connect(&m_storedOperationTimer, SIGNAL(timeout()),this, SLOT(storedTimerElapsedSlot()), Qt::QueuedConnection);
 
+        connect(scriptThread, SIGNAL(threadStateChangedSignal(ThreadSate,ScriptThread*)),this, SLOT(threadStateSlot(ThreadSate)), Qt::DirectConnection);
 
         connect(this, SIGNAL(processStoredOperationsSignal(QTextEdit*,bool,quint32,QVector<ScriptTextEditStoredOperations_t>*)), scriptThread->getScriptWindow(),
                 SLOT(processStoredOperationsSlot(QTextEdit*,bool,quint32,QVector<ScriptTextEditStoredOperations_t>*)), directConnectionType);
@@ -70,6 +71,7 @@ public:
     {
         return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptTextEdit.api");
     }
+
 
     ///Returns the vertical scroll bar value.
     Q_INVOKABLE int verticalScrollBarValue(void){return m_textEdit->verticalScrollBar()->value();}
@@ -169,6 +171,17 @@ Q_SIGNALS:
     void processStoredOperationsSignal(QTextEdit* textEdit, bool isLocked, quint32 maxChars, QVector<ScriptTextEditStoredOperations_t>* m_storedOperations);
 
 private Q_SLOTS:
+
+    ///Is called if the script thread state has changed.
+    void threadStateSlot(ThreadSate state)
+    {
+        if(state == EXITED)
+        {//The script thread has exited.
+
+            //Stop the timer.
+            m_storedOperationTimer.stop();
+        }
+    }
 
     ///Process the stored operations.
     void storedTimerElapsedSlot(void)
