@@ -106,6 +106,13 @@ public:
         connect(m_tableWidget, SIGNAL(itemSelectionChanged()), this, SIGNAL(cellSelectionChangedSignal()), Qt::QueuedConnection);
         connect(m_tableWidget, SIGNAL(cellEntered(int, int)), this, SLOT(stub_cellEnteredSlot(int, int)), Qt::DirectConnection);
 
+        connect(this, SIGNAL(insertRowSignal(int)), m_tableWidget, SLOT(insertRow(int)), directConnectionType);
+        connect(this, SIGNAL(insertColumnSignal(int)), m_tableWidget, SLOT(insertColumn(int)), directConnectionType);
+        connect(this, SIGNAL(removeRowSignal(int)), m_tableWidget, SLOT(removeRow(int)), directConnectionType);
+        connect(this, SIGNAL(removeColumnSignal(int)), m_tableWidget, SLOT(removeColumn(int)), directConnectionType);
+        connect(this, SIGNAL(clearSignal()), m_tableWidget, SLOT(clear()), directConnectionType);
+
+
         connect(this, SIGNAL(resizeColumnToContentsSignal(int,QTableWidget*)), scriptThread->getScriptWindow(),
                 SLOT(resizeColumnToContentsSlot(int,QTableWidget*)), directConnectionType);
         connect(this, SIGNAL(resizeRowToContentsSignal(int,QTableWidget*)), scriptThread->getScriptWindow(),
@@ -491,19 +498,19 @@ public:
 public Q_SLOTS:
 
     ///This slot function inserts one row at row.
-    void insertRow(int row){m_tableWidget->insertRow(row);}
+    void insertRow(int row){emit insertRowSignal(row);}
 
     ///This slot function inserts one column at column.
-    void insertColumn(int column){m_tableWidget->insertColumn(column);}
+    void insertColumn(int column){emit insertColumnSignal(column);}
 
     ///This slot function removes the row at row.
-    void removeRow(int row){m_tableWidget->removeRow(row);}
+    void removeRow(int row){emit removeRowSignal(row);}
 
     ///This slot function removes the column at column.
-    void removeColumn(int column){m_tableWidget->removeColumn(column);}
+    void removeColumn(int column){emit removeColumnSignal(column);}
 
     ///This slot function clears the table (removes all cells).
-    void clear(void){m_tableWidget->clear();}
+    void clear(void){emit clearSignal();}
 
 
 Q_SIGNALS:
@@ -601,6 +608,26 @@ Q_SIGNALS:
     ///This signal is emitted in stub_cellEnteredSlot.
     ///This signal is private and must not be used inside a script.
     void cellEnteredSignal(int row, int rowsel, int column, QTableWidget* tableWidget);
+
+    ///This signal is emitted in insertRow.
+    ///This signal is private and must not be used inside a script.
+    void insertRowSignal(int row);
+
+    ///This signal is emitted in insertColumn.
+    ///This signal is private and must not be used inside a script.
+    void insertColumnSignal(int column);
+
+    ///This signal is emitted in removeRow.
+    ///This signal is private and must not be used inside a script.
+    void removeRowSignal(int row);
+
+    ///This signal is emitted in removeColumn.
+    ///This signal is private and must not be used inside a script.
+    void removeColumnSignal(int column);
+
+    ///This signal is emitted in clear.
+    ///This signal is private and must not be used inside a script.
+    void clearSignal(void);
 
 
 private Q_SLOTS:
