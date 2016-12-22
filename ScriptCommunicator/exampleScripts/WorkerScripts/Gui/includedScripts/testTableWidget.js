@@ -240,6 +240,8 @@ UI_testSendTableWidget.insertWidget(5, 1, "Dial");
 var UI_tableDial1 = UI_testSendTableWidget.getWidget(5, 1)
 UI_tableDial1.valueChangedSignal.connect(tableDialValueChanged)
 
+UI_testSendTableWidget.insertRowWithContent(1, Array("text1", "text2"), Array("red", "green"), Array("white", "black"))
+
 UI_testReceiveTableWidget.insertWidget(3, 0, "SpinBox");
 var UI_tableSpinBox1 = UI_testReceiveTableWidget.getWidget(3, 0)
 UI_tableSpinBox1.valueChangedSignal.connect(tableSpinBoxValueChanged)

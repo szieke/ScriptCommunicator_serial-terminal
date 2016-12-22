@@ -660,43 +660,52 @@ void ScriptSlots::cellEnteredSlot(int row, int rowsel, int column, QTableWidget*
     if((QApplication::mouseButtons() != Qt::NoButton) &&
         !verticalScrollBarPressed && !horizontalScrollBarPressed)
     {
-        QList<QTableWidgetItem*> rowItems,rowItems1;
-        if((tableWidget->verticalHeaderItem(row) != 0) && (tableWidget->verticalHeaderItem(rowsel) != 0))
+        if(tableWidget->verticalHeaderItem(row) == 0)
         {
-
-            tableWidget->blockSignals(true);
-
-            QString savedHeaderText;
-            if(tableWidget->verticalHeader()->isVisible())
-            {
-                savedHeaderText = tableWidget->verticalHeaderItem(row)->text();
-            }
-
-            //remove all cells from the two rows which position have to be swapped
-            for (int col = 0; col < colCount; ++col)
-            {
-                rowItems << tableWidget->takeItem(row, col);
-                rowItems1 << tableWidget->takeItem(rowsel, col);
-
-            }
-
-            //insert all cells from the two rows which positions have to be swapped
-            //at their new positions
-            for (int cola = 0; cola < colCount; ++cola)
-            {
-                tableWidget->setItem(rowsel, cola, rowItems.at(cola));
-                tableWidget->setItem(row, cola, rowItems1.at(cola));
-            }
-
-            if(tableWidget->verticalHeader()->isVisible())
-            {
-                //Swap the vertical header labels.
-                tableWidget->verticalHeaderItem(row)->setText(tableWidget->verticalHeaderItem(rowsel)->text());
-                tableWidget->verticalHeaderItem(rowsel)->setText(savedHeaderText);
-            }
-
-            tableWidget->blockSignals(false);
+            QTableWidgetItem *headerItem = new QTableWidgetItem(QString("%1").arg(rowsel + 1));
+            tableWidget->setVerticalHeaderItem(row, headerItem);
         }
+
+        if(tableWidget->verticalHeaderItem(rowsel) == 0)
+        {
+            QTableWidgetItem *headerItem = new QTableWidgetItem(QString("%1").arg(rowsel + 1));
+            tableWidget->setVerticalHeaderItem(rowsel, headerItem);
+        }
+
+        QList<QTableWidgetItem*> rowItems,rowItems1;
+        tableWidget->blockSignals(true);
+
+        QString savedHeaderText;
+        if(tableWidget->verticalHeader()->isVisible())
+        {
+            savedHeaderText = tableWidget->verticalHeaderItem(row)->text();
+        }
+
+        //remove all cells from the two rows which position have to be swapped
+        for (int col = 0; col < colCount; ++col)
+        {
+            rowItems << tableWidget->takeItem(row, col);
+            rowItems1 << tableWidget->takeItem(rowsel, col);
+
+        }
+
+        //insert all cells from the two rows which positions have to be swapped
+        //at their new positions
+        for (int cola = 0; cola < colCount; ++cola)
+        {
+            tableWidget->setItem(rowsel, cola, rowItems.at(cola));
+            tableWidget->setItem(row, cola, rowItems1.at(cola));
+        }
+
+        if(tableWidget->verticalHeader()->isVisible())
+        {
+            //Swap the vertical header labels.
+            tableWidget->verticalHeaderItem(row)->setText(tableWidget->verticalHeaderItem(rowsel)->text());
+            tableWidget->verticalHeaderItem(rowsel)->setText(savedHeaderText);
+        }
+
+        tableWidget->blockSignals(false);
+
 
     }//if(QApplication::mouseButtons() != Qt::NoButton)
 
@@ -858,4 +867,34 @@ void ScriptSlots::processStoredOperationsSlot(QTextEdit* textEdit, bool isLocked
     }
 
     textEdit->setUpdatesEnabled(true);
+}
+
+
+///This function inserts one row at row and fills the cells with content.
+///Possible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+void ScriptSlots::insertRowWithContentSlot(int row, QStringList texts, QStringList backgroundColors, QStringList foregroundColors, QTableWidget* tableWidget)
+{
+    tableWidget->insertRow(row);
+
+    for(int i = 0; i < tableWidget->columnCount(); i++)
+    {
+        QTableWidgetItem *item = new QTableWidgetItem();
+        tableWidget->setItem(row, i, item);
+
+        if(i < texts.length())
+        {
+            item->setText(texts[i]);
+        }
+
+        if(i < backgroundColors.length())
+        {
+            item->setBackground(stringToGlobalColor(backgroundColors[i]));
+        }
+
+        if(i < foregroundColors.length())
+        {
+            item->setForeground(stringToGlobalColor(foregroundColors[i]));
+        }
+
+    }
 }

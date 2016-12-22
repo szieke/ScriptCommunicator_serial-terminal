@@ -163,6 +163,9 @@ public:
         connect(this, SIGNAL(cellEnteredSignal(int,int,int,QTableWidget*)), scriptThread->getScriptWindow(),
                 SLOT(cellEnteredSlot(int,int,int,QTableWidget*)), Qt::DirectConnection);
 
+        connect(this, SIGNAL(insertRowWithContentSignal(int,QStringList,QStringList,QStringList,QTableWidget*)), scriptThread->getScriptWindow(),
+                SLOT(insertRowWithContentSlot(int,QStringList,QStringList,QStringList,QTableWidget*)), directConnectionType);
+
 
 
     }
@@ -279,10 +282,14 @@ public:
     Q_INVOKABLE void setCellBackgroundColor(QString color, int row, int column)
     {
         QTableWidgetItem *item = m_tableWidget->item(row, column);
-        if(item)
+        if(item == 0)
         {
-            emit setCellBackgroundColorSignal(ScriptWindow::stringToGlobalColor(color), item);
+            item = new QTableWidgetItem();
+            emit setItemSignal(row, column,item, m_tableWidget);
         }
+
+        emit setCellBackgroundColorSignal(ScriptWindow::stringToGlobalColor(color), item);
+
     }
 
     ///Sets the foreground color of a single cell.
@@ -290,10 +297,14 @@ public:
     Q_INVOKABLE void setCellForegroundColor(QString color, int row, int column)
     {
         QTableWidgetItem *item = m_tableWidget->item(row, column);
-        if(item)
+        if(item == 0)
         {
-            emit setCellForegroundColorSignal(ScriptWindow::stringToGlobalColor(color), item);
+            item = new QTableWidgetItem();
+            emit setItemSignal(row, column,item, m_tableWidget);
         }
+
+        emit setCellForegroundColorSignal(ScriptWindow::stringToGlobalColor(color), item);
+
     }
 
 
@@ -492,7 +503,10 @@ public:
         return result;
     }
 
-
+    ///This function inserts one row at row and fills the cells with content.
+    ///Possible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+    Q_INVOKABLE void insertRowWithContent(int row, QStringList texts, QStringList backgroundColors, QStringList foregroundColors)
+    {emit insertRowWithContentSignal(row, texts, backgroundColors, foregroundColors, m_tableWidget);}
 
 
 public Q_SLOTS:
@@ -629,6 +643,9 @@ Q_SIGNALS:
     ///This signal is private and must not be used inside a script.
     void clearSignal(void);
 
+    ///This signal is emitted in insertRowWithContent.
+    ///This signal is private and must not be used inside a script.
+    void insertRowWithContentSignal(int row, QStringList texts, QStringList backgroundColors, QStringList foregroundColors, QTableWidget* tableWidget);
 
 private Q_SLOTS:
 

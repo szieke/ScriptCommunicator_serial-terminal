@@ -371,6 +371,10 @@ public slots:
    ///Process stored operations from a ScriptTextEdit.
    void processStoredOperationsSlot(QTextEdit* textEdit, bool isLocked, quint32 maxChars, QVector<ScriptTextEditStoredOperations_t>* m_storedOperations);
 
+   ///This function inserts one row at row and fills the cells with content.
+   ///Possible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+   void insertRowWithContentSlot(int row, QStringList texts, QStringList backgroundColors, QStringList foregroundColors, QTableWidget* tableWidget);
+
 };
 
 #endif // SCRIPTSLOTS_H

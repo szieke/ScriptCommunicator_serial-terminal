@@ -44,7 +44,8 @@ ScriptTableWidget::getAllSelectedCells(void):Array<ScriptTableCellPosition> \nRe
 ScriptTableWidget::insertWidget(int row, int column, String type):bool \nCreates and inserts a script widget into a table cell.Possible type values are:\nLineEdit, ComboBox, Button, CheckBox, SpinBox, DoubleSpinBox, VerticalSlider, HorizontalSlider\nDial, TimeEdit, DateEdit, DateTimeEdit, CalendarWidget, TextEdit
 ScriptTableWidget::setText(int row, int column, String text):void \nSets the text of one cell.
 ScriptTableWidget::getWidget(int row, int column):ScriptWidget \nReturns the cell widget.
-ScriptTableWidget::insertRow(int row):void \Inserts one row at row.
+ScriptTableWidget::insertRow(int row):void \nInserts one row at row.
+ScriptTableWidget::insertRowWithContent(int row, StringList texts, StringList backgroundColors, StringList foregroundColors):void \nInserts one row at row and fills the cells with content.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptTableWidget::insertColumn(int column):void \nInserts one column at column.
 ScriptTableWidget::removeRow(int row):void \nRemoves the row at row.
 ScriptTableWidget::removeColumn(int column):void \nRemoves the column at column.
