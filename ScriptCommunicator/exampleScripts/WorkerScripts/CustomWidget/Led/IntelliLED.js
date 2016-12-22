@@ -61,6 +61,29 @@ function inputSignal10Changed(state)
 	scriptThread.appendTextToConsole("Led 10: " + !state);
 }
 
+function checkBoxSlot(checked)
+{
+		UI_led.setFlashing(checked);
+}
+
+function sliderSlot(value)
+{
+	//Deaktivate all LEDs (all but the flashing LED).
+	for(var i = 1; i <= 10; i++)
+	{
+		eval("UI_l" + i).setState(false);
+	}
+
+	try
+	{
+		//Get the corresponding LED and switch it on.
+		eval("UI_l" + Math.round((value / 10))).setState(true);
+	}
+	catch(e)
+	{
+	}
+
+}
 
 UI_Dialog.show(); 
 UI_Dialog.finishedSignal.connect(DialogFinished);
@@ -76,3 +99,5 @@ UI_l7.stateChangedSignal.connect(inputSignal7Changed);
 UI_l8.stateChangedSignal.connect(inputSignal8Changed);
 UI_l9.stateChangedSignal.connect(inputSignal9Changed);
 UI_l10.stateChangedSignal.connect(inputSignal10Changed);
+UI_checkBox.clickedSignal.connect(checkBoxSlot);
+UI_horizontalSlider.valueChangedSignal.connect(sliderSlot);

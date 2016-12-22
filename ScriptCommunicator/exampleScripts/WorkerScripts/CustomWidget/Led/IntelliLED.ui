@@ -46,7 +46,7 @@
        <property name="state">
         <bool>false</bool>
        </property>
-       <property name="threshold">
+       <property name="threshold" stdset="0">
         <number>0</number>
        </property>
       </widget>
@@ -81,7 +81,7 @@
        <property name="state">
         <bool>false</bool>
        </property>
-       <property name="threshold">
+       <property name="threshold" stdset="0">
         <number>10</number>
        </property>
       </widget>
@@ -116,7 +116,7 @@
        <property name="state">
         <bool>false</bool>
        </property>
-       <property name="threshold">
+       <property name="threshold" stdset="0">
         <number>20</number>
        </property>
       </widget>
@@ -151,7 +151,7 @@
        <property name="state">
         <bool>false</bool>
        </property>
-       <property name="threshold">
+       <property name="threshold" stdset="0">
         <number>30</number>
        </property>
       </widget>
@@ -186,7 +186,7 @@
        <property name="state">
         <bool>false</bool>
        </property>
-       <property name="threshold">
+       <property name="threshold" stdset="0">
         <number>40</number>
        </property>
       </widget>
@@ -253,7 +253,7 @@
        <property name="state">
         <bool>false</bool>
        </property>
-       <property name="threshold">
+       <property name="threshold" stdset="0">
         <number>60</number>
        </property>
       </widget>
@@ -281,7 +281,7 @@
        <property name="state">
         <bool>false</bool>
        </property>
-       <property name="threshold">
+       <property name="threshold" stdset="0">
         <number>70</number>
        </property>
       </widget>
@@ -309,10 +309,10 @@
        <property name="state">
         <bool>false</bool>
        </property>
-       <property name="threshold">
+       <property name="threshold" stdset="0">
         <number>80</number>
        </property>
-       <property name="input">
+       <property name="input" stdset="0">
         <number>0</number>
        </property>
       </widget>
@@ -340,7 +340,7 @@
        <property name="state">
         <bool>false</bool>
        </property>
-       <property name="threshold">
+       <property name="threshold" stdset="0">
         <number>90</number>
        </property>
       </widget>
@@ -349,6 +349,12 @@
    </item>
    <item>
     <widget class="QSlider" name="horizontalSlider">
+     <property name="maximum">
+      <number>100</number>
+     </property>
+     <property name="singleStep">
+      <number>10</number>
+     </property>
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -425,182 +431,5 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections>
-  <connection>
-   <sender>horizontalSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>l1</receiver>
-   <slot>setInput(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>157</x>
-     <y>54</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>22</x>
-     <y>22</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>horizontalSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>l2</receiver>
-   <slot>setInput(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>157</x>
-     <y>54</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>52</x>
-     <y>22</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>horizontalSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>l3</receiver>
-   <slot>setInput(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>157</x>
-     <y>54</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>82</x>
-     <y>22</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>horizontalSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>l4</receiver>
-   <slot>setInput(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>157</x>
-     <y>54</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>112</x>
-     <y>22</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>horizontalSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>l5</receiver>
-   <slot>setInput(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>157</x>
-     <y>54</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>142</x>
-     <y>22</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>horizontalSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>l6</receiver>
-   <slot>setInput(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>157</x>
-     <y>54</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>172</x>
-     <y>22</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>horizontalSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>l7</receiver>
-   <slot>setInput(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>157</x>
-     <y>54</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>202</x>
-     <y>22</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>horizontalSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>l8</receiver>
-   <slot>setInput(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>157</x>
-     <y>54</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>232</x>
-     <y>22</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>horizontalSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>l9</receiver>
-   <slot>setInput(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>157</x>
-     <y>54</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>262</x>
-     <y>22</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>horizontalSlider</sender>
-   <signal>valueChanged(int)</signal>
-   <receiver>l10</receiver>
-   <slot>setInput(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>157</x>
-     <y>54</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>292</x>
-     <y>22</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>checkBox</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>led</receiver>
-   <slot>setFlashing(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>110</x>
-     <y>83</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>155</x>
-     <y>85</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

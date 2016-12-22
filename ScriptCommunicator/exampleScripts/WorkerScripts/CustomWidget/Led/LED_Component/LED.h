@@ -34,8 +34,6 @@ class QDESIGNER_WIDGET_EXPORT LED : public QWidget
     Q_PROPERTY(bool state READ state WRITE setState)
     Q_PROPERTY(bool flashing READ isFlashing WRITE setFlashing)
     Q_PROPERTY(int flashRate READ flashRate WRITE setFlashRate)
-    Q_PROPERTY(int threshold READ threshold WRITE setThreshold)
-    Q_PROPERTY(int input READ input WRITE setInput)
     Q_PROPERTY(int alphaForOff READ alphaForOff WRITE setAlphaForOff)
 
 public:
@@ -57,8 +55,6 @@ public:
     
     int flashRate() const;
 
-    int threshold() const;
-    int input() const;
     int alphaForOff() const;
 
 public slots:
@@ -68,8 +64,6 @@ public slots:
     void setFlashRate(int rate);
     void startFlashing();
     void stopFlashing();
-    void setThreshold(int value);
-    void setInput(int value);
     void setAlphaForOff(int value);
 
     //QtDesigner sometimes sets the visible property to false (a bug in QtDesigner?) therefore setVisible is ignored here.
@@ -108,8 +102,6 @@ private:
     //
     int m_diamX, m_diamY;
     QTimer* m_timer;
-    int m_threshold;
-    int input_;
     int m_alphaForOff;
     int m_flashRate;
     bool m_flashing;

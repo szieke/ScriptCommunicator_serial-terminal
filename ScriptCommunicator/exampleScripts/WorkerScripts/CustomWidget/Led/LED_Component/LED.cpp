@@ -34,8 +34,6 @@ LED(QWidget* parent) :
     m_alignment(Qt::AlignCenter),
     m_initialState(true),
 	state_(true),
-    m_threshold(50),
-    input_(0),
     m_alphaForOff(80),
     m_flashRate(200),
     m_flashing(false)
@@ -137,25 +135,6 @@ setState(bool state)
     //emit toggleStateSignal();
 }
 
-void LED::
-setThreshold(int value)
-{
-    m_threshold = value;
-    update();
-
-}
-
-void LED::
-setInput(int value)
-{
-    bool oldState = state_;
-
-    input_ = value;
-    if (input_ > m_threshold) state_ = true; else state_ = false;
-    update();
-    if(oldState != state_) emit stateChangedSignal(state_);
-
-}
 
 void LED::setAlphaForOff(int value)
 {
@@ -261,17 +240,6 @@ flashRate() const
     return m_flashRate;
 }
 
-int LED::
-threshold() const
-{
-    return m_threshold;
-}
-
-int LED::
-input() const
-{
-    return input_;
-}
 
 int LED::alphaForOff() const
 {
