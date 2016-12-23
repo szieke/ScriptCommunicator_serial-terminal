@@ -30,12 +30,12 @@ signals:
 
     ///Is emitted if the parsing is finished.
     ///Note: autoCompletionApiFiles contains the auto-completion entries for all parsed files.
-    void parsingFinishedSignal(QMap<QString, QStringList>& autoCompletionEntries, QMap<QString, QStringList>& autoCompletionApiFiles);
+    void parsingFinishedSignal(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles);
 
 public slots:
 
     ///Parses the current text. Emits parsingFinishedSignal if the parsing is finished.
-    void parseSlot(QString& currentText, QString activeDocument);
+    void parseSlot(QString currentText, QString activeDocument);
 
 private:
 

@@ -93,7 +93,7 @@ public:
 
 signals:
     ///Is emitted if the parsing of the source files shall be started.
-    void parseSignal(QString& currentText, QString activeDocument);
+    void parseSignal(QString currentText, QString activeDocument);
 
 protected:
     ///Close event.
@@ -112,7 +112,7 @@ private slots:
 
     ///Is called if the parsing is finished.
     ///Note: autoCompletionApiFiles contains the auto-completion entries for all parsed files.
-    void parsingFinishedSlot(QMap<QString, QStringList>& autoCompletionEntries, QMap<QString, QStringList>& autoCompletionApiFiles);
+    void parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles);
 
     ///Opens a new file.
     void open();
@@ -245,10 +245,13 @@ private:
     QTimer m_parseTimer;
 
     ///The parse thread.
-    ParseThread m_parseThread;
+    ParseThread* m_parseThread;
 
     ///The current font.
     QFont m_currentFont;
+
+    ///True if the parse thread has finished.
+    bool m_parsingFinished;
 
 };
 

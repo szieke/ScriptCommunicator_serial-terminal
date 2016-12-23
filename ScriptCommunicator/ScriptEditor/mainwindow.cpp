@@ -65,7 +65,7 @@ MainWindow* getMainWindow()
  * @param script
  *      The file which should be loaded.
  */
-MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTimer(), m_parseThread(this)
+MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTimer(), m_parseThread(0), m_parsingFinished(true)
 {
     ui->setupUi(this);
 
@@ -107,17 +107,22 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
 
     connect(m_findShortcut, SIGNAL(activated()), this, SLOT(findButtonSlot()));
 
-    m_parseThread.start();
+    m_parseThread = new ParseThread();
+    m_parseThread->moveToThread(m_parseThread);
+    m_parseThread->start();
 
-    connect(this, SIGNAL(parseSignal(QString&,QString)), &m_parseThread, SLOT(parseSlot(QString&,QString)));
-    connect(&m_parseThread, SIGNAL(parsingFinishedSignal(QMap<QString,QStringList>&,QMap<QString,QStringList>&)),
-            this, SLOT(parsingFinishedSlot(QMap<QString,QStringList>&,QMap<QString,QStringList>&)));
+    qRegisterMetaType<QMap<QString,QStringList>>("QMap<QString,QStringList>");
+
+    connect(this, SIGNAL(parseSignal(QString,QString)), m_parseThread, SLOT(parseSlot(QString,QString)), Qt::QueuedConnection);
+    connect(m_parseThread, SIGNAL(parsingFinishedSignal(QMap<QString,QStringList>,QMap<QString,QStringList>)),
+            this, SLOT(parsingFinishedSlot(QMap<QString,QStringList>,QMap<QString,QStringList>)), Qt::QueuedConnection);
 }
 
 MainWindow::~MainWindow()
 {
-    m_parseThread.exit();
+    m_parseThread->exit();
     QThread::msleep(10);
+    m_parseThread->deleteLater();
     delete ui;
 }
 
@@ -129,8 +134,9 @@ MainWindow::~MainWindow()
  * @param autoCompletionApiFiles
  *      Contains the auto-completion entries for all parsed api files.
  */
-void MainWindow::parsingFinishedSlot(QMap<QString, QStringList>& autoCompletionEntries, QMap<QString, QStringList>& autoCompletionApiFiles)
+void MainWindow::parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles)
 {
+    m_parsingFinished = true;
     SingleDocument* currentEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
     currentEditor->initAutoCompletion(m_allFunction, autoCompletionEntries, autoCompletionApiFiles);
 }
@@ -141,23 +147,27 @@ void MainWindow::parsingFinishedSlot(QMap<QString, QStringList>& autoCompletionE
  */
 void MainWindow::parseTimeout(void)
 {
-    m_parseTimer.stop();
-    QString completeText;
-
-    SingleDocument* currentEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-    completeText = currentEditor->text();
-
-    //Get the text of all open documents.
-    for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+    if(m_parsingFinished)
     {
-        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
-        if(currentEditor != textEditor)
-        {
-            completeText.append(textEditor->text());
-        }
-    }
+        m_parseTimer.stop();
+        QString completeText;
 
-    emit parseSignal(completeText, currentEditor->getDocumentName());
+        SingleDocument* currentEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
+        completeText = currentEditor->text();
+
+        //Get the text of all open documents.
+        for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+        {
+            SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
+            if(currentEditor != textEditor)
+            {
+                completeText.append(textEditor->text());
+            }
+        }
+
+        m_parsingFinished = false;
+        emit parseSignal(completeText, currentEditor->getDocumentName());
+    }
 }
 
 /**

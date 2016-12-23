@@ -55,6 +55,7 @@ ParseThread::ParseThread(QObject *parent) : QThread(parent), m_autoCompletionApi
  */
 void ParseThread::run()
 {
+    QThread::setPriority(QThread::LowestPriority);
     exec();
 }
 
@@ -1260,7 +1261,7 @@ void ParseThread::checkDocumentForStandardDynamicObjects(QStringList& lines, QSt
  * @param activeDocument
  *      The name of the active document.
  */
-void ParseThread::parseSlot(QString& currentText, QString activeDocument)
+void ParseThread::parseSlot(QString currentText, QString activeDocument)
 {
     //Clear all parsed objects (all but m_autoCompletionApiFiles).
     m_autoCompletionEntries.clear();
