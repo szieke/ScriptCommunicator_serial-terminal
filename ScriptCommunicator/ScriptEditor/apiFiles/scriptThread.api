@@ -1,4 +1,4 @@
-scriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object):Array<String> \nReturns all functions and properties of an object.
+scriptThread::getAllObjectPropertiesAndFunctions(ScriptValue object):Array<String> \nReturns all functions and properties of an object.
 scriptThread::appendTextToConsole(String string, bool newLine=true, bool bringToForeground=false):void \nAppends text to the script window console.
 scriptThread::sleepFromScript(quint32 timeMs):void \nForces the script thread to sleep for ms milliseconds.
 scriptThread::createUdpSocket(void):ScriptUdpSocket \nCreates an UDP socket.
@@ -29,7 +29,7 @@ scriptThread::createAbsolutePath(String fileName):String \nConverts a relative p
 scriptThread::getScriptFolder(void):String \nReturns the folder in which the script resides.
 scriptThread::loadScript(String scriptPath, bool isRelativePath=true):bool \nLoads/includes one script (QtScript has no built in include mechanism).
 scriptThread::zipDirectory(String fileName, String sourceDirName, String comment=""):bool \nZips a directory.
-scriptThread::zipFiles(String fileName, QVariantList fileList, String comment=""):bool \nAdds files to a zip file.
+scriptThread::zipFiles(String fileName, VariantList fileList, String comment=""):bool \nAdds files to a zip file.
 scriptThread::extractZipFile(String fileName, String destinationDirectory):bool \nExtracts a zip file.
 scriptThread::loadLibrary(String path, bool isRelativePath=true):bool \nLoads a dynamic link library and calls the init function (void init(QScriptEngine* engine)). With this function a script can extend his functionality.
 scriptThread::sendDataArray(Array<unsigned char> data, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false):bool \nSends a data array (Array) with the main interface (in MainInterfaceThread).
@@ -105,8 +105,9 @@ scriptThread::sendReceivedDataToMainInterface(Array<unsigned char> data):void \n
 scriptThread::checkScriptCommunicatorVersion(String minVersion):bool \nChecks if the version of ScriptCommunicator is equal/greater then the version in minVersion.\nThe format of minVersion is: 'major'.'minor' (e.g. 04.11).
 scriptThread::getMainInterfaceSerialPortSettings(void):serialPortSettings \nReturns the serial port settings of the main interface.
 scriptThread::getMainInterfaceSocketSettings(void):socketSettings \nReturns the socket (UDP, TCP client/server) settings of the main interface.
-scriptThread::getMainWindowTitle(void):QString \nReturns the title of the main window.
-scriptThread::setMainWindowTitle(QString newTitle):void \nSets the title of the main window.
+scriptThread::getMainWindowTitle(void):String \nReturns the title of the main window.
+scriptThread::setMainWindowTitle(String newTitle):void \nSets the title of the main window.
+scriptThread::getTimestamp(void):String \nReturns the current time stamp (the format can be set in the settings dialog (console options tab)).
 scriptThread::globalStringChangedSignal.connect(String name, String string)\nIs emitted if a string in the global string map has been changed.
 scriptThread::globalDataArrayChangedSignal.connect(String name, Array<unsigned char> data)\nIs emitted if a data vector in the global string data vector has been changed.
 scriptThread::globalUnsignedChangedSignal.connect(String name, quint32 number)\nIs emitted if an unsigned number in the global unsigned number map has been changed

@@ -548,6 +548,8 @@ public:
     ///Sets the title of the main window.
     Q_INVOKABLE void setMainWindowTitle(QString newTitle){emit setMainWindowTitleSignal(newTitle);}
 
+    ///Returns the current time stamp (the format can be set in the settings dialog (console options tab)).
+    Q_INVOKABLE QString getTimestamp(void){return QDateTime::currentDateTime().toString(m_settingsDialog->settings()->consoleTimestampFormat);}
 
     ///Returns and all functions, signals and properties of an object.
     static void getAllObjectPropertiesAndFunctionsInternal(QScriptValue object, QStringList* resultList, QString* resultString);

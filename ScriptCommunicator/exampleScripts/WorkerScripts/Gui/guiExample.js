@@ -5,7 +5,7 @@ functionalities which can be used by a worker script.
 //Is called if this script shall be exited.
 function stopScript() 
 {
-    scriptThread.appendTextToConsole("script gui example stopped ");
+    scriptThread.appendTextToConsole("script gui example stopped: " + scriptThread.getTimestamp());
 }
 
 //the user has changed the item index
@@ -143,7 +143,7 @@ for(var i = 0; i < argList.length; i++)
 	UI_testTextEdit.append("script argument: " + argList[i]);
 }
 
-scriptThread.appendTextToConsole('script gui example started');
+scriptThread.appendTextToConsole('script gui example started:'  + scriptThread.getTimestamp());
 
 //create and delete a timer object
 var timer2 = scriptThread.createTimer()

@@ -599,6 +599,7 @@ void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStri
             searchSingleType("String", "=scriptThread.getScriptCommunicatorFolder(", lines);
             searchSingleType("String", "=scriptThread.getUserDocumentsFolder(", lines);
             searchSingleType("String", "=scriptThread.getMainWindowTitle(", lines);
+            searchSingleType("String", "=scriptThread.getTimestamp(", lines);
             searchSingleType("ScriptTcpClient", "=scriptThread.createTcpClient(", lines);
         }
 
