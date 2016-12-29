@@ -38,9 +38,9 @@ This script interface has following features:
 # Homepage
 [https://sourceforge.net/projects/scriptcommunicator/](https://sourceforge.net/projects/scriptcommunicator/)
 
-# Downloads (release 04.17)
-- [Windows](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicatorSetup_04_17_windows.zip/download)
-- [Linux 32 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_32Bit/ScriptCommunicator_04_17_linux_32_bit.zip/download)
-- [Linux 64 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_64Bit/ScriptCommunicator_04_17_linux_64_bit.zip/download)
-- [Mac OS X](http://sourceforge.net/projects/scriptcommunicator/files/Mac%20OS%20X/ScriptCommunicator_04_17_mac.zip/download)
-- [Source](http://sourceforge.net/projects/scriptcommunicator/files/Source/ScriptCommunicator_04_17_source.zip/download)
+# Downloads (release 04.18)
+- [Windows](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicatorSetup_04_18_windows.zip/download)
+- [Linux 32 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_32Bit/ScriptCommunicator_04_18_linux_32_bit.zip/download)
+- [Linux 64 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_64Bit/ScriptCommunicator_04_18_linux_64_bit.zip/download)
+- [Mac OS X](http://sourceforge.net/projects/scriptcommunicator/files/Mac%20OS%20X/ScriptCommunicator_04_18_mac.zip/download)
+- [Source](http://sourceforge.net/projects/scriptcommunicator/files/Source/ScriptCommunicator_04_18_source.zip/download)
