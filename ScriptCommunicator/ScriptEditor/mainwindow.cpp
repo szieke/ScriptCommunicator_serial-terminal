@@ -666,6 +666,7 @@ void MainWindow::removeFileLock(int index)
     {
         m_lockFiles[name]->close();
         QFile::remove(name + ".lock");
+        delete m_lockFiles[name];
         m_lockFiles.remove(name);
     }
 }
