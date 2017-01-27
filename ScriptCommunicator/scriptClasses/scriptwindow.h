@@ -309,6 +309,14 @@ private:
     ///Checks if the script table has been changed and saves the table if necessary.
     void checkTableChanged();
 
+    ///Returns the tmp directory for a unsaved info files (created by ScriptEditor for script file which
+    ///have unsaved changes).
+    QString getTmpDirectory(QString fileName){return QFileInfo(fileName).path() +"/.tmp";}
+
+    ///Returns the unsaved info file name for a script file (created by ScriptEditor for script file which
+    ///have unsaved changes)..
+    QString getUnsavedInfoFileName(QString fileName){return getTmpDirectory(fileName) + "/" + QFileInfo(fileName).fileName() + ".unsaved";}
+
     ///The script window user interface.
     Ui::ScriptWindow *m_userInterface;
 

@@ -195,6 +195,9 @@ private:
     ///Removes the lock of a loaded script file.
     void removeFileLock(int index);
 
+    ///Removes the saved info file.
+    void removeSavedInfoFile(QString name);
+
     ///Initializes all actions.
     void initActions();
 
@@ -231,6 +234,9 @@ private:
     ///Returns the lock file name for a file.
     QString getLockFileName(QString fileName){return getTmpDirectory(fileName) + "/" + QFileInfo(fileName).fileName() + ".lock";}
 
+    ///Returns the unsaved info file name for a file.
+    QString getUnsavedInfoFileName(QString fileName){return getTmpDirectory(fileName) + "/" + QFileInfo(fileName).fileName() + ".unsaved";}
+
     QString createNewDocumentTitle(void);
 
     ///Returns the current file name without the path.
@@ -265,6 +271,9 @@ private:
 
     ///The lock files for all open documents.
     QMap<QString, QFile*> m_lockFiles;
+
+    ///The unsaved info files for all documents which have unsaved changes.
+    QMap<QString, QFile*> m_unsavedInfoFiles;
 
 };
 

@@ -66,7 +66,7 @@ MainWindow* getMainWindow()
  *      The file which should be loaded.
  */
 MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTimer(), m_parseThread(0), m_parsingFinished(true),
-    m_lockFiles()
+    m_lockFiles(), m_unsavedInfoFiles()
 {
     ui->setupUi(this);
 
@@ -653,6 +653,31 @@ void MainWindow::showEvent(QShowEvent *event)
 }
 
 /**
+ * Removes the saved info file.
+ * @param name
+ *      The name of the file to which the insaved info file belongs to.
+ */
+void MainWindow::removeSavedInfoFile(QString name)
+{
+
+    if(m_unsavedInfoFiles.contains(name))
+    {
+        QString tmpDirectory = getTmpDirectory(name);
+        QString unsavedInfoFileName = getUnsavedInfoFileName(name);
+
+        m_unsavedInfoFiles[name]->close();
+        QFile::remove(unsavedInfoFileName);
+        delete m_unsavedInfoFiles[name];
+        m_unsavedInfoFiles.remove(name);
+
+        if(QDir(tmpDirectory).entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries).count() == 0)
+        {//The tmp directory is empty.
+            QDir().rmdir(tmpDirectory);
+        }
+    }
+}
+
+/**
  * Removes the lock of a loaded script file.
  * @param index
  *      The tab index of the file.
@@ -677,6 +702,8 @@ void MainWindow::removeFileLock(int index)
             QDir().rmdir(tmpDirectory);
         }
     }
+
+    removeSavedInfoFile(name);
 }
 
 /**
@@ -1227,6 +1254,14 @@ void MainWindow::documentWasModified()
         {
             ui->documentsTabWidget->setTabText(ui->documentsTabWidget->currentIndex(), shownName + "*");
         }
+
+        QString fileName = textEditor->getDocumentName();
+        if(!fileName.isEmpty() && !m_unsavedInfoFiles.contains(fileName))
+        {//No unsaved info file created yet.
+            QFile* unsavedInfoFile = new QFile(getUnsavedInfoFileName(fileName));
+            unsavedInfoFile->open(QIODevice::WriteOnly);
+            m_unsavedInfoFiles[fileName] = unsavedInfoFile;
+        }
     }
     else
     {
@@ -1503,6 +1538,8 @@ bool MainWindow::saveFile(const QString &fileName)
 
     setCurrentFile(fileName);
     statusBar()->showMessage(tr("File saved"), 2000);
+
+    removeSavedInfoFile(fileName);
 
     return true;
 }
