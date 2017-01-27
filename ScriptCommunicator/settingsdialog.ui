@@ -57,7 +57,7 @@
             <x>0</x>
             <y>0</y>
             <width>828</width>
-            <height>377</height>
+            <height>374</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0">
@@ -1118,7 +1118,7 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>335</width>
+            <width>327</width>
             <height>234</height>
            </rect>
           </property>
@@ -1391,7 +1391,7 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>743</width>
+            <width>757</width>
             <height>329</height>
            </rect>
           </property>
@@ -2230,7 +2230,7 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>704</width>
+            <width>718</width>
             <height>412</height>
            </rect>
           </property>
@@ -2954,7 +2954,7 @@ Note: The reopen buton in the main window is only visible if this option is sele
         </property>
        </widget>
       </item>
-      <item row="3" column="7">
+      <item row="3" column="8">
        <widget class="QPushButton" name="closeButton">
         <property name="toolTip">
          <string>Ctrl+X</string>
@@ -2964,7 +2964,7 @@ Note: The reopen buton in the main window is only visible if this option is sele
         </property>
        </widget>
       </item>
-      <item row="0" column="6">
+      <item row="0" column="7">
        <spacer name="horizontalSpacer_8">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -2977,7 +2977,7 @@ Note: The reopen buton in the main window is only visible if this option is sele
         </property>
        </spacer>
       </item>
-      <item row="2" column="7">
+      <item row="2" column="8">
        <widget class="QPushButton" name="searchScriptEditorPushButton">
         <property name="text">
          <string>search</string>
@@ -3026,14 +3026,14 @@ Note: The reopen buton in the main window is only visible if this option is sele
         </item>
        </widget>
       </item>
-      <item row="2" column="2" colspan="5">
+      <item row="2" column="2" colspan="6">
        <widget class="DragDropLineEdit" name="scriptEditorPathLineEdit">
         <property name="toolTip">
          <string>path to the external script editor</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="5">
+      <item row="0" column="6">
        <widget class="QComboBox" name="endianessComboBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -3066,7 +3066,7 @@ in the log, the decimal console and the send window)</string>
         </item>
        </widget>
       </item>
-      <item row="0" column="4">
+      <item row="0" column="5">
        <widget class="QLabel" name="label_26">
         <property name="toolTip">
          <string>endianess of the connected device (is used to interpret the decimals
@@ -3077,7 +3077,7 @@ in the log, the decimal console and the send window)</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="3">
+      <item row="0" column="4">
        <spacer name="horizontalSpacer">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -3100,6 +3100,13 @@ in the log, the decimal console and the send window)</string>
         </property>
         <property name="text">
          <string>use ext. script editor</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QPushButton" name="connectButton">
+        <property name="text">
+         <string>connect</string>
         </property>
        </widget>
       </item>

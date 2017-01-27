@@ -24,6 +24,7 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "ui_settingsdialog.h"
 #include "ui_createSceFile.h"
 #include "settingsdialog.h"
 #include "sendwindow.h"
@@ -2846,6 +2847,7 @@ void MainWindow::customLogActivatedSlot(bool activated)
 void MainWindow::setConnectionButtonsSlot(bool enable)
 {
     m_userInterface->actionConnect->setEnabled(enable);
+    m_settingsDialog->getUserInterface()->connectButton->setEnabled(enable);
     m_settingsDialog->setInterfaceSettingsCanBeChanged(enable);
 }
 
@@ -2912,6 +2914,7 @@ void MainWindow::dataConnectionStatusSlot(bool isConnected, QString message, boo
         m_isConnectedWithCan = (currentSettings->connectionType == CONNECTION_TYPE_PCAN) ? true : false;
         showConnect = false;
         m_userInterface->actionConnect->setText("Disconnect");
+        m_settingsDialog->getUserInterface()->connectButton->setText("disconnect");
     }
     else
     {
@@ -2919,6 +2922,7 @@ void MainWindow::dataConnectionStatusSlot(bool isConnected, QString message, boo
         m_isConnectedWithCan = false;
         showConnect = isWaiting ? false : true;
         m_userInterface->actionConnect->setText(isWaiting ? "Stop waiting" : "Connect");
+        m_settingsDialog->getUserInterface()->connectButton->setText(isWaiting ? "stop waiting" : "connect");
     }
 
     m_userInterface->actionConnect->setIcon(showConnect ? QIcon(":/connect") : QIcon(":/disconnect"));
@@ -3431,6 +3435,8 @@ void MainWindow::connectButtonSlot(void)
 void MainWindow::initActionsConnections()
 {
     connect(m_userInterface->actionConnect, SIGNAL(triggered()), this, SLOT(connectButtonSlot()));
+    connect(m_settingsDialog->getUserInterface()->connectButton, SIGNAL(clicked(bool)), this, SLOT(connectButtonSlot()));
+
     connect(m_userInterface->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
     connect(m_userInterface->actionConfigure, SIGNAL(triggered()), this, SLOT(showSettingsWindowSlot()));
     connect(m_userInterface->actionClear, SIGNAL(triggered()), this, SLOT(clearConsoleSlot()));

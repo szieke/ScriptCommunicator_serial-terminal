@@ -69,8 +69,6 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     m_pcanInterface = new PCANBasicClass(this);
 
-    m_userInterface->baudRateBox->setInsertPolicy(QComboBox::NoInsert);
-
     QStringList listFontSize;
     for (int fs = Settings::MIN_FONT_SIZE; fs <= Settings::MAX_FONT_SIZE; fs++)
         listFontSize.append(QString::number(fs));
@@ -89,14 +87,6 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     connect(m_userInterface->closeButton, SIGNAL(clicked()),
             this, SLOT(closeButtonPressed()));
-    connect(m_userInterface->serialPortInfoListBox, SIGNAL(currentTextChanged(QString)),
-            this, SLOT(comPortChangedSlot(QString)));
-
-    connect(m_userInterface->serialPortInfoListBox, SIGNAL(activated(QString)),
-            this, SLOT(comPortChangedSlot(QString)));
-
-    connect(m_userInterface->baudRateBox, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(checkCustomBaudRatePolicySlot(int)));
 
     connect(m_userInterface->ClearTextLogPushButton, SIGNAL(clicked()),
             this, SLOT(deleteTextLogButtonPressedSlot()));
@@ -124,6 +114,17 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     connect(m_userInterface->serialPortInfoListBox, SIGNAL(currentTextChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
+
+    connect(m_userInterface->serialPortInfoListBox, SIGNAL(currentTextChanged(QString)),
+            this, SLOT(comPortChangedSlot(QString)));
+
+    connect(m_userInterface->serialPortInfoListBox, SIGNAL(activated(QString)),
+            this, SLOT(comPortChangedSlot(QString)));
+
+    m_userInterface->baudRateBox->setInsertPolicy(QComboBox::NoInsert);
+
+    connect(m_userInterface->baudRateBox, SIGNAL(currentIndexChanged(int)),
+            this, SLOT(checkCustomBaudRatePolicySlot(int)));
 
     connect(m_userInterface->baudRateBox, SIGNAL(currentTextChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
@@ -1395,12 +1396,14 @@ void SettingsDialog::initializeInterfaceTabs(void)
         m_userInterface->socketsTypeComboBox->setEnabled(true);
         m_userInterface->socketAddressLineEdit->setEnabled(true);
         m_userInterface->socketOwnPortLineEdit->setEnabled(true);
+        /*
         m_userInterface->serialPortInfoListBox->setEnabled(true);
         m_userInterface->baudRateBox->setEnabled(true);
         m_userInterface->stopBitsBox->setEnabled(true);
         m_userInterface->parityBox->setEnabled(true);
         m_userInterface->flowControlBox->setEnabled(true);
         m_userInterface->dataBitsBox->setEnabled(true);
+        */
         m_userInterface->cheetahPortLineEdit->setEnabled(true);
         m_userInterface->cheetahSpiModeComboBox->setEnabled(true);
         m_userInterface->cheetahBaudrateLineEdit->setEnabled(true);
@@ -1471,12 +1474,14 @@ void SettingsDialog::initializeInterfaceTabs(void)
         m_userInterface->socketPartnerPortLineEdit->setEnabled(false);
         m_userInterface->socketAddressLineEdit->setEnabled(false);
         m_userInterface->socketOwnPortLineEdit->setEnabled(false);
+        /*
         m_userInterface->serialPortInfoListBox->setEnabled(false);
         m_userInterface->baudRateBox->setEnabled(false);
         m_userInterface->stopBitsBox->setEnabled(false);
         m_userInterface->parityBox->setEnabled(false);
         m_userInterface->flowControlBox->setEnabled(false);
         m_userInterface->dataBitsBox->setEnabled(false);
+        */
         m_userInterface->cheetahPortLineEdit->setEnabled(false);
         m_userInterface->cheetahSpiModeComboBox->setEnabled(false);
         m_userInterface->cheetahBaudrateLineEdit->setEnabled(false);

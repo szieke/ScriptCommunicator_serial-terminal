@@ -419,6 +419,9 @@ public:
     ///Converts a pcan baudrate.
     static QString convertPcanBaudrate(quint16 baudrate);
 
+    ///Returns the user interface pointer.
+    Ui::SettingsDialog* getUserInterface(void){return m_userInterface;}
+
     ///In this event filter function the mouse pressed event for serialPortInfoListBox
     ///is intercepted and a scan for available serial port is done.
     ///The previous elements of serialPortInfoListBox are replaced by the result of the scan.
