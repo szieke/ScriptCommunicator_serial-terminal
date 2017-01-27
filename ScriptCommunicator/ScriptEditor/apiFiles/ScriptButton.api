@@ -24,4 +24,4 @@ ScriptButton::setCheckable(bool checkable):void \nSets the checkable property of
 ScriptButton::isCheckable(void):bool \nReturns true if the button is checkable and false if not.
 ScriptButton::isChecked(void):bool \nReturns true if the button is checked and false if not.
 ScriptButton::setChecked(bool checked):void \nChecks or unchecks the button.
-clickedSignal.connect(void) \nThis signal is emitted if the user presses the button.
+ScriptButton::clickedSignal.connect(void) \nThis signal is emitted if the user presses the button.
