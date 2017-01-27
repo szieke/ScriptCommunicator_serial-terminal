@@ -191,6 +191,9 @@ private:
     ///The user interface.
     Ui::MainWindow *ui;
 
+    ///Removes the lock of a loaded script file.
+    void removeFileLock(int index);
+
     ///Initializes all actions.
     void initActions();
 
@@ -252,6 +255,9 @@ private:
 
     ///True if the parse thread has finished.
     bool m_parsingFinished;
+
+    ///The lock files for all open documents.
+    QMap<QString, QFile*> m_lockFiles;
 
 };
 

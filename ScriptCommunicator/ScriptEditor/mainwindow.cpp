@@ -65,7 +65,8 @@ MainWindow* getMainWindow()
  * @param script
  *      The file which should be loaded.
  */
-MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTimer(), m_parseThread(0), m_parsingFinished(true)
+MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTimer(), m_parseThread(0), m_parsingFinished(true),
+    m_lockFiles()
 {
     ui->setupUi(this);
 
@@ -228,6 +229,8 @@ void MainWindow::tabCloseRequestedSlot(int index)
 {
     if(maybeSave(index))
     {
+        removeFileLock(index);
+
         ui->documentsTabWidget->removeTab(index);
 
         if(ui->documentsTabWidget->count() == 0)
@@ -236,6 +239,7 @@ void MainWindow::tabCloseRequestedSlot(int index)
         }
         insertAllFunctionInListView();
     }
+
 }
 
 /**
@@ -649,6 +653,24 @@ void MainWindow::showEvent(QShowEvent *event)
 }
 
 /**
+ * Removes the lock of a loaded script file.
+ * @param index
+ *      The tab index of the file.
+ */
+void MainWindow::removeFileLock(int index)
+{
+    SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(index)->layout()->itemAt(0)->widget());
+    QString name = textEditor->getDocumentName().isEmpty() ? ui->documentsTabWidget->tabText(index) : textEditor->getDocumentName();
+
+    if(m_lockFiles.contains(name))
+    {
+        m_lockFiles[name]->close();
+        QFile::remove(name + ".lock");
+        m_lockFiles.remove(name);
+    }
+}
+
+/**
  * Close event.
  * @param event
  *      The close event.
@@ -664,6 +686,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
         {
             cancelled = true;
         }
+        removeFileLock(i);
     }
 
     if(!cancelled)
@@ -1402,6 +1425,17 @@ void MainWindow::insertAllFunctionInListView()
 bool MainWindow::loadFile(const QString &fileName)
 {
 
+   QFileInfo fi(fileName + ".lock");
+    if(fi.exists())
+    {//The file is already opened.
+
+        QMessageBox message(QMessageBox::Warning, "Warning", fileName + " is already opened by an other instance of ScriptCommunicator. Open anyway?", QMessageBox::Yes | QMessageBox::No, this);
+        if(message.exec() == QMessageBox::No)
+        {
+            return false;
+        }
+    }
+
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly))
     {
@@ -1411,6 +1445,12 @@ bool MainWindow::loadFile(const QString &fileName)
                              .arg(file.errorString()));
         return false;
     }
+
+    //Create the lock file.
+    QFile* lockFile = new QFile(fileName + ".lock");
+    lockFile->open(QIODevice::WriteOnly);
+    m_lockFiles[fileName] = lockFile;
+
 
     QTextStream in(&file);
     QApplication::setOverrideCursor(Qt::WaitCursor);
