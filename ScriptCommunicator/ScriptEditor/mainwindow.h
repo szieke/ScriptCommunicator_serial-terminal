@@ -29,6 +29,7 @@
 #include <QListWidget>
 #include <QSplitter>
 #include <QShortcut>
+#include <QFileInfo>
 #include "singledocument.h"
 #include <QTreeWidgetItem>
 #include "parseThread.h"
@@ -223,6 +224,12 @@ private:
 
     ///Sets the current file (name).
     void setCurrentFile(const QString &fileName);
+
+    ///Returns the tmp directory for a file.
+    QString getTmpDirectory(QString fileName){return QFileInfo(fileName).path() +"/.tmp";}
+
+    ///Returns the lock file name for a file.
+    QString getLockFileName(QString fileName){return getTmpDirectory(fileName) + "/" + QFileInfo(fileName).fileName() + ".lock";}
 
     QString createNewDocumentTitle(void);
 

@@ -664,10 +664,18 @@ void MainWindow::removeFileLock(int index)
 
     if(m_lockFiles.contains(name))
     {
+        QString tmpDirectory = getTmpDirectory(name);
+        QString lockFileName = getLockFileName(name);
+
         m_lockFiles[name]->close();
-        QFile::remove(name + ".lock");
+        QFile::remove(lockFileName);
         delete m_lockFiles[name];
         m_lockFiles.remove(name);
+
+        if(QDir(tmpDirectory).entryInfoList(QDir::NoDotAndDotDot|QDir::AllEntries).count() == 0)
+        {//The tmp directory is empty.
+            QDir().rmdir(tmpDirectory);
+        }
     }
 }
 
@@ -1425,9 +1433,10 @@ void MainWindow::insertAllFunctionInListView()
  */
 bool MainWindow::loadFile(const QString &fileName)
 {
+    QString tmpDirectory = getTmpDirectory(fileName);
+    QString lockFileName = getLockFileName(fileName);
 
-   QFileInfo fi(fileName + ".lock");
-    if(fi.exists())
+    if(QFileInfo().exists(lockFileName))
     {//The file is already opened.
 
         QMessageBox message(QMessageBox::Warning, "Warning", fileName + " is already opened by an other instance of ScriptCommunicator. Open anyway?", QMessageBox::Yes | QMessageBox::No, this);
@@ -1447,8 +1456,11 @@ bool MainWindow::loadFile(const QString &fileName)
         return false;
     }
 
+    //Create the tmp directory.
+    QDir().mkdir(tmpDirectory);
+
     //Create the lock file.
-    QFile* lockFile = new QFile(fileName + ".lock");
+    QFile* lockFile = new QFile(lockFileName);
     lockFile->open(QIODevice::WriteOnly);
     m_lockFiles[fileName] = lockFile;
 
