@@ -551,6 +551,9 @@ public:
     ///Returns the current time stamp (the format can be set in the settings dialog (console options tab)).
     Q_INVOKABLE QString getTimestamp(void){return QDateTime::currentDateTime().toString(m_settingsDialog->settings()->consoleTimestampFormat);}
 
+    ///Returns the console settings (settings dialog).
+    Q_INVOKABLE QScriptValue getConsoleSettings(void);
+
     ///Returns and all functions, signals and properties of an object.
     static void getAllObjectPropertiesAndFunctionsInternal(QScriptValue object, QStringList* resultList, QString* resultString);
 

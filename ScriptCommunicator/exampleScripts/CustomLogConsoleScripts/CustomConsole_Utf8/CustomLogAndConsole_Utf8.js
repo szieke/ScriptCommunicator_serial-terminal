@@ -1,5 +1,5 @@
 /*************************************************************************
-This script demonstrates how to create a ascii custom log/console script.
+This script demonstrates how to create a utf8 custom log/console script.
 IMPORTANT!
 To reload a changed custom console/log script the corresponding checkbox in the settings dialog must
 be unchecked and then checked again or the corresponding search button must be pressed.
@@ -50,8 +50,8 @@ function createString(data, timeStamp, type, isLog)
 	resultString += "  size: " + data.length;
 	resultString += "  value: ";
 	
-	//Convert the received bytes (unsigned char) to an ascii string (char)
-	resultString += conv.byteArrayToString(data);
+	//Convert the received bytes (unsigned char) to an utf8 string (char)
+	resultString += conv.byteArrayToUtf8String(data);
 	if(!isLog)
 	{
 		//The console is a HTML console therefore following characters must be replaced with their HTML representation.
@@ -63,4 +63,4 @@ function createString(data, timeStamp, type, isLog)
 	return resultString;
 }
 
-cust.appendTextToConsole("CustomLogAndConsole_Ascii.js started", true, false);
+cust.appendTextToConsole("CustomLogAndConsole_Utf8.js started", true, false);

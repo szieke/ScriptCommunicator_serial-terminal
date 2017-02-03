@@ -2878,6 +2878,38 @@ void ScriptThread::sendReceivedDataToMainInterface(QVector<unsigned char> data)
 }
 
 /**
+ * Returns the console settings (settings dialog).
+ *      The console settings.
+ */
+QScriptValue ScriptThread::getConsoleSettings(void)
+{
+    const Settings* settings = m_settingsDialog->settings();
+    QScriptValue ret = m_scriptEngine->newObject();
+
+    ret.setProperty("showReceivedData", settings->showReceivedDataInConsole);
+    ret.setProperty("showSendData", settings->showSendDataInConsole);
+    ret.setProperty("maxChars", settings->maxCharsInConsole);
+    ret.setProperty("lockScrolling", settings->lockScrollingInConsole);
+    ret.setProperty("font", settings->stringConsoleFont);
+    ret.setProperty("fontSize", settings->stringConsoleFontSize);
+    ret.setProperty("updateInterval", settings->updateIntervalConsole);
+    ret.setProperty("receiveColor", settings->consoleReceiveColor);
+    ret.setProperty("sendColor", settings->consoleSendColor);
+    ret.setProperty("backgroundColor", settings->consoleBackgroundColor);
+    ret.setProperty("timestampColor", settings->consoleMessageAndTimestampColor);
+    ret.setProperty("newLineAfterBytes", settings->consoleNewLineAfterBytes);
+    ret.setProperty("newLineAfterPause", settings->consoleNewLineAfterPause);
+    ret.setProperty("createNewLineAtByte", (settings->consoleNewLineAt != 0xffff) ? true : false);
+    ret.setProperty("newLineAtByte", (quint8)settings->consoleNewLineAt);
+    ret.setProperty("ceateTimestampAtByte", (settings->consoleCreateTimestampAt != 0) ? true : false);
+    ret.setProperty("timestampAtByte", (quint8)settings->consoleCreateTimestampAt);
+	ret.setProperty("generateCyclicTimeStamps", settings->generateTimeStampsInConsole);
+    ret.setProperty("timeStampInterval", settings->timeStampIntervalConsole);
+	ret.setProperty("timestampFormat", settings->consoleTimestampFormat);
+    return ret;
+}
+
+/**
  * @brief Returns and all functions, signals and properties of an object.
  * @param object
  *      The object.

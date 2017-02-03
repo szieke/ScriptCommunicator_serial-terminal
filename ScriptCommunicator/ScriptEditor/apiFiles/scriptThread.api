@@ -108,6 +108,7 @@ scriptThread::getMainInterfaceSocketSettings(void):socketSettings \nReturns the 
 scriptThread::getMainWindowTitle(void):String \nReturns the title of the main window.
 scriptThread::setMainWindowTitle(String newTitle):void \nSets the title of the main window.
 scriptThread::getTimestamp(void):String \nReturns the current time stamp (the format can be set in the settings dialog (console options tab)).
+scriptThread::getConsoleSettings(void):ConsoleSettings \nReturns the console settings (settings dialog).
 scriptThread::globalStringChangedSignal.connect(String name, String string)\nIs emitted if a string in the global string map has been changed.
 scriptThread::globalDataArrayChangedSignal.connect(String name, Array<unsigned char> data)\nIs emitted if a data vector in the global string data vector has been changed.
 scriptThread::globalUnsignedChangedSignal.connect(String name, quint32 number)\nIs emitted if an unsigned number in the global unsigned number map has been changed
