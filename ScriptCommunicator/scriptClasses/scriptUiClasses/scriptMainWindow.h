@@ -37,7 +37,8 @@ class ScriptMainWindow : public ScriptWidget
     Q_OBJECT
 public:
     explicit ScriptMainWindow(QMainWindow* window, ScriptThread *scriptThread) :
-        ScriptWidget(window, scriptThread, scriptThread->getScriptWindow()), m_window(window), m_wasVisible(window->isVisible())
+        ScriptWidget(window, scriptThread, scriptThread->getScriptWindow()), m_window(window), m_wasVisible(window->isVisible()),
+        m_hideCalled(false), m_timer(0)
     {
         m_timer = new QTimer();
         m_timer->setInterval(500);
@@ -64,6 +65,13 @@ public:
         return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptMainWindow.api");
     }
 
+    ///Shows the widget.
+    Q_INVOKABLE void show(void){m_hideCalled = false; ScriptWidget::show();}
+
+
+    ///Hides the widget.
+    Q_INVOKABLE void hide(void){m_hideCalled = true; ScriptWidget::hide();}
+
 Q_SIGNALS:
     ///This signal is emitted if the user closes the window.
     ///Scripts can connect a function to this signal.
@@ -88,11 +96,14 @@ private slots:
     ///finishedSignal Signal.
     void checkIfClosedTimerFunctionSlot(void)
     {
-        if(m_wasVisible && !m_window->isVisible())
-        {//window has been closed
-            emit finishedSignal();
+        if(!m_hideCalled)
+        {
+            if(m_wasVisible && !m_window->isVisible())
+            {//window has been closed
+                emit finishedSignal();
+            }
+            m_wasVisible = m_window->isVisible();
         }
-        m_wasVisible = m_window->isVisible();
 
     }
 
@@ -102,6 +113,9 @@ private:
 
     ///True if the window was visible.
     bool m_wasVisible;
+
+    ///True if the window is hidden because of a call to hide.
+    bool m_hideCalled;
 
     ///This timer calls checkIfClosedTimerFunctionSlot.
     QTimer* m_timer;

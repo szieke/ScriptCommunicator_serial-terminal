@@ -1201,7 +1201,7 @@ void SendWindow::loadFileSlot(void)
     checkTableChanged();
 
     QString tmpFileName = QFileDialog::getOpenFileName(this, tr("Open sequence config"),
-                                                       m_mainWindow->getAndCreateProgramUserFolder(), tr("XML files (*.xml);;Files (*)"));
+                                                       m_mainWindow->getAndCreateProgramUserFolder(), tr("sequence config files (*.seq);;Files (*)"));
     if(!tmpFileName.isEmpty())
     {
         m_currentSequenceFileName = tmpFileName;
@@ -1319,7 +1319,7 @@ void SendWindow::unloadFileSlot(void)
 void SendWindow::saveAsFileSlot(void)
 {
     QString tmpFileName = QFileDialog::getSaveFileName(this, tr("Save sequence config file"),
-                                                       m_mainWindow->getAndCreateProgramUserFolder(), tr("XML files (*.xml);;Files (*)"));
+                                                       m_mainWindow->getAndCreateProgramUserFolder(), tr("sequence config files (*.seq);;Files (*)"));
     if(!tmpFileName.isEmpty())
     {
         m_currentSequenceFileName = tmpFileName;

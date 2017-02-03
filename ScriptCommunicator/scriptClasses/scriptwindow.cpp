@@ -779,7 +779,7 @@ void ScriptWindow::removeScriptSlot()
 void ScriptWindow::loadConfigSlot()
 {
     QString tmpFileName = QFileDialog::getOpenFileName(this, tr("Open script config file"),
-                                                       m_mainWindow->getAndCreateProgramUserFolder(), tr("XML files (*.xml);;Files (*)"));
+                                                       m_mainWindow->getAndCreateProgramUserFolder(), tr("script config files (*.scripts);;Files (*)"));
     if(!tmpFileName.isEmpty())
     {
         m_currentScriptConfigFileName = tmpFileName;
@@ -956,7 +956,7 @@ void ScriptWindow::editUiSlot()
 void ScriptWindow::saveConfigAsSlot()
 {
     QString tmpFileName = QFileDialog::getSaveFileName(this, tr("Save script config file"),
-                                                       m_mainWindow->getAndCreateProgramUserFolder(), tr("XML files (*.xml);;Files (*)"));
+                                                       m_mainWindow->getAndCreateProgramUserFolder(), tr("script config files (*.scripts);;Files (*)"));
     if(!tmpFileName.isEmpty())
     {
         m_currentScriptConfigFileName = tmpFileName;

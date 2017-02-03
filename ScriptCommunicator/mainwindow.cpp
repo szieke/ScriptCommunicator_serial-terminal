@@ -51,13 +51,13 @@
 const QString MainWindow::VERSION = SCRIPT_COMMUNICATOR_VERSION;
 
 #ifdef Q_OS_WIN32
-const QString MainWindow::INIT_MAIN_CONFIG_FILE = "initialSettingsWin.xml";
+const QString MainWindow::INIT_MAIN_CONFIG_FILE = "initialSettingsWin.config";
 #else
 
 #ifdef Q_OS_MAC
-const QString MainWindow::INIT_MAIN_CONFIG_FILE = "initialSettingsMac.xml";
+const QString MainWindow::INIT_MAIN_CONFIG_FILE = "initialSettingsMac.config";
 #else
-const QString MainWindow::INIT_MAIN_CONFIG_FILE = "initialSettings.xml";
+const QString MainWindow::INIT_MAIN_CONFIG_FILE = "initialSettings.config";
 #endif//#ifdef Q_OS_MAC
 
 #endif
@@ -376,6 +376,20 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
         else
         {
             defaultConfig = configFile;
+
+            QStringList list = readMainConfigFileList(true);
+            int index = list.indexOf("<DEFAULT_CONFIG_FILE>:" + configFile);
+            if(index == -1)
+            {//configFile is not the default config.
+
+                index = list.indexOf(configFile);
+                if(index != -1)
+                {
+                    list.removeAt(index);
+                }
+                list.push_front(configFile);
+            }
+            saveMainConfigFileList(list);
         }
 
         if(defaultConfig.isEmpty())
@@ -388,11 +402,11 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
                 QString templateFile = getScriptCommunicatorFilesFolder() + "/templates/" + INIT_MAIN_CONFIG_FILE;
                 QFile::copy(templateFile, m_mainConfigFile);
 
-                QFile::copy(getScriptCommunicatorFilesFolder() + "/templates/initalSequences.xml",
-                            getAndCreateProgramUserFolder() + "/initalSequences.xml");
+                QFile::copy(getScriptCommunicatorFilesFolder() + "/templates/initalSequences.seq",
+                            getAndCreateProgramUserFolder() + "/initalSequences.seq");
 
-                QFile::copy(getScriptCommunicatorFilesFolder() + "/templates/initalScripts.xml",
-                            getAndCreateProgramUserFolder() + "/initalScripts.xml");
+                QFile::copy(getScriptCommunicatorFilesFolder() + "/templates/initalScripts.scripts",
+                            getAndCreateProgramUserFolder() + "/initalScripts.scripts");
 
                 list.push_back(m_mainConfigFile);
                 saveMainConfigFileList(list);
@@ -1412,7 +1426,7 @@ bool MainWindow::loadSettings()
 
                         if(m_isFirstProgramStart)
                         {
-                            m_sendWindow->setCurrentSequenceFileName (getAndCreateProgramUserFolder() + "/initalSequences.xml");
+                            m_sendWindow->setCurrentSequenceFileName (getAndCreateProgramUserFolder() + "/initalSequences.seq");
                         }
                         else
                         {
@@ -1632,7 +1646,7 @@ bool MainWindow::loadSettings()
 
                         if(m_isFirstProgramStart)
                         {
-                            m_scriptWindow->setCurrentScriptConfigFileName(getAndCreateProgramUserFolder() + "/initalScripts.xml");
+                            m_scriptWindow->setCurrentScriptConfigFileName(getAndCreateProgramUserFolder() + "/initalScripts.scripts");
                         }
                         else
                         {
@@ -4552,7 +4566,7 @@ void MainWindow::printConsoleSlot()
 void MainWindow::copyConfigSlot()
 {
     QString tmpFileName = QFileDialog::getSaveFileName(this, tr("Copy main config file"),
-                                                       getAndCreateProgramUserFolder(), tr("XML files (*.xml);;Files (*)"));
+                                                       getAndCreateProgramUserFolder(), tr("main config files (*.config);;Files (*)"));
     if(!tmpFileName.isEmpty())
     {
         saveSettings();
@@ -4613,7 +4627,7 @@ bool MainWindow::createConfig(bool isCallFromButton)
 {
     bool newConfigUsed = false;
     QString tmpFileName = QFileDialog::getSaveFileName(this, tr("Create main config file"),
-                                                       getAndCreateProgramUserFolder(), tr("XML files (*.xml);;Files (*)"));
+                                                       getAndCreateProgramUserFolder(), tr("main config files (*.config);;Files (*)"));
     if(!tmpFileName.isEmpty())
     {
         if(isCallFromButton)
@@ -4791,7 +4805,7 @@ void MainWindow::loadPreviousConfigSlot()
 void MainWindow::loadConfigSlot()
 {
     QString tmpFileName = QFileDialog::getOpenFileName(this, tr("Open main config file"),
-                                                       getAndCreateProgramUserFolder(),tr("XML files (*.xml);;Files (*)"));
+                                                       getAndCreateProgramUserFolder(),tr("main config files (*.config);;Files (*)"));
 
     if(!tmpFileName.isEmpty())
     {
