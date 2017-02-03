@@ -28,8 +28,8 @@ function readConsoleSetting(isFirstCall)
 		parseInt(g_settings.backgroundColor.substring(2,4), 16), parseInt(g_settings.backgroundColor.substring(4,0), 16), "Base");
 		
 		//text color.
-		UI_TextEdit1.setPaletteColorRgb(parseInt(g_settings.receiveColor..substring(0,2), 16), 
-		parseInt(g_settings.receiveColor..substring(2,4), 16), parseInt(g_settings.receiveColor..substring(4,0), 16), "Text");
+		UI_TextEdit1.setPaletteColorRgb(parseInt(g_settings.receiveColor.substring(0,2), 16), 
+		parseInt(g_settings.receiveColor.substring(2,4), 16), parseInt(g_settings.receiveColor.substring(4,0), 16), "Text");
 	}
 }
 
@@ -38,7 +38,6 @@ function replaceHtmlCharactersForConsole(string)
 {
 	string = string.replace(/</gm, "&lt;")//replace < with &lt
 	string = string.replace(/>/gm, "&gt;")//replace > with &gt
-	string = string.replace(/(\r\n|\n|\r)/gm, "<br>")//replace \r\n, \n and \r with <br>
 	string = string.replace(/ /gm, "&nbsp;")//replace space with &nbsp;
 	return string;
 }
@@ -64,11 +63,15 @@ function addDataToConsole(data, fontColor)
 	
 	var tmpString = replaceHtmlCharactersForConsole(conv.byteArrayToUtf8String(data));
 	
-	//Replace the new line bytes.
-	var newLineAtByte = String.fromCharCode(g_settings["newLineAtByte"]);
-	while(tmpString.indexOf(newLineAtByte) != -1)
+	
+	if(g_settings["createNewLineAtByte"])
 	{
-		tmpString = tmpString.replace(newLineAtByte, "<br>");
+		//Replace the new line bytes.
+		var newLineAtByte = String.fromCharCode(g_settings["newLineAtByte"]);
+		while(tmpString.indexOf(newLineAtByte) != -1)
+		{
+			tmpString = tmpString.replace(newLineAtByte, "<br>");
+		}
 	}
 	
 	receivedString += tmpString;
