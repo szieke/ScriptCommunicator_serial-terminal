@@ -33,14 +33,6 @@ function readConsoleSetting(isFirstCall)
 	}
 }
 
-//Replace the characters of a string into their HTML representation.
-function replaceHtmlCharactersForConsole(string)
-{
-	string = string.replace(/</gm, "&lt;")//replace < with &lt
-	string = string.replace(/>/gm, "&gt;")//replace > with &gt
-	string = string.replace(/ /gm, "&nbsp;")//replace space with &nbsp;
-	return string;
-}
 
 function addDataToConsole(data, fontColor)
 {
@@ -53,7 +45,7 @@ function addDataToConsole(data, fontColor)
 			
 			receivedString += "<span style=\"font-family:'"+ g_settings["font"];
 			receivedString += "';font-size:" + g_settings["fontSize"]+ "pt;color:#" + g_settings["timeStampColor"] + "\">";
-			receivedString += replaceHtmlCharactersForConsole(scriptThread.getTimestamp());
+			receivedString += UI_TextEdit1.replaceNonHtmlChars(scriptThread.getTimestamp(), false);
 			receivedString += "</span>";
 		}
 	}
@@ -61,7 +53,7 @@ function addDataToConsole(data, fontColor)
 	receivedString += "<span style=\"font-family:'"+ g_settings["font"];
 	receivedString += "';font-size:" + g_settings["fontSize"]+ "pt;color:#" + fontColor + "\">";
 	
-	var tmpString = replaceHtmlCharactersForConsole(conv.byteArrayToUtf8String(data));
+	var tmpString = UI_TextEdit1.replaceNonHtmlChars(conv.byteArrayToUtf8String(data), false);
 	
 	
 	if(g_settings["createNewLineAtByte"])

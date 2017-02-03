@@ -89,12 +89,15 @@ public:
     Q_INVOKABLE void setMaxChars(int maxChars){ m_maxChars = maxChars;}
 
     ///Replaces the characters '\n',' ', '<' and '>' to their html representation.
-    Q_INVOKABLE QString replaceNonHtmlChars(QString text)
+    Q_INVOKABLE QString replaceNonHtmlChars(QString text, bool replaceNewLine=true)
     {
         text.replace("<", "&lt;");
         text.replace(">", "&gt;");
-        text.replace("\n", "<br>");
         text.replace(" ", "&nbsp;");
+        if(replaceNewLine)
+        {
+            text.replace("\n", "<br>");
+        }
         return text;
     }
     ///Moves the curser to the end of the text edit.
