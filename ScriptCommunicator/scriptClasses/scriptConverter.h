@@ -27,8 +27,11 @@ public:
     ///Converts a byte array into a hex string.
     Q_INVOKABLE static QString byteArrayToHexString(QVector<unsigned char> data);
 
-    ///Converts a byte array which contains ascii characters into a ascii string (QString).
+    ///Converts a byte array which contains ascii characters into an ascii string (QString).
     Q_INVOKABLE static QString byteArrayToString(QVector<unsigned char> data);
+
+    ///Converts a byte array which contains utf8 characters into an utf8 string (QString).
+    Q_INVOKABLE static QString byteArrayToUtf8String(QVector<unsigned char> data);
 
     ///Converts an ascii string into a byte array.
     Q_INVOKABLE static QVector<unsigned char> stringToArray(QString str);

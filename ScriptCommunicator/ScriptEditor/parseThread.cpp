@@ -607,6 +607,7 @@ void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStri
         if(currentText.contains("=conv."))
         {
             searchSingleType("String", "=conv.byteArrayToString(", lines);
+            searchSingleType("String", "=conv.byteArrayToUtf8String(", lines);
             searchSingleType("String", "=conv.byteArrayToHexString(", lines);
             searchSingleType("Dummy", "=conv.stringToArray(", lines, true);
             searchSingleType("Dummy", "=conv.addStringToArray(", lines, true);

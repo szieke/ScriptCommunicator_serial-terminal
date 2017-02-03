@@ -31,11 +31,12 @@ function timerElapsed()
 		UI_StartButton.setEnabled(true);
 	}
 }
-
+//The Lock button in the main window has been pressed.
 function mainWindowLockScrollingClicked(isChecked)
 {
 	UI_TextEdit1.lockScrolling(isChecked);
 }
+//The Clear button in the main window has been pressed.
 function mainWindowClearConsoleClicked()
 {
 	UI_TextEdit1.clear();

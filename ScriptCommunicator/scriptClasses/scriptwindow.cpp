@@ -1384,6 +1384,7 @@ void ScriptWindow::startScriptThread(int selectedRow, bool withDebugger)
                                 QMessageBox::Yes | QMessageBox::No, this);
             if(message.exec() == QMessageBox::No)
             {
+                m_userInterface->tableWidget->item(selectedRow,COLUMN_SCRIPT_THREAD_STATUS)->setText("not running");
                 return;
             }
         }

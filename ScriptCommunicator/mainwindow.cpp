@@ -1148,6 +1148,13 @@ bool MainWindow::loadSettings()
 
     if(m_commandLineScripts.isEmpty())
     {
+        m_scriptWindow->stopAllScripts();
+
+        while(!m_scriptWindow->allScriptsHaveBeenStopped())
+        {
+            QThread::msleep(10);
+            QCoreApplication::processEvents();
+        }
 
         setWindowTitle("ScriptCommunicator " + MainWindow::VERSION + "   " + m_mainConfigFile);
 

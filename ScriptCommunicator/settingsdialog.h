@@ -578,6 +578,9 @@ private:
     ///Fills the gui elements which correspond to the serial port.
     void fillSerialPortParameters();
 
+    ///Checks if the mixed console chekcbox can be activated.
+    void checkMixedConsoleCheckbox();
+
     ///Reads the information from all available serial port.
     QVector<QStringList> getSerialPortsInfo();
     QSignalMapper *mapColorButtons;

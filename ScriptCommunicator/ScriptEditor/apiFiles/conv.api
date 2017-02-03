@@ -1,5 +1,6 @@
 conv::getAllObjectPropertiesAndFunctions(ScriptValue object):Array<String> \nReturns all functions and properties of an object.
-conv::byteArrayToString(Array<unsigned char> data):String \nConverts a byte array which contains ascii characters into a ascii string (String).
+conv::byteArrayToString(Array<unsigned char> data):String \nConverts a byte array which contains ascii characters into an ascii string (String).
+conv::byteArrayToUtf8String(Array<unsigned char> data):String \nConverts a byte array which contains utf8 characters into an utf8 string (QString).
 conv::byteArrayToHexString(Array<unsigned char> data):String \nConverts a byte array into a hex string.
 conv::stringToArray(String str):Array<unsigned char> \nConverts an ascii string into a byte array.
 conv::byteArrayToUint16(Array<unsigned char> data, bool littleEndian):uint16_t \nConverts the first Bytes of a byte array to an uint16_t.

@@ -49,7 +49,7 @@ QString ScriptConverter::byteArrayToHexString(QVector<unsigned char> data)
     return result;
 }
 /**
- * Converts a byte array which contains ascii characters into a ascii string (QString).
+ * Converts a byte array which contains ascii characters into an ascii string (QString).
  * @param data
  *      The data.
  * @return
@@ -63,6 +63,18 @@ QString ScriptConverter::byteArrayToString(QVector<unsigned char> data)
         result.append(static_cast<char>(val));
     }
     return result;
+}
+
+/**
+ * Converts a byte array which contains utf8 characters into an utf8 string (QString).
+ * @param data
+ *      The data.
+ * @return
+ *      The created string.
+ */
+QString ScriptConverter::byteArrayToUtf8String(QVector<unsigned char> data)
+{
+    return QString::fromUtf8((const char*)data.constData(), data.length());
 }
 
 /**

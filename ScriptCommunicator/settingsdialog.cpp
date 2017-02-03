@@ -788,6 +788,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     m_userInterface->PrintTimeStampLineEdit->setText(QString("%1").arg(settings.timeStampIntervalConsole));
     m_userInterface->ConsoleUpdateIntervallLineEdit->setText(QString("%1").arg(settings.updateIntervalConsole));
     m_userInterface->consoleShowMixedCheckBox->setChecked(settings.showMixedConsole);
+    checkMixedConsoleCheckbox();
     m_userInterface->consoleShowBinaryCheckBox->setChecked(settings.showBinaryConsole);
     m_userInterface->consoleShowCanMetaCheckBox->setChecked(settings.showCanMetaInformationInConsole);
     m_userInterface->showCanTabCheckBox->setChecked(settings.showCanTab);
@@ -1598,6 +1599,25 @@ void SettingsDialog::proxyRadioButtonClickedSlot(void)
 }
 
 /**
+ * Checks if the mixed console chekcbox can be activated.
+ */
+void SettingsDialog::checkMixedConsoleCheckbox()
+{
+    if(!m_userInterface->consoleShowAsciiCheckBox->isChecked() &&
+       !m_userInterface->consoleShowHexCheckBox->isChecked() &&
+       !m_userInterface->consoleShowBinaryCheckBox->isChecked() &&
+       !m_userInterface->consoleShowDecimalCheckBox->isChecked())
+    {
+        m_userInterface->consoleShowMixedCheckBox->setChecked(false);
+        m_userInterface->consoleShowMixedCheckBox->setEnabled(false);
+    }
+    else
+    {
+        m_userInterface->consoleShowMixedCheckBox->setEnabled(true);
+    }
+}
+
+/**
  * This slot function is called if a selection from a check box has been changed.
  * It updates the settings struct (m_currentSettings).
  * @param state
@@ -1611,6 +1631,8 @@ void SettingsDialog::stateFromCheckboxChangedSlot(int state)
 
     updateSettings();
     emit configHasToBeSavedSignal();
+
+    checkMixedConsoleCheckbox();
 }
 
 /**

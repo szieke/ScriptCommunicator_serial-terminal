@@ -405,8 +405,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>358</width>
-            <height>337</height>
+            <width>828</width>
+            <height>374</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0,1">
@@ -878,8 +878,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>248</width>
-            <height>151</height>
+            <width>828</width>
+            <height>374</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,0,1">
@@ -1118,8 +1118,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>327</width>
-            <height>234</height>
+            <width>828</width>
+            <height>374</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_12" stretch="2,1">
@@ -1391,79 +1391,13 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>757</width>
-            <height>329</height>
+            <width>828</width>
+            <height>374</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
            <item row="0" column="0">
             <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" columnstretch="0,0,0,0,0,0,0,1,0">
-             <item row="13" column="2" colspan="2">
-              <widget class="QFontComboBox" name="consoleFontComboBox">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>console font (the mixed console has always courier new)</string>
-               </property>
-               <property name="editable">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="0" column="1">
-              <widget class="QCheckBox" name="ShowReceivedCheckBox">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>show received data in console</string>
-               </property>
-               <property name="text">
-                <string>receive</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-               <property name="tristate">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QCheckBox" name="consoleShowHexCheckBox">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>show hexadecimal console</string>
-               </property>
-               <property name="text">
-                <string>hex</string>
-               </property>
-              </widget>
-             </item>
              <item row="4" column="1">
               <widget class="QCheckBox" name="consoleShowDecimalCheckBox">
                <property name="sizePolicy">
@@ -1480,79 +1414,10 @@ for TCP clients.</string>
                </property>
               </widget>
              </item>
-             <item row="6" column="1" colspan="7">
-              <widget class="DragDropLineEdit" name="consoleScriptLineEdit">
-               <property name="toolTip">
-                <string>script which generates the text for the custom console (see chapter custom console/log scripts for more details)</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="2">
-              <widget class="QComboBox" name="consoleDecimalsType">
-               <property name="toolTip">
-                <string>the type of the decimals in the decimal console</string>
-               </property>
-               <item>
-                <property name="text">
-                 <string>int8</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>int16</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>int32</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>uint8</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>uint16</string>
-                </property>
-               </item>
-               <item>
-                <property name="text">
-                 <string>uint32</string>
-                </property>
-               </item>
-              </widget>
-             </item>
-             <item row="10" column="1">
-              <widget class="QLineEdit" name="ConsoleBufferLineEdit">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>max. characters in console</string>
-               </property>
-               <property name="inputMask">
-                <string/>
-               </property>
-              </widget>
-             </item>
              <item row="3" column="2">
               <widget class="QCheckBox" name="consoleShowMixedCheckBox">
                <property name="toolTip">
-                <string>show mixed console (ascii, dec and hex together in one console if they are selected)</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;show mixed console (ascii, dec and hex together in one console if they are selected)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="statusTip">
                 <string/>
@@ -1971,6 +1836,141 @@ for TCP clients.</string>
                </property>
               </widget>
              </item>
+             <item row="10" column="1">
+              <widget class="QLineEdit" name="ConsoleBufferLineEdit">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>max. characters in console</string>
+               </property>
+               <property name="inputMask">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QCheckBox" name="consoleShowHexCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>show hexadecimal console</string>
+               </property>
+               <property name="text">
+                <string>hex</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="1" colspan="7">
+              <widget class="DragDropLineEdit" name="consoleScriptLineEdit">
+               <property name="toolTip">
+                <string>script which generates the text for the custom console (see chapter custom console/log scripts for more details)</string>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="13" column="2" colspan="2">
+              <widget class="QFontComboBox" name="consoleFontComboBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>console font (the mixed console has always courier new)</string>
+               </property>
+               <property name="editable">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QCheckBox" name="ShowReceivedCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>show received data in console</string>
+               </property>
+               <property name="text">
+                <string>receive</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+               <property name="tristate">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="2">
+              <widget class="QComboBox" name="consoleDecimalsType">
+               <property name="toolTip">
+                <string>the type of the decimals in the decimal console</string>
+               </property>
+               <item>
+                <property name="text">
+                 <string>int8</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>int16</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>int32</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>uint8</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>uint16</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>uint32</string>
+                </property>
+               </item>
+              </widget>
+             </item>
             </layout>
            </item>
           </layout>
@@ -1994,8 +1994,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>353</width>
-            <height>278</height>
+            <width>828</width>
+            <height>374</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2230,7 +2230,7 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>718</width>
+            <width>811</width>
             <height>412</height>
            </rect>
           </property>
