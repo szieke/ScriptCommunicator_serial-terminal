@@ -57,12 +57,7 @@ QString ScriptConverter::byteArrayToHexString(QVector<unsigned char> data)
  */
 QString ScriptConverter::byteArrayToString(QVector<unsigned char> data)
 {
-    QString result;
-    for(auto val : data)
-    {
-        result.append(static_cast<char>(val));
-    }
-    return result;
+    return QString::fromLocal8Bit((const char*)data.constData(), data.length());
 }
 
 /**
