@@ -280,7 +280,7 @@ void ParseThread::parseWidgetList(QDomElement& docElem, bool parseActions)
         }
         else if(className == QString("QStatusBar"))
         {
-            className = "ScriptComboBox";
+            className = "ScriptStatusBar";
         }
         else if(className == QString("QTabWidget"))
         {
@@ -333,6 +333,10 @@ void ParseThread::parseWidgetList(QDomElement& docElem, bool parseActions)
         else if(className == QString("QCalendarWidget"))
         {
             className = "ScriptCalendarWidget";
+        }
+        else
+        {
+            className = "";
         }
         addObjectToAutoCompletionList(objectName, className, true);
     }
@@ -1158,6 +1162,10 @@ void ParseThread::parseTableWidetInsert(const QString objectName, QStringList li
                     else if(subObject.className  == QString("Dial"))
                     {
                         subObject.className  = "ScriptDial";
+                    }
+                    else
+                    {
+                        subObject.className = "";
                     }
 
                     if(m_tableWidgetObjects.contains(objectName))
