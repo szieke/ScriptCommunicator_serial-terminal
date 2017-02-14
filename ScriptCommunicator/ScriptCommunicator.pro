@@ -139,7 +139,6 @@ HEADERS += \
     scriptClasses/scriptUiClasses/scriptSlider.h \
     scriptClasses/scriptUiClasses/scriptMainWindow.h \
     scriptClasses/scriptUiClasses/scriptAction.h \
-    scriptClasses/scriptUiClasses/scriptStatusBar.h \
     scriptClasses/scriptUiClasses/scriptTabWidget.h \
     scriptClasses/scriptUiClasses/scriptGroupBox.h \
     scriptClasses/scriptUiClasses/scriptRadioButton.h \

@@ -29,7 +29,7 @@ function action1ClickedSlot(value)
 	}
 	
 	//show a message in the status bar
-	UI_statusbar.showMessage(text, 1000);
+	UI_MainWindow.showMessage(text, 1000);
 }
 
 scriptThread.appendTextToConsole('script test main window started');

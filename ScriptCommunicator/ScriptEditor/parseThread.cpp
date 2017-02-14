@@ -278,10 +278,6 @@ void ParseThread::parseWidgetList(QDomElement& docElem, bool parseActions)
         {
             className = "ScriptAction";
         }
-        else if(className == QString("QStatusBar"))
-        {
-            className = "ScriptStatusBar";
-        }
         else if(className == QString("QTabWidget"))
         {
             className = "ScriptTabWidget";
@@ -884,10 +880,6 @@ void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStri
                 searchForScriptWidgetCommonFunctions(i.key(), lines);
             }
             else if(i.value() == "ScriptSpinBox")
-            {
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptStatusBar")
             {
                 searchForScriptWidgetCommonFunctions(i.key(), lines);
             }

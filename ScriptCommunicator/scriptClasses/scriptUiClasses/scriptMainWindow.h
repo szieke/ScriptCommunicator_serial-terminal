@@ -51,6 +51,8 @@ public:
         //wrapper events)
         connect(m_timer, SIGNAL(timeout()), this, SLOT(checkIfClosedTimerFunctionSlot()));
 
+        connect(this, SIGNAL(showMessageSignal(QString,int)), window->statusBar(), SLOT(showMessage(QString,int)));
+
     }
 
     virtual ~ScriptMainWindow()
@@ -72,10 +74,17 @@ public:
     ///Hides the widget.
     Q_INVOKABLE void hide(void){m_hideCalled = true; ScriptWidget::hide();}
 
+    ///Shows a message in the status bar.
+    Q_INVOKABLE void showMessage(QString text, int duration){emit showMessageSignal(text, duration);}
+
 Q_SIGNALS:
     ///This signal is emitted if the user closes the window.
     ///Scripts can connect a function to this signal.
     void finishedSignal(void);
+
+    ///Is emitted by the showMessage function.
+    ///This signal is private and must not be used inside a script.
+    void showMessageSignal(const QString &text, int timeout);
 
 public slots:
 

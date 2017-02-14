@@ -45,7 +45,6 @@
 #include "scriptSlider.h"
 #include "scriptMainWindow.h"
 #include "scriptAction.h"
-#include "scriptStatusBar.h"
 #include "scriptTabWidget.h"
 #include "scriptGroupBox.h"
 #include "scriptRadioButton.h"
@@ -844,12 +843,6 @@ void ScriptThread::installOneChild(QObject* child, QScriptEngine* scriptEngine)
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
     }
-    else if(QString(child->metaObject()->className()) == QString("QStatusBar"))
-    {
-        ScriptStatusBar* element = new ScriptStatusBar(static_cast<QStatusBar*>(child), this);
-        scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
-        element->setObjectName(objectName);
-    }
     else if(QString(child->metaObject()->className()) == QString("QTabWidget"))
     {
         ScriptTabWidget* element = new ScriptTabWidget(static_cast<QTabWidget*>(child), this);
@@ -976,7 +969,8 @@ void ScriptThread::installOneChild(QObject* child, QScriptEngine* scriptEngine)
             QString(child->metaObject()->className()) == QString("QListModel") ||
             QString(child->metaObject()->className()) == QString("QStackedLayout") ||
             QString(child->metaObject()->className()) == QString("QTableModel") ||
-            QString(child->metaObject()->className()) == QString("QTabBar"))
+            QString(child->metaObject()->className()) == QString("QTabBar") ||
+            QString(child->metaObject()->className()) == QString("QStatusBar"))
     {//not supported class
 
     }
