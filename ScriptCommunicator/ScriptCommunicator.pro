@@ -18,6 +18,9 @@ QT += uitools
 QT += network
 QT += sql
 QT += scripttools
+win32{
+QT += winextras
+}
 
 DEFINES += QUAZIP_STATIC
 unix{

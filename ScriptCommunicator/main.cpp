@@ -35,6 +35,7 @@
 
 #ifdef Q_OS_WIN32
 #include <Windows.h>
+#include <QtWinExtras/QtWin>
 #endif
 
 ///Is set to true if a thread has been terminated.
@@ -84,6 +85,7 @@ int main(int argc, char *argv[])
     bool withScriptWindow = false;
     bool scriptWindowIsMinimized = true;
     QString minimumScVersion;
+    QString iconFile;
 
 #ifdef Q_OS_WIN32
     qInstallMessageHandler(messageHandler);
@@ -125,9 +127,13 @@ int main(int argc, char *argv[])
 
                 scriptArguments << currentArg.remove("-A");
             }
-            else if(QString("-minScVersion") == currentArg)
+            else if(currentArg.startsWith("-minScVersion"))
             {
                 minimumScVersion = currentArg.remove("-minScVersion");
+            }
+            else if(currentArg.startsWith("-I"))
+            {
+                iconFile = currentArg.remove("-I");
             }
             else
             {
@@ -248,6 +254,16 @@ int main(int argc, char *argv[])
 
         MainWindow* w = new MainWindow(scripts, withScriptWindow, scriptWindowIsMinimized, extraPluginPaths,
                                        scriptArguments, configFile);
+
+        if(!iconFile.isEmpty())
+        {
+#ifdef Q_OS_WIN32
+            //Without this call the taskbar icon would not be the new one.
+            QtWin::setCurrentProcessExplicitAppUserModelID("ScriptCommunicator_" + configFile);
+#endif
+            w->setWindowIcon(QIcon(iconFile));
+            qApp->setWindowIcon(QIcon(iconFile));
+        }
 
         if(scripts.isEmpty())
         {
