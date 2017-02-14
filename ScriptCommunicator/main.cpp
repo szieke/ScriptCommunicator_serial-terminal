@@ -35,7 +35,6 @@
 
 #ifdef Q_OS_WIN32
 #include <Windows.h>
-#include <QtWinExtras/QtWin>
 #endif
 
 ///Is set to true if a thread has been terminated.
@@ -253,17 +252,7 @@ int main(int argc, char *argv[])
     {
 
         MainWindow* w = new MainWindow(scripts, withScriptWindow, scriptWindowIsMinimized, extraPluginPaths,
-                                       scriptArguments, configFile);
-
-        if(!iconFile.isEmpty())
-        {
-#ifdef Q_OS_WIN32
-            //Without this call the taskbar icon would not be the new one.
-            QtWin::setCurrentProcessExplicitAppUserModelID("ScriptCommunicator_" + configFile);
-#endif
-            w->setWindowIcon(QIcon(iconFile));
-            qApp->setWindowIcon(QIcon(iconFile));
-        }
+                                       scriptArguments, configFile, iconFile);
 
         if(scripts.isEmpty())
         {

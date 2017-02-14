@@ -33,6 +33,11 @@
 #include <QMutex>
 #include <QTime>
 
+#ifdef Q_OS_WIN32
+#include <Windows.h>
+#include <QtWinExtras/QtWin>
+#endif
+
 #include <QMessageBox>
 #include <QtSerialPort/QSerialPort>
 #include <QFileDialog>
@@ -167,11 +172,13 @@ void SendConsole::wheelEvent(QWheelEvent *event)
  *      True if the script window shall be minimized (command-line mode).
  * @param extraPluginPaths
  *      Extra plug-in search paths.
- * \param configFile
+ * @param configFile
  *      The command line config file.
+ * @param iconFile
+ *      The icon file.
  */
 MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWindowIsMinimized, QStringList extraPluginPaths, QStringList scriptArguments,
-                       QString configFile) :
+                       QString configFile, QString iconFile) :
     QMainWindow(0),
     m_userInterface(new Ui::MainWindow), m_isConnected(false),
     m_sendWindowPositionAndSizeloaded(false), m_scriptWindowPositionAndSizeloaded(false),
@@ -518,6 +525,19 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
             }
         }
 
+    }
+
+#ifdef Q_OS_WIN32
+        QString name = m_mainConfigFile.isEmpty() ? QString("%1").arg(QDateTime::currentMSecsSinceEpoch()) : m_mainConfigFile;
+        //Specifiy a unique application-defined Application User Model ID (AppUserModelID) that identifies the current process to the taskbar.
+        //Note: Because of this id every instance of ScriptCommunicator has its own icon group in the task bar.
+        QtWin::setCurrentProcessExplicitAppUserModelID("ScriptCommunicator_" + name);
+#endif
+
+    if(!iconFile.isEmpty())
+    {
+        setWindowIcon(QIcon(iconFile));
+        qApp->setWindowIcon(QIcon(iconFile));
     }
 
 }

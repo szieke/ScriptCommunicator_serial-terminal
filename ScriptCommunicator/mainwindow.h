@@ -139,7 +139,7 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWindowIsMinimized,
-                        QStringList extraPluginPaths, QStringList scriptArguments, QString configFile);
+                        QStringList extraPluginPaths, QStringList scriptArguments, QString configFile, QString iconFile);
     ~MainWindow();
 
     ///Hide pop-up menu on toolbar
