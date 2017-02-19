@@ -803,11 +803,26 @@ SequenceScriptEngineWrapper* SequenceScriptThread::loadScript(QString scriptPath
 
     m_scriptFileObject->setScriptFileName(scriptPath);
     SequenceScriptEngineWrapper* scriptEngineWrapper= 0;
+    QWidget *parent = (m_sendWindow->isVisible()) ? static_cast<QWidget *>(m_sendWindow) : static_cast<QWidget *>(m_mainWindow);
+
+    QString unsavedInfoFile = ScriptWindow::getUnsavedInfoFileName(scriptPath);
+    if(QFileInfo().exists(unsavedInfoFile))
+    {//The file has unsaved changes.
+
+        m_dialogIsShown = true;
+        if(!m_standardDialogs->showYesNoDialog("Warning", "Warning", scriptPath + " is opened by an instance of ScriptEditor and contains unsaved changes. Execute anyway?",
+                                               parent))
+        {
+            m_dialogIsShown = false;
+            return scriptEngineWrapper;
+        }
+        m_dialogIsShown = false;
+    }
+
     QFile scriptFile(scriptPath);
     if(!scriptFile.open(QIODevice::ReadOnly))
     {
         m_dialogIsShown = true;
-        QWidget *parent = (m_sendWindow->isVisible()) ? static_cast<QWidget *>(m_sendWindow) : static_cast<QWidget *>(m_mainWindow);
         m_standardDialogs->messageBox("Critical", "error", "could not open script file: " + scriptPath,parent);
         m_dialogIsShown = false;
     }

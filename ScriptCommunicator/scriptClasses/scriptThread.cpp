@@ -1330,8 +1330,16 @@ void ScriptThread::scriptSignalHandlerSlot(const QScriptValue & exception)
  */
 bool ScriptThread::loadScript(QString scriptPath, bool isRelativePath)
 {
-     QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
-    return m_scriptFileObject->loadScript(scriptPath, isRelativePath, m_scriptEngine, parent, m_scriptWindow);
+    QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
+    bool scriptShallBeStopped = false;
+    bool result =  m_scriptFileObject->loadScript(scriptPath, isRelativePath, m_scriptEngine, parent, m_scriptWindow, true, &scriptShallBeStopped);
+
+    if(!result && scriptShallBeStopped)
+    {
+        stopScript();
+    }
+
+    return result;
 }
 
 /**

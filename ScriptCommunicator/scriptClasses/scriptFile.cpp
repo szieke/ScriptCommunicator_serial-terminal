@@ -27,6 +27,10 @@ void ScriptFile::intSignals(ScriptWindow *scriptWindow, bool runsInDebugger, boo
             scriptWindow->getMainWindow(), SLOT(showMessageBoxSlot(QMessageBox::Icon, QString, QString, QMessageBox::StandardButtons, QWidget*)),
             useBlockingSignals ? directConnectionType : Qt::QueuedConnection);
 
+    connect(this, SIGNAL(showYesNoDialogSignal(QMessageBox::Icon,QString,QString,QWidget*,bool*)),
+            scriptWindow->getMainWindow(), SLOT(showYesNoDialogSlot(QMessageBox::Icon,QString,QString,QWidget*,bool*)),
+            directConnectionType);
+
     connect(this, SIGNAL(disableMouseEventsSignal()),
             scriptWindow->getMainWindow(), SLOT(disableMouseEventsSlot()), useBlockingSignals ? directConnectionType : Qt::QueuedConnection);
 
@@ -305,15 +309,40 @@ void ScriptFile::showExceptionInMessageBox(QScriptValue exception, QString scrip
  * @param isRelativePath
  *      True of scriptPath is a relative path.
  * @param scriptEngine
- *      Tje script engine
+ *      The script engine
+ * @param checkForUnsavedData
+ *      True if this function shall check for unsaved data.
+ * @param scriptShallBeStopped
+ *      True (out) if the script shall be stopped (user input). May be NULL.
  * @return
  *      True on success.
  */
-bool ScriptFile::loadScript(QString scriptPath, bool isRelativePath, QScriptEngine* scriptEngine, QWidget *parent, ScriptWindow *scriptWindow)
+bool ScriptFile::loadScript(QString scriptPath, bool isRelativePath, QScriptEngine* scriptEngine, QWidget *parent, ScriptWindow *scriptWindow,
+                            bool checkForUnsavedData, bool* scriptShallBeStopped)
 {
     bool hasSucceded = true;
 
     scriptPath = isRelativePath ? createAbsolutePath(scriptPath) : scriptPath;
+
+    if(checkForUnsavedData)
+    {
+        QString unsavedInfoFile = ScriptWindow::getUnsavedInfoFileName(scriptPath);
+        if(QFileInfo().exists(unsavedInfoFile))
+        {//The file has unsaved changes.
+
+            bool yesPressed = false;
+            emit showYesNoDialogSignal(QMessageBox::Warning,"Warning", scriptPath + " is opened by an instance of ScriptEditor and contains unsaved changes. Execute anyway?",
+                                       parent, &yesPressed);
+            if(!yesPressed)
+            {
+                if(scriptShallBeStopped)
+                {
+                    *scriptShallBeStopped = true;
+                }
+                return false;
+            }
+        }
+    }
 
     QFile scriptFile(scriptPath);
     if(!scriptFile.open(QIODevice::ReadOnly))

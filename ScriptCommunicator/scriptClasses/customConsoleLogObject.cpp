@@ -26,6 +26,7 @@
 #include <QMessageBox>
 #include <QTextStream>
 #include "mainwindow.h"
+#include "scriptwindow.h"
 #include <QCoreApplication>
 #include <QApplication>
 #include <QAction>
@@ -74,6 +75,7 @@ CustomConsoleLogObject::~CustomConsoleLogObject()
  */
 void CustomConsoleLogObject::createThread(bool debug)
 {
+
     m_script = new CustomConsoleLogThread(this, m_mainWindow, m_scriptPath, debug);
 
     qRegisterMetaType<QMessageBox::Icon>("QMessageBox::Icon");
@@ -288,10 +290,18 @@ void CustomConsoleLogThread::loadCustomScriptSlot(QString scriptPath, bool* hasS
 {
     if(!scriptPath.isEmpty())
     {
+
+        QString unsavedInfoFile = ScriptWindow::getUnsavedInfoFileName(scriptPath);
+        if(QFileInfo().exists(unsavedInfoFile))
+        {//The file has unsaved changes.
+
+            emit showMessageBoxSignal(QMessageBox::Critical, "Warning", scriptPath + " is opened by an instance of ScriptEditor and contains unsaved changes.", QMessageBox::Ok);
+        }
+
         QFile scriptFile(scriptPath);
         if(!scriptFile.open(QIODevice::ReadOnly))
         {
-            emit showMessageBoxSignal(QMessageBox::Critical, "error", "could not open script file: " + scriptPath, QMessageBox::Ok);
+            emit showMessageBoxSignal(QMessageBox::Critical, "Error", "could not open script file: " + scriptPath, QMessageBox::Ok);
         }
         else
         {

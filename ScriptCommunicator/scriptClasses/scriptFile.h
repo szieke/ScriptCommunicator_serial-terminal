@@ -72,7 +72,7 @@ public:
                                    ScriptWindow* scriptWindow);
 
     ///Loads/includes one script (QtScript has no built in include mechanism).
-    bool loadScript(QString scriptPath, bool isRelativePath, QScriptEngine* scriptEngine, QWidget* parent, ScriptWindow* scriptWindow);
+    bool loadScript(QString scriptPath, bool isRelativePath, QScriptEngine* scriptEngine, QWidget* parent, ScriptWindow* scriptWindow, bool checkForUnsavedData, bool *scriptShallBeStopped);
 
     ///Sets the script file name (path).
     void setScriptFileName(QString scriptFileName){m_scriptFileName = scriptFileName;}
@@ -91,6 +91,10 @@ signals:
     ///Is connected with MainWindow::showMessageBoxSlot (shows a message box).
     ///This function must not be used from script.
     void showMessageBoxSignal(QMessageBox::Icon icon, QString title, QString text, QMessageBox::StandardButtons buttons, QWidget *parent);
+
+    ///Is connected with MainWindow::showYesNoDialogSlot (shows a yes/no dialog).
+    ///This function must not be used from script.
+    void showYesNoDialogSignal(QMessageBox::Icon icon, QString title, QString text,  QWidget *parent, bool* yesButtonPressed);
 
     ///Disables all mouse events for all windows.
     ///This function must not be used from script.

@@ -1375,19 +1375,6 @@ void ScriptWindow::startScriptThread(int selectedRow, bool withDebugger)
 
         ScriptThread* thread = 0;
         QString scriptFileName = m_userInterface->tableWidget->item(selectedRow, COLUMN_SCRIPT_PATH)->text();
-        QString unsavedInfoFile = getUnsavedInfoFileName(scriptFileName);
-
-        if(QFileInfo().exists(unsavedInfoFile))
-        {//The file has unsaved changes.
-
-            QMessageBox message(QMessageBox::Warning, "Warning", scriptFileName + " is opened by an instance of ScriptEditor and contains unsaved changes. Execute anyway?",
-                                QMessageBox::Yes | QMessageBox::No, this);
-            if(message.exec() == QMessageBox::No)
-            {
-                m_userInterface->tableWidget->item(selectedRow,COLUMN_SCRIPT_THREAD_STATUS)->setText("not running");
-                return;
-            }
-        }
 
         if(m_userInterface->tableWidget->item(selectedRow, COLUMN_UI_PATH)->text() != 0)
         {//This script has a user interface.

@@ -110,7 +110,16 @@ public:
 
     ///Loads/includes one script (QtScript has no built in include mechanism).
     Q_INVOKABLE bool loadScript(QString scriptPath, bool isRelativePath=true)
-    {return m_scriptFileObject->loadScript(scriptPath, isRelativePath, m_scriptEngine, m_mainWindow, m_mainWindow->getScriptWindow());}
+    {
+        scriptPath = isRelativePath ? createAbsolutePath(scriptPath) : scriptPath;
+        QString unsavedInfoFile = ScriptWindow::getUnsavedInfoFileName(scriptPath);
+        if(QFileInfo().exists(unsavedInfoFile))
+        {//The file has unsaved changes.
+
+            emit showMessageBoxSignal(QMessageBox::Critical, "Warning", scriptPath + " is opened by an instance of ScriptEditor and contains unsaved changes.", QMessageBox::Ok);
+        }
+        return m_scriptFileObject->loadScript(scriptPath, false, m_scriptEngine, m_mainWindow, m_mainWindow->getScriptWindow(), false, NULL);
+    }
 
     ///Reads a text file and returns the content.
     Q_INVOKABLE QString readFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1)
