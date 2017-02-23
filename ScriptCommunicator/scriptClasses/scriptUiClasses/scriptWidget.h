@@ -216,8 +216,8 @@ public:
     Q_INVOKABLE QString getClassName(void){return metaObject()->className();}
 
     ///Returns the name of this object (UI_'object name in the ui file').
-    ///Note: This function returns only a not empty string for GUI elements from ui files or if the function
-    ///setObjectName has been called for the current object.
+    ///Note: This function returns only a not empty string for GUI elements from ui files (standard GUI elements).
+    ///For GUI elements created with ScriptTableWidget::insertWidget the object name must be set with setObjectName.
     Q_INVOKABLE QString getObjectName(void){return QObject::objectName();}
 
     ///Sets the name of the current object (can be retrieved with getObjectName).

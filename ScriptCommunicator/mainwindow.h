@@ -335,6 +335,10 @@ public slots:
     ///Adds data to the main window send history.
     void addDataToMainWindowSendHistorySlot(QByteArray data);
 
+    ///Sets the main window and the ScriptCommunicator task bar icon.
+    ///Supported formats: .ico, .gif, .png, .jpeg, .tiff, .bmp, .icns.
+   void setMainWindowAndTaskBarIconSlot(QString iconFile);
+
 private slots:
 
     ///Menu debug sequence script slot function.

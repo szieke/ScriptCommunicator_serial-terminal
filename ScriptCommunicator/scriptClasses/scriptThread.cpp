@@ -306,6 +306,9 @@ void ScriptThread::run()
         connect(m_scriptWindow->m_mainWindow->getUserInterface()->actionLockScrolling, SIGNAL(toggled(bool)),
                 this, SLOT(mainWindowLockScrollingSlot(bool)), Qt::QueuedConnection);
 
+        connect(this, SIGNAL(setMainWindowAndTaskBarIconSignal(QString)),
+                m_scriptWindow->m_mainWindow, SLOT(setMainWindowAndTaskBarIconSlot(QString)), Qt::QueuedConnection);
+
         connect(this, SIGNAL(addToolBoxPagesToMainWindowSignal(QToolBox*)),
                 m_scriptWindow->m_mainWindow, SLOT(addToolBoxPagesToMainWindowSlot(QToolBox*)), Qt::QueuedConnection);
 
@@ -2909,6 +2912,21 @@ QScriptValue ScriptThread::getConsoleSettings(void)
     ret.setProperty("timeStampInterval", settings->timeStampIntervalConsole);
 	ret.setProperty("timestampFormat", settings->consoleTimestampFormat);
     return ret;
+}
+
+
+/**
+ * Sets the main window and the ScriptCommunicator task bar icon.
+ * Supported formats: .ico, .gif, .png, .jpeg, .tiff, .bmp, .icns.
+ * @param iconFile
+ *      The file name of the icon.
+ * @param isRelativePath
+ *      True of path is a relative path.
+ */
+void ScriptThread::setMainWindowAndTaskBarIcon(QString iconFile, bool isRelativePath)
+{
+    iconFile = isRelativePath ? m_scriptFileObject->createAbsolutePath(iconFile) : iconFile;
+    emit setMainWindowAndTaskBarIconSignal(iconFile);
 }
 
 /**

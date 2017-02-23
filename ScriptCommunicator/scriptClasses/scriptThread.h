@@ -554,6 +554,10 @@ public:
     ///Returns the console settings (settings dialog).
     Q_INVOKABLE QScriptValue getConsoleSettings(void);
 
+    ///Sets the main window and the ScriptCommunicator task bar icon.
+    ///Supported formats: .ico, .gif, .png, .jpeg, .tiff, .bmp, .icns.
+    Q_INVOKABLE void setMainWindowAndTaskBarIcon(QString iconFile, bool isRelativePath=true);
+
     ///Returns and all functions, signals and properties of an object.
     static void getAllObjectPropertiesAndFunctionsInternal(QScriptValue object, QStringList* resultList, QString* resultString);
 
@@ -621,6 +625,10 @@ signals:
     ///use canMessagesReceivedSignal if the main interface is a can interface).
     ///Scripts can connect a function to this signal.
     void dataReceivedSignal(QVector<unsigned char> data);
+
+    ///This signal is emitted in setMainWindowAndTaskBarIcon.
+    ///This signal must not be used from script.
+    void setMainWindowAndTaskBarIconSignal(QString iconFile);
 
 
     ///This signal is emitted if a can message (or several) has been received with the main interface.

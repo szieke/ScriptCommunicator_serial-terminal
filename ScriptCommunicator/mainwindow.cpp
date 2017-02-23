@@ -536,8 +536,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
     if(!iconFile.isEmpty())
     {
-        setWindowIcon(QIcon(iconFile));
-        qApp->setWindowIcon(QIcon(iconFile));
+        setMainWindowAndTaskBarIconSlot(iconFile);
     }
 
 }
@@ -559,6 +558,18 @@ MainWindow::~MainWindow()
     delete m_mainInterface;
     delete m_addMessageDialog;
     delete m_searchConsole;
+}
+
+/**
+ * Sets the main window and the ScriptCommunicator task bar icon.
+ * Supported formats: .ico, .gif, .png, .jpeg, .tiff, .bmp, .icns.
+ * @param iconFile
+ *      The file name of the icon.
+ */
+void MainWindow::setMainWindowAndTaskBarIconSlot(QString iconFile)
+{
+    setWindowIcon(QIcon(iconFile));
+    qApp->setWindowIcon(QIcon(iconFile));
 }
 
 /**

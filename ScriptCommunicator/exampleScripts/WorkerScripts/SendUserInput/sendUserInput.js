@@ -14,6 +14,8 @@ function dialogFinished(e)
 
 function sendSequence()
 {
+	var sender = this;
+	scriptThread.appendTextToConsole(sender.getObjectName());
 	var data = "send data: ";
 	data += UI_LineEdit.text() + " ";
 	data += UI_ComboBox.currentText() + " ";
@@ -28,6 +30,7 @@ function sendSequence()
 scriptThread.appendTextToConsole('script has started');
 UI_Dialog.finishedSignal.connect(dialogFinished);
 
-UI_SendButton.clickedSignal.connect(sendSequence)
+UI_SendButton.clickedSignal.connect(UI_SendButton, sendSequence)
 
 scriptThread.appendTextToConsole("serial port signals: " + scriptThread.getSerialPortSignals().toString(16));
+scriptThread.setMainWindowAndTaskBarIcon("mainWindow.ico");

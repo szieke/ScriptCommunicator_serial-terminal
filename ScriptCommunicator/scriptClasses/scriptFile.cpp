@@ -130,7 +130,7 @@ QVector<unsigned char> ScriptFile::readBinaryFile(QString path, bool isRelativeP
 * * @param path
 *      The file path.
 * @param isRelativePath
-*      True if the file path is relative to the executable.
+*      True of path is a relative path.
 * @return
 *      The file size if the file exists. -1 if the file doesn't exists.
 *
