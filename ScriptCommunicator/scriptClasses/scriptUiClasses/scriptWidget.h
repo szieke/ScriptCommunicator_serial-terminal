@@ -41,7 +41,8 @@ class ScriptWidget: public QObject, public ScriptObject
     Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 
 public:
-    ScriptWidget(QWidget* widget, ScriptThread *scriptThread, ScriptWindow* scriptWindow) : m_scriptWindow(scriptWindow), m_widget(widget)
+    ScriptWidget(QWidget* widget, ScriptThread *scriptThread, ScriptWindow* scriptWindow) :
+        m_scriptWindow(scriptWindow), m_scriptThread(scriptThread), m_widget(widget)
     {
 
         if(QThread::currentThread() == scriptThread->thread())
@@ -67,6 +68,7 @@ public:
             connect(this, SIGNAL(closeSignal()), widget, SLOT(close()), Qt::QueuedConnection);
             connect(this, SIGNAL(hideSignal()), widget, SLOT(hide()), Qt::QueuedConnection);
             connect(this, SIGNAL(setWindowTitleSignal(QString)), widget, SLOT(setWindowTitle(QString)), Qt::QueuedConnection);
+            connect(this, SIGNAL(setWindowIconSignal(QString, QWidget*)), scriptWindow, SLOT(setWindowIconSlot(QString, QWidget*)), Qt::QueuedConnection);
 
             connect(this, SIGNAL(setWindowPositionAndSizeSignal(QString, QWidget*)),
                     scriptWindow, SLOT(setWindowPositionAndSizeSlot(QString, QWidget*)), directConnectionType);
@@ -223,6 +225,14 @@ public:
     ///Sets the name of the current object (can be retrieved with getObjectName).
     Q_INVOKABLE void setObjectName(QString name){QObject::setObjectName(name);}
 
+    ///Sets the window icon of a dialog or a main window.
+    ///Supported formats: .ico, .gif, .png, .jpeg, .tiff, .bmp, .icns.
+    Q_INVOKABLE void setWindowIcon(QString iconFile, bool isRelativePath=true)
+    {
+        iconFile = isRelativePath ? m_scriptThread->createAbsolutePath(iconFile) : iconFile;
+        emit setWindowIconSignal(iconFile, m_widget);
+    }
+
 Q_SIGNALS:
 
     ///Is emitted by the setWindowFlag function,
@@ -292,9 +302,16 @@ Q_SIGNALS:
     ///This signal is private and must not be used inside a script.
     void setScriptGuiElementColorRgbSignal(quint8 red, quint8 green,quint8 blue, QWidget* element, QString colorRole);
 
+    ///This signal is emitted in setWindowIcon.
+    ///This signal is private and must not be used inside a script.
+    void setWindowIconSignal(QString iconFile, QWidget* widget);
+
 protected:
     ///Script window pointer.
     ScriptWindow* m_scriptWindow;
+
+    ///Pointer to the script thread;
+    ScriptThread* m_scriptThread;
 private:
     ///The wrapped widget.
     QWidget* m_widget;

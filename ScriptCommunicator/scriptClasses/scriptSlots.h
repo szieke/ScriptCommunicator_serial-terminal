@@ -23,6 +23,7 @@
 #include <QLineEdit>
 #include <QListWidgetItem>
 #include <QRadioButton>
+#include <QIcon>
 
 ///The ScriptTextEdit operations which are stored for later processing.
 typedef enum
@@ -374,6 +375,10 @@ public slots:
    ///This function inserts one row at row and fills the cells with content.
    ///Possible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
    void insertRowWithContentSlot(int row, QStringList texts, QStringList backgroundColors, QStringList foregroundColors, QTableWidget* tableWidget);
+
+   ///Sets the window icon of a dialog or a main window.
+   ///Supported formats: .ico, .gif, .png, .jpeg, .tiff, .bmp, .icns.
+   void setWindowIconSlot(QString iconFile, QWidget* widget){widget->setWindowIcon(QIcon(iconFile));}
 
 };
 

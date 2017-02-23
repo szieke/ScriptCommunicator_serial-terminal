@@ -29,3 +29,4 @@ ScriptWidget::blockSignals(bool block):bool \nIf block is true, signals emitted 
 ScriptWidget::getClassName(void):String \nReturns the class name of this object.
 ScriptWidget::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files (standard GUI elements).\nFor GUI elements created with ScriptTableWidget::insertWidget the object name must be set with setObjectName.
 ScriptWidget::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
+ScriptWidget::setWindowIcon(String iconFile, bool isRelativePath=true):void \nSets the window icon of a dialog or a main window.\nSupported formats: .ico, .gif, .png, .jpeg, .tiff, .bmp, .icns.

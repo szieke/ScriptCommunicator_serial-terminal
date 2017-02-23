@@ -33,4 +33,5 @@ UI_Dialog.finishedSignal.connect(dialogFinished);
 UI_SendButton.clickedSignal.connect(UI_SendButton, sendSequence)
 
 scriptThread.appendTextToConsole("serial port signals: " + scriptThread.getSerialPortSignals().toString(16));
-scriptThread.setMainWindowAndTaskBarIcon("mainWindow.ico");
+scriptThread.setMainWindowAndTaskBarIcon("mainWindowIcon.ico");
+UI_Dialog.setWindowIcon("dialogIcon.png");
