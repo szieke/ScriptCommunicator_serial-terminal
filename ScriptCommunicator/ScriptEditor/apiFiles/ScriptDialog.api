@@ -29,4 +29,5 @@ ScriptDialog::blockSignals(bool block):bool \nIf block is true, signals emitted 
 ScriptDialog::getClassName(void):String \nReturns the class name of this object.
 ScriptDialog::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
 ScriptDialog::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
+ScriptDialog::setWindowIcon(String iconFile, bool isRelativePath=true):void \nSets the window icon of a dialog or a main window.\nSupported formats: .ico, .gif, .png, .jpeg, .tiff, .bmp, .icns.
 ScriptDialog::finishedSignal.connect(void) \nThis signal is emitted if the user closes the dialog.
