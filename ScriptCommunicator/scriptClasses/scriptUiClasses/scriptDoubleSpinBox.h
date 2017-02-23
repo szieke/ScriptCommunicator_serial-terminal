@@ -59,7 +59,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptDoubleSpinBox.api");
+        return MainWindow::parseApiFile("ScriptDoubleSpinBox.api");
     }
 
     ///Sets the spin box's minimum and maximum values to minimum and maximum respectively.

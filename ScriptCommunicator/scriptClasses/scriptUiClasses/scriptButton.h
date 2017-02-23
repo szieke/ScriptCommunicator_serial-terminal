@@ -58,7 +58,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptButton.api");
+        return MainWindow::parseApiFile("ScriptButton.api");
     }
 
     ///Sets the button text.

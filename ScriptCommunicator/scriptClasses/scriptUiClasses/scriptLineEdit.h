@@ -62,7 +62,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptLineEdit.api");
+        return MainWindow::parseApiFile("ScriptLineEdit.api");
     }
 
     ///Returns the text of the line exit.

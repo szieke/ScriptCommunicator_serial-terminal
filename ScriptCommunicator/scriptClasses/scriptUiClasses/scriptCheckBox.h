@@ -54,7 +54,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptCheckBox.api");
+        return MainWindow::parseApiFile("ScriptCheckBox.api");
     }
 
     ///Sets the check box text.

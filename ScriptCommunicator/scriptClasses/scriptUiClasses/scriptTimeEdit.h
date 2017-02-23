@@ -51,7 +51,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptTimeEdit.api");
+        return MainWindow::parseApiFile("ScriptTimeEdit.api");
     }
 
     ///Sets the time.

@@ -91,8 +91,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() +
-               ";" + MainWindow::parseApiFile("ScriptPlotWindow.api");
+        return MainWindow::parseApiFile("ScriptPlotWindow.api");
     }
 
     ///This function adds a graph to the diagram.

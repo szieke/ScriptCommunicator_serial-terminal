@@ -49,7 +49,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptLabel.api");
+        return MainWindow::parseApiFile("ScriptLabel.api");
     }
 
     ///Sets the label text.

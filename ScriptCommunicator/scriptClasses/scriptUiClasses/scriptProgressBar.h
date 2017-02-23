@@ -52,7 +52,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptProgressBar.api");
+        return MainWindow::parseApiFile("ScriptProgressBar.api");
     }
 
     ///Resets the progress bar. The progress bar rewinds and shows no progress.

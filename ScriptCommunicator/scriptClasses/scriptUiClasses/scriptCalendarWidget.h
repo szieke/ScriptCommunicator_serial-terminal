@@ -56,7 +56,7 @@ public:
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return ScriptWidget::getPublicScriptElements() + ";" + MainWindow::parseApiFile("ScriptCalendarWidget.api");
+        return MainWindow::parseApiFile("ScriptCalendarWidget.api");
     }
 
     ///Sets the selected date.

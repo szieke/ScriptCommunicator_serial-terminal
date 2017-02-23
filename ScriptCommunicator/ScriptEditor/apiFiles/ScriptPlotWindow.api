@@ -39,6 +39,7 @@ ScriptPlotWindow::removeAllGraphs(void):void \nThis function removes all graphs.
 ScriptPlotWindow::showHelperElements(bool showXRange, bool showYRange, bool showUpdate, bool showSave, bool showLoad, bool showClear, bool showGraphVisibility, quint32 graphVisibilityMaxSize=80, bool showLegend=true):void \nSets the visibility of several plot widget elements.
 ScriptPlotWindow::setMaxDataPointsPerGraph(qint32 maxDataPointsPerGraph):void \nSets tThe max. number of data points per graph (the default is 10.000.000).
 ScriptPlotWindow::setUpdateInterval(quint32 updateInterval):void \nSets the update-interval.
+ScriptPlotWindow::setWindowIcon(String iconFile, bool isRelativePath=true):void \nSets the window icon of a dialog or a main window.\nSupported formats: .ico, .gif, .png, .jpeg, .tiff, .bmp, .icns.
 ScriptPlotWindow::plotMousePressSignal.connect(double xValue, double yValue, quint32 mouseButton) \nIs emitted if the user press a mouse button inside the plot.\nNote: mouseButton has the type Qt::MouseButton.
 ScriptPlotWindow::clearButtonPressedSignal.connect(void) \nIs emitted if the user clicks the clear button.
 ScriptPlotWindow::closedSignal.connect(void) \nThis signal is emitted if the plot window has been closed.
