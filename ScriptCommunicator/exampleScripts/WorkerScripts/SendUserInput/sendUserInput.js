@@ -3,6 +3,7 @@
 //Is called if this script shall be exited.
 function stopScript() 
 {
+	scriptThread.setMainWindowAndTaskBarIcon("default.ico");
     scriptThread.appendTextToConsole("script has been stopped");
 }
 
