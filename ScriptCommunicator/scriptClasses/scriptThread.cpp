@@ -2167,10 +2167,15 @@ QVector<unsigned char>  ScriptThread::readAllStandardOutputFromProcess(QScriptVa
             {
                 QDateTime startTime = QDateTime::currentDateTime();
 
-                while(!byteArray.contains(blockByte) && (startTime.msecsTo(QDateTime::currentDateTime()) < blockTime) && (proc->state() == QProcess::Running))
+                while(!byteArray.contains(blockByte) && (startTime.msecsTo(QDateTime::currentDateTime()) < blockTime))
                 {
                     proc->waitForReadyRead(1);
                     byteArray.append(proc->readAllStandardOutput());
+
+                    if(proc->state() != QProcess::Running)
+                    {
+                        break;
+                    }
                 }
 
             }
@@ -2219,10 +2224,14 @@ QVector<unsigned char>  ScriptThread::readAllStandardErrorFromProcess(QScriptVal
             {
                 QDateTime startTime = QDateTime::currentDateTime();
 
-                while(!byteArray.contains(blockByte) && (startTime.msecsTo(QDateTime::currentDateTime()) < blockTime) && (proc->state() == QProcess::Running))
+                while(!byteArray.contains(blockByte) && (startTime.msecsTo(QDateTime::currentDateTime()) < blockTime))
                 {
                     proc->waitForReadyRead(1);
                     byteArray.append(proc->readAllStandardError());
+                    if(proc->state() != QProcess::Running)
+                    {
+                        break;
+                    }
 
                 }
 
