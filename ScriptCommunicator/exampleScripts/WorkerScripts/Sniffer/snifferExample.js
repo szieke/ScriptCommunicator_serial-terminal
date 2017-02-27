@@ -59,7 +59,7 @@ function dataReceivedSlot(data)
 		var consoleString = ""
 		if(UI_showAsAsciiCheckBox.isChecked())
 		{
-			consoleString = scriptThread.byteArrayToString(data);
+			consoleString = conv.byteArrayToString(data);
 		}
 		else
 		{
@@ -209,7 +209,7 @@ function readyReadSlot()
 		var consoleString = "";
 		if(UI_showAsAsciiCheckBox.isChecked())
 		{
-			consoleString = scriptThread.byteArrayToString(data);
+			consoleString = conv.byteArrayToString(data);
 		}
 		else
 		{

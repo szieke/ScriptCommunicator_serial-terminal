@@ -52,11 +52,11 @@ else
 
 
 	var res = scriptThread.readAllStandardOutputFromProcess(process, true, String('\n').charCodeAt(0), 10000);
-	scriptThread.appendTextToConsole("stdout data:  " + scriptThread.byteArrayToString(res).replace("\n", ""));
+	scriptThread.appendTextToConsole("stdout data:  " + conv.byteArrayToString(res).replace("\n", ""));
 	
 	
 	var err = scriptThread.readAllStandardErrorFromProcess(process, true, String('\n').charCodeAt(0), 10000);
-	scriptThread.appendTextToConsole("stderr data: " + scriptThread.byteArrayToString(err).replace("\n", ""));
+	scriptThread.appendTextToConsole("stderr data: " + conv.byteArrayToString(err).replace("\n", ""));
 	
 	scriptThread.waitForFinishedProcess(process);
 	var exitCode = scriptThread.getProcessExitCode(process)

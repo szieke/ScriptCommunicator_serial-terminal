@@ -335,15 +335,15 @@ public:
     ///Returns true if the process is running.
     Q_INVOKABLE bool processIsRunning(QScriptValue process);
 
-    ///This function returns all data available from the standard output of process.
-	///Note: If isBlocking is true then this function blocks until the blockByte has been received or
-	///blockTime has elapsed (-1=infinite).
+    ///This function returns all data available from the standard output of process (can be called after the process is finished).
+	///Note: If isBlocking is true then this function blocks until the blockByte has been received, blockTime has elapsed (-1=infinite) or
+	///the process is finished.
     Q_INVOKABLE QVector<unsigned char> readAllStandardOutputFromProcess(QScriptValue process, bool isBlocking=false,
                                                                         quint8 blockByte='\n', qint32 blockTime=30000);
 
-    ///This function returns all data available from the standard error of process.
-	///Note: If isBlocking is true then this function blocks until the blockByte has been received or
-	///blockTime has elapsed (-1=infinite).
+    ///This function returns all data available from the standard error of process (can be called after the process is finished).
+	///Note: If isBlocking is true then this function blocks until the blockByte has been received, blockTime has elapsed (-1=infinite) or
+	///the process is finished.
     Q_INVOKABLE QVector<unsigned char> readAllStandardErrorFromProcess(QScriptValue process, bool isBlocking=false,
                                                                        quint8 blockByte='\n', qint32 blockTime=30000);
 

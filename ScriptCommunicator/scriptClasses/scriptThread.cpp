@@ -2137,9 +2137,9 @@ bool ScriptThread::processIsRunning(QScriptValue process)
 
 }
 /**
- * This function returns all data available from the standard output of process.
+ * This function returns all data available from the standard output of process (can be called after the process is finished).
  * Note: If isBlocking is true then this function blocks until the blockByte has been received,
- * blockTime has elapsed (-1=infinite) or the process has stopped.
+ * blockTime has elapsed (-1=infinite) or the process is finished.
  * @param process
  *      The process.
  * @param isBlocking
@@ -2194,9 +2194,9 @@ QVector<unsigned char>  ScriptThread::readAllStandardOutputFromProcess(QScriptVa
 }
 
 /**
- * This function returns all data available from the standard error of process.
+ * This function returns all data available from the standard error of process (can be called after the process is finished).
  * Note: If isBlocking is true then this function blocks until the blockByte has been received or
- * blockTime has elapsed (-1=infinite) or the process has stopped.
+ * blockTime has elapsed (-1=infinite) or the process is finished.
  * @param process
  *      The process.
  * @param isBlocking

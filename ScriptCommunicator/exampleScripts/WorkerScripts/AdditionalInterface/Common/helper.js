@@ -126,7 +126,7 @@ function updateConsole()
 				}
 				if(UI_ShowAscii.isChecked())
 				{
-					consoleString = UI_TextEdit.replaceNonHtmlChars(scriptThread.byteArrayToString(g_consoleData[i][0]).replace(/\r\n/g, "\n")) ;
+					consoleString = UI_TextEdit.replaceNonHtmlChars(conv.byteArrayToString(g_consoleData[i][0]).replace(/\r\n/g, "\n")) ;
 				}
 				else
 				{
