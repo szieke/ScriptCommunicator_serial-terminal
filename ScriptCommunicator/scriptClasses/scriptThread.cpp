@@ -2116,9 +2116,30 @@ bool ScriptThread::writeToProcessStdin(QScriptValue process, QVector<unsigned ch
 }
 
 /**
+ * Returns true if the process is running.
+ * @param process
+ *      The process.
+ */
+bool ScriptThread::processIsRunning(QScriptValue process)
+{
+    bool isRunning = false;
+
+    if(process.isValid() && process.isQObject())
+    {
+        QObject* obj = process.toQObject();
+        if(QString(obj->metaObject()->className()) == QString("QProcess"))
+        {
+            QProcess* proc = static_cast<QProcess*>(obj);
+            isRunning = (proc->state() == QProcess::Running) ? true : false;
+        }
+    }
+    return isRunning;
+
+}
+/**
  * This function returns all data available from the standard output of process.
- * Note: If isBlocking is true then this function blocks until the blockByte has been received or
- * blockTime has elapsed (-1=infinite).
+ * Note: If isBlocking is true then this function blocks until the blockByte has been received,
+ * blockTime has elapsed (-1=infinite) or the process has stopped.
  * @param process
  *      The process.
  * @param isBlocking
@@ -2146,7 +2167,7 @@ QVector<unsigned char>  ScriptThread::readAllStandardOutputFromProcess(QScriptVa
             {
                 QDateTime startTime = QDateTime::currentDateTime();
 
-                while(!byteArray.contains(blockByte) && (startTime.msecsTo(QDateTime::currentDateTime()) < blockTime))
+                while(!byteArray.contains(blockByte) && (startTime.msecsTo(QDateTime::currentDateTime()) < blockTime) && (proc->state() == QProcess::Running))
                 {
                     proc->waitForReadyRead(1);
                     byteArray.append(proc->readAllStandardOutput());
@@ -2170,7 +2191,7 @@ QVector<unsigned char>  ScriptThread::readAllStandardOutputFromProcess(QScriptVa
 /**
  * This function returns all data available from the standard error of process.
  * Note: If isBlocking is true then this function blocks until the blockByte has been received or
- * blockTime has elapsed (-1=infinite).
+ * blockTime has elapsed (-1=infinite) or the process has stopped.
  * @param process
  *      The process.
  * @param isBlocking
@@ -2198,7 +2219,7 @@ QVector<unsigned char>  ScriptThread::readAllStandardErrorFromProcess(QScriptVal
             {
                 QDateTime startTime = QDateTime::currentDateTime();
 
-                while(!byteArray.contains(blockByte) && (startTime.msecsTo(QDateTime::currentDateTime()) < blockTime))
+                while(!byteArray.contains(blockByte) && (startTime.msecsTo(QDateTime::currentDateTime()) < blockTime) && (proc->state() == QProcess::Running))
                 {
                     proc->waitForReadyRead(1);
                     byteArray.append(proc->readAllStandardError());

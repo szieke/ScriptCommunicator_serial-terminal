@@ -332,6 +332,9 @@ public:
     ///Note: Blocks until the writing is finished or until msecs milliseconds have passed (-1=infinite).
     Q_INVOKABLE bool writeToProcessStdin(QScriptValue process, QVector<unsigned char> data, int waitTime=30000);
 
+    ///Returns true if the process is running.
+    Q_INVOKABLE bool processIsRunning(QScriptValue process);
+
     ///This function returns all data available from the standard output of process.
 	///Note: If isBlocking is true then this function blocks until the blockByte has been received or
 	///blockTime has elapsed (-1=infinite).
