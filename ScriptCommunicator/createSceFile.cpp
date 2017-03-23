@@ -129,19 +129,10 @@ void CreateSceFile::setMenuState(void)
 void CreateSceFile::selectFileSlot()
 {
     QString file = QFileDialog::QFileDialog::getSaveFileName(this, tr("Select file name"),
-                                                             "", tr("ScriptCommunicator executable(*.sce)"));
+                                                             "", tr("Files (*)"));
     if(!file.isEmpty())
     {
-        if(file.endsWith(".scez"))
-        {
-            file.replace(".scez", "");
-        }
-
-        if(!file.endsWith(".sce"))
-        {
-            file.append(".sce");
-        }
-        ui->fileLineEdit->setText(file);
+        ui->fileLineEdit->setText(file.split(".")[0]);
     }
 
     setMenuState();
@@ -496,7 +487,8 @@ QString CreateSceFile::createSceFile()
             QString source = ui->filesTableWidget->item(i, COLUMN_SOURCE)->text();
 
             xmlWriter.writeStartElement("Script");
-            xmlWriter.writeAttribute("path", "./" + currentFolder + "/" + QFileInfo(source).fileName());
+            QString path = currentFolder.isEmpty() ? "./" + QFileInfo(source).fileName() : "./" + currentFolder + "/" + QFileInfo(source).fileName();
+            xmlWriter.writeAttribute("path", path);
             xmlWriter.writeEndElement();
         }
     }
@@ -618,7 +610,8 @@ void CreateSceFile::addAllFromScriptWindow()
 void CreateSceFile::generateCompressedFileSlot()
 {
     bool success = false;
-    ScriptFile fileHelper(this, ui->fileLineEdit->text());
+    QString sceFileName = ui->fileLineEdit->text() + "/" + QFileInfo(ui->fileLineEdit->text()).fileName() + ".sce";
+    ScriptFile fileHelper(this, sceFileName);
     QStringList copiedFiles;
 
     if(!isExecutableScriptInFilesTable())
@@ -638,13 +631,13 @@ void CreateSceFile::generateCompressedFileSlot()
     generateSlot(&copiedFiles, ui->progressBar, &success);
     if(success)
     {
-        copiedFiles << ui->fileLineEdit->text();
-        QString zipFileName = ui->fileLineEdit->text().split(".")[0] + ".scez";
+        copiedFiles << sceFileName;
+        QString zipFileName = ui->fileLineEdit->text() + ".scez";
 
         (void)fileHelper.deleteFile(zipFileName, false);
 
         QList<QStringList> fileList;
-        QString rootDir = QDir(QFileInfo(ui->fileLineEdit->text()).path()).absolutePath();
+        QString rootDir = QDir(QFileInfo(sceFileName).path()).absolutePath();
         for(auto el : copiedFiles)
         {
             QStringList entry;
@@ -684,16 +677,8 @@ void CreateSceFile::generateCompressedFileSlot()
         }
     }
 
-    //Delete all sub directories from the file table.
-    deleteAllSubDirectoriesFromFileTable(QFileInfo(ui->fileLineEdit->text()).path());
-
-    //Delete all copied files.
-    for(auto el : copiedFiles)
-    {
-        (void)QFile::remove(el);
-    }
-
-    (void)QFile::remove(ui->fileLineEdit->text());
+    //Delete the sce folder.
+    (void)QDir(ui->fileLineEdit->text()).removeRecursively();
 
     if(success)
     {
@@ -773,39 +758,6 @@ QStringList CreateSceFile::getAllPluginPathsFromFileTable()
 }
 
 /**
- * Deletes all sub directory from the file table.
- * @param rootPath
- *      The root path of the sub directories.
- */
-void CreateSceFile::deleteAllSubDirectoriesFromFileTable(QString rootPath)
-{
-    QStringList subDirs;
-    //Get all sub directories.
-    for(int i = 0; i < ui->filesTableWidget->rowCount(); i++)
-    {
-        QString folder = ui->filesTableWidget->item(i, COLUMN_SUBDIR)->text();
-        if(!subDirs.contains(folder))
-        {
-            subDirs << folder;
-        }
-    }
-
-    for (auto el : subDirs)
-    {
-        QString folder = el;
-        int index = folder.indexOf("/");
-        if(index != -1)
-        {
-            folder = folder.left(index);
-        }
-        if(!folder.isEmpty())
-        {
-            (void)QDir((rootPath + "/" + folder)).removeRecursively();
-        }
-    }
-}
-
-/**
  * Generate sce file menu slot function.
  * @param copiedFilesOutput
  *      The copied files.
@@ -817,7 +769,8 @@ void CreateSceFile::deleteAllSubDirectoriesFromFileTable(QString rootPath)
  */
 void CreateSceFile::generateSlot(QStringList* copiedFilesOutput, QProgressBar* progress, bool *resultPointer)
 {
-    QFile file(ui->fileLineEdit->text());
+    QString sceFileName = ui->fileLineEdit->text() + "/" + QFileInfo(ui->fileLineEdit->text()).fileName() + ".sce";
+    QFile file(sceFileName);
     file.remove();
     bool success = true;
     QStringList copiedFiles;
@@ -825,6 +778,14 @@ void CreateSceFile::generateSlot(QStringList* copiedFilesOutput, QProgressBar* p
     if(!isExecutableScriptInFilesTable())
     {
         QMessageBox::information(this, "could not start generation", "No executable script defined.");
+        return;
+    }
+
+    //Delete and create the sce folder.
+    (void)QDir(ui->fileLineEdit->text()).removeRecursively();
+    if(!QDir().mkpath(ui->fileLineEdit->text()))
+    {
+        QMessageBox::critical(this, "error", QString("could not create: %1").arg(ui->fileLineEdit->text()));
         return;
     }
 
@@ -847,13 +808,10 @@ void CreateSceFile::generateSlot(QStringList* copiedFilesOutput, QProgressBar* p
         data << createSceFile();
         file.close();
 
-        //Delete all sub directories from the file table.
-        deleteAllSubDirectoriesFromFileTable(QFileInfo(ui->fileLineEdit->text()).path());
-
         for(int i = 0; i < ui->filesTableWidget->rowCount(); i++)
         {
             QString currentFolder = ui->filesTableWidget->item(i, COLUMN_SUBDIR)->text();
-            currentFolder = QFileInfo(ui->fileLineEdit->text()).absolutePath() + "/" + currentFolder;
+            currentFolder = QFileInfo(sceFileName).absolutePath() + "/" + currentFolder;
             QString source = ui->filesTableWidget->item(i, COLUMN_SOURCE)->text();
 
             if(!QFile().exists(currentFolder))
@@ -885,7 +843,7 @@ void CreateSceFile::generateSlot(QStringList* copiedFilesOutput, QProgressBar* p
     }// if(file.open(QIODevice::WriteOnly | QIODevice::Text))
     else
     {
-        QMessageBox::critical(this, "error", QString("could not create: %1").arg(ui->fileLineEdit->text()));
+        QMessageBox::critical(this, "error", QString("could not create: %1").arg(sceFileName));
         success = false;
     }
 
@@ -901,8 +859,8 @@ void CreateSceFile::generateSlot(QStringList* copiedFilesOutput, QProgressBar* p
     {
         statusBar()->showMessage("sce file creation failed", 5000);
 
-        //Delete all sub directories from the file table.
-        deleteAllSubDirectoriesFromFileTable(QFileInfo(ui->fileLineEdit->text()).path());
+        //Delete the sce folder.
+        (void)QDir(ui->fileLineEdit->text()).removeRecursively();
 
         //Delete all copied files.
         for(auto el : copiedFiles)
@@ -910,7 +868,7 @@ void CreateSceFile::generateSlot(QStringList* copiedFilesOutput, QProgressBar* p
             (void)QFile::remove(el);
         }
 
-        (void)QFile::remove(ui->fileLineEdit->text());
+        (void)QFile::remove(sceFileName);
     }
 
     if(copiedFilesOutput == 0)

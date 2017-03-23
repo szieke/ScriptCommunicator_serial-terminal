@@ -144,9 +144,6 @@ private:
     ///Returns the sub directory which corresponds to the file type.
     QString getSubDirectoryFromType(QString type);
 
-    ///Deletes all sub directory from the file table.
-    void deleteAllSubDirectoriesFromFileTable(QString rootPath);
-
     ///Returns all library paths from the file table.
     QStringList getAllLibraryPathsFromFileTable();
 
