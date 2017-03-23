@@ -854,6 +854,8 @@ void ScriptSlots::processStoredOperationsSlot(QTextEdit* textEdit, bool isLocked
         }
 
         MainWindow::limtCharsInTextEdit(textEdit, maxChars);
+
+        if(el.atTheEnd)textEdit->moveCursor(QTextCursor::End);
     }
 
     if(isLocked)
