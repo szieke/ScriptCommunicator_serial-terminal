@@ -78,7 +78,7 @@ color() const
 }
 
 void LED::
-setColor(const QColor& color)
+setColor(QColor color)
 {
     m_color = color;
 	update();

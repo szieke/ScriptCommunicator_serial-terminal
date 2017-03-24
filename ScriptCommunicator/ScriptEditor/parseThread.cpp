@@ -332,7 +332,10 @@ void ParseThread::parseWidgetList(QDomElement& docElem, bool parseActions)
         }
         else
         {
-            className = "";
+            if(!m_autoCompletionApiFiles.contains(className + ".api"))
+            {//No API file for the current class.
+                className = "";
+            }
         }
         addObjectToAutoCompletionList(objectName, className, true);
     }

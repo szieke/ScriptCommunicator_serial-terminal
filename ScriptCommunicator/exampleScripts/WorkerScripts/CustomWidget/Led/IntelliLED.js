@@ -101,3 +101,9 @@ UI_l9.stateChangedSignal.connect(inputSignal9Changed);
 UI_l10.stateChangedSignal.connect(inputSignal10Changed);
 UI_checkBox.clickedSignal.connect(checkBoxSlot);
 UI_horizontalSlider.valueChangedSignal.connect(sliderSlot);
+
+//Set the led color to blue.
+UI_led.setColorRgb(0,0,255);
+
+//Set the flahing rate.
+UI_led.setFlashRate(500);
