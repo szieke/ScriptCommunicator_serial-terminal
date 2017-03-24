@@ -395,9 +395,6 @@ public:
         return readAllLinesInternally(&m_serialPort, removeNewLine, removeCarriageReturn);
     }
 
-    ///Returns true if the serial port is open.
-    Q_INVOKABLE isOpen(void){return m_serialPort.isOpen();}
-
     ///This function reads a line (a line ends with a '\n') of ASCII characters from an QIODevice object.
     ///If removeNewLine is true then the '\n' will not returned (is removed from the received line).
     ///If removeCarriageReturn is true then a '\r' in front of '\n' will also not returned.

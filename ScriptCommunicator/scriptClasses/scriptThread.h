@@ -551,8 +551,12 @@ public:
     ///Sets the title of the main window.
     Q_INVOKABLE void setMainWindowTitle(QString newTitle){emit setMainWindowTitleSignal(newTitle);}
 
-    ///Returns the current time stamp (the format can be set in the settings dialog (console options tab)).
-    Q_INVOKABLE QString getTimestamp(void){return QDateTime::currentDateTime().toString(m_settingsDialog->settings()->consoleTimestampFormat);}
+    ///Returns the current time stamp in a specific format (see QDateTime.toString for more details).
+    ///If the format string is empty then the format from the settings dialog (console options tab) is used.
+    Q_INVOKABLE QString getTimestamp(QString format = "")
+    {
+        return QDateTime::currentDateTime().toString(format.isEmpty() ? m_settingsDialog->settings()->consoleTimestampFormat : format);
+    }
 
     ///Returns the console settings (settings dialog).
     Q_INVOKABLE QScriptValue getConsoleSettings(void);
