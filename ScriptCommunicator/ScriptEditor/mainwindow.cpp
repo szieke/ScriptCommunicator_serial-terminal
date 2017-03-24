@@ -1501,6 +1501,7 @@ bool MainWindow::loadFile(const QString &fileName)
 
 
     QTextStream in(&file);
+    in.setCodec("UTF-8");
     QApplication::setOverrideCursor(Qt::WaitCursor);
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
     textEditor->setText(in.readAll());
@@ -1531,6 +1532,7 @@ bool MainWindow::saveFile(const QString &fileName)
     }
 
     QTextStream out(&file);
+    out.setCodec("UTF-8");
     QApplication::setOverrideCursor(Qt::WaitCursor);
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
     out << textEditor->text();

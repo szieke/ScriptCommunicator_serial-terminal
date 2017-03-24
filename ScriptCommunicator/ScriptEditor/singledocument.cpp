@@ -23,6 +23,8 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
 {
 
     connect(this, SIGNAL(textChanged()), m_mainWindow, SLOT(documentWasModified()));
+
+    setUtf8(true);
 }
 
 
