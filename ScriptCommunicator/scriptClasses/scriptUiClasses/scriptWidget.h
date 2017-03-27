@@ -94,6 +94,9 @@ public:
                     scriptWindow, SLOT(setWindowFlagsSlot(Qt::WindowFlags,QWidget*)), directConnectionType);
 
             connect(this, SIGNAL(setFocusSignal()), m_widget, SLOT(setFocus()), Qt::QueuedConnection);
+
+            connect(this, SIGNAL(createShortCutSignal(QString,QWidget*,QShortcut**)),
+                    scriptWindow, SLOT(createShortCutSlot(QString,QWidget*,QShortcut**)), directConnectionType);
         }
     }
     ///Returns a semicolon separated list with all public functions, signals and properties.
@@ -233,6 +236,18 @@ public:
         emit setWindowIconSignal(iconFile, m_widget);
     }
 
+    ///Creates a shortcut and connects it to a script function.
+    Q_INVOKABLE void createShortCut(QString keys, QScriptValue scriptFunction)
+    {
+        QShortcut* shortCut;
+        emit createShortCutSignal(keys, m_widget, &shortCut);
+        if (!qScriptConnect(shortCut, SIGNAL(activated()), QScriptValue(), scriptFunction))
+        {
+            m_scriptThread->getScriptEngine()->currentContext()->throwError("could not find function: " + scriptFunction.toString());
+
+        }
+    }
+
 Q_SIGNALS:
 
     ///Is emitted by the setWindowFlag function,
@@ -305,6 +320,10 @@ Q_SIGNALS:
     ///This signal is emitted in setWindowIcon.
     ///This signal is private and must not be used inside a script.
     void setWindowIconSignal(QString iconFile, QWidget* widget);
+
+    ///This signal is emitted in createShortCut.
+    ///This signal is private and must not be used inside a script.
+    void createShortCutSignal(QString key, QWidget* parent, QShortcut** shortCut);
 
 protected:
     ///Script window pointer.

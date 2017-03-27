@@ -24,6 +24,7 @@
 #include <QListWidgetItem>
 #include <QRadioButton>
 #include <QIcon>
+#include <QShortcut>
 
 ///The ScriptTextEdit operations which are stored for later processing.
 typedef enum
@@ -379,6 +380,9 @@ public slots:
    ///Sets the window icon of a dialog or a main window.
    ///Supported formats: .ico, .gif, .png, .jpeg, .tiff, .bmp, .icns.
    void setWindowIconSlot(QString iconFile, QWidget* widget){widget->setWindowIcon(QIcon(iconFile));}
+
+   ///Creates a shortcut.
+   void createShortCutSlot(QString keys, QWidget* parent, QShortcut **shortCut);
 
 };
 

@@ -900,3 +900,18 @@ void ScriptSlots::insertRowWithContentSlot(int row, QStringList texts, QStringLi
 
     }
 }
+
+/**
+ * Creates a shortcut.
+ * @param keys
+ *      The keys for the shortcut.
+ * @param parent
+ *      The parent widget of the shortcut.
+ * @param shortCut
+ *      The created shortcut.
+ */
+void ScriptSlots::createShortCutSlot(QString keys, QWidget *parent, QShortcut **shortCut)
+{
+    *shortCut = new QShortcut(QKeySequence(keys),parent);
+
+}

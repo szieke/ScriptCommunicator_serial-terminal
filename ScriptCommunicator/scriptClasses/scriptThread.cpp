@@ -336,7 +336,7 @@ void ScriptThread::run()
                 m_settingsDialog, SLOT(setAllSettingsSlot(Settings&,bool)), directConnectionType);
 
         connect(this, SIGNAL(appendTextToConsoleSignal(QString, bool,bool)),
-                m_scriptWindow, SLOT(appendTextToConsoleSlot(QString, bool,bool)), directConnectionType);
+                m_scriptWindow, SLOT(appendTextToConsoleSlot(QString, bool,bool)), Qt::QueuedConnection);
 
         connect(m_scriptWindow->m_mainInterfaceThread, SIGNAL(dataReceivedSignal(QByteArray)),
                 this, SLOT(dataReceivedSlot(QByteArray)), Qt::QueuedConnection);

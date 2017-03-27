@@ -28,6 +28,21 @@ function sendSequence()
 	}
 }
 
+function testShortcut1()
+{
+	scriptThread.appendTextToConsole("testShortcut1");
+}
+
+function testShortcut2()
+{
+	scriptThread.appendTextToConsole("testShortcut2");
+}
+
+function testShortcut3()
+{
+	scriptThread.appendTextToConsole("testShortcut3");
+}
+
 scriptThread.appendTextToConsole('script has started');
 UI_Dialog.finishedSignal.connect(dialogFinished);
 
@@ -36,3 +51,15 @@ UI_SendButton.clickedSignal.connect(UI_SendButton, sendSequence)
 scriptThread.appendTextToConsole("serial port signals: " + scriptThread.getSerialPortSignals().toString(16));
 scriptThread.setMainWindowAndTaskBarIcon("mainWindowIcon.ico");
 UI_Dialog.setWindowIcon("dialogIcon.png");
+
+//Test shortcut 1.
+UI_Dialog.createShortCut("Alt+V", testShortcut1)
+
+//Test shortcut 2.
+UI_Dialog.createShortCut("F1", testShortcut2)
+
+//To activate test shortcut 3:
+//- enter Alt+Ctrl+X, release Alt+Ctrl+X
+//- enter Ctrl+S, release Ctrl+S
+//- enter Q
+UI_Dialog.createShortCut("Alt+Ctrl+X,Ctrl+S,Q", testShortcut3)
