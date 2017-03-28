@@ -322,6 +322,11 @@ void CustomConsoleLogThread::loadCustomScriptSlot(QString scriptPath, bool* hasS
             m_scriptEngine->globalObject().setProperty("cust", m_scriptEngine->newQObject(this));
             m_scriptSql->registerScriptMetaTypes(m_scriptEngine);
             m_converterObject.registerScriptMetaTypes(m_scriptEngine);
+            m_scriptEngine->globalObject().setProperty("scriptFile", m_scriptEngine->newQObject(this));
+
+            connect(this, SIGNAL(appendTextToConsoleSignal(QString, bool,bool)),
+                            m_mainWindow->getScriptWindow(), SLOT(appendTextToConsoleSlot(QString, bool,bool)), Qt::QueuedConnection);
+
 
 
             ScriptXmlReader::registerScriptMetaTypes(m_scriptEngine);

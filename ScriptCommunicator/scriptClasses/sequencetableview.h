@@ -107,6 +107,7 @@ public:
     ///Appends text to the script window console.
     Q_INVOKABLE void appendTextToConsole(QString string, bool newLine=true, bool bringToForeground=false){ emit appendTextToConsoleSignal(string, newLine,bringToForeground);}
 
+    /****************Deprecated functions (replaced by the conv object)******************************************************/
     ///Converts a byte array which contains ascii characters into a ascii string (QString).
     Q_INVOKABLE QString byteArrayToString(QVector<unsigned char> data){return ScriptConverter::byteArrayToString(data);}
 
@@ -118,6 +119,7 @@ public:
 
     ///Adds an ascii string to a byte array.
     Q_INVOKABLE QVector<unsigned char> addStringToArray(QVector<unsigned char> array, QString str){return ScriptConverter::addStringToArray(array, str);}
+    /*************************************************************************************************************************/
 
     ///Calculates a crc8.
     Q_INVOKABLE static quint8 calculateCrc8(const QVector<unsigned char> data){return CRC::calculateCrc8(data);}

@@ -102,6 +102,7 @@ public:
     ///Appends text to the script window console.
     Q_INVOKABLE void appendTextToConsole(QString string, bool newLine=true, bool bringToForeground=false){ emit appendTextToConsoleSignal(string, newLine,bringToForeground);}
 
+    /****************Deprecated functions (replaced by the conv object)******************************************************/
     ///Converts a byte array which contains ascii characters into a ascii string (QString).
     Q_INVOKABLE QString byteArrayToString(QVector<unsigned char> data){return ScriptConverter::byteArrayToString(data);}
 
@@ -113,45 +114,10 @@ public:
 
     ///Adds an ascii string to a byte array.
     Q_INVOKABLE QVector<unsigned char> addStringToArray(QVector<unsigned char> array, QString str){return ScriptConverter::addStringToArray(array, str);}
+    /*************************************************************************************************************************/
 
-    ///Forces the script thread to sleep for ms milliseconds.
-    Q_INVOKABLE void sleepFromScript(quint32 timeMs);
 
-    ///Creates an UDP socket.
-    Q_INVOKABLE QScriptValue createUdpSocket(void);
-
-    ///Creates a TCP server.
-    Q_INVOKABLE QScriptValue createTcpServer(void);
-
-    ///Creates a TCP socket.
-    Q_INVOKABLE QScriptValue createTcpClient(void);
-
-    ///Creates a timer.
-    Q_INVOKABLE QScriptValue createTimer(void);
-
-    ///Creates a serial port.
-    Q_INVOKABLE QScriptValue createSerialPort(void);
-
-    ///Creates a cheetah spi interface.
-    Q_INVOKABLE QScriptValue createCheetahSpiInterface(void);
-
-    ///Creates a pcan interface.
-    Q_INVOKABLE QScriptValue createPcanInterface(void);
-
-    ///Creates a plot window.
-    Q_INVOKABLE QScriptValue createPlotWindow();
-
-    ///Creates a XML reader.
-    Q_INVOKABLE QScriptValue createXmlReader();
-
-    ///Creates a XML writer.
-    Q_INVOKABLE QScriptValue createXmlWriter();
-
-    ///Deletes an object created by the script.
-    ///Note: This function must not used any more.
-    ///Objects are deleted automatically by the script engine garbage collector.
-    Q_INVOKABLE void deleteObject(QObject* obj);
-
+    /****************Deprecated functions (replaced by the scriptFile object)******************************************************/
     ///Reads a text file and returns the content.
     Q_INVOKABLE QString readFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1)
     {return m_scriptFileObject->readFile(path, isRelativePath, startPosition, numberOfBytes);}
@@ -221,19 +187,61 @@ public:
         return fi.absolutePath();
     }
 
-    ///Loads/includes one script (QtScript has no built in include mechanism).
-    Q_INVOKABLE bool loadScript(QString scriptPath, bool isRelativePath=true);
-
     ///Zips a directory.
     Q_INVOKABLE bool zipDirectory(QString fileName, QString sourceDirName, QString comment="")
     {return m_scriptFileObject->zipDirectory(fileName, sourceDirName, 0, comment);}
 
     ///Adds files to a zip file.
-    Q_INVOKABLE bool zipFiles(QString fileName, QVariantList fileList, QString comment="");
+    Q_INVOKABLE bool zipFiles(QString fileName, QVariantList fileList, QString comment="")
+    { return m_scriptFileObject->zipFiles(fileName, fileList, comment);}
 
     ///Extracts a zip file.
     Q_INVOKABLE bool extractZipFile(QString fileName, QString destinationDirectory)
     {return m_scriptFileObject->extractZipFile(fileName, destinationDirectory);}
+
+
+    /*************************************************************************************************************************/
+
+    ///Forces the script thread to sleep for ms milliseconds.
+    Q_INVOKABLE void sleepFromScript(quint32 timeMs);
+
+    ///Creates an UDP socket.
+    Q_INVOKABLE QScriptValue createUdpSocket(void);
+
+    ///Creates a TCP server.
+    Q_INVOKABLE QScriptValue createTcpServer(void);
+
+    ///Creates a TCP socket.
+    Q_INVOKABLE QScriptValue createTcpClient(void);
+
+    ///Creates a timer.
+    Q_INVOKABLE QScriptValue createTimer(void);
+
+    ///Creates a serial port.
+    Q_INVOKABLE QScriptValue createSerialPort(void);
+
+    ///Creates a cheetah spi interface.
+    Q_INVOKABLE QScriptValue createCheetahSpiInterface(void);
+
+    ///Creates a pcan interface.
+    Q_INVOKABLE QScriptValue createPcanInterface(void);
+
+    ///Creates a plot window.
+    Q_INVOKABLE QScriptValue createPlotWindow();
+
+    ///Creates a XML reader.
+    Q_INVOKABLE QScriptValue createXmlReader();
+
+    ///Creates a XML writer.
+    Q_INVOKABLE QScriptValue createXmlWriter();
+
+    ///Deletes an object created by the script.
+    ///Note: This function must not used any more.
+    ///Objects are deleted automatically by the script engine garbage collector.
+    Q_INVOKABLE void deleteObject(QObject* obj);
+
+    ///Loads/includes one script (QtScript has no built in include mechanism).
+    Q_INVOKABLE bool loadScript(QString scriptPath, bool isRelativePath=true);
 
     ///Loads a dynamic link library and calls the init function (void init(QScriptEngine* engine)).
     ///With this function a script can extend his functionality.

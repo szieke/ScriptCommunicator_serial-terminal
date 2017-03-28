@@ -185,7 +185,7 @@ scriptThread.appendTextToConsole('script has started');
 
 
 var db = scriptSql.addDatabase("QSQLITE")
-db.setDatabaseName(scriptThread.createAbsolutePath("test.db3"));
+db.setDatabaseName(scriptFile.createAbsolutePath("test.db3"));
 db.open();
 if(!db.isOpen())
 {

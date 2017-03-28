@@ -6,8 +6,8 @@ Pier Andrea Serra, University of Sassari, Italy. 2015
 
 cust.loadScript("CustomConsole_QRCodeHelper.js");
 
-var imageFolder = cust.getScriptFolder() + "/Media/"
-var QRCode = cust.readFile("QRData.txt");
+var imageFolder = scriptFile.getScriptFolder() + "/Media/"
+var QRCode = scriptFile.readFile("QRData.txt");
 
 var QRCodeArray =  CSVToArray(QRCode);
 

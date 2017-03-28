@@ -12,15 +12,15 @@ function listWidgetItemDoubleClicked(currentRow)
 	UI_testTextEdit.append("UI_listWidgetItemDoubleClicked: " + currentRow);
 }
 
-UI_sendListWidget.insertNewItem(UI_sendListWidget.rowCount(), "item0", scriptThread.createAbsolutePath("icons/folder.gif"));
+UI_sendListWidget.insertNewItem(UI_sendListWidget.rowCount(), "item0", scriptFile.createAbsolutePath("icons/folder.gif"));
 UI_sendListWidget.insertNewItem(UI_sendListWidget.rowCount(), "item", "");
 UI_sendListWidget.setItemText(UI_sendListWidget.rowCount() - 1, UI_sendListWidget.getItemText(UI_sendListWidget.rowCount() - 1) + "1");
-UI_sendListWidget.setItemIcon(UI_sendListWidget.rowCount() - 1, scriptThread.createAbsolutePath("icons/openfolder.gif"));
+UI_sendListWidget.setItemIcon(UI_sendListWidget.rowCount() - 1, scriptFile.createAbsolutePath("icons/openfolder.gif"));
 UI_sendListWidget.seItemBackgroundColor(UI_sendListWidget.rowCount() - 1, "red")
-UI_sendListWidget.insertNewItem(UI_sendListWidget.rowCount(), "item2", scriptThread.createAbsolutePath("icons/browser.ico"));
+UI_sendListWidget.insertNewItem(UI_sendListWidget.rowCount(), "item2", scriptFile.createAbsolutePath("icons/browser.ico"));
 
 //Test remove item.
-UI_sendListWidget.insertNewItem(UI_sendListWidget.rowCount(), "item2", scriptThread.createAbsolutePath("icons/browser.ico"));
+UI_sendListWidget.insertNewItem(UI_sendListWidget.rowCount(), "item2", scriptFile.createAbsolutePath("icons/browser.ico"));
 UI_sendListWidget.removeItem(UI_sendListWidget.rowCount() - 1);
 
 UI_sendListWidget.setCurrentRow(0);

@@ -107,7 +107,7 @@ cust.appendTextToConsole("CustomLogConsole_Sql.js started", true, false);
 
 var errorString  = "";
 var db = scriptSql.addDatabase("QSQLITE")
-db.setDatabaseName(cust.getScriptFolder() + "/testLog.db3");
+db.setDatabaseName(scriptFile.getScriptFolder() + "/testLog.db3");
 db.open();
 if(!db.isOpen())
 {

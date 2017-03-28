@@ -101,11 +101,11 @@ function NewElementsButtonButtonClicked()
 	
 	if(input != "")
 	{
-		UI_sendListWidget.insertNewItem(UI_sendListWidget.rowCount(), input, scriptThread.createAbsolutePath("icons/folder.gif"));
+		UI_sendListWidget.insertNewItem(UI_sendListWidget.rowCount(), input, scriptFile.createAbsolutePath("icons/folder.gif"));
 		
 		var treeItem1 = UI_treeWidget.createScriptTreeWidgetItem();
 		treeItem1.setText(0, input);
-		treeItem1.setItemIcon(0, scriptThread.createAbsolutePath("icons/openfolder.gif"));
+		treeItem1.setItemIcon(0, scriptFile.createAbsolutePath("icons/openfolder.gif"));
 		UI_treeWidget.addTopLevelItem(treeItem1);
 		
 		UI_testReceiveTableWidget.insertRow(UI_testReceiveTableWidget.rowCount() )
@@ -155,16 +155,16 @@ UI_testTextEdit.append("Skript start");
 
 
 /********************************test the file api*********************/
-if(scriptThread.checkFileExists("testFileFromGuiExample.txt"))
+if(scriptFile.checkFileExists("testFileFromGuiExample.txt"))
 {
-	var fileContent = scriptThread.readFile("testFileFromGuiExample.txt");
+	var fileContent = scriptFile.readFile("testFileFromGuiExample.txt");
 	UI_testTextEdit.append(fileContent);
 }
 else
 {
-	UI_testTextEdit.append(scriptThread.createAbsolutePath("testFileFromGuiExample.txt") + " does not exist");
+	UI_testTextEdit.append(scriptFile.createAbsolutePath("testFileFromGuiExample.txt") + " does not exist");
 }
-scriptThread.writeFile("testFileFromGuiExample.txt", true, "test file content\r\nline 2", true);
+scriptFile.writeFile("testFileFromGuiExample.txt", true, "test file content\r\nline 2", true);
 /***********************************************************************/
 
 
@@ -219,7 +219,7 @@ UI_NewElementsButton.setCheckable(true);
 UI_NewElementsButton.setChecked(true);
 var testButton = UI_NewElementsButton;
 UI_NewElementsButton.setObjectName("testButton");
-UI_NewElementsButton.setIcon(scriptThread.createAbsolutePath("icons/new.png"));
+UI_NewElementsButton.setIcon(scriptFile.createAbsolutePath("icons/new.png"));
 		
 //test text edit, checkbox, radio button
 scriptThread.loadScript("includedScripts/testLineEdit_CheckBox_RadioButton.js");

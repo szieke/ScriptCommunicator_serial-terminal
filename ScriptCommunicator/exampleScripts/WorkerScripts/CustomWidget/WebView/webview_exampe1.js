@@ -49,7 +49,7 @@ try
 }
 catch(e)
 {
-	scriptThread.messageBox("Error", "Missing libraries", "See " + scriptThread.createAbsolutePath("readme.txt") + " for more informations.");
+	scriptThread.messageBox("Error", "Missing libraries", "See " + scriptFile.createAbsolutePath("readme.txt") + " for more informations.");
 }
 
 

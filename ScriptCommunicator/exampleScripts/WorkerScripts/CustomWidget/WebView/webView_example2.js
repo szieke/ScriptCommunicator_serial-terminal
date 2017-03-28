@@ -40,7 +40,7 @@ function sendPage()
 	pl += "</body>" + cr;		
 	pl += "</html>" + cr;	
 
-    UI_webView.setHtml(pl,"file:///"+scriptThread.getScriptFolder()+"/");
+    UI_webView.setHtml(pl,"file:///"+ scriptFile.getScriptFolder()+"/");
     UI_textEdit.setPlainText(UI_webView.evaluateJavaScript("document.body.innerHTML"));
 	
 	UI_statusTextEdit.append(UI_webView.evaluateJavaScript("sendHello()") );	
@@ -122,7 +122,7 @@ try
 }
 catch(e)
 {
-	scriptThread.messageBox("Error", "Missing libraries", "See " + scriptThread.createAbsolutePath("readme.txt") + " for more informations.");
+	scriptThread.messageBox("Error", "Missing libraries", "See " + scriptFile.createAbsolutePath("readme.txt") + " for more informations.");
 }
 
 

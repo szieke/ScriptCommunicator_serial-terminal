@@ -25,7 +25,7 @@ function ClearFilePushButtonClickedSlot()
 			UI_InformationLabel.setText("bytes written: " + bytesWritten);
 			
 			//Create empty file.
-			scriptThread.writeBinaryFile(UI_FilePathLineEdit.text(), false, Array(), false);
+			scriptFile.writeBinaryFile(UI_FilePathLineEdit.text(), false, Array(), false);
 		}
 		else
 		{
@@ -51,14 +51,14 @@ function openFilePushButtonClickedSlot()
 		UI_InformationLabel.setText("bytes written: " + bytesWritten);
 		
 
-		if(scriptThread.checkFileExists(path, false))
+		if(scriptFile.checkFileExists(path, false))
 		{
-			if(!scriptThread.deleteFile(path, false))
+			if(!scriptFile.deleteFile(path, false))
 			{
 				scriptThread.messageBox("Information", "information", "could not access (delete) file: " + path);
 			}
 			//Create empty file.
-			scriptThread.writeBinaryFile(path, false, Array(), false);
+			scriptFile.writeBinaryFile(path, false, Array(), false);
 		}
 	}
 	UI_ReceiveFileDialog.raise();
@@ -92,7 +92,7 @@ function dataReceivedSlot(data)
 function writteData()
 {
 	timer.stop();
-	if(scriptThread.writeBinaryFile(UI_FilePathLineEdit.text(), false, receivedData, false))
+	if(scriptFile.writeBinaryFile(UI_FilePathLineEdit.text(), false, receivedData, false))
 	{
 		bytesWritten += receivedData.length;
 		UI_InformationLabel.setText("bytes written: " + bytesWritten);

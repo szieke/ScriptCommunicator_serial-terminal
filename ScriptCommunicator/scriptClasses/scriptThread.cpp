@@ -433,7 +433,8 @@ void ScriptThread::run()
         m_standardDialogs->intSignals(m_scriptWindow, m_scriptRunsInDebugger);
 
         m_scriptFileObject = new ScriptFile(this, m_scriptFileName);
-        m_scriptFileObject->intSignals(m_scriptWindow, m_scriptRunsInDebugger);
+        m_scriptFileObject->intSignals(m_scriptWindow, m_scriptEngine, m_scriptRunsInDebugger);
+        m_scriptEngine->globalObject().setProperty("scriptFile", m_scriptEngine->newQObject(m_scriptFileObject));
 
 
         if(m_userInterface[0]->getWidgetPointer())
@@ -2267,31 +2268,6 @@ bool ScriptThread::sendString(QString string, int repetitionCount, int pause, bo
     return sendByteArray(string.toLocal8Bit(), repetitionCount, pause, addToMainWindowSendHistory);
 }
 
-/**
- * Adds files to a zip file.
- * @param fileName
- * The file name of the zip file.
- * @param fileList
- *      Contains all files. An entry consists of a string pair.
- *      The first entry of this pair is the source file name (including the absolute file path) and the second
- *      is the file name inside (including the relative path) the zip file.
- * @param comment
- *      The zip file comment.
- * @return
- *      True on success.
- */
-bool ScriptThread::zipFiles(QString fileName, QVariantList fileList, QString comment)
-{
-    bool result = false;
-    QList<QStringList> createdList;
-
-    for(int i = 0; i < fileList.length(); i++)
-    {
-        createdList << fileList[i].toStringList();
-    }
-    result = m_scriptFileObject->zipFiles(fileName, createdList, 0, comment);
-    return result;
-}
 /**
  * Loads a dynamic link library and calls the init function (void init(QScriptEngine* engine)).
  * With this function a script can extend his functionality.

@@ -11,26 +11,7 @@ scriptThread::createPcanInterface(void):ScriptPcanInterface \nCreates a pcan int
 scriptThread::createPlotWindow(void):ScriptPlotWindow \nCreates a plot window.
 scriptThread::createXmlReader(void):ScriptXmlReader \nCreates a XML reader.
 scriptThread::createXmlWriter(void):ScriptXmlWriter \nCreates a XML writer.
-scriptThread::readFile(String path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1):String \nReads a text file and returns the content.
-scriptThread::readBinaryFile(String path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1):Array<unsigned char> \nReads a binary file and returns the content.
-scriptThread::getFileSize(String path, bool isRelativePath=true):qint64 \nReturns the size of a file.
-scriptThread::checkFileExists(String path, bool isRelativePath=true):bool \nChecks if a file exists.
-scriptThread::checkDirectoryExists(String directory, bool isRelativePath=true):bool \nChecks if a directory exists.
-scriptThread::createDirectory(String directory, bool isRelativePath=true):bool \nCreates a directory.
-scriptThread::renameDirectory(String directory, String newName):bool \nRenames a directory.
-scriptThread::renameFile(String path, String newName):bool \nRenames a file.
-scriptThread::deleteFile(String path, bool isRelativePath=true):bool \nDeletes a file.
-scriptThread::deleteDirectory(String directory, bool isRelativePath=true):bool \nDeletes a directory (must be empty).
-scriptThread::deleteDirectoryRecursively(String directory, bool isRelativePath=true):bool \nIf a file or directory cannot be removed, deleteDirectoryRecursively() keeps going and attempts to delete as many files and sub-directories as possible, then returns false. If the directory was already removed, the method returns true (expected result already reached).
-scriptThread::readDirectory(String directory, bool isRelativePath=true, bool recursive=true, bool returnFiles=true, bool returnDirectories=true):Array<String> \nReads the content of a directory and his sub directories.
-scriptThread::writeFile(String path, bool isRelativePath, String content, bool replaceFile, qint64 startPosition=-1):bool \nWrites a text file (if replaceFile is true, the existing file is overwritten, else the content is appended).
-scriptThread::writeBinaryFile(String path, bool isRelativePath, Array<unsigned char> content, bool replaceFile, qint64 startPosition=-1):bool \nWrites a binary file (if replaceFile is true, the existing file is overwritten, else the content is appended).
-scriptThread::createAbsolutePath(String fileName):String \nConverts a relative path into an absolute path.
-scriptThread::getScriptFolder(void):String \nReturns the folder in which the script resides.
 scriptThread::loadScript(String scriptPath, bool isRelativePath=true):bool \nLoads/includes one script (QtScript has no built in include mechanism).
-scriptThread::zipDirectory(String fileName, String sourceDirName, String comment=""):bool \nZips a directory.
-scriptThread::zipFiles(String fileName, VariantList fileList, String comment=""):bool \nAdds files to a zip file.
-scriptThread::extractZipFile(String fileName, String destinationDirectory):bool \nExtracts a zip file.
 scriptThread::loadLibrary(String path, bool isRelativePath=true):bool \nLoads a dynamic link library and calls the init function (void init(QScriptEngine* engine)). With this function a script can extend his functionality.
 scriptThread::sendDataArray(Array<unsigned char> data, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false):bool \nSends a data array (Array) with the main interface (in MainInterfaceThread).
 scriptThread::sendCanMessage(quint8 type, quint32 canId, Array<unsigned char> data, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false):bool \nSends a can message with the main interface (in MainInterfaceThread). f more then 8 data bytes are given several can messages with the same can id will be sent.

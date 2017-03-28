@@ -1,0 +1,19 @@
+scriptFile::readFile(String path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1):String \nReads a text file and returns the content.
+scriptFile::readBinaryFile(String path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1):Array<unsigned char> \nReads a binary file and returns the content.
+scriptFile::getFileSize(String path, bool isRelativePath=true):qint64 \nReturns the size of a file.
+scriptFile::checkFileExists(String path, bool isRelativePath=true):bool \nChecks if a file exists.
+scriptFile::checkDirectoryExists(String directory, bool isRelativePath=true):bool \nChecks if a directory exists.
+scriptFile::createDirectory(String directory, bool isRelativePath=true):bool \nCreates a directory.
+scriptFile::renameDirectory(String directory, String newName):bool \nRenames a directory.
+scriptFile::renameFile(String path, String newName):bool \nRenames a file.
+scriptFile::deleteFile(String path, bool isRelativePath=true):bool \nDeletes a file.
+scriptFile::deleteDirectory(String directory, bool isRelativePath=true):bool \nDeletes a directory (must be empty).
+scriptFile::deleteDirectoryRecursively(String directory, bool isRelativePath=true):bool \nIf a file or directory cannot be removed, deleteDirectoryRecursively() keeps going and attempts to delete as many files and sub-directories as possible, then returns false. If the directory was already removed, the method returns true (expected result already reached).
+scriptFile::readDirectory(String directory, bool isRelativePath=true, bool recursive=true, bool returnFiles=true, bool returnDirectories=true):Array<String> \nReads the content of a directory and his sub directories.
+scriptFile::writeFile(String path, bool isRelativePath, String content, bool replaceFile, qint64 startPosition=-1):bool \nWrites a text file (if replaceFile is true, the existing file is overwritten, else the content is appended).
+scriptFile::writeBinaryFile(String path, bool isRelativePath, Array<unsigned char> content, bool replaceFile, qint64 startPosition=-1):bool \nWrites a binary file (if replaceFile is true, the existing file is overwritten, else the content is appended).
+scriptFile::createAbsolutePath(String fileName):String \nConverts a relative path into an absolute path.
+scriptFile::getScriptFolder(void):String \nReturns the folder in which the script resides.
+scriptFile::zipDirectory(String fileName, String sourceDirName, String comment=""):bool \nZips a directory.
+scriptFile::zipFiles(String fileName, VariantList fileList, String comment=""):bool \nAdds files to a zip file.
+scriptFile::extractZipFile(String fileName, String destinationDirectory):bool \nExtracts a zip file.

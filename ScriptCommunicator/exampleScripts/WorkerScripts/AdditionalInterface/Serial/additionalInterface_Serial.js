@@ -101,9 +101,9 @@ function sendDataFromMainInterface(data)
 //Loads the saved user interface settings.
 function loadUiSettings()
 {
-	if(scriptThread.checkFileExists(g_settingsFileName))
+	if(scriptFile.checkFileExists(g_settingsFileName))
 	{
-		var settings = scriptThread.readFile(g_settingsFileName);
+		var settings = scriptFile.readFile(g_settingsFileName);
 		var stringArray = settings.split("\r\n");
 		
 		UI_SerialPortInfoListBox.setCurrentText(getValueOfStringArray(stringArray, "UI_SerialPortInfoListBox"));
@@ -131,7 +131,7 @@ function saveUiSettings()
 		settings += "UI_FlowControlBox=" + UI_FlowControlBox.currentText() + "\r\n";
 
 		
-		scriptThread.writeFile(g_settingsFileName, true, settings, true);
+		scriptFile.writeFile(g_settingsFileName, true, settings, true);
 	}
 	catch(e)
 	{

@@ -1,0 +1,14 @@
+UI_dataBitsBox=8
+UI_parityBox=None
+UI_baudRateBox=115200
+UI_stopBitsBox=1
+UI_flowControlBox=None
+UI_serialPortInfoListBox=COM18
+UI_socketsTypeComboBox=Tcp client
+UI_socketAdressLineEdit=
+UI_socketPortLineEdit=
+UI_socketUdpOwnPortLineEdit=
+UI_connectionTypeComboBox=socket
+UI_showReceivedCheckBox=false
+UI_showAsAsciiCheckBox=true
+UI_scrollLockCheckBox=false

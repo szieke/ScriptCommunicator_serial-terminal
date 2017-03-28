@@ -86,9 +86,11 @@ public:
         return MainWindow::parseApiFile("cust.api");
     }
 
+
     ///Appends text to the script window console.
     Q_INVOKABLE void appendTextToConsole(QString string, bool newLine=true, bool bringToForeground=false){ emit appendTextToConsoleSignal(string, newLine,bringToForeground);}
 
+    /****************Deprecated functions (replaced by the conv object)******************************************************/
     ///Converts a byte array which contains ascii characters into a ascii string (QString).
     Q_INVOKABLE QString byteArrayToString(QVector<unsigned char> data){return ScriptConverter::byteArrayToString(data);}
 
@@ -100,26 +102,9 @@ public:
 
     ///Adds an ascii string to a byte array.
     Q_INVOKABLE QVector<unsigned char> addStringToArray(QVector<unsigned char> array, QString str){return ScriptConverter::addStringToArray(array, str);}
+    /*************************************************************************************************************************/
 
-    ///Returns the folder in which the script resides.
-    Q_INVOKABLE QString getScriptFolder(void)
-    {
-        QFileInfo fi(m_scriptPath);
-        return fi.absolutePath();
-    }
-
-    ///Loads/includes one script (QtScript has no built in include mechanism).
-    Q_INVOKABLE bool loadScript(QString scriptPath, bool isRelativePath=true)
-    {
-        scriptPath = isRelativePath ? createAbsolutePath(scriptPath) : scriptPath;
-        QString unsavedInfoFile = ScriptWindow::getUnsavedInfoFileName(scriptPath);
-        if(QFileInfo().exists(unsavedInfoFile))
-        {//The file has unsaved changes.
-
-            emit showMessageBoxSignal(QMessageBox::Critical, "Warning", scriptPath + " is opened by an instance of ScriptEditor and contains unsaved changes.", QMessageBox::Ok);
-        }
-        return m_scriptFileObject->loadScript(scriptPath, false, m_scriptEngine, m_mainWindow, m_mainWindow->getScriptWindow(), false, NULL);
-    }
+    /****************Deprecated functions (replaced by the scriptFile object)******************************************************/
 
     ///Reads a text file and returns the content.
     Q_INVOKABLE QString readFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1)
@@ -182,6 +167,31 @@ public:
 
     ///Converts a relative path into an absolute path.
     Q_INVOKABLE QString createAbsolutePath(QString fileName){return m_scriptFileObject->createAbsolutePath(fileName);}
+
+    ///Returns the folder in which the script resides.
+    Q_INVOKABLE QString getScriptFolder(void)
+    {
+        QFileInfo fi(m_scriptPath);
+        return fi.absolutePath();
+    }
+
+
+    /*************************************************************************************************************************/
+
+    ///Loads/includes one script (QtScript has no built in include mechanism).
+    Q_INVOKABLE bool loadScript(QString scriptPath, bool isRelativePath=true)
+    {
+        scriptPath = isRelativePath ? createAbsolutePath(scriptPath) : scriptPath;
+        QString unsavedInfoFile = ScriptWindow::getUnsavedInfoFileName(scriptPath);
+        if(QFileInfo().exists(unsavedInfoFile))
+        {//The file has unsaved changes.
+
+            emit showMessageBoxSignal(QMessageBox::Critical, "Warning", scriptPath + " is opened by an instance of ScriptEditor and contains unsaved changes.", QMessageBox::Ok);
+        }
+        return m_scriptFileObject->loadScript(scriptPath, false, m_scriptEngine, m_mainWindow, m_mainWindow->getScriptWindow(), false, NULL);
+    }
+
+
 
     ///Returns the current version of ScriptCommunicator.
     Q_INVOKABLE QString getCurrentVersion(void){return MainWindow::VERSION;}

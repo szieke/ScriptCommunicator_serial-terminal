@@ -571,8 +571,6 @@ void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStri
             searchSingleType("ScriptPlotWindow", "=scriptThread.createPlotWindow(", lines);
             searchSingleType("ScriptXmlReader", "=scriptThread.createXmlReader(", lines);
             searchSingleType("ScriptXmlWriter", "=scriptThread.createXmlWriter(", lines);
-            searchSingleType("Dummy", "=scriptThread.readBinaryFile(", lines, true);
-            searchSingleType("String", "=scriptThread.readDirectory(", lines, true);
             searchSingleType("Dummy", "=scriptThread.readAllStandardOutputFromProcess(", lines, true);
             searchSingleType("Dummy", "=scriptThread.readAllStandardErrorFromProcess(", lines, true);
             searchSingleType("String", "=scriptThread.getLocalIpAdress(", lines, true);
@@ -586,9 +584,6 @@ void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStri
             searchSingleType("String", "=scriptThread.availableSerialPorts(", lines, true);
             searchSingleType("String", "=scriptThread.getScriptArguments(", lines, true);
             searchSingleType("String", "=scriptThread.getAllObjectPropertiesAndFunctions(", lines, true);
-            searchSingleType("String", "=scriptThread.readFile(", lines);
-            searchSingleType("String", "=scriptThread.createAbsolutePath(", lines);
-            searchSingleType("String", "=scriptThread.getScriptFolder(", lines);
             searchSingleType("String", "=scriptThread.showFileDialog(", lines);
             searchSingleType("String", "=scriptThread.showDirectoryDialog(", lines);
             searchSingleType("String", "=scriptThread.showTextInputDialog(", lines);
@@ -605,6 +600,15 @@ void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStri
             searchSingleType("String", "=scriptThread.getMainWindowTitle(", lines);
             searchSingleType("String", "=scriptThread.getTimestamp(", lines);
             searchSingleType("ScriptTcpClient", "=scriptThread.createTcpClient(", lines);
+        }
+
+        if(currentText.contains("=scriptFile."))
+        {
+            searchSingleType("Dummy", "=scriptFile.readBinaryFile(", lines, true);
+            searchSingleType("String", "=scriptFile.readDirectory(", lines, true);
+            searchSingleType("String", "=scriptFile.readFile(", lines);
+            searchSingleType("String", "=scriptFile.getScriptFolder(", lines);
+            searchSingleType("String", "=scriptFile.createAbsolutePath(", lines);
         }
 
         if(currentText.contains("=conv."))
@@ -655,11 +659,6 @@ void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStri
 
         if(currentText.contains("=cust."))
         {
-            searchSingleType("String", "=cust.getScriptFolder(", lines);
-            searchSingleType("String", "=cust.readFile(", lines);
-            searchSingleType("Dummy", "=cust.readBinaryFile(", lines, true);
-            searchSingleType("String", "=cust.readDirectory(", lines, true);
-            searchSingleType("String", "=cust.createAbsolutePath(", lines);
             searchSingleType("String", "=cust.getCurrentVersion(", lines);
             searchSingleType("String", "=cust.getAllObjectPropertiesAndFunctions(", lines, true);
             searchSingleType("ScriptXmlReader", "=cust.createXmlReader(", lines);

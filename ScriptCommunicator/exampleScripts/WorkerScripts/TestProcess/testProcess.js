@@ -31,7 +31,7 @@ function getExecutableName()
 
 
 var arguments = Array("arg1","arg2","arg3","arg4");
-var executable = scriptThread.getScriptFolder()+"/" + getExecutableName();
+var executable = scriptFile.getScriptFolder()+"/" + getExecutableName();
 scriptThread.appendTextToConsole("starting: " + executable);
 
 

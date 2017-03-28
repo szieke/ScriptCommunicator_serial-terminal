@@ -34,7 +34,7 @@ function sendFilePushButtonClickedSlot()
 				var send = 0;
 				while(send < fileSize)
 				{
-					var array = scriptThread.readBinaryFile(UI_FilePathLineEdit.text(), false, send, 20000);
+					var array = scriptFile.readBinaryFile(UI_FilePathLineEdit.text(), false, send, 20000);
 					if(array.length > 0)
 					{
 						if(scriptThread.isConnectedWithCan())

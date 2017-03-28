@@ -118,7 +118,7 @@ UI_testSendTableWidget.setCellEditable(1,0, false);
 UI_testSendTableWidget.insertRow(UI_testSendTableWidget.rowCount() )
 UI_testSendTableWidget.setHorizontalHeaderLabel(2, "hor3");
 UI_testSendTableWidget.setText(0, 0, "test1");
-UI_testSendTableWidget.setCellIcon(0, 0, scriptThread.createAbsolutePath("icons/folder.gif"));
+UI_testSendTableWidget.setCellIcon(0, 0, scriptFile.createAbsolutePath("icons/folder.gif"));
 UI_testSendTableWidget.setText(1, 0, "test2");
 UI_testSendTableWidget.setText(2, 0, "test3");
 UI_testReceiveTableWidget.setCellForegroundColor("blue", 2, 0);

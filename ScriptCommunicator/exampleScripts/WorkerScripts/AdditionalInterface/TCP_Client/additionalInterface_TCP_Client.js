@@ -138,9 +138,9 @@ function sendDataFromMainInterface(data)
 //Loads the saved user interface settings.
 function loadUiSettings()
 {
-	if(scriptThread.checkFileExists(g_settingsFileName))
+	if(scriptFile.checkFileExists(g_settingsFileName))
 	{
-		var settings = scriptThread.readFile(g_settingsFileName);
+		var settings = scriptFile.readFile(g_settingsFileName);
 		var stringArray = settings.split("\r\n");
 		
 		UI_SocketDestinationAddress.setText(getValueOfStringArray(stringArray, "UI_SocketDestinationAddress"));
@@ -167,7 +167,7 @@ function saveUiSettings()
 		settings += "UI_ShowNothing=" + UI_ShowNothing.isChecked() + "\r\n";
 		settings += "UI_SendToMainInterface=" + UI_SendToMainInterface.isChecked() + "\r\n";
 		
-		scriptThread.writeFile(g_settingsFileName, true, settings, true);
+		scriptFile.writeFile(g_settingsFileName, true, settings, true);
 	}
 	catch(e)
 	{

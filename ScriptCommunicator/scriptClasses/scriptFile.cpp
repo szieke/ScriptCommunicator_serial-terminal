@@ -229,7 +229,7 @@ QString ScriptFile::createAbsolutePath(QString fileName)
 }
 
 /**
- * Shows a script exception with a message box to the user.
+ * Shows a script exception (message box) to the user.
  * @param exception
  *      The script exception.
  * @param scriptPath
@@ -686,6 +686,34 @@ bool ScriptFile::zipDirectory(const QString& fileName, const QString sourceDirNa
 
     return zipFiles(fileName, fileList, progress, comment);
 }
+
+
+/**
+ * Adds files to a zip file.
+ * @param fileName
+ * The file name of the zip file.
+ * @param fileList
+ *      Contains all files. An entry consists of a string pair.
+ *      The first entry of this pair is the source file name (including the absolute file path) and the second
+ *      is the file name inside (including the relative path) the zip file.
+ * @param comment
+ *      The zip file comment.
+ * @return
+ *      True on success.
+ */
+bool ScriptFile::zipFiles(QString fileName, QVariantList fileList, QString comment)
+{
+    bool result = false;
+    QList<QStringList> createdList;
+
+    for(int i = 0; i < fileList.length(); i++)
+    {
+        createdList << fileList[i].toStringList();
+    }
+    result = zipFiles(fileName, createdList, 0, comment);
+    return result;
+}
+
 /**
  * Adds files to a zip file.
  * @param fileName

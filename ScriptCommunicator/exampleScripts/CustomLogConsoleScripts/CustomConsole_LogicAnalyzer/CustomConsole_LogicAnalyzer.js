@@ -10,7 +10,7 @@ be unchecked and then checked again or the corresponding search button must be p
 cust.loadScript("CustomConsole_Helper.js")
 
 //Set the image folder.
-var imageFolder = cust.getScriptFolder() + "/Media"
+var imageFolder = scriptFile.getScriptFolder() + "/Media"
 
 
 /*
