@@ -16,6 +16,16 @@ typedef struct
     QString className;
 }TableWidgetSubObject;
 
+
+///Contains the data of a function which returns a object (e.g. String).
+typedef struct
+{
+    bool isArray;
+    QString functionName;
+    QString resultType;
+
+}FunctionWithResultObject;
+
 class ParseThread : public QThread
 {
     Q_OBJECT
@@ -61,7 +71,7 @@ private:
     ///Checks if in the current document user interface files are loaded.
     void checkDocumentForUiFiles(QString& currentText, QString &activeDocument);
 
-    ///Adds on obect to the auto-completion list./
+    ///Adds on obect to the auto-completion list.
     void addObjectToAutoCompletionList(QString& objectName, QString& className, bool isGuiElement, bool isArray=false, bool replaceExistingEntry=false);
 
     ///Parses a widget list from a user interface file (auto-completion).
