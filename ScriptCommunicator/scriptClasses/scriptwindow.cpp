@@ -740,7 +740,11 @@ void ScriptWindow::tableDropEventSlot(int row, int column, QStringList files)
     {
         if(!el.isEmpty())
         {
+#ifdef Q_OS_MAC
+            addScript("/" + el);
+#else
             addScript(el);
+#endif
         }
     }
 }
