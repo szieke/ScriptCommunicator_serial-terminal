@@ -55,13 +55,13 @@ private:
     ///Searches all ScriptTableWidget::insertWidgets calls of a specific ScriptTableWidget object.
     void parseTableWidetInsert(const QString objectName, QStringList lines);
 
-    ///Searches for functions which habe all ScriptWidgets in common.
-    void searchForScriptWidgetCommonFunctions(const QString& objectName, QStringList& lines);
-
     ///Searches a single object type.
     void searchSingleType(QString className, QString searchString, QStringList& lines, bool isArray=false,
                                         bool withOutDotsAndBracked= false, bool replaceExistingEntry=false, bool matchExact = false);
 
+    ///Searches all functions which return objects to for a specific object.
+    void seachAllFunctionForSpecificObject(QStringList& lines,
+                                                        QVector<FunctionWithResultObject>& functions, QString objectName);
     ///Searches all dynamically created objects created by custom objects (like ScriptTimer).
     void checkDocumentForCustomDynamicObjects(QStringList& lines, QStringList &linesWithBrackets , QString &currentText, int passNumber);
 
@@ -85,6 +85,9 @@ private:
 
     ///Removes all square brackets and all between them.
     void removeAllBetweenSquareBrackets(QString& currentText);
+
+    ///Parses a single line from an api file and adds functions which return objects to m_functionsWithResultObjects.
+    void parseSingleLineForFunctionsWithResultObjects(QString singleEntry);
 
     ///Contains the auto-completion entries for all parsed api files.
     QMap<QString, QStringList> m_autoCompletionApiFiles;
@@ -118,6 +121,9 @@ private:
 
     ///Contains all parsed ui files.
     QStringList m_parsedFiles;
+
+    ///Contains the data of a function which returns a object (e.g. String).
+    QMap<QString, QVector<FunctionWithResultObject>> m_functionsWithResultObjects;
 };
 
 #endif // PARSETHREAD_H

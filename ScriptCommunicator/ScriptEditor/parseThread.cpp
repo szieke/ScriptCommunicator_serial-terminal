@@ -21,6 +21,111 @@ QString getScriptEditorFilesFolder(void)
 #endif
 }
 
+/**
+ * Parses a single line from an api file and adds functions which return objects to m_functionsWithResultObjects.
+ * @param singleLine
+ *      The current line
+ */
+void ParseThread::parseSingleLineForFunctionsWithResultObjects(QString singleLine)
+{
+    QStringList split = singleLine.split(":");
+    if(split.length() >= 4)
+    {
+        FunctionWithResultObject element;
+        element.isArray = false;
+        QString className = split[0];
+        element.functionName = split[2];
+        element.resultType = split[3];
+        int index = element.functionName.indexOf("(");
+        if(index != -1)
+        {
+            element.functionName.remove(index + 1, element.functionName.length() - (index + 1));
+        }
+        else
+        {//Invalid entry.
+            return;
+        }
+
+        index = element.resultType.indexOf("\\n");
+        if(index != -1)
+        {
+            element.resultType.remove(index, element.resultType.length() - index);
+            element.resultType.replace(" ", "");//Remove all spaces
+
+            if(element.resultType.startsWith("Array"))
+            {
+                element.isArray = true;
+
+                if(element.resultType.startsWith("Array<String>"))
+                {
+                    element.resultType = "String";
+                }
+                else if(element.resultType.startsWith("Array<ScriptXmlAttribute>"))
+                {
+                    element.resultType = "ScriptXmlAttribute";
+                }
+                else if(element.resultType.startsWith("Array<ScriptXmlElement>"))
+                {
+                    element.resultType = "ScriptXmlElement";
+                }
+                else
+                {
+                    element.resultType = "Dummy";
+                }
+            }
+            else
+            {
+                if(element.resultType.startsWith("String") ||
+                   element.resultType.startsWith("ScriptSqlField") ||
+                   element.resultType.startsWith("ScriptSqlRecord") ||
+                   element.resultType.startsWith("ScriptSqlError") ||
+                   element.resultType.startsWith("ScriptSqlRecord") ||
+                   element.resultType.startsWith("ScriptSqlIndex") ||
+                   element.resultType.startsWith("ScriptSqlQuery") ||
+                   element.resultType.startsWith("ScriptSqlDatabase") ||
+                   element.resultType.startsWith("ScriptXmlElement") ||
+                   element.resultType.startsWith("ScriptXmlReader") ||
+                   element.resultType.startsWith("ScriptXmlWriter") ||
+                   element.resultType.startsWith("ScriptTimer") ||
+                   element.resultType.startsWith("ScriptUdpSocket") ||
+                   element.resultType.startsWith("ScriptTcpServer") ||
+                   element.resultType.startsWith("ScriptTcpServer") ||
+                   element.resultType.startsWith("ScriptSerialPort") ||
+                   element.resultType.startsWith("ScriptCheetahSpi") ||
+                   element.resultType.startsWith("ScriptPcanInterface") ||
+                   element.resultType.startsWith("ScriptTcpClient") ||
+                   element.resultType.startsWith("ScriptTreeWidgetItem") ||
+                   element.resultType.startsWith("ScriptPlotWidget") ||
+                   element.resultType.startsWith("ScriptPlotWindow") ||
+                   element.resultType.startsWith("ScriptCanvas2DWidget") ||
+                   element.resultType.startsWith("ScriptTcpClient"))
+                {
+                    //Return value is an known object.
+                }
+                else
+                {
+                    return;
+                }
+
+            }
+
+        }
+        else
+        {//Invalid entry.
+            return;
+        }
+
+
+        if(!m_functionsWithResultObjects.contains((className)))
+        {
+            m_functionsWithResultObjects[className] = QVector<FunctionWithResultObject>();
+        }
+
+
+        m_functionsWithResultObjects[className].append(element);
+    }
+}
+
 ParseThread::ParseThread(QObject *parent) : QThread(parent), m_autoCompletionApiFiles(), m_autoCompletionEntries(), m_objectAddedToCompletionList(false),
     m_creatorObjects(), m_stringList(), m_unknownTypeObjects(), m_arrayList(), m_tableWidgets(),
     m_tableWidgetObjects(), m_foundUiFiles(), m_parsedFiles()
@@ -40,6 +145,8 @@ ParseThread::ParseThread(QObject *parent) : QThread(parent), m_autoCompletionApi
 
                 while(!singleEntry.isEmpty())
                 {
+                    parseSingleLineForFunctionsWithResultObjects(singleEntry);
+
                     //Add the current line to the api map.
                     m_autoCompletionApiFiles[fileName] << QString(singleEntry).replace("\\n", "\n");
                     singleEntry = in.readLine();
@@ -551,6 +658,24 @@ void ParseThread::checkDocumentForUiFiles(QString& currentText, QString& activeD
 }
 
 /**
+ * Searches all functions which return objects to for a specific object.
+ * @param lines
+ *      The current lines.
+ * @param functions
+ *      The functions for the current object.
+ * @param objectName
+ *      The name of the current object.
+ */
+void ParseThread::seachAllFunctionForSpecificObject(QStringList& lines,
+                                                    QVector<FunctionWithResultObject>& functions, QString objectName)
+{
+    for(auto el : functions)
+    {
+        searchSingleType(el.resultType, "=" + objectName + "." + el.functionName, lines, el.isArray);
+    }
+}
+
+/**
  * Searches all dynamically created objects created by custom objects (like ScriptTimer).
  * @param currentText
  *      The text in which shall be searched.
@@ -562,115 +687,40 @@ void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStri
     {
         if(currentText.contains("=scriptThread."))
         {
-            searchSingleType("ScriptUdpSocket", "=scriptThread.createUdpSocket(", lines);
-            searchSingleType("ScriptTcpServer", "=scriptThread.createTcpServer(", lines);
-            searchSingleType("ScriptTimer", "=scriptThread.createTimer(", lines);
-            searchSingleType("ScriptSerialPort", "=scriptThread.createSerialPort(", lines);
-            searchSingleType("ScriptCheetahSpi", "=scriptThread.createCheetahSpiInterface(", lines);
-            searchSingleType("ScriptPcanInterface", "=scriptThread.createPcanInterface(", lines);
-            searchSingleType("ScriptPlotWindow", "=scriptThread.createPlotWindow(", lines);
-            searchSingleType("ScriptXmlReader", "=scriptThread.createXmlReader(", lines);
-            searchSingleType("ScriptXmlWriter", "=scriptThread.createXmlWriter(", lines);
-            searchSingleType("Dummy", "=scriptThread.readAllStandardOutputFromProcess(", lines, true);
-            searchSingleType("Dummy", "=scriptThread.readAllStandardErrorFromProcess(", lines, true);
-            searchSingleType("String", "=scriptThread.getLocalIpAdress(", lines, true);
-            searchSingleType("Dummy", "=scriptThread.showGetIntDialog(", lines, true);
-            searchSingleType("Dummy", "=scriptThread.showGetDoubleDialog(", lines, true);
-            searchSingleType("Dummy", "=scriptThread.showColorDialog(", lines, true);
-            searchSingleType("Dummy", "=scriptThread.getGlobalDataArray(", lines, true);
-            searchSingleType("Dummy", "=scriptThread.getGlobalUnsignedNumber(", lines, true);
-            searchSingleType("Dummy", "=scriptThread.getGlobalSignedNumber(", lines, true);
-            searchSingleType("Dummy", "=scriptThread.getGlobalRealNumber(", lines, true);
-            searchSingleType("String", "=scriptThread.availableSerialPorts(", lines, true);
-            searchSingleType("String", "=scriptThread.getScriptArguments(", lines, true);
-            searchSingleType("String", "=scriptThread.getAllObjectPropertiesAndFunctions(", lines, true);
-            searchSingleType("String", "=scriptThread.showFileDialog(", lines);
-            searchSingleType("String", "=scriptThread.showDirectoryDialog(", lines);
-            searchSingleType("String", "=scriptThread.showTextInputDialog(", lines);
-            searchSingleType("String", "=scriptThread.showMultiLineTextInputDialog(", lines);
-            searchSingleType("String", "=scriptThread.showGetItemDialog(", lines);
-            searchSingleType("String", "=scriptThread.getGlobalString(", lines);
-            searchSingleType("String", "=scriptThread.getCurrentVersion(", lines);
-            searchSingleType("String", "=scriptThread.getScriptTableName(", lines);
-            searchSingleType("String", "=scriptThread.currentCpuArchitecture(", lines);
-            searchSingleType("String", "=scriptThread.productType(", lines);
-            searchSingleType("String", "=scriptThread.productVersion(", lines);
-            searchSingleType("String", "=scriptThread.getScriptCommunicatorFolder(", lines);
-            searchSingleType("String", "=scriptThread.getUserDocumentsFolder(", lines);
-            searchSingleType("String", "=scriptThread.getMainWindowTitle(", lines);
-            searchSingleType("String", "=scriptThread.getTimestamp(", lines);
-            searchSingleType("ScriptTcpClient", "=scriptThread.createTcpClient(", lines);
+            seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["scriptThread"], "scriptThread");
         }
 
         if(currentText.contains("=scriptFile."))
         {
-            searchSingleType("Dummy", "=scriptFile.readBinaryFile(", lines, true);
-            searchSingleType("String", "=scriptFile.readDirectory(", lines, true);
-            searchSingleType("String", "=scriptFile.readFile(", lines);
-            searchSingleType("String", "=scriptFile.getScriptFolder(", lines);
-            searchSingleType("String", "=scriptFile.createAbsolutePath(", lines);
+            seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["scriptFile"], "scriptFile");
         }
 
         if(currentText.contains("=conv."))
         {
-            searchSingleType("String", "=conv.byteArrayToString(", lines);
-            searchSingleType("String", "=conv.byteArrayToUtf8String(", lines);
-            searchSingleType("String", "=conv.byteArrayToHexString(", lines);
-            searchSingleType("Dummy", "=conv.stringToArray(", lines, true);
-            searchSingleType("Dummy", "=conv.addStringToArray(", lines, true);
-            searchSingleType("Dummy", "=conv.addUint16ToArray(", lines, true);
-            searchSingleType("Dummy", "=conv.addUint32ToArray(", lines, true);
-            searchSingleType("Dummy", "=conv.addUint64ToArray(", lines, true);
-            searchSingleType("Dummy", "=conv.addInt16ToArray(", lines, true);
-            searchSingleType("Dummy", "=conv.addInt32ToArray(", lines, true);
-            searchSingleType("Dummy", "=conv.addInt64ToArray(", lines, true);
-            searchSingleType("Dummy", "=conv.addFloat32ToArray(", lines, true);
-            searchSingleType("Dummy", "=conv.addFloat64ToArray(", lines, true);
+            seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["conv"], "conv");
         }
 
         if(currentText.contains("=seq."))
         {
-            searchSingleType("String", "=seq.getGlobalString(", lines);
-            searchSingleType("Dummy", "=seq.getGlobalDataArray(", lines, true);
-            searchSingleType("Dummy", "=seq.getGlobalUnsignedNumber(", lines, true);
-            searchSingleType("Dummy", "=seq.getGlobalSignedNumber(", lines, true);
-            searchSingleType("String", "=seq.getCurrentVersion(", lines);
-            searchSingleType("String", "=seq.showTextInputDialog(", lines);
-            searchSingleType("String", "=seq.showMultiLineTextInputDialog(", lines);
-            searchSingleType("String", "=seq.showGetItemDialog(", lines);
-            searchSingleType("Dummy", "=seq.showGetIntDialog(", lines, true);
-            searchSingleType("Dummy", "=seq.showGetDoubleDialog(", lines, true);
-            searchSingleType("Dummy", "=seq.showColorDialog(", lines, true);
-            searchSingleType("String", "=seq.getAllObjectPropertiesAndFunctions(", lines, true);
+            seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["seq"], "seq");
 
         }
 
         if(currentText.contains("=scriptSql."))
         {
-            searchSingleType("ScriptSqlDatabase", "=scriptSql.addDatabase(", lines);
-            searchSingleType("ScriptSqlDatabase", "=scriptSql.cloneDatabase(", lines);
-            searchSingleType("ScriptSqlDatabase", "=scriptSql.database(", lines);
-            searchSingleType("String", "=scriptSql.connectionNames(", lines, true);
-            searchSingleType("String", "=scriptSql.drivers(", lines, true);
-            searchSingleType("ScriptSqlQuery", "=scriptSql.createQuery(", lines);
-            searchSingleType("ScriptSqlField", "=scriptSql.createField(", lines);
-            searchSingleType("ScriptSqlRecord", "=scriptSql.createRecord(", lines);
+            seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["scriptSql"], "scriptSql");
         }
 
         if(currentText.contains("=cust."))
         {
-            searchSingleType("String", "=cust.getCurrentVersion(", lines);
-            searchSingleType("String", "=cust.getAllObjectPropertiesAndFunctions(", lines, true);
-            searchSingleType("ScriptXmlReader", "=cust.createXmlReader(", lines);
-            searchSingleType("ScriptXmlWriter", "=cust.createXmlWriter(", lines);
+            seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["cust"], "cust");
         }
 
 
         for(auto el : m_tableWidgets)
         {
             parseTableWidetInsert(el, lines);
-            searchSingleType("Dummy", "=" + el + ".getAllSelectedCells(", lines, true);
-            searchForScriptWidgetCommonFunctions(el, lines);
+            seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["ScriptTableWidget"], el);
         }
 
         QStringList keys = m_tableWidgetObjects.keys();
@@ -682,331 +732,53 @@ void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStri
     }//if(passNumber == 1)
 
 
-
     QMap<QString, QString> tmpCreatorList = m_creatorObjects;
     QMap<QString, QString>::iterator i;
     for (i = tmpCreatorList.begin(); i != tmpCreatorList.end(); ++i)
     {
         if(passNumber == 1)
         {
-            if(i.value() == "ScriptTreeWidget")
+            if((i.value() == "ScriptTreeWidget") || (i.value() == "ScriptXmlReader") ||
+               (i.value() == "ScriptXmlWriter") || (i.value() == "ScriptSqlDatabase") ||
+               (i.value() == "ScriptTcpServer") || (i.value() == "ScriptCheetahSpi") ||
+               (i.value() == "ScriptSerialPort") || (i.value() == "ScriptUdpSocket") ||
+               (i.value() == "ScriptPcanInterface") || (i.value() == "ScriptSplitter") ||
+               (i.value() == "QWebView") || (i.value() == "ScriptAction") ||
+               (i.value() == "ScriptButton") || (i.value() == "ScriptCalendarWidget") ||
+               (i.value() == "ScriptCheckBox") || (i.value() == "ScriptCheckBox") ||
+               (i.value() == "ScriptDateEdit") || (i.value() == "ScriptDateTimeEdit") ||
+               (i.value() == "ScriptDial") || (i.value() == "ScriptDialog") ||
+               (i.value() == "ScriptDoubleSpinBox") || (i.value() == "ScriptFontComboBox") ||
+               (i.value() == "ScriptGroupBox") || (i.value() == "ScriptLabel") ||
+               (i.value() == "ScriptLineEdit") || (i.value() == "ScriptListWidget") ||
+               (i.value() == "ScriptMainWindow") || (i.value() == "ScriptPlotWindow") ||
+               (i.value() == "ScriptProgressBar") || (i.value() == "ScriptRadioButton") ||
+               (i.value() == "ScriptSlider") || (i.value() == "ScriptSpinBox") ||
+               (i.value() == "ScriptTabWidget") || (i.value() == "ScriptTextEdit") ||
+               (i.value() == "ScriptTimeEdit") || (i.value() == "ScriptTimer") ||
+               (i.value() == "ScriptToolBox") || (i.value() == "ScriptToolButton") ||
+               (i.value() == "ScriptWidget"))
             {
-                searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".createScriptTreeWidgetItem(", lines);
-                searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".invisibleRootItem(", lines);
-                searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".itemAbove(", lines);
-                searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".itemBelow(", lines);
-                searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".takeTopLevelItem(", lines);
-                searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".topLevelItem(", lines);
-                searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".currentItem(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptXmlReader")
-            {
-                searchSingleType("ScriptXmlElement", "=" + i.key() + ".getRootElement(", lines);
-                searchSingleType("ScriptXmlElement", "=" + i.key() + ".elementsByTagName(", lines, true);
+                if(m_functionsWithResultObjects.contains(i.value()))
+                {
+                    seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects[i.value()], i.key());
+                }
 
-            }
-            else if(i.value() == "ScriptXmlWriter")
-            {
-
-                searchSingleType("String", "=" + i.key() + ".getInternalBuffer(", lines);
-            }
-            else if(i.value() == "ScriptSqlDatabase")
-            {
-                searchSingleType("ScriptSqlIndex", "=" + i.key() + ".primaryIndex(", lines);
-                searchSingleType("ScriptSqlRecord", "=" + i.key() + ".record(", lines);
-                searchSingleType("ScriptSqlQuery", "=" + i.key() + ".exec(", lines);
-                searchSingleType("ScriptSqlError", "=" + i.key() + ".lastError(", lines);
-                searchSingleType("String", "=" + i.key() + ".tables(", lines, true);
-
-                searchSingleType("String", "=" + i.key() + ".databaseName(", lines);
-                searchSingleType("String", "=" + i.key() + ".userName(", lines);
-                searchSingleType("String", "=" + i.key() + ".password(", lines);
-                searchSingleType("String", "=" + i.key() + ".hostName(", lines);
-                searchSingleType("String", "=" + i.key() + ".driverName(", lines);
-                searchSingleType("String", "=" + i.key() + ".connectOptions(", lines);
-                searchSingleType("String", "=" + i.key() + ".connectionName(", lines);
-            }
-            else if(i.value() == "ScriptTcpServer")
-            {
-                searchSingleType("ScriptTcpClient", "=" + i.key() + ".nextPendingConnection(", lines);
-
-            }
-            else if(i.value() == "ScriptCheetahSpi")
-            {
-                searchSingleType("Dummy", "=" + i.key() + ".readAll(", lines, true);
-                searchSingleType("String", "=" + i.key() + ".readAllLines(", lines, true);
-
-                searchSingleType("String", "=" + i.key() + ".detectDevices(", lines);
-            }
-            else if(i.value() == "ScriptSerialPort")
-            {
-                searchSingleType("Dummy", "=" + i.key() + ".readAll(", lines, true);
-                searchSingleType("String", "=" + i.key() + ".readAllLines(", lines, true);
-
-                searchSingleType("String", "=" + i.key() + ".portName(", lines);
-                searchSingleType("String", "=" + i.key() + ".parity(", lines);
-                searchSingleType("String", "=" + i.key() + ".stopBits(", lines);
-                searchSingleType("String", "=" + i.key() + ".flowControl(", lines);
-                searchSingleType("String", "=" + i.key() + ".errorString(", lines);
-                searchSingleType("String", "=" + i.key() + ".readLine(", lines);
-            }
-            else if(i.value() == "ScriptUdpSocket")
-            {
-                searchSingleType("Dummy", "=" + i.key() + ".readDatagram(", lines, true);
-                searchSingleType("Dummy", "=" + i.key() + ".readAll(", lines, true);
-                searchSingleType("String", "=" + i.key() + ".readAllLines(", lines, true);
-
-                searchSingleType("String", "=" + i.key() + ".readLine(", lines);
-            }
-            else if(i.value() == "ScriptPcanInterface")
-            {
-                searchSingleType("Dummy", "=" + i.key() + ".getCanParameter(", lines, true);
-
-                searchSingleType("String", "=" + i.key() + ".getStatusString(", lines);
-            }
-            else if(i.value() == "ScriptSplitter")
-            {
-                searchSingleType("Dummy", "=" + i.key() + ".sizes(", lines, true);
-
-            }
-            else if(i.value() == "QWebView")
-            {
-
-                searchSingleType("String", "=" + i.key() + ".url(", lines);
-                searchSingleType("String", "=" + i.key() + ".selectedHtml(", lines);
-                searchSingleType("String", "=" + i.key() + ".selectedText(", lines);
-                searchSingleType("String", "=" + i.key() + ".title(", lines);
-            }
-            else if(i.value() == "ScriptAction")
-            {
-
-                searchSingleType("String", "=" + i.key() + ".text(", lines);
-            }
-            else if(i.value() == "ScriptButton")
-            {
-                searchSingleType("String", "=" + i.key() + ".text(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptCalendarWidget")
-            {
-                searchSingleType("String", "=" + i.key() + ".getSelectedDate(", lines);
-                searchSingleType("String", "=" + i.key() + ".getDateFormat(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptCheckBox")
-            {
-                searchSingleType("String", "=" + i.key() + ".text(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptComboBox")
-            {
-                searchSingleType("String", "=" + i.key() + ".currentText(", lines);
-                searchSingleType("String", "=" + i.key() + ".itemText(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptDateEdit")
-            {
-                searchSingleType("String", "=" + i.key() + ".getDate(", lines);
-                searchSingleType("String", "=" + i.key() + ".getDisplayFormat(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptDateTimeEdit")
-            {
-                searchSingleType("String", "=" + i.key() + ".getDateTime(", lines);
-                searchSingleType("String", "=" + i.key() + ".getDisplayFormat(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptDial")
-            {
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptDialog")
-            {
-                searchSingleType("String", "=" + i.key() + ".windowPositionAndSize(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptDoubleSpinBox")
-            {
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptFontComboBox")
-            {
-                searchSingleType("String", "=" + i.key() + ".currentText(", lines);
-                searchSingleType("String", "=" + i.key() + ".itemText(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptGroupBox")
-            {
-                searchSingleType("String", "=" + i.key() + ".title(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-                searchSingleType("ScriptPlotWidget",  "=" + i.key() + ".addPlotWidget(", lines);
-                searchSingleType("ScriptCanvas2DWidget",  "=" + i.key() + ".addCanvas2DWidget(", lines);
-            }
-            else if(i.value() == "ScriptLabel")
-            {
-                searchSingleType("String", "=" + i.key() + ".text(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptLineEdit")
-            {
-                searchSingleType("String", "=" + i.key() + ".text(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptListWidget")
-            {
-                searchSingleType("String", "=" + i.key() + ".getItemText(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptMainWindow")
-            {
-                searchSingleType("String", "=" + i.key() + ".windowPositionAndSize(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptPlotWindow")
-            {
-                searchSingleType("String", "=" + i.key() + ".windowPositionAndSize(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptProgressBar")
-            {
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptRadioButton")
-            {
-                searchSingleType("String", "=" + i.key() + ".text(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptSlider")
-            {
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptSpinBox")
-            {
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptTabWidget")
-            {
-                searchSingleType("String", "=" + i.key() + ".tabText(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptTextEdit")
-            {
-                searchSingleType("String", "=" + i.key() + ".toPlainText(", lines);
-                searchSingleType("String", "=" + i.key() + ".toHtml(", lines);
-                searchSingleType("String", "=" + i.key() + ".replaceNonHtmlChars(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptTimeEdit")
-            {
-                searchSingleType("String", "=" + i.key() + ".getTime(", lines);
-                searchSingleType("String", "=" + i.key() + ".getDisplayFormat(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptTimer")
-            {
-
-            }
-            else if(i.value() == "ScriptToolBox")
-            {
-                searchSingleType("String", "=" + i.key() + ".itemText(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptToolButton")
-            {
-                searchSingleType("String", "=" + i.key() + ".text(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
-            }
-            else if(i.value() == "ScriptWidget")
-            {
-                searchSingleType("String", "=" + i.key() + ".windowPositionAndSize(", lines);
-                searchForScriptWidgetCommonFunctions(i.key(), lines);
             }
 
         }//if(passNumber == 1)
 
-        if(i.value() == "ScriptTreeWidgetItem")
+        if((i.value() == "ScriptTreeWidgetItem") || (i.value() == "ScriptXmlElement") ||
+           (i.value() == "ScriptXmlAttribute") || (i.value() == "ScriptSqlQuery") ||
+           (i.value() == "ScriptSqlRecord") || (i.value() == "ScriptSqlError") ||
+           (i.value() == "ScriptSqlField") || (i.value() == "ScriptSqlIndex") ||
+           (i.value() == "ScriptTcpClient") || (i.value() == "ScriptPlotWidget") ||
+           (i.value() == "Date"))
         {
-            searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".takeChild(", lines);
-            searchSingleType("ScriptTreeWidgetItem", "=" + i.key() + ".parent(", lines);
-            searchForScriptWidgetCommonFunctions(i.key(), lines);
-            searchSingleType("String", "=" + i.key() + ".text(", lines);
-            searchSingleType("String", "=" + i.key() + ".data(", lines);
-        }
-        else if(i.value() == "ScriptXmlElement")
-        {
-            searchSingleType("ScriptXmlElement", "=" + i.key() + ".childElements(", lines, true);
-            searchSingleType("String", "=" + i.key() + ".childTextElements(", lines, true);
-            searchSingleType("String", "=" + i.key() + ".childCDataElements(", lines, true);
-            searchSingleType("String", "=" + i.key() + ".childCommentElements(", lines, true);
-            searchSingleType("ScriptXmlAttribute", "=" + i.key() + ".attributes(", lines, true);
-
-            searchSingleType("String", "=" + i.key() + ".elementName(", lines);
-            searchSingleType("String", "=" + i.key() + ".attributeValue(", lines);
-        }
-        else if(i.value() == "ScriptXmlAttribute")
-        {
-
-            searchSingleType("String", "=" + i.key() + ".value(", lines);
-            searchSingleType("String", "=" + i.key() + ".name(", lines);
-        }
-        else if(i.value() == "ScriptSqlQuery")
-        {
-            searchSingleType("ScriptSqlError", "=" + i.key() + ".lastError(", lines);
-            searchSingleType("ScriptSqlRecord", "=" + i.key() + ".record(", lines);
-
-            searchSingleType("String", "=" + i.key() + ".lastQuery(", lines);
-            searchSingleType("String", "=" + i.key() + ".executedQuery(", lines);
-        }
-        else if(i.value() == "ScriptSqlRecord")
-        {
-            searchSingleType("ScriptSqlField", "=" + i.key() + ".field(", lines);
-            searchSingleType("ScriptSqlRecord", "=" + i.key() + ".keyValues(", lines);
-
-            searchSingleType("String", "=" + i.key() + ".fieldName(", lines);
-        }
-        else if(i.value() == "ScriptSqlError")
-        {
-
-            searchSingleType("String", "=" + i.key() + ".driverText(", lines);
-            searchSingleType("String", "=" + i.key() + ".databaseText(", lines);
-            searchSingleType("String", "=" + i.key() + ".nativeErrorCode(", lines);
-            searchSingleType("String", "=" + i.key() + ".text(", lines);
-        }
-        else if(i.value() == "ScriptSqlField")
-        {
-
-            searchSingleType("String", "=" + i.key() + ".name(", lines);
-        }
-        else if(i.value() == "ScriptSqlIndex")
-        {
-
-            searchSingleType("String", "=" + i.key() + ".cursorName(", lines);
-            searchSingleType("String", "=" + i.key() + ".name(", lines);
-        }
-        else if(i.value() == "ScriptTcpClient")
-        {
-            searchSingleType("Dummy", "=" + i.key() + ".readAll(", lines, true);
-            searchSingleType("String", "=" + i.key() + ".readAllLines(", lines, true);
-
-            searchSingleType("String", "=" + i.key() + ".getErrorString(", lines);
-            searchSingleType("String", "=" + i.key() + ".readLine(", lines);
-        }
-        else if(i.value() == "ScriptPlotWidget")
-        {
-            searchForScriptWidgetCommonFunctions(i.key(), lines);
-        }
-        else if(i.value() == "Date")
-        {
-            searchSingleType("String", "=" + i.key() + ".toString(", lines);
-            searchSingleType("String", "=" + i.key() + ".toDateString(", lines);
-            searchSingleType("String", "=" + i.key() + ".toTimeString(", lines);
-            searchSingleType("String", "=" + i.key() + ".toLocaleString(", lines);
-            searchSingleType("String", "=" + i.key() + ".toLocaleDateString(", lines);
-            searchSingleType("String", "=" + i.key() + ".toLocaleTimeString(", lines);
-            searchSingleType("String", "=" + i.key() + ".toUTCString(", lines);
-            searchSingleType("String", "=" + i.key() + ".toISOString(", lines);
-            searchSingleType("String", "=" + i.key() + ".toJSON(", lines);
+            if(m_functionsWithResultObjects.contains(i.value()))
+            {
+                seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects[i.value()], i.key());
+            }
         }
 
         searchSingleType(i.value(), "=" + i.key(), linesWithBrackets, m_arrayList.contains(i.key()), true, false, true);
@@ -1174,26 +946,11 @@ void ParseThread::parseTableWidetInsert(const QString objectName, QStringList li
                         m_tableWidgetObjects[objectName] = vect;
                     }
 
-
                 }
             }
 
         }
     }
-}
-
-/**
- * Searches for functions which habe all ScriptWidgets in common.
- * @param objectName
- *      The object name.
- * @param lines
- *      The script lines.
- */
-void ParseThread::searchForScriptWidgetCommonFunctions(const QString& objectName, QStringList& lines)
-{
-    searchSingleType("String", "=" + objectName + ".getAdditionalData(", lines);
-    searchSingleType("String", "=" + objectName + ".getClassName(", lines);
-    searchSingleType("String", "=" + objectName + ".getObjectName(", lines);
 }
 
 /**
@@ -1218,22 +975,7 @@ void ParseThread::checkDocumentForStandardDynamicObjects(QStringList& lines, QSt
     QVector<QString> tmpList = m_stringList;
     for(auto el : tmpList)
     {
-        searchSingleType("String", "=" + el + ".toString(", lines);
-        searchSingleType("String", "=" + el + ".valueOf(", lines);
-        searchSingleType("String", "=" + el + ".charAt(", lines);
-        searchSingleType("String", "=" + el + ".concat(", lines);
-        searchSingleType("String", "=" + el + ".match(", lines, true);
-        searchSingleType("String", "=" + el + ".replace(", lines);
-        searchSingleType("String", "=" + el + ".slice(", lines);
-        searchSingleType("String", "=" + el + ".split(", lines, true);
-        searchSingleType("String", "=" + el + ".substring(", lines);
-        searchSingleType("String", "=" + el + ".toLowerCase(", lines);
-        searchSingleType("String", "=" + el + ".toLocaleLowerCase(", lines);
-        searchSingleType("String", "=" + el + ".toUpperCase(", lines);
-        searchSingleType("String", "=" + el + ".toLocaleUpperCase(", lines);
-        searchSingleType("String", "=" + el + ".trim(", lines);
-        searchSingleType("String", "=" + el + ".fromCharCode(", lines);
-
+        seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["String"], el);
         searchSingleType("String", "=" + el, linesWithBrackets, m_arrayList.contains(el), true, false, true);
         searchSingleType("String", "=" + el + "[", linesWithBrackets);
 
@@ -1243,18 +985,21 @@ void ParseThread::checkDocumentForStandardDynamicObjects(QStringList& lines, QSt
     tmpList = m_arrayList;
     for(auto el : tmpList)
     {
-        searchSingleType("Dummy", "=" + el + ".concat(", lines, true);
-        searchSingleType("Dummy", "=" + el + ".slice(", lines, true);
-        searchSingleType("Dummy", "=" + el + ".splice(", lines, true);
-        searchSingleType("Dummy", "=" + el + ".map(", lines, true);
-        searchSingleType("Dummy", "=" + el + ".filter(", lines, true);
-        searchSingleType("Dummy", "=" + el + ".filter(", lines, true);
-        searchSingleType("Dummy", "=" + el, linesWithBrackets, true, true,false, true);
-
-        searchSingleType("String", "=" + el + ".toString(", lines);
-        searchSingleType("String", "=" + el + ".toLocaleString(", lines);
-        searchSingleType("String", "=" + el + ".join(", lines);
+        seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["Array"], el);
     }
+
+    QMap<QString, QString> tmpCreatorList = m_creatorObjects;
+   QMap<QString, QString>::iterator i;
+   for (i = tmpCreatorList.begin(); i != tmpCreatorList.end(); ++i)
+   {
+      if(i.value() == "Date")
+       {
+           if(m_functionsWithResultObjects.contains(i.value()))
+           {
+               seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects[i.value()], i.key());
+           }
+       }
+   }
 }
 
 /**
