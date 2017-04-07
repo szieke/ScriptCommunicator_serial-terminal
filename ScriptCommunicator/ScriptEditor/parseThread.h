@@ -60,13 +60,13 @@ private:
                                         bool withOutDotsAndBracked= false, bool replaceExistingEntry=false, bool matchExact = false);
 
     ///Searches all functions which return objects to for a specific object.
-    void seachAllFunctionForSpecificObject(QStringList& lines,
+    void seachAllFunctionForSpecificObject(QStringList& lines, QString &currentText,
                                                         QVector<FunctionWithResultObject>& functions, QString objectName);
     ///Searches all dynamically created objects created by custom objects (like ScriptTimer).
     void checkDocumentForCustomDynamicObjects(QStringList& lines, QStringList &linesWithBrackets , QString &currentText, int passNumber);
 
     ///Searches all dynamically created objects created by standard objects (like String).
-    void checkDocumentForStandardDynamicObjects(QStringList& lines, QStringList &linesWithBrackets, int passNumber);
+    void checkDocumentForStandardDynamicObjects(QStringList& lines, QString &currentText, QStringList &linesWithBrackets, int passNumber);
 
     ///Checks if in the current document user interface files are loaded.
     void checkDocumentForUiFiles(QString& currentText, QString &activeDocument);

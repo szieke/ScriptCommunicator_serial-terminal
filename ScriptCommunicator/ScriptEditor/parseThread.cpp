@@ -100,7 +100,7 @@ void ParseThread::parseSingleLineForFunctionsWithResultObjects(QString singleLin
                    element.resultType.startsWith("ScriptCanvas2DWidget") ||
                    element.resultType.startsWith("ScriptTcpClient"))
                 {
-                    //Return value is an known object.
+                    //Return value has a valid class.
                 }
                 else
                 {
@@ -661,22 +661,30 @@ void ParseThread::checkDocumentForUiFiles(QString& currentText, QString& activeD
  * Searches all functions which return objects to for a specific object.
  * @param lines
  *      The current lines.
+ * @param currentText
+ *      The text in which shall be searched.
  * @param functions
  *      The functions for the current object.
  * @param objectName
  *      The name of the current object.
  */
-void ParseThread::seachAllFunctionForSpecificObject(QStringList& lines,
+void ParseThread::seachAllFunctionForSpecificObject(QStringList& lines, QString &currentText,
                                                     QVector<FunctionWithResultObject>& functions, QString objectName)
 {
-    for(auto el : functions)
-    {
-        searchSingleType(el.resultType, "=" + objectName + "." + el.functionName, lines, el.isArray);
+    if(currentText.contains("=" + objectName + "."))
+    {//The text contains an assignment of a function from the current objet.
+
+        for(auto el : functions)
+        {
+            searchSingleType(el.resultType, "=" + objectName + "." + el.functionName, lines, el.isArray);
+        }
     }
 }
 
 /**
  * Searches all dynamically created objects created by custom objects (like ScriptTimer).
+ * @param lines
+ *      The current lines.
  * @param currentText
  *      The text in which shall be searched.
  */
@@ -684,45 +692,26 @@ void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStri
 {
 
     if(passNumber == 1)
-    {
-        if(currentText.contains("=scriptThread."))
-        {
-            seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["scriptThread"], "scriptThread");
-        }
+    {//Static object are only searched in the first pass.
 
-        if(currentText.contains("=scriptFile."))
-        {
-            seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["scriptFile"], "scriptFile");
-        }
-
-        if(currentText.contains("=conv."))
-        {
-            seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["conv"], "conv");
-        }
-
-        if(currentText.contains("=seq."))
-        {
-            seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["seq"], "seq");
-
-        }
-
-        if(currentText.contains("=scriptSql."))
-        {
-            seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["scriptSql"], "scriptSql");
-        }
-
-        if(currentText.contains("=cust."))
-        {
-            seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["cust"], "cust");
-        }
+        //Search for the static objects.
+        seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects["scriptThread"], "scriptThread");
+        seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects["scriptFile"], "scriptFile");
+        seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects["conv"], "conv");
+        seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects["seq"], "seq");
+        seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects["scriptSql"], "scriptSql");
+        seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects["cust"], "cust");
 
 
+        //Search for GUI elements created by a table widget.
         for(auto el : m_tableWidgets)
         {
             parseTableWidetInsert(el, lines);
-            seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["ScriptTableWidget"], el);
+            seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects["ScriptTableWidget"], el);
         }
 
+
+        //Search for all functions of the GUI elements (created by a table widget) which returns another object.
         QStringList keys = m_tableWidgetObjects.keys();
         for(int i = 0; i < keys.length(); i++)
         {
@@ -736,53 +725,21 @@ void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStri
     QMap<QString, QString>::iterator i;
     for (i = tmpCreatorList.begin(); i != tmpCreatorList.end(); ++i)
     {
-        if(passNumber == 1)
+        if(m_functionsWithResultObjects.contains(i.value()))
         {
-            if((i.value() == "ScriptTreeWidget") || (i.value() == "ScriptXmlReader") ||
-               (i.value() == "ScriptXmlWriter") || (i.value() == "ScriptSqlDatabase") ||
-               (i.value() == "ScriptTcpServer") || (i.value() == "ScriptCheetahSpi") ||
-               (i.value() == "ScriptSerialPort") || (i.value() == "ScriptUdpSocket") ||
-               (i.value() == "ScriptPcanInterface") || (i.value() == "ScriptSplitter") ||
-               (i.value() == "QWebView") || (i.value() == "ScriptAction") ||
-               (i.value() == "ScriptButton") || (i.value() == "ScriptCalendarWidget") ||
-               (i.value() == "ScriptCheckBox") || (i.value() == "ScriptCheckBox") ||
-               (i.value() == "ScriptDateEdit") || (i.value() == "ScriptDateTimeEdit") ||
-               (i.value() == "ScriptDial") || (i.value() == "ScriptDialog") ||
-               (i.value() == "ScriptDoubleSpinBox") || (i.value() == "ScriptFontComboBox") ||
-               (i.value() == "ScriptGroupBox") || (i.value() == "ScriptLabel") ||
-               (i.value() == "ScriptLineEdit") || (i.value() == "ScriptListWidget") ||
-               (i.value() == "ScriptMainWindow") || (i.value() == "ScriptPlotWindow") ||
-               (i.value() == "ScriptProgressBar") || (i.value() == "ScriptRadioButton") ||
-               (i.value() == "ScriptSlider") || (i.value() == "ScriptSpinBox") ||
-               (i.value() == "ScriptTabWidget") || (i.value() == "ScriptTextEdit") ||
-               (i.value() == "ScriptTimeEdit") || (i.value() == "ScriptTimer") ||
-               (i.value() == "ScriptToolBox") || (i.value() == "ScriptToolButton") ||
-               (i.value() == "ScriptWidget"))
-            {
-                if(m_functionsWithResultObjects.contains(i.value()))
-                {
-                    seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects[i.value()], i.key());
-                }
-
-            }
-
-        }//if(passNumber == 1)
-
-        if((i.value() == "ScriptTreeWidgetItem") || (i.value() == "ScriptXmlElement") ||
-           (i.value() == "ScriptXmlAttribute") || (i.value() == "ScriptSqlQuery") ||
-           (i.value() == "ScriptSqlRecord") || (i.value() == "ScriptSqlError") ||
-           (i.value() == "ScriptSqlField") || (i.value() == "ScriptSqlIndex") ||
-           (i.value() == "ScriptTcpClient") || (i.value() == "ScriptPlotWidget") ||
-           (i.value() == "Date"))
-        {
-            if(m_functionsWithResultObjects.contains(i.value()))
-            {
-                seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects[i.value()], i.key());
-            }
+            //Search for alle functions of the current object wich returns another object.
+            seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects[i.value()], i.key());
         }
 
+        //Search for assignments of the current object.
         searchSingleType(i.value(), "=" + i.key(), linesWithBrackets, m_arrayList.contains(i.key()), true, false, true);
-        searchSingleType(i.value(), "=" + i.key() + "[", linesWithBrackets);
+
+        if(m_arrayList.contains(i.key()))
+        {//Object is an array.
+
+            //Search for assignments of an array element from the current object.
+            searchSingleType(i.value(), "=" + i.key() + "[", linesWithBrackets);
+        }
     }
 }
 
@@ -958,10 +915,11 @@ void ParseThread::parseTableWidetInsert(const QString objectName, QStringList li
  * @param currentText
  *      The text in which shall be searched.
  */
-void ParseThread::checkDocumentForStandardDynamicObjects(QStringList& lines, QStringList &linesWithBrackets, int passNumber)
+void ParseThread::checkDocumentForStandardDynamicObjects(QStringList& lines, QString &currentText, QStringList &linesWithBrackets, int passNumber)
 {
     if(passNumber == 1)
-    {
+    {//Only the first pass the following code shall be executed.
+
         searchSingleType("Dummy", "=Array(", linesWithBrackets, true);
         searchSingleType("Dummy", "=newArray(", linesWithBrackets, true);
 
@@ -975,7 +933,7 @@ void ParseThread::checkDocumentForStandardDynamicObjects(QStringList& lines, QSt
     QVector<QString> tmpList = m_stringList;
     for(auto el : tmpList)
     {
-        seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["String"], el);
+        seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects["String"], el);
         searchSingleType("String", "=" + el, linesWithBrackets, m_arrayList.contains(el), true, false, true);
         searchSingleType("String", "=" + el + "[", linesWithBrackets);
 
@@ -985,10 +943,10 @@ void ParseThread::checkDocumentForStandardDynamicObjects(QStringList& lines, QSt
     tmpList = m_arrayList;
     for(auto el : tmpList)
     {
-        seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects["Array"], el);
+        seachAllFunctionForSpecificObject(lines,currentText,  m_functionsWithResultObjects["Array"], el);
     }
 
-    QMap<QString, QString> tmpCreatorList = m_creatorObjects;
+   QMap<QString, QString> tmpCreatorList = m_creatorObjects;
    QMap<QString, QString>::iterator i;
    for (i = tmpCreatorList.begin(); i != tmpCreatorList.end(); ++i)
    {
@@ -996,7 +954,7 @@ void ParseThread::checkDocumentForStandardDynamicObjects(QStringList& lines, QSt
        {
            if(m_functionsWithResultObjects.contains(i.value()))
            {
-               seachAllFunctionForSpecificObject(lines, m_functionsWithResultObjects[i.value()], i.key());
+               seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects[i.value()], i.key());
            }
        }
    }
@@ -1069,7 +1027,7 @@ void ParseThread::parseSlot(QString currentText, QString activeDocument)
         m_objectAddedToCompletionList = false;
 
         //Call several times to get all objects created by dynamic objects.
-        checkDocumentForStandardDynamicObjects(lines, linesWithBrackets, counter);
+        checkDocumentForStandardDynamicObjects(lines, currentText, linesWithBrackets, counter);
         counter++;
     }while(m_objectAddedToCompletionList);
 
