@@ -1,1 +1,1 @@
-call sfx.bat "C:\Program Files\WinRAR\winrar" exeFileName.exe sceFolder sceFile.sce icon.ico
+call sfx.bat "C:\Program Files\WinRAR\winrar" exampleExecutableName exampleSfx sceFile.sce sfx.ico

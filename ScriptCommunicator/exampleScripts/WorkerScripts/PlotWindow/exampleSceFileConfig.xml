@@ -1,0 +1,8 @@
+
+<SceConfiguration>
+  <Files>
+    <File subDirectory="scripts" type="execute script" source="plotWindowExample.js"/>
+  </Files>
+  <ScriptArguments/>
+  <ScriptWindowState withScriptWindow="0" notMinimized="0" minScVersion="4.20" sceFileName="exampleSce"/>
+</SceConfiguration>
