@@ -94,7 +94,8 @@ HEADERS      = \
     mainwindow.h \
     singledocument.h \
     parseThread.h \
-    version.h
+    version.h \
+    esprima/esprima.h
 SOURCES      = main.cpp \
     QScintilla/InputMethod.cpp \
     QScintilla/ListBoxQt.cpp \
@@ -159,7 +160,8 @@ SOURCES      = main.cpp \
     findDialog.cpp \
     mainwindow.cpp \
     singledocument.cpp \
-    parseThread.cpp
+    parseThread.cpp \
+    esprima/esprima.cpp
 
 
 RESOURCES    = ScriptEditor.qrc

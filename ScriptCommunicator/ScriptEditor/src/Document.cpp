@@ -2284,7 +2284,7 @@ public:
 	}
 };
 
-// Define a way for the Regular Expression code to access the document
+// Define a way for the Regular Node code to access the document
 class DocumentIndexer : public CharacterIndexer {
 	Document *pdoc;
 	int end;
