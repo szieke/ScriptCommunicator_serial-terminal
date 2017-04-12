@@ -44,6 +44,7 @@
 #include <QSplitter>
 #include "version.h"
 #include <QFontDialog>
+#include "Qsci/qscistyle.h"
 
 
 #include <Qsci/qsciscintilla.h>
@@ -51,9 +52,7 @@
 #include "ui_mainwindow.h"
 #include "ui_findDialog.h"
 #include "esprima/esprima.h"
-#include <sys/time.h>
-#include <iostream>
-#include <fstream>
+
 
 ///Pointer to the main window.
 MainWindow* g_mainWindow = 0;
@@ -64,108 +63,6 @@ MainWindow* getMainWindow()
     return g_mainWindow;
 }
 
-#if 0
-#define NONE (0)
-
-#define PROP(name) \
-  (out << std::string(indent, ' ') << #name " = " << node->name << "\n")
-
-#define DUMP(Node, props) \
-  void visit(esprima::Node *node) { \
-    out << std::string(indent, ' ') << #Node " { // line " << node->loc->start->line << "\n"; \
-    indent += 2; \
-    (void)(props); \
-    visitChildren(node); \
-    indent -= 2; \
-    out << std::string(indent, ' ') << "}\n"; \
-  }
-
-struct DumpVisitor : esprima::Visitor {
-  int indent;
-  std::ostream &out;
-  DumpVisitor(std::ostream &out) : indent(), out(out) {}
-  DUMP(Program, NONE)
-  DUMP(Identifier, PROP(name))
-  DUMP(BlockStatement, NONE)
-  DUMP(EmptyStatement, NONE)
-  DUMP(ExpressionStatement, NONE)
-  DUMP(IfStatement, NONE)
-  DUMP(LabeledStatement, NONE)
-  DUMP(BreakStatement, NONE)
-  DUMP(ContinueStatement, NONE)
-  DUMP(WithStatement, NONE)
-  DUMP(SwitchCase, NONE)
-  DUMP(SwitchStatement, NONE)
-  DUMP(ReturnStatement, NONE)
-  DUMP(ThrowStatement, NONE)
-  DUMP(CatchClause, NONE)
-  DUMP(TryStatement, NONE)
-  DUMP(WhileStatement, NONE)
-  DUMP(DoWhileStatement, NONE)
-  DUMP(ForStatement, NONE)
-  DUMP(ForInStatement, NONE)
-  DUMP(DebuggerStatement, NONE)
-  DUMP(FunctionDeclaration, NONE)
-  DUMP(VariableDeclarator, NONE)
-  DUMP(VariableDeclaration, PROP(kind))
-  DUMP(ThisExpression, NONE)
-  DUMP(ArrayExpression, NONE)
-  DUMP(Property, PROP(kind))
-  DUMP(ObjectExpression, NONE)
-  DUMP(FunctionExpression, NONE)
-  DUMP(SequenceExpression, NONE)
-  DUMP(UnaryExpression, (PROP(operator_), PROP(prefix)))
-  DUMP(BinaryExpression, PROP(operator_))
-  DUMP(AssignmentExpression, PROP(operator_))
-  DUMP(UpdateExpression, PROP(operator_))
-  DUMP(LogicalExpression, PROP(operator_))
-  DUMP(ConditionalExpression, NONE)
-  DUMP(NewExpression, NONE)
-  DUMP(CallExpression, NONE)
-  DUMP(MemberExpression, PROP(computed))
-  DUMP(NullLiteral, NONE)
-  DUMP(RegExpLiteral, (PROP(pattern), PROP(flags)))
-  DUMP(StringLiteral, PROP(value))
-  DUMP(NumericLiteral, PROP(value))
-  DUMP(BooleanLiteral, PROP(value))
-};
-
-int64_t microseconds() {
-  struct timeval time;
-  gettimeofday(&time, NULL);
-  return time.tv_sec * (int64_t)1000000 + time.tv_usec;
-}
-
-void compile(const std::string &path, std::istream &input, std::ostream &output) {
-  std::string code((std::istreambuf_iterator<char>(input)), std::istreambuf_iterator<char>());
-  std::cout << "parsing " << path << std::endl;
-  try {
-    esprima::Pool pool;
-    int64_t start = microseconds();
-    esprima::Program *program = esprima::parse(pool, code);
-    int64_t end = microseconds();
-/*
-    esprima::VariableDeclaration* test = dynamic_cast<esprima::VariableDeclaration*>(program->body[14]);
-    if(test)
-    {
-        std::cout << " 1";
-    }
-
-    esprima::FunctionDeclaration* test2 =dynamic_cast<esprima::FunctionDeclaration*>(program->body[14]);
-
-    if(test2)
-    {
-        std::cout << " 2";
-    }
-    */
-    std::cout << "parsed in " << (end - start) / 1000 << "ms" << std::endl;
-    DumpVisitor visitor(output);
-    program->accept(&visitor);
-  } catch (const esprima::ParseError &error) {
-    std::cout << "parse error: " << error.description << std::endl;
-  }
-}
-#endif
 
 /**
  * Constructor.
@@ -246,7 +143,7 @@ void MainWindow::parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEn
 {
     m_parsingFinished = true;
     SingleDocument* currentEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-    currentEditor->initAutoCompletion(m_allFunction, autoCompletionEntries, autoCompletionApiFiles);
+    currentEditor->initAutoCompletion(m_allFunctions, autoCompletionEntries, autoCompletionApiFiles);
 }
 
 
@@ -918,60 +815,63 @@ QMap<QString, bool> MainWindow::getAllIncludedScripts(int tabIndex)
 }
 
 /**
- * Returns all functions in a script file.
+ * Returns all functions and variables in a script file.
  * @param tabIndex
  *      The index of the tab.
  * @return
- *      All functions.
+ *      All parsed entries.
  */
-QStringList MainWindow::getAllFunctions(int tabIndex)
+QVector<ParsedEntry> MainWindow::getAllFunctionsAndVariables(int tabIndex)
 {
-    QStringList result;
+    QVector<ParsedEntry> result;
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(tabIndex)->layout()->itemAt(0)->widget());
     QString text = textEditor->text();
 
-
-    //Remove all '/**/' comments.
-    QRegExp comment("/\\*(.|[\r\n])*\\*/");
-    comment.setMinimal(true);
-    comment.setPatternSyntax(QRegExp::RegExp);
-    text.replace(comment, " ");
-
-    //Remove all '//' comments.
-    comment.setMinimal(false);
-    comment.setPattern("//[^\n]*");
-    text.remove(comment);
-
-
-
-    QRegExp rx("function *(*)");
-    rx.setPatternSyntax(QRegExp::Wildcard);
-    int index = 0;
-
-    while(index != -1)
+    textEditor->clearAnnotations();
+    esprima::Pool pool;
+    esprima::Program *program = NULL;
+    try
     {
-        index = text.indexOf(rx,index);
+        program = esprima::parse(pool, text.toLocal8Bit().constData());
+    }
+    catch(esprima::ParseError e)
+    {
+        QsciStyle myStyle(-1,"Annotation",QColor(255,0,0),QColor(255,150,150),QFont("Courier New",-1,-1,true),true);
+        textEditor->annotate(e.lineNumber - 1, e.description.c_str(),myStyle);
+        return result;
+    }
 
-        if(index != -1)
+
+    for(int i = 0; i < program->body.size(); i++)
+    {
+        ParsedEntry entry;
+        esprima::VariableDeclaration* test = dynamic_cast<esprima::VariableDeclaration*>(program->body[i]);
+        if(test)
         {
-            int endIndex = text.indexOf(")", index);
-            if(endIndex != -1)
+            entry.line = test->loc->start->line;
+            entry.column = test->loc->start->column;
+            entry.name = test->declarations[0]->id->name.c_str();
+            entry.isFunction = false;
+            entry.params = QStringList();
+            result.append(entry);
+        }
+
+        esprima::FunctionDeclaration* test2 =dynamic_cast<esprima::FunctionDeclaration*>(program->body[i]);
+
+        if(test2)
+        {
+            entry.line = test2->loc->start->line;
+            entry.column = test2->loc->start->column;
+            entry.name = test2->id->name.c_str();
+            entry.isFunction = true;
+            for(int j = 0; j < test2->params.size(); j++)
             {
-                QString func = text.mid(index, (endIndex - index) + 1);
-
-                if(!func.contains("\n"))
-                {//The string contains no new line.
-
-                    func.remove(QRegExp("function "));
-                    func.remove(" ");
-                    result.append(func);
-                }
+                entry.params.append(test2->params[j]->name.c_str());
             }
-            index++;
+            result.append(entry);
         }
     }
 
-    result.sort(Qt::CaseInsensitive );
     return result;
 }
 
@@ -1274,20 +1174,18 @@ void MainWindow::functionListDoubleClicked(QTreeWidgetItem* item, int column)
 
     if(item)
     {
-        QString function = item->data(0, FUNC_NAME_INDEX).toString();
+        QString name = item->data(0, NAME_INDEX).toString();
         bool isOk = false;
-        int index = item->data(0, TABINDEX_NAME_INDEX).toInt(&isOk);
+        int index = item->data(0, NAME_TABINDEX).toInt(&isOk);
+        int line = item->data(0, LINENUMBER_TABINDEX).toInt(&isOk - 1) -1;
 
-        if(!function.isEmpty() && (index != -1))
+        if(!name.isEmpty() && (index != -1) && (line != -1))
         {
-            function.replace(",", ".*,.*");
-            function.replace("(", "(.*");
-            function.replace(")", ".*)");
-            function = QString("function.*[ |/]%1").arg(function);
 
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(index)->layout()->itemAt(0)->widget());
-            (void)textEditor->findFirst(function, true, true, false, true, true, 0,
-                                  0, true, false);
+            textEditor->setCursorPosition(line, 0);
+            (void)textEditor->findFirst(name, false, true, false, true, true, line,
+                                 0, true, false);
 
             ui->documentsTabWidget->setCurrentIndex(index);
             textEditor->setFocus();
@@ -1499,7 +1397,7 @@ void MainWindow::insertAllFunctionInListView()
     QTreeWidgetItem* root = ui->functionsTreeWidget->invisibleRootItem();
     bool hasFunctions = false;
     QMap<QString, bool> expandMap;
-    m_allFunction.clear();
+    m_allFunctions.clear();
 
     for(int i = 0; i < root->childCount(); i++)
     {
@@ -1514,28 +1412,50 @@ void MainWindow::insertAllFunctionInListView()
 
         if(!textEditor->getDocumentName().endsWith(".ui"))
         {
-            QStringList functions = getAllFunctions(i);
+             QVector<ParsedEntry> entries = getAllFunctionsAndVariables(i);
 
-            if(!functions.isEmpty())
+            if(!entries.isEmpty())
             {
                 hasFunctions = true;
                 QTreeWidgetItem* fileElement = new QTreeWidgetItem(root);
-                fileElement->setData(0, FUNC_NAME_INDEX, "");
-                fileElement->setData(0, TABINDEX_NAME_INDEX, i);
+                fileElement->setData(0, NAME_INDEX, "");
+                fileElement->setData(0, NAME_TABINDEX, i);
+                fileElement->setData(0, LINENUMBER_TABINDEX, -1);
 
                 fileElement->setText(0, strippedName(textEditor->getDocumentName()));
                 root->addChild(fileElement);
-                for(auto el : functions)
-                {
-                    QTreeWidgetItem* funcElement = new QTreeWidgetItem(fileElement);
-                    funcElement->setData(0, FUNC_NAME_INDEX, el);
 
-                    funcElement->setData(0, TABINDEX_NAME_INDEX, i);
-                    funcElement->setText(0, el);
+                for(auto el : entries)
+                {
+
+                    QTreeWidgetItem* funcElement = new QTreeWidgetItem(fileElement);
+                    funcElement->setData(0, NAME_INDEX, el.name);
+                    QString textInTreeWidget = el.name;
+                    funcElement->setData(0, NAME_TABINDEX, i);
+                    funcElement->setData(0, LINENUMBER_TABINDEX, el.line);
                     fileElement->addChild(funcElement);
 
-                    m_allFunction.append(el);
+                    if(el.isFunction)
+                    {
+                        m_allFunctions.append(el.name);
+
+                        textInTreeWidget += "(";
+
+                        for(auto param : el.params)
+                        {
+                            textInTreeWidget += param + ",";
+                        }
+                        if(textInTreeWidget.right(1) == ",")
+                        {
+                            textInTreeWidget.remove(textInTreeWidget.length() - 1, 1);
+                        }
+                        textInTreeWidget += ")";
+                    }
+
+                    funcElement->setText(0, textInTreeWidget);
+
                 }
+
 
                 if(expandMap.contains(fileElement->text(0)))
                 {
@@ -1557,8 +1477,9 @@ void MainWindow::insertAllFunctionInListView()
     if(!hasFunctions)
     {
         QTreeWidgetItem* fileElement = new QTreeWidgetItem(root);
-        fileElement->setData(0, FUNC_NAME_INDEX, "");
-        fileElement->setData(0, TABINDEX_NAME_INDEX, -1);
+        fileElement->setData(0, NAME_INDEX, "");
+        fileElement->setData(0, NAME_TABINDEX, -1);
+        fileElement->setData(0, LINENUMBER_TABINDEX, -1);
         fileElement->setText(0, "no functions");
     }
 
@@ -1577,11 +1498,7 @@ bool MainWindow::loadFile(const QString &fileName)
 {
     QString tmpDirectory = getTmpDirectory(fileName);
     QString lockFileName = getLockFileName(fileName);
-#if 0
-    std::ifstream input(fileName.toLocal8Bit().constData());
-    std::ofstream output((std::string(fileName.toLocal8Bit().constData()) + ".dump.txt").c_str());
-    compile(fileName.toLocal8Bit().constData(), input, output);
-#endif
+
     if(QFileInfo().exists(lockFileName))
     {//The file is already opened.
 

@@ -5,7 +5,18 @@
 #include <Qsci/qsciscintilla.h>
 #include <QDomDocument>
 
+//A parsed entry.
+typedef struct
+{
+    int line;
+    int column;
+    QString name;
+    bool isFunction;
+    QStringList params;
+}ParsedEntry;
+
 class MainWindow;
+
 
 ///This class holds a single document.
 class SingleDocument : public QsciScintilla

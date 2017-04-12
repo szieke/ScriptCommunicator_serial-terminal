@@ -40,6 +40,7 @@ class MainWindow;
 }
 
 
+
 ///Main window class.
 class MainWindow : public QMainWindow
 {
@@ -62,7 +63,7 @@ public:
     void startScriptEditor(QStringList arguments);
 
     ///Returns all functions in a script file.
-    QStringList getAllFunctions(int tabIndex);
+    QVector<ParsedEntry> getAllFunctionsAndVariables(int tabIndex);
 
     ///Returns all included scripts from a script file.
     QMap<QString, bool> getAllIncludedScripts(int tabIndex);
@@ -79,11 +80,14 @@ public:
     ///Returns true if the document in fileName has already been loaded.
     bool checkIfDocumentAlreadyLoaded(QString fileName, int &index);
 
-    ///The function index in the data map (tree widget).
-    static const quint32 FUNC_NAME_INDEX = Qt::UserRole + 1;
+    ///The name index in the data map (tree widget).
+    static const quint32 NAME_INDEX = Qt::UserRole + 1;
 
-    ///The tab index in the data map (tree widget).
-    static const quint32 TABINDEX_NAME_INDEX = Qt::UserRole + 2;
+    ///The tab (in the name can be found)index in the data map belongs to (tree widget).
+    static const quint32 NAME_TABINDEX = Qt::UserRole + 2;
+
+    ///The line number (in which the name can be found) index in the data map (tree widget).
+    static const quint32 LINENUMBER_TABINDEX = Qt::UserRole + 3;
 
     ///The internal script editor version.
     static const quint32 INTERNAL_VERSION = 1;
@@ -254,8 +258,8 @@ private:
     ///Shortcut for finding text in the current script file.
     QShortcut* m_findShortcut;
 
-    ///All function which are displayed in the function list.
-    QStringList m_allFunction;
+    ///All function which are displayed in the outline.
+    QStringList m_allFunctions;
 
     ///The parse timer.
     QTimer m_parseTimer;
