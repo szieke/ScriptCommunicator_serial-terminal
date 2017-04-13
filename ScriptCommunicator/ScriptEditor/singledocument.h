@@ -13,6 +13,7 @@ typedef struct
     QString name;
     bool isFunction;
     QStringList params;
+    int tabIndex;
 }ParsedEntry;
 
 class MainWindow;

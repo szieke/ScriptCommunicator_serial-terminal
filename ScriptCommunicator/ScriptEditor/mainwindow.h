@@ -80,14 +80,8 @@ public:
     ///Returns true if the document in fileName has already been loaded.
     bool checkIfDocumentAlreadyLoaded(QString fileName, int &index);
 
-    ///The name index in the data map (tree widget).
-    static const quint32 NAME_INDEX = Qt::UserRole + 1;
-
-    ///The tab (in the name can be found)index in the data map belongs to (tree widget).
-    static const quint32 NAME_TABINDEX = Qt::UserRole + 2;
-
-    ///The line number (in which the name can be found) index in the data map (tree widget).
-    static const quint32 LINENUMBER_TABINDEX = Qt::UserRole + 3;
+    ///The index in the data map (tree widget) of the parsed entries pointer (ParsedEntry).
+    static const quint32 PARSED_ENTRY = Qt::UserRole + 3;
 
     ///The internal script editor version.
     static const quint32 INTERNAL_VERSION = 1;
@@ -222,6 +216,9 @@ private:
 
     ///Inserts all function (form the current script file) into the function list view.
     void insertAllFunctionInListView();
+
+    ///Clears the outline window.
+    void clearOutlineWindow(void);
 
     ///Starts the designer.
     void startDesigner(QString uiFile);

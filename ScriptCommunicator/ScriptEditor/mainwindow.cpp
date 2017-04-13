@@ -106,7 +106,7 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     m_findDialog->ui->findWhatComboBox->setAutoCompletion(false);
     m_findDialog->ui->replaceComboBox->setAutoCompletion(false);
 
-    connect(ui->functionsTreeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(functionListDoubleClicked(QTreeWidgetItem*,int)));
+    connect(ui->outlineTreeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(functionListDoubleClicked(QTreeWidgetItem*,int)));
 
     m_findShortcut = new QShortcut(QKeySequence(Qt::Key_F3),this);
 
@@ -848,7 +848,7 @@ QVector<ParsedEntry> MainWindow::getAllFunctionsAndVariables(int tabIndex)
         esprima::VariableDeclaration* test = dynamic_cast<esprima::VariableDeclaration*>(program->body[i]);
         if(test)
         {
-            entry.line = test->loc->start->line;
+            entry.line = test->loc->start->line - 1;
             entry.column = test->loc->start->column;
             entry.name = test->declarations[0]->id->name.c_str();
             entry.isFunction = false;
@@ -860,7 +860,7 @@ QVector<ParsedEntry> MainWindow::getAllFunctionsAndVariables(int tabIndex)
 
         if(test2)
         {
-            entry.line = test2->loc->start->line;
+            entry.line = test2->loc->start->line - 1;
             entry.column = test2->loc->start->column;
             entry.name = test2->id->name.c_str();
             entry.isFunction = true;
@@ -1174,20 +1174,17 @@ void MainWindow::functionListDoubleClicked(QTreeWidgetItem* item, int column)
 
     if(item)
     {
-        QString name = item->data(0, NAME_INDEX).toString();
         bool isOk = false;
-        int index = item->data(0, NAME_TABINDEX).toInt(&isOk);
-        int line = item->data(0, LINENUMBER_TABINDEX).toInt(&isOk - 1) -1;
+        ParsedEntry* entry  = (ParsedEntry*)item->data(0, PARSED_ENTRY).toULongLong(&isOk);
 
-        if(!name.isEmpty() && (index != -1) && (line != -1))
+        if(entry != 0)
         {
-
-            SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(index)->layout()->itemAt(0)->widget());
-            textEditor->setCursorPosition(line, 0);
-            (void)textEditor->findFirst(name, false, true, false, true, true, line,
+            SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(entry->tabIndex)->layout()->itemAt(0)->widget());
+            textEditor->setCursorPosition(entry->line, 0);
+            (void)textEditor->findFirst(entry->name, false, true, false, true, true, entry->line,
                                  0, true, false);
 
-            ui->documentsTabWidget->setCurrentIndex(index);
+            ui->documentsTabWidget->setCurrentIndex(entry->tabIndex);
             textEditor->setFocus();
         }
     }
@@ -1389,22 +1386,43 @@ bool MainWindow::maybeSave(int index)
 }
 
 /**
+ * Clears the outline window.
+ */
+void MainWindow::clearOutlineWindow(void)
+{
+    QTreeWidgetItemIterator it(ui->outlineTreeWidget);
+    while (*it)
+    {
+        bool isOk = false;
+        ParsedEntry* entry  = (ParsedEntry*)(*it)->data(0, PARSED_ENTRY).toULongLong(&isOk);
+        if(entry != 0)
+        {
+            delete entry;
+        }
+      ++it;
+    }
+
+    ui->outlineTreeWidget->clear();
+}
+
+/**
  * Inserts all function (form the current script file) into the function list view.
  */
 void MainWindow::insertAllFunctionInListView()
 {
 
-    QTreeWidgetItem* root = ui->functionsTreeWidget->invisibleRootItem();
+    QTreeWidgetItem* root = ui->outlineTreeWidget->invisibleRootItem();
     bool hasFunctions = false;
     QMap<QString, bool> expandMap;
     m_allFunctions.clear();
 
+    //Save the expanded state of all tree widget elements.
     for(int i = 0; i < root->childCount(); i++)
     {
         expandMap[root->child(i)->text(0)] = root->child(i)->isExpanded();
     }
 
-    ui->functionsTreeWidget->clear();
+    clearOutlineWindow();
 
     for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
     {
@@ -1418,9 +1436,7 @@ void MainWindow::insertAllFunctionInListView()
             {
                 hasFunctions = true;
                 QTreeWidgetItem* fileElement = new QTreeWidgetItem(root);
-                fileElement->setData(0, NAME_INDEX, "");
-                fileElement->setData(0, NAME_TABINDEX, i);
-                fileElement->setData(0, LINENUMBER_TABINDEX, -1);
+                fileElement->setData(0, PARSED_ENTRY, 0);
 
                 fileElement->setText(0, strippedName(textEditor->getDocumentName()));
                 root->addChild(fileElement);
@@ -1429,10 +1445,11 @@ void MainWindow::insertAllFunctionInListView()
                 {
 
                     QTreeWidgetItem* funcElement = new QTreeWidgetItem(fileElement);
-                    funcElement->setData(0, NAME_INDEX, el.name);
                     QString textInTreeWidget = el.name;
-                    funcElement->setData(0, NAME_TABINDEX, i);
-                    funcElement->setData(0, LINENUMBER_TABINDEX, el.line);
+                    ParsedEntry* tmpEntry = new ParsedEntry();
+                    *tmpEntry = el;
+                    tmpEntry->tabIndex = i;
+                    funcElement->setData(0, PARSED_ENTRY, (quint64)tmpEntry);
                     fileElement->addChild(funcElement);
 
                     if(el.isFunction)
@@ -1459,30 +1476,20 @@ void MainWindow::insertAllFunctionInListView()
 
                 if(expandMap.contains(fileElement->text(0)))
                 {
+                    //Restore the expanded state of all tree widget elements.
                     if(expandMap[fileElement->text(0)])
                     {
-                        ui->functionsTreeWidget->expandItem(fileElement);
+                        ui->outlineTreeWidget->expandItem(fileElement);
                     }
                 }
                 else
-                {//New file element.
-                    ui->functionsTreeWidget->expandItem(fileElement);
+                {//New file element, expand all items.
+                    ui->outlineTreeWidget->expandItem(fileElement);
                 }
 
             }
         }
     }
-
-
-    if(!hasFunctions)
-    {
-        QTreeWidgetItem* fileElement = new QTreeWidgetItem(root);
-        fileElement->setData(0, NAME_INDEX, "");
-        fileElement->setData(0, NAME_TABINDEX, -1);
-        fileElement->setData(0, LINENUMBER_TABINDEX, -1);
-        fileElement->setText(0, "no functions");
-    }
-
 
     static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget())->setFocus();
     m_parseTimer.start(1000);
