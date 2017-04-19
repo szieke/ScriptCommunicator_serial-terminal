@@ -81,13 +81,13 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
 
     if(scripts.isEmpty())
     {
-        addTab("");
+        addTab("", false);
     }
     else
     {
         for(auto el : scripts)
         {
-            addTab(el);
+            addTab(el, true);
         }
     }
 
@@ -107,6 +107,7 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     m_findDialog->ui->replaceComboBox->setAutoCompletion(false);
 
     connect(ui->outlineTreeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(functionListDoubleClicked(QTreeWidgetItem*,int)));
+    connect(ui->uiTreeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(uiViewDoubleClicked(QTreeWidgetItem*,int)));
 
     m_findShortcut = new QShortcut(QKeySequence(Qt::Key_F3),this);
 
@@ -118,9 +119,11 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
 
     qRegisterMetaType<QMap<QString,QStringList>>("QMap<QString,QStringList>");
 
-    connect(this, SIGNAL(parseSignal(QString,QString)), m_parseThread, SLOT(parseSlot(QString,QString)), Qt::QueuedConnection);
-    connect(m_parseThread, SIGNAL(parsingFinishedSignal(QMap<QString,QStringList>,QMap<QString,QStringList>)),
-            this, SLOT(parsingFinishedSlot(QMap<QString,QStringList>,QMap<QString,QStringList>)), Qt::QueuedConnection);
+    connect(this, SIGNAL(parseSignal(QString,QStringList)), m_parseThread, SLOT(parseSlot(QString,QStringList)), Qt::QueuedConnection);
+    connect(m_parseThread, SIGNAL(parsingFinishedSignal(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>)),
+            this, SLOT(parsingFinishedSlot(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>)), Qt::QueuedConnection);
+
+     m_parseTimer.start(2000);
 }
 
 MainWindow::~MainWindow()
@@ -139,11 +142,14 @@ MainWindow::~MainWindow()
  * @param autoCompletionApiFiles
  *      Contains the auto-completion entries for all parsed api files.
  */
-void MainWindow::parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles)
+void MainWindow::parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles,
+                                     QMap<QString, QStringList> parsedUiObjects)
 {
     m_parsingFinished = true;
     SingleDocument* currentEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
     currentEditor->initAutoCompletion(m_allFunctions, autoCompletionEntries, autoCompletionApiFiles);
+
+    insertAllUiObjectsInUiView(parsedUiObjects);
 }
 
 
@@ -152,13 +158,43 @@ void MainWindow::parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEn
  */
 void MainWindow::parseTimeout(void)
 {
+
     if(m_parsingFinished)
     {
         m_parseTimer.stop();
+
+        for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+        {
+            SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
+
+            QFileInfo fileInfo(textEditor->getDocumentName());
+            if(textEditor->getDocumentName() != "")
+            {
+                if(fileInfo.lastModified() != textEditor->getLastModified())
+                {//Document was changed from elsewhere
+
+                    QFile file(textEditor->getDocumentName());
+                    if (file.open(QFile::ReadOnly))
+                    {
+                        QTextStream in(&file);
+                        in.setCodec("UTF-8");
+                        textEditor->setText(in.readAll());
+                        file.close();
+                        ui->documentsTabWidget->setCurrentIndex(i);
+                        saveFile(textEditor->getDocumentName());
+                        statusBar()->showMessage(tr("File reloaded"), 10000);
+                    }
+
+                }
+            }
+        }
+
         QString completeText;
+        QStringList loadedDocuments;
 
         SingleDocument* currentEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
         completeText = currentEditor->text();
+        loadedDocuments.append(currentEditor->getDocumentName());
 
         //Get the text of all open documents.
         for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
@@ -167,18 +203,21 @@ void MainWindow::parseTimeout(void)
             if(currentEditor != textEditor)
             {
                 completeText.append(textEditor->text());
+                loadedDocuments.append(textEditor->getDocumentName());
             }
         }
 
         m_parsingFinished = false;
-        emit parseSignal(completeText, currentEditor->getDocumentName());
+        emit parseSignal(completeText, loadedDocuments);
+
+        m_parseTimer.start(2000);
     }
 }
 
 /**
  * Adds a tab.
  */
-void MainWindow::addTab(QString script)
+void MainWindow::addTab(QString script, bool setTabIndex)
 {
     int index = -1;
     if(!checkIfDocumentAlreadyLoaded(script, index))
@@ -208,7 +247,7 @@ void MainWindow::addTab(QString script)
 
                 if(ui->documentsTabWidget->count() == 0)
                 {
-                    addTab("");
+                    addTab("", false);
                 }
             }
         }
@@ -219,7 +258,10 @@ void MainWindow::addTab(QString script)
     }
     else
     {
-        ui->documentsTabWidget->setCurrentIndex(index);
+        if(setTabIndex)
+        {
+            ui->documentsTabWidget->setCurrentIndex(index);
+        }
     }
 
 }
@@ -239,9 +281,10 @@ void MainWindow::tabCloseRequestedSlot(int index)
 
         if(ui->documentsTabWidget->count() == 0)
         {
-            addTab("");
+            addTab("", true);
         }
-        insertAllFunctionInListView();
+        parseTimeout();
+        insertAllFunctionAndVariablesInListView();
     }
 
 }
@@ -277,29 +320,6 @@ QString MainWindow::getTheCorrespondingUiFile(QString scriptFile)
     return uiFile;
 }
 
-/**
- * Enables or dissbles the edit ui action.
- */
-void MainWindow::enableDisableActionEditUI()
-{
-    if(ui->documentsTabWidget->currentWidget() && ui->documentsTabWidget->currentWidget()->layout())
-    {
-        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-
-        QString uiFile = getTheCorrespondingUiFile(textEditor->getDocumentName());
-        if(uiFile.isEmpty())
-        {
-            ui->actionEditUI->setEnabled(false);
-            ui->actionEditUI->setToolTip(QString("edit the corresponding user interface file (no corresponding ui file found)"));
-        }
-        else
-        {
-            ui->actionEditUI->setEnabled(true);
-            ui->actionEditUI->setToolTip(QString("edit the corresponding user interface file (%1)").arg(QFileInfo(uiFile).fileName()));
-        }
-    }
-}
-
 
 /**
  * Is called if current tab index has been changed.
@@ -312,9 +332,6 @@ void MainWindow::tabIndexChangedSlot(int index)
     {
         (void)index;
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-
-        //Enable/disable the edit ui action.
-        enableDisableActionEditUI();
 
         if(textEditor->hasSelectedText())
         {
@@ -338,13 +355,10 @@ void MainWindow::tabIndexChangedSlot(int index)
         {
             ui->actionOpenAllIncludedScripts->setEnabled(true);
         }
-        m_parseTimer.start(1000);
     }
     else
     {
         ui->actionOpenAllIncludedScripts->setEnabled(false);
-        ui->actionEditUI->setEnabled(false);
-        ui->actionEditUI->setToolTip("edit the corresponding user interface file");
     }
 }
 
@@ -398,7 +412,7 @@ void MainWindow::redoSlot()
  */
 void MainWindow::newSlot()
 {
-    addTab("");
+    addTab("", true);
 }
 
 
@@ -455,29 +469,7 @@ void MainWindow::startDesigner(QString uiFile)
     }
 
 }
-/**
- * Edit UI action slot.
- */
-void MainWindow::editUiSlot()
-{
-    SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-    QString uiFile = getTheCorrespondingUiFile(textEditor->getDocumentName());
 
-    int ret = QMessageBox::question(this, tr("Edit user interface"), "Edit the ui in text mode?",
-                                   QMessageBox::Yes | QMessageBox::Default,
-                                   QMessageBox::No);
-
-    if (ret == QMessageBox::Yes)
-    {
-        addTab(uiFile);
-    }
-    else
-    {
-        startDesigner(uiFile);
-    }
-
-
-}
 
 /**
  * Open all included action slot.
@@ -501,7 +493,7 @@ void MainWindow::openAllIncludedScriptsSlot()
         {
             fileName = i.key();
         }
-        addTab(fileName);
+        addTab(fileName, true);
     }
     ui->documentsTabWidget->setCurrentIndex(currentIndex);
 }
@@ -619,7 +611,7 @@ void MainWindow::dropEvent(QDropEvent *event)
                 }
                 else
                 {
-                    addTab(file);
+                    addTab(file, true);
                 }
             }
         }
@@ -1079,7 +1071,7 @@ void MainWindow::open()
         }
         else
         {
-            addTab(fileName);
+            addTab(fileName, true);
         }
     }
 }
@@ -1161,6 +1153,54 @@ void MainWindow::zoomInSlot()
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
         textEditor->lexer()->setFont(m_currentFont, -1);
     }
+}
+
+
+/**
+ * Is called if the user double clicks on the ui view.
+ * @param item
+ *      The clicked item.
+ */
+void MainWindow::uiViewDoubleClicked(QTreeWidgetItem* item, int column)
+{
+    (void)column;
+
+    if(item)
+    {
+        bool isOk = false;
+        ParsedUiObject* entry  = (ParsedUiObject*)item->data(0, PARSED_ENTRY).toULongLong(&isOk);
+
+        if(entry != 0)
+        {
+            int index = 0;
+            if(!checkIfDocumentAlreadyLoaded(entry->uiFile, index))
+            {
+                int ret = QMessageBox::question(this, tr("Edit user interface"), "Edit the ui in text mode?",
+                                               QMessageBox::Yes | QMessageBox::Default,
+                                               QMessageBox::No);
+
+                if (ret == QMessageBox::Yes)
+                {
+                    addTab(entry->uiFile, true);
+                }
+                else
+                {
+                    startDesigner(entry->uiFile);
+                }
+            }
+
+
+            if(checkIfDocumentAlreadyLoaded(entry->uiFile, index))
+            {
+                SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(index)->layout()->itemAt(0)->widget());
+                (void)textEditor->findFirst("name=\"" + entry->objectName, false, true, false, true, true, 0, 0, true, false);
+
+                ui->documentsTabWidget->setCurrentIndex(index);
+                textEditor->setFocus();
+            }
+        }
+    }
+
 }
 
 /**
@@ -1269,12 +1309,6 @@ void MainWindow::documentWasModified()
     {
          ui->documentsTabWidget->setTabText(ui->documentsTabWidget->currentIndex(), shownName);
     }
-
-    if(!m_parseTimer.isActive())
-    {
-        m_parseTimer.start(1000);
-    }
-
 }
 
 /**
@@ -1295,7 +1329,6 @@ void MainWindow::initActions()
     connect(ui->actionUndo, SIGNAL(triggered()), this, SLOT(undoSlot()));
     connect(ui->actionRedo, SIGNAL(triggered()), this, SLOT(redoSlot()));
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newSlot()));
-    connect(ui->actionEditUI, SIGNAL(triggered()), this, SLOT(editUiSlot()));
     connect(ui->actionOpenAllIncludedScripts, SIGNAL(triggered()), this, SLOT(openAllIncludedScriptsSlot()));
     connect(ui->actionSetFont, SIGNAL(triggered()), this, SLOT(setFont()));
 
@@ -1397,6 +1430,7 @@ void MainWindow::clearOutlineWindow(void)
         ParsedEntry* entry  = (ParsedEntry*)(*it)->data(0, PARSED_ENTRY).toULongLong(&isOk);
         if(entry != 0)
         {
+            (*it)->setData(0, PARSED_ENTRY, (quint64)0);
             delete entry;
         }
       ++it;
@@ -1405,10 +1439,118 @@ void MainWindow::clearOutlineWindow(void)
     ui->outlineTreeWidget->clear();
 }
 
+
 /**
- * Inserts all function (form the current script file) into the function list view.
+ * Clears the ui window.
  */
-void MainWindow::insertAllFunctionInListView()
+void MainWindow::clearUiWindow(void)
+{
+    QTreeWidgetItemIterator it(ui->uiTreeWidget);
+    while (*it)
+    {
+        bool isOk = false;
+        ParsedUiObject* entry  = (ParsedUiObject*)(*it)->data(0, PARSED_ENTRY).toULongLong(&isOk);
+        if(entry != 0)
+        {
+            (*it)->setData(0, PARSED_ENTRY, (quint64)0);
+            delete entry;
+        }
+      ++it;
+    }
+
+    ui->uiTreeWidget->clear();
+}
+/**
+ * Inserts all UI objects in the ui view.
+ *
+ * @param parsedUiObjects
+ *      All parsed UI objects.
+ */
+void MainWindow::insertAllUiObjectsInUiView(QMap<QString, QStringList> parsedUiObjects)
+{
+    static QString savedCompleteTreeString = "";
+    QString currenCompleteTreeString = "";
+
+    QTreeWidgetItem* root = ui->uiTreeWidget->invisibleRootItem();
+    QMap<QString, bool> expandMap;
+
+    //Save the expanded state of all tree widget elements.
+    for(int i = 0; i < root->childCount(); i++)
+    {
+        expandMap[root->child(i)->text(0)] = root->child(i)->isExpanded();
+    }
+
+    QMap<QString, QStringList>::const_iterator iter = parsedUiObjects.constBegin();
+    while (iter != parsedUiObjects.constEnd())
+    {
+        for(auto el : iter.value())
+        {
+            currenCompleteTreeString += el;
+        }
+        iter++;
+    }
+
+    if(savedCompleteTreeString == currenCompleteTreeString)
+    {///The tree wigdet content has not changed.
+        return;
+    }
+
+    savedCompleteTreeString = currenCompleteTreeString;
+    clearUiWindow();
+
+    iter = parsedUiObjects.constBegin();
+    bool firstFile = true;
+    while (iter != parsedUiObjects.constEnd())
+    {
+        QTreeWidgetItem* fileElement = new QTreeWidgetItem(root);
+        fileElement->setData(0, PARSED_ENTRY, 0);
+        fileElement->setText(0, strippedName(iter.key()));
+        fileElement->setToolTip(0, iter.key());
+        root->addChild(fileElement);
+
+        if(firstFile)
+        {
+            fileElement->setSelected(true);
+            firstFile = false;
+        }
+
+
+        for(auto el : iter.value())
+        {
+            QTreeWidgetItem* funcElement = new QTreeWidgetItem(fileElement);
+            QString textInTreeWidget = "UI_" + el;
+            ParsedUiObject* tmpEntry = new ParsedUiObject();
+            tmpEntry->objectName = el;
+            tmpEntry->uiFile = iter.key();
+            funcElement->setData(0, PARSED_ENTRY, (quint64)tmpEntry);
+            fileElement->addChild(funcElement);
+
+            funcElement->setText(0, textInTreeWidget);
+            funcElement->setToolTip(0, textInTreeWidget);
+        }
+
+        if(expandMap.contains(fileElement->text(0)))
+        {
+            //Restore the expanded state of all tree widget elements.
+            if(expandMap[fileElement->text(0)])
+            {
+                ui->uiTreeWidget->expandItem(fileElement);
+            }
+        }
+        else
+        {//New file element, expand all items.
+            ui->uiTreeWidget->expandItem(fileElement);
+        }
+
+        iter++;
+    }
+}
+
+
+/**
+ * Inserts all function and global variables (form the current script file) into the function list view.
+ */
+void MainWindow::insertAllFunctionAndVariablesInListView(void)
 {
 
     QTreeWidgetItem* root = ui->outlineTreeWidget->invisibleRootItem();
@@ -1437,8 +1579,8 @@ void MainWindow::insertAllFunctionInListView()
                 hasFunctions = true;
                 QTreeWidgetItem* fileElement = new QTreeWidgetItem(root);
                 fileElement->setData(0, PARSED_ENTRY, 0);
-
                 fileElement->setText(0, strippedName(textEditor->getDocumentName()));
+                fileElement->setToolTip(0, textEditor->getDocumentName());
                 root->addChild(fileElement);
 
                 for(auto el : entries)
@@ -1470,6 +1612,7 @@ void MainWindow::insertAllFunctionInListView()
                     }
 
                     funcElement->setText(0, textInTreeWidget);
+                    funcElement->setToolTip(0, textInTreeWidget);
 
                 }
 
@@ -1492,8 +1635,6 @@ void MainWindow::insertAllFunctionInListView()
     }
 
     static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget())->setFocus();
-    m_parseTimer.start(1000);
-
 }
 
 /**
@@ -1543,7 +1684,10 @@ bool MainWindow::loadFile(const QString &fileName)
     QApplication::restoreOverrideCursor();
 
     setCurrentFile(fileName);
+    textEditor->updateLastModified();
     statusBar()->showMessage(tr("File loaded"), 5000);
+
+    m_parseTimer.start(200);
     return true;
 }
 
@@ -1571,12 +1715,15 @@ bool MainWindow::saveFile(const QString &fileName)
     QApplication::setOverrideCursor(Qt::WaitCursor);
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
     out << textEditor->text();
+    file.close();
     QApplication::restoreOverrideCursor();
 
     setCurrentFile(fileName);
     statusBar()->showMessage(tr("File saved"), 2000);
 
     removeSavedInfoFile(fileName);
+
+    textEditor->updateLastModified();
 
     return true;
 }
@@ -1620,8 +1767,8 @@ void MainWindow::setCurrentFile(const QString &fileName)
     setWindowTitle(tr("ScriptCommunicator %1 - Script Editor %2[*]").arg(SCRIPT_COMMUNICATOR_VERSION).arg(windowShownName));
 
     ui->documentsTabWidget->setTabText(ui->documentsTabWidget->currentIndex(), tabShownName);
-    insertAllFunctionInListView();
-    enableDisableActionEditUI();
+    ui->documentsTabWidget->setTabToolTip(ui->documentsTabWidget->currentIndex(), fileName);
+    insertAllFunctionAndVariablesInListView();
 }
 
 /**

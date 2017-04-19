@@ -40,12 +40,13 @@ signals:
 
     ///Is emitted if the parsing is finished.
     ///Note: autoCompletionApiFiles contains the auto-completion entries for all parsed files.
-    void parsingFinishedSignal(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles);
+    void parsingFinishedSignal(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles,
+                               QMap<QString, QStringList> parsedUiObjects);
 
 public slots:
 
     ///Parses the current text. Emits parsingFinishedSignal if the parsing is finished.
-    void parseSlot(QString currentText, QString activeDocument);
+    void parseSlot(QString currentText, QStringList loadedDocuments);
 
 private:
 
@@ -75,7 +76,7 @@ private:
     void addObjectToAutoCompletionList(QString& objectName, QString& className, bool isGuiElement, bool isArray=false, bool replaceExistingEntry=false);
 
     ///Parses a widget list from a user interface file (auto-completion).
-    void parseWidgetList(QDomElement& docElem, bool parseActions);
+    void parseWidgetList(QString uiFileName, QDomElement& docElem, bool parseActions);
 
     ///Parses an user interface file (auto-completion).
     void parseUiFile(QString uiFileName);
@@ -116,14 +117,14 @@ private:
     ///Contains all objects created by ScriptTable::InsertWidget.
     QMap<QString, QVector<TableWidgetSubObject>> m_tableWidgetObjects;
 
-    ///Contains all found ui files.
-    QStringList m_foundUiFiles;
-
     ///Contains all parsed ui files.
     QStringList m_parsedFiles;
 
     ///Contains the data of a function which returns a object (e.g. String).
     QMap<QString, QVector<FunctionWithResultObject>> m_functionsWithResultObjects;
+
+    ///Contains the parsed UI objects.
+    QMap<QString, QStringList> m_parsedUiObjects;
 };
 
 #endif // PARSETHREAD_H

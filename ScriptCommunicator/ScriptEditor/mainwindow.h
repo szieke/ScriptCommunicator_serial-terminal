@@ -54,7 +54,7 @@ public:
     ~MainWindow();
 
     ///Adds a tab.
-    void addTab(QString script);
+    void addTab(QString script, bool setTabIndex);
 
     ///Returns the folder ich which the ScriptEditor files
     QString getScriptEditorFilesFolder(void);
@@ -92,7 +92,7 @@ public:
 
 signals:
     ///Is emitted if the parsing of the source files shall be started.
-    void parseSignal(QString currentText, QString activeDocument);
+    void parseSignal(QString currentText, QStringList loadedDocuments);
 
 protected:
     ///Close event.
@@ -111,7 +111,8 @@ private slots:
 
     ///Is called if the parsing is finished.
     ///Note: autoCompletionApiFiles contains the auto-completion entries for all parsed files.
-    void parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles);
+    void parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles,
+                             QMap<QString, QStringList> parsedUiObjects);
 
     ///Opens a new file.
     void open();
@@ -140,6 +141,9 @@ private slots:
     ///Checks if the current script file has been changed. If the files has been changed
     ///it displays this in the window title.
     void documentWasModified();
+
+    ///Is called if the user double clicks on the ui view.
+    void uiViewDoubleClicked(QTreeWidgetItem* item, int column);
 
     ///Is called if the user double clicks on the function list.
     void functionListDoubleClicked(QTreeWidgetItem*item, int column);
@@ -176,9 +180,6 @@ private slots:
     ///New action slot.
     void newSlot();
 
-    ///Edit UI action slot.
-    void editUiSlot();
-
     ///Open all included action slot.
     void openAllIncludedScriptsSlot();
 
@@ -199,9 +200,6 @@ private:
     ///Initializes all actions.
     void initActions();
 
-    ///Enables or dissbles the edit ui action.
-    void enableDisableActionEditUI();
-
     ///Reads the editor settings.
     void readSettings();
 
@@ -214,11 +212,17 @@ private:
     ///Loads a file.
     bool loadFile(const QString &fileName);
 
-    ///Inserts all function (form the current script file) into the function list view.
-    void insertAllFunctionInListView();
+    ///Inserts all UI objects in the ui view
+    void insertAllUiObjectsInUiView(QMap<QString, QStringList> parsedUiObjects);
+
+    ///Inserts all function and global variables (form the current script file) into the function list view.
+    void insertAllFunctionAndVariablesInListView(void);
 
     ///Clears the outline window.
     void clearOutlineWindow(void);
+
+    ///Clears the ui window.
+    void clearUiWindow(void);
 
     ///Starts the designer.
     void startDesigner(QString uiFile);

@@ -4,6 +4,7 @@
 #include <QObject>
 #include <Qsci/qsciscintilla.h>
 #include <QDomDocument>
+#include <QDateTime>
 
 //A parsed entry.
 typedef struct
@@ -16,6 +17,13 @@ typedef struct
     int tabIndex;
 }ParsedEntry;
 
+//A parsed ui object entry.
+typedef struct
+{
+    QString objectName;
+    QString uiFile;
+}ParsedUiObject;
+
 class MainWindow;
 
 
@@ -27,6 +35,12 @@ public:
 
     ///Initializes the lexer.
     void initLexer(QString script);
+
+    ///Updates the last modified time stamp.
+    void updateLastModified(void);
+
+    ///Returns the last modified time stamp.
+    QDateTime getLastModified(void);
 
     ///Sets the document name/path.
     void setDocumentName(QString name, QFont font);
@@ -61,6 +75,9 @@ private:
 
     ///The name of the document.
     QString m_documentName;
+
+    ///Time at which the corresponding file has been modified-
+    QDateTime m_fileLastModified;
 };
 
 #endif // SINGLEDOCUMENT_H

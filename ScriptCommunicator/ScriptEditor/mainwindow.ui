@@ -26,11 +26,30 @@
        </property>
        <widget class="QWidget" name="tab">
         <attribute name="title">
-         <string>Outline</string>
+         <string>Script files</string>
         </attribute>
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="0">
           <widget class="QTreeWidget" name="outlineTreeWidget">
+           <attribute name="headerVisible">
+            <bool>false</bool>
+           </attribute>
+           <column>
+            <property name="text">
+             <string notr="true">1</string>
+            </property>
+           </column>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="UI">
+        <attribute name="title">
+         <string>UI files</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_2">
+         <item>
+          <widget class="QTreeWidget" name="uiTreeWidget">
            <attribute name="headerVisible">
             <bool>false</bool>
            </attribute>
@@ -78,7 +97,6 @@
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="actionOpenAllIncludedScripts"/>
-    <addaction name="actionEditUI"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
     <addaction name="separator"/>
@@ -95,7 +113,6 @@
     <addaction name="actionPaste"/>
     <addaction name="actionFind"/>
     <addaction name="separator"/>
-    <addaction name="actionEditUI"/>
     <addaction name="separator"/>
     <addaction name="actionSetFont"/>
    </widget>
@@ -133,7 +150,6 @@
    <addaction name="actionRedo"/>
    <addaction name="separator"/>
    <addaction name="actionOpenAllIncludedScripts"/>
-   <addaction name="actionEditUI"/>
   </widget>
   <action name="actionOpen">
    <property name="icon">
@@ -333,21 +349,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
-   </property>
-  </action>
-  <action name="actionEditUI">
-   <property name="icon">
-    <iconset resource="ScriptEditor.qrc">
-     <normaloff>:/images/designer.ico</normaloff>:/images/designer.ico</iconset>
-   </property>
-   <property name="text">
-    <string>Edit user interface</string>
-   </property>
-   <property name="toolTip">
-    <string>edit the corresponding user interface file</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+E</string>
    </property>
   </action>
   <action name="actionSetFont">

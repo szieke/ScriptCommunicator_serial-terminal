@@ -19,7 +19,7 @@
  *      The parent.
  */
 SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
-    QsciScintilla(parent), m_mainWindow(mainWindow), m_documentName("")
+    QsciScintilla(parent), m_mainWindow(mainWindow), m_documentName(""), m_fileLastModified(QDateTime::currentDateTime())
 {
 
     connect(this, SIGNAL(textChanged()), m_mainWindow, SLOT(documentWasModified()));
@@ -27,7 +27,22 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
     setUtf8(true);
 }
 
+/**
+ * Returns the last modified time stamp.
+ */
+QDateTime SingleDocument::getLastModified(void)
+{
+    return m_fileLastModified;
+}
 
+/**
+ * Updates the last modified time stamp.
+ */
+void SingleDocument::updateLastModified(void)
+{
+    QFileInfo fileInfo(m_documentName);
+    m_fileLastModified = fileInfo.lastModified();
+}
 
 /**
  * Sets the document name/path.

@@ -128,7 +128,7 @@ void ParseThread::parseSingleLineForFunctionsWithResultObjects(QString singleLin
 
 ParseThread::ParseThread(QObject *parent) : QThread(parent), m_autoCompletionApiFiles(), m_autoCompletionEntries(), m_objectAddedToCompletionList(false),
     m_creatorObjects(), m_stringList(), m_unknownTypeObjects(), m_arrayList(), m_tableWidgets(),
-    m_tableWidgetObjects(), m_foundUiFiles(), m_parsedFiles()
+    m_tableWidgetObjects(), m_parsedFiles()
 {
     if(m_autoCompletionApiFiles.isEmpty())
     {
@@ -305,12 +305,14 @@ void ParseThread::removeAllBetweenSquareBrackets(QString& currentText)
 }
 /**
  * Parses a widget list from a user interface file (auto-completion).
+ * @param uiFileName
+ *      The user interface file.
  * @param docElem
  *      The QDomElement from the user interface file.
  * @param parseActions
  *      If true then all actions will be parsed. If false then all widgets will be parsed.
  */
-void ParseThread::parseWidgetList(QDomElement& docElem, bool parseActions)
+void ParseThread::parseWidgetList(QString uiFileName, QDomElement& docElem, bool parseActions)
 {
     QDomNodeList nodeList = docElem.elementsByTagName((parseActions) ? "addaction" : "widget");
 
@@ -443,6 +445,15 @@ void ParseThread::parseWidgetList(QDomElement& docElem, bool parseActions)
             {//No API file for the current class.
                 className = "";
             }
+        }
+
+        if(!m_parsedUiObjects.contains(uiFileName))
+        {
+            m_parsedUiObjects[uiFileName] = QStringList();
+        }
+        if(!m_parsedUiObjects[uiFileName].contains(objectName))
+        {
+            m_parsedUiObjects[uiFileName].append(objectName);
         }
         addObjectToAutoCompletionList(objectName, className, true);
     }
@@ -591,15 +602,11 @@ void ParseThread::parseUiFile(QString uiFileName)
             if (doc.setContent(&uiFile))
             {
                 QDomElement docElem = doc.documentElement();
-                parseWidgetList(docElem, false);
-                parseWidgetList(docElem, true);
+                parseWidgetList(uiFileName, docElem, false);
+                parseWidgetList(uiFileName, docElem, true);
             }
 
             uiFile.close();
-            if(!m_foundUiFiles.contains(uiFileName))
-            {
-                m_foundUiFiles.append(uiFileName);
-            }
         }
     }
 
@@ -964,15 +971,16 @@ void ParseThread::checkDocumentForStandardDynamicObjects(QStringList& lines, QSt
  * Parses the current text. Emits parsingFinishedSignal if the parsing is finished.
  * @param currentText
  *      The text which shall be parsed.
- * @param activeDocument
- *      The name of the active document.
+ * @param loadedDocument
+ *      The names of the loaded document.
  */
-void ParseThread::parseSlot(QString currentText, QString activeDocument)
+void ParseThread::parseSlot(QString currentText, QStringList loadedDocuments)
 {
     //Clear all parsed objects (all but m_autoCompletionApiFiles).
     m_autoCompletionEntries.clear();
     m_creatorObjects.clear();
     m_tableWidgetObjects.clear();
+    m_parsedUiObjects.clear();
     m_parsedFiles.clear();
     m_stringList.clear();
     m_arrayList.clear();
@@ -994,21 +1002,21 @@ void ParseThread::parseSlot(QString currentText, QString activeDocument)
     //Get all lines (without square brackets).
     QStringList lines = currentText.split(splitRegexp);
 
-    //Parse all found user interface files (check for changes).
-    for(auto el : m_foundUiFiles)
+    //Check if the loaded documents have a ui-file.
+    for(auto el : loadedDocuments)
     {
-        parseUiFile(el);
-    }
-
-    //Check if the active document has a ui-file.
-    QString uiFileName = MainWindow::getTheCorrespondingUiFile(activeDocument);
-    if(!uiFileName.isEmpty())
-    {
-        parseUiFile(uiFileName);
+        QString uiFileName = MainWindow::getTheCorrespondingUiFile(el);
+        if(!uiFileName.isEmpty())
+        {
+            parseUiFile(uiFileName);
+        }
     }
 
     //Find all included user interface files.
-    checkDocumentForUiFiles(currentText, activeDocument);
+    for(auto el : loadedDocuments)
+    {
+        checkDocumentForUiFiles(currentText, el);
+    }
 
     int counter = 1;
     do
@@ -1045,6 +1053,6 @@ void ParseThread::parseSlot(QString currentText, QString activeDocument)
         }
     }
 
-    emit parsingFinishedSignal(m_autoCompletionEntries, m_autoCompletionApiFiles);
+    emit parsingFinishedSignal(m_autoCompletionEntries, m_autoCompletionApiFiles, m_parsedUiObjects);
 }
 
