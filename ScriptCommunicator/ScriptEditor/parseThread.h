@@ -26,6 +26,17 @@ typedef struct
 
 }FunctionWithResultObject;
 
+//A parsed entry.
+typedef struct
+{
+    int line;
+    int column;
+    QString name;
+    bool isFunction;
+    QStringList params;
+    int tabIndex;
+}ParsedEntry;
+
 class ParseThread : public QThread
 {
     Q_OBJECT
@@ -46,9 +57,12 @@ signals:
 public slots:
 
     ///Parses the current text. Emits parsingFinishedSignal if the parsing is finished.
-    void parseSlot(QString currentText, QStringList loadedDocuments);
+    void parseSlot(QString currentText, QStringList loadedDocuments, QMap<QString, QString> loadedUiFiles);
 
 private:
+
+    ///Returns all functions and gloabl variables in the loaded script files.
+    QMap<QString,QVector<ParsedEntry>> getAllFunctionsAndGlobalVariables(QMap<QString, QString> loadedScripts);
 
     ///Searches objects which are returned by a ScriptTableWidget.
     void searchSingleTableSubWidgets(QString objectName, QVector<TableWidgetSubObject> subObjects, QStringList& lines);
@@ -79,7 +93,7 @@ private:
     void parseWidgetList(QString uiFileName, QDomElement& docElem, bool parseActions);
 
     ///Parses an user interface file (auto-completion).
-    void parseUiFile(QString uiFileName);
+    void parseUiFile(QString uiFileName, QString fileContent);
 
     ///Removes all unnecessary characters (e.g. comments).
     void removeAllUnnecessaryCharacters(QString& currentText);

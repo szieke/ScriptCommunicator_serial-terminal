@@ -95,6 +95,7 @@
      <string>&amp;File</string>
     </property>
     <addaction name="actionNew"/>
+    <addaction name="actionReload"/>
     <addaction name="actionOpen"/>
     <addaction name="actionOpenAllIncludedScripts"/>
     <addaction name="actionSave"/>
@@ -141,6 +142,7 @@
    <addaction name="actionNew"/>
    <addaction name="actionOpen"/>
    <addaction name="actionSave"/>
+   <addaction name="actionReload"/>
    <addaction name="separator"/>
    <addaction name="actionCut"/>
    <addaction name="actionCopy"/>
@@ -150,6 +152,7 @@
    <addaction name="actionRedo"/>
    <addaction name="separator"/>
    <addaction name="actionOpenAllIncludedScripts"/>
+   <addaction name="actionEditUi"/>
   </widget>
   <action name="actionOpen">
    <property name="icon">
@@ -175,7 +178,7 @@
     <string>Save</string>
    </property>
    <property name="toolTip">
-    <string>save the document to disk</string>
+    <string>save the current document to disk</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -364,6 +367,33 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+F</string>
+   </property>
+  </action>
+  <action name="actionEditUi">
+   <property name="icon">
+    <iconset resource="ScriptEditor.qrc">
+     <normaloff>:/images/designer.ico</normaloff>:/images/designer.ico</iconset>
+   </property>
+   <property name="text">
+    <string>edit ui</string>
+   </property>
+   <property name="toolTip">
+    <string>edit the selected ui file (ui tab)</string>
+   </property>
+  </action>
+  <action name="actionReload">
+   <property name="icon">
+    <iconset resource="ScriptEditor.qrc">
+     <normaloff>:/images/reload.png</normaloff>:/images/reload.png</iconset>
+   </property>
+   <property name="text">
+    <string>Reload</string>
+   </property>
+   <property name="toolTip">
+    <string>reload the current document</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
    </property>
   </action>
  </widget>

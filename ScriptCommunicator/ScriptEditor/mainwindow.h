@@ -92,7 +92,7 @@ public:
 
 signals:
     ///Is emitted if the parsing of the source files shall be started.
-    void parseSignal(QString currentText, QStringList loadedDocuments);
+    void parseSignal(QString currentText, QStringList loadedDocuments, QMap<QString, QString> loadedUiFile);
 
 protected:
     ///Close event.
@@ -129,6 +129,9 @@ private slots:
     ///Is called if the find button the the find dialog has been clicked.
     void findButtonSlot();
 
+    ///Is called if the edit ui button has been clicked.
+    void editUiButtonSlot();
+
     ///Is called if the replace button the the find dialog has been clicked.
     void replaceButtonSlot();
 
@@ -162,6 +165,9 @@ private slots:
     ///Is called if a tab shall be closed.
     void tabCloseRequestedSlot(int index);
 
+    ///Reload action slot.
+    void reloadSlot();
+
     ///Cut action slot.
     void cutSlot();
 
@@ -182,6 +188,9 @@ private slots:
 
     ///Open all included action slot.
     void openAllIncludedScriptsSlot();
+
+    ///Is call by m_checkForFileChangesTimer and checks for changes in the loaded files.
+    void checkForFileChanges(void);
 
     ///Is called if the parse timer times out.
     void parseTimeout(void);
@@ -279,6 +288,9 @@ private:
 
     ///The unsaved info files for all documents which have unsaved changes.
     QMap<QString, QFile*> m_unsavedInfoFiles;
+
+    ///This timer checks for changes in the loades files.
+    QTimer m_checkForFileChangesTimer;
 
 };
 

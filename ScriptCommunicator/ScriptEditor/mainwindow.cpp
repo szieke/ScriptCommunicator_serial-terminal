@@ -70,7 +70,7 @@ MainWindow* getMainWindow()
  *      The file which should be loaded.
  */
 MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTimer(), m_parseThread(0), m_parsingFinished(true),
-    m_lockFiles(), m_unsavedInfoFiles()
+    m_lockFiles(), m_unsavedInfoFiles(), m_checkForFileChangesTimer()
 {
     ui->setupUi(this);
 
@@ -102,6 +102,8 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     connect(m_findDialog->ui->replacePushButton, SIGNAL(clicked()), this, SLOT(replaceButtonSlot()));
     connect(m_findDialog->ui->replaceAllPushButton, SIGNAL(clicked()), this, SLOT(replaceAllButtonSlot()));
     connect(&m_parseTimer, SIGNAL(timeout()), this, SLOT(parseTimeout()));
+    connect(&m_checkForFileChangesTimer, SIGNAL(timeout()), this, SLOT(checkForFileChanges()));
+
 
     m_findDialog->ui->findWhatComboBox->setAutoCompletion(false);
     m_findDialog->ui->replaceComboBox->setAutoCompletion(false);
@@ -118,12 +120,15 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     m_parseThread->start();
 
     qRegisterMetaType<QMap<QString,QStringList>>("QMap<QString,QStringList>");
+    qRegisterMetaType<QMap<QString,QString>>("QMap<QString,QString>");
 
-    connect(this, SIGNAL(parseSignal(QString,QStringList)), m_parseThread, SLOT(parseSlot(QString,QStringList)), Qt::QueuedConnection);
+    connect(this, SIGNAL(parseSignal(QString,QStringList, QMap<QString, QString>)), m_parseThread,
+            SLOT(parseSlot(QString,QStringList, QMap<QString, QString>)), Qt::QueuedConnection);
     connect(m_parseThread, SIGNAL(parsingFinishedSignal(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>)),
             this, SLOT(parsingFinishedSlot(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>)), Qt::QueuedConnection);
 
      m_parseTimer.start(2000);
+     m_checkForFileChangesTimer.start(2000);
 }
 
 MainWindow::~MainWindow()
@@ -152,6 +157,72 @@ void MainWindow::parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEn
     insertAllUiObjectsInUiView(parsedUiObjects);
 }
 
+/**
+ * Is call by m_checkForFileChangesTimer and checks for changes in the loaded files.
+ */
+void MainWindow::checkForFileChanges(void)
+{
+    m_checkForFileChangesTimer.stop();
+
+    for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+    {
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
+
+        QFileInfo fileInfo(textEditor->getDocumentName());
+        if(textEditor->getDocumentName() != "")
+        {
+            if(fileInfo.lastModified() != textEditor->getLastModified())
+            {//Document was changed from elsewhere
+
+                int ret = QMessageBox::question(this, tr("ScriptCommunicator script editor"), textEditor->getDocumentName() + " has been modified by another programm."
+                                                                                                    " Reload this file",
+                                               QMessageBox::Yes | QMessageBox::Default,
+                                               QMessageBox::No);
+
+                if (ret == QMessageBox::Yes)
+                {
+                    QFile file(textEditor->getDocumentName());
+                    if (file.open(QFile::ReadOnly))
+                    {
+                        QTextStream in(&file);
+                        in.setCodec("UTF-8");
+                        textEditor->setText(in.readAll());
+                        file.close();
+
+                        textEditor->setModified(false);
+                        removeSavedInfoFile(textEditor->getDocumentName());
+
+
+                        if(ui->documentsTabWidget->currentIndex() == i)
+                        {
+                            //Call the slot function manually.
+                            tabIndexChangedSlot(i);
+                        }
+                        else
+                        {
+                            ui->documentsTabWidget->setCurrentIndex(i);
+                        }
+
+                        //Set the tab text,
+                        ui->documentsTabWidget->setTabText(ui->documentsTabWidget->currentIndex(), strippedName(textEditor->getDocumentName()));
+                        statusBar()->showMessage(tr("File reloaded"), 10000);
+                    }
+                    else
+                    {
+                        QMessageBox::warning(this, tr("ScriptCommunicator script editor"),
+                                             tr("Cannot read file %1:\n%2")
+                                             .arg(textEditor->getDocumentName())
+                                             .arg(file.errorString()));
+                    }
+                }
+
+                textEditor->updateLastModified();
+            }
+        }
+    }
+
+    m_checkForFileChangesTimer.start(2000);
+}
 
 /**
  * Is called if the parse timer times out.
@@ -163,38 +234,20 @@ void MainWindow::parseTimeout(void)
     {
         m_parseTimer.stop();
 
-        for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
-        {
-            SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
-
-            QFileInfo fileInfo(textEditor->getDocumentName());
-            if(textEditor->getDocumentName() != "")
-            {
-                if(fileInfo.lastModified() != textEditor->getLastModified())
-                {//Document was changed from elsewhere
-
-                    QFile file(textEditor->getDocumentName());
-                    if (file.open(QFile::ReadOnly))
-                    {
-                        QTextStream in(&file);
-                        in.setCodec("UTF-8");
-                        textEditor->setText(in.readAll());
-                        file.close();
-                        ui->documentsTabWidget->setCurrentIndex(i);
-                        saveFile(textEditor->getDocumentName());
-                        statusBar()->showMessage(tr("File reloaded"), 10000);
-                    }
-
-                }
-            }
-        }
-
         QString completeText;
         QStringList loadedDocuments;
+        QMap<QString, QString> loadedUiFiles;
 
         SingleDocument* currentEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-        completeText = currentEditor->text();
-        loadedDocuments.append(currentEditor->getDocumentName());
+        if(!currentEditor->getDocumentName().endsWith(".ui"))
+        {
+            completeText = currentEditor->text();
+            loadedDocuments.append(currentEditor->getDocumentName());
+        }
+        else
+        {
+            loadedUiFiles[currentEditor->getDocumentName()] = currentEditor->text();
+        }
 
         //Get the text of all open documents.
         for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
@@ -202,13 +255,20 @@ void MainWindow::parseTimeout(void)
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
             if(currentEditor != textEditor)
             {
-                completeText.append(textEditor->text());
-                loadedDocuments.append(textEditor->getDocumentName());
+                if(!textEditor->getDocumentName().endsWith(".ui"))
+                {
+                    completeText.append(textEditor->text());
+                    loadedDocuments.append(textEditor->getDocumentName());
+                }
+                else
+                {
+                    loadedUiFiles[textEditor->getDocumentName()] = textEditor->text();
+                }
             }
         }
 
         m_parsingFinished = false;
-        emit parseSignal(completeText, loadedDocuments);
+        emit parseSignal(completeText, loadedDocuments, loadedUiFiles);
 
         m_parseTimer.start(2000);
     }
@@ -344,7 +404,20 @@ void MainWindow::tabIndexChangedSlot(int index)
             ui->actionCopy->setEnabled(false);
         }
         setWindowModified(textEditor->isModified());
-        setWindowTitle(tr("ScriptCommunicator %1 - Script Editor %2[*]").arg(SCRIPT_COMMUNICATOR_VERSION).arg(textEditor->getDocumentName()));
+
+        QString nameInTitle;
+        if(textEditor->getDocumentName().isEmpty())
+        {
+            ui->actionReload->setEnabled(false);
+            nameInTitle = ui->documentsTabWidget->tabText(ui->documentsTabWidget->currentIndex());
+        }
+        else
+        {
+            ui->actionReload->setEnabled(true);
+            nameInTitle = textEditor->getDocumentName();
+        }
+
+        setWindowTitle(tr("ScriptCommunicator %1 - Script Editor %2[*]").arg(SCRIPT_COMMUNICATOR_VERSION).arg(nameInTitle));
 
         QMap<QString, bool> scripts = getAllIncludedScripts(ui->documentsTabWidget->currentIndex());
         if(scripts.isEmpty())
@@ -363,7 +436,44 @@ void MainWindow::tabIndexChangedSlot(int index)
 }
 
 /**
- * /Cut action slot.
+ * Reload action slot.
+ */
+void MainWindow::reloadSlot()
+{
+    SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
+    QFile file(textEditor->getDocumentName());
+    if (file.open(QFile::ReadOnly))
+    {
+        QTextStream in(&file);
+        in.setCodec("UTF-8");
+        textEditor->setText(in.readAll());
+        file.close();
+
+        textEditor->setModified(false);
+        removeSavedInfoFile(textEditor->getDocumentName());
+
+        //Call the slot function manually.
+        tabIndexChangedSlot(ui->documentsTabWidget->currentIndex());
+
+        //Set the tab text,
+        ui->documentsTabWidget->setTabText(ui->documentsTabWidget->currentIndex(), strippedName(textEditor->getDocumentName()));
+        statusBar()->showMessage(tr("File reloaded"), 10000);
+
+        textEditor->updateLastModified();
+        m_parseTimer.start(200);
+        insertAllFunctionAndVariablesInListView();
+    }
+    else
+    {
+        QMessageBox::warning(this, tr("ScriptCommunicator script editor"),
+                             tr("Cannot read file %1:\n%2")
+                             .arg(textEditor->getDocumentName())
+                             .arg(file.errorString()));
+    }
+}
+
+/**
+ * Cut action slot.
  */
 void MainWindow::cutSlot()
 {
@@ -1025,6 +1135,36 @@ bool MainWindow::findTextInDocument(QString findText)
 }
 
 /**
+ * Is called if the edit ui button has been clicked.
+ */
+void MainWindow::editUiButtonSlot()
+{
+    QList<QTreeWidgetItem*>items = ui->uiTreeWidget->selectedItems();
+    if(!items.isEmpty())
+    {
+        bool isOk;
+        ParsedUiObject* entry  = (ParsedUiObject*)items[0]->data(0, PARSED_ENTRY).toULongLong(&isOk);
+
+        int index = 0;
+        if((entry != 0) && !checkIfDocumentAlreadyLoaded(entry->uiFile, index))
+        {
+            int ret = QMessageBox::question(this, tr("Edit user interface"), "Edit " + strippedName(entry->uiFile) + " in text mode?",
+                                           QMessageBox::Yes | QMessageBox::Default,
+                                           QMessageBox::No);
+
+            if (ret == QMessageBox::Yes)
+            {
+                addTab(entry->uiFile, true);
+            }
+            else
+            {
+                startDesigner(entry->uiFile);
+            }
+        }
+    }
+}
+
+/**
  * Is called if the find button the the find dialog has been clicked.
  */
 void MainWindow::findButtonSlot()
@@ -1170,12 +1310,12 @@ void MainWindow::uiViewDoubleClicked(QTreeWidgetItem* item, int column)
         bool isOk = false;
         ParsedUiObject* entry  = (ParsedUiObject*)item->data(0, PARSED_ENTRY).toULongLong(&isOk);
 
-        if(entry != 0)
+        if((entry != 0) && !entry->objectName.isEmpty())
         {
             int index = 0;
             if(!checkIfDocumentAlreadyLoaded(entry->uiFile, index))
             {
-                int ret = QMessageBox::question(this, tr("Edit user interface"), "Edit the ui in text mode?",
+                int ret = QMessageBox::question(this, tr("Edit user interface"), "Edit " + strippedName(entry->uiFile) + " in text mode?",
                                                QMessageBox::Yes | QMessageBox::Default,
                                                QMessageBox::No);
 
@@ -1331,6 +1471,10 @@ void MainWindow::initActions()
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newSlot()));
     connect(ui->actionOpenAllIncludedScripts, SIGNAL(triggered()), this, SLOT(openAllIncludedScriptsSlot()));
     connect(ui->actionSetFont, SIGNAL(triggered()), this, SLOT(setFont()));
+    connect(ui->actionEditUi , SIGNAL(triggered()), this, SLOT(editUiButtonSlot()));
+    connect(ui->actionReload , SIGNAL(triggered()), this, SLOT(reloadSlot()));
+
+    ui->actionEditUi->setEnabled(false);
 
 }
 
@@ -1498,12 +1642,17 @@ void MainWindow::insertAllUiObjectsInUiView(QMap<QString, QStringList> parsedUiO
     savedCompleteTreeString = currenCompleteTreeString;
     clearUiWindow();
 
+    ui->actionEditUi->setEnabled(parsedUiObjects.isEmpty() ? false : true);
+
     iter = parsedUiObjects.constBegin();
     bool firstFile = true;
     while (iter != parsedUiObjects.constEnd())
     {
         QTreeWidgetItem* fileElement = new QTreeWidgetItem(root);
-        fileElement->setData(0, PARSED_ENTRY, 0);
+        ParsedUiObject* tmpEntry = new ParsedUiObject();
+        tmpEntry->objectName = "";
+        tmpEntry->uiFile = iter.key();
+        fileElement->setData(0, PARSED_ENTRY, (quint64)tmpEntry);
         fileElement->setText(0, strippedName(iter.key()));
         fileElement->setToolTip(0, iter.key());
         root->addChild(fileElement);
@@ -1519,7 +1668,7 @@ void MainWindow::insertAllUiObjectsInUiView(QMap<QString, QStringList> parsedUiO
         {
             QTreeWidgetItem* funcElement = new QTreeWidgetItem(fileElement);
             QString textInTreeWidget = "UI_" + el;
-            ParsedUiObject* tmpEntry = new ParsedUiObject();
+            tmpEntry = new ParsedUiObject();
             tmpEntry->objectName = el;
             tmpEntry->uiFile = iter.key();
             funcElement->setData(0, PARSED_ENTRY, (quint64)tmpEntry);
@@ -1747,6 +1896,7 @@ void MainWindow::setCurrentFile(const QString &fileName)
         tabShownName = createNewDocumentTitle();
         windowShownName = tabShownName;
         ui->actionOpenAllIncludedScripts->setEnabled(false);
+        ui->actionReload->setEnabled(false);
     }
     else
     {
@@ -1762,6 +1912,8 @@ void MainWindow::setCurrentFile(const QString &fileName)
         {
             ui->actionOpenAllIncludedScripts->setEnabled(true);
         }
+
+        ui->actionReload->setEnabled(true);
     }
 
     setWindowTitle(tr("ScriptCommunicator %1 - Script Editor %2[*]").arg(SCRIPT_COMMUNICATOR_VERSION).arg(windowShownName));

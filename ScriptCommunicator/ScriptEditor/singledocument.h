@@ -6,16 +6,7 @@
 #include <QDomDocument>
 #include <QDateTime>
 
-//A parsed entry.
-typedef struct
-{
-    int line;
-    int column;
-    QString name;
-    bool isFunction;
-    QStringList params;
-    int tabIndex;
-}ParsedEntry;
+
 
 //A parsed ui object entry.
 typedef struct

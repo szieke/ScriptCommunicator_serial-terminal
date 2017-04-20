@@ -13,5 +13,6 @@
         <file>images/new.ico</file>
         <file>images/designer.ico</file>
         <file>images/font.png</file>
+        <file>images/reload.png</file>
     </qresource>
 </RCC>

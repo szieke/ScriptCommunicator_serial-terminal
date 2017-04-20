@@ -5,6 +5,7 @@
 #include <QDirIterator>
 #include <QTextStream>
 #include <QCoreApplication>
+#include "esprima/esprima.h"
 
 /**
  * Returns the folder ich which the ScriptEditor files
@@ -586,8 +587,10 @@ void ParseThread::addObjectToAutoCompletionList(QString& objectName, QString& cl
  * Parses an user interface file (auto-completion).
  * @param uiFileName
  *      The user interface file.
+ * @param fileContent
+ *      The file content.
  */
-void ParseThread::parseUiFile(QString uiFileName)
+void ParseThread::parseUiFile(QString uiFileName, QString fileContent)
 {
 
     QFile uiFile(uiFileName);
@@ -597,16 +600,30 @@ void ParseThread::parseUiFile(QString uiFileName)
     {
         m_parsedFiles.append(uiFileName);
 
-        if (uiFile.open(QFile::ReadOnly))
+        if(fileContent.isEmpty())
         {
-            if (doc.setContent(&uiFile))
+            //Load the file content.
+            if (uiFile.open(QFile::ReadOnly))
+            {
+                if (doc.setContent(&uiFile))
+                {
+                    QDomElement docElem = doc.documentElement();
+                    parseWidgetList(uiFileName, docElem, false);
+                    parseWidgetList(uiFileName, docElem, true);
+                }
+
+                uiFile.close();
+            }
+        }
+        else
+        {
+            if (doc.setContent(fileContent))
             {
                 QDomElement docElem = doc.documentElement();
                 parseWidgetList(uiFileName, docElem, false);
                 parseWidgetList(uiFileName, docElem, true);
             }
 
-            uiFile.close();
         }
     }
 
@@ -658,7 +675,7 @@ void ParseThread::checkDocumentForUiFiles(QString& currentText, QString& activeD
             uiFile = QFileInfo(activeDocument).absolutePath() + "/" + uiFile;
         }
 
-        parseUiFile(uiFile);
+        parseUiFile(uiFile, "");
         index = currentText.indexOf("scriptThread.loadUserInterfaceFile", index + 1);
 
     }
@@ -967,6 +984,74 @@ void ParseThread::checkDocumentForStandardDynamicObjects(QStringList& lines, QSt
    }
 }
 
+
+/**
+ * Returns all functions and gloabl variables in the loaded script files.
+ * @param loadedScripts
+ *      The loaded scripts.
+ * @return
+ *      All parsed entries.
+ */
+QMap<QString,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QMap<QString, QString> loadedScripts)
+{
+    QMap<QString,QVector<ParsedEntry>> result;
+
+    QMap<QString, QString>::const_iterator iter = loadedScripts.constBegin();
+    while (iter != loadedScripts.constEnd())
+    {
+        QVector<ParsedEntry> fileResult;
+        esprima::Pool pool;
+        esprima::Program *program = NULL;
+        try
+        {
+            program = esprima::parse(pool, iter.value().toLocal8Bit().constData());
+        }
+        catch(esprima::ParseError e)
+        {
+            (void)e;
+            break;
+        }
+
+        for(int i = 0; i < program->body.size(); i++)
+        {
+            ParsedEntry entry;
+            esprima::VariableDeclaration* test = dynamic_cast<esprima::VariableDeclaration*>(program->body[i]);
+            if(test)
+            {
+                entry.line = test->loc->start->line - 1;
+                entry.column = test->loc->start->column;
+                entry.name = test->declarations[0]->id->name.c_str();
+                entry.isFunction = false;
+                entry.params = QStringList();
+                fileResult.append(entry);
+            }
+
+            esprima::FunctionDeclaration* test2 =dynamic_cast<esprima::FunctionDeclaration*>(program->body[i]);
+
+            if(test2)
+            {
+                entry.line = test2->loc->start->line - 1;
+                entry.column = test2->loc->start->column;
+                entry.name = test2->id->name.c_str();
+                entry.isFunction = true;
+                for(int j = 0; j < test2->params.size(); j++)
+                {
+                    entry.params.append(test2->params[j]->name.c_str());
+                }
+                fileResult.append(entry);
+            }
+        }
+
+        if(!fileResult.isEmpty())
+        {
+            result[iter.key()] = fileResult;
+        }
+
+        iter++;
+
+    }
+    return result;
+}
 /**
  * Parses the current text. Emits parsingFinishedSignal if the parsing is finished.
  * @param currentText
@@ -974,7 +1059,7 @@ void ParseThread::checkDocumentForStandardDynamicObjects(QStringList& lines, QSt
  * @param loadedDocument
  *      The names of the loaded document.
  */
-void ParseThread::parseSlot(QString currentText, QStringList loadedDocuments)
+void ParseThread::parseSlot(QString currentText, QStringList loadedDocuments, QMap<QString, QString> loadedUiFiles)
 {
     //Clear all parsed objects (all but m_autoCompletionApiFiles).
     m_autoCompletionEntries.clear();
@@ -1002,13 +1087,21 @@ void ParseThread::parseSlot(QString currentText, QStringList loadedDocuments)
     //Get all lines (without square brackets).
     QStringList lines = currentText.split(splitRegexp);
 
+    //Parse all loaded ui files.
+    QMap<QString, QString>::const_iterator iter = loadedUiFiles.constBegin();
+    while (iter != loadedUiFiles.constEnd())
+    {
+        parseUiFile(iter.key(), iter.value());
+        iter++;
+    }
+
     //Check if the loaded documents have a ui-file.
     for(auto el : loadedDocuments)
     {
         QString uiFileName = MainWindow::getTheCorrespondingUiFile(el);
         if(!uiFileName.isEmpty())
         {
-            parseUiFile(uiFileName);
+            parseUiFile(uiFileName, "");
         }
     }
 
