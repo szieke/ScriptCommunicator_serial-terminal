@@ -7,6 +7,7 @@
 #include <QVector>
 #include <QStringList>
 #include <QDomDocument>
+#include <QDateTime>
 
 ///Object created by ScriptTable::InsertWidget.
 typedef struct
@@ -52,12 +53,12 @@ signals:
     ///Is emitted if the parsing is finished.
     ///Note: autoCompletionApiFiles contains the auto-completion entries for all parsed files.
     void parsingFinishedSignal(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles,
-                               QMap<QString, QStringList> parsedUiObjects);
+                               QMap<QString, QStringList> parsedUiObjects, QMap<QString,QVector<ParsedEntry>> parsedEntries, bool doneParsing);
 
 public slots:
 
     ///Parses the current text. Emits parsingFinishedSignal if the parsing is finished.
-    void parseSlot(QString currentText, QStringList loadedDocuments, QMap<QString, QString> loadedUiFiles);
+    void parseSlot(QMap<QString, QString> loadedUiFiles, QMap<QString, QString> loadedScripts, bool loadedFileChanged);
 
 private:
 
@@ -84,7 +85,7 @@ private:
     void checkDocumentForStandardDynamicObjects(QStringList& lines, QString &currentText, QStringList &linesWithBrackets, int passNumber);
 
     ///Checks if in the current document user interface files are loaded.
-    void checkDocumentForUiFiles(QString& currentText, QString &activeDocument);
+    void checkDocumentForUiFiles(QString& currentText, QString activeDocument);
 
     ///Adds on obect to the auto-completion list.
     void addObjectToAutoCompletionList(QString& objectName, QString& className, bool isGuiElement, bool isArray=false, bool replaceExistingEntry=false);
@@ -132,13 +133,17 @@ private:
     QMap<QString, QVector<TableWidgetSubObject>> m_tableWidgetObjects;
 
     ///Contains all parsed ui files.
-    QStringList m_parsedFiles;
+    QStringList m_parsedUiFiles;
+
+    ///Contains the last changed time of all parsed ui files which where loaded from file.
+    QMap<QString, QDateTime> m_parsedUiFilesFromFile;
 
     ///Contains the data of a function which returns a object (e.g. String).
     QMap<QString, QVector<FunctionWithResultObject>> m_functionsWithResultObjects;
 
     ///Contains the parsed UI objects.
     QMap<QString, QStringList> m_parsedUiObjects;
+
 };
 
 #endif // PARSETHREAD_H

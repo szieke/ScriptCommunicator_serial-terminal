@@ -42,6 +42,12 @@ public:
     ///Initializes the autocompletion.
     void initAutoCompletion(QStringList &additionalElements, QMap<QString, QStringList> &autoCompletionEntries, QMap<QString, QStringList>& autoCompletionApiFiles);
 
+    ///Sets m_fileMustBeParsed.
+    void setFileMustBeParsed(bool fileMustBeParsed){m_fileMustBeParsed = fileMustBeParsed;}
+
+    ///Returns m_fileMustBeParsed.
+    bool getFileMustBeParsed(void){return m_fileMustBeParsed;}
+
 private:
 
     ///Checks if in the current document user interface files are loaded.
@@ -69,6 +75,9 @@ private:
 
     ///Time at which the corresponding file has been modified-
     QDateTime m_fileLastModified;
+
+    ///True if the file must be parst (file content changed).
+    bool m_fileMustBeParsed;
 };
 
 #endif // SINGLEDOCUMENT_H

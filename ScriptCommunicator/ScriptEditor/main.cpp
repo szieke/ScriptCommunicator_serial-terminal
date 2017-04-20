@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 
     for(int i = 1; i < argc; i++)
     {
-        scripts << argv[i];
+        scripts << QString(argv[i]).replace("\\", "/");
     }
 
     MainWindow mainWin(scripts);

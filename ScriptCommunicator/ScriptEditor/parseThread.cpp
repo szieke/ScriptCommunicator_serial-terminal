@@ -129,7 +129,7 @@ void ParseThread::parseSingleLineForFunctionsWithResultObjects(QString singleLin
 
 ParseThread::ParseThread(QObject *parent) : QThread(parent), m_autoCompletionApiFiles(), m_autoCompletionEntries(), m_objectAddedToCompletionList(false),
     m_creatorObjects(), m_stringList(), m_unknownTypeObjects(), m_arrayList(), m_tableWidgets(),
-    m_tableWidgetObjects(), m_parsedFiles()
+    m_tableWidgetObjects(), m_parsedUiFiles(), m_parsedUiFilesFromFile()
 {
     if(m_autoCompletionApiFiles.isEmpty())
     {
@@ -596,9 +596,9 @@ void ParseThread::parseUiFile(QString uiFileName, QString fileContent)
     QFile uiFile(uiFileName);
     QDomDocument doc("ui");
 
-    if(!m_parsedFiles.contains(uiFileName))
+    if(!m_parsedUiFiles.contains(uiFileName))
     {
-        m_parsedFiles.append(uiFileName);
+        m_parsedUiFiles.append(uiFileName);
 
         if(fileContent.isEmpty())
         {
@@ -613,6 +613,9 @@ void ParseThread::parseUiFile(QString uiFileName, QString fileContent)
                 }
 
                 uiFile.close();
+
+                QFileInfo fileInfo(uiFileName);
+                m_parsedUiFilesFromFile[uiFileName] = fileInfo.lastModified();
             }
         }
         else
@@ -633,7 +636,7 @@ void ParseThread::parseUiFile(QString uiFileName, QString fileContent)
  * If user interface are loaded then they will be parsed and added to the auto-completion
  * list (m_autoCompletionEntries).
  */
-void ParseThread::checkDocumentForUiFiles(QString& currentText, QString& activeDocument)
+void ParseThread::checkDocumentForUiFiles(QString& currentText, QString activeDocument)
 {
     int index;
 
@@ -1054,26 +1057,60 @@ QMap<QString,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariable
 }
 /**
  * Parses the current text. Emits parsingFinishedSignal if the parsing is finished.
- * @param currentText
- *      The text which shall be parsed.
- * @param loadedDocument
- *      The names of the loaded document.
+ * @param loadedUiFiles
+ *      All loaded ui files.
+ * @param loadedScripts
+ *      All loaded scripts.
  */
-void ParseThread::parseSlot(QString currentText, QStringList loadedDocuments, QMap<QString, QString> loadedUiFiles)
+void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<QString, QString> loadedScripts, bool loadedFileChanged)
 {
     //Clear all parsed objects (all but m_autoCompletionApiFiles).
     m_autoCompletionEntries.clear();
     m_creatorObjects.clear();
     m_tableWidgetObjects.clear();
     m_parsedUiObjects.clear();
-    m_parsedFiles.clear();
+    m_parsedUiFiles.clear();
     m_stringList.clear();
     m_arrayList.clear();
     m_tableWidgets.clear();
     m_unknownTypeObjects.clear();
 
-
     QRegExp splitRegexp("[\n;]");
+
+
+    bool uiFileChanged = false;
+
+    //Creates a string which contains the text of all loaded scripts.
+    QMap<QString, QDateTime>::const_iterator timeIter = m_parsedUiFilesFromFile.constBegin();
+    while (timeIter != m_parsedUiFilesFromFile.constEnd())
+    {
+        QFileInfo fileInfo(timeIter.key());
+        if(fileInfo.lastModified() != timeIter.value())
+        {
+            uiFileChanged = true;
+            break;
+        }
+
+        timeIter++;
+    }
+
+    if(!loadedFileChanged && !uiFileChanged)
+    {//Nothing changed.
+        emit parsingFinishedSignal(QMap<QString, QStringList>(), QMap<QString, QStringList>(), QMap<QString, QStringList>(), QMap<QString,QVector<ParsedEntry>>(), false);
+        return;
+    }
+    m_parsedUiFilesFromFile.clear();
+
+    QMap<QString,QVector<ParsedEntry>> parsedEntries = getAllFunctionsAndGlobalVariables(loadedScripts);
+
+    QString currentText;
+    //Creates a string which contains the text of all loaded scripts.
+    QMap<QString, QString>::const_iterator iter = loadedScripts.constBegin();
+    while (iter != loadedScripts.constEnd())
+    {
+        currentText += iter.value();
+        iter++;
+    }
 
     //Remove all unnecessary characters (e.g. comments).
     removeAllUnnecessaryCharacters(currentText);
@@ -1088,7 +1125,7 @@ void ParseThread::parseSlot(QString currentText, QStringList loadedDocuments, QM
     QStringList lines = currentText.split(splitRegexp);
 
     //Parse all loaded ui files.
-    QMap<QString, QString>::const_iterator iter = loadedUiFiles.constBegin();
+    iter = loadedUiFiles.constBegin();
     while (iter != loadedUiFiles.constEnd())
     {
         parseUiFile(iter.key(), iter.value());
@@ -1096,20 +1133,25 @@ void ParseThread::parseSlot(QString currentText, QStringList loadedDocuments, QM
     }
 
     //Check if the loaded documents have a ui-file.
-    for(auto el : loadedDocuments)
+    iter = loadedScripts.constBegin();
+    while (iter != loadedScripts.constEnd())
     {
-        QString uiFileName = MainWindow::getTheCorrespondingUiFile(el);
+        QString uiFileName = MainWindow::getTheCorrespondingUiFile(iter.key());
         if(!uiFileName.isEmpty())
         {
             parseUiFile(uiFileName, "");
         }
+        iter++;
     }
 
     //Find all included user interface files.
-    for(auto el : loadedDocuments)
+    iter = loadedScripts.constBegin();
+    while (iter != loadedScripts.constEnd())
     {
-        checkDocumentForUiFiles(currentText, el);
+        checkDocumentForUiFiles(currentText,iter.key());
+        iter++;
     }
+
 
     int counter = 1;
     do
@@ -1146,6 +1188,6 @@ void ParseThread::parseSlot(QString currentText, QStringList loadedDocuments, QM
         }
     }
 
-    emit parsingFinishedSignal(m_autoCompletionEntries, m_autoCompletionApiFiles, m_parsedUiObjects);
+    emit parsingFinishedSignal(m_autoCompletionEntries, m_autoCompletionApiFiles, m_parsedUiObjects, parsedEntries, true);
 }
 

@@ -19,7 +19,8 @@
  *      The parent.
  */
 SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
-    QsciScintilla(parent), m_mainWindow(mainWindow), m_documentName(""), m_fileLastModified(QDateTime::currentDateTime())
+    QsciScintilla(parent), m_mainWindow(mainWindow), m_documentName(""), m_fileLastModified(QDateTime::currentDateTime()),
+    m_fileMustBeParsed(false)
 {
 
     connect(this, SIGNAL(textChanged()), m_mainWindow, SLOT(documentWasModified()));

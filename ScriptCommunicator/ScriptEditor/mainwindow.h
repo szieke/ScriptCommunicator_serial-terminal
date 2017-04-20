@@ -62,9 +62,6 @@ public:
     ///Starts an other instance of ScriptEditor.
     void startScriptEditor(QStringList arguments);
 
-    ///Returns all functions in a script file.
-    QVector<ParsedEntry> getAllFunctionsAndVariables(int tabIndex);
-
     ///Returns all included scripts from a script file.
     QMap<QString, bool> getAllIncludedScripts(int tabIndex);
 
@@ -92,7 +89,7 @@ public:
 
 signals:
     ///Is emitted if the parsing of the source files shall be started.
-    void parseSignal(QString currentText, QStringList loadedDocuments, QMap<QString, QString> loadedUiFile);
+    void parseSignal(QMap<QString, QString> loadedUiFile,QMap<QString, QString> loadedScripts, bool loadedFileChanged);
 
 protected:
     ///Close event.
@@ -112,7 +109,7 @@ private slots:
     ///Is called if the parsing is finished.
     ///Note: autoCompletionApiFiles contains the auto-completion entries for all parsed files.
     void parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles,
-                             QMap<QString, QStringList> parsedUiObjects);
+                             QMap<QString, QStringList> parsedUiObjects, QMap<QString, QVector<ParsedEntry>> parsedEntries, bool doneParsing);
 
     ///Opens a new file.
     void open();
@@ -224,8 +221,11 @@ private:
     ///Inserts all UI objects in the ui view
     void insertAllUiObjectsInUiView(QMap<QString, QStringList> parsedUiObjects);
 
-    ///Inserts all function and global variables (form the current script file) into the function list view.
-    void insertAllFunctionAndVariablesInListView(void);
+    ///Check for errors in the loaded scripts.
+    bool checkForErrorsInScripts(void);
+
+    ///Inserts all function and global variables (form the current script file) into the function script view.
+    void insertAllFunctionAndVariablesInScriptView(QMap<QString,QVector<ParsedEntry>> parsedEntries);
 
     ///Clears the outline window.
     void clearOutlineWindow(void);
