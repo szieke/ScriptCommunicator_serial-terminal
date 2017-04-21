@@ -53,17 +53,17 @@ signals:
     ///Is emitted if the parsing is finished.
     ///Note: autoCompletionApiFiles contains the auto-completion entries for all parsed files.
     void parsingFinishedSignal(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles,
-                               QMap<QString, QStringList> parsedUiObjects, QMap<QString,QVector<ParsedEntry>> parsedEntries, bool doneParsing);
+                               QMap<QString, QStringList> parsedUiObjects, QMap<int,QVector<ParsedEntry>> parsedEntries, bool doneParsing);
 
 public slots:
 
     ///Parses the current text. Emits parsingFinishedSignal if the parsing is finished.
-    void parseSlot(QMap<QString, QString> loadedUiFiles, QMap<QString, QString> loadedScripts, bool loadedFileChanged);
+    void parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QString> loadedScripts, QMap<int, QString> loadedScriptsIndex, bool loadedFileChanged);
 
 private:
 
     ///Returns all functions and gloabl variables in the loaded script files.
-    QMap<QString,QVector<ParsedEntry>> getAllFunctionsAndGlobalVariables(QMap<QString, QString> loadedScripts);
+    QMap<int,QVector<ParsedEntry>> getAllFunctionsAndGlobalVariables(QMap<int, QString> loadedScripts);
 
     ///Searches objects which are returned by a ScriptTableWidget.
     void searchSingleTableSubWidgets(QString objectName, QVector<TableWidgetSubObject> subObjects, QStringList& lines);

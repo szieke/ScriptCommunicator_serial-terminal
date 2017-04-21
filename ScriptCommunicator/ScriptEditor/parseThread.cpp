@@ -995,11 +995,12 @@ void ParseThread::checkDocumentForStandardDynamicObjects(QStringList& lines, QSt
  * @return
  *      All parsed entries.
  */
-QMap<QString,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QMap<QString, QString> loadedScripts)
+QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QMap<int, QString> loadedScripts)
 {
-    QMap<QString,QVector<ParsedEntry>> result;
+    QMap<int,QVector<ParsedEntry>> result;
+    QStringList foundVariablesWithVar;
 
-    QMap<QString, QString>::const_iterator iter = loadedScripts.constBegin();
+    QMap<int, QString>::const_iterator iter = loadedScripts.constBegin();
     while (iter != loadedScripts.constEnd())
     {
         QVector<ParsedEntry> fileResult;
@@ -1012,7 +1013,8 @@ QMap<QString,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariable
         catch(esprima::ParseError e)
         {
             (void)e;
-            break;
+            iter++;
+            continue;
         }
 
         for(int i = 0; i < program->body.size(); i++)
@@ -1026,17 +1028,19 @@ QMap<QString,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariable
                 entry.name = test->declarations[0]->id->name.c_str();
                 entry.isFunction = false;
                 entry.params = QStringList();
+                entry.tabIndex = iter.key();
                 fileResult.append(entry);
+                foundVariablesWithVar.append(entry.name);
             }
 
             esprima::FunctionDeclaration* test2 =dynamic_cast<esprima::FunctionDeclaration*>(program->body[i]);
-
             if(test2)
             {
                 entry.line = test2->loc->start->line - 1;
                 entry.column = test2->loc->start->column;
                 entry.name = test2->id->name.c_str();
                 entry.isFunction = true;
+                entry.tabIndex = iter.key();
                 for(int j = 0; j < test2->params.size(); j++)
                 {
                     entry.params.append(test2->params[j]->name.c_str());
@@ -1062,7 +1066,7 @@ QMap<QString,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariable
  * @param loadedScripts
  *      All loaded scripts.
  */
-void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<QString, QString> loadedScripts, bool loadedFileChanged)
+void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QString> loadedScripts, QMap<int, QString> loadedScriptsIndex, bool loadedFileChanged)
 {
     //Clear all parsed objects (all but m_autoCompletionApiFiles).
     m_autoCompletionEntries.clear();
@@ -1096,16 +1100,16 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<QString, 
 
     if(!loadedFileChanged && !uiFileChanged)
     {//Nothing changed.
-        emit parsingFinishedSignal(QMap<QString, QStringList>(), QMap<QString, QStringList>(), QMap<QString, QStringList>(), QMap<QString,QVector<ParsedEntry>>(), false);
+        emit parsingFinishedSignal(QMap<QString, QStringList>(), QMap<QString, QStringList>(), QMap<QString, QStringList>(), QMap<int,QVector<ParsedEntry>>(), false);
         return;
     }
     m_parsedUiFilesFromFile.clear();
 
-    QMap<QString,QVector<ParsedEntry>> parsedEntries = getAllFunctionsAndGlobalVariables(loadedScripts);
+    QMap<int,QVector<ParsedEntry>> parsedEntries = getAllFunctionsAndGlobalVariables(loadedScripts);
 
     QString currentText;
     //Creates a string which contains the text of all loaded scripts.
-    QMap<QString, QString>::const_iterator iter = loadedScripts.constBegin();
+    QMap<int, QString>::const_iterator iter = loadedScripts.constBegin();
     while (iter != loadedScripts.constEnd())
     {
         currentText += iter.value();
@@ -1125,18 +1129,18 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<QString, 
     QStringList lines = currentText.split(splitRegexp);
 
     //Parse all loaded ui files.
-    iter = loadedUiFiles.constBegin();
-    while (iter != loadedUiFiles.constEnd())
+    QMap<QString, QString>::const_iterator iterUi  = loadedUiFiles.constBegin();
+    while (iterUi != loadedUiFiles.constEnd())
     {
-        parseUiFile(iter.key(), iter.value());
-        iter++;
+        parseUiFile(iterUi.key(), iterUi.value());
+        iterUi++;
     }
 
     //Check if the loaded documents have a ui-file.
     iter = loadedScripts.constBegin();
     while (iter != loadedScripts.constEnd())
     {
-        QString uiFileName = MainWindow::getTheCorrespondingUiFile(iter.key());
+        QString uiFileName = MainWindow::getTheCorrespondingUiFile(loadedScriptsIndex[iter.key()]);
         if(!uiFileName.isEmpty())
         {
             parseUiFile(uiFileName, "");
@@ -1148,7 +1152,7 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<QString, 
     iter = loadedScripts.constBegin();
     while (iter != loadedScripts.constEnd())
     {
-        checkDocumentForUiFiles(currentText,iter.key());
+        checkDocumentForUiFiles(currentText,loadedScriptsIndex[iter.key()]);
         iter++;
     }
 

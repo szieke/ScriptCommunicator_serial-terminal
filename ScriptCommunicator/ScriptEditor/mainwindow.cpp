@@ -121,12 +121,13 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
 
     qRegisterMetaType<QMap<QString,QStringList>>("QMap<QString,QStringList>");
     qRegisterMetaType<QMap<QString,QString>>("QMap<QString,QString>");
-    qRegisterMetaType<QMap<QString,QVector<ParsedEntry>>>("QMap<QString,QVector<ParsedEntry>>");
+    qRegisterMetaType<QMap<int,QString>>("QMap<int,QString>");
+    qRegisterMetaType<QMap<int,QVector<ParsedEntry>>>("QMap<int,QVector<ParsedEntry>>");
 
-    connect(this, SIGNAL(parseSignal(QMap<QString, QString>,QMap<QString, QString>,bool)), m_parseThread,
-            SLOT(parseSlot(QMap<QString, QString>,QMap<QString, QString>,bool)), Qt::QueuedConnection);
-    connect(m_parseThread, SIGNAL(parsingFinishedSignal(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>,QMap<QString, QVector<ParsedEntry>>,bool)),
-            this, SLOT(parsingFinishedSlot(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>,QMap<QString, QVector<ParsedEntry>>,bool)), Qt::QueuedConnection);
+    connect(this, SIGNAL(parseSignal(QMap<QString, QString>,QMap<int, QString>,QMap<int, QString>, bool)), m_parseThread,
+            SLOT(parseSlot(QMap<QString, QString>,QMap<int, QString>,QMap<int, QString>,bool)), Qt::QueuedConnection);
+    connect(m_parseThread, SIGNAL(parsingFinishedSignal(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>,QMap<int, QVector<ParsedEntry>>,bool)),
+            this, SLOT(parsingFinishedSlot(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>,QMap<int, QVector<ParsedEntry>>,bool)), Qt::QueuedConnection);
 
      m_parseTimer.start(2000);
      m_checkForFileChangesTimer.start(2000);
@@ -149,7 +150,7 @@ MainWindow::~MainWindow()
  *      Contains the auto-completion entries for all parsed api files.
  */
 void MainWindow::parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles,
-                                     QMap<QString, QStringList> parsedUiObjects, QMap<QString,QVector<ParsedEntry>> parsedEntries, bool doneParsing)
+                                     QMap<QString, QStringList> parsedUiObjects, QMap<int,QVector<ParsedEntry>> parsedEntries, bool doneParsing)
 {
     if(doneParsing)
     {
@@ -158,10 +159,9 @@ void MainWindow::parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEn
 
         insertAllUiObjectsInUiView(parsedUiObjects);
 
-        if(!checkForErrorsInScripts())
-        {
-            insertAllFunctionAndVariablesInScriptView(parsedEntries);
-        }
+        (void)checkForErrorsInScripts();
+
+        insertAllFunctionAndVariablesInScriptView(parsedEntries);
 
         for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
         {
@@ -250,8 +250,9 @@ void MainWindow::parseTimeout(void)
     {
         m_parseTimer.stop();
 
-        QMap<QString, QString> loadedScripts;
+        QMap<int, QString> loadedScripts;
         QMap<QString, QString> loadedUiFiles;
+        QMap<int, QString> loadedScriptsIndex;
         bool fileMustBeParsed = false;
 
         //Note: The document from the current tab must be the first entry in loadedScripts (if variable with the same
@@ -264,7 +265,8 @@ void MainWindow::parseTimeout(void)
         }
         if(!currentEditor->getDocumentName().endsWith(".ui"))
         {
-            loadedScripts[currentEditor->getDocumentName()] = currentEditor->text();
+            loadedScripts[ui->documentsTabWidget->currentIndex()] = currentEditor->text();
+            loadedScriptsIndex[ui->documentsTabWidget->currentIndex()] = currentEditor->getDocumentName();
         }
         else
         {
@@ -279,7 +281,8 @@ void MainWindow::parseTimeout(void)
             {
                 if(!textEditor->getDocumentName().endsWith(".ui"))
                 {
-                    loadedScripts[textEditor->getDocumentName()] = textEditor->text();
+                    loadedScripts[i] = textEditor->text();
+                    loadedScriptsIndex[i] = textEditor->getDocumentName();
                 }
                 else
                 {
@@ -294,7 +297,7 @@ void MainWindow::parseTimeout(void)
         }
 
         m_parsingFinished = false;
-        emit parseSignal(loadedUiFiles, loadedScripts, fileMustBeParsed);
+        emit parseSignal(loadedUiFiles, loadedScripts, loadedScriptsIndex, fileMustBeParsed);
 
         m_parseTimer.start(2000);
     }
@@ -368,6 +371,12 @@ void MainWindow::tabCloseRequestedSlot(int index)
         if(ui->documentsTabWidget->count() == 0)
         {
             addTab("", true);
+        }
+
+        for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+        {
+            SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
+            textEditor->setFileMustBeParsed(true);
         }
         m_parseTimer.start(200);
     }
@@ -1326,8 +1335,9 @@ void MainWindow::functionListDoubleClicked(QTreeWidgetItem* item, int column)
         {
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(entry->tabIndex)->layout()->itemAt(0)->widget());
             textEditor->setCursorPosition(entry->line, 0);
-            (void)textEditor->findFirst(entry->name, false, true, false, true, true, entry->line,
-                                 0, true, false);
+
+            QString regEx = (entry->isFunction) ? QString("function.*[ |/]%1").arg(entry->name) : QString("var.*[ |/]%1").arg(entry->name);
+            (void)textEditor->findFirst(regEx, true, true, false, true, true, entry->line, 0, true, false);
 
             ui->documentsTabWidget->setCurrentIndex(entry->tabIndex);
             textEditor->setFocus();
@@ -1703,7 +1713,7 @@ bool MainWindow::checkForErrorsInScripts(void)
 /**
  * Inserts all function and global variables (form the current script file) into the function script view.
  */
-void MainWindow::insertAllFunctionAndVariablesInScriptView(QMap<QString,QVector<ParsedEntry>> parsedEntries)
+void MainWindow::insertAllFunctionAndVariablesInScriptView(QMap<int,QVector<ParsedEntry>> parsedEntries)
 {
     static QString savedCompleteTreeString = "";
     QString currentCompleteTreeString = "";
@@ -1711,10 +1721,11 @@ void MainWindow::insertAllFunctionAndVariablesInScriptView(QMap<QString,QVector<
     QMap<QString, bool> expandMap;
     m_allFunctions.clear();
 
-    QMap<QString,QVector<ParsedEntry>>::const_iterator iter = parsedEntries.constBegin();
+    QMap<int,QVector<ParsedEntry>>::const_iterator iter = parsedEntries.constBegin();
     while (iter != parsedEntries.constEnd())
     {
-        currentCompleteTreeString += iter.key();
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(iter.key())->layout()->itemAt(0)->widget());
+        currentCompleteTreeString += textEditor->getDocumentName();
         for(auto el : iter.value())
         {
             currentCompleteTreeString += el.name;
@@ -1740,13 +1751,13 @@ void MainWindow::insertAllFunctionAndVariablesInScriptView(QMap<QString,QVector<
     iter = parsedEntries.constBegin();
     while (iter != parsedEntries.constEnd())
     {
-        int index = -1;
-        checkIfDocumentAlreadyLoaded(iter.key(), index);
 
         QTreeWidgetItem* fileElement = new QTreeWidgetItem(root);
         fileElement->setData(0, PARSED_ENTRY, 0);
-        fileElement->setText(0, strippedName(iter.key()));
-        fileElement->setToolTip(0, iter.key());
+        fileElement->setText(0, ui->documentsTabWidget->tabText(iter.key()));
+
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(iter.key())->layout()->itemAt(0)->widget());
+        fileElement->setToolTip(0, textEditor->getDocumentName());
         root->addChild(fileElement);
 
         for(auto el : iter.value())
@@ -1756,7 +1767,6 @@ void MainWindow::insertAllFunctionAndVariablesInScriptView(QMap<QString,QVector<
             QString textInTreeWidget = el.name;
             ParsedEntry* tmpEntry = new ParsedEntry();
             *tmpEntry = el;
-            tmpEntry->tabIndex = index;
             funcElement->setData(0, PARSED_ENTRY, (quint64)tmpEntry);
             fileElement->addChild(funcElement);
 

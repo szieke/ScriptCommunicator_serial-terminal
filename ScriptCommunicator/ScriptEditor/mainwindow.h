@@ -89,7 +89,7 @@ public:
 
 signals:
     ///Is emitted if the parsing of the source files shall be started.
-    void parseSignal(QMap<QString, QString> loadedUiFile,QMap<QString, QString> loadedScripts, bool loadedFileChanged);
+    void parseSignal(QMap<QString, QString> loadedUiFile,QMap<int, QString> loadedScripts, QMap<int, QString> loadedScriptsIndex,bool loadedFileChanged);
 
 protected:
     ///Close event.
@@ -109,7 +109,7 @@ private slots:
     ///Is called if the parsing is finished.
     ///Note: autoCompletionApiFiles contains the auto-completion entries for all parsed files.
     void parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles,
-                             QMap<QString, QStringList> parsedUiObjects, QMap<QString, QVector<ParsedEntry>> parsedEntries, bool doneParsing);
+                             QMap<QString, QStringList> parsedUiObjects, QMap<int, QVector<ParsedEntry> > parsedEntries, bool doneParsing);
 
     ///Opens a new file.
     void open();
@@ -225,7 +225,7 @@ private:
     bool checkForErrorsInScripts(void);
 
     ///Inserts all function and global variables (form the current script file) into the function script view.
-    void insertAllFunctionAndVariablesInScriptView(QMap<QString,QVector<ParsedEntry>> parsedEntries);
+    void insertAllFunctionAndVariablesInScriptView(QMap<int, QVector<ParsedEntry> > parsedEntries);
 
     ///Clears the outline window.
     void clearOutlineWindow(void);
