@@ -1336,7 +1336,26 @@ void MainWindow::functionListDoubleClicked(QTreeWidgetItem* item, int column)
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(entry->tabIndex)->layout()->itemAt(0)->widget());
             textEditor->setCursorPosition(entry->line, 0);
 
-            QString regEx = (entry->isFunction) ? QString("function.*[ |/]%1").arg(entry->name) : QString("var.*[ |/]%1").arg(entry->name);
+            QString regEx;
+            if(entry->type == ENTRY_TYPE_FUNCTION)
+            {
+                regEx = QString("function.*[ |/]%1").arg(entry->name);
+
+            }
+            else if(entry->type == ENTRY_TYPE_CLASS_THIS_FUNCTION)
+            {
+                regEx = QString("%1*[ |/]=*[ |/]function").arg(entry->name);
+
+            }
+            else if(entry->type == ENTRY_TYPE_MAP_VAR)
+            {
+                regEx = QString("%1*[ |/:]").arg(entry->name);
+
+            }
+            else
+            {
+              regEx = QString("var.*[ |/]%1").arg(entry->name);
+            }
             (void)textEditor->findFirst(regEx, true, true, false, true, true, entry->line, 0, true, false);
 
             ui->documentsTabWidget->setCurrentIndex(entry->tabIndex);
@@ -1711,6 +1730,114 @@ bool MainWindow::checkForErrorsInScripts(void)
 }
 
 /**
+ * Inserts a subelement into the script view.
+ * @param parent
+ *      The parent element.
+ * @param parsedEntries
+ *      The parsed sub entries.
+ */
+void MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<ParsedEntry> parsedEntries)
+{
+    for(auto el : parsedEntries)
+    {
+        QTreeWidgetItem* funcElement = new QTreeWidgetItem(parent);
+        QString textInTreeWidget = el.name;
+        ParsedEntry* tmpEntry = new ParsedEntry();
+        *tmpEntry = el;
+        funcElement->setData(0, PARSED_ENTRY, (quint64)tmpEntry);
+        parent->addChild(funcElement);
+
+        if((el.type == ENTRY_TYPE_FUNCTION) || (el.type == ENTRY_TYPE_CLASS_FUNCTION)
+                || (el.type == ENTRY_TYPE_CLASS_THIS_FUNCTION))
+        {
+            m_allFunctions.append(el.name);
+
+            textInTreeWidget += "(";
+
+            for(auto param : el.params)
+            {
+                textInTreeWidget += param + ",";
+            }
+            if(textInTreeWidget.right(1) == ",")
+            {
+                textInTreeWidget.remove(textInTreeWidget.length() - 1, 1);
+            }
+            textInTreeWidget += ")";
+        }
+
+        funcElement->setText(0, textInTreeWidget);
+        funcElement->setToolTip(0, textInTreeWidget);
+
+        if(!tmpEntry->subElements.isEmpty())
+        {
+            inserSubElementsToScriptView(funcElement, tmpEntry->subElements);
+        }
+
+    }
+}
+
+
+/**
+ * Saves the expanded state of all tree widget elements.
+ *
+ * @param parent
+ *      The parent tree widget item.
+ * @param expandMap
+ *      The map in which the expanded states are saved.
+ * @param key
+ *      The key of the parent tree widget in the expand map.
+ */
+static saveExpandedState(QTreeWidgetItem* parent, QMap<QString, bool>& expandMap, QString key)
+{
+    for(int i = 0; i < parent->childCount(); i++)
+    {
+        QTreeWidgetItem* subEl = parent->child(i);
+        expandMap[key + ":" + subEl->text(0)] = subEl->isExpanded();
+
+        if(subEl->childCount() > 0)
+        {
+            saveExpandedState(subEl, expandMap, key + subEl->text(0));
+        }
+    }
+}
+
+/**
+ * Restores the expanded state of all tree widget elements.
+ *
+ * @parm treeWidget
+ *      The tree widget.
+ * @param parent
+ *      The parent tree widget item.
+ * @param expandMap
+ *      The map in which the expanded states are saved.
+ * @param key
+ *      The key of the parent tree widget in the expand map.
+ */
+static restoreExpandedState(QTreeWidget *treeWidget, QTreeWidgetItem* parent, QMap<QString, bool>& expandMap, QString key)
+{
+    for(int i = 0; i < parent->childCount(); i++)
+    {
+        QTreeWidgetItem* subEl = parent->child(i);
+        if(expandMap.contains(key + ":" + subEl->text(0)))
+        {
+            if(expandMap[key + ":" + subEl->text(0)])
+            {
+                treeWidget->expandItem(subEl);
+            }
+        }
+        else
+        {
+            treeWidget->expandItem(subEl);
+        }
+
+        if(subEl->childCount() > 0)
+        {
+            restoreExpandedState(treeWidget, subEl, expandMap, key + subEl->text(0));
+        }
+    }
+}
+
+/**
  * Inserts all function and global variables (form the current script file) into the function script view.
  */
 void MainWindow::insertAllFunctionAndVariablesInScriptView(QMap<int,QVector<ParsedEntry>> parsedEntries)
@@ -1728,6 +1855,10 @@ void MainWindow::insertAllFunctionAndVariablesInScriptView(QMap<int,QVector<Pars
         currentCompleteTreeString += textEditor->getDocumentName();
         for(auto el : iter.value())
         {
+            for(auto subEl : el.subElements)
+            {
+                currentCompleteTreeString += subEl.name + QString("%1,%2").arg(subEl.type).arg(subEl.line);
+            }
             currentCompleteTreeString += el.name;
         }
         iter++;
@@ -1741,10 +1872,7 @@ void MainWindow::insertAllFunctionAndVariablesInScriptView(QMap<int,QVector<Pars
     savedCompleteTreeString = currentCompleteTreeString;
 
     //Save the expanded state of all tree widget elements.
-    for(int i = 0; i < root->childCount(); i++)
-    {
-        expandMap[root->child(i)->text(0)] = root->child(i)->isExpanded();
-    }
+    saveExpandedState(root, expandMap, "");
 
     clearOutlineWindow();
 
@@ -1760,54 +1888,13 @@ void MainWindow::insertAllFunctionAndVariablesInScriptView(QMap<int,QVector<Pars
         fileElement->setToolTip(0, textEditor->getDocumentName());
         root->addChild(fileElement);
 
-        for(auto el : iter.value())
-        {
-
-            QTreeWidgetItem* funcElement = new QTreeWidgetItem(fileElement);
-            QString textInTreeWidget = el.name;
-            ParsedEntry* tmpEntry = new ParsedEntry();
-            *tmpEntry = el;
-            funcElement->setData(0, PARSED_ENTRY, (quint64)tmpEntry);
-            fileElement->addChild(funcElement);
-
-            if(el.isFunction)
-            {
-                m_allFunctions.append(el.name);
-
-                textInTreeWidget += "(";
-
-                for(auto param : el.params)
-                {
-                    textInTreeWidget += param + ",";
-                }
-                if(textInTreeWidget.right(1) == ",")
-                {
-                    textInTreeWidget.remove(textInTreeWidget.length() - 1, 1);
-                }
-                textInTreeWidget += ")";
-            }
-
-            funcElement->setText(0, textInTreeWidget);
-            funcElement->setToolTip(0, textInTreeWidget);
-
-        }
-
-
-        if(expandMap.contains(fileElement->text(0)))
-        {
-            //Restore the expanded state of all tree widget elements.
-            if(expandMap[fileElement->text(0)])
-            {
-                ui->outlineTreeWidget->expandItem(fileElement);
-            }
-        }
-        else
-        {//New file element, expand all items.
-            ui->outlineTreeWidget->expandItem(fileElement);
-        }
+        inserSubElementsToScriptView(fileElement, iter.value());
 
         iter++;
     }
+
+    //Restore the expanded state of all tree widget elements.
+    restoreExpandedState(ui->outlineTreeWidget, root, expandMap, "");
 }
 
 /**

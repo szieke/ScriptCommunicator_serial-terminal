@@ -27,16 +27,31 @@ typedef struct
 
 }FunctionWithResultObject;
 
-//A parsed entry.
-typedef struct
+typedef enum
+{
+    ENTRY_TYPE_VAR = 0,
+    ENTRY_TYPE_FUNCTION,
+    ENTRY_TYPE_CLASS,
+    ENTRY_TYPE_CLASS_FUNCTION,
+    ENTRY_TYPE_CLASS_THIS_FUNCTION,
+    ENTRY_TYPE_CLASS_VAR,
+    ENTRY_TYPE_MAP,
+    ENTRY_TYPE_MAP_VAR
+
+}EntryType;
+
+///A parsed entry.
+typedef struct ParsedEntry ParsedEntry;
+struct ParsedEntry
 {
     int line;
     int column;
     QString name;
-    bool isFunction;
+    EntryType type;
     QStringList params;
     int tabIndex;
-}ParsedEntry;
+    QVector<ParsedEntry> subElements;
+};
 
 class ParseThread : public QThread
 {

@@ -224,7 +224,10 @@ private:
     ///Check for errors in the loaded scripts.
     bool checkForErrorsInScripts(void);
 
-    ///Inserts all function and global variables (form the current script file) into the function script view.
+    ///Inserts a subelement into the script view.
+    void inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<ParsedEntry> parsedEntries);
+
+    ///Inserts all function and global variables (form the current script file) into the script view.
     void insertAllFunctionAndVariablesInScriptView(QMap<int, QVector<ParsedEntry> > parsedEntries);
 
     ///Clears the outline window.

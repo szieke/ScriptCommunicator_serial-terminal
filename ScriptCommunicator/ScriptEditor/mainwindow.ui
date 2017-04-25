@@ -31,6 +31,15 @@
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="0">
           <widget class="QTreeWidget" name="outlineTreeWidget">
+           <property name="editTriggers">
+            <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
+           </property>
+           <property name="selectionMode">
+            <enum>QAbstractItemView::SingleSelection</enum>
+           </property>
+           <property name="expandsOnDoubleClick">
+            <bool>false</bool>
+           </property>
            <attribute name="headerVisible">
             <bool>false</bool>
            </attribute>
@@ -50,6 +59,9 @@
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
           <widget class="QTreeWidget" name="uiTreeWidget">
+           <property name="expandsOnDoubleClick">
+            <bool>false</bool>
+           </property>
            <attribute name="headerVisible">
             <bool>false</bool>
            </attribute>
