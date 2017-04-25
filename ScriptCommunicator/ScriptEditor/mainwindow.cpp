@@ -1347,9 +1347,10 @@ void MainWindow::functionListDoubleClicked(QTreeWidgetItem* item, int column)
                 regEx = QString("%1*[ |/]=*[ |/]function").arg(entry->name);
 
             }
-            else if(entry->type == ENTRY_TYPE_MAP_VAR)
+            else if((entry->type == ENTRY_TYPE_MAP_VAR) ||
+                    (entry->type == ENTRY_TYPE_MAP_FUNC))
             {
-                regEx = QString("%1*[ |/:]").arg(entry->name);
+                regEx = QString("%1*[\" |/:]").arg(entry->name);
 
             }
             else
@@ -1773,6 +1774,11 @@ void MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
             inserSubElementsToScriptView(funcElement, tmpEntry->subElements);
         }
 
+        for(int i = 0; i < funcElement->columnCount(); i++)
+        {
+            funcElement->sortChildren(i, Qt::AscendingOrder);
+        }
+
     }
 }
 
@@ -1851,15 +1857,27 @@ void MainWindow::insertAllFunctionAndVariablesInScriptView(QMap<int,QVector<Pars
     QMap<int,QVector<ParsedEntry>>::const_iterator iter = parsedEntries.constBegin();
     while (iter != parsedEntries.constEnd())
     {
-        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(iter.key())->layout()->itemAt(0)->widget());
-        currentCompleteTreeString += textEditor->getDocumentName();
-        for(auto el : iter.value())
+        if(ui->documentsTabWidget->widget(iter.key()))
         {
-            for(auto subEl : el.subElements)
+            SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(iter.key())->layout()->itemAt(0)->widget());
+            currentCompleteTreeString += textEditor->getDocumentName();
+            for(auto el : iter.value())
             {
-                currentCompleteTreeString += subEl.name + QString("%1,%2").arg(subEl.type).arg(subEl.line);
+                for(auto subEl : el.subElements)
+                {
+                    currentCompleteTreeString += subEl.name + QString("%1,%2").arg(subEl.type).arg(subEl.line);
+
+                    if((el.type == ENTRY_TYPE_FUNCTION) || (el.type == ENTRY_TYPE_CLASS_FUNCTION)
+                            || (el.type == ENTRY_TYPE_CLASS_THIS_FUNCTION))
+                    {
+                        for(auto param : el.params)
+                        {
+                            currentCompleteTreeString += param;
+                        }
+                    }
+                }
+                currentCompleteTreeString += el.name;
             }
-            currentCompleteTreeString += el.name;
         }
         iter++;
     }
@@ -1884,11 +1902,19 @@ void MainWindow::insertAllFunctionAndVariablesInScriptView(QMap<int,QVector<Pars
         fileElement->setData(0, PARSED_ENTRY, 0);
         fileElement->setText(0, ui->documentsTabWidget->tabText(iter.key()));
 
-        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(iter.key())->layout()->itemAt(0)->widget());
-        fileElement->setToolTip(0, textEditor->getDocumentName());
-        root->addChild(fileElement);
+        if(ui->documentsTabWidget->widget(iter.key()))
+        {
+            SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(iter.key())->layout()->itemAt(0)->widget());
+            fileElement->setToolTip(0, textEditor->getDocumentName());
+            root->addChild(fileElement);
 
-        inserSubElementsToScriptView(fileElement, iter.value());
+            inserSubElementsToScriptView(fileElement, iter.value());
+
+            for(int i = 0; i < fileElement->columnCount(); i++)
+            {
+                fileElement->sortChildren(i, Qt::AscendingOrder);
+            }
+        }
 
         iter++;
     }
