@@ -228,7 +228,7 @@ private:
     void inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<ParsedEntry> parsedEntries);
 
     ///Inserts all function and global variables (form the current script file) into the script view.
-    void insertAllFunctionAndVariablesInScriptView(QMap<int, QVector<ParsedEntry> > parsedEntries);
+    void insertAllFunctionAndVariablesInScriptView(QMap<int, QVector<ParsedEntry> > &parsedEntries);
 
     ///Clears the outline window.
     void clearOutlineWindow(void);

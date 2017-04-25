@@ -1843,10 +1843,34 @@ static restoreExpandedState(QTreeWidget *treeWidget, QTreeWidgetItem* parent, QM
     }
 }
 
+static void parsedEntryToString(const QVector<ParsedEntry>& parsedEntries,
+                                QString& currentCompleteTreeString)
+{
+    for(auto el : parsedEntries)
+    {
+        currentCompleteTreeString += el.name + QString("%1,%2").arg(el.type).arg(el.line);
+        if((el.type == ENTRY_TYPE_FUNCTION) || (el.type == ENTRY_TYPE_CLASS_FUNCTION)
+                || (el.type == ENTRY_TYPE_CLASS_THIS_FUNCTION))
+        {
+            for(auto param : el.params)
+            {
+                currentCompleteTreeString += param;
+            }
+        }
+
+        if(!el.subElements.isEmpty())
+        {
+            parsedEntryToString(el.subElements,currentCompleteTreeString);
+        }
+
+        currentCompleteTreeString += el.name;
+    }
+}
+
 /**
  * Inserts all function and global variables (form the current script file) into the function script view.
  */
-void MainWindow::insertAllFunctionAndVariablesInScriptView(QMap<int,QVector<ParsedEntry>> parsedEntries)
+void MainWindow::insertAllFunctionAndVariablesInScriptView(QMap<int,QVector<ParsedEntry>>& parsedEntries)
 {
     static QString savedCompleteTreeString = "";
     QString currentCompleteTreeString = "";
@@ -1860,24 +1884,8 @@ void MainWindow::insertAllFunctionAndVariablesInScriptView(QMap<int,QVector<Pars
         if(ui->documentsTabWidget->widget(iter.key()))
         {
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(iter.key())->layout()->itemAt(0)->widget());
-            currentCompleteTreeString += textEditor->getDocumentName();
-            for(auto el : iter.value())
-            {
-                for(auto subEl : el.subElements)
-                {
-                    currentCompleteTreeString += subEl.name + QString("%1,%2").arg(subEl.type).arg(subEl.line);
-
-                    if((el.type == ENTRY_TYPE_FUNCTION) || (el.type == ENTRY_TYPE_CLASS_FUNCTION)
-                            || (el.type == ENTRY_TYPE_CLASS_THIS_FUNCTION))
-                    {
-                        for(auto param : el.params)
-                        {
-                            currentCompleteTreeString += param;
-                        }
-                    }
-                }
-                currentCompleteTreeString += el.name;
-            }
+            currentCompleteTreeString += textEditor->getDocumentName() + ui->documentsTabWidget->tabText(iter.key());
+            parsedEntryToString(iter.value(), currentCompleteTreeString);
         }
         iter++;
     }

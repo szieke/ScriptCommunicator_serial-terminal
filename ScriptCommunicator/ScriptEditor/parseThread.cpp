@@ -1073,7 +1073,7 @@ static void parseFunction(esprima::FunctionDeclaration* function, ParsedEntry* e
                 subEntry.tabIndex = tabIndex;
                 for(int j = 0; j < funcExp->params.size(); j++)
                 {
-                    entry->params.append(funcExp->params[j]->name.c_str());
+                    subEntry.params.append(funcExp->params[j]->name.c_str());
                 }
                 entry->subElements.append(subEntry);
             }
@@ -1101,7 +1101,7 @@ static void parseFunction(esprima::FunctionDeclaration* function, ParsedEntry* e
                             subEntry.tabIndex = tabIndex;
                             for(int j = 0; j < funcExp->params.size(); j++)
                             {
-                                entry->params.append(funcExp->params[j]->name.c_str());
+                                subEntry.params.append(funcExp->params[j]->name.c_str());
                             }
                             entry->subElements.append(subEntry);
                         }
@@ -1145,7 +1145,7 @@ static void parseClass(esprima::NewExpression* newExp, ParsedEntry* parent, int 
                     subEntry.tabIndex = tabIndex;
                     for(int j = 0; j < funcExp->params.size(); j++)
                     {
-                        parent->params.append(funcExp->params[j]->name.c_str());
+                        subEntry.params.append(funcExp->params[j]->name.c_str());
                     }
                     parent->subElements.append(subEntry);
                 }
@@ -1171,7 +1171,7 @@ static void parseClass(esprima::NewExpression* newExp, ParsedEntry* parent, int 
                             subEntry.tabIndex = tabIndex;
                             for(int j = 0; j < funcExp->params.size(); j++)
                             {
-                                parent->params.append(funcExp->params[j]->name.c_str());
+                                subEntry.params.append(funcExp->params[j]->name.c_str());
                             }
                             parent->subElements.append(subEntry);
                         }
