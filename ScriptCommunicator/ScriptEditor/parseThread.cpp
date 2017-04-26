@@ -1424,13 +1424,6 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
             m_autoCompletionEntries[el] << el;
         }
     }
-/*
-    m_autoCompletionEntries.clear();
-    m_autoCompletionApiFiles.clear();
-    m_autoCompletionEntries["myTest"] << "myTest::var1";
-    m_autoCompletionEntries["myTest"] << "myTest::var1::var2";
-    m_autoCompletionEntries["myTest"] << "myTest::var3";
-*/
 
    emit parsingFinishedSignal(m_autoCompletionEntries, m_autoCompletionApiFiles, m_parsedUiObjects, parsedEntries, true);
 }

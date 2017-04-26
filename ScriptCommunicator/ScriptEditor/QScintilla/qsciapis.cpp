@@ -189,50 +189,6 @@ void QsciAPIsWorker::run()
         }
     }
 
-    for (int a = 0; a < prepared->raw_apis.count(); ++a)
-    {
-        // Check to see if we should stop.
-        if (abort)
-            break;
-
-        QStringList tmpWords = prepared->apiWords(a, wseps, true);
-        QString word;
-        int index = 0;
-        if(tmpWords.size() >= 2)
-        {
-            //words << tmpWords[0];
-            QString tmp;
-            for(int i = 0; i < (tmpWords.size() - 1);)
-            {
-                tmp += tmpWords[i];
-                i++;
-                if(i < (tmpWords.size() -1 ))
-                {
-                    tmp += "::";
-                }
-            }
-            word = tmp;
-            index = tmpWords.count() - 2;
-        }
-        else
-        {
-            word = tmpWords[0];
-            index = 0;
-        }
-
-        // Add the word's position to any existing list for this word.
-        QsciAPIs::WordIndexList wil = prepared->wdict[word];
-
-        // If the language is case insensitive and we haven't seen this
-        // word before then save it in the case dictionary.
-        if (!cs && wil.count() == 0)
-            prepared->cdict[word.toUpper()] = word;
-
-        wil.append(QsciAPIs::WordIndex(a, index));
-        prepared->wdict[word] = wil;
-
-    }
-
     // Tell the main thread we have finished.
     QApplication::postEvent(proxy, new QEvent(abort ? WorkerAborted : WorkerFinished));
 }
@@ -520,13 +476,12 @@ void QsciAPIs::updateAutoCompletionList(const QStringList &context,
         if (new_context.last().isEmpty())
         {
 
-            lastCompleteWord(apiSearchString, with_context, unambig);
-/*
+            lastCompleteWord(new_context[new_context.count() - 2], with_context, unambig);
             if(with_context.isEmpty())
             {
                 lastCompleteWord(new_context[0], with_context, unambig);
             }
-            */
+
         }
         else
             lastPartialWord(new_context.last(), with_context, unambig);
