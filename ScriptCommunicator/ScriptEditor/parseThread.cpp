@@ -1183,6 +1183,22 @@ static void parseClass(esprima::NewExpression* newExp, ParsedEntry* parent, int 
     }
 }
 
+
+static void addParsedEntiresToAutoCompletionList(const ParsedEntry& entry, QMap<QString, QStringList>& m_autoCompletionEntries,
+                                                 QString parentString, QString rootObjectName)
+{
+    QString value = (parentString.isEmpty()) ? entry.name : parentString + "::" + entry.name;
+
+    m_autoCompletionEntries[rootObjectName] << value;
+
+    for(auto el : entry.subElements)
+    {
+        addParsedEntiresToAutoCompletionList(el, m_autoCompletionEntries, value, rootObjectName);
+
+         //m_autoCompletionEntries[parentString + entry.name] << parentString + entry.name + "::" + el.name;
+    }
+}
+
 /**
  * Returns all functions and gloabl variables in the loaded script files.
  * @param loadedScripts
@@ -1206,7 +1222,13 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
         }
         catch(esprima::ParseError e)
         {
-            (void)e;
+            ParsedEntry entry;
+            entry.line = e.lineNumber;
+            entry.type = ENTRY_TYPE_PARSE_ERROR;
+            entry.tabIndex = iter.key();
+            entry.name = e.description.c_str();
+            fileResult.append(entry);
+            result[iter.key()] = fileResult;
             iter++;
             continue;
         }
@@ -1230,12 +1252,17 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                 {//Class.
                     entry.type = ENTRY_TYPE_CLASS;
                     parseClass(newExp, &entry, iter.key());
+
+                    addParsedEntiresToAutoCompletionList(entry, m_autoCompletionEntries, "", entry.name);
+
                 }
                 else if(objExp)
                 {//Map/Array
 
                     entry.type = ENTRY_TYPE_MAP;
                     parseObjectExpression(objExp, &entry, iter.key());
+
+                    addParsedEntiresToAutoCompletionList(entry, m_autoCompletionEntries, "", entry.name);
                 }
                 else
                 {
@@ -1397,7 +1424,14 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
             m_autoCompletionEntries[el] << el;
         }
     }
+/*
+    m_autoCompletionEntries.clear();
+    m_autoCompletionApiFiles.clear();
+    m_autoCompletionEntries["myTest"] << "myTest::var1";
+    m_autoCompletionEntries["myTest"] << "myTest::var1::var2";
+    m_autoCompletionEntries["myTest"] << "myTest::var3";
+*/
 
-    emit parsingFinishedSignal(m_autoCompletionEntries, m_autoCompletionApiFiles, m_parsedUiObjects, parsedEntries, true);
+   emit parsingFinishedSignal(m_autoCompletionEntries, m_autoCompletionApiFiles, m_parsedUiObjects, parsedEntries, true);
 }
 

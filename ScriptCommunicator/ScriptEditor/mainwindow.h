@@ -221,14 +221,11 @@ private:
     ///Inserts all UI objects in the ui view
     void insertAllUiObjectsInUiView(QMap<QString, QStringList> parsedUiObjects);
 
-    ///Check for errors in the loaded scripts.
-    bool checkForErrorsInScripts(void);
-
     ///Inserts a subelement into the script view.
     void inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<ParsedEntry> parsedEntries);
 
-    ///Inserts all function and global variables (form the current script file) into the script view.
-    void insertAllFunctionAndVariablesInScriptView(QMap<int, QVector<ParsedEntry> > &parsedEntries);
+    ///Inserts all parsed elements in the  script view and displays all parse errors (annotations).
+    void insertFillScriptViewAndDisplayErrors(QMap<int, QVector<ParsedEntry> > &parsedEntries);
 
     ///Clears the outline window.
     void clearOutlineWindow(void);

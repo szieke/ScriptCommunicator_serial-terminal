@@ -152,16 +152,15 @@ MainWindow::~MainWindow()
 void MainWindow::parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles,
                                      QMap<QString, QStringList> parsedUiObjects, QMap<int,QVector<ParsedEntry>> parsedEntries, bool doneParsing)
 {
-    if(doneParsing)
+     SingleDocument* currentEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
+
+    if(doneParsing &&  !currentEditor->isListActive())
     {
-        SingleDocument* currentEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
         currentEditor->initAutoCompletion(m_allFunctions, autoCompletionEntries, autoCompletionApiFiles);
 
         insertAllUiObjectsInUiView(parsedUiObjects);
 
-        (void)checkForErrorsInScripts();
-
-        insertAllFunctionAndVariablesInScriptView(parsedEntries);
+        insertFillScriptViewAndDisplayErrors(parsedEntries);
 
         for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
         {
@@ -1694,43 +1693,6 @@ void MainWindow::insertAllUiObjectsInUiView(QMap<QString, QStringList> parsedUiO
 }
 
 /**
- * Check for errors in the loaded scripts.
- *
- * @return
- *      True if one script contains an error.
- */
-bool MainWindow::checkForErrorsInScripts(void)
-{
-    bool errorFound = false;
-
-    for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
-    {
-        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
-
-        if(!textEditor->getDocumentName().endsWith(".ui"))
-        {
-            QString text = textEditor->text();
-
-            textEditor->clearAnnotations();
-            esprima::Pool pool;
-            esprima::Program *program = NULL;
-            try
-            {
-                program = esprima::parse(pool, text.toLocal8Bit().constData());
-            }
-            catch(esprima::ParseError e)
-            {
-                QsciStyle myStyle(-1,"Annotation",QColor(255,0,0),QColor(255,150,150),QFont("Courier New",-1,-1,true),true);
-                textEditor->annotate(e.lineNumber - 1, e.description.c_str(),myStyle);
-                errorFound = true;
-            }
-        }
-    }
-
-    return errorFound;
-}
-
-/**
  * Inserts a subelement into the script view.
  * @param parent
  *      The parent element.
@@ -1741,42 +1703,54 @@ void MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
 {
     for(auto el : parsedEntries)
     {
-        QTreeWidgetItem* funcElement = new QTreeWidgetItem(parent);
-        QString textInTreeWidget = el.name;
-        ParsedEntry* tmpEntry = new ParsedEntry();
-        *tmpEntry = el;
-        funcElement->setData(0, PARSED_ENTRY, (quint64)tmpEntry);
-        parent->addChild(funcElement);
-
-        if((el.type == ENTRY_TYPE_FUNCTION) || (el.type == ENTRY_TYPE_CLASS_FUNCTION)
-                || (el.type == ENTRY_TYPE_CLASS_THIS_FUNCTION))
+        if(el.type == ENTRY_TYPE_PARSE_ERROR)
         {
-            m_allFunctions.append(el.name);
-
-            textInTreeWidget += "(";
-
-            for(auto param : el.params)
+            if(ui->documentsTabWidget->widget(el.tabIndex))
             {
-                textInTreeWidget += param + ",";
+                QsciStyle myStyle(-1,"Annotation",QColor(255,0,0),QColor(255,150,150),QFont("Courier New",-1,-1,true),true);
+                SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(el.tabIndex)->layout()->itemAt(0)->widget());
+                textEditor->annotate(el.line - 1, el.name,myStyle);
             }
-            if(textInTreeWidget.right(1) == ",")
+        }
+        else
+        {
+            QTreeWidgetItem* funcElement = new QTreeWidgetItem(parent);
+            QString textInTreeWidget = el.name;
+            ParsedEntry* tmpEntry = new ParsedEntry();
+            *tmpEntry = el;
+            funcElement->setData(0, PARSED_ENTRY, (quint64)tmpEntry);
+            parent->addChild(funcElement);
+
+            if((el.type == ENTRY_TYPE_FUNCTION) || (el.type == ENTRY_TYPE_CLASS_FUNCTION)
+                    || (el.type == ENTRY_TYPE_CLASS_THIS_FUNCTION))
             {
-                textInTreeWidget.remove(textInTreeWidget.length() - 1, 1);
+                m_allFunctions.append(el.name);
+
+                textInTreeWidget += "(";
+
+                for(auto param : el.params)
+                {
+                    textInTreeWidget += param + ",";
+                }
+                if(textInTreeWidget.right(1) == ",")
+                {
+                    textInTreeWidget.remove(textInTreeWidget.length() - 1, 1);
+                }
+                textInTreeWidget += ")";
             }
-            textInTreeWidget += ")";
-        }
 
-        funcElement->setText(0, textInTreeWidget);
-        funcElement->setToolTip(0, textInTreeWidget);
+            funcElement->setText(0, textInTreeWidget);
+            funcElement->setToolTip(0, textInTreeWidget);
 
-        if(!tmpEntry->subElements.isEmpty())
-        {
-            inserSubElementsToScriptView(funcElement, tmpEntry->subElements);
-        }
+            if(!tmpEntry->subElements.isEmpty())
+            {
+                inserSubElementsToScriptView(funcElement, tmpEntry->subElements);
+            }
 
-        for(int i = 0; i < funcElement->columnCount(); i++)
-        {
-            funcElement->sortChildren(i, Qt::AscendingOrder);
+            for(int i = 0; i < funcElement->columnCount(); i++)
+            {
+                funcElement->sortChildren(i, Qt::AscendingOrder);
+            }
         }
 
     }
@@ -1868,9 +1842,9 @@ static void parsedEntryToString(const QVector<ParsedEntry>& parsedEntries,
 }
 
 /**
- * Inserts all function and global variables (form the current script file) into the function script view.
+ * Inserts all parsed elements in the  script view and displays all parse errors (annotations).
  */
-void MainWindow::insertAllFunctionAndVariablesInScriptView(QMap<int,QVector<ParsedEntry>>& parsedEntries)
+void MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEntry>>& parsedEntries)
 {
     static QString savedCompleteTreeString = "";
     QString currentCompleteTreeString = "";
@@ -1901,6 +1875,13 @@ void MainWindow::insertAllFunctionAndVariablesInScriptView(QMap<int,QVector<Pars
     saveExpandedState(root, expandMap, "");
 
     clearOutlineWindow();
+
+    //Clear all annotations.
+    for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+    {
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
+        textEditor->clearAnnotations();
+    }
 
     iter = parsedEntries.constBegin();
     while (iter != parsedEntries.constEnd())
