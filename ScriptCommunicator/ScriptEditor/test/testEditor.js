@@ -1,6 +1,6 @@
 function Class(arg0)
 {
-    var waitForResponse = 100;
+    var waitForResponse = "100";
 	var reset = function(arg1)
     {
 	  var test = "";
@@ -13,7 +13,7 @@ function Class(arg0)
 	}
 }
 
-Class.prototype.getInfo = function()  //auswerten?
+Class.prototype.getInfo = function(arg) 
 {
     return this.waitForResponse;
 }
@@ -49,6 +49,11 @@ var classSingelton1 = new function()
     {
         reset();
 	}
+}
+
+classSingelton1.prototype.getInfo = function(arg)  //auswerten?
+{
+    return this.waitForResponse;
 }
 
 var test= "";

@@ -1202,8 +1202,6 @@ static void addParsedEntiresToAutoCompletionList(const ParsedEntry& entry, QMap<
     for(auto el : entry.subElements)
     {
         addParsedEntiresToAutoCompletionList(el, m_autoCompletionEntries, value, rootObjectName);
-
-         //m_autoCompletionEntries[parentString + entry.name] << parentString + entry.name + "::" + el.name;
     }
 }
 
@@ -1217,11 +1215,13 @@ static void addParsedEntiresToAutoCompletionList(const ParsedEntry& entry, QMap<
 QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QMap<int, QString> loadedScripts)
 {
     QMap<int,QVector<ParsedEntry>> result;
+    QMap<QString, QVector<ParsedEntry>> prototypeFunctions;
 
     QMap<int, QString>::const_iterator iter = loadedScripts.constBegin();
     while (iter != loadedScripts.constEnd())
     {
         QVector<ParsedEntry> fileResult;
+        QMap<QString, QVector<ParsedEntry>> prototypeFunctionsSingleFile;
         esprima::Pool pool;
         esprima::Program *program = NULL;
         try
@@ -1261,7 +1261,7 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                     entry.type = ENTRY_TYPE_CLASS;
                     parseClass(newExp, &entry, iter.key());
 
-                    addParsedEntiresToAutoCompletionList(entry, m_autoCompletionEntries, "", entry.name);
+                    //addParsedEntiresToAutoCompletionList(entry, m_autoCompletionEntries, "", entry.name);
 
                 }
                 else if(objExp)
@@ -1270,7 +1270,7 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                     entry.type = ENTRY_TYPE_MAP;
                     parseObjectExpression(objExp, &entry, iter.key());
 
-                    addParsedEntiresToAutoCompletionList(entry, m_autoCompletionEntries, "", entry.name);
+                    //addParsedEntiresToAutoCompletionList(entry, m_autoCompletionEntries, "", entry.name);
                 }
                 else
                 {
@@ -1285,8 +1285,75 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                 if(funcDecl)
                 {
                     parseFunction(funcDecl, &entry, iter.key());
+                    //addParsedEntiresToAutoCompletionList(entry, m_autoCompletionEntries, "", entry.name);
                     fileResult.append(entry);
                 }
+                else
+                {
+                    esprima::ExpressionStatement* expStatement = dynamic_cast<esprima::ExpressionStatement*>(program->body[i]);
+                    if(expStatement)
+                    {
+                        esprima::AssignmentExpression* assExp = dynamic_cast<esprima::AssignmentExpression*>(expStatement->expression);
+                        if(assExp)
+                        {
+                            esprima::MemberExpression* left = dynamic_cast<esprima::MemberExpression*>(assExp->left);
+                            esprima::FunctionExpression* right = dynamic_cast<esprima::FunctionExpression*>(assExp->right);
+                            if(left && right)
+                            {
+                                esprima::MemberExpression* object = dynamic_cast<esprima::MemberExpression*>(left->object);
+                                esprima::Identifier* property = dynamic_cast<esprima::Identifier*>(left->property);
+                                if(object && property)
+                                {
+                                    esprima::Identifier* subObject = dynamic_cast<esprima::Identifier*>(object->object);
+                                    if(subObject)
+                                    {
+                                        ParsedEntry prot;
+                                        prot.line = left->loc->start->line -1;
+                                        prot.column = left->loc->start->column;
+                                        prot.name = property->name.c_str();
+                                        prot.params = QStringList();
+                                        prot.tabIndex = iter.key();
+                                        prot.type = ENTRY_TYPE_PROTOTYPE_FUNC;
+
+                                        for(int j = 0; j < right->params.size(); j++)
+                                        {
+                                            prot.params.append(right->params[j]->name.c_str());
+                                        }
+                                        if(!prototypeFunctionsSingleFile.contains(subObject->name.c_str()))
+                                        {
+                                          prototypeFunctionsSingleFile[subObject->name.c_str()] = QVector<ParsedEntry>();
+                                        }
+                                        prototypeFunctionsSingleFile[subObject->name.c_str()].append(prot);
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+        }
+
+        for(int j = 0; j < fileResult.size(); j++)
+        {
+            if(prototypeFunctionsSingleFile.contains(fileResult[j].name))
+            {
+                for (auto member : prototypeFunctionsSingleFile[fileResult[j].name])
+                {
+                    fileResult[j].subElements.append(member);
+                }
+
+                prototypeFunctionsSingleFile.remove(fileResult[j].name);
+            }
+            else
+            {
+                prototypeFunctions[fileResult[j].name] = prototypeFunctionsSingleFile[fileResult[j].name];
+                prototypeFunctionsSingleFile.remove(fileResult[j].name);
+            }
+
+            if(fileResult[j].type != ENTRY_TYPE_VAR)
+            {
+                addParsedEntiresToAutoCompletionList(fileResult[j], m_autoCompletionEntries, "", fileResult[j].name);
             }
         }
 

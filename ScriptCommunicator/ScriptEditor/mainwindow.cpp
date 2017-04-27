@@ -451,21 +451,46 @@ void MainWindow::tabIndexChangedSlot(int index)
         }
 
         setWindowTitle(tr("ScriptCommunicator %1 - Script Editor %2[*]").arg(SCRIPT_COMMUNICATOR_VERSION).arg(nameInTitle));
+    }
 
-        QMap<QString, bool> scripts = getAllIncludedScripts(ui->documentsTabWidget->currentIndex());
-        if(scripts.isEmpty())
-        {
-            ui->actionOpenAllIncludedScripts->setEnabled(false);
-        }
-        else
-        {
-            ui->actionOpenAllIncludedScripts->setEnabled(true);
-        }
-    }
-    else
+    setStateLoadAllIncludedScriptsButton();
+}
+
+
+/**
+ * Sets the state of the load all scripts button.
+ */
+void MainWindow::setStateLoadAllIncludedScriptsButton(void)
+{
+    bool containsIncludedScripts = false;
+    for(qint32 index = 0; index < ui->documentsTabWidget->count(); index++)
     {
-        ui->actionOpenAllIncludedScripts->setEnabled(false);
+        if(ui->documentsTabWidget->widget(index) && ui->documentsTabWidget->widget(index)->layout())
+        {
+            SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(index)->layout()->itemAt(0)->widget());
+            QMap<QString, bool> scripts = getAllIncludedScripts(index);
+            QMap<QString, bool>::iterator iter;
+            for (iter = scripts.begin(); iter != scripts.end(); ++iter)
+            {
+                QString fileName;
+                if(iter.value() == true)
+                {//Relative path.
+
+                    fileName = QFileInfo(textEditor->getDocumentName()).absolutePath() + "/" + iter.key();
+                }
+                else
+                {
+                    fileName = iter.key();
+                }
+                int tmpIndex;
+                if(!checkIfDocumentAlreadyLoaded(fileName, tmpIndex))
+                {
+                    containsIncludedScripts = true;
+                }
+            }
+        }
     }
+    ui->actionOpenAllIncludedScripts->setEnabled(containsIncludedScripts);
 }
 
 /**
@@ -619,25 +644,39 @@ void MainWindow::startDesigner(QString uiFile)
  */
 void MainWindow::openAllIncludedScriptsSlot()
 {
-
-    QMap<QString, bool> scripts = getAllIncludedScripts(ui->documentsTabWidget->currentIndex());
-    SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
     int currentIndex = ui->documentsTabWidget->currentIndex();
-    QMap<QString, bool>::iterator i;
-    for (i = scripts.begin(); i != scripts.end(); ++i)
-    {
-        QString fileName;
-        if(i.value() == true)
-        {//Relative path.
+    bool fileLoaded = false;
 
-            fileName = QFileInfo(textEditor->getDocumentName()).absolutePath() + "/" + i.key();
-        }
-        else
+    do
+    {
+        fileLoaded = false;
+
+        for(qint32 index = 0; index < ui->documentsTabWidget->count(); index++)
         {
-            fileName = i.key();
+            QMap<QString, bool> scripts = getAllIncludedScripts(index);
+            SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(index)->layout()->itemAt(0)->widget());
+            QMap<QString, bool>::iterator iter;
+            for (iter = scripts.begin(); iter != scripts.end(); ++iter)
+            {
+                QString fileName;
+                if(iter.value() == true)
+                {//Relative path.
+
+                    fileName = QFileInfo(textEditor->getDocumentName()).absolutePath() + "/" + iter.key();
+                }
+                else
+                {
+                    fileName = iter.key();
+                }
+                int tmpIndex;
+                if(!checkIfDocumentAlreadyLoaded(fileName, tmpIndex))
+                {
+                    addTab(fileName, true);
+                    fileLoaded = true;
+                }
+            }
         }
-        addTab(fileName, true);
-    }
+    }while(fileLoaded);
     ui->documentsTabWidget->setCurrentIndex(currentIndex);
 }
 
@@ -885,61 +924,66 @@ void MainWindow::closeEvent(QCloseEvent *event)
 QMap<QString, bool> MainWindow::getAllIncludedScripts(int tabIndex)
 {
     QMap<QString, bool> result;
-    SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(tabIndex)->layout()->itemAt(0)->widget());
-    QString text = textEditor->text();
 
-    //Remove all '/**/' comments.
-    QRegExp comment("/\\*(.|[\r\n])*\\*/");
-    comment.setMinimal(true);
-    comment.setPatternSyntax(QRegExp::RegExp);
-    text.remove(comment);
-
-    //Remove all '//' comments.
-    comment.setMinimal(false);
-    comment.setPattern("//[^\n]*");
-    text.remove(comment);
-
-    bool custSearched = false;
-    QRegExp rx("scriptThread.loadScript(*)");
-    rx.setPatternSyntax(QRegExp::Wildcard);
-    int index = 0;
-
-
-    while(index != -1)
+    if(ui->documentsTabWidget->widget(tabIndex) && ui->documentsTabWidget->widget(tabIndex)->layout())
     {
-        index = text.indexOf(rx,index);
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(tabIndex)->layout()->itemAt(0)->widget());
+        QString text = textEditor->text();
 
-        if(index != -1)
+        //Remove all '/**/' comments.
+        QRegExp comment("/\\*(.|[\r\n])*\\*/");
+        comment.setMinimal(true);
+        comment.setPatternSyntax(QRegExp::RegExp);
+        text.remove(comment);
+
+        //Remove all '//' comments.
+        comment.setMinimal(false);
+        comment.setPattern("//[^\n]*");
+        text.remove(comment);
+
+        bool custSearched = false;
+        QRegExp rx("scriptThread.loadScript(*)");
+        rx.setPatternSyntax(QRegExp::Wildcard);
+        int index = 0;
+
+
+        while(index != -1)
         {
-            int endIndex = text.indexOf(")", index);
-            if(endIndex != -1)
+            index = text.indexOf(rx,index);
+
+            if(index != -1)
             {
-                QString script = text.mid(index, (endIndex - index));
-
-                int startIndex = script.indexOf("(", 0);
-                script.remove(0, startIndex + 1);
-                script.remove('"');
-                script.remove("'");
-                QStringList list = script.split(",");
-
-                if(list.count() > 1)
+                int endIndex = text.indexOf(")", index);
+                if(endIndex != -1)
                 {
-                    result[list[0]] = list[1].contains("true") ? true : false;
+                    QString script = text.mid(index, (endIndex - index));
+
+                    int startIndex = script.indexOf("(", 0);
+                    script.remove(0, startIndex + 1);
+                    script.remove('"');
+                    script.remove("'");
+                    QStringList list = script.split(",");
+
+                    if(list.count() > 1)
+                    {
+                        result[list[0]] = list[1].contains("true") ? true : false;
+                    }
+                    else
+                    {
+                        result[list[0]] = true;
+                    }
                 }
-                else
-                {
-                    result[list[0]] = true;
-                }
+                index++;
             }
-            index++;
-        }
-        else
-        {
-            if(!custSearched)
+            else
             {
-                custSearched = true;
-                index = 0;
-                rx.setPattern("cust.loadScript(*)");
+                if(!custSearched)
+                {
+                    custSearched = true;
+                    index = 0;
+                    rx.setPattern("cust.loadScript(*)");
+                }
+
             }
 
         }
@@ -1352,6 +1396,11 @@ void MainWindow::functionListDoubleClicked(QTreeWidgetItem* item, int column)
                 regEx = QString("%1*[\" |/:]").arg(entry->name);
 
             }
+            else if(entry->type == ENTRY_TYPE_PROTOTYPE_FUNC)
+            {
+                regEx = QString("prototype.%1").arg(entry->name);
+
+            }
             else
             {
               regEx = QString("var.*[ |/]%1").arg(entry->name);
@@ -1722,7 +1771,8 @@ void MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
             parent->addChild(funcElement);
 
             if((el.type == ENTRY_TYPE_FUNCTION) || (el.type == ENTRY_TYPE_CLASS_FUNCTION)
-                    || (el.type == ENTRY_TYPE_MAP_FUNC) || (el.type == ENTRY_TYPE_CLASS_THIS_FUNCTION))
+                    || (el.type == ENTRY_TYPE_MAP_FUNC) || (el.type == ENTRY_TYPE_CLASS_THIS_FUNCTION) ||
+                    (el.type == ENTRY_TYPE_PROTOTYPE_FUNC))
             {
                 m_allFunctions.append(el.name);
 
@@ -1804,10 +1854,6 @@ static restoreExpandedState(QTreeWidget *treeWidget, QTreeWidgetItem* parent, QM
             {
                 treeWidget->expandItem(subEl);
             }
-        }
-        else
-        {
-            treeWidget->expandItem(subEl);
         }
 
         if(subEl->childCount() > 0)
@@ -2024,26 +2070,16 @@ void MainWindow::setCurrentFile(const QString &fileName)
     {
         tabShownName = createNewDocumentTitle();
         windowShownName = tabShownName;
-        ui->actionOpenAllIncludedScripts->setEnabled(false);
         ui->actionReload->setEnabled(false);
     }
     else
     {
         tabShownName = strippedName(fileName);
         windowShownName = fileName;
-
-        QMap<QString, bool> scripts = getAllIncludedScripts(ui->documentsTabWidget->currentIndex());
-        if(scripts.isEmpty())
-        {
-            ui->actionOpenAllIncludedScripts->setEnabled(false);
-        }
-        else
-        {
-            ui->actionOpenAllIncludedScripts->setEnabled(true);
-        }
-
         ui->actionReload->setEnabled(true);
     }
+
+    setStateLoadAllIncludedScriptsButton();
 
     setWindowTitle(tr("ScriptCommunicator %1 - Script Editor %2[*]").arg(SCRIPT_COMMUNICATOR_VERSION).arg(windowShownName));
 

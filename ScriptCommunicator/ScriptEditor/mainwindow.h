@@ -197,6 +197,9 @@ private:
     ///The user interface.
     Ui::MainWindow *ui;
 
+    ///Sets the state of the load all scripts button.
+    void setStateLoadAllIncludedScriptsButton(void);
+
     ///Removes the lock of a loaded script file.
     void removeFileLock(int index);
 
