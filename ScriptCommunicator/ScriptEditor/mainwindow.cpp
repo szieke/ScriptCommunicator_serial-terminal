@@ -2032,6 +2032,10 @@ bool MainWindow::saveFile(const QString &fileName)
         return false;
     }
 
+    //Add the UTF-8 bom.
+    const char bom[] = {0xEF, 0xBB, 0xBF};
+    file.write(bom, 3);
+
     QTextStream out(&file);
     out.setCodec("UTF-8");
     QApplication::setOverrideCursor(Qt::WaitCursor);
