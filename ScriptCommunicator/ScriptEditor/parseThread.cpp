@@ -1024,6 +1024,11 @@ static void parseObjectExpression(esprima::ObjectExpression* objExp, ParsedEntry
         if(funcExp)
         {
             subEntry.type = ENTRY_TYPE_MAP_FUNC;
+
+            for(int j = 0; j < funcExp->params.size(); j++)
+            {
+                subEntry.params.append(funcExp->params[j]->name.c_str());
+            }
         }
 
         parent->subElements.append(subEntry);
@@ -1124,31 +1129,34 @@ static void parseClass(esprima::NewExpression* newExp, ParsedEntry* parent, int 
             esprima::VariableDeclaration* subVarDecl = dynamic_cast<esprima::VariableDeclaration*>(funcExp->body->body[j]);
             if(subVarDecl)
             {
+                subEntry.line = subVarDecl->loc->start->line - 1;
+                subEntry.column = subVarDecl->loc->start->column;
+                subEntry.name = subVarDecl->declarations[0]->id->name.c_str();
+                subEntry.params = QStringList();
+                subEntry.tabIndex = tabIndex;
+
                 esprima::FunctionExpression* funcExp = dynamic_cast<esprima::FunctionExpression*>(subVarDecl->declarations[0]->init);
-                if(funcExp == 0)
+                esprima::ObjectExpression* objExp = dynamic_cast<esprima::ObjectExpression*>(subVarDecl->declarations[0]->init);
+                if(funcExp)
                 {
-                    subEntry.line = subVarDecl->loc->start->line - 1;
-                    subEntry.column = subVarDecl->loc->start->column;
-                    subEntry.name = subVarDecl->declarations[0]->id->name.c_str();
-                    subEntry.type = ENTRY_TYPE_CLASS_VAR;
-                    subEntry.params = QStringList();
-                    subEntry.tabIndex = tabIndex;
-                    parent->subElements.append(subEntry);
-                }
-                else
-                {
-                    subEntry.line = subVarDecl->loc->start->line - 1;
-                    subEntry.column = subVarDecl->loc->start->column;
-                    subEntry.name = subVarDecl->declarations[0]->id->name.c_str();
                     subEntry.type = ENTRY_TYPE_CLASS_FUNCTION;
-                    subEntry.params = QStringList();
-                    subEntry.tabIndex = tabIndex;
                     for(int j = 0; j < funcExp->params.size(); j++)
                     {
                         subEntry.params.append(funcExp->params[j]->name.c_str());
                     }
-                    parent->subElements.append(subEntry);
                 }
+                else if(objExp)
+                {//Map/Array
+
+                    subEntry.type = ENTRY_TYPE_MAP;
+                    parseObjectExpression(objExp, &subEntry, tabIndex);
+                }
+                else
+                {
+                   subEntry.type = ENTRY_TYPE_CLASS_VAR;
+                }
+
+                parent->subElements.append(subEntry);
             }
             else
             {

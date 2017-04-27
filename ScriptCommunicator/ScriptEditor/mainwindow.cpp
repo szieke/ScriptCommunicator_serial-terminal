@@ -129,7 +129,7 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     connect(m_parseThread, SIGNAL(parsingFinishedSignal(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>,QMap<int, QVector<ParsedEntry>>,bool)),
             this, SLOT(parsingFinishedSlot(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>,QMap<int, QVector<ParsedEntry>>,bool)), Qt::QueuedConnection);
 
-     m_parseTimer.start(2000);
+     m_parseTimer.start(4000);
      m_checkForFileChangesTimer.start(2000);
 }
 
@@ -298,7 +298,7 @@ void MainWindow::parseTimeout(void)
         m_parsingFinished = false;
         emit parseSignal(loadedUiFiles, loadedScripts, loadedScriptsIndex, fileMustBeParsed);
 
-        m_parseTimer.start(2000);
+        m_parseTimer.start(4000);
     }
 }
 
@@ -1445,7 +1445,7 @@ void MainWindow::documentWasModified()
          ui->documentsTabWidget->setTabText(ui->documentsTabWidget->currentIndex(), shownName);
     }
 
-    m_parseTimer.start(2000);
+    m_parseTimer.start(4000);
 }
 
 /**
@@ -1722,7 +1722,7 @@ void MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
             parent->addChild(funcElement);
 
             if((el.type == ENTRY_TYPE_FUNCTION) || (el.type == ENTRY_TYPE_CLASS_FUNCTION)
-                    || (el.type == ENTRY_TYPE_CLASS_THIS_FUNCTION))
+                    || (el.type == ENTRY_TYPE_MAP_FUNC) || (el.type == ENTRY_TYPE_CLASS_THIS_FUNCTION))
             {
                 m_allFunctions.append(el.name);
 
