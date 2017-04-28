@@ -1,4 +1,4 @@
-//the user has pressed the get text button
+﻿//the user has pressed the get text button
 function UI_testGetTextLineEditTextChangedSignal(text)
 {
 	UI_testTextEdit.append("UI_UI_testGetTextLineEditTextChangedSignal");

@@ -47,6 +47,7 @@
 #include "Qsci/qscistyle.h"
 
 
+
 #include <Qsci/qsciscintilla.h>
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -124,12 +125,11 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     qRegisterMetaType<QMap<int,QString>>("QMap<int,QString>");
     qRegisterMetaType<QMap<int,QVector<ParsedEntry>>>("QMap<int,QVector<ParsedEntry>>");
 
-    connect(this, SIGNAL(parseSignal(QMap<QString, QString>,QMap<int, QString>,QMap<int, QString>, bool)), m_parseThread,
-            SLOT(parseSlot(QMap<QString, QString>,QMap<int, QString>,QMap<int, QString>,bool)), Qt::QueuedConnection);
-    connect(m_parseThread, SIGNAL(parsingFinishedSignal(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>,QMap<int, QVector<ParsedEntry>>,bool)),
-            this, SLOT(parsingFinishedSlot(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>,QMap<int, QVector<ParsedEntry>>,bool)), Qt::QueuedConnection);
+    connect(this, SIGNAL(parseSignal(QMap<QString, QString>,QMap<int, QString>,QMap<int, QString>, bool,bool)), m_parseThread,
+            SLOT(parseSlot(QMap<QString, QString>,QMap<int, QString>,QMap<int, QString>,bool,bool)), Qt::QueuedConnection);
+    connect(m_parseThread, SIGNAL(parsingFinishedSignal(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>,QMap<int, QVector<ParsedEntry>>,bool,bool)),
+            this, SLOT(parsingFinishedSlot(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>,QMap<int, QVector<ParsedEntry>>,bool,bool)), Qt::QueuedConnection);
 
-     m_parseTimer.start(4000);
      m_checkForFileChangesTimer.start(2000);
 }
 
@@ -150,23 +150,28 @@ MainWindow::~MainWindow()
  *      Contains the auto-completion entries for all parsed api files.
  */
 void MainWindow::parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles,
-                                     QMap<QString, QStringList> parsedUiObjects, QMap<int,QVector<ParsedEntry>> parsedEntries, bool doneParsing)
+                                     QMap<QString, QStringList> parsedUiObjects, QMap<int,QVector<ParsedEntry>> parsedEntries, bool doneParsing,
+                                     bool parseOnlyUIFiles)
 {
      SingleDocument* currentEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
 
+
     if(doneParsing &&  !currentEditor->isListActive())
     {
-        currentEditor->initAutoCompletion(m_allFunctions, autoCompletionEntries, autoCompletionApiFiles);
+        if(!parseOnlyUIFiles)
+        {
+            currentEditor->initAutoCompletion(m_allFunctions, autoCompletionEntries, autoCompletionApiFiles);
+
+            insertFillScriptViewAndDisplayErrors(parsedEntries);
+
+            for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+            {
+                SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
+                textEditor->setFileMustBeParsed(false);
+            }
+        }
 
         insertAllUiObjectsInUiView(parsedUiObjects);
-
-        insertFillScriptViewAndDisplayErrors(parsedEntries);
-
-        for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
-        {
-            SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
-            textEditor->setFileMustBeParsed(false);
-        }
     }
 
     m_parsingFinished = true;
@@ -236,18 +241,24 @@ void MainWindow::checkForFileChanges(void)
         }
     }
 
+    parseTimeout(true);
     m_checkForFileChangesTimer.start(2000);
 }
 
 /**
  * Is called if the parse timer times out.
+ *
+ * @param parseOnlyUIFiles
+ *      True if only UI files shall be parsed.
  */
-void MainWindow::parseTimeout(void)
+void MainWindow::parseTimeout(bool parseOnlyUIFiles)
 {
-
     if(m_parsingFinished)
     {
+
+        bool parseTimerWasActive = m_parseTimer.isActive();
         m_parseTimer.stop();
+
 
         QMap<int, QString> loadedScripts;
         QMap<QString, QString> loadedUiFiles;
@@ -296,20 +307,78 @@ void MainWindow::parseTimeout(void)
         }
 
         m_parsingFinished = false;
-        emit parseSignal(loadedUiFiles, loadedScripts, loadedScriptsIndex, fileMustBeParsed);
+        emit parseSignal(loadedUiFiles, loadedScripts, loadedScriptsIndex, fileMustBeParsed, parseOnlyUIFiles);
 
-        m_parseTimer.start(4000);
+        if(parseOnlyUIFiles & parseTimerWasActive)
+        {
+            m_parseTimer.start(200);
+        }
+    }
+
+
+
+}
+
+
+
+void MainWindow::handleDoubleClick(int position, int line, int modifiers)
+{
+    if(ui->documentsTabWidget->currentWidget() && ui->documentsTabWidget->currentWidget()->layout())
+    {
+        const bool ctrl = (modifiers & QsciScintillaBase::SCMOD_CTRL) != 0;
+
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
+        QString text = textEditor->selectedText();
+
+        QTreeWidgetItemIterator iter(ui->outlineTreeWidget);
+        while (*iter)
+        {
+            bool isOk = false;
+            ParsedEntry* entry  = (ParsedEntry*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
+
+          if (entry->completeName == text)
+          {
+              functionListDoubleClicked((*iter), 0);
+
+              for(auto el : ui->outlineTreeWidget->selectedItems())
+              {
+                  el->setSelected(false);
+              }
+
+              QTreeWidgetItem* item = (*iter)->parent();
+              while(item)
+              {
+                  item->setExpanded(true);
+                  item = item->parent();
+              }
+              (*iter)->setSelected(true);
+              ui->outlineTreeWidget->scrollToItem((*iter));
+            break;
+          }
+
+          ++iter;
+        }
     }
 }
 
 /**
  * Adds a tab.
+ *
+ * @param script
+ *      The script which shall be added.
+ * @param setTabIndex
+ *      If the script is already loaded, the corresponding tab is activates if setTabIndex is true.
+ * @return
+ *      True if a tab has been added
  */
-void MainWindow::addTab(QString script, bool setTabIndex)
+bool MainWindow::addTab(QString script, bool setTabIndex)
 {
     int index = -1;
+    bool tabAdded = false;
+
     if(!checkIfDocumentAlreadyLoaded(script, index))
     {
+        tabAdded = true;
 
         QWidget* newTab = new QWidget();
         ui->documentsTabWidget->addTab(newTab, strippedName(script));
@@ -326,6 +395,9 @@ void MainWindow::addTab(QString script, bool setTabIndex)
         connect(textEditor, SIGNAL(zoomInSignal()), this, SLOT(zoomInSlot()));
         connect(textEditor, SIGNAL(zoomOutSignal()), this, SLOT(zoomOutSlot()));
 
+        connect(textEditor,SIGNAL(SCN_DOUBLECLICK(int,int,int)),
+                 this,SLOT(handleDoubleClick(int,int,int)));
+
 
         if(!script.isEmpty())
         {
@@ -336,6 +408,10 @@ void MainWindow::addTab(QString script, bool setTabIndex)
                 if(ui->documentsTabWidget->count() == 0)
                 {
                     addTab("", false);
+                }
+                else
+                {
+                    tabAdded = false;
                 }
             }
         }
@@ -352,6 +428,7 @@ void MainWindow::addTab(QString script, bool setTabIndex)
         }
     }
 
+    return tabAdded;
 }
 
 /**
@@ -668,10 +745,9 @@ void MainWindow::openAllIncludedScriptsSlot()
                 {
                     fileName = iter.key();
                 }
-                int tmpIndex;
-                if(!checkIfDocumentAlreadyLoaded(fileName, tmpIndex))
+
+                if(addTab(fileName, true))
                 {
-                    addTab(fileName, true);
                     fileLoaded = true;
                 }
             }
@@ -1377,35 +1453,37 @@ void MainWindow::functionListDoubleClicked(QTreeWidgetItem* item, int column)
         if(entry != 0)
         {
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(entry->tabIndex)->layout()->itemAt(0)->widget());
-            textEditor->setCursorPosition(entry->line, 0);
 
-            QString regEx;
-            if(entry->type == ENTRY_TYPE_FUNCTION)
+            if(entry->type != ENTRY_TYPE_FILE)
             {
-                regEx = QString("function.*[ |/]%1").arg(entry->name);
+                QString regEx;
+                if(entry->type == ENTRY_TYPE_FUNCTION)
+                {
+                    regEx = QString("function.*[ |/]%1").arg(entry->name);
 
-            }
-            else if(entry->type == ENTRY_TYPE_CLASS_THIS_FUNCTION)
-            {
-                regEx = QString("%1*[ |/]=*[ |/]function").arg(entry->name);
+                }
+                else if(entry->type == ENTRY_TYPE_CLASS_THIS_FUNCTION)
+                {
+                    regEx = QString("%1*[ |/]=*[ |/]function").arg(entry->name);
 
-            }
-            else if((entry->type == ENTRY_TYPE_MAP_VAR) ||
-                    (entry->type == ENTRY_TYPE_MAP_FUNC))
-            {
-                regEx = QString("%1*[\" |/:]").arg(entry->name);
+                }
+                else if((entry->type == ENTRY_TYPE_MAP_VAR) ||
+                        (entry->type == ENTRY_TYPE_MAP_FUNC))
+                {
+                    regEx = QString("%1*[\" |/:]").arg(entry->name);
 
-            }
-            else if(entry->type == ENTRY_TYPE_PROTOTYPE_FUNC)
-            {
-                regEx = QString("prototype.%1").arg(entry->name);
+                }
+                else if(entry->type == ENTRY_TYPE_PROTOTYPE_FUNC)
+                {
+                    regEx = QString("prototype.%1").arg(entry->name);
 
-            }
-            else
-            {
-              regEx = QString("var.*[ |/]%1").arg(entry->name);
-            }
-            (void)textEditor->findFirst(regEx, true, true, false, true, true, entry->line, 0, true, false);
+                }
+                else
+                {
+                  regEx = QString("var.*[ |/]%1").arg(entry->name);
+                }
+                (void)textEditor->findFirst(regEx, true, true, false, true, true, entry->line, 0, true, false);
+                }
 
             ui->documentsTabWidget->setCurrentIndex(entry->tabIndex);
             textEditor->setFocus();
@@ -1494,7 +1572,6 @@ void MainWindow::documentWasModified()
          ui->documentsTabWidget->setTabText(ui->documentsTabWidget->currentIndex(), shownName);
     }
 
-    m_parseTimer.start(4000);
 }
 
 /**
@@ -1748,8 +1825,9 @@ void MainWindow::insertAllUiObjectsInUiView(QMap<QString, QStringList> parsedUiO
  * @param parsedEntries
  *      The parsed sub entries.
  */
-void MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<ParsedEntry> parsedEntries)
+bool MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<ParsedEntry> parsedEntries, QString parentName)
 {
+    bool hasError = false;
     for(auto el : parsedEntries)
     {
         if(el.type == ENTRY_TYPE_PARSE_ERROR)
@@ -1759,6 +1837,7 @@ void MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
                 QsciStyle myStyle(-1,"Annotation",QColor(255,0,0),QColor(255,150,150),QFont("Courier New",-1,-1,true),true);
                 SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(el.tabIndex)->layout()->itemAt(0)->widget());
                 textEditor->annotate(el.line - 1, el.name,myStyle);
+                hasError = true;
             }
         }
         else
@@ -1767,6 +1846,7 @@ void MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
             QString textInTreeWidget = el.name;
             ParsedEntry* tmpEntry = new ParsedEntry();
             *tmpEntry = el;
+            tmpEntry->completeName = (parentName.isEmpty()) ? tmpEntry->name : parentName + "." + tmpEntry->name;
             funcElement->setData(0, PARSED_ENTRY, (quint64)tmpEntry);
             parent->addChild(funcElement);
 
@@ -1794,7 +1874,7 @@ void MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
 
             if(!tmpEntry->subElements.isEmpty())
             {
-                inserSubElementsToScriptView(funcElement, tmpEntry->subElements);
+                hasError = inserSubElementsToScriptView(funcElement, tmpEntry->subElements, tmpEntry->completeName);
             }
 
             for(int i = 0; i < funcElement->columnCount(); i++)
@@ -1804,6 +1884,8 @@ void MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
         }
 
     }
+
+    return hasError;
 }
 
 
@@ -1853,6 +1935,10 @@ static restoreExpandedState(QTreeWidget *treeWidget, QTreeWidgetItem* parent, QM
             if(expandMap[key + ":" + subEl->text(0)])
             {
                 treeWidget->expandItem(subEl);
+            }
+            else
+            {
+                treeWidget->collapseItem(subEl);
             }
         }
 
@@ -1934,7 +2020,11 @@ void MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
     {
 
         QTreeWidgetItem* fileElement = new QTreeWidgetItem(root);
-        fileElement->setData(0, PARSED_ENTRY, 0);
+        ParsedEntry* dummyEntry = new ParsedEntry();
+        dummyEntry->type = ENTRY_TYPE_FILE;
+        dummyEntry->tabIndex = iter.key();
+
+        fileElement->setData(0, PARSED_ENTRY, (quint64)dummyEntry);
         fileElement->setText(0, ui->documentsTabWidget->tabText(iter.key()));
 
         if(ui->documentsTabWidget->widget(iter.key()))
@@ -1942,8 +2032,12 @@ void MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(iter.key())->layout()->itemAt(0)->widget());
             fileElement->setToolTip(0, textEditor->getDocumentName());
             root->addChild(fileElement);
+            ui->outlineTreeWidget->expandItem(fileElement);
 
-            inserSubElementsToScriptView(fileElement, iter.value());
+            if(inserSubElementsToScriptView(fileElement, iter.value(), ""))
+            {
+                fileElement->setTextColor(0, QColor(255,0,0));
+            }
 
             for(int i = 0; i < fileElement->columnCount(); i++)
             {

@@ -1,4 +1,4 @@
-function Class(arg0)
+﻿function Class(arg0)
 {
     var waitForResponse = "100";
 	var reset = function(arg1)
@@ -17,8 +17,6 @@ Class.prototype.getInfo = function(arg)
 {
     return this.waitForResponse;
 }
-
-var classVar = new Class("www");
 
 var array1 = 
 {
@@ -57,4 +55,11 @@ classSingelton1.prototype.getInfo = function(arg)  //auswerten?
 }
 
 var test= "";
+
+classSingelton1.testMap.name.testFunc();
+
+var map2 = map1;
+var array2 = array1;
+var classVar = new Class("www");
+
 

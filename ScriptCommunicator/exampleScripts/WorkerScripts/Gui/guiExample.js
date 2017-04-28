@@ -1,4 +1,4 @@
-/*************************************************************************
+﻿/*************************************************************************
 This worker script (worker scripts can be added in the script window) demonstrates the the gui 
 functionalities which can be used by a worker script. 
 ***************************************************************************/
@@ -7,7 +7,7 @@ function stopScript()
 {
     scriptThread.appendTextToConsole("script gui example stopped: " + scriptThread.getTimestamp());
 }
-
+test1.testfunc();
 //the user has changed the item index
 function toolBoxCurrentItemChangedSignal(index)
 {

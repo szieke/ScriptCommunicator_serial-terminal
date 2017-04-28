@@ -39,7 +39,8 @@ typedef enum
     ENTRY_TYPE_MAP_VAR,
     ENTRY_TYPE_MAP_FUNC,
     ENTRY_TYPE_PARSE_ERROR,
-    ENTRY_TYPE_PROTOTYPE_FUNC
+    ENTRY_TYPE_PROTOTYPE_FUNC,
+    ENTRY_TYPE_FILE
 
 }EntryType;
 
@@ -50,6 +51,7 @@ struct ParsedEntry
     int line;
     int column;
     QString name;
+    QString completeName;
     EntryType type;
     QStringList params;
     int tabIndex;
@@ -71,12 +73,14 @@ signals:
     ///Is emitted if the parsing is finished.
     ///Note: autoCompletionApiFiles contains the auto-completion entries for all parsed files.
     void parsingFinishedSignal(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles,
-                               QMap<QString, QStringList> parsedUiObjects, QMap<int,QVector<ParsedEntry>> parsedEntries, bool doneParsing);
+                               QMap<QString, QStringList> parsedUiObjects, QMap<int,QVector<ParsedEntry>> parsedEntries, bool doneParsing,
+                               bool parseOnlyUIFiles);
 
 public slots:
 
     ///Parses the current text. Emits parsingFinishedSignal if the parsing is finished.
-    void parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QString> loadedScripts, QMap<int, QString> loadedScriptsIndex, bool loadedFileChanged);
+    void parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QString> loadedScripts, QMap<int, QString> loadedScriptsIndex,
+                   bool loadedFileChanged, bool parseOnlyUIFiles);
 
 private:
 

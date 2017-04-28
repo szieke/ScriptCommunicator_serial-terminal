@@ -1498,8 +1498,13 @@ int Document::ExtendWordSelect(int pos, int delta, bool onlyWordCharacters) {
 	if (delta < 0) {
 		if (!onlyWordCharacters)
 			ccStart = WordCharClass(cb.CharAt(pos-1));
-		while (pos > 0 && (WordCharClass(cb.CharAt(pos - 1)) == ccStart))
+
+        CharClassify::cc tmp = WordCharClass(cb.CharAt(pos - 1));
+        while (pos > 0 && ((tmp == ccStart) || (cb.CharAt(pos - 1) == '.')))
+        {
 			pos--;
+            tmp = WordCharClass(cb.CharAt(pos - 1));
+        }
 	} else {
 		if (!onlyWordCharacters && pos < Length())
 			ccStart = WordCharClass(cb.CharAt(pos));

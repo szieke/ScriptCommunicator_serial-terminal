@@ -1222,6 +1222,7 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
     {
         QVector<ParsedEntry> fileResult;
         QMap<QString, QVector<ParsedEntry>> prototypeFunctionsSingleFile;
+        QMap<QString, ParsedEntry> objects;
         esprima::Pool pool;
         esprima::Program *program = NULL;
         try
@@ -1258,10 +1259,23 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
 
                 if(newExp)
                 {//Class.
-                    entry.type = ENTRY_TYPE_CLASS;
-                    parseClass(newExp, &entry, iter.key());
 
-                    //addParsedEntiresToAutoCompletionList(entry, m_autoCompletionEntries, "", entry.name);
+                    esprima::FunctionExpression* funcExpr = dynamic_cast<esprima::FunctionExpression*>(newExp->callee);
+                    if(funcExpr)
+                    {
+                        entry.type = ENTRY_TYPE_CLASS;
+                        parseClass(newExp, &entry, iter.key());
+                        objects[entry.name] = entry;
+                    }
+                    else
+                    {
+                        entry.type = ENTRY_TYPE_VAR;
+                        esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(newExp->callee);
+                        if(id)
+                        {
+                            entry.params.append(id->name.c_str());
+                        }
+                    }
 
                 }
                 else if(objExp)
@@ -1269,12 +1283,22 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
 
                     entry.type = ENTRY_TYPE_MAP;
                     parseObjectExpression(objExp, &entry, iter.key());
-
-                    //addParsedEntiresToAutoCompletionList(entry, m_autoCompletionEntries, "", entry.name);
+                    objects[entry.name] = entry;
                 }
                 else
                 {
                     entry.type = ENTRY_TYPE_VAR;
+
+                    esprima::VariableDeclarator* decl = dynamic_cast<esprima::VariableDeclarator*>(varDecl->declarations[0]);
+                    if(decl)
+                    {
+                        esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(decl->init);
+                        if(id)
+                        {
+                            entry.params.append(id->name.c_str());
+                        }
+
+                    }
                 }
 
                 fileResult.append(entry);
@@ -1285,8 +1309,8 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                 if(funcDecl)
                 {
                     parseFunction(funcDecl, &entry, iter.key());
-                    //addParsedEntiresToAutoCompletionList(entry, m_autoCompletionEntries, "", entry.name);
                     fileResult.append(entry);
+                    objects[entry.name] = entry;
                 }
                 else
                 {
@@ -1355,6 +1379,17 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
             {
                 addParsedEntiresToAutoCompletionList(fileResult[j], m_autoCompletionEntries, "", fileResult[j].name);
             }
+            else
+            {
+                if(!fileResult[j].params.isEmpty())
+                {
+                    if(objects.contains(fileResult[j].params[0]))
+                    {
+                        fileResult[j].subElements = objects[fileResult[j].params[0]].subElements;
+                        addParsedEntiresToAutoCompletionList(fileResult[j], m_autoCompletionEntries, "", fileResult[j].name);
+                    }
+                }
+            }
         }
 
         if(!fileResult.isEmpty())
@@ -1374,8 +1409,9 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
  * @param loadedScripts
  *      All loaded scripts.
  */
-void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QString> loadedScripts, QMap<int, QString> loadedScriptsIndex, bool loadedFileChanged)
+void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QString> loadedScripts, QMap<int, QString> loadedScriptsIndex, bool loadedFileChanged, bool parseOnlyUIFiles)
 {
+
     //Clear all parsed objects (all but m_autoCompletionApiFiles).
     m_autoCompletionEntries.clear();
     m_creatorObjects.clear();
@@ -1408,12 +1444,17 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
 
     if(!loadedFileChanged && !uiFileChanged)
     {//Nothing changed.
-        emit parsingFinishedSignal(QMap<QString, QStringList>(), QMap<QString, QStringList>(), QMap<QString, QStringList>(), QMap<int,QVector<ParsedEntry>>(), false);
+        emit parsingFinishedSignal(QMap<QString, QStringList>(), QMap<QString, QStringList>(), QMap<QString, QStringList>(),
+                                   QMap<int,QVector<ParsedEntry>>(), false, parseOnlyUIFiles);
         return;
     }
     m_parsedUiFilesFromFile.clear();
 
-    QMap<int,QVector<ParsedEntry>> parsedEntries = getAllFunctionsAndGlobalVariables(loadedScripts);
+    QMap<int,QVector<ParsedEntry>> parsedEntries;
+    if(!parseOnlyUIFiles)
+    {
+        parsedEntries = getAllFunctionsAndGlobalVariables(loadedScripts);
+    }
 
     QString currentText;
     //Creates a string which contains the text of all loaded scripts.
@@ -1465,41 +1506,44 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
     }
 
 
-    int counter = 1;
-    do
+    if(!parseOnlyUIFiles)
     {
-        m_objectAddedToCompletionList = false;
-
-        //Call several times to get all objects created by dynamic objects.
-        checkDocumentForCustomDynamicObjects(lines, linesWithBrackets, currentText, counter);
-        counter++;
-    }while(m_objectAddedToCompletionList);
-
-
-    counter = 1;
-    do
-    {
-        m_objectAddedToCompletionList = false;
-
-        //Call several times to get all objects created by dynamic objects.
-        checkDocumentForStandardDynamicObjects(lines, currentText, linesWithBrackets, counter);
-        counter++;
-    }while(m_objectAddedToCompletionList);
-
-
-    //Search all objects with an unknown type.
-    searchSingleType("Dummy", "=", lines);
-
-
-    //Add all objects with an unknown type.
-    for(auto el : m_unknownTypeObjects)
-    {
-        if(!m_autoCompletionEntries.contains(el))
+        int counter = 1;
+        do
         {
-            m_autoCompletionEntries[el] << el;
+            m_objectAddedToCompletionList = false;
+
+            //Call several times to get all objects created by dynamic objects.
+            checkDocumentForCustomDynamicObjects(lines, linesWithBrackets, currentText, counter);
+            counter++;
+        }while(m_objectAddedToCompletionList);
+
+
+        counter = 1;
+        do
+        {
+            m_objectAddedToCompletionList = false;
+
+            //Call several times to get all objects created by dynamic objects.
+            checkDocumentForStandardDynamicObjects(lines, currentText, linesWithBrackets, counter);
+            counter++;
+        }while(m_objectAddedToCompletionList);
+
+
+        //Search all objects with an unknown type.
+        searchSingleType("Dummy", "=", lines);
+
+
+        //Add all objects with an unknown type.
+        for(auto el : m_unknownTypeObjects)
+        {
+            if(!m_autoCompletionEntries.contains(el))
+            {
+                m_autoCompletionEntries[el] << el;
+            }
         }
     }
 
-   emit parsingFinishedSignal(m_autoCompletionEntries, m_autoCompletionApiFiles, m_parsedUiObjects, parsedEntries, true);
+   emit parsingFinishedSignal(m_autoCompletionEntries, m_autoCompletionApiFiles, m_parsedUiObjects, parsedEntries, true, parseOnlyUIFiles);
 }
 

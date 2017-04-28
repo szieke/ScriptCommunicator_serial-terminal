@@ -54,7 +54,7 @@ public:
     ~MainWindow();
 
     ///Adds a tab.
-    void addTab(QString script, bool setTabIndex);
+    bool addTab(QString script, bool setTabIndex);
 
     ///Returns the folder ich which the ScriptEditor files
     QString getScriptEditorFilesFolder(void);
@@ -89,7 +89,8 @@ public:
 
 signals:
     ///Is emitted if the parsing of the source files shall be started.
-    void parseSignal(QMap<QString, QString> loadedUiFile,QMap<int, QString> loadedScripts, QMap<int, QString> loadedScriptsIndex,bool loadedFileChanged);
+    void parseSignal(QMap<QString, QString> loadedUiFile,QMap<int, QString> loadedScripts, QMap<int, QString> loadedScriptsIndex,
+                     bool loadedFileChanged, bool parseOnlyUIFiles);
 
 protected:
     ///Close event.
@@ -106,10 +107,12 @@ protected:
 
 private slots:
 
+    void handleDoubleClick(int position, int line, int modifiers);
+
     ///Is called if the parsing is finished.
     ///Note: autoCompletionApiFiles contains the auto-completion entries for all parsed files.
     void parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles,
-                             QMap<QString, QStringList> parsedUiObjects, QMap<int, QVector<ParsedEntry> > parsedEntries, bool doneParsing);
+                             QMap<QString, QStringList> parsedUiObjects, QMap<int, QVector<ParsedEntry> > parsedEntries, bool doneParsing, bool parseOnlyUIFiles);
 
     ///Opens a new file.
     void open();
@@ -190,7 +193,7 @@ private slots:
     void checkForFileChanges(void);
 
     ///Is called if the parse timer times out.
-    void parseTimeout(void);
+    void parseTimeout(bool parseOnlyUIFiles = false);
 
 private:
 
@@ -225,7 +228,7 @@ private:
     void insertAllUiObjectsInUiView(QMap<QString, QStringList> parsedUiObjects);
 
     ///Inserts a subelement into the script view.
-    void inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<ParsedEntry> parsedEntries);
+    bool inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<ParsedEntry> parsedEntries, QString parentName);
 
     ///Inserts all parsed elements in the  script view and displays all parse errors (annotations).
     void insertFillScriptViewAndDisplayErrors(QMap<int, QVector<ParsedEntry> > &parsedEntries);

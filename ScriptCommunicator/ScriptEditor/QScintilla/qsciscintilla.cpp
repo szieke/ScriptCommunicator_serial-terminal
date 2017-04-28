@@ -76,6 +76,7 @@ QsciScintilla::QsciScintilla(QWidget *parent)
              SLOT(handleModified(int,int,const char *,int,int,int,int,int,int,int)));
     connect(this,SIGNAL(SCN_CALLTIPCLICK(int)),
              SLOT(handleCallTipClick(int)));
+
     connect(this,SIGNAL(SCN_CHARADDED(int)),
              SLOT(handleCharAdded(int)));
     connect(this,SIGNAL(SCN_INDICATORCLICK(int,int)),
@@ -1658,6 +1659,7 @@ void QsciScintilla::handleModified(int pos, int mtype, const char *text,
             emit linesChanged();
     }
 }
+
 
 
 // Zoom in a number of points.
