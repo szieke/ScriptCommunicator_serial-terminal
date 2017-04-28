@@ -366,7 +366,7 @@ public:
 	void GetHighlightDelimiters(HighlightDelimiter &hDelimiter, int line, int lastLine);
 
 	void Indent(bool forwards);
-	int ExtendWordSelect(int pos, int delta, bool onlyWordCharacters=false);
+    int ExtendWordSelect(int pos, int delta, bool onlyWordCharacters=false, bool allowDot=false);
 	int NextWordStart(int pos, int delta);
 	int NextWordEnd(int pos, int delta);
 	int SCI_METHOD Length() const { return cb.Length(); }

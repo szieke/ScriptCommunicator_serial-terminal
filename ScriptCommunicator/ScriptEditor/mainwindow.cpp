@@ -323,9 +323,10 @@ void MainWindow::parseTimeout(bool parseOnlyUIFiles)
 
 void MainWindow::handleDoubleClick(int position, int line, int modifiers)
 {
-    if(ui->documentsTabWidget->currentWidget() && ui->documentsTabWidget->currentWidget()->layout())
+    const bool ctrl = (modifiers & QsciScintillaBase::SCMOD_CTRL) != 0;
+
+    if(ui->documentsTabWidget->currentWidget() && ui->documentsTabWidget->currentWidget()->layout() && ctrl)
     {
-        const bool ctrl = (modifiers & QsciScintillaBase::SCMOD_CTRL) != 0;
 
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
         QString text = textEditor->selectedText();
