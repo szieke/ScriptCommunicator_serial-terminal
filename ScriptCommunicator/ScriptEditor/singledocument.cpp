@@ -81,7 +81,11 @@ void SingleDocument::initLexer(QString script)
         setTabWidth(4);
         setMarginLineNumbers(0,true);
         setMarginType(0, QsciScintilla::NumberMargin);
+        setFolding(QsciScintilla::CircledTreeFoldStyle);
         setMarginsForegroundColor(QColor(128, 128, 128));
+
+        dynamic_cast<QsciLexerJavaScript*>(lexer())->setFoldComments(true);
+        dynamic_cast<QsciLexerJavaScript*>(lexer())->setFoldCompact(false);
        }
 
 }
@@ -124,6 +128,7 @@ void SingleDocument::initAutoCompletion(QStringList& additionalElements, QMap<QS
             apis->add(el);
         }
         apis->prepare();
+
     }
 
 }
