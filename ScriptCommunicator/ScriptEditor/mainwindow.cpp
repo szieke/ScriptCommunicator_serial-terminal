@@ -131,6 +131,8 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
             this, SLOT(parsingFinishedSlot(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>,QMap<int, QVector<ParsedEntry>>,bool,bool)), Qt::QueuedConnection);
 
      m_checkForFileChangesTimer.start(2000);
+
+     parseTimeout(false);
 }
 
 MainWindow::~MainWindow()
@@ -1479,12 +1481,20 @@ void MainWindow::functionListDoubleClicked(QTreeWidgetItem* item, int column)
                     regEx = QString("prototype.%1").arg(entry->name);
 
                 }
+                else if(entry->type == ENTRY_TYPE_CONST)
+                {
+                    regEx = QString("const.*[ |/]%1").arg(entry->name);
+
+                }
                 else
                 {
                   regEx = QString("var.*[ |/]%1").arg(entry->name);
                 }
-                (void)textEditor->findFirst(regEx, true, true, false, true, true, entry->line, 0, true, false);
+                if(!textEditor->findFirst(regEx, true, true, false, true, true, entry->line, 0, true, false))
+                {
+                    (void)textEditor->findFirst(entry->name, false, true, false, true, true, entry->line, 0, true, false);
                 }
+            }
 
             ui->documentsTabWidget->setCurrentIndex(entry->tabIndex);
             textEditor->setFocus();
@@ -1779,6 +1789,7 @@ void MainWindow::insertAllUiObjectsInUiView(QMap<QString, QStringList> parsedUiO
         fileElement->setData(0, PARSED_ENTRY, (quint64)tmpEntry);
         fileElement->setText(0, strippedName(iter.key()));
         fileElement->setToolTip(0, iter.key());
+        fileElement->setIcon(0, QIcon(":/images/ui16.png"));
         root->addChild(fileElement);
 
         if(firstFile)
@@ -1796,6 +1807,7 @@ void MainWindow::insertAllUiObjectsInUiView(QMap<QString, QStringList> parsedUiO
             tmpEntry->objectName = el;
             tmpEntry->uiFile = iter.key();
             funcElement->setData(0, PARSED_ENTRY, (quint64)tmpEntry);
+            funcElement->setIcon(0, QIcon(":/images/var.png"));
             fileElement->addChild(funcElement);
 
             funcElement->setText(0, textInTreeWidget);
@@ -1868,6 +1880,11 @@ bool MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
                     textInTreeWidget.remove(textInTreeWidget.length() - 1, 1);
                 }
                 textInTreeWidget += ")";
+                funcElement->setIcon(0, QIcon(":/images/func.png"));
+            }
+            else
+            {
+                funcElement->setIcon(0, QIcon(":/images/var.png"));
             }
 
             funcElement->setText(0, textInTreeWidget);
@@ -2032,6 +2049,7 @@ void MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
         {
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(iter.key())->layout()->itemAt(0)->widget());
             fileElement->setToolTip(0, textEditor->getDocumentName());
+            fileElement->setIcon(0, QIcon(":/images/document.png"));
             root->addChild(fileElement);
             ui->outlineTreeWidget->expandItem(fileElement);
 

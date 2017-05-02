@@ -14,5 +14,11 @@
         <file>images/designer.ico</file>
         <file>images/font.png</file>
         <file>images/reload.png</file>
+        <file>images/circle_blue.png</file>
+        <file>images/circle_orange.png</file>
+        <file>images/func.png</file>
+        <file>images/var.png</file>
+        <file>images/document.png</file>
+        <file>images/ui16.png</file>
     </qresource>
 </RCC>

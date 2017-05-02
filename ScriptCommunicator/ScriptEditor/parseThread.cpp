@@ -1287,7 +1287,7 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                 }
                 else
                 {
-                    entry.type = ENTRY_TYPE_VAR;
+                    entry.type = (varDecl->kind == "const") ? ENTRY_TYPE_CONST : ENTRY_TYPE_VAR;
 
                     esprima::VariableDeclarator* decl = dynamic_cast<esprima::VariableDeclarator*>(varDecl->declarations[0]);
                     if(decl)

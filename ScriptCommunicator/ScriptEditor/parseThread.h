@@ -30,6 +30,7 @@ typedef struct
 typedef enum
 {
     ENTRY_TYPE_VAR = 0,
+    ENTRY_TYPE_CONST,
     ENTRY_TYPE_FUNCTION,
     ENTRY_TYPE_CLASS,
     ENTRY_TYPE_CLASS_FUNCTION,
