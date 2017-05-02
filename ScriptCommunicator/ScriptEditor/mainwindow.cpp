@@ -100,6 +100,7 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     m_findDialog = new FindDialog(this);
 
     connect(m_findDialog->ui->findPushButton, SIGNAL(clicked()), this, SLOT(findButtonSlot()));
+    connect(m_findDialog->ui->findAllPushButton, SIGNAL(clicked()), this, SLOT(findAllButtonSlot()));
     connect(m_findDialog->ui->replacePushButton, SIGNAL(clicked()), this, SLOT(replaceButtonSlot()));
     connect(m_findDialog->ui->replaceAllPushButton, SIGNAL(clicked()), this, SLOT(replaceAllButtonSlot()));
     connect(&m_parseTimer, SIGNAL(timeout()), this, SLOT(parseTimeout()));
@@ -111,6 +112,7 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
 
     connect(ui->outlineTreeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(functionListDoubleClicked(QTreeWidgetItem*,int)));
     connect(ui->uiTreeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(uiViewDoubleClicked(QTreeWidgetItem*,int)));
+    connect(ui->findResults, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(findResultsDoubleClicked(QTreeWidgetItem*,int)));
 
     m_findShortcut = new QShortcut(QKeySequence(Qt::Key_F3),this);
 
@@ -1266,11 +1268,89 @@ void MainWindow::editUiButtonSlot()
 void MainWindow::findButtonSlot()
 {
     QString findText = m_findDialog->ui->findWhatComboBox->currentText();
-
     addStringToTheSearchStringList(findText);
 
     //Find the text.
     findTextInDocument(findText);
+}
+
+/**
+ * Is called if the find all button the the find dialog has been clicked.
+ */
+void MainWindow::findAllButtonSlot()
+{
+    QString findText = m_findDialog->ui->findWhatComboBox->currentText();
+    addStringToTheSearchStringList(findText);
+    ui->findResults->clear();
+    int counter = 0;
+
+    for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+    {
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
+        QTreeWidgetItem* fileElement = NULL;
+        int foundLine = 0;
+        int column = 0;
+        int oldCursorLine, oldCursorIndex;
+        textEditor->getCursorPosition(&oldCursorLine, &oldCursorIndex);
+
+        while(textEditor->findFirst(findText, false, m_findDialog->ui->matchCaseCheckBox->isChecked(),
+                                                 m_findDialog->ui->matchWholeWordCheckBox->isChecked(), false, true, foundLine
+                                    ,column, false))
+        {
+            textEditor->getCursorPosition(&foundLine, &column);
+            if(!fileElement)
+            {
+                fileElement = new QTreeWidgetItem(ui->findResults->invisibleRootItem());
+                ParsedEntry* dummyEntry = new ParsedEntry();
+                dummyEntry->type = ENTRY_TYPE_FILE;
+                dummyEntry->tabIndex = i;
+
+                fileElement->setData(0, PARSED_ENTRY, (quint64)dummyEntry);
+                fileElement->setText(0, ui->documentsTabWidget->tabText(i));
+                fileElement->setToolTip(0, textEditor->getDocumentName());
+                ui->findResults->invisibleRootItem()->addChild(fileElement);
+                ui->findResults->expandItem(fileElement);
+                if(ui->documentsTabWidget->tabText(i).endsWith(".ui"))
+                {
+                    fileElement->setIcon(0, QIcon(":/images/ui16.png"));
+                }
+                else
+                {
+                    fileElement->setIcon(0, QIcon(":/images/document.png"));
+                }
+            }
+
+            QTreeWidgetItem* el = new QTreeWidgetItem(fileElement);
+            QString textInTreeWidget = QString("Line %1:  %2").arg(foundLine).arg(textEditor->text(foundLine));
+            textInTreeWidget.replace("\r", "");
+            textInTreeWidget.replace("\n", "");
+
+            ParsedEntry* tmpEntry = new ParsedEntry();
+            tmpEntry->name = findText;
+            tmpEntry->line = foundLine;
+            tmpEntry->column = column - findText.length();
+            tmpEntry->tabIndex = i;
+
+            el->setData(0, PARSED_ENTRY, (quint64)tmpEntry);
+            fileElement->addChild(el);
+            el->setText(0, textInTreeWidget);
+            el->setToolTip(0, textInTreeWidget);
+            counter++;
+
+        }
+
+        textEditor->setCursorPosition(oldCursorLine, oldCursorIndex);
+    }
+    ui->infoTabWidget->setTabText(0, QString("Find results - %1 occurrence found").arg(counter));
+
+    QList<int> list = ui->splitter2->sizes();
+    double size = list[0] + list[1];
+    if(list[1] < (size * 0.1))
+    {
+        list[1] = static_cast<int>(size * 0.2);
+        list[0] = static_cast<int>(size - list[1]);
+        ui->splitter2->setSizes(list);
+    }
 }
 
 /**
@@ -1434,6 +1514,37 @@ void MainWindow::uiViewDoubleClicked(QTreeWidgetItem* item, int column)
                 ui->documentsTabWidget->setCurrentIndex(index);
                 textEditor->setFocus();
             }
+        }
+    }
+
+}
+
+/**
+ * Is called if the user double clicks on the find result list.
+ * @param item
+ *      The clicked item.
+ */
+void MainWindow::findResultsDoubleClicked(QTreeWidgetItem* item, int column)
+{
+    (void)column;
+
+    if(item)
+    {
+        bool isOk = false;
+        ParsedEntry* entry  = (ParsedEntry*)item->data(0, PARSED_ENTRY).toULongLong(&isOk);
+
+        if(entry != 0)
+        {
+            SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(entry->tabIndex)->layout()->itemAt(0)->widget());
+
+            if(entry->type != ENTRY_TYPE_FILE)
+            {
+
+                (void)textEditor->findFirst(entry->name, false, true, false, true, true, entry->line, 0, true, false);
+            }
+
+            ui->documentsTabWidget->setCurrentIndex(entry->tabIndex);
+            textEditor->setFocus();
         }
     }
 
@@ -1618,6 +1729,8 @@ void MainWindow::initActions()
 void MainWindow::readSettings()
 {
     QSettings settings("ScriptCommunicator", QString("ScriptEditor_%1").arg(INTERNAL_VERSION));
+    QList<int> list;
+    double size;
 
     if(settings.contains("pos") && settings.contains("size") && settings.contains("mainSplitter") && settings.contains("fontFamily"))
     {
@@ -1638,13 +1751,19 @@ void MainWindow::readSettings()
     }
     else
     {
-        QList<int> list = ui->splitter->sizes();
-
-        double size = list[0] + list[1];
+        list = ui->splitter->sizes();
+        size = list[0] + list[1];
         list[0] = static_cast<int>(size * 0.2);
         list[1] = static_cast<int>(size - list[0]);
         ui->splitter->setSizes(list);
     }
+
+    //Hide the find list.
+    list = ui->splitter2->sizes();
+    size = list[0] + list[1];
+    list[1] = 0;
+    list[0] = static_cast<int>(size);
+    ui->splitter2->setSizes(list);
 
 
 }

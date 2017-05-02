@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>396</width>
-    <height>272</height>
+    <height>301</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -120,6 +120,13 @@
        </property>
        <property name="text">
         <string>find</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="findAllPushButton">
+       <property name="text">
+        <string>find all</string>
        </property>
       </widget>
      </item>

@@ -88,6 +88,7 @@ void SingleDocument::initLexer(QString script)
         dynamic_cast<QsciLexerJavaScript*>(lexer())->setFoldCompact(false);
        }
 
+
 }
 
 

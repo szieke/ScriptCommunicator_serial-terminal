@@ -129,6 +129,9 @@ private slots:
     ///Is called if the find button the the find dialog has been clicked.
     void findButtonSlot();
 
+    ///Is called if the find all button the the find dialog has been clicked.
+    void findAllButtonSlot();
+
     ///Is called if the edit ui button has been clicked.
     void editUiButtonSlot();
 
@@ -147,6 +150,9 @@ private slots:
 
     ///Is called if the user double clicks on the ui view.
     void uiViewDoubleClicked(QTreeWidgetItem* item, int column);
+
+    ///Is called if the user double clicks on the find result list.
+    void findResultsDoubleClicked(QTreeWidgetItem* item, int column);
 
     ///Is called if the user double clicks on the function list.
     void functionListDoubleClicked(QTreeWidgetItem*item, int column);
