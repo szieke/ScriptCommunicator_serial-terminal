@@ -1442,7 +1442,7 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
         timeIter++;
     }
 
-    if(!loadedFileChanged && !uiFileChanged)
+    if(parseOnlyUIFiles && !loadedFileChanged && !uiFileChanged)
     {//Nothing changed.
         emit parsingFinishedSignal(QMap<QString, QStringList>(), QMap<QString, QStringList>(), QMap<QString, QStringList>(),
                                    QMap<int,QVector<ParsedEntry>>(), false, parseOnlyUIFiles);

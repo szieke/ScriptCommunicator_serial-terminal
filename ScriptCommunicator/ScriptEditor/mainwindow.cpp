@@ -170,15 +170,13 @@ void MainWindow::parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEn
     {
         if(!parseOnlyUIFiles)
         {
-            currentEditor->initAutoCompletion(m_allFunctions, autoCompletionEntries, autoCompletionApiFiles);
-
-            insertFillScriptViewAndDisplayErrors(parsedEntries);
-
             for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
             {
                 SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
-                textEditor->setFileMustBeParsed(false);
+                textEditor->initAutoCompletion(m_allFunctions, autoCompletionEntries, autoCompletionApiFiles);
             }
+
+            insertFillScriptViewAndDisplayErrors(parsedEntries);
         }
 
         insertAllUiObjectsInUiView(parsedUiObjects);
@@ -365,6 +363,8 @@ void MainWindow::parseTimeout(bool parseOnlyUIFiles)
         {
             fileMustBeParsed = true;
         }
+        currentEditor->setFileMustBeParsed(false);
+
         if(!currentEditor->getDocumentName().endsWith(".ui"))
         {
             loadedScripts[ui->documentsTabWidget->currentIndex()] = currentEditor->text();
@@ -396,6 +396,7 @@ void MainWindow::parseTimeout(bool parseOnlyUIFiles)
             {
                 fileMustBeParsed = true;
             }
+            textEditor->setFileMustBeParsed(false);
         }
 
         m_parsingFinished = false;
