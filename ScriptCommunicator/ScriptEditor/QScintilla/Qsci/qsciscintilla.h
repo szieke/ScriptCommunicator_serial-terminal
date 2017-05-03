@@ -630,6 +630,7 @@ public:
     //! \sa fillIndicatorRange()
     void clearIndicatorRange(int lineFrom, int indexFrom, int lineTo,
             int indexTo, int indicatorNumber);
+    void clearIndicatorRangeWithPosition(int start, int finish, int indicatorNumber);
 
     //! Clear all registered images.
     //!
@@ -719,6 +720,7 @@ public:
     //! \sa clearIndicatorRange()
     void fillIndicatorRange(int lineFrom, int indexFrom, int lineTo,
             int indexTo, int indicatorNumber);
+    void fillIndicatorRangeWithPosition(int start, int finish, int indicatorNumber);
 
     //! Find the first occurrence of the string \a expr and return true if
     //! \a expr was found, otherwise returns false.  If \a expr is found it
@@ -1834,6 +1836,7 @@ public slots:
     //! \sa getSelection()
     virtual void setSelection(int lineFrom, int indexFrom, int lineTo,
             int indexTo);
+    void setSelectionFromPosition(int start, int end);
 
     //! Sets the background colour, including the alpha component, of selected
     //! text to \a col.
@@ -1929,6 +1932,8 @@ public slots:
     //!
     //! \sa zoomIn(), zoomOut()
     virtual void zoomTo(int size);
+
+    QString wordAtPosition(int position, bool allowDot=false) const;
 
 signals:
     //! This signal is emitted whenever the cursor position changes.  \a line
@@ -2099,8 +2104,6 @@ private:
     bool ensureRW();
     void insertAtPos(const QString &text, int pos);
     static int mapModifiers(int modifiers);
-
-    QString wordAtPosition(int position) const;
 
     ScintillaBytes styleText(const QList<QsciStyledText> &styled_text,
             char **styles, int style_offset = 0);

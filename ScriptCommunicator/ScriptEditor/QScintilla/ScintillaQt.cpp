@@ -162,7 +162,7 @@ void QsciScintillaQt::StartDrag()
 
 // Re-implement to trap certain messages.
 sptr_t QsciScintillaQt::WndProc(unsigned int iMessage, uptr_t wParam,
-        sptr_t lParam)
+        sptr_t lParam, sptr_t additionalParameter)
 {
     switch (iMessage)
     {
@@ -173,7 +173,7 @@ sptr_t QsciScintillaQt::WndProc(unsigned int iMessage, uptr_t wParam,
         return reinterpret_cast<sptr_t>(this);
     }
 
-    return ScintillaBase::WndProc(iMessage, wParam, lParam);
+    return ScintillaBase::WndProc(iMessage, wParam, lParam, additionalParameter);
 }
 
 

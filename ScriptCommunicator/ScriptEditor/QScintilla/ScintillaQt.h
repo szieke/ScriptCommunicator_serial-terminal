@@ -97,7 +97,7 @@ public:
 	virtual ~QsciScintillaQt();
 
 	virtual sptr_t WndProc(unsigned int iMessage, uptr_t wParam,
-            sptr_t lParam);
+            sptr_t lParam, sptr_t additionalParameter = 0);
 
 protected:
     void timerEvent(QTimerEvent *e);

@@ -770,7 +770,7 @@ void ScintillaBase::NotifyLexerChanged(Document *, void *) {
 #endif
 }
 
-sptr_t ScintillaBase::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam) {
+sptr_t ScintillaBase::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam, sptr_t additionalParameter) {
 	switch (iMessage) {
 	case SCI_AUTOCSHOW:
 		listType = 0;
@@ -1064,7 +1064,7 @@ sptr_t ScintillaBase::WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lPara
 #endif
 
 	default:
-		return Editor::WndProc(iMessage, wParam, lParam);
+        return Editor::WndProc(iMessage, wParam, lParam, additionalParameter );
 	}
 	return 0l;
 }

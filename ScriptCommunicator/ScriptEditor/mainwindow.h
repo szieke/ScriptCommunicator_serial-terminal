@@ -87,6 +87,9 @@ public:
     ///Returns the corresponding ui file for a script.
     static QString getTheCorrespondingUiFile(QString scriptFile);
 
+    ///Clears the current indicator.
+    void clearCurrentIndicator(void);
+
 signals:
     ///Is emitted if the parsing of the source files shall be started.
     void parseSignal(QMap<QString, QString> loadedUiFile,QMap<int, QString> loadedScripts, QMap<int, QString> loadedScriptsIndex,
@@ -317,6 +320,15 @@ private:
 
     ///This timer is started if a mouse move event occurs (calls mouseTimerSlot).
     QTimer m_mouseEventTimer;
+
+    ///The start of the current indicator (-1 is invalid) .
+    int m_indicatorStart;
+
+    ///The start of the current indicator (-1 is invalid) .
+    int m_indicatorEnd;
+
+    ///True if the ctrl key is pressed.
+    bool m_CtrlIsPressed;
 
 };
 

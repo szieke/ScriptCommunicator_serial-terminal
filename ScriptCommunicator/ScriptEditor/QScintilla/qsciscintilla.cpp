@@ -2016,6 +2016,13 @@ void QsciScintilla::setSelection(int lineFrom, int indexFrom, int lineTo,
             positionFromLineIndex(lineTo, indexTo));
 }
 
+// Sets the current selection.
+void QsciScintilla::setSelectionFromPosition(int start, int end)
+{
+    SendScintilla(SCI_SETSEL, start, end);
+}
+
+
 
 // Set the background colour of selected text.
 void QsciScintilla::setSelectionBackgroundColor(const QColor &col)
@@ -2907,10 +2914,16 @@ void QsciScintilla::setIndicatorOutlineColor(const QColor &col, int indicatorNum
 void QsciScintilla::fillIndicatorRange(int lineFrom, int indexFrom,
         int lineTo, int indexTo, int indicatorNumber)
 {
+    int start = positionFromLineIndex(lineFrom, indexFrom);
+    int finish = positionFromLineIndex(lineTo, indexTo);
+    fillIndicatorRangeWithPosition(start, finish, indicatorNumber);
+}
+
+// Fill a range with an indicator.
+void QsciScintilla::fillIndicatorRangeWithPosition(int start, int finish, int indicatorNumber)
+{
     if (indicatorNumber < INDIC_IME)
     {
-        int start = positionFromLineIndex(lineFrom, indexFrom);
-        int finish = positionFromLineIndex(lineTo, indexTo);
 
         // We ignore allocatedIndicators to allow any indicators defined
         // elsewhere (e.g. in lexers) to be set.
@@ -2935,10 +2948,16 @@ void QsciScintilla::fillIndicatorRange(int lineFrom, int indexFrom,
 void QsciScintilla::clearIndicatorRange(int lineFrom, int indexFrom,
         int lineTo, int indexTo, int indicatorNumber)
 {
+    int start = positionFromLineIndex(lineFrom, indexFrom);
+    int finish = positionFromLineIndex(lineTo, indexTo);
+    clearIndicatorRangeWithPosition(start, finish, indicatorNumber);
+}
+
+// Clear a range with an indicator.
+void QsciScintilla::clearIndicatorRangeWithPosition(int start, int finish, int indicatorNumber)
+{
     if (indicatorNumber < INDIC_IME)
     {
-        int start = positionFromLineIndex(lineFrom, indexFrom);
-        int finish = positionFromLineIndex(lineTo, indexTo);
 
         // We ignore allocatedIndicators to allow any indicators defined
         // elsewhere (e.g. in lexers) to be set.
@@ -4117,12 +4136,12 @@ QString QsciScintilla::wordAtPoint(const QPoint &point) const
 
 
 // Return the word at the given position.
-QString QsciScintilla::wordAtPosition(int position) const
+QString QsciScintilla::wordAtPosition(int position, bool allowDot) const
 {
     if (position < 0)
         return QString();
 
-    long start_pos = SendScintilla(SCI_WORDSTARTPOSITION, position, true);
+    long start_pos = SendScintilla(SCI_WORDSTARTPOSITION, position, true, (long)allowDot);
     long end_pos = SendScintilla(SCI_WORDENDPOSITION, position, true);
     int word_len = end_pos - start_pos;
 

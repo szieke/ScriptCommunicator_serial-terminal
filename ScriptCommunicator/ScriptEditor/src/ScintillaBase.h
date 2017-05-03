@@ -94,7 +94,7 @@ protected:
 
 public:
 	// Public so scintilla_send_message can use it
-	virtual sptr_t WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
+    virtual sptr_t WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam, sptr_t additionalParameter = 0);
 };
 
 #ifdef SCI_NAMESPACE

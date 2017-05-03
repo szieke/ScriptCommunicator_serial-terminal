@@ -211,7 +211,7 @@
     <string>Open</string>
    </property>
    <property name="toolTip">
-    <string>open an existing file</string>
+    <string>Open an existing file</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
@@ -226,7 +226,7 @@
     <string>Save</string>
    </property>
    <property name="toolTip">
-    <string>save the current document to disk</string>
+    <string>Save the current document to disk</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
@@ -242,10 +242,10 @@
   </action>
   <action name="actionExit">
    <property name="text">
-    <string>quit</string>
+    <string>Quit</string>
    </property>
    <property name="toolTip">
-    <string>exit the application</string>
+    <string>Exit the application</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
@@ -263,7 +263,7 @@
     <string>Cut</string>
    </property>
    <property name="toolTip">
-    <string>cut the current selection's contents to the clipboard</string>
+    <string>Cut the current selection's contents to the clipboard</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+X</string>
@@ -351,7 +351,7 @@
     <string>Undo</string>
    </property>
    <property name="toolTip">
-    <string>undo</string>
+    <string>Undo</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Z</string>
@@ -366,7 +366,7 @@
     <string>Redo</string>
    </property>
    <property name="toolTip">
-    <string>redo</string>
+    <string>Redo</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Y</string>
@@ -381,7 +381,7 @@
     <string>Open included scripts</string>
    </property>
    <property name="toolTip">
-    <string>open all included scripts</string>
+    <string>Open all included scripts</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+O</string>
@@ -396,7 +396,7 @@
     <string>New</string>
    </property>
    <property name="toolTip">
-    <string>create new script</string>
+    <string>Create new script</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
@@ -411,7 +411,7 @@
     <string>Set font</string>
    </property>
    <property name="toolTip">
-    <string>set font</string>
+    <string>Set font</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+F</string>
@@ -423,10 +423,10 @@
      <normaloff>:/images/designer.ico</normaloff>:/images/designer.ico</iconset>
    </property>
    <property name="text">
-    <string>edit ui</string>
+    <string>Edit ui</string>
    </property>
    <property name="toolTip">
-    <string>edit the selected ui file (ui tab)</string>
+    <string>Edit the selected ui file (ui tab)</string>
    </property>
   </action>
   <action name="actionReload">
@@ -438,7 +438,7 @@
     <string>Reload</string>
    </property>
    <property name="toolTip">
-    <string>reload the current document</string>
+    <string>Reload the current document</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>

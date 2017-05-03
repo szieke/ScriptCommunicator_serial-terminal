@@ -72,7 +72,8 @@ MainWindow* getMainWindow()
  */
 MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTimer(), m_parseThread(0), m_parsingFinished(true),
     m_lockFiles(), m_unsavedInfoFiles(), m_checkForFileChangesTimer(),
-    m_lastMouseMoveEvent(QEvent::None,QPointF(),Qt::NoButton, Qt::NoButton, Qt::NoModifier), m_mouseEventTimer()
+    m_lastMouseMoveEvent(QEvent::None,QPointF(),Qt::NoButton, Qt::NoButton, Qt::NoModifier), m_mouseEventTimer(),
+    m_indicatorStart(-1), m_indicatorEnd(-1), m_CtrlIsPressed(false)
 {
     ui->setupUi(this);
 
@@ -229,6 +230,7 @@ void MainWindow::checkForFileChanges(void)
                         }
                         else
                         {
+                            clearCurrentIndicator();
                             ui->documentsTabWidget->setCurrentIndex(i);
                         }
 
@@ -255,30 +257,79 @@ void MainWindow::checkForFileChanges(void)
 }
 
 /**
+ * Clears the current indicator.
+ */
+void MainWindow::clearCurrentIndicator(void)
+{
+    if(m_indicatorEnd != -1)
+    {//An indicator ist activ.
+
+        if(ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex()) && ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex())->layout())
+        {
+            SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex())->layout()->itemAt(0)->widget());
+            textEditor->clearIndicatorRangeWithPosition(m_indicatorStart, m_indicatorEnd, 1);
+            m_indicatorEnd = -1;
+        }
+    }
+}
+
+/**
  * Is called if the mouse move timer times out.
  */
 void MainWindow::mouseMoveTimerSlot()
 {
+
     if(ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex()) && ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex())->layout())
     {
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex())->layout()->itemAt(0)->widget());
-
-        statusBar()->showMessage(QString("Mouse move (%1,%2,%3)").arg(m_lastMouseMoveEvent.pos().x()).arg(m_lastMouseMoveEvent.pos().y()).arg(textEditor->wordAtPoint(m_lastMouseMoveEvent.pos())));
         QString word = textEditor->wordAtPoint(m_lastMouseMoveEvent.pos());
-        if(textEditor->lexer() && !word.isEmpty())
+        long pos = textEditor->SendScintilla(QsciScintillaBase::SCI_POSITIONFROMPOINTCLOSE, m_lastMouseMoveEvent.x(), m_lastMouseMoveEvent.y());
+        int line = textEditor->lineAt(m_lastMouseMoveEvent.pos());
+
+        clearCurrentIndicator();
+
+        //Cancel any existing call tip.
+        textEditor->SendScintilla(QsciScintillaBase::SCI_CALLTIPCANCEL);
+        if(m_CtrlIsPressed)
         {
+            QString completeWord = textEditor->wordAtPosition(pos, true);
+            bool wordIsInOutline = false;
 
-          long pos = textEditor->SendScintilla(QsciScintillaBase::SCI_POSITIONFROMPOINTCLOSE, m_lastMouseMoveEvent.x(), m_lastMouseMoveEvent.y());
-          int line = textEditor->lineAt(m_lastMouseMoveEvent.pos());
+            QTreeWidgetItemIterator iter(ui->outlineTreeWidget);
+            while (*iter)
+            {
+                bool isOk = false;
+                ParsedEntry* entry  = (ParsedEntry*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
 
-          if(!textEditor->callTip(pos))
-          {
-              QString lineText = textEditor->text(line);
-              int index = lineText.indexOf(word);
-              index = lineText.indexOf("(", index + 1);
-              pos = textEditor->positionFromLineIndex(line, index + 1);
-              (void)textEditor->callTip(pos);
-          }
+              if (entry->completeName == completeWord)
+              {
+                  wordIsInOutline = true;
+                  break;
+              }
+
+              ++iter;
+            }
+
+            if(wordIsInOutline)
+            {
+                m_indicatorStart = textEditor->SendScintilla(QsciScintillaBase::SCI_WORDSTARTPOSITION, pos, true);
+                m_indicatorEnd = textEditor->SendScintilla(QsciScintillaBase::SCI_WORDENDPOSITION, pos, true);
+                textEditor->fillIndicatorRangeWithPosition(m_indicatorStart, m_indicatorEnd, 1);
+            }
+        }
+        else
+        {
+            if(textEditor->lexer() && !word.isEmpty())
+            {
+              if(!textEditor->callTip(pos))
+              {
+                  QString lineText = textEditor->text(line);
+                  int index = lineText.indexOf(word);
+                  index = lineText.indexOf("(", index + 1);
+                  pos = textEditor->positionFromLineIndex(line, index + 1);
+                  (void)textEditor->callTip(pos);
+              }
+            }
         }
 
     }
@@ -364,6 +415,8 @@ void MainWindow::parseTimeout(bool parseOnlyUIFiles)
 
 void MainWindow::handleDoubleClick(int position, int line, int modifiers)
 {
+    (void)position;
+    (void)line;
     const bool ctrl = (modifiers & QsciScintillaBase::SCMOD_CTRL) != 0;
 
     if(ui->documentsTabWidget->currentWidget() && ui->documentsTabWidget->currentWidget()->layout() && ctrl)
@@ -371,6 +424,12 @@ void MainWindow::handleDoubleClick(int position, int line, int modifiers)
 
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
         QString text = textEditor->selectedText();
+
+        //Clear the selection.
+        long pos = textEditor->SendScintilla(QsciScintillaBase::SCI_POSITIONFROMPOINTCLOSE, m_lastMouseMoveEvent.x(), m_lastMouseMoveEvent.y());
+        int start = textEditor->SendScintilla(QsciScintillaBase::SCI_WORDSTARTPOSITION, pos, true);
+        int end = textEditor->SendScintilla(QsciScintillaBase::SCI_WORDENDPOSITION, pos, true);
+        textEditor->setSelectionFromPosition(start, end);
 
         QTreeWidgetItemIterator iter(ui->outlineTreeWidget);
         while (*iter)
@@ -466,6 +525,7 @@ bool MainWindow::addTab(QString script, bool setTabIndex)
     {
         if(setTabIndex)
         {
+            clearCurrentIndicator();
             ui->documentsTabWidget->setCurrentIndex(index);
         }
     }
@@ -812,6 +872,7 @@ void MainWindow::openAllIncludedScriptsSlot()
             }
         }
     }while(fileLoaded);
+    clearCurrentIndicator();
     ui->documentsTabWidget->setCurrentIndex(currentIndex);
 }
 
@@ -1336,6 +1397,24 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
       m_lastMouseMoveEvent = *static_cast<QMouseEvent*>(event);
       m_mouseEventTimer.start(200);
   }
+  else if (event->type() == QEvent::KeyRelease)
+  {
+      QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+      if((keyEvent->modifiers() & Qt::ControlModifier) == 0)
+      {
+          m_CtrlIsPressed = false;
+          clearCurrentIndicator();
+      }
+  }
+  else if (event->type() == QEvent::KeyPress)
+  {
+      QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
+      if((keyEvent->modifiers() & Qt::ControlModifier) != 0)
+      {
+          m_CtrlIsPressed = true;
+          m_mouseEventTimer.start(100);
+      }
+  }
   return false;
 }
 
@@ -1452,6 +1531,7 @@ void MainWindow::findReplaceAllButtonSlot(bool replace)
         }
 
         ui->documentsTabWidget->setCurrentIndex(oldTabIndex);
+        clearCurrentIndicator();
     }
     else
     {
@@ -1649,6 +1729,7 @@ void MainWindow::uiViewDoubleClicked(QTreeWidgetItem* item, int column)
                     textEditor->ensureLineVisible(foundLine);
                 }
 
+                clearCurrentIndicator();
                 ui->documentsTabWidget->setCurrentIndex(index);
                 textEditor->setFocus();
             }
@@ -1687,6 +1768,7 @@ void MainWindow::findResultsDoubleClicked(QTreeWidgetItem* item, int column)
                 }
             }
 
+            clearCurrentIndicator();
             ui->documentsTabWidget->setCurrentIndex(entry->tabIndex);
             textEditor->setFocus();
         }
@@ -1757,9 +1839,15 @@ void MainWindow::functionListDoubleClicked(QTreeWidgetItem* item, int column)
                     int foundLine, column;
                     textEditor->getCursorPosition(&foundLine, &column);
                     textEditor->ensureLineVisible(foundLine);
+
+                    int startPos = textEditor->SendScintilla(QsciScintillaBase::SCI_GETSELECTIONSTART);
+                    QString word = textEditor->selectedText();
+                    int index = word.indexOf(entry->name);
+                    startPos += index;
+                    textEditor->setSelectionFromPosition(startPos, startPos + entry->name.length());
                 }
             }
-
+            clearCurrentIndicator();
             ui->documentsTabWidget->setCurrentIndex(entry->tabIndex);
             textEditor->setFocus();
         }

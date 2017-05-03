@@ -566,7 +566,7 @@ public:
 	// Public so the COM thunks can access it.
 	bool IsUnicodeMode() const;
 	// Public so scintilla_send_message can use it.
-	virtual sptr_t WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam);
+    virtual sptr_t WndProc(unsigned int iMessage, uptr_t wParam, sptr_t lParam, sptr_t additionalParameter = 0);
 	// Public so scintilla_set_id can use it.
 	int ctrlID;
 	// Public so COM methods for drag and drop can set it.
