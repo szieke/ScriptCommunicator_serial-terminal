@@ -71,7 +71,8 @@ MainWindow* getMainWindow()
  *      The file which should be loaded.
  */
 MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTimer(), m_parseThread(0), m_parsingFinished(true),
-    m_lockFiles(), m_unsavedInfoFiles(), m_checkForFileChangesTimer()
+    m_lockFiles(), m_unsavedInfoFiles(), m_checkForFileChangesTimer(),
+    m_lastMouseMoveEvent(QEvent::None,QPointF(),Qt::NoButton, Qt::NoButton, Qt::NoModifier), m_mouseEventTimer()
 {
     ui->setupUi(this);
 
@@ -106,6 +107,7 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     connect(m_findDialog->ui->replaceAllPushButton, SIGNAL(clicked()), this, SLOT(replaceAllButtonSlot()));
     connect(&m_parseTimer, SIGNAL(timeout()), this, SLOT(parseTimeout()));
     connect(&m_checkForFileChangesTimer, SIGNAL(timeout()), this, SLOT(checkForFileChanges()));
+    connect(&m_mouseEventTimer, SIGNAL(timeout()), this, SLOT(mouseMoveTimerSlot()));
 
 
     m_findDialog->ui->findWhatComboBox->setAutoCompletion(false);
@@ -136,6 +138,8 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
      m_checkForFileChangesTimer.start(2000);
 
      parseTimeout(false);
+
+     qApp->installEventFilter(this);
 }
 
 MainWindow::~MainWindow()
@@ -248,6 +252,38 @@ void MainWindow::checkForFileChanges(void)
 
     parseTimeout(true);
     m_checkForFileChangesTimer.start(2000);
+}
+
+/**
+ * Is called if the mouse move timer times out.
+ */
+void MainWindow::mouseMoveTimerSlot()
+{
+    if(ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex()) && ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex())->layout())
+    {
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex())->layout()->itemAt(0)->widget());
+
+        statusBar()->showMessage(QString("Mouse move (%1,%2,%3)").arg(m_lastMouseMoveEvent.pos().x()).arg(m_lastMouseMoveEvent.pos().y()).arg(textEditor->wordAtPoint(m_lastMouseMoveEvent.pos())));
+        QString word = textEditor->wordAtPoint(m_lastMouseMoveEvent.pos());
+        if(textEditor->lexer() && !word.isEmpty())
+        {
+
+          long pos = textEditor->SendScintilla(QsciScintillaBase::SCI_POSITIONFROMPOINTCLOSE, m_lastMouseMoveEvent.x(), m_lastMouseMoveEvent.y());
+          int line = textEditor->lineAt(m_lastMouseMoveEvent.pos());
+
+          if(!textEditor->callTip(pos))
+          {
+              QString lineText = textEditor->text(line);
+              int index = lineText.indexOf(word);
+              index = lineText.indexOf("(", index + 1);
+              pos = textEditor->positionFromLineIndex(line, index + 1);
+              (void)textEditor->callTip(pos);
+          }
+        }
+
+    }
+
+    m_mouseEventTimer.stop();
 }
 
 /**
@@ -1292,6 +1328,17 @@ void MainWindow::findButtonSlot()
     }
 }
 
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    (void)obj;
+  if (event->type() == QEvent::MouseMove)
+  {
+      m_lastMouseMoveEvent = *static_cast<QMouseEvent*>(event);
+      m_mouseEventTimer.start(200);
+  }
+  return false;
+}
+
 /**
  * Is called if the find all or the replace all button in the find dialog has been clicked.
  */
@@ -1386,17 +1433,18 @@ void MainWindow::findReplaceAllButtonSlot(bool replace)
 
         textEditor->setCursorPosition(oldCursorLine, oldCursorIndex);
     }
+    QString textInTab;
     if(replace)
     {
-        if(counter > 0)
+        if(counter == 1)
         {
-            ui->infoTabWidget->setTabText(0, QString("Replace results - %1 occurrence replaced").arg(counter));
+            textInTab = "Replace all result - %1 occurrence replaced";
         }
-        else
+        else if((counter == 0) || (counter > 1))
         {
-            QMessageBox::information(this, tr("Script Editor"),"0 tokens replaced");
+            textInTab = "Replace all result - %1 occurrences replaced";
+        }
 
-        }
 
         for(auto index : modifiedDocuments)
         {
@@ -1407,16 +1455,18 @@ void MainWindow::findReplaceAllButtonSlot(bool replace)
     }
     else
     {
-        if(counter > 0)
+        if(counter == 1)
         {
-            ui->infoTabWidget->setTabText(0, QString("Find results - %1 occurrence found").arg(counter));
+            textInTab = "Find all result - %1 occurrence found";
         }
-        else
+        else if((counter == 0) || (counter > 1))
         {
-            QMessageBox::information(this, tr("Script Editor"),
-                             QString("Can't find %1").arg(findText));
+            textInTab = "Find all result - %1 occurrences found";
         }
+
     }
+
+    ui->infoTabWidget->setTabText(0, textInTab.arg(counter));
 
     if(counter > 0)
     {
@@ -1429,6 +1479,10 @@ void MainWindow::findReplaceAllButtonSlot(bool replace)
             list[0] = static_cast<int>(size - list[1]);
             ui->splitter2->setSizes(list);
         }
+    }
+    else
+    {
+        QMessageBox::information(this, tr("Script Editor"), QString("Can't find %1").arg(findText));
     }
 }
 

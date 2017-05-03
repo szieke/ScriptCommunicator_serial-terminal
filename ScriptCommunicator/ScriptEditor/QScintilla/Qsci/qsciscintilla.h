@@ -1520,7 +1520,7 @@ public slots:
 
     //! Display a call tip based on the the characters immediately to the left
     //! of the cursor.
-    virtual void callTip();
+    virtual bool callTip(int startPos = -1);
 
     //! Deletes all the text in the text edit.
     virtual void clear();
@@ -1702,6 +1702,8 @@ public slots:
     //!
     //! \sa getCursorPosition()
     virtual void setCursorPosition(int line, int index);
+
+    void setCursorPosition(const QPoint &pos);
 
     //! Sets the end-of-line mode to \a mode.  The default is the platform's
     //! natural mode.

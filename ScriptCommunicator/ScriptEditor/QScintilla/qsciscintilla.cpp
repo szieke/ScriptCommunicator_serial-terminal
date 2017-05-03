@@ -297,18 +297,25 @@ bool QsciScintilla::isCallTipActive() const
 
 
 // Handle a possible change to any current call tip.
-void QsciScintilla::callTip()
+bool QsciScintilla::callTip(int startPos)
 {
     QsciAbstractAPIs *apis = lex->apis();
 
     if (!apis)
-        return;
+        return false;
 
     int pos, commas = 0;
     bool found = false;
     char ch;
 
-    pos = SendScintilla(SCI_GETCURRENTPOS);
+    if(startPos == -1)
+    {
+        pos = SendScintilla(SCI_GETCURRENTPOS);
+    }
+    else
+    {
+        pos = startPos;
+    }
 
     // Move backwards through the line looking for the start of the current
     // call tip and working out which argument it is.
@@ -342,12 +349,12 @@ void QsciScintilla::callTip()
 
     // Done if there is no new call tip to set.
     if (!found)
-        return;
+        return false;
 
     QStringList context = apiContext(pos, pos, ctPos);
 
     if (context.isEmpty())
-        return;
+        return false;
 
     // The last word is complete, not partial.
     context << QString();
@@ -359,7 +366,7 @@ void QsciScintilla::callTip()
     int nr_entries = ct_entries.count();
 
     if (nr_entries == 0)
-        return;
+        return false;
 
     if (maxCallTips > 0 && maxCallTips < nr_entries)
     {
@@ -404,7 +411,7 @@ void QsciScintilla::callTip()
 
     // Done if there is more than one call tip.
     if (nr_entries > 1)
-        return;
+        return true;
 
     // Highlight the current argument.
     const char *astart;
@@ -416,7 +423,7 @@ void QsciScintilla::callTip()
             ;
 
     if (!astart || !*++astart)
-        return;
+        return true;
 
     // The end is at the next comma or unmatched closing parenthesis.
     const char *aend;
@@ -441,6 +448,8 @@ void QsciScintilla::callTip()
 
     if (astart != aend)
         SendScintilla(SCI_CALLTIPSETHLT, astart - cts, aend - cts);
+
+    return true;
 }
 
 
@@ -530,8 +539,16 @@ QStringList QsciScintilla::apiContext(int pos, int &context_start,
             good_pos = pos;
             expecting = Word;
         }
+        else if(getCharacter(pos) == ' ')
+        {
+        }
         else
         {
+            char ch = SendScintilla(SCI_GETCHARAT, pos);
+            if(ch != ' ')
+            {
+                pos++;
+            }
             QString word = getWord(pos);
             if (word.isEmpty() || expecting == Separator)
                 break;
@@ -2349,6 +2366,13 @@ void QsciScintilla::getCursorPosition(int *line, int *index) const
 void QsciScintilla::setCursorPosition(int line, int index)
 {
     SendScintilla(SCI_GOTOPOS, positionFromLineIndex(line, index));
+}
+
+// Set the cursor position
+void QsciScintilla::setCursorPosition(const QPoint &pos)
+{
+    long chpos = SendScintilla(SCI_POSITIONFROMPOINTCLOSE, pos.x(), pos.y());
+    SendScintilla(SCI_GOTOPOS, chpos);
 }
 
 

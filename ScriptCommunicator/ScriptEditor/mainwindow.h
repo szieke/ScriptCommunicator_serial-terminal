@@ -105,6 +105,8 @@ protected:
     ///Drop event.
     void dropEvent(QDropEvent *event);
 
+    bool eventFilter(QObject *obj, QEvent *event);
+
 private slots:
 
     void handleDoubleClick(int position, int line, int modifiers);
@@ -203,6 +205,9 @@ private slots:
 
     ///Is called if the parse timer times out.
     void parseTimeout(bool parseOnlyUIFiles = false);
+
+    ///Is called if the mouse move timer times out.
+    void mouseMoveTimerSlot();
 
 private:
 
@@ -306,6 +311,12 @@ private:
 
     ///This timer checks for changes in the loades files.
     QTimer m_checkForFileChangesTimer;
+
+    ///The last mouse move event.
+    QMouseEvent m_lastMouseMoveEvent;
+
+    ///This timer is started if a mouse move event occurs (calls mouseTimerSlot).
+    QTimer m_mouseEventTimer;
 
 };
 
