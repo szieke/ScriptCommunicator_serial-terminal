@@ -118,13 +118,19 @@
        <property name="enabled">
         <bool>true</bool>
        </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;find next occurrence in the current document&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
-        <string>find</string>
+        <string>find next</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="findAllPushButton">
+       <property name="toolTip">
+        <string>find all occurrences in all documents</string>
+       </property>
        <property name="text">
         <string>find all</string>
        </property>
@@ -132,13 +138,19 @@
      </item>
      <item>
       <widget class="QPushButton" name="replacePushButton">
+       <property name="toolTip">
+        <string>replace the next occurrence in the current document</string>
+       </property>
        <property name="text">
-        <string>replace</string>
+        <string>replace next</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="replaceAllPushButton">
+       <property name="toolTip">
+        <string>replace all occurrences in all document</string>
+       </property>
        <property name="text">
         <string>replace all</string>
        </property>

@@ -129,8 +129,8 @@ private slots:
     ///Is called if the find button the the find dialog has been clicked.
     void findButtonSlot();
 
-    ///Is called if the find all button the the find dialog has been clicked.
-    void findAllButtonSlot();
+    ///Is called if the find all or the replace all button in the find dialog has been clicked.
+    void findReplaceAllButtonSlot(bool replace=false);
 
     ///Is called if the edit ui button has been clicked.
     void editUiButtonSlot();
@@ -146,7 +146,7 @@ private slots:
 
     ///Checks if the current script file has been changed. If the files has been changed
     ///it displays this in the window title.
-    void documentWasModified();
+    void documentWasModified(int index=-1);
 
     ///Is called if the user double clicks on the ui view.
     void uiViewDoubleClicked(QTreeWidgetItem* item, int column);
@@ -168,8 +168,11 @@ private slots:
     ///Is called if current tab index has been changed.
     void tabIndexChangedSlot(int index);
 
-    ///Is called if a tab shall be closed.
-    void tabCloseRequestedSlot(int index);
+    ///Is called if an info tab shall be closed.
+    void infoTabCloseRequestedSlot(int index);
+
+    ///Is called if a documents tab shall be closed.
+    void documentsTabCloseRequestedSlot(int index);
 
     ///Reload action slot.
     void reloadSlot();

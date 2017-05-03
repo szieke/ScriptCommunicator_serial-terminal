@@ -53,6 +53,8 @@ struct ParsedEntry
     int column;
     QString name;
     QString completeName;
+    bool findWithCase;
+    bool findWholeWord;
     EntryType type;
     QStringList params;
     int tabIndex;

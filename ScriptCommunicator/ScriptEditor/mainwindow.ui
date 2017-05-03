@@ -97,6 +97,9 @@
         <property name="currentIndex">
          <number>0</number>
         </property>
+        <property name="tabsClosable">
+         <bool>true</bool>
+        </property>
         <widget class="QWidget" name="findTab">
          <attribute name="title">
           <string>Find results</string>
@@ -187,6 +190,7 @@
    <addaction name="actionOpen"/>
    <addaction name="actionSave"/>
    <addaction name="actionReload"/>
+   <addaction name="actionSetFont"/>
    <addaction name="separator"/>
    <addaction name="actionCut"/>
    <addaction name="actionCopy"/>

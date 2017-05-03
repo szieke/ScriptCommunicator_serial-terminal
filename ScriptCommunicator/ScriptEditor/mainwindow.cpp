@@ -78,7 +78,8 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     g_mainWindow = this;
 
     connect(ui->documentsTabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabIndexChangedSlot(int)));
-    connect(ui->documentsTabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(tabCloseRequestedSlot(int)));
+    connect(ui->documentsTabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(documentsTabCloseRequestedSlot(int)));
+    connect(ui->infoTabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(infoTabCloseRequestedSlot(int)));
 
     if(scripts.isEmpty())
     {
@@ -100,7 +101,7 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     m_findDialog = new FindDialog(this);
 
     connect(m_findDialog->ui->findPushButton, SIGNAL(clicked()), this, SLOT(findButtonSlot()));
-    connect(m_findDialog->ui->findAllPushButton, SIGNAL(clicked()), this, SLOT(findAllButtonSlot()));
+    connect(m_findDialog->ui->findAllPushButton, SIGNAL(clicked()), this, SLOT(findReplaceAllButtonSlot()));
     connect(m_findDialog->ui->replacePushButton, SIGNAL(clicked()), this, SLOT(replaceButtonSlot()));
     connect(m_findDialog->ui->replaceAllPushButton, SIGNAL(clicked()), this, SLOT(replaceAllButtonSlot()));
     connect(&m_parseTimer, SIGNAL(timeout()), this, SLOT(parseTimeout()));
@@ -198,7 +199,7 @@ void MainWindow::checkForFileChanges(void)
             if(fileInfo.lastModified() != textEditor->getLastModified())
             {//Document was changed from elsewhere
 
-                int ret = QMessageBox::question(this, tr("ScriptCommunicator script editor"), textEditor->getDocumentName() +
+                int ret = QMessageBox::question(this, tr("Script Editor"), textEditor->getDocumentName() +
                                                 " has been modified by another programm. Reload this file",
                                                QMessageBox::Yes | QMessageBox::Default,
                                                QMessageBox::No);
@@ -233,7 +234,7 @@ void MainWindow::checkForFileChanges(void)
                     }
                     else
                     {
-                        QMessageBox::warning(this, tr("ScriptCommunicator script editor"),
+                        QMessageBox::warning(this, tr("Script Editor"),
                                              tr("Cannot read file %1:\n%2")
                                              .arg(textEditor->getDocumentName())
                                              .arg(file.errorString()));
@@ -437,11 +438,28 @@ bool MainWindow::addTab(QString script, bool setTabIndex)
 }
 
 /**
- * Is called if a tab shall be closed.
+ * Is called if an info tab shall be closed.
  * @param index
  *      The tab index.
  */
-void MainWindow::tabCloseRequestedSlot(int index)
+void MainWindow::infoTabCloseRequestedSlot(int index)
+{
+    (void)index;
+
+    //Hide the find/replace list.
+    QList<int> list = ui->splitter2->sizes();
+    double size = list[0] + list[1];
+    list[1] = 0;
+    list[0] = static_cast<int>(size);
+    ui->splitter2->setSizes(list);
+}
+
+/**
+ * Is called if a documents tab shall be closed.
+ * @param index
+ *      The tab index.
+ */
+void MainWindow::documentsTabCloseRequestedSlot(int index)
 {
     if(maybeSave(index))
     {
@@ -605,7 +623,7 @@ void MainWindow::reloadSlot()
     }
     else
     {
-        QMessageBox::warning(this, tr("ScriptCommunicator script editor"),
+        QMessageBox::warning(this, tr("Script Editor"),
                              tr("Cannot read file %1:\n%2")
                              .arg(textEditor->getDocumentName())
                              .arg(file.errorString()));
@@ -1166,12 +1184,20 @@ void MainWindow::replaceButtonSlot()
     addStringToTheSearchStringList(findText);
 
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-    if(textEditor->hasSelectedText())
+    if(textEditor->hasSelectedText() && (textEditor->selectedText() == findText))
     {
         textEditor->replaceSelectedText(replaceText);
+        (void)findTextInDocument(findText);
     }
+    else
+    {
 
-    findTextInDocument(findText);
+        if(!findTextInDocument(findText))
+        {
+            QMessageBox::information(this, tr("Script Editor"),
+                                     QString("Can't find %1").arg(findText));
+        }
+    }
 }
 
 /**
@@ -1179,19 +1205,7 @@ void MainWindow::replaceButtonSlot()
  */
 void MainWindow::replaceAllButtonSlot()
 {
-    QString replaceText =m_findDialog->ui->replaceComboBox->currentText();
-    QString findText = m_findDialog->ui->findWhatComboBox->currentText();
-
-    addStringToTheReplaceList(replaceText);
-    addStringToTheSearchStringList(findText);
-
-    SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-    textEditor->setCursorPosition(0,0);
-    while(textEditor->findFirst(findText, false, m_findDialog->ui->matchCaseCheckBox->isChecked(),
-                                m_findDialog->ui->matchWholeWordCheckBox->isChecked(), false, true, -1, -1, false, false))
-    {
-        textEditor->replaceSelectedText(replaceText);
-    }
+    findReplaceAllButtonSlot(true);
 }
 
 /**
@@ -1271,16 +1285,29 @@ void MainWindow::findButtonSlot()
     addStringToTheSearchStringList(findText);
 
     //Find the text.
-    findTextInDocument(findText);
+    if(!findTextInDocument(findText))
+    {
+        QMessageBox::information(this, tr("Script Editor"),
+                             QString("Can't find %1").arg(findText));
+    }
 }
 
 /**
- * Is called if the find all button the the find dialog has been clicked.
+ * Is called if the find all or the replace all button in the find dialog has been clicked.
  */
-void MainWindow::findAllButtonSlot()
+void MainWindow::findReplaceAllButtonSlot(bool replace)
 {
     QString findText = m_findDialog->ui->findWhatComboBox->currentText();
+    QString replaceText =m_findDialog->ui->replaceComboBox->currentText();
     addStringToTheSearchStringList(findText);
+    QList<int> modifiedDocuments;
+    int oldTabIndex = ui->documentsTabWidget->currentIndex();
+
+    if(replace)
+    {
+        addStringToTheReplaceList(replaceText);
+    }
+
     ui->findResults->clear();
     int counter = 0;
 
@@ -1297,6 +1324,7 @@ void MainWindow::findAllButtonSlot()
                                                  m_findDialog->ui->matchWholeWordCheckBox->isChecked(), false, true, foundLine
                                     ,column, false))
         {
+
             textEditor->getCursorPosition(&foundLine, &column);
             if(!fileElement)
             {
@@ -1329,7 +1357,13 @@ void MainWindow::findAllButtonSlot()
             tmpEntry->name = findText;
             tmpEntry->line = foundLine;
             tmpEntry->column = column - findText.length();
+            if(tmpEntry->column > 0)
+            {
+                tmpEntry->column--;
+            }
             tmpEntry->tabIndex = i;
+            tmpEntry->findWholeWord = m_findDialog->ui->matchWholeWordCheckBox->isChecked();
+            tmpEntry->findWithCase = m_findDialog->ui->matchCaseCheckBox->isChecked();
 
             el->setData(0, PARSED_ENTRY, (quint64)tmpEntry);
             fileElement->addChild(el);
@@ -1337,19 +1371,64 @@ void MainWindow::findAllButtonSlot()
             el->setToolTip(0, textInTreeWidget);
             counter++;
 
+            if(replace)
+            {
+                textEditor->replaceSelectedText(replaceText);
+                tmpEntry->name = replaceText;
+
+                if(!modifiedDocuments.contains(i))
+                {
+                    modifiedDocuments.append(i);
+                }
+            }
+
         }
 
         textEditor->setCursorPosition(oldCursorLine, oldCursorIndex);
     }
-    ui->infoTabWidget->setTabText(0, QString("Find results - %1 occurrence found").arg(counter));
-
-    QList<int> list = ui->splitter2->sizes();
-    double size = list[0] + list[1];
-    if(list[1] < (size * 0.1))
+    if(replace)
     {
-        list[1] = static_cast<int>(size * 0.2);
-        list[0] = static_cast<int>(size - list[1]);
-        ui->splitter2->setSizes(list);
+        if(counter > 0)
+        {
+            ui->infoTabWidget->setTabText(0, QString("Replace results - %1 occurrence replaced").arg(counter));
+        }
+        else
+        {
+            QMessageBox::information(this, tr("Script Editor"),"0 tokens replaced");
+
+        }
+
+        for(auto index : modifiedDocuments)
+        {
+            documentWasModified(index);
+        }
+
+        ui->documentsTabWidget->setCurrentIndex(oldTabIndex);
+    }
+    else
+    {
+        if(counter > 0)
+        {
+            ui->infoTabWidget->setTabText(0, QString("Find results - %1 occurrence found").arg(counter));
+        }
+        else
+        {
+            QMessageBox::information(this, tr("Script Editor"),
+                             QString("Can't find %1").arg(findText));
+        }
+    }
+
+    if(counter > 0)
+    {
+        //Show the find/replace list.
+        QList<int> list = ui->splitter2->sizes();
+        double size = list[0] + list[1];
+        if(list[1] < (size * 0.1))
+        {
+            list[1] = static_cast<int>(size * 0.2);
+            list[0] = static_cast<int>(size - list[1]);
+            ui->splitter2->setSizes(list);
+        }
     }
 }
 
@@ -1509,7 +1588,12 @@ void MainWindow::uiViewDoubleClicked(QTreeWidgetItem* item, int column)
             if(checkIfDocumentAlreadyLoaded(entry->uiFile, index))
             {
                 SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(index)->layout()->itemAt(0)->widget());
-                (void)textEditor->findFirst("name=\"" + entry->objectName, false, true, false, true, true, 0, 0, true, false);
+                if(textEditor->findFirst("name=\"" + entry->objectName, false, true, false, true, true, 0, 0, true, false))
+                {
+                    int foundLine, column;
+                    textEditor->getCursorPosition(&foundLine, &column);
+                    textEditor->ensureLineVisible(foundLine);
+                }
 
                 ui->documentsTabWidget->setCurrentIndex(index);
                 textEditor->setFocus();
@@ -1540,7 +1624,13 @@ void MainWindow::findResultsDoubleClicked(QTreeWidgetItem* item, int column)
             if(entry->type != ENTRY_TYPE_FILE)
             {
 
-                (void)textEditor->findFirst(entry->name, false, true, false, true, true, entry->line, 0, true, false);
+                if(textEditor->findFirst(entry->name, false, entry->findWithCase,
+                                            entry->findWholeWord, true, true, entry->line, entry->column, true, false))
+                {
+                    int foundLine, column;
+                    textEditor->getCursorPosition(&foundLine, &column);
+                    textEditor->ensureLineVisible(foundLine);
+                }
             }
 
             ui->documentsTabWidget->setCurrentIndex(entry->tabIndex);
@@ -1601,9 +1691,18 @@ void MainWindow::functionListDoubleClicked(QTreeWidgetItem* item, int column)
                 {
                   regEx = QString("var.*[ |/]%1").arg(entry->name);
                 }
+
+                bool itemFound = true;
                 if(!textEditor->findFirst(regEx, true, true, false, true, true, entry->line, 0, true, false))
                 {
-                    (void)textEditor->findFirst(entry->name, false, true, false, true, true, entry->line, 0, true, false);
+                    itemFound = textEditor->findFirst(entry->name, false, true, false, true, true, entry->line, 0, true, false);
+                }
+
+                if(itemFound)
+                {
+                    int foundLine, column;
+                    textEditor->getCursorPosition(&foundLine, &column);
+                    textEditor->ensureLineVisible(foundLine);
                 }
             }
 
@@ -1657,9 +1756,19 @@ QString MainWindow::createNewDocumentTitle(void)
  * Checks if the current script file has been changed. If the files has been changed
  * it displays this in the window title.
  */
-void MainWindow::documentWasModified()
+void MainWindow::documentWasModified(int index)
 {
-    SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
+    SingleDocument* textEditor;
+
+    if(index == -1)
+    {
+        textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
+        index = ui->documentsTabWidget->currentIndex();
+    }
+    else
+    {
+        textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(index)->layout()->itemAt(0)->widget());
+    }
     setWindowModified(textEditor->isModified());
     textEditor->setMarginWidth(0, QString("00%1").arg(textEditor->lines()));
     textEditor->setFileMustBeParsed(true);
@@ -1667,7 +1776,7 @@ void MainWindow::documentWasModified()
     QString shownName;
     if (textEditor->getDocumentName().isEmpty())
     {
-        shownName = ui->documentsTabWidget->tabText(ui->documentsTabWidget->currentIndex());
+        shownName = ui->documentsTabWidget->tabText(index);
 
     }
     else
@@ -1678,7 +1787,7 @@ void MainWindow::documentWasModified()
     {
         if(!shownName.endsWith("*"))
         {
-            ui->documentsTabWidget->setTabText(ui->documentsTabWidget->currentIndex(), shownName + "*");
+            ui->documentsTabWidget->setTabText(index, shownName + "*");
         }
 
         QString fileName = textEditor->getDocumentName();
@@ -1691,7 +1800,7 @@ void MainWindow::documentWasModified()
     }
     else
     {
-         ui->documentsTabWidget->setTabText(ui->documentsTabWidget->currentIndex(), shownName);
+         ui->documentsTabWidget->setTabText(index, shownName);
     }
 
 }
@@ -1758,7 +1867,7 @@ void MainWindow::readSettings()
         ui->splitter->setSizes(list);
     }
 
-    //Hide the find list.
+    //Hide the find/replace list.
     list = ui->splitter2->sizes();
     size = list[0] + list[1];
     list[1] = 0;
@@ -2213,7 +2322,7 @@ bool MainWindow::loadFile(const QString &fileName)
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly))
     {
-        QMessageBox::warning(this, tr("ScriptCommunicator script editor"),
+        QMessageBox::warning(this, tr("Script Editor"),
                              tr("Cannot read file %1:\n%2")
                              .arg(fileName)
                              .arg(file.errorString()));
@@ -2257,7 +2366,7 @@ bool MainWindow::saveFile(const QString &fileName)
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly))
     {
-        QMessageBox::warning(this, tr("ScriptCommunicator script editor"),
+        QMessageBox::warning(this, tr("Script Editor"),
                              tr("Cannot write file %1:\n%2.")
                              .arg(fileName)
                              .arg(file.errorString()));
