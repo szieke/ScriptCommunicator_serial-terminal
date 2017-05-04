@@ -4179,7 +4179,7 @@ void Editor::ButtonDownWithModifiers(Point pt, unsigned int curTime, int modifie
 
 			int startWord, endWord;
 			if ((sel.MainCaret() >= originalAnchorPos) && !pdoc->IsLineEndPosition(charPos)) {
-                startWord = pdoc->ExtendWordSelect(pdoc->MovePositionOutsideChar(charPos + 1, 1), -1, false, ctrl);
+                startWord = pdoc->ExtendWordSelect(pdoc->MovePositionOutsideChar(charPos + 1, 1), -1);
 				endWord = pdoc->ExtendWordSelect(charPos, 1);
 			} else {
 				// Selecting backwards, or anchor beyond last character on line. In these cases,

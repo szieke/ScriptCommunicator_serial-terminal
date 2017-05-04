@@ -20,12 +20,46 @@
  */
 SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
     QsciScintilla(parent), m_mainWindow(mainWindow), m_documentName(""), m_fileLastModified(QDateTime::currentDateTime()),
-    m_fileMustBeParsed(true)
+    m_fileMustBeParsed(true), m_clickIndicatorStart(-1), m_clickIndicatorEnd(-1), m_clickIndicatorIdentifier(1)
 {
 
     connect(this, SIGNAL(textChanged()), m_mainWindow, SLOT(documentWasModified()));
 
+    m_clickIndicatorIdentifier = indicatorDefine(PlainIndicator, -1);
+    setIndicatorForegroundColor(QColor(0,0,255), m_clickIndicatorIdentifier);
+
     setUtf8(true);
+}
+
+/**
+ * Underlines a word which can be clicked (funktion or variable in the outline window).
+ * @param pos
+ *      The position of one character of the word.
+ */
+void SingleDocument::underlineWordWhichCanBeClicked(int pos)
+{
+    if(m_clickIndicatorStart != -1)
+    {
+        removeUndlineFromWordWhichCanBeClicked();
+    }
+
+    m_clickIndicatorStart = SendScintilla(SCI_WORDSTARTPOSITION, pos, true);
+    m_clickIndicatorEnd = SendScintilla(SCI_WORDENDPOSITION, pos, true);
+
+    fillIndicatorRangeWithPosition(m_clickIndicatorStart, m_clickIndicatorEnd, m_clickIndicatorIdentifier);
+}
+
+/**
+ * Clears the current underline (clickable word).
+ */
+void SingleDocument::removeUndlineFromWordWhichCanBeClicked(void)
+{
+    if(m_clickIndicatorStart != -1)
+    {
+        clearIndicatorRangeWithPosition(m_clickIndicatorStart, m_clickIndicatorEnd, m_clickIndicatorIdentifier);
+        m_clickIndicatorStart = -1;
+        m_clickIndicatorEnd = -1;
+    }
 }
 
 /**

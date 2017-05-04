@@ -49,7 +49,7 @@ var classSingelton1 = new function()
 	}
 }
 
-classSingelton1.prototype.getInfo = function(arg)  //auswerten?
+classSingelton1.prototype.getInfo = function(arg) 
 {
     return this.waitForResponse;
 }
@@ -57,6 +57,7 @@ classSingelton1.prototype.getInfo = function(arg)  //auswerten?
 var test= "";
 
 classSingelton1.testMap.name.testFunc();
+classSingelton1.getInfo();
 
 var map2 = map1;
 var array2 = array1;

@@ -21,46 +21,48 @@ typedef struct
 ///Contains the data of a function which returns a object (e.g. String).
 typedef struct
 {
-    bool isArray;
-    QString functionName;
-    QString resultType;
+    QString functionName;//The name of the function.
+    QString resultType;//The result type of the function.
+    bool isArray;//True if the result type is an array.
 
 }FunctionWithResultObject;
 
+//The type of an parsed entry.
 typedef enum
 {
-    ENTRY_TYPE_VAR = 0,
-    ENTRY_TYPE_CONST,
-    ENTRY_TYPE_FUNCTION,
-    ENTRY_TYPE_CLASS,
-    ENTRY_TYPE_CLASS_FUNCTION,
-    ENTRY_TYPE_CLASS_THIS_FUNCTION,
-    ENTRY_TYPE_CLASS_VAR,
-    ENTRY_TYPE_MAP,
-    ENTRY_TYPE_MAP_VAR,
-    ENTRY_TYPE_MAP_FUNC,
-    ENTRY_TYPE_PARSE_ERROR,
-    ENTRY_TYPE_PROTOTYPE_FUNC,
-    ENTRY_TYPE_FILE
+    PARSED_ENTRY_TYPE_VAR = 0,//Variable
+    PARSED_ENTRY_TYPE_CONST,//Const value
+    PARSED_ENTRY_TYPE_FUNCTION,//Function
+    PARSED_ENTRY_TYPE_CLASS,//Class
+    PARSED_ENTRY_TYPE_CLASS_FUNCTION,//Class function
+    PARSED_ENTRY_TYPE_CLASS_THIS_FUNCTION,//Class this function
+    PARSED_ENTRY_TYPE_CLASS_VAR,//Class variable
+    PARSED_ENTRY_TYPE_MAP,//Map
+    PARSED_ENTRY_TYPE_MAP_VAR,//Map variable
+    PARSED_ENTRY_TYPE_MAP_FUNC,//Map function
+    PARSED_ENTRY_TYPE_PARSE_ERROR,//Parse error
+    PARSED_ENTRY_TYPE_PROTOTYPE_FUNC,//Prototype function.
+    PARSED_ENTRY_TYPE_FILE//File
 
-}EntryType;
+}ParsedEntryType;
 
 ///A parsed entry.
 typedef struct ParsedEntry ParsedEntry;
 struct ParsedEntry
 {
-    int line;
-    int column;
-    QString name;
-    QString completeName;
-    bool findWithCase;
-    bool findWholeWord;
-    EntryType type;
-    QStringList params;
-    int tabIndex;
-    QVector<ParsedEntry> subElements;
+    int line;//The line number.
+    int column;//The column.
+    QString name;//The entry name.
+    QString completeName;//The complete name (inkludes the parents).
+    bool findWithCase;//False if for this entry the case is ignored during search.
+    bool findWholeWord;//True if for this entry the whole complete name shall be searched during search.
+    ParsedEntryType type;//The type of this entry.
+    QStringList params;//The parameters.
+    int tabIndex;//The tab (dodument) to which this entry belongs to.
+    QVector<ParsedEntry> subElements;//The sub entries.
 };
 
+///This thread parses all documents (parseSlot).
 class ParseThread : public QThread
 {
     Q_OBJECT

@@ -73,7 +73,7 @@ MainWindow* getMainWindow()
 MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTimer(), m_parseThread(0), m_parsingFinished(true),
     m_lockFiles(), m_unsavedInfoFiles(), m_checkForFileChangesTimer(),
     m_lastMouseMoveEvent(QEvent::None,QPointF(),Qt::NoButton, Qt::NoButton, Qt::NoModifier), m_mouseEventTimer(),
-    m_indicatorStart(-1), m_indicatorEnd(-1), m_CtrlIsPressed(false)
+    m_ctrlIsPressed(false), m_indicatorClickTimer(), m_lastIndicatorClickPosition(0)
 {
     ui->setupUi(this);
 
@@ -109,6 +109,7 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     connect(&m_parseTimer, SIGNAL(timeout()), this, SLOT(parseTimeout()));
     connect(&m_checkForFileChangesTimer, SIGNAL(timeout()), this, SLOT(checkForFileChanges()));
     connect(&m_mouseEventTimer, SIGNAL(timeout()), this, SLOT(mouseMoveTimerSlot()));
+    connect(&m_indicatorClickTimer, SIGNAL(timeout()), this, SLOT(indicatorClickTimerSlot()));
 
 
     m_findDialog->ui->findWhatComboBox->setAutoCompletion(false);
@@ -163,11 +164,13 @@ void MainWindow::parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEn
                                      QMap<QString, QStringList> parsedUiObjects, QMap<int,QVector<ParsedEntry>> parsedEntries, bool doneParsing,
                                      bool parseOnlyUIFiles)
 {
-     SingleDocument* currentEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
 
+
+    SingleDocument* currentEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
 
     if(doneParsing &&  !currentEditor->isListActive())
     {
+
         if(!parseOnlyUIFiles)
         {
             for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
@@ -179,6 +182,7 @@ void MainWindow::parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEn
             insertFillScriptViewAndDisplayErrors(parsedEntries);
         }
 
+
         insertAllUiObjectsInUiView(parsedUiObjects);
     }
 
@@ -186,7 +190,7 @@ void MainWindow::parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEn
 }
 
 /**
- * Is call by m_checkForFileChangesTimer and checks for changes in the loaded files.
+ * Is called by m_checkForFileChangesTimer and checks for changes in the loaded files.
  */
 void MainWindow::checkForFileChanges(void)
 {
@@ -232,7 +236,7 @@ void MainWindow::checkForFileChanges(void)
                             ui->documentsTabWidget->setCurrentIndex(i);
                         }
 
-                        //Set the tab text,
+                        //Set the tab text.
                         ui->documentsTabWidget->setTabText(ui->documentsTabWidget->currentIndex(), strippedName(textEditor->getDocumentName()));
                         statusBar()->showMessage(tr("File reloaded"), 10000);
                     }
@@ -259,15 +263,40 @@ void MainWindow::checkForFileChanges(void)
  */
 void MainWindow::clearCurrentIndicator(void)
 {
-    if(m_indicatorEnd != -1)
-    {//An indicator ist activ.
+    if(ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex()) && ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex())->layout())
+    {
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex())->layout()->itemAt(0)->widget());
+        textEditor->removeUndlineFromWordWhichCanBeClicked();
+    }
+}
 
-        if(ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex()) && ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex())->layout())
-        {
-            SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex())->layout()->itemAt(0)->widget());
-            textEditor->clearIndicatorRangeWithPosition(m_indicatorStart, m_indicatorEnd, 1);
-            m_indicatorEnd = -1;
-        }
+/**
+ * Is called if an indicator is clicked.
+ */
+void MainWindow::indicatorClickTimerSlot()
+{
+    m_indicatorClickTimer.stop();
+    handleDoubleClicksInEditor(m_lastIndicatorClickPosition, 0, m_ctrlIsPressed ? QsciScintillaBase::SCMOD_CTRL : QsciScintillaBase:: SCMOD_NORM);
+}
+
+/**
+ * Is called if an indicator is clicked.
+ * @param line
+ *      The line of the indicator.
+ * @param index
+ *      The index of the indicator.
+ * @param modifier
+ *      The keyboard modifier.
+ *
+ */
+void MainWindow::indicatorClickedSlot(int line, int index, Qt::KeyboardModifiers modifier)
+{
+    if(ui->documentsTabWidget->currentWidget() && ui->documentsTabWidget->currentWidget()->layout() &&
+            (modifier & Qt::ControlModifier))
+    {
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
+        m_lastIndicatorClickPosition = textEditor->positionFromLineIndex(line, index);
+        m_indicatorClickTimer.start(200);
     }
 }
 
@@ -288,37 +317,39 @@ void MainWindow::mouseMoveTimerSlot()
 
         //Cancel any existing call tip.
         textEditor->SendScintilla(QsciScintillaBase::SCI_CALLTIPCANCEL);
-        if(m_CtrlIsPressed)
+        if(m_ctrlIsPressed)
         {
             QString completeWord = textEditor->wordAtPosition(pos, true);
-            bool wordIsInOutline = false;
-
-            QTreeWidgetItemIterator iter(ui->outlineTreeWidget);
-            while (*iter)
+            if(!completeWord.isEmpty())
             {
-                bool isOk = false;
-                ParsedEntry* entry  = (ParsedEntry*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
+                //Check if the word is in the outline.
+                bool wordIsInOutline = false;
+                QTreeWidgetItemIterator iter(ui->outlineTreeWidget);
+                while (*iter)
+                {
+                    bool isOk = false;
+                    ParsedEntry* entry  = (ParsedEntry*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
 
-              if (entry->completeName == completeWord)
-              {
-                  wordIsInOutline = true;
-                  break;
-              }
+                  if (entry->completeName == completeWord)
+                  {
+                      wordIsInOutline = true;
+                      break;
+                  }
 
-              ++iter;
-            }
+                  ++iter;
+                }
 
-            if(wordIsInOutline)
-            {
-                m_indicatorStart = textEditor->SendScintilla(QsciScintillaBase::SCI_WORDSTARTPOSITION, pos, true);
-                m_indicatorEnd = textEditor->SendScintilla(QsciScintillaBase::SCI_WORDENDPOSITION, pos, true);
-                textEditor->fillIndicatorRangeWithPosition(m_indicatorStart, m_indicatorEnd, 1);
+                if(wordIsInOutline)
+                {
+                    textEditor->underlineWordWhichCanBeClicked(pos);
+                }
             }
         }
         else
         {
             if(textEditor->lexer() && !word.isEmpty())
             {
+                //Show the calltip (if possible).
               if(!textEditor->callTip(pos))
               {
                   QString lineText = textEditor->text(line);
@@ -402,19 +433,26 @@ void MainWindow::parseTimeout(bool parseOnlyUIFiles)
         m_parsingFinished = false;
         emit parseSignal(loadedUiFiles, loadedScripts, loadedScriptsIndex, fileMustBeParsed, parseOnlyUIFiles);
 
+        //Restart the parse timer if it was active and this call parses only the ui files.
         if(parseOnlyUIFiles & parseTimerWasActive)
         {
             m_parseTimer.start(200);
         }
     }
 
-
-
 }
 
 
-
-void MainWindow::handleDoubleClick(int position, int line, int modifiers)
+/**
+ * Is called if the user double clicks a postion in the editor.
+ * @param position
+ *      The position in the editor.
+ * @param line
+ *      The line in the editor.
+ * @param modifiers
+ *      The keyboard modifiers.
+ */
+void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifiers)
 {
     (void)position;
     (void)line;
@@ -422,41 +460,44 @@ void MainWindow::handleDoubleClick(int position, int line, int modifiers)
 
     if(ui->documentsTabWidget->currentWidget() && ui->documentsTabWidget->currentWidget()->layout() && ctrl)
     {
+        m_indicatorClickTimer.stop();
 
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-        QString text = textEditor->selectedText();
+        QString text = textEditor->wordAtPosition(m_lastIndicatorClickPosition, true);
 
-        //Clear the selection.
-        long pos = textEditor->SendScintilla(QsciScintillaBase::SCI_POSITIONFROMPOINTCLOSE, m_lastMouseMoveEvent.x(), m_lastMouseMoveEvent.y());
-        int start = textEditor->SendScintilla(QsciScintillaBase::SCI_WORDSTARTPOSITION, pos, true);
-        int end = textEditor->SendScintilla(QsciScintillaBase::SCI_WORDENDPOSITION, pos, true);
-        textEditor->setSelectionFromPosition(start, end);
-
+        //Iterate over all elements in the scripts outline.
         QTreeWidgetItemIterator iter(ui->outlineTreeWidget);
         while (*iter)
         {
             bool isOk = false;
             ParsedEntry* entry  = (ParsedEntry*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
 
-          if (entry->completeName == text)
-          {
-              functionListDoubleClicked((*iter), 0);
+            //The double clicked word is in teh scripts outline.
+            if (entry->completeName == text)
+            {
+                functionListDoubleClicked((*iter), 0);
 
-              for(auto el : ui->outlineTreeWidget->selectedItems())
-              {
-                  el->setSelected(false);
-              }
+                //Deselect all selected items.
+                for(auto el : ui->outlineTreeWidget->selectedItems())
+                {
+                    el->setSelected(false);
+                }
 
-              QTreeWidgetItem* item = (*iter)->parent();
-              while(item)
-              {
-                  item->setExpanded(true);
-                  item = item->parent();
-              }
-              (*iter)->setSelected(true);
-              ui->outlineTreeWidget->scrollToItem((*iter));
-            break;
-          }
+                //Expand all parents items.
+                QTreeWidgetItem* item = (*iter)->parent();
+                while(item)
+                {
+                    item->setExpanded(true);
+                    item = item->parent();
+                }
+
+                //Select the found item.
+                (*iter)->setSelected(true);
+
+                //Scroll to the found item.
+                ui->outlineTreeWidget->scrollToItem((*iter));
+              break;
+            }
 
           ++iter;
         }
@@ -498,7 +539,9 @@ bool MainWindow::addTab(QString script, bool setTabIndex)
         connect(textEditor, SIGNAL(zoomOutSignal()), this, SLOT(zoomOutSlot()));
 
         connect(textEditor,SIGNAL(SCN_DOUBLECLICK(int,int,int)),
-                 this,SLOT(handleDoubleClick(int,int,int)));
+                 this,SLOT(handleDoubleClicksInEditor(int,int,int)));
+        connect(textEditor, SIGNAL(indicatorClicked(int,int,Qt::KeyboardModifiers)), this,
+                SLOT(indicatorClickedSlot(int,int,Qt::KeyboardModifiers)));
 
 
         if(!script.isEmpty())
@@ -562,7 +605,9 @@ void MainWindow::documentsTabCloseRequestedSlot(int index)
     {
         removeFileLock(index);
 
+        QWidget* tab = ui->documentsTabWidget->widget(index);
         ui->documentsTabWidget->removeTab(index);
+        delete tab;
 
         if(ui->documentsTabWidget->count() == 0)
         {
@@ -1390,6 +1435,15 @@ void MainWindow::findButtonSlot()
     }
 }
 
+/**
+ * The event filter.
+ * @param obj
+ *      The object to which the event belongs to.
+ * @param event
+ *      The event.
+ * @return
+ *      True if the event processed (then this event is not routed to other objects).
+ */
 bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
     (void)obj;
@@ -1403,7 +1457,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
       QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
       if((keyEvent->modifiers() & Qt::ControlModifier) == 0)
       {
-          m_CtrlIsPressed = false;
+          m_ctrlIsPressed = false;
           clearCurrentIndicator();
       }
   }
@@ -1412,7 +1466,7 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event)
       QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
       if((keyEvent->modifiers() & Qt::ControlModifier) != 0)
       {
-          m_CtrlIsPressed = true;
+          m_ctrlIsPressed = true;
           m_mouseEventTimer.start(100);
       }
   }
@@ -1438,6 +1492,7 @@ void MainWindow::findReplaceAllButtonSlot(bool replace)
     ui->findResults->clear();
     int counter = 0;
 
+    //Find/replace in all documents.
     for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
     {
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
@@ -1447,6 +1502,7 @@ void MainWindow::findReplaceAllButtonSlot(bool replace)
         int oldCursorLine, oldCursorIndex;
         textEditor->getCursorPosition(&oldCursorLine, &oldCursorIndex);
 
+        //Find all occurrences.
         while(textEditor->findFirst(findText, false, m_findDialog->ui->matchCaseCheckBox->isChecked(),
                                                  m_findDialog->ui->matchWholeWordCheckBox->isChecked(), false, true, foundLine
                                     ,column, false))
@@ -1455,9 +1511,10 @@ void MainWindow::findReplaceAllButtonSlot(bool replace)
             textEditor->getCursorPosition(&foundLine, &column);
             if(!fileElement)
             {
+                //Add the entry for the document/file.
                 fileElement = new QTreeWidgetItem(ui->findResults->invisibleRootItem());
                 ParsedEntry* dummyEntry = new ParsedEntry();
-                dummyEntry->type = ENTRY_TYPE_FILE;
+                dummyEntry->type = PARSED_ENTRY_TYPE_FILE;
                 dummyEntry->tabIndex = i;
 
                 fileElement->setData(0, PARSED_ENTRY, (quint64)dummyEntry);
@@ -1475,6 +1532,7 @@ void MainWindow::findReplaceAllButtonSlot(bool replace)
                 }
             }
 
+            //Add the entry for the found/replaced text.
             QTreeWidgetItem* el = new QTreeWidgetItem(fileElement);
             QString textInTreeWidget = QString("Line %1:  %2").arg(foundLine).arg(textEditor->text(foundLine));
             textInTreeWidget.replace("\r", "");
@@ -1500,6 +1558,7 @@ void MainWindow::findReplaceAllButtonSlot(bool replace)
 
             if(replace)
             {
+                //Replace the found text.
                 textEditor->replaceSelectedText(replaceText);
                 tmpEntry->name = replaceText;
 
@@ -1700,11 +1759,13 @@ void MainWindow::uiViewDoubleClicked(QTreeWidgetItem* item, int column)
         bool isOk = false;
         ParsedUiObject* entry  = (ParsedUiObject*)item->data(0, PARSED_ENTRY).toULongLong(&isOk);
 
+        //Check of entry is valid.
         if((entry != 0) && !entry->objectName.isEmpty())
         {
             int index = 0;
             if(!checkIfDocumentAlreadyLoaded(entry->uiFile, index))
-            {
+            {//The ui file is not already loaded.
+
                 int ret = QMessageBox::question(this, tr("Edit user interface"), "Edit " + strippedName(entry->uiFile) + " in text mode?",
                                                QMessageBox::Yes | QMessageBox::Default,
                                                QMessageBox::No);
@@ -1721,7 +1782,9 @@ void MainWindow::uiViewDoubleClicked(QTreeWidgetItem* item, int column)
 
 
             if(checkIfDocumentAlreadyLoaded(entry->uiFile, index))
-            {
+            {//The ui file is loaded.
+
+                //Serach for the clicked item/text.
                 SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(index)->layout()->itemAt(0)->widget());
                 if(textEditor->findFirst("name=\"" + entry->objectName, false, true, false, true, true, 0, 0, true, false))
                 {
@@ -1753,13 +1816,14 @@ void MainWindow::findResultsDoubleClicked(QTreeWidgetItem* item, int column)
         bool isOk = false;
         ParsedEntry* entry  = (ParsedEntry*)item->data(0, PARSED_ENTRY).toULongLong(&isOk);
 
+        //Check if entry is valid.
         if(entry != 0)
+
         {
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(entry->tabIndex)->layout()->itemAt(0)->widget());
-
-            if(entry->type != ENTRY_TYPE_FILE)
+            if(entry->type != PARSED_ENTRY_TYPE_FILE)
             {
-
+                //Find the clicked item/text.
                 if(textEditor->findFirst(entry->name, false, entry->findWithCase,
                                             entry->findWholeWord, true, true, entry->line, entry->column, true, false))
                 {
@@ -1791,35 +1855,36 @@ void MainWindow::functionListDoubleClicked(QTreeWidgetItem* item, int column)
         bool isOk = false;
         ParsedEntry* entry  = (ParsedEntry*)item->data(0, PARSED_ENTRY).toULongLong(&isOk);
 
+        //Check if entry is valid.
         if(entry != 0)
         {
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(entry->tabIndex)->layout()->itemAt(0)->widget());
 
-            if(entry->type != ENTRY_TYPE_FILE)
+            if(entry->type != PARSED_ENTRY_TYPE_FILE)
             {
                 QString regEx;
-                if(entry->type == ENTRY_TYPE_FUNCTION)
+                if(entry->type == PARSED_ENTRY_TYPE_FUNCTION)
                 {
                     regEx = QString("function.*[ |/]%1").arg(entry->name);
 
                 }
-                else if(entry->type == ENTRY_TYPE_CLASS_THIS_FUNCTION)
+                else if(entry->type == PARSED_ENTRY_TYPE_CLASS_THIS_FUNCTION)
                 {
                     regEx = QString("%1*[ |/]=*[ |/]function").arg(entry->name);
 
                 }
-                else if((entry->type == ENTRY_TYPE_MAP_VAR) ||
-                        (entry->type == ENTRY_TYPE_MAP_FUNC))
+                else if((entry->type == PARSED_ENTRY_TYPE_MAP_VAR) ||
+                        (entry->type == PARSED_ENTRY_TYPE_MAP_FUNC))
                 {
                     regEx = QString("%1*[\" |/:]").arg(entry->name);
 
                 }
-                else if(entry->type == ENTRY_TYPE_PROTOTYPE_FUNC)
+                else if(entry->type == PARSED_ENTRY_TYPE_PROTOTYPE_FUNC)
                 {
                     regEx = QString("prototype.%1").arg(entry->name);
 
                 }
-                else if(entry->type == ENTRY_TYPE_CONST)
+                else if(entry->type == PARSED_ENTRY_TYPE_CONST)
                 {
                     regEx = QString("const.*[ |/]%1").arg(entry->name);
 
@@ -1830,13 +1895,17 @@ void MainWindow::functionListDoubleClicked(QTreeWidgetItem* item, int column)
                 }
 
                 bool itemFound = true;
+
+                //Find the clicked item/text.
                 if(!textEditor->findFirst(regEx, true, true, false, true, true, entry->line, 0, true, false))
                 {
+                    //The item was not found. Search with a simple string (instead of regular expression).
                     itemFound = textEditor->findFirst(entry->name, false, true, false, true, true, entry->line, 0, true, false);
                 }
 
                 if(itemFound)
                 {
+                    //Goto the found item/text.
                     int foundLine, column;
                     textEditor->getCursorPosition(&foundLine, &column);
                     textEditor->ensureLineVisible(foundLine);
@@ -2153,6 +2222,7 @@ void MainWindow::insertAllUiObjectsInUiView(QMap<QString, QStringList> parsedUiO
     bool firstFile = true;
     while (iter != parsedUiObjects.constEnd())
     {
+        //Add the element for the current ui files.
         QTreeWidgetItem* fileElement = new QTreeWidgetItem(root);
         ParsedUiObject* tmpEntry = new ParsedUiObject();
         tmpEntry->objectName = "";
@@ -2170,6 +2240,7 @@ void MainWindow::insertAllUiObjectsInUiView(QMap<QString, QStringList> parsedUiO
         }
 
 
+        //Add all gui elements from the current ui file.
         for(auto el : iter.value())
         {
             QTreeWidgetItem* funcElement = new QTreeWidgetItem(fileElement);
@@ -2214,7 +2285,7 @@ bool MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
     bool hasError = false;
     for(auto el : parsedEntries)
     {
-        if(el.type == ENTRY_TYPE_PARSE_ERROR)
+        if(el.type == PARSED_ENTRY_TYPE_PARSE_ERROR)
         {
             if(ui->documentsTabWidget->widget(el.tabIndex))
             {
@@ -2234,9 +2305,9 @@ bool MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
             funcElement->setData(0, PARSED_ENTRY, (quint64)tmpEntry);
             parent->addChild(funcElement);
 
-            if((el.type == ENTRY_TYPE_FUNCTION) || (el.type == ENTRY_TYPE_CLASS_FUNCTION)
-                    || (el.type == ENTRY_TYPE_MAP_FUNC) || (el.type == ENTRY_TYPE_CLASS_THIS_FUNCTION) ||
-                    (el.type == ENTRY_TYPE_PROTOTYPE_FUNC))
+            if((el.type == PARSED_ENTRY_TYPE_FUNCTION) || (el.type == PARSED_ENTRY_TYPE_CLASS_FUNCTION)
+                    || (el.type == PARSED_ENTRY_TYPE_MAP_FUNC) || (el.type == PARSED_ENTRY_TYPE_CLASS_THIS_FUNCTION) ||
+                    (el.type == PARSED_ENTRY_TYPE_PROTOTYPE_FUNC))
             {
                 m_allFunctions.append(el.name);
 
@@ -2263,6 +2334,7 @@ bool MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
 
             if(!tmpEntry->subElements.isEmpty())
             {
+                //Add all sub elements.
                 hasError = inserSubElementsToScriptView(funcElement, tmpEntry->subElements, tmpEntry->completeName);
             }
 
@@ -2338,15 +2410,24 @@ static restoreExpandedState(QTreeWidget *treeWidget, QTreeWidgetItem* parent, QM
     }
 }
 
+/**
+ * Converts the parsed entries to a string.
+ *
+ * @param parsedEntries
+ *      The parsed entries.
+ * @param currentCompleteTreeString
+ *      The created string.
+ */
 static void parsedEntryToString(const QVector<ParsedEntry>& parsedEntries,
                                 QString& currentCompleteTreeString)
 {
     for(auto el : parsedEntries)
     {
         currentCompleteTreeString += el.name + QString("%1,%2").arg(el.type).arg(el.line);
-        if((el.type == ENTRY_TYPE_FUNCTION) || (el.type == ENTRY_TYPE_CLASS_FUNCTION)
-                || (el.type == ENTRY_TYPE_CLASS_THIS_FUNCTION))
+        if((el.type == PARSED_ENTRY_TYPE_FUNCTION) || (el.type == PARSED_ENTRY_TYPE_CLASS_FUNCTION)
+                || (el.type == PARSED_ENTRY_TYPE_CLASS_THIS_FUNCTION))
         {
+            //Add all parameters to the string.
             for(auto param : el.params)
             {
                 currentCompleteTreeString += param;
@@ -2355,15 +2436,20 @@ static void parsedEntryToString(const QVector<ParsedEntry>& parsedEntries,
 
         if(!el.subElements.isEmpty())
         {
+            //Add all sub elements to the string.
             parsedEntryToString(el.subElements,currentCompleteTreeString);
         }
 
+        //Add the elemement name to the string.
         currentCompleteTreeString += el.name;
     }
 }
 
 /**
  * Inserts all parsed elements in the  script view and displays all parse errors (annotations).
+ *
+ * @param parsedEntries
+ *      The parsed entries.
  */
 void MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEntry>>& parsedEntries)
 {
@@ -2373,6 +2459,7 @@ void MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
     QMap<QString, bool> expandMap;
     m_allFunctions.clear();
 
+    //Convert all parsed entries to a string.
     QMap<int,QVector<ParsedEntry>>::const_iterator iter = parsedEntries.constBegin();
     while (iter != parsedEntries.constEnd())
     {
@@ -2386,7 +2473,7 @@ void MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
     }
 
    if(savedCompleteTreeString == currentCompleteTreeString)
-   {///The tree wigdet content has not changed.
+   {//The tree wigdet content has not changed.
        return;
    }
 
@@ -2404,18 +2491,20 @@ void MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
         textEditor->clearAnnotations();
     }
 
+    //Add all parsed entries to the script outline.
     iter = parsedEntries.constBegin();
     while (iter != parsedEntries.constEnd())
     {
-
+        //Add the element for the current documents tab.
         QTreeWidgetItem* fileElement = new QTreeWidgetItem(root);
         ParsedEntry* dummyEntry = new ParsedEntry();
-        dummyEntry->type = ENTRY_TYPE_FILE;
+        dummyEntry->type = PARSED_ENTRY_TYPE_FILE;
         dummyEntry->tabIndex = iter.key();
 
         fileElement->setData(0, PARSED_ENTRY, (quint64)dummyEntry);
         fileElement->setText(0, ui->documentsTabWidget->tabText(iter.key()));
 
+        //Add all elements for the current documents tab.
         if(ui->documentsTabWidget->widget(iter.key()))
         {
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(iter.key())->layout()->itemAt(0)->widget());
@@ -2493,6 +2582,7 @@ bool MainWindow::loadFile(const QString &fileName)
     textEditor->setFileMustBeParsed(true);
     statusBar()->showMessage(tr("File loaded"), 5000);
 
+    //Parse all files.
     m_parseTimer.start(200);
     return true;
 }
@@ -2535,6 +2625,8 @@ bool MainWindow::saveFile(const QString &fileName)
 
     textEditor->updateLastModified();
     textEditor->setFileMustBeParsed(true);
+
+    //Parse all files.
     m_parseTimer.start(200);
 
     return true;

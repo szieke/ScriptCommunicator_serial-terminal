@@ -83,7 +83,6 @@ public:
     ///The internal script editor version.
     static const quint32 INTERNAL_VERSION = 1;
 
-
     ///Returns the corresponding ui file for a script.
     static QString getTheCorrespondingUiFile(QString scriptFile);
 
@@ -108,11 +107,13 @@ protected:
     ///Drop event.
     void dropEvent(QDropEvent *event);
 
+    ///The event filter.
     bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:
 
-    void handleDoubleClick(int position, int line, int modifiers);
+    ///Is called if the user double clicks a postion in the editor.
+    void handleDoubleClicksInEditor(int position, int line, int modifiers);
 
     ///Is called if the parsing is finished.
     ///Note: autoCompletionApiFiles contains the auto-completion entries for all parsed files.
@@ -211,6 +212,12 @@ private slots:
 
     ///Is called if the mouse move timer times out.
     void mouseMoveTimerSlot();
+
+    ///Is called if an indicator is clicked.
+    void indicatorClickedSlot(int line, int index, Qt::KeyboardModifiers modifier);
+
+    ///Is called if an indicator is clicked.
+    void indicatorClickTimerSlot();
 
 private:
 
@@ -321,14 +328,14 @@ private:
     ///This timer is started if a mouse move event occurs (calls mouseTimerSlot).
     QTimer m_mouseEventTimer;
 
-    ///The start of the current indicator (-1 is invalid) .
-    int m_indicatorStart;
-
-    ///The start of the current indicator (-1 is invalid) .
-    int m_indicatorEnd;
-
     ///True if the ctrl key is pressed.
-    bool m_CtrlIsPressed;
+    bool m_ctrlIsPressed;
+
+    ///This timer is started if an indicator is clicked. (calls indicatorClickTimerSlot)
+    QTimer m_indicatorClickTimer;
+
+    ///The position of the last click indicator event.
+    long m_lastIndicatorClickPosition;
 
 };
 

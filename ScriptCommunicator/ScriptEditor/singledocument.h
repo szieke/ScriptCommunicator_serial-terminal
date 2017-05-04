@@ -30,6 +30,12 @@ public:
     ///Updates the last modified time stamp.
     void updateLastModified(void);
 
+    ///Underlines a word which can be clicked (funktion or variable in the outline window).
+    void underlineWordWhichCanBeClicked(int pos);
+
+    ///Clears the current underline (clickable word).
+    void removeUndlineFromWordWhichCanBeClicked(void);
+
     ///Returns the last modified time stamp.
     QDateTime getLastModified(void);
 
@@ -78,6 +84,15 @@ private:
 
     ///True if the file must be parst (file content changed).
     bool m_fileMustBeParsed;
+
+    ///The start of the current click indicator (-1 is invalid) .
+    int m_clickIndicatorStart;
+
+    ///The start of the current click indicator (-1 is invalid) .
+    int m_clickIndicatorEnd;
+
+    ///The id of the indicator which is used to underline clickable words.
+    int m_clickIndicatorIdentifier;
 };
 
 #endif // SINGLEDOCUMENT_H

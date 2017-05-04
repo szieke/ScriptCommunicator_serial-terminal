@@ -1010,7 +1010,7 @@ static void parseObjectExpression(esprima::ObjectExpression* objExp, ParsedEntry
         {
         }
 
-        subEntry.type = ENTRY_TYPE_MAP_VAR;
+        subEntry.type = PARSED_ENTRY_TYPE_MAP_VAR;
         subEntry.params = QStringList();
         subEntry.tabIndex = tabIndex;
 
@@ -1023,7 +1023,7 @@ static void parseObjectExpression(esprima::ObjectExpression* objExp, ParsedEntry
         esprima::FunctionExpression* funcExp = dynamic_cast<esprima::FunctionExpression*>(objExp->properties[j]->value);
         if(funcExp)
         {
-            subEntry.type = ENTRY_TYPE_MAP_FUNC;
+            subEntry.type = PARSED_ENTRY_TYPE_MAP_FUNC;
 
             for(int j = 0; j < funcExp->params.size(); j++)
             {
@@ -1043,7 +1043,7 @@ static void parseFunction(esprima::FunctionDeclaration* function, ParsedEntry* e
     entry->line = function->id->loc->start->line - 1;
     entry->column = function->id->loc->start->column;
     entry->name = function->id->name.c_str();
-    entry->type = ENTRY_TYPE_FUNCTION;
+    entry->type = PARSED_ENTRY_TYPE_FUNCTION;
     entry->tabIndex = tabIndex;
     for(int j = 0; j < function->params.size(); j++)
     {
@@ -1063,7 +1063,7 @@ static void parseFunction(esprima::FunctionDeclaration* function, ParsedEntry* e
                 subEntry.line = subVarDecl->loc->start->line - 1;
                 subEntry.column = subVarDecl->loc->start->column;
                 subEntry.name = subVarDecl->declarations[0]->id->name.c_str();
-                subEntry.type = ENTRY_TYPE_CLASS_VAR;
+                subEntry.type = PARSED_ENTRY_TYPE_CLASS_VAR;
                 subEntry.params = QStringList();
                 subEntry.tabIndex = tabIndex;
                 entry->subElements.append(subEntry);
@@ -1073,7 +1073,7 @@ static void parseFunction(esprima::FunctionDeclaration* function, ParsedEntry* e
                 subEntry.line = subVarDecl->loc->start->line - 1;
                 subEntry.column = subVarDecl->loc->start->column;
                 subEntry.name = subVarDecl->declarations[0]->id->name.c_str();
-                subEntry.type = ENTRY_TYPE_CLASS_FUNCTION;
+                subEntry.type = PARSED_ENTRY_TYPE_CLASS_FUNCTION;
                 subEntry.params = QStringList();
                 subEntry.tabIndex = tabIndex;
                 for(int j = 0; j < funcExp->params.size(); j++)
@@ -1101,7 +1101,7 @@ static void parseFunction(esprima::FunctionDeclaration* function, ParsedEntry* e
                             subEntry.line = memExp->loc->start->line - 1;
                             subEntry.column = memExp->loc->start->column;
                             subEntry.name = id->name.c_str();
-                            subEntry.type = ENTRY_TYPE_CLASS_THIS_FUNCTION;
+                            subEntry.type = PARSED_ENTRY_TYPE_CLASS_THIS_FUNCTION;
                             subEntry.params = QStringList();
                             subEntry.tabIndex = tabIndex;
                             for(int j = 0; j < funcExp->params.size(); j++)
@@ -1139,7 +1139,7 @@ static void parseClass(esprima::NewExpression* newExp, ParsedEntry* parent, int 
                 esprima::ObjectExpression* objExp = dynamic_cast<esprima::ObjectExpression*>(subVarDecl->declarations[0]->init);
                 if(funcExp)
                 {
-                    subEntry.type = ENTRY_TYPE_CLASS_FUNCTION;
+                    subEntry.type = PARSED_ENTRY_TYPE_CLASS_FUNCTION;
                     for(int j = 0; j < funcExp->params.size(); j++)
                     {
                         subEntry.params.append(funcExp->params[j]->name.c_str());
@@ -1148,12 +1148,12 @@ static void parseClass(esprima::NewExpression* newExp, ParsedEntry* parent, int 
                 else if(objExp)
                 {//Map/Array
 
-                    subEntry.type = ENTRY_TYPE_MAP;
+                    subEntry.type = PARSED_ENTRY_TYPE_MAP;
                     parseObjectExpression(objExp, &subEntry, tabIndex);
                 }
                 else
                 {
-                   subEntry.type = ENTRY_TYPE_CLASS_VAR;
+                   subEntry.type = PARSED_ENTRY_TYPE_CLASS_VAR;
                 }
 
                 parent->subElements.append(subEntry);
@@ -1174,7 +1174,7 @@ static void parseClass(esprima::NewExpression* newExp, ParsedEntry* parent, int 
                             subEntry.line = memExp->loc->start->line - 1;
                             subEntry.column = memExp->loc->start->column;
                             subEntry.name = id->name.c_str();
-                            subEntry.type = ENTRY_TYPE_CLASS_THIS_FUNCTION;
+                            subEntry.type = PARSED_ENTRY_TYPE_CLASS_THIS_FUNCTION;
                             subEntry.params = QStringList();
                             subEntry.tabIndex = tabIndex;
                             for(int j = 0; j < funcExp->params.size(); j++)
@@ -1233,7 +1233,7 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
         {
             ParsedEntry entry;
             entry.line = e.lineNumber;
-            entry.type = ENTRY_TYPE_PARSE_ERROR;
+            entry.type = PARSED_ENTRY_TYPE_PARSE_ERROR;
             entry.tabIndex = iter.key();
             entry.name = e.description.c_str();
             fileResult.append(entry);
@@ -1241,6 +1241,7 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
             iter++;
             continue;
         }
+
 
         for(int i = 0; i < program->body.size(); i++)
         {
@@ -1263,13 +1264,13 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                     esprima::FunctionExpression* funcExpr = dynamic_cast<esprima::FunctionExpression*>(newExp->callee);
                     if(funcExpr)
                     {
-                        entry.type = ENTRY_TYPE_CLASS;
+                        entry.type = PARSED_ENTRY_TYPE_CLASS;
                         parseClass(newExp, &entry, iter.key());
                         objects[entry.name] = entry;
                     }
                     else
                     {
-                        entry.type = ENTRY_TYPE_VAR;
+                        entry.type = PARSED_ENTRY_TYPE_VAR;
                         esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(newExp->callee);
                         if(id)
                         {
@@ -1281,13 +1282,13 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                 else if(objExp)
                 {//Map/Array
 
-                    entry.type = ENTRY_TYPE_MAP;
+                    entry.type = PARSED_ENTRY_TYPE_MAP;
                     parseObjectExpression(objExp, &entry, iter.key());
                     objects[entry.name] = entry;
                 }
                 else
                 {
-                    entry.type = (varDecl->kind == "const") ? ENTRY_TYPE_CONST : ENTRY_TYPE_VAR;
+                    entry.type = (varDecl->kind == "const") ? PARSED_ENTRY_TYPE_CONST : PARSED_ENTRY_TYPE_VAR;
 
                     esprima::VariableDeclarator* decl = dynamic_cast<esprima::VariableDeclarator*>(varDecl->declarations[0]);
                     if(decl)
@@ -1337,7 +1338,7 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                                         prot.name = property->name.c_str();
                                         prot.params = QStringList();
                                         prot.tabIndex = iter.key();
-                                        prot.type = ENTRY_TYPE_PROTOTYPE_FUNC;
+                                        prot.type = PARSED_ENTRY_TYPE_PROTOTYPE_FUNC;
 
                                         for(int j = 0; j < right->params.size(); j++)
                                         {
@@ -1375,7 +1376,7 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                 prototypeFunctionsSingleFile.remove(fileResult[j].name);
             }
 
-            if(fileResult[j].type != ENTRY_TYPE_VAR)
+            if(fileResult[j].type != PARSED_ENTRY_TYPE_VAR)
             {
                 addParsedEntiresToAutoCompletionList(fileResult[j], m_autoCompletionEntries, "", fileResult[j].name);
             }
