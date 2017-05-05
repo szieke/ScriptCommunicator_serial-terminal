@@ -35,10 +35,10 @@ namespace esprima {
         Position(Pool &pool) : Poolable(pool), line(), column() {}
     };
 
-    struct SourceLocation {
+    struct SourceLocation : Poolable{
         Position *start;
         Position *end;
-        SourceLocation(Pool &pool) : start(), end() {}
+        SourceLocation(Pool &pool) : Poolable(pool), start(), end() {}
     };
 
     struct Program;

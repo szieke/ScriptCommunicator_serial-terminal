@@ -846,12 +846,12 @@ struct EsprimaParser {
         return token;
     }
 
-    struct EsprimaRegExp {
+    struct EsprimaRegExp : Poolable {
         std::string literal, pattern, flags;
         int range[2];
 
-        EsprimaRegExp(const std::string &literal, const std::string &pattern, const std::string &flags, int rangeMin, int rangeMax)
-                : literal(literal), pattern(pattern), flags(flags) {
+        EsprimaRegExp(Pool& pool, const std::string &literal, const std::string &pattern, const std::string &flags, int rangeMin, int rangeMax)
+                : Poolable(pool), literal(literal), pattern(pattern), flags(flags) {
             range[0] = rangeMin;
             range[1] = rangeMax;
         }
@@ -941,7 +941,7 @@ struct EsprimaParser {
 
         peek();
 
-        return new EsprimaRegExp(
+        return new EsprimaRegExp(pool,
             str,
             pattern,
             flags,
@@ -2874,11 +2874,12 @@ struct EsprimaParser {
         return wtf.close(delegate.createBlockStatement(sourceElements));
     }
 
-    struct ParseParams {
+    struct ParseParams : Poolable {
         std::vector<Identifier *> params;
         EsprimaToken *stricted;
         EsprimaToken *firstRestricted;
         std::string message;
+        ParseParams(Pool& pool) : Poolable(pool){}
     };
 
     ParseParams *parseParams(EsprimaToken *firstRestricted) {
@@ -2927,7 +2928,7 @@ struct EsprimaParser {
 
         expect(")");
 
-        ParseParams *result = new ParseParams;
+        ParseParams *result = new ParseParams(pool);
         result->params = params;
         result->stricted = stricted;
         result->firstRestricted = firstRestricted;
@@ -3105,11 +3106,11 @@ struct EsprimaParser {
         return wtf.close(delegate.createProgram(body));
     }
 
-    struct EsprimaMarker {
+    struct EsprimaMarker : Poolable{
         EsprimaParser &parser;
         int range[2];
         SourceLocation *loc;
-        EsprimaMarker(EsprimaParser &parser) : parser(parser), loc() { range[0] = range[1] = 0; }
+        EsprimaMarker(Pool& pool, EsprimaParser &parser) : Poolable(pool), parser(parser), loc() { range[0] = range[1] = 0; }
 
         void end() {
             range[1] = parser.index;
@@ -3131,7 +3132,7 @@ struct EsprimaParser {
     };
 
     EsprimaMarker *createLocationMarker() {
-        EsprimaMarker *marker = new EsprimaMarker(*this);
+        EsprimaMarker *marker = new EsprimaMarker(pool, *this);
 
         marker->loc = new SourceLocation(pool);
         marker->loc->start = new Position(pool);
@@ -3275,7 +3276,7 @@ struct EsprimaParser {
         }
 
         ~WrapTrackingFunction() {
-            delete marker;
+            //delete marker;
         }
 
         template <typename T>
