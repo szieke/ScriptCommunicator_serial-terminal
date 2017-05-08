@@ -1,4 +1,4 @@
-/**********************************************************************
+﻿/**********************************************************************
 This is an example sequence send script which can be added to a sequence (send window), It demonstrates
 the possibilities of sequence send scripts.
 
@@ -14,7 +14,7 @@ function sendData(data)
 	if(resultArray[0] == 1)
 	{//OK button pressed.
 		//Append the input value.
-		data = seq.addStringToArray(data, "  input: " + resultArray[1] + "\n")	
+		data = conv.addStringToArray(data, "  input: " + resultArray[1] + "\n")	
 	}
 	else
 	{//No OK button pressed.

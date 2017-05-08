@@ -1,4 +1,4 @@
-/**********************************************************************
+﻿/**********************************************************************
 This script tests all SequenceSendScript dialogs.
 ***********************************************************************/
 
@@ -8,7 +8,7 @@ function sendData(data)
 	var input = seq.showTextInputDialog("Title", "label", "initial text");
 	if(input != "")
 	{//OK button pressed.
-		data = seq.addStringToArray(data, input)
+		data = conv.addStringToArray(data, input)
 	}
 	else
 	{
@@ -18,8 +18,8 @@ function sendData(data)
 	input = seq.showMultiLineTextInputDialog("Enter name", "item name", "newItem");
 	if(input != "")
 	{//OK button pressed.
-		data = seq.addStringToArray(data, " ");
-		data = seq.addStringToArray(data, input)
+		data = conv.addStringToArray(data, " ");
+		data = conv.addStringToArray(data, input)
 	}
 	else
 	{
@@ -29,14 +29,14 @@ function sendData(data)
 	input = seq.showGetItemDialog("Enter name", "item name", Array("item1", "item2"), 1, true);
 	if(input != "")
 	{//OK button pressed.
-		data = seq.addStringToArray(data, " ");
-		data = seq.addStringToArray(data, input)
+		data = conv.addStringToArray(data, " ");
+		data = conv.addStringToArray(data, input)
 	}
 
 	var resultArray = seq.showGetIntDialog("Enter value","value:",0, 0, 100, 1);
 	if(resultArray[0] == 1)
 	{//OK button pressed.	
-		data = seq.addStringToArray(data, " int:" + parseInt(resultArray[1]));
+		data = conv.addStringToArray(data, " int:" + parseInt(resultArray[1]));
 	}
 	else
 	{
@@ -46,7 +46,7 @@ function sendData(data)
 	resultArray = seq.showGetDoubleDialog("Enter value", "value", 10, 0, 20, 1);
 	if(resultArray[0] >= 1.0)
 	{//OK button pressed.
-		data = seq.addStringToArray(data, " double:" + parseFloat(resultArray[1]));
+		data = conv.addStringToArray(data, " double:" + parseFloat(resultArray[1]));
 	}
 	else
 	{
@@ -57,17 +57,17 @@ function sendData(data)
 	
 	if(seq.showYesNoDialog("Information", "Title", "yes or no?"))
 	{//Yes clicked.
-		data = seq.addStringToArray(data, " yes/no:yes");
+		data = conv.addStringToArray(data, " yes/no:yes");
 	}
 	else
 	{
-		data = seq.addStringToArray(data, " yes/no:no");
+		data = conv.addStringToArray(data, " yes/no:no");
 	}
 	
 	resultArray = seq.showColorDialog(1,2,3,4,true);
 	if(resultArray[0])
 	{//OK clicked.
-		data = seq.addStringToArray(data, " color:" + parseInt(resultArray[1]) + "," + parseInt(resultArray[2]) + "," + parseInt(resultArray[3]) + "," + parseInt(resultArray[4]));
+		data = conv.addStringToArray(data, " color:" + parseInt(resultArray[1]) + "," + parseInt(resultArray[2]) + "," + parseInt(resultArray[3]) + "," + parseInt(resultArray[4]));
 	}
 	
 	seq.appendTextToConsole("sequenceSendTestAllDialogs.js send: " + data, true, false);
