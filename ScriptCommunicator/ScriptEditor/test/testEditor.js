@@ -1,11 +1,15 @@
 ﻿function Class(arg0)
 {
-    var waitForResponse = "100";//ToDo: Den Typen parsen und ggf. mit in die Autocompletionliste eintragen, wenn dieser Wert einer anderen
+    //ToDo: Den Typen parsen und ggf. mit in die Autocompletionliste eintragen, wenn dieser Wert einer anderen
 	//Variablen zugewiesen wird, dann den Typen mit zuweisen (den Typen von Variablen mit im Outline anzeigen?).
+	var testString= "100";
+	var testTimer = scriptThread.createTimer();
+	
+	
+	
 	var reset = function(arg1)
     {
 	  var test = "";
-	  waitForResponse = false;
 	}	
 	
 	this.start = function(arg2)
@@ -63,4 +67,7 @@ classSingelton1.getInfo();
 var map2 = map1;
 var array2 = array1;
 var classVar = new Class("www");
+
+var timer = classVar.testTimer;//ToDo: Den Typen von timer erkennen.
+var string = classVar.testString;//ToDo: Den Typen von timer erkennen.
 
