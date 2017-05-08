@@ -1,7 +1,7 @@
 ﻿function Class(arg0)
 {
     var waitForResponse = "100";//ToDo: Den Typen parsen und ggf. mit in die Autocompletionliste eintragen, wenn dieser Wert einer anderen
-	//Variablen zugewiesen wird, dann den Typen mit zuweisen.
+	//Variablen zugewiesen wird, dann den Typen mit zuweisen (den Typen von Variablen mit im Outline anzeigen?).
 	var reset = function(arg1)
     {
 	  var test = "";
