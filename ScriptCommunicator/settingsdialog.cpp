@@ -349,11 +349,20 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
             this, SLOT(searchLogScriptSlot()));
 
     connect(m_userInterface->noProxyRadioButton, SIGNAL(clicked()),
-            this, SLOT(proxyRadioButtonClickedSlot()));
+            this, SLOT(socketProxyRadioButtonClickedSlot()));
     connect(m_userInterface->useSystemProxyRadioButton, SIGNAL(clicked()),
-            this, SLOT(proxyRadioButtonClickedSlot()));
+            this, SLOT(socketProxyRadioButtonClickedSlot()));
     connect(m_userInterface->useSpecificProxyRadioButton, SIGNAL(clicked()),
-            this, SLOT(proxyRadioButtonClickedSlot()));
+            this, SLOT(socketProxyRadioButtonClickedSlot()));
+
+    connect(m_userInterface->updateNoProxy, SIGNAL(clicked()),
+            this, SLOT(updateProxyRadioButtonClickedSlot()));
+    connect(m_userInterface->updateUseSystemProxy, SIGNAL(clicked()),
+            this, SLOT(updateProxyRadioButtonClickedSlot()));
+    connect(m_userInterface->updateUseSpecificProxy, SIGNAL(clicked()),
+            this, SLOT(updateProxyRadioButtonClickedSlot()));
+
+
     connect(m_userInterface->proxyAddressLineEdit, SIGNAL(textChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
     connect(m_userInterface->proxyPortLineEdit, SIGNAL(textChanged(QString)),
@@ -361,6 +370,15 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->proxyUserNameLineEdit, SIGNAL(textChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
     connect(m_userInterface->proxyPasswordLineEdit, SIGNAL(textChanged(QString)),
+            this, SLOT(textFromGuiElementChangedSlot(QString)));
+
+    connect(m_userInterface->updateProxyAddress, SIGNAL(textChanged(QString)),
+            this, SLOT(textFromGuiElementChangedSlot(QString)));
+    connect(m_userInterface->updateProxyPort, SIGNAL(textChanged(QString)),
+            this, SLOT(textFromGuiElementChangedSlot(QString)));
+    connect(m_userInterface->updateProxyUserName, SIGNAL(textChanged(QString)),
+            this, SLOT(textFromGuiElementChangedSlot(QString)));
+    connect(m_userInterface->updateProxyPassword, SIGNAL(textChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
 
     connect(m_userInterface->consoleEditScriptPushButton, SIGNAL(clicked()),
@@ -1012,6 +1030,25 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
         m_userInterface->tabWidget->setCurrentIndex(settings.settingsDialogTabIndex);
     }
 
+    //Update settings
+    m_userInterface->updateProxyAddress->setText(settings.updateSettings.proxyIpAddress);
+    m_userInterface->updateProxyPort->setText(QString("%1").arg(settings.updateSettings.proxyPort));
+    m_userInterface->updateProxyUserName->setText(settings.updateSettings.proxyUserName);
+    m_userInterface->updateProxyPassword->setText(settings.updateSettings.proxyPassword);
+    if(settings.updateSettings.proxySettings == 1)
+    {
+        m_userInterface->updateUseSystemProxy->setChecked(true);
+    }
+    else if(settings.updateSettings.proxySettings == 2)
+    {
+        m_userInterface->updateUseSpecificProxy->setChecked(true);
+    }
+    else
+    {
+        m_userInterface->updateNoProxy->setChecked(true);
+
+    }
+
     updateSettings();
 
     initializeInterfaceTabs();
@@ -1397,14 +1434,7 @@ void SettingsDialog::initializeInterfaceTabs(void)
         m_userInterface->socketsTypeComboBox->setEnabled(true);
         m_userInterface->socketAddressLineEdit->setEnabled(true);
         m_userInterface->socketOwnPortLineEdit->setEnabled(true);
-        /*
-        m_userInterface->serialPortInfoListBox->setEnabled(true);
-        m_userInterface->baudRateBox->setEnabled(true);
-        m_userInterface->stopBitsBox->setEnabled(true);
-        m_userInterface->parityBox->setEnabled(true);
-        m_userInterface->flowControlBox->setEnabled(true);
-        m_userInterface->dataBitsBox->setEnabled(true);
-        */
+
         m_userInterface->cheetahPortLineEdit->setEnabled(true);
         m_userInterface->cheetahSpiModeComboBox->setEnabled(true);
         m_userInterface->cheetahBaudrateLineEdit->setEnabled(true);
@@ -1438,10 +1468,10 @@ void SettingsDialog::initializeInterfaceTabs(void)
             m_userInterface->socketPartnerPortLineEdit->setEnabled(true);
         }
 
+        //Socket proxy settins.
         m_userInterface->noProxyRadioButton->setEnabled(true);
         m_userInterface->useSystemProxyRadioButton->setEnabled(true);
         m_userInterface->useSpecificProxyRadioButton->setEnabled(true);
-
         if(m_userInterface->useSpecificProxyRadioButton->isChecked())
         {
             m_userInterface->proxyAddressLineEdit->setEnabled(true);
@@ -1466,7 +1496,6 @@ void SettingsDialog::initializeInterfaceTabs(void)
             }
         }
 
-
     }
     else
     {
@@ -1475,14 +1504,7 @@ void SettingsDialog::initializeInterfaceTabs(void)
         m_userInterface->socketPartnerPortLineEdit->setEnabled(false);
         m_userInterface->socketAddressLineEdit->setEnabled(false);
         m_userInterface->socketOwnPortLineEdit->setEnabled(false);
-        /*
-        m_userInterface->serialPortInfoListBox->setEnabled(false);
-        m_userInterface->baudRateBox->setEnabled(false);
-        m_userInterface->stopBitsBox->setEnabled(false);
-        m_userInterface->parityBox->setEnabled(false);
-        m_userInterface->flowControlBox->setEnabled(false);
-        m_userInterface->dataBitsBox->setEnabled(false);
-        */
+
         m_userInterface->cheetahPortLineEdit->setEnabled(false);
         m_userInterface->cheetahSpiModeComboBox->setEnabled(false);
         m_userInterface->cheetahBaudrateLineEdit->setEnabled(false);
@@ -1515,6 +1537,34 @@ void SettingsDialog::initializeInterfaceTabs(void)
         m_userInterface->proxyUserNameLineEdit->setEnabled(false);
         m_userInterface->proxyPasswordLineEdit->setEnabled(false);
 
+    }
+
+    //Update proxy settings.
+    m_userInterface->updateNoProxy->setEnabled(true);
+    m_userInterface->updateUseSystemProxy->setEnabled(true);
+    m_userInterface->updateUseSpecificProxy->setEnabled(true);
+    if(m_userInterface->updateUseSpecificProxy->isChecked())
+    {
+        m_userInterface->updateProxyAddress->setEnabled(true);
+        m_userInterface->updateProxyPort->setEnabled(true);
+        m_userInterface->updateProxyUserName->setEnabled(true);
+        m_userInterface->updateProxyPassword->setEnabled(true);
+    }
+    else
+    {
+        m_userInterface->updateProxyAddress->setEnabled(false);
+        m_userInterface->updateProxyPort->setEnabled(false);
+
+        if(m_userInterface->updateUseSystemProxy->isChecked())
+        {
+            m_userInterface->updateProxyUserName->setEnabled(true);
+            m_userInterface->updateProxyPassword->setEnabled(true);
+        }
+        else
+        {
+            m_userInterface->updateProxyUserName->setEnabled(false);
+            m_userInterface->updateProxyPassword->setEnabled(false);
+        }
     }
 }
 
@@ -1589,14 +1639,25 @@ void SettingsDialog::textFromGuiElementChangedSlot(QString text)
 }
 
 /**
- * Is called if the user clickes a proxy radio button.
+ * Is called if the user clickes a socket proxy radio button.
  */
-void SettingsDialog::proxyRadioButtonClickedSlot(void)
+void SettingsDialog::socketProxyRadioButtonClickedSlot(void)
 {
     initializeInterfaceTabs();
     updateSettings();
     emit configHasToBeSavedSignal();
 }
+
+/**
+ * Is called if the user clickes a update proxy radio button.
+ */
+void SettingsDialog::updateProxyRadioButtonClickedSlot(void)
+{
+    initializeInterfaceTabs();
+    updateSettings();
+    emit configHasToBeSavedSignal();
+}
+
 
 /**
  * Checks if the mixed console chekcbox can be activated.
@@ -2121,6 +2182,27 @@ void SettingsDialog::updateSettings()
         {
             m_userInterface->consoleEditScriptPushButton->setEnabled(false);
         }
+    }
+
+    //Update settings,
+    m_currentSettings.updateSettings.proxyIpAddress = m_userInterface->updateProxyAddress->text();
+    m_currentSettings.updateSettings.proxyPort = m_userInterface->updateProxyPort->text().toUInt();
+    m_currentSettings.updateSettings.proxyUserName = m_userInterface->updateProxyUserName->text();
+    m_currentSettings.updateSettings.proxyPassword = m_userInterface->updateProxyPassword->text();
+
+    if(m_userInterface->updateUseSystemProxy->isChecked())
+    {
+        m_currentSettings.updateSettings.proxySettings = 1;
+
+    }
+    else if(m_userInterface->updateUseSpecificProxy->isChecked())
+    {
+        m_currentSettings.updateSettings.proxySettings = 2;
+
+    }
+    else
+    {
+        m_currentSettings.updateSettings.proxySettings = 0;
     }
 
 }

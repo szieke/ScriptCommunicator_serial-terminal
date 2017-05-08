@@ -1794,6 +1794,26 @@ bool MainWindow::loadSettings()
                     }
                 }
 
+                {//update setting
+
+                    QDomNodeList nodeList = docElem.elementsByTagName("updateSetting");
+                    if(!nodeList.isEmpty())
+                    {
+                        QDomNode node = nodeList.at(0);
+
+                        currentSettings.updateSettings.proxySettings = node.attributes().namedItem("proxySettings").nodeValue().toUInt();
+                        currentSettings.updateSettings.proxyIpAddress = node.attributes().namedItem("proxyIpAddress").nodeValue();
+                        currentSettings.updateSettings.proxyPort = node.attributes().namedItem("proxyPort").nodeValue().toUInt();
+                        currentSettings.updateSettings.proxyUserName = node.attributes().namedItem("proxyUserName").nodeValue();
+                        currentSettings.updateSettings.proxyPassword = node.attributes().namedItem("proxyPassword").nodeValue();
+                    }
+                    else
+                    {
+                        currentSettings.updateSettings.proxySettings = 1;//use system settings.
+                    }
+
+                }
+
                 m_settingsDialog->blockSignals(true);
                 m_settingsDialog->setAllSettingsSlot(currentSettings, true);
                 m_settingsDialog->blockSignals(false);
@@ -2564,6 +2584,18 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("visible"), QString("%1").arg(m_scriptWindow->getCreateSceFileDialog()->isVisible())),
                 };
                 writeXmlElement(xmlWriter, "createSceWindow", createSceSettings);
+            }
+
+            {//update settings
+                std::map<QString, QString> updateSetting =
+                {std::make_pair(QString("proxyIpAddress"), QString("%1").arg(currentSettings->updateSettings.proxyIpAddress)),
+                 std::make_pair(QString("proxyPassword"), QString("%1").arg(currentSettings->updateSettings.proxyPassword)),
+                 std::make_pair(QString("proxyPort"), QString("%1").arg(currentSettings->updateSettings.proxyPort)),
+                 std::make_pair(QString("proxySettings"), QString("%1").arg(currentSettings->updateSettings.proxySettings)),
+                 std::make_pair(QString("proxyUserName"), QString("%1").arg(currentSettings->updateSettings.proxyUserName)),
+                };
+
+                writeXmlElement(xmlWriter, "updateSetting", updateSetting);
             }
 
             xmlWriter.writeEndElement();//"settings"
@@ -3515,6 +3547,7 @@ void MainWindow::initActionsConnections()
     connect(m_userInterface->actionVideo, SIGNAL(triggered()),this, SLOT(watchVideoSlot()));
     connect(m_userInterface->actionGetSupport, SIGNAL(triggered()),this, SLOT(getSupportSlot()));
     connect(m_userInterface->actionCheckForUpdates, SIGNAL(triggered()),this, SLOT(checkForUpdatesSlot()));
+    connect(m_settingsDialog->getUserInterface()->checkForUpdates, SIGNAL(pressed()),this, SLOT(checkForUpdatesSlot()));
 
     connect(m_userInterface->actionAddScript, SIGNAL(triggered()),this, SLOT(addScriptSlot()));
     connect(m_userInterface->actionEditScript, SIGNAL(triggered()),this, SLOT(editScriptSlot()));
@@ -4419,11 +4452,11 @@ void MainWindow::checkForUpdatesSlot()
 {
     Settings settings = *m_settingsDialog->settings();
     QString type = "NO_PROXY";
-    if(settings.socketSettings.proxySettings == 1)
+    if(settings.updateSettings.proxySettings == 1)
     {
         type = "SYSTEM_PROXY";
     }
-    else if(settings.socketSettings.proxySettings == 2)
+    else if(settings.updateSettings.proxySettings == 2)
     {
         type = "CUSTOM_PROXY";
     }
@@ -4432,10 +4465,10 @@ void MainWindow::checkForUpdatesSlot()
         type = "NO_PROXY";
     }
 
-    QNetworkProxy proxy = ScriptTcpClient::createProxy(type, settings.socketSettings.proxyUserName,
-                                                       settings.socketSettings.proxyPassword,
-                                                       settings.socketSettings.proxyIpAddress,
-                                                       settings.socketSettings.proxyPort);
+    QNetworkProxy proxy = ScriptTcpClient::createProxy(type, settings.updateSettings.proxyUserName,
+                                                       settings.updateSettings.proxyPassword,
+                                                       settings.updateSettings.proxyIpAddress,
+                                                       settings.updateSettings.proxyPort);
 
     m_userInterface->actionCheckForUpdates->setEnabled(false);
     updatesManager = new QNetworkAccessManager(this);
@@ -4516,14 +4549,14 @@ void MainWindow::updateManagerReplyFinished(QNetworkReply* reply)
 
         if(pageIsInvalid)
         {
-            QMessageBox msgBox(QMessageBox::Information, "error while searching for an update", "Invalid data received.");
-            msgBox.setTextFormat(Qt::RichText);
+            QMessageBox msgBox(QMessageBox::Information, "error while searching for an update", "Invalid data received: " + result);
+            msgBox.setTextFormat(Qt::PlainText);
             msgBox.exec();
         }
     }
     else
     {
-        QString text = "Connection error (eror code: %1). Are you connected with the internet and are your proxy settings (socket tab in the setting dialog) correct?";
+        QString text = "Connection error (eror code: %1). Are you connected with the internet and are your proxy settings (update tab in the setting dialog) correct?";
         text = text.arg(error);
         QMessageBox msgBox(QMessageBox::Information, "connection error",text);
         msgBox.setTextFormat(Qt::RichText);

@@ -1003,7 +1003,7 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>93</width>
+          <width>98</width>
           <height>93</height>
          </rect>
         </property>
@@ -1049,7 +1049,7 @@ to send a sequence double click on it</string>
           <x>0</x>
           <y>0</y>
           <width>323</width>
-          <height>513</height>
+          <height>517</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1579,6 +1579,12 @@ to send a sequence double click on it</string>
    </layout>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="iconSize">
+    <size>
+     <width>20</width>
+     <height>20</height>
+    </size>
+   </property>
    <property name="toolButtonStyle">
     <enum>Qt::ToolButtonTextBesideIcon</enum>
    </property>
