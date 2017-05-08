@@ -1,6 +1,7 @@
 ﻿function Class(arg0)
 {
-    var waitForResponse = "100";
+    var waitForResponse = "100";//ToDo: Den Typen parsen und ggf. mit in die Autocompletionliste eintragen, wenn dieser Wert einer anderen
+	//Variablen zugewiesen wird, dann den Typen mit zuweisen.
 	var reset = function(arg1)
     {
 	  var test = "";
@@ -62,5 +63,4 @@ classSingelton1.getInfo();
 var map2 = map1;
 var array2 = array1;
 var classVar = new Class("www");
-
 
