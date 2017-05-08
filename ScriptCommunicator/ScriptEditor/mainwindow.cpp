@@ -1447,43 +1447,7 @@ void MainWindow::findButtonSlot()
     }
 }
 
-/**
- * The event filter.
- * @param obj
- *      The object to which the event belongs to.
- * @param event
- *      The event.
- * @return
- *      True if the event processed (then this event is not routed to other objects).
- */
-bool MainWindow::eventFilter(QObject *obj, QEvent *event)
-{
-    (void)obj;
-  if (event->type() == QEvent::MouseMove)
-  {
-      m_lastMouseMoveEvent = *static_cast<QMouseEvent*>(event);
-      m_mouseEventTimer.start(200);
-  }
-  else if (event->type() == QEvent::KeyRelease)
-  {
-      QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
-      if((keyEvent->modifiers() & Qt::ControlModifier) == 0)
-      {
-          m_ctrlIsPressed = false;
-          clearCurrentIndicator();
-      }
-  }
-  else if (event->type() == QEvent::KeyPress)
-  {
-      QKeyEvent* keyEvent = static_cast<QKeyEvent*>(event);
-      if((keyEvent->modifiers() & Qt::ControlModifier) != 0)
-      {
-          m_ctrlIsPressed = true;
-          m_mouseEventTimer.start(100);
-      }
-  }
-  return false;
-}
+
 
 /**
  * Is called if the find all or the replace all button in the find dialog has been clicked.

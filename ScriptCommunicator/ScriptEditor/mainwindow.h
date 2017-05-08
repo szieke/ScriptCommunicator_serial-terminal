@@ -107,8 +107,6 @@ protected:
     ///Drop event.
     void dropEvent(QDropEvent *event);
 
-    ///The event filter.
-    bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:
 

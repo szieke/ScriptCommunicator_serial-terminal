@@ -2919,7 +2919,7 @@ void QsciScintilla::fillIndicatorRange(int lineFrom, int indexFrom,
     fillIndicatorRangeWithPosition(start, finish, indicatorNumber);
 }
 
-// Fill a range with an indicator.
+// Fill a range with an indicator (position based).
 void QsciScintilla::fillIndicatorRangeWithPosition(int start, int finish, int indicatorNumber)
 {
     if (indicatorNumber < INDIC_IME)

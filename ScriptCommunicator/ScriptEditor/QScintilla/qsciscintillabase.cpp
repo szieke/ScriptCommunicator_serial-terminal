@@ -418,6 +418,8 @@ void QsciScintillaBase::keyPressEvent(QKeyEvent *e)
     {
         QAbstractScrollArea::keyPressEvent(e);
     }
+
+    keyPressEventChild(e);
 }
 
 
@@ -564,6 +566,7 @@ void QsciScintillaBase::mouseDoubleClickEvent(QMouseEvent *e)
 void QsciScintillaBase::mouseMoveEvent(QMouseEvent *e)
 {
     sci->ButtonMove(QSCI_SCI_NAMESPACE(Point)(e->x(), e->y()));
+    mouseMoveEventChild(e);
 }
 
 

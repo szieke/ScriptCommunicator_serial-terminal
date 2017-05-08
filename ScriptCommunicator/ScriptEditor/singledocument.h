@@ -54,6 +54,16 @@ public:
     ///Returns m_fileMustBeParsed.
     bool getFileMustBeParsed(void){return m_fileMustBeParsed;}
 
+protected:
+
+    ///Handle mouse moves
+   void mouseMoveEventChild(QMouseEvent *event);
+
+   ///Handle key presses
+   void keyPressEventChild(QKeyEvent *event);
+
+   void keyReleaseEvent(QKeyEvent *event);
+
 private:
 
     ///Checks if in the current document user interface files are loaded.

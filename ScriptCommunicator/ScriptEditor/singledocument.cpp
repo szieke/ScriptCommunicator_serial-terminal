@@ -31,6 +31,30 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
     setUtf8(true);
 }
 
+void SingleDocument::keyReleaseEvent(QKeyEvent *event)
+{
+    if((event->modifiers() & Qt::ControlModifier) == 0)
+    {
+        m_mainWindow->m_ctrlIsPressed = false;
+        removeUndlineFromWordWhichCanBeClicked();
+    }
+}
+void SingleDocument::keyPressEventChild(QKeyEvent *event)
+{
+
+    if((event->modifiers() & Qt::ControlModifier) != 0)
+    {
+        m_mainWindow->m_ctrlIsPressed = true;
+        m_mainWindow->m_mouseEventTimer.start(100);
+    }
+}
+
+void SingleDocument::mouseMoveEventChild(QMouseEvent *event)
+{
+    m_mainWindow->m_lastMouseMoveEvent = *event;
+    m_mainWindow->m_mouseEventTimer.start(200);
+}
+
 /**
  * Underlines a word which can be clicked (funktion or variable in the outline window).
  * @param pos

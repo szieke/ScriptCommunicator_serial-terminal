@@ -990,8 +990,16 @@ void ParseThread::checkDocumentForStandardDynamicObjects(QStringList& lines, QSt
    }
 }
 
-
-static void parseObjectExpression(esprima::ObjectExpression* objExp, ParsedEntry* parent, int tabIndex)
+/**
+ * Parses an (esprima) object expression.
+ * @param objExp
+ *      The object expression.
+ * @param parent
+ *      The parent entry.
+ * @param tabIndex
+ *      The tab index to which the expression belongs to.
+ */
+static void parseEsprimaObjectExpression(esprima::ObjectExpression* objExp, ParsedEntry* parent, int tabIndex)
 {
     for(int j = 0; j < objExp->properties.size(); j++)
     {
@@ -1020,14 +1028,16 @@ static void parseObjectExpression(esprima::ObjectExpression* objExp, ParsedEntry
         esprima::ObjectExpression* subObjExp = dynamic_cast<esprima::ObjectExpression*>(objExp->properties[j]->value);
         if(subObjExp)
         {
-            parseObjectExpression(subObjExp, &subEntry, tabIndex);
+            parseEsprimaObjectExpression(subObjExp, &subEntry, tabIndex);
         }
 
         esprima::FunctionExpression* funcExp = dynamic_cast<esprima::FunctionExpression*>(objExp->properties[j]->value);
         if(funcExp)
-        {
+        {//The current expression is a function.
+
             subEntry.type = PARSED_ENTRY_TYPE_MAP_FUNC;
 
+            //Parse all arguments.
             for(int j = 0; j < funcExp->params.size(); j++)
             {
                 subEntry.params.append(funcExp->params[j]->name.c_str());
@@ -1035,12 +1045,19 @@ static void parseObjectExpression(esprima::ObjectExpression* objExp, ParsedEntry
         }
 
         parent->subElements.append(subEntry);
-
     }
 }
 
-
-static void parseFunction(esprima::FunctionDeclaration* function, ParsedEntry* entry, int tabIndex)
+/**
+ * Parses an (esprima) function declaration.
+ * @param function
+ *      The function declaration.
+ * @param parent
+ *      The parent entry.
+ * @param tabIndex
+ *      The tab index to which the declaration belongs to.
+ */
+static void parseEsprimaFunctionDeclaration(esprima::FunctionDeclaration* function, ParsedEntry* entry, int tabIndex)
 {
 
     entry->line = function->id->loc->start->line - 1;
@@ -1048,42 +1065,40 @@ static void parseFunction(esprima::FunctionDeclaration* function, ParsedEntry* e
     entry->name = function->id->name.c_str();
     entry->type = PARSED_ENTRY_TYPE_FUNCTION;
     entry->tabIndex = tabIndex;
+
+    //Parse all arguments.
     for(int j = 0; j < function->params.size(); j++)
     {
         entry->params.append(function->params[j]->name.c_str());
     }
 
-
+    //Parse the body of of the function.
     for(int j = 0; j < function->body->body.size(); j++)
     {
         ParsedEntry subEntry;
         esprima::VariableDeclaration* subVarDecl = dynamic_cast<esprima::VariableDeclaration*>(function->body->body[j]);
         if(subVarDecl)
         {
+            subEntry.line = subVarDecl->loc->start->line - 1;
+            subEntry.column = subVarDecl->loc->start->column;
+            subEntry.name = subVarDecl->declarations[0]->id->name.c_str();
+            subEntry.params = QStringList();
+            subEntry.tabIndex = tabIndex;
+            entry->subElements.append(subEntry);
+
             esprima::FunctionExpression* funcExp = dynamic_cast<esprima::FunctionExpression*>(subVarDecl->declarations[0]->init);
             if(funcExp == 0)
             {
-                subEntry.line = subVarDecl->loc->start->line - 1;
-                subEntry.column = subVarDecl->loc->start->column;
-                subEntry.name = subVarDecl->declarations[0]->id->name.c_str();
                 subEntry.type = PARSED_ENTRY_TYPE_CLASS_VAR;
-                subEntry.params = QStringList();
-                subEntry.tabIndex = tabIndex;
-                entry->subElements.append(subEntry);
+
             }
             else
             {
-                subEntry.line = subVarDecl->loc->start->line - 1;
-                subEntry.column = subVarDecl->loc->start->column;
-                subEntry.name = subVarDecl->declarations[0]->id->name.c_str();
                 subEntry.type = PARSED_ENTRY_TYPE_CLASS_FUNCTION;
-                subEntry.params = QStringList();
-                subEntry.tabIndex = tabIndex;
                 for(int j = 0; j < funcExp->params.size(); j++)
                 {
                     subEntry.params.append(funcExp->params[j]->name.c_str());
                 }
-                entry->subElements.append(subEntry);
             }
         }
         else
@@ -1121,7 +1136,16 @@ static void parseFunction(esprima::FunctionDeclaration* function, ParsedEntry* e
     }
 }
 
-static void parseClass(esprima::NewExpression* newExp, ParsedEntry* parent, int tabIndex)
+/**
+ * Parses an (esprima) new expression.
+ * @param newExp
+ *      The new expression.
+ * @param parent
+ *      The parent entry.
+ * @param tabIndex
+ *      The tab index to which the expression belongs to.
+ */
+static void parseEsprimaNewExpression(esprima::NewExpression* newExp, ParsedEntry* parent, int tabIndex)
 {
     esprima::FunctionExpression* funcExp = dynamic_cast<esprima::FunctionExpression*>(newExp->callee);
     if(funcExp)
@@ -1141,7 +1165,8 @@ static void parseClass(esprima::NewExpression* newExp, ParsedEntry* parent, int 
                 esprima::FunctionExpression* funcExp = dynamic_cast<esprima::FunctionExpression*>(subVarDecl->declarations[0]->init);
                 esprima::ObjectExpression* objExp = dynamic_cast<esprima::ObjectExpression*>(subVarDecl->declarations[0]->init);
                 if(funcExp)
-                {
+                {//Function
+
                     subEntry.type = PARSED_ENTRY_TYPE_CLASS_FUNCTION;
                     for(int j = 0; j < funcExp->params.size(); j++)
                     {
@@ -1152,10 +1177,11 @@ static void parseClass(esprima::NewExpression* newExp, ParsedEntry* parent, int 
                 {//Map/Array
 
                     subEntry.type = PARSED_ENTRY_TYPE_MAP;
-                    parseObjectExpression(objExp, &subEntry, tabIndex);
+                    parseEsprimaObjectExpression(objExp, &subEntry, tabIndex);
                 }
                 else
-                {
+                {//Variable
+
                    subEntry.type = PARSED_ENTRY_TYPE_CLASS_VAR;
                 }
 
@@ -1195,16 +1221,27 @@ static void parseClass(esprima::NewExpression* newExp, ParsedEntry* parent, int 
 }
 
 
-static void addParsedEntiresToAutoCompletionList(const ParsedEntry& entry, QMap<QString, QStringList>& m_autoCompletionEntries,
+/**
+ * Adds a parsed entry (and his subentries) to the auto completion list.
+ * @param entry
+ *      The parsed entry.
+ * @param autoCompletionEntries
+ *      The auto completion list.
+ * @param parentString
+ *      The string of the parent in the auto completion list.
+ * @param rootObjectName
+ *      The name of the root parsed entry.
+ */
+static void addParsedEntiresToAutoCompletionList(const ParsedEntry& entry, QMap<QString, QStringList>& autoCompletionEntries,
                                                  QString parentString, QString rootObjectName)
 {
     QString value = (parentString.isEmpty()) ? entry.name : parentString + "::" + entry.name;
 
-    m_autoCompletionEntries[rootObjectName] << value;
+    autoCompletionEntries[rootObjectName] << value;
 
     for(auto el : entry.subElements)
     {
-        addParsedEntiresToAutoCompletionList(el, m_autoCompletionEntries, value, rootObjectName);
+        addParsedEntiresToAutoCompletionList(el, autoCompletionEntries, value, rootObjectName);
     }
 }
 
@@ -1218,9 +1255,10 @@ static void addParsedEntiresToAutoCompletionList(const ParsedEntry& entry, QMap<
 QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QMap<int, QString> loadedScripts)
 {
     QMap<int,QVector<ParsedEntry>> result;
-    QMap<QString, QVector<ParsedEntry>> prototypeFunctions;
 
     QMap<int, QString>::const_iterator iter = loadedScripts.constBegin();
+
+    //Parse all files.
     while (iter != loadedScripts.constEnd())
     {
         QVector<ParsedEntry> fileResult;
@@ -1245,7 +1283,7 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
             continue;
         }
 
-
+        //Parse the complete file.
         for(int i = 0; i < program->body.size(); i++)
         {
             ParsedEntry entry;
@@ -1266,13 +1304,14 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
 
                     esprima::FunctionExpression* funcExpr = dynamic_cast<esprima::FunctionExpression*>(newExp->callee);
                     if(funcExpr)
-                    {
+                    {//Class
+
                         entry.type = PARSED_ENTRY_TYPE_CLASS;
-                        parseClass(newExp, &entry, iter.key());
+                        parseEsprimaNewExpression(newExp, &entry, iter.key());
                         objects[entry.name] = entry;
                     }
                     else
-                    {
+                    {//Variable
                         entry.type = PARSED_ENTRY_TYPE_VAR;
                         esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(newExp->callee);
                         if(id)
@@ -1286,33 +1325,36 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                 {//Map/Array
 
                     entry.type = PARSED_ENTRY_TYPE_MAP;
-                    parseObjectExpression(objExp, &entry, iter.key());
+                    parseEsprimaObjectExpression(objExp, &entry, iter.key());
                     objects[entry.name] = entry;
                 }
                 else
-                {
-                    entry.type = (varDecl->kind == "const") ? PARSED_ENTRY_TYPE_CONST : PARSED_ENTRY_TYPE_VAR;
+                {//Const or variable.
 
+                    entry.type = (varDecl->kind == "const") ? PARSED_ENTRY_TYPE_CONST : PARSED_ENTRY_TYPE_VAR;
                     esprima::VariableDeclarator* decl = dynamic_cast<esprima::VariableDeclarator*>(varDecl->declarations[0]);
                     if(decl)
                     {
                         esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(decl->init);
                         if(id)
-                        {
+                        {//The the declaration of the current variable has an assignement of another variable/object
+                         //e.g. var map2 = map1;
                             entry.params.append(id->name.c_str());
                         }
-
                     }
                 }
 
+                //Append the current entry to the file result list.
                 fileResult.append(entry);
-            }
+
+            }//if(varDecl)
             else
             {
                 esprima::FunctionDeclaration* funcDecl = dynamic_cast<esprima::FunctionDeclaration*>(program->body[i]);
                 if(funcDecl)
-                {
-                    parseFunction(funcDecl, &entry, iter.key());
+                {//Function
+
+                    parseEsprimaFunctionDeclaration(funcDecl, &entry, iter.key());
                     fileResult.append(entry);
                     objects[entry.name] = entry;
                 }
@@ -1334,7 +1376,8 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                                 {
                                     esprima::Identifier* subObject = dynamic_cast<esprima::Identifier*>(object->object);
                                     if(subObject)
-                                    {
+                                    {//Prototyp function
+
                                         ParsedEntry prot;
                                         prot.line = left->loc->start->line -1;
                                         prot.column = left->loc->start->column;
@@ -1362,34 +1405,41 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
             }
         }
 
+        //Add the prototyp function to their correspondig objects/classes and
+        //add the parsed entries to the autocompletion list.
         for(int j = 0; j < fileResult.size(); j++)
         {
             if(prototypeFunctionsSingleFile.contains(fileResult[j].name))
-            {
+            {//The current object/class has prototype functions.
+
+                //Add the prototyp function to the current objects/classes
                 for (auto member : prototypeFunctionsSingleFile[fileResult[j].name])
                 {
                     fileResult[j].subElements.append(member);
                 }
+            }
 
-                prototypeFunctionsSingleFile.remove(fileResult[j].name);
-            }
-            else
-            {
-                prototypeFunctions[fileResult[j].name] = prototypeFunctionsSingleFile[fileResult[j].name];
-                prototypeFunctionsSingleFile.remove(fileResult[j].name);
-            }
+            //Remove the prototype functions.
+            prototypeFunctionsSingleFile.remove(fileResult[j].name);
 
             if(fileResult[j].type != PARSED_ENTRY_TYPE_VAR)
             {
+                //Add the parsed entries to the autocompletion list.
                 addParsedEntiresToAutoCompletionList(fileResult[j], m_autoCompletionEntries, "", fileResult[j].name);
             }
             else
             {
                 if(!fileResult[j].params.isEmpty())
-                {
+                {//The the declaration of the current variable has an assignement of another variable/object
+                 //e.g. var map2 = map1;
+
                     if(objects.contains(fileResult[j].params[0]))
-                    {
+                    {//The assigned object is in the objects list.
+
+                        //Add all subelements of the assigned variable/object to the current variable.
                         fileResult[j].subElements = objects[fileResult[j].params[0]].subElements;
+
+                        //Add the current variable to the autocompletion list.
                         addParsedEntiresToAutoCompletionList(fileResult[j], m_autoCompletionEntries, "", fileResult[j].name);
                     }
                 }
@@ -1398,12 +1448,13 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
 
         if(!fileResult.isEmpty())
         {
+            //Add the result for the current file to the result list.
             result[iter.key()] = fileResult;
         }
 
         iter++;
 
-    }
+    }//while (iter != loadedScripts.constEnd())
     return result;
 }
 /**
@@ -1457,6 +1508,7 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
     QMap<int,QVector<ParsedEntry>> parsedEntries;
     if(!parseOnlyUIFiles)
     {
+        //Get all global function and variables (with the esprima parser).
         parsedEntries = getAllFunctionsAndGlobalVariables(loadedScripts);
     }
 

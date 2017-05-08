@@ -720,7 +720,7 @@ public:
     //! \sa clearIndicatorRange()
     void fillIndicatorRange(int lineFrom, int indexFrom, int lineTo,
             int indexTo, int indicatorNumber);
-    void fillIndicatorRangeWithPosition(int start, int finish, int indicatorNumber);
+    void fillIndicatorRangeWithPosition(int start, int finish, int indicatorNumber);//Position based.
 
     //! Find the first occurrence of the string \a expr and return true if
     //! \a expr was found, otherwise returns false.  If \a expr is found it
