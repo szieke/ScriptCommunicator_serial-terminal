@@ -20,5 +20,6 @@
         <file>images/var.png</file>
         <file>images/document.png</file>
         <file>images/ui16.png</file>
+        <file>images/close.png</file>
     </qresource>
 </RCC>

@@ -281,7 +281,7 @@ void QsciScintilla::handleCharAdded(int ch)
             autoIndentation(ch, pos);
 
     // See if we might want to start auto-completion.
-    if (!isCallTipActive() && acSource != AcsNone)
+    if (acSource != AcsNone)
         if (isStartChar(ch))
             startAutoCompletion(acSource, false, use_single == AcusAlways);
         else if (acThresh >= 1 && (isWordCharacter(ch) || ch == ']'))

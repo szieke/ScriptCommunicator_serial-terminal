@@ -36,7 +36,10 @@ void ParseThread::parseSingleLineForFunctionsWithResultObjects(QString singleLin
         element.isArray = false;
         QString className = split[0];
         element.functionName = split[2];
-        element.resultType = split[3];
+
+        QStringList resultType = singleLine.split("):");
+        element.resultType = (resultType.length() > 1) ? resultType[1] : split[3];
+
         int index = element.functionName.indexOf("(");
         if(index != -1)
         {

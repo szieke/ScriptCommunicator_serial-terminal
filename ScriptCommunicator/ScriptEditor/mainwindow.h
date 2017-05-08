@@ -81,7 +81,7 @@ public:
     static const quint32 PARSED_ENTRY = Qt::UserRole + 3;
 
     ///The internal script editor version.
-    static const quint32 INTERNAL_VERSION = 1;
+    static const quint32 INTERNAL_VERSION = 2;
 
     ///Returns the corresponding ui file for a script.
     static QString getTheCorrespondingUiFile(QString scriptFile);
@@ -200,6 +200,9 @@ private slots:
 
     ///New action slot.
     void newSlot();
+
+    ///Close document action slot.
+    void closeDocumentSlot();
 
     ///Open all included action slot.
     void openAllIncludedScriptsSlot();

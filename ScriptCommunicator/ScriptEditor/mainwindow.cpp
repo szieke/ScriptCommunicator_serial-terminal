@@ -827,6 +827,18 @@ void MainWindow::newSlot()
 
 
 /**
+ * Close document action slot.
+ */
+void MainWindow::closeDocumentSlot()
+{
+    SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex())->layout()->itemAt(0)->widget());
+    if(!(textEditor->getDocumentName().isEmpty() && !textEditor->isModified()))
+    {
+        documentsTabCloseRequestedSlot(ui->documentsTabWidget->currentIndex());
+    }
+}
+
+/**
  * Starts the designer.
  * @param uiFile
  *      The ui file.
@@ -1680,7 +1692,6 @@ void MainWindow::setFont()
             textEditor->lexer()->setFont(m_currentFont, -1);
         }
     }
-
 }
 
 /**
@@ -2035,6 +2046,7 @@ void MainWindow::initActions()
     connect(ui->actionUndo, SIGNAL(triggered()), this, SLOT(undoSlot()));
     connect(ui->actionRedo, SIGNAL(triggered()), this, SLOT(redoSlot()));
     connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newSlot()));
+    connect(ui->actionCloseDocument, SIGNAL(triggered()), this, SLOT(closeDocumentSlot()));
     connect(ui->actionOpenAllIncludedScripts, SIGNAL(triggered()), this, SLOT(openAllIncludedScriptsSlot()));
     connect(ui->actionSetFont, SIGNAL(triggered()), this, SLOT(setFont()));
     connect(ui->actionEditUi , SIGNAL(triggered()), this, SLOT(editUiButtonSlot()));
@@ -2053,7 +2065,8 @@ void MainWindow::readSettings()
     QList<int> list;
     double size;
 
-    if(settings.contains("pos") && settings.contains("size") && settings.contains("mainSplitter") && settings.contains("fontFamily"))
+    if(settings.contains("pos") && settings.contains("size") && settings.contains("mainSplitter") && settings.contains("fontFamily")
+            && settings.contains("mainWindowState"))
     {
         QPoint pos = settings.value("pos", QPoint(200, 200)).toPoint();
         QSize size = settings.value("size", QSize(600, 600)).toSize();
@@ -2066,6 +2079,8 @@ void MainWindow::readSettings()
         m_currentFont.setPointSize(settings.value("fontPointSize", QFont().pointSize()).toInt(&ok));
         m_currentFont.setWeight(settings.value("fontWeight", QFont().weight()).toInt(&ok));
         m_currentFont.setItalic(settings.value("fontItalic", QFont().italic()).toBool());
+
+        restoreState(settings.value("mainWindowState", QByteArray()).toByteArray());
 
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
         textEditor->lexer()->readSettings(settings);
@@ -2102,6 +2117,7 @@ void MainWindow::writeSettings()
     settings.setValue("fontPointSize", m_currentFont.pointSize());
     settings.setValue("fontWeight", m_currentFont.weight());
     settings.setValue("fontItalic", m_currentFont.italic());
+    settings.setValue("mainWindowState", saveState());
 
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
     textEditor->lexer()->writeSettings(settings);

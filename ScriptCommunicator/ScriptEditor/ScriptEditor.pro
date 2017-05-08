@@ -171,4 +171,5 @@ FORMS += \
     mainwindow.ui
 
 DISTFILES += \
-    images/font.png
+    images/font.png \
+    images/close.png
