@@ -7,7 +7,7 @@ function stopScript()
 {
     scriptThread.appendTextToConsole("script gui example stopped: " + scriptThread.getTimestamp());
 }
-test1.testfunc();
+
 //the user has changed the item index
 function toolBoxCurrentItemChangedSignal(index)
 {
