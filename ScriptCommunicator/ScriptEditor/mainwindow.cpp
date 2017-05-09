@@ -2340,7 +2340,7 @@ bool MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
  * @param key
  *      The key of the parent tree widget in the expand map.
  */
-static saveExpandedState(QTreeWidgetItem* parent, QMap<QString, bool>& expandMap, QString key)
+static void saveExpandedState(QTreeWidgetItem* parent, QMap<QString, bool>& expandMap, QString key)
 {
     for(int i = 0; i < parent->childCount(); i++)
     {
@@ -2366,7 +2366,7 @@ static saveExpandedState(QTreeWidgetItem* parent, QMap<QString, bool>& expandMap
  * @param key
  *      The key of the parent tree widget in the expand map.
  */
-static restoreExpandedState(QTreeWidget *treeWidget, QTreeWidgetItem* parent, QMap<QString, bool>& expandMap, QString key)
+static void restoreExpandedState(QTreeWidget *treeWidget, QTreeWidgetItem* parent, QMap<QString, bool>& expandMap, QString key)
 {
     for(int i = 0; i < parent->childCount(); i++)
     {
