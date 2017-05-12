@@ -1,10 +1,27 @@
-﻿function Class(arg0)
-{
-    //ToDo: Den Typen parsen und ggf. mit in die Autocompletionliste eintragen, wenn dieser Wert einer anderen
-	//Variablen zugewiesen wird, dann den Typen mit zuweisen (den Typen von Variablen mit im Outline anzeigen?).
-	var testString= "100";
-	var testTimer = scriptThread.createTimer();
+﻿
+var HST_BAUDRATE = 19200; 
+var sleeptime = 10;
+var timeout = 2000 / sleeptime;
+var str = "" + val;
+var idx = UI_comboLk42.currentIndex();  //ToDo: Als Number anzeigen
+var comboString = UI_comboLk42.currentText();
+var testArray = [ 60, 35, 83];
+
+var map3 = {
+"HST" : {
+        baudrate : HST_BAUDRATE,
+        send : scriptThread.stringToArray("HST\n"),
+		send2 : [ 60, 35, 83],
+    },
 	
+}
+
+function Class(arg0)
+{
+	var testString= scriptThread.getAllObjectPropertiesAndFunctions();
+	var testTimer = scriptThread.createTimer();
+	var testDate1 = Date();
+	var testDate2 = new Date();
 	
 	
 	var reset = function(arg1)
@@ -14,6 +31,7 @@
 	
 	this.start = function(arg2)
     {
+		var test = "";
         reset();
 	}
 }
@@ -68,6 +86,8 @@ var map2 = map1;
 var array2 = array1;
 var classVar = new Class("www");
 
-var timer = classVar.testTimer;//ToDo: Den Typen von timer erkennen.
+var timer = classVar.testTimer;
 var string = classVar.testString;//ToDo: Den Typen von timer erkennen.
+
+var date2 = classVar.testDate2;
 

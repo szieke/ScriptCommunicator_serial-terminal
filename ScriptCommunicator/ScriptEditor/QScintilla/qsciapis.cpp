@@ -477,10 +477,26 @@ void QsciAPIs::updateAutoCompletionList(const QStringList &context,
         {
 
             lastCompleteWord(new_context[new_context.count() - 2], with_context, unambig);
+
             if(with_context.isEmpty())
             {
-                apiSearchString = new_context[0];
-                lastCompleteWord(new_context[0], with_context, unambig);
+
+                if(new_context.size() == 4)
+                {
+                    lastCompleteWord(new_context[1], with_context, unambig);
+
+                    if(!with_context.isEmpty())
+                    {
+                        apiSearchString.remove("::" + new_context[2]);
+                    }
+                }
+
+                if(with_context.isEmpty())
+                {
+                    apiSearchString = new_context[0];
+                    lastCompleteWord(new_context[0], with_context, unambig);
+                }
+
             }
 
         }

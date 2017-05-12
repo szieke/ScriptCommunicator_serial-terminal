@@ -60,6 +60,7 @@ struct ParsedEntry
     QStringList params;//The parameters.
     int tabIndex;//The tab (dodument) to which this entry belongs to.
     QVector<ParsedEntry> subElements;//The sub entries.
+    QString valueType;//The value type of the element (variable).
 };
 
 ///This thread parses all documents (parseSlot).
@@ -125,6 +126,8 @@ private:
 
     ///Removes all unnecessary characters (e.g. comments).
     void removeAllUnnecessaryCharacters(QString& currentText);
+
+    bool replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, ParsedEntry& entry, QString parentName);
 
     ///Removes all square brackets and all between them.
     void removeAllBetweenSquareBrackets(QString& currentText);

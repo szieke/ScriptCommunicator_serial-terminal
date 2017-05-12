@@ -2307,6 +2307,11 @@ bool MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
             else
             {
                 funcElement->setIcon(0, QIcon(":/images/var.png"));
+
+                if(!el.valueType.isEmpty())
+                {
+                    textInTreeWidget += ": " + el.valueType;
+                }
             }
 
             funcElement->setText(0, textInTreeWidget);
@@ -2422,6 +2427,9 @@ static void parsedEntryToString(const QVector<ParsedEntry>& parsedEntries,
 
         //Add the elemement name to the string.
         currentCompleteTreeString += el.name;
+
+        //Add the value type to the string.
+        currentCompleteTreeString += el.valueType;
     }
 }
 
