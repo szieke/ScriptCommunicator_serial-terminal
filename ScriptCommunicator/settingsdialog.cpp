@@ -457,8 +457,8 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     m_userInterface->consoleNewLineAt->addItem("LF", (quint16)'\n');
     m_userInterface->consoleNewLineAt->addItem("CR", (quint16)'\r');
-    m_userInterface->consoleNewLineAt->addItem("none", (quint16)0xffff);
-    m_userInterface->consoleNewLineAt->addItem("custom");
+    m_userInterface->consoleNewLineAt->addItem("None", (quint16)0xffff);
+    m_userInterface->consoleNewLineAt->addItem("Custom");
     m_userInterface->consoleNewLineAt->setInsertPolicy(QComboBox::NoInsert);
 
     connect(m_userInterface->consoleNewLineAt, SIGNAL(currentIndexChanged(int)),
@@ -468,8 +468,8 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     m_userInterface->logNewLineAt->addItem("LF", (quint16)'\n');
     m_userInterface->logNewLineAt->addItem("CR", (quint16)'\r');
-    m_userInterface->logNewLineAt->addItem("none", (quint16)0xffff);
-    m_userInterface->logNewLineAt->addItem("custom");
+    m_userInterface->logNewLineAt->addItem("None", (quint16)0xffff);
+    m_userInterface->logNewLineAt->addItem("Custom");
     m_userInterface->logNewLineAt->setInsertPolicy(QComboBox::NoInsert);
 
     connect(m_userInterface->logNewLineAt, SIGNAL(currentIndexChanged(int)),
@@ -484,10 +484,11 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 #else
     m_userInterface->consoleSendOnEnter->addItem("CR+LF", "\r\n");
 #endif
+    m_userInterface->consoleSendOnEnter->addItem("None", "");
 
     m_userInterface->consoleTimestampAtByteComboBox->addItem("LF", (quint16)'\n');
     m_userInterface->consoleTimestampAtByteComboBox->addItem("CR", (quint16)'\r');
-    m_userInterface->consoleTimestampAtByteComboBox->addItem("custom");
+    m_userInterface->consoleTimestampAtByteComboBox->addItem("Custom");
     m_userInterface->consoleTimestampAtByteComboBox->setInsertPolicy(QComboBox::NoInsert);
     connect(m_userInterface->consoleTimestampAtByteComboBox, SIGNAL(currentIndexChanged(int)),
             this, SLOT(checkCustomConsoleTimestampAtSlot(int)));
@@ -496,7 +497,7 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     m_userInterface->logTimestampAtByteComboBox->addItem("LF", (quint16)'\n');
     m_userInterface->logTimestampAtByteComboBox->addItem("CR", (quint16)'\r');
-    m_userInterface->logTimestampAtByteComboBox->addItem("custom");
+    m_userInterface->logTimestampAtByteComboBox->addItem("Custom");
     m_userInterface->logTimestampAtByteComboBox->setInsertPolicy(QComboBox::NoInsert);
     connect(m_userInterface->logTimestampAtByteComboBox, SIGNAL(currentIndexChanged(int)),
             this, SLOT(checkCustomLogTimestampAtSlot(int)));
@@ -861,9 +862,13 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     {//CR
         m_userInterface->consoleSendOnEnter->setCurrentIndex(1);
     }
-    else
+    else if(settings.consoleSendOnEnter == "\r\n")
     {//CR+LF
         m_userInterface->consoleSendOnEnter->setCurrentIndex(2);
+    }
+    else
+    {//none
+        m_userInterface->consoleSendOnEnter->setCurrentIndex(3);
     }
 
     if(settings.consoleReceiveColor.isEmpty()){settings.consoleReceiveColor = "000000";}
