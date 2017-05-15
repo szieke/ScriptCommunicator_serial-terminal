@@ -7,5 +7,5 @@ scriptSql::connectionNames():Array<String> \nReturns a list containing the names
 scriptSql::drivers():Array<String> \nReturns a list of all the available database drivers.
 scriptSql::isDriverAvailable(String name):bool \nReturns true if a driver called name is available; otherwise returns false.
 scriptSql::createQuery(ScriptSqlDatabase dataBase, String query = String()):ScriptSqlQuery \nCreates a ScriptSqlQuery object using the SQL query and the current database.
-scriptSql::createField(String fieldName = String(), quint32 type = (quint32)QVariant::Invalid):ScriptSqlField \nCreates a ScriptSqlField object.
+scriptSql::createField(String fieldName = String(), Number type = (Number)QVariant::Invalid):ScriptSqlField \nCreates a ScriptSqlField object.
 scriptSql::createRecord(void):ScriptSqlRecord \nCreates a ScriptSqlRecord object.

@@ -5,30 +5,30 @@ ScriptListWidget::setBackgroundColor(String color):void \nSets the background co
 ScriptListWidget::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptListWidget::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptListWidget::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptListWidget::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-ScriptListWidget::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptListWidget::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptListWidget::setToolTip(String text, Number duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptListWidget::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptListWidget::setFocus(void):void \nGives the keyboard input focus to this widget.
-ScriptListWidget::width(void):int \nReturns the width of the widget excluding any window frame.
-ScriptListWidget::height(void):int \nReturns the height of the widget excluding any window frame.
-ScriptListWidget::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
-ScriptListWidget::getAdditionalData(int key):String \nReturns an additional data entry.
+ScriptListWidget::width(void):Number \nReturns the width of the widget excluding any window frame.
+ScriptListWidget::height(void):Number \nReturns the height of the widget excluding any window frame.
+ScriptListWidget::setAdditionalData(Number key, String data):void \nSets/stores an additional data entry.
+ScriptListWidget::getAdditionalData(Number key):String \nReturns an additional data entry.
 ScriptListWidget::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptListWidget::getClassName(void):String \nReturns the class name of this object.
 ScriptListWidget::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
 ScriptListWidget::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
-ScriptListWidget::insertNewItem(int row, String itemText, String iconFileName):void \nInserts a new list item.
-ScriptListWidget::rowCount(void):int \nReturns the number of rows in the list widget.
-ScriptListWidget::removeItem(int row):void \nRemoves a item from the list widget.
-ScriptListWidget::currentSelectedRow(void):int \nReturns the current selected row.
-ScriptListWidget::setCurrentRow(int row):void \nSets the current selected row.
+ScriptListWidget::insertNewItem(Number row, String itemText, String iconFileName):void \nInserts a new list item.
+ScriptListWidget::rowCount(void):Number \nReturns the number of rows in the list widget.
+ScriptListWidget::removeItem(Number row):void \nRemoves a item from the list widget.
+ScriptListWidget::currentSelectedRow(void):Number \nReturns the current selected row.
+ScriptListWidget::setCurrentRow(Number row):void \nSets the current selected row.
 ScriptListWidget::clear(void):void \nClears the list widget.
-ScriptListWidget::seItemBackgroundColor(int row, String color):void \nSets the background color of an item.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptListWidget::setItemForegroundColor(int row, String color):void \nSets the foreground color of an item.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptListWidget::getItemText(int row):String \nReturns the item text.
-ScriptListWidget::setItemText(int row, String text):void \nSets the item text.
-ScriptListWidget::setItemIcon(int row, String iconFileName):void \nSets the item icon.
+ScriptListWidget::seItemBackgroundColor(Number row, String color):void \nSets the background color of an item.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptListWidget::setItemForegroundColor(Number row, String color):void \nSets the foreground color of an item.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptListWidget::getItemText(Number row):String \nReturns the item text.
+ScriptListWidget::setItemText(Number row, String text):void \nSets the item text.
+ScriptListWidget::setItemIcon(Number row, String iconFileName):void \nSets the item icon.
 ScriptListWidget::sortItems(bool ascendingOrder=true):void \nSorts the items in the widget in the specified order(true=AscendingOrder,\nfalse=DescendingOrder).
-ScriptListWidget::currentRowChangedSignal.connect(int currentRow) \nThis signal is emitted if the current row selection has been changed.
-ScriptListWidget::itemClickedSignal.connect(int row) \nThis signal is emitted if a row has been clicked.
-ScriptListWidget::itemDoubleClickedSignal.connect(int row) \nThis signal is emitted if a row has been double clicked.
+ScriptListWidget::currentRowChangedSignal.connect(Number currentRow) \nThis signal is emitted if the current row selection has been changed.
+ScriptListWidget::itemClickedSignal.connect(Number row) \nThis signal is emitted if a row has been clicked.
+ScriptListWidget::itemDoubleClickedSignal.connect(Number row) \nThis signal is emitted if a row has been Number clicked.

@@ -87,7 +87,7 @@ var array2 = array1;
 var classVar = new Class("www");
 
 var timer = classVar.testTimer;
-var string = classVar.testString;//ToDo: Den Typen von timer erkennen.
+var string = classVar.testString;
 
 var date2 = classVar.testDate2;
 

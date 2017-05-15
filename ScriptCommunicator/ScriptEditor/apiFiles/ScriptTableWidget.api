@@ -5,54 +5,54 @@ ScriptTableWidget::setBackgroundColor(String color):void \nSets the background c
 ScriptTableWidget::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptTableWidget::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptTableWidget::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptTableWidget::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-ScriptTableWidget::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptTableWidget::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptTableWidget::setToolTip(String text, Number duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptTableWidget::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptTableWidget::setFocus(void):void \nGives the keyboard input focus to this widget.
-ScriptTableWidget::width(void):int \nReturns the width of the widget excluding any window frame.
-ScriptTableWidget::height(void):int \nReturns the height of the widget excluding any window frame.
-ScriptTableWidget::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
-ScriptTableWidget::getAdditionalData(int key):String \nReturns an additional data entry.
+ScriptTableWidget::width(void):Number \nReturns the width of the widget excluding any window frame.
+ScriptTableWidget::height(void):Number \nReturns the height of the widget excluding any window frame.
+ScriptTableWidget::setAdditionalData(Number key, String data):void \nSets/stores an additional data entry.
+ScriptTableWidget::getAdditionalData(Number key):String \nReturns an additional data entry.
 ScriptTableWidget::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptTableWidget::getClassName(void):String \nReturns the class name of this object.
 ScriptTableWidget::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
 ScriptTableWidget::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
-ScriptTableWidget::getText(int row, int column):String \nReturns the text of one cell.
-ScriptTableWidget::setCellIcon(int row, int column, String iconFileName):void \nSets the icon of a single cell.
-ScriptTableWidget::setVerticalHeaderLabel(int row, String text):void \nSets a vertical header label.
-ScriptTableWidget::setHorizontalHeaderLabel(int column, String text):void \nSets a horizontal header label.
-ScriptTableWidget::setCellEditable(int row, int column, bool editable):void \nMakes on cell editable or not editable.
-ScriptTableWidget::setRowCount(int rows):void \nSets the row count.
-ScriptTableWidget::rowCount(void):int \nReturn the row count.
-ScriptTableWidget::setColumnCount(int columns):void \nSets the column count.
-ScriptTableWidget::columnCount(void):int \nReturns the column count.
-ScriptTableWidget::setCellBackgroundColor(String color, int row, int column):void \nSets the background color of a single cell.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptTableWidget::setCellForegroundColor(String color, int row, int column):void \nSets the foreground color of a single cell.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptTableWidget::resizeColumnToContents(int column):void \nResizes the column given to the size of its contents.
-ScriptTableWidget::resizeRowToContents(int row):void \nResizes the row given to the size of its contents.
-ScriptTableWidget::setRowHeight(int row, int height):void \nSets the height of the given row to be height.
-ScriptTableWidget::rowHeight(int row)int \nReturns the height of the given row.
-ScriptTableWidget::setColumnWidth(int column, int width):void \nSets the width of the given column to be width.
-ScriptTableWidget::columnWidth(int column):int \nReturns the width of the given column.
-ScriptTableWidget::frameWidth(void):int \nReturns the width of the frame that is drawn.
-ScriptTableWidget::verticalHeaderWidth(void):int \nReturns the width of the vertical header.
-ScriptTableWidget::verticalScrollBarWidth(void):int \nReturns the width of the vertical scroll bar.
+ScriptTableWidget::getText(Number row, Number column):String \nReturns the text of one cell.
+ScriptTableWidget::setCellIcon(Number row, Number column, String iconFileName):void \nSets the icon of a single cell.
+ScriptTableWidget::setVerticalHeaderLabel(Number row, String text):void \nSets a vertical header label.
+ScriptTableWidget::setHorizontalHeaderLabel(Number column, String text):void \nSets a horizontal header label.
+ScriptTableWidget::setCellEditable(Number row, Number column, bool editable):void \nMakes on cell editable or not editable.
+ScriptTableWidget::setRowCount(Number rows):void \nSets the row count.
+ScriptTableWidget::rowCount(void):Number \nReturn the row count.
+ScriptTableWidget::setColumnCount(Number columns):void \nSets the column count.
+ScriptTableWidget::columnCount(void):Number \nReturns the column count.
+ScriptTableWidget::setCellBackgroundColor(String color, Number row, Number column):void \nSets the background color of a single cell.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptTableWidget::setCellForegroundColor(String color, Number row, Number column):void \nSets the foreground color of a single cell.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptTableWidget::resizeColumnToContents(Number column):void \nResizes the column given to the size of its contents.
+ScriptTableWidget::resizeRowToContents(Number row):void \nResizes the row given to the size of its contents.
+ScriptTableWidget::setRowHeight(Number row, Number height):void \nSets the height of the given row to be height.
+ScriptTableWidget::rowHeight(Number row)Number \nReturns the height of the given row.
+ScriptTableWidget::setColumnWidth(Number column, Number width):void \nSets the width of the given column to be width.
+ScriptTableWidget::columnWidth(Number column):Number \nReturns the width of the given column.
+ScriptTableWidget::frameWidth(void):Number \nReturns the width of the frame that is drawn.
+ScriptTableWidget::verticalHeaderWidth(void):Number \nReturns the width of the vertical header.
+ScriptTableWidget::verticalScrollBarWidth(void):Number \nReturns the width of the vertical scroll bar.
 ScriptTableWidget::isVerticalScrollBarVisible(void):bool \nReturns true if the vertical scroll bar is visible.
-ScriptTableWidget::sortItems(int column, bool ascendingOrder=true):void \nSorts the items in the widget in the specified order(true=AscendingOrder,\nfalse=DescendingOrder) by the values in the given column.
+ScriptTableWidget::sortItems(Number column, bool ascendingOrder=true):void \nSorts the items in the widget in the specified order(true=AscendingOrder,\nfalse=DescendingOrder) by the values in the given column.
 ScriptTableWidget::rowsCanBeMovedByUser(bool canBeMoved):void \nIf set to true the user can move a selected row up or down\n(while holding the left mouse button at the row and moving the mouse up and/or down).
 ScriptTableWidget::getAllSelectedCells(void):Array<ScriptTableCellPosition> \nReturns the rows and columns of the selected cells.
-ScriptTableWidget::insertWidget(int row, int column, String type):bool \nCreates and inserts a script widget into a table cell.Possible type values are:\nLineEdit, ComboBox, Button, CheckBox, SpinBox, DoubleSpinBox, VerticalSlider, HorizontalSlider\nDial, TimeEdit, DateEdit, DateTimeEdit, CalendarWidget, TextEdit
-ScriptTableWidget::setText(int row, int column, String text):void \nSets the text of one cell.
-ScriptTableWidget::getWidget(int row, int column):ScriptWidget \nReturns the cell widget.
-ScriptTableWidget::insertRow(int row):void \nInserts one row at row.
-ScriptTableWidget::insertRowWithContent(int row, StringList texts, StringList backgroundColors, StringList foregroundColors):void \nInserts one row at row and fills the cells with content.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptTableWidget::insertColumn(int column):void \nInserts one column at column.
-ScriptTableWidget::removeRow(int row):void \nRemoves the row at row.
-ScriptTableWidget::removeColumn(int column):void \nRemoves the column at column.
+ScriptTableWidget::insertWidget(Number row, Number column, String type):bool \nCreates and inserts a script widget into a table cell.Possible type values are:\nLineEdit, ComboBox, Button, CheckBox, SpinBox, DoubleSpinBox, VerticalSlider, HorizontalSlider\nDial, TimeEdit, DateEdit, DateTimeEdit, CalendarWidget, TextEdit
+ScriptTableWidget::setText(Number row, Number column, String text):void \nSets the text of one cell.
+ScriptTableWidget::getWidget(Number row, Number column):ScriptWidget \nReturns the cell widget.
+ScriptTableWidget::insertRow(Number row):void \nInserts one row at row.
+ScriptTableWidget::insertRowWithContent(Number row, StringList texts, StringList backgroundColors, StringList foregroundColors):void \nInserts one row at row and fills the cells with content.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptTableWidget::insertColumn(Number column):void \nInserts one column at column.
+ScriptTableWidget::removeRow(Number row):void \nRemoves the row at row.
+ScriptTableWidget::removeColumn(Number column):void \nRemoves the column at column.
 ScriptTableWidget::clear(void):void \nClears the table (removes all cells).
-ScriptTableWidget::cellPressedSignal.connect(int row, int column) \nThis signal is emitted if the user has pressed a cell.
-ScriptTableWidget::cellClickedSignal.connect(int row, int column) \nThis signal is emitted if the user has clicked a cell.
-ScriptTableWidget::cellDoubleClickedSignal.connect(int row, int column) \nThis signal is emitted if the user has double clicked a cell.
-ScriptTableWidget::cellChangedSignal.connect(int row, int column) \nThis signal is emitted if a cell has been changed.
-ScriptTableWidget::horizontalHeaderSectionResizedSignal.connect(int logicalIndex, int oldSize, int newSize) \nThis signal is emitted if a horizontal header section is resized.\nThe section's logical number is specified by logicalIndex, the old size by oldSize, and the new size by newSize.
+ScriptTableWidget::cellPressedSignal.connect(Number row, Number column) \nThis signal is emitted if the user has pressed a cell.
+ScriptTableWidget::cellClickedSignal.connect(Number row, Number column) \nThis signal is emitted if the user has clicked a cell.
+ScriptTableWidget::cellDoubleClickedSignal.connect(Number row, Number column) \nThis signal is emitted if the user has Number clicked a cell.
+ScriptTableWidget::cellChangedSignal.connect(Number row, Number column) \nThis signal is emitted if a cell has been changed.
+ScriptTableWidget::horizontalHeaderSectionResizedSignal.connect(Number logicalIndex, Number oldSize, Number newSize) \nThis signal is emitted if a horizontal header section is resized.\nThe section's logical number is specified by logicalIndex, the old size by oldSize, and the new size by newSize.
 ScriptTableWidget::cellSelectionChangedSignal.connect(void) \nThis signal is emitted whenever the selection changes.

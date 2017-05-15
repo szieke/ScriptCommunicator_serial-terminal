@@ -1,7 +1,7 @@
-ScriptTcpServer::listen(quint16 port):bool \nCall this function to start listening for new connections.
+ScriptTcpServer::listen(Number port):bool \nCall this function to start listening for new connections.
 ScriptTcpServer::isListening(void):bool \nReturns true if the socket is listening for new connections.
-ScriptTcpServer::setMaxPendingConnections(int numConnections):void \nSet the max. pending connections.
-ScriptTcpServer::maxPendingConnections(void):int \nReturns the max. pending connections.
+ScriptTcpServer::setMaxPendingConnections(Number numConnections):void \nSet the max. pending connections.
+ScriptTcpServer::maxPendingConnections(void):Number \nReturns the max. pending connections.
 ScriptTcpServer::close():void \nThis function closes the tcp server.
 ScriptTcpServer::hasPendingConnections(void):bool \nReturns true if the server has a pending connection; otherwise returns false.
 ScriptTcpServer::nextPendingConnection(void):ScriptTcpClient \nReturn the next pending connection (returns a script TCP client).

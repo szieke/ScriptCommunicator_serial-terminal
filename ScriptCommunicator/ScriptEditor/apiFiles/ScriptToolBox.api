@@ -5,20 +5,20 @@ ScriptToolBox::setBackgroundColor(String color):void \nSets the background color
 ScriptToolBox::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptToolBox::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptToolBox::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptToolBox::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-ScriptToolBox::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptToolBox::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptToolBox::setToolTip(String text, Number duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptToolBox::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptToolBox::setFocus(void):void \nGives the keyboard input focus to this widget.
-ScriptToolBox::width(void):int \nReturns the width of the widget excluding any window frame.
-ScriptToolBox::height(void):int \nReturns the height of the widget excluding any window frame.
-ScriptToolBox::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
-ScriptToolBox::getAdditionalData(int key):String \nReturns an additional data entry.
+ScriptToolBox::width(void):Number \nReturns the width of the widget excluding any window frame.
+ScriptToolBox::height(void):Number \nReturns the height of the widget excluding any window frame.
+ScriptToolBox::setAdditionalData(Number key, String data):void \nSets/stores an additional data entry.
+ScriptToolBox::getAdditionalData(Number key):String \nReturns an additional data entry.
 ScriptToolBox::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptToolBox::getClassName(void):String \nReturns the class name of this object.
 ScriptToolBox::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
 ScriptToolBox::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
-ScriptToolBox::setItemText(int index, String text):void \nSets the item text.
-ScriptToolBox::itemText(int index):String \nReturns the item text.
-ScriptToolBox::setCurrentIndex(int index):void \nSets the current item index.
-ScriptToolBox::currentIndex(void):int \nReturns the current item index.
-ScriptToolBox::currentItemChangedSignal.connect(int index) \nThis signal is emitted if the current item has been changed.
+ScriptToolBox::setItemText(Number index, String text):void \nSets the item text.
+ScriptToolBox::itemText(Number index):String \nReturns the item text.
+ScriptToolBox::setCurrentIndex(Number index):void \nSets the current item index.
+ScriptToolBox::currentIndex(void):Number \nReturns the current item index.
+ScriptToolBox::currentItemChangedSignal.connect(Number index) \nThis signal is emitted if the current item has been changed.

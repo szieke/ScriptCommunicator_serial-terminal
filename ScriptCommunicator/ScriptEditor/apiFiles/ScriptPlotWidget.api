@@ -5,27 +5,27 @@ ScriptPlotWidget::setBackgroundColor(String color):void \nSets the background co
 ScriptPlotWidget::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptPlotWidget::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptPlotWidget::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptPlotWidget::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-ScriptPlotWidget::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptPlotWidget::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptPlotWidget::setToolTip(String text, Number duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptPlotWidget::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptPlotWidget::setFocus(void):void \nGives the keyboard input focus to this widget.
-ScriptPlotWidget::width(void):int \nReturns the width of the widget excluding any window frame.
-ScriptPlotWidget::height(void):int \nReturns the height of the widget excluding any window frame.
-ScriptPlotWidget::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
-ScriptPlotWidget::getAdditionalData(int key):String \nReturns an additional data entry.
+ScriptPlotWidget::width(void):Number \nReturns the width of the widget excluding any window frame.
+ScriptPlotWidget::height(void):Number \nReturns the height of the widget excluding any window frame.
+ScriptPlotWidget::setAdditionalData(Number key, String data):void \nSets/stores an additional data entry.
+ScriptPlotWidget::getAdditionalData(Number key):String \nReturns an additional data entry.
 ScriptPlotWidget::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptPlotWidget::getClassName(void):String \nReturns the class name of this object.
 ScriptPlotWidget::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
 ScriptPlotWidget::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
-ScriptPlotWidget::addGraph(String color, String penStyle, String name):int \nThis function adds a graph to the diagram.
-ScriptPlotWidget::setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue):void \nThis function sets the initial ranges of the diagram.
-ScriptPlotWidget::addDataToGraph(int graphIndex, double x, double y):void \nThis function adds one point to a graph.
+ScriptPlotWidget::addGraph(String color, String penStyle, String name):Number \nThis function adds a graph to the diagram.
+ScriptPlotWidget::setInitialAxisRanges(Number xRange, Number yMinValue, Number ymaxValue):void \nThis function sets the initial ranges of the diagram.
+ScriptPlotWidget::addDataToGraph(Number graphIndex, Number x, Number y):void \nThis function adds one point to a graph.
 ScriptPlotWidget::setAxisLabels(String xAxisLabel, String yAxisLabel):void \nSets the axis label.
 ScriptPlotWidget::showLegend(bool show):void \nThis function shows or hides the diagram legend.
 ScriptPlotWidget::clearGraphs(void):void \nThis function clears the data of all graphs.
 ScriptPlotWidget::removeAllGraphs(void):void \nThis function removes all graphs.
-ScriptPlotWidget::showHelperElements(bool showXRange, bool showYRange, bool showUpdate, bool showSave, bool showLoad, bool showClear, bool showGraphVisibility, quint32 graphVisibilityMaxSize=80, bool showLegend=true):void \nSets the visibility of several plot widget elements.
-ScriptPlotWidget::setMaxDataPointsPerGraph(qint32 maxDataPointsPerGraph):void \nSets tThe max. number of data points per graph (the default is 10.000.000).
-ScriptPlotWidget::setUpdateInterval(quint32 updateInterval):void \nSets the update-interval.
-ScriptPlotWidget::plotMousePressSignal.connect(double xValue, double yValue, quint32 mouseButton) \nIs emitted if the user press a mouse button inside the plot.\nNote: mouseButton has the type Qt::MouseButton.
+ScriptPlotWidget::showHelperElements(bool showXRange, bool showYRange, bool showUpdate, bool showSave, bool showLoad, bool showClear, bool showGraphVisibility, Number graphVisibilityMaxSize=80, bool showLegend=true):void \nSets the visibility of several plot widget elements.
+ScriptPlotWidget::setMaxDataPointsPerGraph(Number maxDataPointsPerGraph):void \nSets tThe max. number of data points per graph (the default is 10.000.000).
+ScriptPlotWidget::setUpdateInterval(Number updateInterval):void \nSets the update-interval.
+ScriptPlotWidget::plotMousePressSignal.connect(Number xValue, Number yValue, Number mouseButton) \nIs emitted if the user press a mouse button inside the plot.\nNote: mouseButton has the type Qt::MouseButton.
 ScriptPlotWidget::clearButtonPressedSignal.connect(void) \nIs emitted if the user clicks the clear button.

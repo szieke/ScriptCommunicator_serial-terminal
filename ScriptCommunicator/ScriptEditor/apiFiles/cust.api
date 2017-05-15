@@ -1,7 +1,7 @@
 cust::appendTextToConsole(String string, bool newLine=true, bool bringToForeground=false):void \nAppends text to the script window console.
 cust::loadScript(String scriptPath, bool isRelativePath=true):bool \nLoads/includes one script (QtScript has no built in include mechanism).
 cust::getCurrentVersion(void):String \nReturns the current version of ScriptCommunicator.
-cust::setBlockTime(quint32 blockTime):void \nSets the script block time.\nNote: After this execution time (createString and the script main function (all outside a function))\nthe script is regarded as blocked and will be terminated.
+cust::setBlockTime(Number blockTime):void \nSets the script block time.\nNote: After this execution time (createString and the script main function (all outside a function))\nthe script is regarded as blocked and will be terminated.
 cust::createXmlReader(void):ScriptXmlReader \nCreates a XML reader.
 cust::createXmlWriter(void):ScriptXmlWriter \nCreates a XML writer.
 cust::getAllObjectPropertiesAndFunctions(ScriptValue object):Array<String> \nReturns all functions and properties of an object.

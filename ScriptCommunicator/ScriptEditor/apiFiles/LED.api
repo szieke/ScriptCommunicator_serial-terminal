@@ -1,6 +1,6 @@
 LED::toggleState(void):void \nToggles the state of the LED (on/off).
 LED::setFlashing(bool flashing):void \nTurns the flashing of the LED 
 LED::setState(bool state)void \nSets the state of the LED (on/off).
-LED::setColorRgb(quint8 red, quint8 green, quint8 blue):void \n Sets the color of the LED.
-LED::setFlashRate(int rate):void \nSets the flahing rate of the LED (ms).
+LED::setColorRgb(Number red, Number green, Number blue):void \n Sets the color of the LED.
+LED::setFlashRate(Number rate):void \nSets the flahing rate of the LED (ms).
 LED::stateChangedSignal.connect(bool state) \nIs emitted if the state of the led has been changed.

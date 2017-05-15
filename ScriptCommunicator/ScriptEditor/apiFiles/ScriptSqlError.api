@@ -1,6 +1,6 @@
 ScriptSqlError::driverText(void):String \nReturns the text of the error as reported by the driver.\nThis may contain database-specific descriptions. It may also be empty.
 ScriptSqlError::databaseText(void):String \nReturns the text of the error as reported by the database.\nThis may contain database-specific descriptions; it may be empty.
-ScriptSqlError::type(void):quint32 \nQSqlError::ErrorType \nReturns the error type, or -1 if the type cannot be determined.
+ScriptSqlError::type(void):Number \nQSqlError::ErrorType \nReturns the error type, or -1 if the type cannot be determined.
 ScriptSqlError::nativeErrorCode(void):String \nReturns the database-specific error code, or an empty string if it cannot be determined.
 ScriptSqlError::text(void):String \nThis is a convenience function that returns databaseText() and driverText() concatenated into a single string.
 ScriptSqlError::isValid(void):bool \nReturns true if an error is set, otherwise false.

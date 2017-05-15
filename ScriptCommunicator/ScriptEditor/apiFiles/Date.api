@@ -1,28 +1,28 @@
 Date::toString(void):String \nConverts a Date object to a string.
-Date::toDateString(void):String \nConverts the date portion of a Date object into a readable string.
+Date::toDateString(void):String \nConverts the date portion of a Date object Numbero a readable string.
 Date::toTimeString(void):String \nConverts the time portion of a Date object to a string.
 Date::toLocaleString(void):String \nConverts a Date object to a string, using locale conventions.
 Date::toLocaleDateString(void):String \nReturns the date portion of a Date object as a string, using locale conventions.
 Date::toLocaleTimeString(void):String \nReturns the time portion of a Date object as a string, using locale conventions.
-Date::valueOf(void):int \nReturns the primitive value of a Date object.
-Date::getTime(void):int \nReturns the number of milliseconds since midnight Jan 1 1970, and a specified date.
-Date::getFullYear(void):int \nReturns the year.
-Date::getUTCFullYear(void):int  \nReturns the year, according to universal time.
-Date::getMonth(void):int \nReturns the month (from 0-11).
-Date::getUTCMonth(void):int \nReturns the month, according to universal time (from 0-11).
-Date::getDate(void):int \nReturns the day of the month (from 1-31).
-Date::getUTCDate(void):int \nReturns the day of the month, according to universal time (from 1-31).
-Date::getDay(void):int \nReturns the day of the week (from 0-6).
-Date::getUTCDay(void):int \nReturns the day of the week, according to universal time (from 0-6).
-Date::getHours(void):int \nReturns the hour (from 0-23).
-Date::getUTCHours(void):int \nReturns the hour, according to universal time (from 0-23).
-Date::getMinutes(void):int \nReturns the minutes (from 0-59).
-Date::getUTCMinutes(void):int \nReturns the minutes, according to universal time (from 0-59).
-Date::getSeconds(void):int \nReturns the seconds (from 0-59).
-Date::getUTCSeconds(void):int \nReturns the seconds, according to universal time (from 0-59).
-Date::getMilliseconds(void):int \nReturns the milliseconds (from 0-999).
-Date::getUTCMilliseconds(void):int \nReturns the milliseconds, according to universal time (from 0-999).
-Date::getTimeZoneOffset(void):int \nReturns the time difference between UTC time and local time, in minutes.
+Date::valueOf(void):Number \nReturns the primitive value of a Date object.
+Date::getTime(void):Number \nReturns the number of milliseconds since midnight Jan 1 1970, and a specified date.
+Date::getFullYear(void):Number \nReturns the year.
+Date::getUTCFullYear(void):Number  \nReturns the year, according to universal time.
+Date::getMonth(void):Number \nReturns the month (from 0-11).
+Date::getUTCMonth(void):Number \nReturns the month, according to universal time (from 0-11).
+Date::getDate(void):Number \nReturns the day of the month (from 1-31).
+Date::getUTCDate(void):Number \nReturns the day of the month, according to universal time (from 1-31).
+Date::getDay(void):Number \nReturns the day of the week (from 0-6).
+Date::getUTCDay(void):Number \nReturns the day of the week, according to universal time (from 0-6).
+Date::getHours(void):Number \nReturns the hour (from 0-23).
+Date::getUTCHours(void):Number \nReturns the hour, according to universal time (from 0-23).
+Date::getMinutes(void):Number \nReturns the minutes (from 0-59).
+Date::getUTCMinutes(void):Number \nReturns the minutes, according to universal time (from 0-59).
+Date::getSeconds(void):Number \nReturns the seconds (from 0-59).
+Date::getUTCSeconds(void):Number \nReturns the seconds, according to universal time (from 0-59).
+Date::getMilliseconds(void):Number \nReturns the milliseconds (from 0-999).
+Date::getUTCMilliseconds(void):Number \nReturns the milliseconds, according to universal time (from 0-999).
+Date::getTimeZoneOffset(void):Number \nReturns the time difference between UTC time and local time, in minutes.
 Date::setTime(time):void \nSets a date to a specified number of milliseconds after/before January 1, 1970.
 Date::setMilliseconds(ms):void \nSets the milliseconds of a date object.
 Date::setUTCMilliseconds(ms):void \nSets the milliseconds of a date object, according to universal time.
@@ -39,7 +39,7 @@ Date::setUTCMonth(month [, date]):void \nSets the month of a date object, accord
 Date::setFullYear(year [, month [, date]]):void \nSets the year of a date object.
 Date::setUTCFullYear(year [, month [, date]]):void \nSets the year of a date object, according to universal time.
 Date::toUTCString(void):String \nConverts a Date object to a string, according to universal time.
-Date::toISOString(void):String Converts a Date object into a string, using the ISO standard.
+Date::toISOString(void):String Converts a Date object Numbero a string, using the ISO standard.
 Date::toJSON(void):String \nReturns the date as a string, formatted as a JSON date.
 Date::now() \nReturns the number of milliseconds elapsed since 1 January 1970 00:00:00 UTC.
 Date::parse(string) \nThis method parses a string representation of a date, and returns the number of milliseconds since January 1,\n1970, 00:00:00 UTC or NaN if the string is unrecognised or contains illegal date values (e.g. 2015-02-31)

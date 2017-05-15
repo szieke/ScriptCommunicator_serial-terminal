@@ -5,19 +5,19 @@ ScriptCheckBox::setBackgroundColor(String color):void \nSets the background colo
 ScriptCheckBox::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptCheckBox::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptCheckBox::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptCheckBox::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-ScriptCheckBox::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptCheckBox::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptCheckBox::setToolTip(String text, Number duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptCheckBox::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptCheckBox::setFocus(void):void \nGives the keyboard input focus to this widget.
-ScriptCheckBox::width(void):int \nReturns the width of the widget excluding any window frame.
-ScriptCheckBox::height(void):int \nReturns the height of the widget excluding any window frame.
-ScriptCheckBox::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
-ScriptCheckBox::getAdditionalData(int key):String \nReturns an additional data entry.
+ScriptCheckBox::width(void):Number \nReturns the width of the widget excluding any window frame.
+ScriptCheckBox::height(void):Number \nReturns the height of the widget excluding any window frame.
+ScriptCheckBox::setAdditionalData(Number key, String data):void \nSets/stores an additional data entry.
+ScriptCheckBox::getAdditionalData(Number key):String \nReturns an additional data entry.
 ScriptCheckBox::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptCheckBox::getClassName(void):String \nReturns the class name of this object.
 ScriptCheckBox::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
 ScriptCheckBox::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
-ScriptCheckBox::setText(const String text):void \nSets the check box text.
+ScriptCheckBox::setText(String text):void \nSets the check box text.
 ScriptCheckBox::text(void):String \nReturns the check box text.
 ScriptCheckBox::setChecked(bool checked):void \nSets the checked state of the check box.
 ScriptCheckBox::isChecked(void):bool \nReturns true of the check box is checked.

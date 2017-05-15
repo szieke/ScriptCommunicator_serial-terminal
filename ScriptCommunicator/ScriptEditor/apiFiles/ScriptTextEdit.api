@@ -5,23 +5,23 @@ ScriptTextEdit::setBackgroundColor(String color):void \nSets the background colo
 ScriptTextEdit::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptTextEdit::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptTextEdit::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptTextEdit::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-ScriptTextEdit::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptTextEdit::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptTextEdit::setToolTip(String text, Number duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptTextEdit::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptTextEdit::setFocus(void):void \nGives the keyboard input focus to this widget.
-ScriptTextEdit::width(void):int \nReturns the width of the widget excluding any window frame.
-ScriptTextEdit::height(void):int \nReturns the height of the widget excluding any window frame.
-ScriptTextEdit::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
-ScriptTextEdit::getAdditionalData(int key):String \nReturns an additional data entry.
+ScriptTextEdit::width(void):Number \nReturns the width of the widget excluding any window frame.
+ScriptTextEdit::height(void):Number \nReturns the height of the widget excluding any window frame.
+ScriptTextEdit::setAdditionalData(Number key, String data):void \nSets/stores an additional data entry.
+ScriptTextEdit::getAdditionalData(Number key):String \nReturns an additional data entry.
 ScriptTextEdit::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptTextEdit::getClassName(void):String \nReturns the class name of this object.
 ScriptTextEdit::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
 ScriptTextEdit::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
-ScriptTextEdit::verticalScrollBarValue(void):int \nReturns the vertical scroll bar value.
-ScriptTextEdit::verticalScrollBarSetValue(int value):void \nSets the vertical scroll bar value.
+ScriptTextEdit::verticalScrollBarValue(void):Number \nReturns the vertical scroll bar value.
+ScriptTextEdit::verticalScrollBarSetValue(Number value):void \nSets the vertical scroll bar value.
 ScriptTextEdit::toPlainText(void):String \nReturns the content of the text edit as plain text.
 ScriptTextEdit::toHtml(void):String \nReturns the content of the text edit as html.
-ScriptTextEdit::setMaxChars(int maxChars):void \nSets the max. number of chars in the text edit.
+ScriptTextEdit::setMaxChars(Number maxChars):void \nSets the max. number of chars in the text edit.
 ScriptTextEdit::replaceNonHtmlChars(String text):String \nReplaces the characters '\n',' ', '<' and '>' to their html representation.
 ScriptTextEdit::moveTextPositionToEnd(void):void \nMoves the curser to the end of the text edit.
 ScriptTextEdit::setFontPointSize(qreal fontSize):void \nSets font size.
@@ -33,5 +33,5 @@ ScriptTextEdit::append(String text):void \nAppends text at the end of text edit 
 ScriptTextEdit::setPlainText(String text):void \nSets the text of the text edit (plain text).
 ScriptTextEdit::setText(String text):void \nSets the text of the text edit.
 ScriptTextEdit::lockScrolling(bool lock):void \nLocks or unlocks the scrolling of the vertical scroll bar.
-ScriptTextEdit::setUpdateRate(int updateRate):void \nSets the update rate of the script text edit.
+ScriptTextEdit::setUpdateRate(Number updateRate):void \nSets the update rate of the script text edit.
 ScriptTextEdit::textChangedSignal.connect(void) \nThis signal is emitted if the text of the text edit has been changed.

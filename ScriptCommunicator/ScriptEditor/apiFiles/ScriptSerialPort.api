@@ -1,11 +1,11 @@
 ScriptSerialPort::setDTR(bool set):void \nSets the DTR pin.
 ScriptSerialPort::setRTS(bool set):void \nSets the RTS pin.
-ScriptSerialPort::setPortName(const String &name):void \nSets the serial port name.
+ScriptSerialPort::setPortName(String &name):void \nSets the serial port name.
 ScriptSerialPort::portName(void):String \nReturns the serial port name.
-ScriptSerialPort::setBaudRate(qint32 baudRate):bool \nSets the baudrate.
-ScriptSerialPort::baudRate(void):qint32 \nReturns the baudrate.
-ScriptSerialPort::setDataBits(quint32 dataBits):bool \nSets the number of data bits.
-ScriptSerialPort::dataBits(void):quint32 \nReturns the number of data bits.
+ScriptSerialPort::setBaudRate(Number baudRate):bool \nSets the baudrate.
+ScriptSerialPort::baudRate(void):Number \nReturns the baudrate.
+ScriptSerialPort::setDataBits(Number dataBits):bool \nSets the number of data bits.
+ScriptSerialPort::dataBits(void):Number \nReturns the number of data bits.
 ScriptSerialPort::setParity(String parityString):bool \nSets the parity. Possible values are:\n- None\n- Even\n- Odd\n- Space\n- Mark
 ScriptSerialPort::parity(void):String \nReturns the parity. Possible values are:\n- None\n- Even\n- Odd\n- Space\n- Mark\n- Unknown
 ScriptSerialPort::setStopBits(String stopBitsString):bool \nSets the number of stop bits. Possible values are:\n- 1\n- 1.5\n- 2
@@ -15,14 +15,14 @@ ScriptSerialPort::flowControl(void):String \nReturns the flow control. Possible 
 ScriptSerialPort::errorString(void):String \nReturns the error string from the serial port (contains additional information\nin the case of an error).
 ScriptSerialPort::open(void):bool \nOpens the serial port.
 ScriptSerialPort::close(void):void \nCloses the serial port.
-ScriptSerialPort::getSerialPortSignals(void):quint32 \nReturns the state of the serial port signals (pins).\nThe signals are bit coded:\nNoSignal = 0x00,\nDataTerminalReadySignal = 0x04,\nDataCarrierDetectSignal = 0x08,\nDataSetReadySignal = 0x10,\nRingIndicatorSignal = 0x20,\nRequestToSendSignal = 0x40,\nClearToSendSignal = 0x80
+ScriptSerialPort::getSerialPortSignals(void):Number \nReturns the state of the serial port signals (pins).\nThe signals are bit coded:\nNoSignal = 0x00,\nDataTerminalReadySignal = 0x04,\nDataCarrierDetectSignal = 0x08,\nDataSetReadySignal = 0x10,\nRingIndicatorSignal = 0x20,\nRequestToSendSignal = 0x40,\nClearToSendSignal = 0x80
 ScriptSerialPort::isOpen(void):bool \nReturns true if the serial port is open.
 ScriptSerialPort::bytesAvailable(void):qint64 \nReturns the number of bytes which are available for reading.
-ScriptSerialPort::readAll(void):Array<unsigned char> \nReturns all available received bytes.
-ScriptSerialPort::write(Array<unsigned char>dataVector):qint64 \nWrites data to the serial port. Returns the number of written bytes.
+ScriptSerialPort::readAll(void):Array<Number> \nReturns all available received bytes.
+ScriptSerialPort::write(Array<Number>dataVector):qint64 \nWrites data to the serial port. Returns the number of written bytes.
 ScriptSerialPort::writeString(String string):qint64 \nWrites a string to the serial port. Returns the number of written bytes.
 ScriptSerialPort::bytesToWrite(void):qint64 \nReturns the number of bytes which are not written yet.
-ScriptSerialPort::waitForBytesWritten(int msecs):bool \nThis function waits until all bytes have been written (sent) or the time in msec has been elapsed.
+ScriptSerialPort::waitForBytesWritten(Number msecs):bool \nThis function waits until all bytes have been written (sent) or the time in msec has been elapsed.
 ScriptSerialPort::enableMainInterfaceRouting(void):void \nEnables the main interface routing (all data from the main interface is send with this socket and\nall received (with this socket) data is sent with the main interace).
 ScriptSerialPort::disableMainInterfaceRouting(void):void \nDisables the main interface routing.
 ScriptSerialPort::canReadLine(void):bool \nThis function checks if a data line (ends with EOL ('\n')) is ready to be read.

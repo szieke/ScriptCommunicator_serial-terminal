@@ -11,20 +11,20 @@ ScriptDialog::setBackgroundColor(String color):void \nSets the background color 
 ScriptDialog::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptDialog::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptDialog::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptDialog::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-ScriptDialog::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptDialog::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptDialog::setToolTip(String text, Number duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptDialog::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptDialog::raise(void):void \nRaises this widget to the top of the parent widget's stack.
 ScriptDialog::lower(void):void \nLowers the widget to the bottom of the parent widget's stack.
-ScriptDialog::setWindowFlags(quint32 flags):void \nSets the window flags.\nNote: ScriptWidget::show must be called after a setWindowFlags call.
-ScriptDialog::clearWindowFlags(quint32 flags):void \nClears the given window flags.\nNote: ScriptWidget::show must be called after a clearWindowFlags call.
-ScriptDialog::windowFlags(void):quint32 \nReturns the window flags.
+ScriptDialog::setWindowFlags(Number flags):void \nSets the window flags.\nNote: ScriptWidget::show must be called after a setWindowFlags call.
+ScriptDialog::clearWindowFlags(Number flags):void \nClears the given window flags.\nNote: ScriptWidget::show must be called after a clearWindowFlags call.
+ScriptDialog::windowFlags(void):Number \nReturns the window flags.
 ScriptDialog::setFocus(void):void \nGives the keyboard input focus to this widget.
-ScriptDialog::width(void):int \nReturns the width of the widget excluding any window frame.
-ScriptDialog::height(void):int \nReturns the height of the widget excluding any window frame.
+ScriptDialog::width(void):Number \nReturns the width of the widget excluding any window frame.
+ScriptDialog::height(void):Number \nReturns the height of the widget excluding any window frame.
 ScriptDialog::getWidgetPointer(void):QWidget* \nReturns the widget pointer.
-ScriptDialog::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
-ScriptDialog::getAdditionalData(int key):String \nReturns an additional data entry.
+ScriptDialog::setAdditionalData(Number key, String data):void \nSets/stores an additional data entry.
+ScriptDialog::getAdditionalData(Number key):String \nReturns an additional data entry.
 ScriptDialog::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptDialog::getClassName(void):String \nReturns the class name of this object.
 ScriptDialog::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.

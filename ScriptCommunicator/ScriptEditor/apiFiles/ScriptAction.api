@@ -1,4 +1,4 @@
-ScriptAction::setText(const String text):void \nSets the action text.
+ScriptAction::setText(String text):void \nSets the action text.
 ScriptAction::text(void):String \nReturns the action text.
 ScriptAction::setChecked(bool checked):void \nSets the checked state of the action.
 ScriptAction::isChecked(void):bool \nReturns true of the action is checked.

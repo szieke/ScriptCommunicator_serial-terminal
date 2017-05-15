@@ -39,7 +39,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="serialPortTab">
       <attribute name="title">
@@ -1155,6 +1155,9 @@ for TCP clients.</string>
               </item>
               <item row="1" column="1">
                <widget class="QComboBox" name="pcanBaudratecomboBox">
+                <property name="toolTip">
+                 <string>kBaud</string>
+                </property>
                 <item>
                  <property name="text">
                   <string>1000</string>

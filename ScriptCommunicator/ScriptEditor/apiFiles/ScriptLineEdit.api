@@ -5,14 +5,14 @@ ScriptLineEdit::setBackgroundColor(String color):void \nSets the background colo
 ScriptLineEdit::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptLineEdit::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptLineEdit::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptLineEdit::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-ScriptLineEdit::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptLineEdit::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptLineEdit::setToolTip(String text, Number duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptLineEdit::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptLineEdit::setFocus(void):void \nGives the keyboard input focus to this widget.
-ScriptLineEdit::width(void):int \nReturns the width of the widget excluding any window frame.
-ScriptLineEdit::height(void):int \nReturns the height of the widget excluding any window frame.
-ScriptLineEdit::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
-ScriptLineEdit::getAdditionalData(int key):String \nReturns an additional data entry.
+ScriptLineEdit::width(void):Number \nReturns the width of the widget excluding any window frame.
+ScriptLineEdit::height(void):Number \nReturns the height of the widget excluding any window frame.
+ScriptLineEdit::setAdditionalData(Number key, String data):void \nSets/stores an additional data entry.
+ScriptLineEdit::getAdditionalData(Number key):String \nReturns an additional data entry.
 ScriptLineEdit::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptLineEdit::getClassName(void):String \nReturns the class name of this object.
 ScriptLineEdit::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
@@ -20,8 +20,8 @@ ScriptLineEdit::setObjectName(String name):void \nSets the name of the current o
 ScriptLineEdit::text(void):String \nReturns the text of the line exit.
 ScriptLineEdit::isReadOnly(void):bool \nReturns true of the line edit is editable.
 ScriptLineEdit::setReadOnly(bool readOnly):void \nSets the editable property of the line edit.
-ScriptLineEdit::addIntValidator(int bottom, int top):void \nAdds an int validator to the line edit\n(this ensures that the line edit contains only integer).
-ScriptLineEdit::addDoubleValidator(double bottom, double top, int decimals):void \nAdds an double validator to the line edit\n(this ensures that the line edit contains only double values).
+ScriptLineEdit::addIntValidator(Number bottom, Number top):void \nAdds an Number validator to the line edit\n(this ensures that the line edit contains only integer).
+ScriptLineEdit::addDoubleValidator(Number bottom, Number top, Number decimals):void \nAdds an Number validator to the line edit\n(this ensures that the line edit contains only Number values).
 ScriptLineEdit::addRexpExValidator(String pattern, bool caseSensitiv) \nAdds an regular expression validator to the line edit\n(this ensures that the line edit contains only the allowed values which are specified in the pattern).
 ScriptLineEdit::setText(String text):void \nSets the text of the line edit.
 ScriptLineEdit::clear(void):void \nClears the line edit.

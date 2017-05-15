@@ -1,10 +1,10 @@
 ScriptTimer::setSingleShot(bool singleShot):void \nSets the timer to single-shot or non-single-shot.\nA single-shot timer fires only once, non-single-shot timers fire every interval milliseconds.
 ScriptTimer::isSingleShot(void):bool \nReturns true if the timer is a single-shot timer.
-ScriptTimer::setInterval(int msec):void \nSets the timer interval.
-ScriptTimer::interval(void):int \nReturns the timer interval.
-ScriptTimer::start(int msec):void \nStarts or restarts the timer with a timeout interval of msec milliseconds.\nIf the timer is already running, it will be stopped and restarted.\nIf the timer is a single-shot timer, then the timer will be activated only once.
+ScriptTimer::setInterval(Number msec):void \nSets the timer interval.
+ScriptTimer::interval(void):Number \nReturns the timer interval.
+ScriptTimer::start(Number msec):void \nStarts or restarts the timer with a timeout interval of msec milliseconds.\nIf the timer is already running, it will be stopped and restarted.\nIf the timer is a single-shot timer, then the timer will be activated only once.
 ScriptTimer::start(void):void \nStarts or restarts the timer with the timeout interval set in setInterval.\nIf the timer is already running, it will be stopped and restarted.\nIf the timer is a single-shot timer, then the timer will be activated only once.
 ScriptTimer::stop(void):void \nStops the timer.
 ScriptTimer::isActive(void):bool \nReturns true if the timer is running, otherwise false.
-ScriptTimer::remainingTime(void):int \nReturns the timer's remaining value in milliseconds left until the timeout.\nIf the timer is inactive, the returned value will be -1. If the timer is overdue,\nthe returned value will be 0.
+ScriptTimer::remainingTime(void):Number \nReturns the timer's remaining value in milliseconds left until the timeout.\nIf the timer is inactive, the returned value will be -1. If the timer is overdue,\nthe returned value will be 0.
 ScriptTimer::timeoutSignal.connect(void) \nThis signal is emitted if the timer times out.

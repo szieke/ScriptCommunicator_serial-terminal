@@ -1,15 +1,15 @@
 seq::appendTextToConsole(String string, bool newLine=true, bool bringToForeground=false):void \nAppends text to the script window console.
-seq::calculateCrc8(const Array<unsigned char> data):quint8 \nCalculates a crc8.
-seq::calculateCrc8WithPolynomial(Array<unsigned char> data, unsigned char polynomial, unsigned char startValue=0):quint8 \nCalculates a crc8 with a given polynomial.
-seq::calculateCrc16(const Array<unsigned char> data):quint16 \nCalculates a crc16.
-seq::calculateCrc32(const Array<unsigned char> data):quint32 \nCalculates a crc32.
-seq::calculateCrc64(const Array<unsigned char> data):quint64 \nCalculates a crc64.
+seq::calculateCrc8(Array<Number> data):Number \nCalculates a crc8.
+seq::calculateCrc8WithPolynomial(Array<Number> data, Number polynomial, Number startValue=0):Number \nCalculates a crc8 with a given polynomial.
+seq::calculateCrc16(Array<Number> data):Number \nCalculates a crc16.
+seq::calculateCrc32(Array<Number> data):Number \nCalculates a crc32.
+seq::calculateCrc64(Array<Number> data):quint64 \nCalculates a crc64.
 seq::setGlobalString(String name, String string):void \nSets a string in the global string map (Scripts can exchange data with this map).
 seq::getGlobalString(String name, bool removeValue=false):String \nReturns a string from the global string map (Scripts can exchange data with this map).\nNote: Returns an empty string if name is not in the map.
-seq::setGlobalDataArray(String name, Array<unsigned char> data):void \nSets a data vector in the global data vector map (Scripts can exchange data with this map).
-seq::getGlobalDataArray(String name, bool removeValue=false):Array<unsigned char> \nReturns a data vector from the global data vector map (Scripts can exchange data with this map).\nNote: Returns an empty data vector if name is not in the map.
-seq::setGlobalUnsignedNumber(String name, quint32 number):void \nSets a unsigned number in the global unsigned number map Scripts can exchange data with this map).
-seq::getGlobalUnsignedNumber(String name,bool removeValue=false):Array<quint32> \nReturns a unsigned number from the global unsigned number map (Scripts can exchange data with this map).\nThe first element is the result status (1=name found, 0=name not found). The second element is the read value.
+seq::setGlobalDataArray(String name, Array<Number> data):void \nSets a data vector in the global data vector map (Scripts can exchange data with this map).
+seq::getGlobalDataArray(String name, bool removeValue=false):Array<Number> \nReturns a data vector from the global data vector map (Scripts can exchange data with this map).\nNote: Returns an empty data vector if name is not in the map.
+seq::setGlobalUnsignedNumber(String name, Number number):void \nSets a unsigned number in the global unsigned number map Scripts can exchange data with this map).
+seq::getGlobalUnsignedNumber(String name,bool removeValue=false):Array<Number> \nReturns a unsigned number from the global unsigned number map (Scripts can exchange data with this map).\nThe first element is the result status (1=name found, 0=name not found). The second element is the read value.
 seq::setGlobalSignedNumber(String name, qint32 number):void \nSets a signed number in the global signed number map (Scripts can exchange data with this map).
 seq::getGlobalSignedNumber(String name,bool removeValue=false):Array<qint32> \nReturns a signed number from the global signed number map (Scripts can exchange data with this map).\nThe first element is the result status (1=name found, 0=name not found). The second element is the read value.
 seq::getCurrentVersion(void):String \nReturns the current version of ScriptCommunicator.
@@ -17,9 +17,9 @@ seq::messageBox(String icon, String title, String text, QWidget* parent=0):void 
 seq::showYesNoDialog(String icon, String title, String text, QWidget* parent=0):bool \nShows a yes/no dialog.
 seq::showTextInputDialog(String title, String label, String displayedText="", QWidget* parent=0):String \nConvenience function to get a string from the user.\nShows a QInputDialog::getText dialog (line edit).
 seq::showMultiLineTextInputDialog(String title, String label, String displayedText="", QWidget* parent=0):String \nConvenience function to get a multiline string from the user.\nShows a QInputDialog::getMultiLineText dialog (plain text edit).
-seq::showGetItemDialog(String title, String label, Array<String> displayedItems, int currentItemIndex=0, bool editable=false, QWidget* parent=0):String \nConvenience function to let the user select an item from a string list.\nShows a QInputDialog::getItem dialog (combobox).
-seq::showGetIntDialog(String title, String label, int initialValue, int min, int max, int step, QWidget* parent=0):Array<int> \nConvenience function to get an integer input from the user.\nShows a QInputDialog::getInt dialog (spinbox).
-seq::showGetDoubleDialog(String title, String label, double initialValue, double min, double max, int decimals, QWidget* parent=0):Array<double> \nConvenience function to get a floating point number from the user.\nShows a QInputDialog::getDouble dialog (spinbox).
-seq::showColorDialog(quint8 initInitalRed=255, quint8 initInitalGreen=255, quint8 initInitalBlue=255, quint8 initInitalAlpha=255, bool alphaIsEnabled=false, QWidget* parent=0):Array<int> \nConvenience function to get color settings from the user.
-seq::setBlockTime(quint32 blockTime):void \nSets the script block time.\nNote: After this execution time (sendData and the script main function (all outside a function))\nthe script is regarded as blocked and will be stopped.
+seq::showGetItemDialog(String title, String label, Array<String> displayedItems, Number currentItemIndex=0, bool editable=false, QWidget* parent=0):String \nConvenience function to let the user select an item from a string list.\nShows a QInputDialog::getItem dialog (combobox).
+seq::showGetIntDialog(String title, String label, Number initialValue, Number min, Number max, Number step, QWidget* parent=0):Array<Number> \nConvenience function to get an integer input from the user.\nShows a QInputDialog::getInt dialog (spinbox).
+seq::showGetDoubleDialog(String title, String label, Number initialValue, Number min, Number max, Number decimals, QWidget* parent=0):Array<Number> \nConvenience function to get a floating point number from the user.\nShows a QInputDialog::getDouble dialog (spinbox).
+seq::showColorDialog(Number initInitalRed=255, Number initInitalGreen=255, Number initInitalBlue=255, Number initInitalAlpha=255, bool alphaIsEnabled=false, QWidget* parent=0):Array<Number> \nConvenience function to get color settings from the user.
+seq::setBlockTime(Number blockTime):void \nSets the script block time.\nNote: After this execution time (sendData and the script main function (all outside a function))\nthe script is regarded as blocked and will be stopped.
 seq::getAllObjectPropertiesAndFunctions(ScriptValue object):Array<String> \nReturns all functions and properties of an object.

@@ -1,23 +1,23 @@
 conv::getAllObjectPropertiesAndFunctions(ScriptValue object):Array<String> \nReturns all functions and properties of an object.
-conv::byteArrayToString(Array<unsigned char> data):String \nConverts a byte array which contains ascii characters into an ascii string (String).
-conv::byteArrayToUtf8String(Array<unsigned char> data):String \nConverts a byte array which contains utf8 characters into an utf8 string (QString).
-conv::byteArrayToHexString(Array<unsigned char> data):String \nConverts a byte array into a hex string.
-conv::stringToArray(String str):Array<unsigned char> \nConverts an ascii string into a byte array.
-conv::byteArrayToUint16(Array<unsigned char> data, bool littleEndian):uint16_t \nConverts the first Bytes of a byte array to an uint16_t.
-conv::byteArrayToUint32(Array<unsigned char> data, bool littleEndian):uint32_t \nConverts the first Bytes of a byte array to an uint32_t.
-conv::byteArrayToUint64(Array<unsigned char> data, bool littleEndian):uint64_t \nConverts the first Bytes of a byte array to an uint64_t.
-conv::unsignedCharToSignedChar(unsigned char number):int8_t \nConverts an unsigned char to a signed char (int8_t).
-conv::byteArrayToInt16(Array<unsigned char> data, bool littleEndian):int16_t \nConverts the first Bytes of a byte array to an int16_t.
-conv::byteArrayToInt32(Array<unsigned char> data, bool littleEndian):int32_t \nConverts the first Bytes of a byte array to an int32_t.
-conv::byteArrayToInt64(Array<unsigned char> data, bool littleEndian):int64_t \nConverts the first Bytes of a byte array to an int64_t.
-conv::byteArrayToFloat32(Array<unsigned char> data, bool littleEndian):float \nConverts the first Bytes of a byte array to a float32.
-conv::byteArrayToFloat64(Array<unsigned char> data, bool littleEndian):double \nConverts the first Bytes of a byte array to a float64.
-conv::addStringToArray(Array<unsigned char> array , String str):Array<unsigned char> \nAdds an ascii string to a byte array.
-conv::addUint16ToArray(Array<unsigned char> array, uint16_t value, bool littleEndian):Array<unsigned char> \nAdds an uint16 to a byte array.
-conv::addUint32ToArray(Array<unsigned char> array, uint32_t value, bool littleEndian):Array<unsigned char> \nAdds an uint32 to a byte array.
-conv::addUint64ToArray(Array<unsigned char> array, uint64_t value, bool littleEndian):Array<unsigned char> \nAdds an uint64 to a byte array.
-conv::addInt16ToArray(Array<unsigned char> array, int16_t value, bool littleEndian):Array<unsigned char> \nAdds an int16 to a byte array.
-conv::addInt32ToArray(Array<unsigned char> array, int32_t value, bool littleEndian):Array<unsigned char> \nAdds an int32 to a byte array.
-conv::addInt64ToArray(Array<unsigned char> array, int64_t value, bool littleEndian):Array<unsigned char> \nAdds an int64 to a byte array.
-conv::addFloat32ToArray(Array<unsigned char> array, float value, bool littleEndian):Array<unsigned char> \nAdds a float32 to a byte array.
-conv::addFloat64ToArray(Array<unsigned char> array, double value, bool littleEndian):Array<unsigned char> \nAdds a float64 to a byte array.
+conv::byteArrayToString(Array<Number> data):String \nConverts a byte array which contains ascii characters into an ascii string (String).
+conv::byteArrayToUtf8String(Array<Number> data):String \nConverts a byte array which contains utf8 characters into an utf8 string (QString).
+conv::byteArrayToHexString(Array<Number> data):String \nConverts a byte array into a hex string.
+conv::stringToArray(String str):Array<Number> \nConverts an ascii string into a byte array.
+conv::byteArrayToUint16(Array<Number> data, bool littleEndian):Number \nConverts the first Bytes of a byte array to an uint16.
+conv::byteArrayToUint32(Array<Number> data, bool littleEndian):Number \nConverts the first Bytes of a byte array to an uint32.
+conv::byteArrayToUint64(Array<Number> data, bool littleEndian):Number \nConverts the first Bytes of a byte array to an uint64.
+conv::unsignedCharToSignedChar(Number number):Number \nConverts an Number to a signed char (int8).
+conv::byteArrayToInt16(Array<Number> data, bool littleEndian):Number \nConverts the first Bytes of a byte array to an int16.
+conv::byteArrayToInt32(Array<Number> data, bool littleEndian):Number \nConverts the first Bytes of a byte array to an int32.
+conv::byteArrayToInt64(Array<Number> data, bool littleEndian):Number \nConverts the first Bytes of a byte array to an int64.
+conv::byteArrayToFloat32(Array<Number> data, bool littleEndian):Number \nConverts the first Bytes of a byte array to a float32.
+conv::byteArrayToFloat64(Array<Number> data, bool littleEndian):Number \nConverts the first Bytes of a byte array to a float64.
+conv::addStringToArray(Array<Number> array , String str):Array<Number> \nAdds an ascii string to a byte array.
+conv::addUint16ToArray(Array<Number> array, Number value, bool littleEndian):Array<Number> \nAdds an uint16 to a byte array.
+conv::addUint32ToArray(Array<Number> array, Number value, bool littleEndian):Array<Number> \nAdds an uint32 to a byte array.
+conv::addUint64ToArray(Array<Number> array, Number value, bool littleEndian):Array<Number> \nAdds an uint64 to a byte array.
+conv::addInt16ToArray(Array<Number> array, Number value, bool littleEndian):Array<Number> \nAdds an int16 to a byte array.
+conv::addInt32ToArray(Array<Number> array, Number value, bool littleEndian):Array<Number> \nAdds an int32 to a byte array.
+conv::addInt64ToArray(Array<Number> array, Number value, bool littleEndian):Array<Number> \nAdds an int64 to a byte array.
+conv::addFloat32ToArray(Array<Number> array, float value, bool littleEndian):Array<Number> \nAdds a float32 to a byte array.
+conv::addFloat64ToArray(Array<Number> array, double value, bool littleEndian):Array<Number> \nAdds a float64 to a byte array.

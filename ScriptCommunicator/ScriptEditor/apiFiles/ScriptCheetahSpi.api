@@ -1,5 +1,5 @@
 ScriptCheetahSpi::detectDevices(void):String \nReturns a string which contains informations about all detected devices.
-ScriptCheetahSpi::connect(quint32 port, qint16 mode, quint32 baudrate):bool \nConnects to a cheetah spi interface (the baudrate is in kHz).
+ScriptCheetahSpi::connect(Number port, Number mode, Number baudrate):bool \nConnects to a cheetah spi interface (the baudrate is in kHz).
 ScriptCheetahSpi::disconnect(void):void \nDisconnects from the cheetah spi interface.
-ScriptCheetahSpi::sendReceiveData(Array<unsigned char> sendData, quint8 chipSelect):bool \nSends and receive data with the cheetah spi interface\n(the received data must be read with readAll).
+ScriptCheetahSpi::sendReceiveData(Array<unsigned char> sendData, Number chipSelect):bool \nSends and receive data with the cheetah spi interface\n(the received data must be read with readAll).
 ScriptCheetahSpi::readAll(void):Array<unsigned char>  \nReturns all received data from the last sendReceiveData call.

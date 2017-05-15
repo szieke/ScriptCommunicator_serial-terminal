@@ -1,19 +1,19 @@
-ScriptTcpClient::connectToHost(String hostAdress, quint16 port):void \nThis function connects the socket to a tcp server.
+ScriptTcpClient::connectToHost(String hostAdress, Number port):void \nThis function connects the socket to a tcp server.
 ScriptTcpClient::close(void):void \nThis function closes the socket.
 ScriptTcpClient::isReadable(void):bool \nReturns true if data can be read from the socket (if data has been received).
 ScriptTcpClient::bytesAvailable(void):quint64 \nReturns the number of bytes which are available for reading.
-ScriptTcpClient::readAll(void):Array<unsigned char> \nThis function returns all received bytes.
-ScriptTcpClient::write(Array<unsigned char> dataVector):qint64 \nWrites data to the socket. Returns the number of written bytes.
+ScriptTcpClient::readAll(void):Array<Number> \nThis function returns all received bytes.
+ScriptTcpClient::write(Array<Number> dataVector):qint64 \nWrites data to the socket. Returns the number of written bytes.
 ScriptTcpClient::writeString(String string):qint64 \nWrites a string to the socket. Returns the number of written bytes.
 ScriptTcpClient::isOpen(void):bool \nReturns true if the TCP client is open/connected.
 ScriptTcpClient::getErrorString(void):String \nReturns a human-readable description of the last error that has been occurred.
 ScriptTcpClient::enableMainInterfaceRouting(void):void \nEnables the main interface routing (all data from the main interface is send with this socket and\nall received (with this socket) data is sent with the main interface).
 ScriptTcpClient::disableMainInterfaceRouting(void):void \nDisables the main interface routing.
-ScriptTcpClient::setProxy(String proxyType = "NO_PROXY", String proxyUserName= "", String proxyPassword = "", String proxyIpAddress = "", quint16 proxyPort = 0):void \nSets the proxy of the TCP client. Possible values for proxyType are:\n'NO_PROXY', 'SYSTEM_PROXY', 'CUSTOM_PROXY'
+ScriptTcpClient::setProxy(String proxyType = "NO_PROXY", String proxyUserName= "", String proxyPassword = "", String proxyIpAddress = "", Number proxyPort = 0):void \nSets the proxy of the TCP client. Possible values for proxyType are:\n'NO_PROXY', 'SYSTEM_PROXY', 'CUSTOM_PROXY'
 ScriptTcpClient::canReadLine(void):bool \nThis function checks if a data line (ends with EOL ('\n')) is ready to be read.
 ScriptTcpClient::readLine(bool removeNewLine=true, bool removeCarriageReturn=true):String \nThis function reads a line (a line ends with a '\n') of ASCII characters.\nIf removeNewLine is true then the '\n' will not returned (is removed from the received line).\nIf removeCarriageReturn is true then a '\r' in front of '\n' will also not returned.\nNote: If no new data line is ready for reading this functions returns an empty string.
 ScriptTcpClient::readAllLines(bool removeNewLine=true, bool removeCarriageReturn=true):Array<String> \nThis function reads all available lines (a line ends with a '\n') of ASCII characters.\nIf removeNewLine is true then the '\n' will not returned (is removed from the received line).\nIf removeCarriageReturn is true then a '\r' in front of '\n' will also not returned.\nNote: If no new data line is ready for reading this functions returns an empty list.
 ScriptTcpClient::connectedSignal.connect(void) \nThis signal is emitted if the connection has been established.
 ScriptTcpClient::disconnectedSignal.connect(void) \nThis signal is emitted if the connection has been disconnected.
 ScriptTcpClient::readyReadSignal.connect(void) \nThis signal is emitted if data can be read from the socket (if data has been received).
-ScriptTcpClient::errorSignal.connect(int error) \nThis signal is emitted after an error has been occurred.\nThe error parameter (QAbstractSocket::SocketError enumeration) describes the type of error that has been occurred.
+ScriptTcpClient::errorSignal.connect(Number error) \nThis signal is emitted after an error has been occurred.\nThe error parameter (QAbstractSocket::SocketError enumeration) describes the type of error that has been occurred.

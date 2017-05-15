@@ -4,5 +4,5 @@ ScriptSqlIndex::setName(String name):void \nSets the name of the index to name.
 ScriptSqlIndex::name(void):String \nReturns the name of the index.
 ScriptSqlIndex::append(ScriptSqlField field):void \nAppends the field field to the list of indexed fields.\nThe field is appended with an ascending sort order.
 ScriptSqlIndex::append(ScriptSqlField field, bool desc):void \nAppends the field field to the list of indexed fields.\nThe field is appended with an ascending sort order, unless desc is true.
-ScriptSqlIndex::isDescending(int i):bool \nReturns true if field i in the index is sorted in descending order; otherwise returns false.
-ScriptSqlIndex::setDescending(int i, bool desc):void \nIf desc is true, field i is sorted in descending order.\nOtherwise, field i is sorted in ascending order (the default).\nIf the field does not exist, nothing happens.
+ScriptSqlIndex::isDescending(Number i):bool \nReturns true if field i in the index is sorted in descending order; otherwise returns false.
+ScriptSqlIndex::setDescending(Number i, bool desc):void \nIf desc is true, field i is sorted in descending order.\nOtherwise, field i is sorted in ascending order (the default).\nIf the field does not exist, nothing happens.

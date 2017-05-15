@@ -5,21 +5,21 @@ ScriptTabWidget::setBackgroundColor(String color):void \nSets the background col
 ScriptTabWidget::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptTabWidget::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptTabWidget::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptTabWidget::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-ScriptTabWidget::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptTabWidget::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptTabWidget::setToolTip(String text, Number duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptTabWidget::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptTabWidget::setFocus(void):void \nGives the keyboard input focus to this widget.
-ScriptTabWidget::width(void):int \nReturns the width of the widget excluding any window frame.
-ScriptTabWidget::height(void):int \nReturns the height of the widget excluding any window frame.
-ScriptTabWidget::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
-ScriptTabWidget::getAdditionalData(int key):String \nReturns an additional data entry.
+ScriptTabWidget::width(void):Number \nReturns the width of the widget excluding any window frame.
+ScriptTabWidget::height(void):Number \nReturns the height of the widget excluding any window frame.
+ScriptTabWidget::setAdditionalData(Number key, String data):void \nSets/stores an additional data entry.
+ScriptTabWidget::getAdditionalData(Number key):String \nReturns an additional data entry.
 ScriptTabWidget::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptTabWidget::getClassName(void):String \nReturns the class name of this object.
 ScriptTabWidget::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
 ScriptTabWidget::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
-ScriptTabWidget::setTabText(int index, String text):void \nSets the tab text.
-ScriptTabWidget::tabText(int index):String \nReturns the tab text.
-ScriptTabWidget::setCurrentIndex(int index):void \nSets the current tab index.
-ScriptTabWidget::currentIndex(void):int \nReturns the current tab index.
-ScriptTabWidget::currentTabChangedSignal.connect(int index) \nThis signal is emitted if the current tab has been changed.
+ScriptTabWidget::setTabText(Number index, String text):void \nSets the tab text.
+ScriptTabWidget::tabText(Number index):String \nReturns the tab text.
+ScriptTabWidget::setCurrentIndex(Number index):void \nSets the current tab index.
+ScriptTabWidget::currentIndex(void):Number \nReturns the current tab index.
+ScriptTabWidget::currentTabChangedSignal.connect(Number index) \nThis signal is emitted if the current tab has been changed.
 

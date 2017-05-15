@@ -5,19 +5,19 @@ ScriptRadioButton::setBackgroundColor(String color):void \nSets the background c
 ScriptRadioButton::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptRadioButton::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptRadioButton::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptRadioButton::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-ScriptRadioButton::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptRadioButton::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptRadioButton::setToolTip(String text, Number duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptRadioButton::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptRadioButton::setFocus(void):void \nGives the keyboard input focus to this widget.
-ScriptRadioButton::width(void):int \nReturns the width of the widget excluding any window frame.
-ScriptRadioButton::height(void):int \nReturns the height of the widget excluding any window frame.
-ScriptRadioButton::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
-ScriptRadioButton::getAdditionalData(int key):String \nReturns an additional data entry.
+ScriptRadioButton::width(void):Number \nReturns the width of the widget excluding any window frame.
+ScriptRadioButton::height(void):Number \nReturns the height of the widget excluding any window frame.
+ScriptRadioButton::setAdditionalData(Number key, String data):void \nSets/stores an additional data entry.
+ScriptRadioButton::getAdditionalData(Number key):String \nReturns an additional data entry.
 ScriptRadioButton::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptRadioButton::getClassName(void):String \nReturns the class name of this object.
 ScriptRadioButton::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
 ScriptRadioButton::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
-ScriptRadioButton::setText(const String text):void \nSets the radio button text.
+ScriptRadioButton::setText(String text):void \nSets the radio button text.
 ScriptRadioButton::text(void):String \nReturns the radio button text.
 ScriptRadioButton::setChecked(bool checked):void \nSets the checked state of the radio button.
 ScriptRadioButton::isChecked(void):bool \nReturns true of the radio button is checked.

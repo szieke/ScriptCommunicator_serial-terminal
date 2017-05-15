@@ -5,35 +5,35 @@ ScriptTreeWidgetItem::setBackgroundColor(String color):void \nSets the backgroun
 ScriptTreeWidgetItem::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptTreeWidgetItem::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptTreeWidgetItem::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptTreeWidgetItem::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-ScriptTreeWidgetItem::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptTreeWidgetItem::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptTreeWidgetItem::setToolTip(String text, Number duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptTreeWidgetItem::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptTreeWidgetItem::setFocus(void):void \nGives the keyboard input focus to this widget.
-ScriptTreeWidgetItem::width(void):int \nReturns the width of the widget excluding any window frame.
-ScriptTreeWidgetItem::height(void):int \nReturns the height of the widget excluding any window frame.
-ScriptTreeWidgetItem::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
-ScriptTreeWidgetItem::getAdditionalData(int key):String \nReturns an additional data entry.
+ScriptTreeWidgetItem::width(void):Number \nReturns the width of the widget excluding any window frame.
+ScriptTreeWidgetItem::height(void):Number \nReturns the height of the widget excluding any window frame.
+ScriptTreeWidgetItem::setAdditionalData(Number key, String data):void \nSets/stores an additional data entry.
+ScriptTreeWidgetItem::getAdditionalData(Number key):String \nReturns an additional data entry.
 ScriptTreeWidgetItem::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptTreeWidgetItem::getClassName(void):String \nReturns the class name of this object.
 ScriptTreeWidgetItem::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
 ScriptTreeWidgetItem::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
-ScriptTreeWidgetItem::setText(int column, String text):void \nSets the text to be displayed in the given column to the given text.
-ScriptTreeWidgetItem::text(int column):String \nReturns the text in the specified column.
-ScriptTreeWidgetItem::setItemIcon(int column, String iconFileName):void \nSets the item icon.
+ScriptTreeWidgetItem::setText(Number column, String text):void \nSets the text to be displayed in the given column to the given text.
+ScriptTreeWidgetItem::text(Number column):String \nReturns the text in the specified column.
+ScriptTreeWidgetItem::setItemIcon(Number column, String iconFileName):void \nSets the item icon.
 ScriptTreeWidgetItem::addChild(ScriptTreeWidgetItem child):void \nAppends the child item to the list of children.
-ScriptTreeWidgetItem::childCount(void):int \nReturns the number of child items.
-ScriptTreeWidgetItem::insertChild (int index, ScriptTreeWidgetItem child):void \nInserts the child item at index in the list of children.\nIf the child has already been inserted somewhere else it won't be inserted again.
-ScriptTreeWidgetItem::takeChild (int index):ScriptTreeWidgetItem \nRemoves the item at index and returns it, otherwise return null.
+ScriptTreeWidgetItem::childCount(void):Number \nReturns the number of child items.
+ScriptTreeWidgetItem::insertChild (Number index, ScriptTreeWidgetItem child):void \nInserts the child item at index in the list of children.\nIf the child has already been inserted somewhere else it won't be inserted again.
+ScriptTreeWidgetItem::takeChild (Number index):ScriptTreeWidgetItem \nRemoves the item at index and returns it, otherwise return null.
 ScriptTreeWidgetItem::deleteItem(void):void \nDeletes the current item.
-ScriptTreeWidgetItem::indexOfChild(ScriptTreeWidgetItem child):int \nReturns the index of the given child in the item's list of children.
-ScriptTreeWidgetItem::sortChildren(int column, bool ascendingOrder):void \nSorts the children of the item using the given order(true=AscendingOrder,\nfalse=DescendingOrder) by the values in the given column.
+ScriptTreeWidgetItem::indexOfChild(ScriptTreeWidgetItem child):Number \nReturns the index of the given child in the item's list of children.
+ScriptTreeWidgetItem::sortChildren(Number column, bool ascendingOrder):void \nSorts the children of the item using the given order(true=AscendingOrder,\nfalse=DescendingOrder) by the values in the given column.
 ScriptTreeWidgetItem::parent (void):ScriptTreeWidgetItem \nReturns the item's parent.
-ScriptTreeWidgetItem::columnCount(void):int \nReturns the number of columns in the item.
-ScriptTreeWidgetItem::setBackgroundColor(int column, String color):void \nSets the background color of the label in the given column to the specified color.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptTreeWidgetItem::setForegroundColor(int column, String color):void \nSets the foreground color of the label in the given column to the specified color.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptTreeWidgetItem::columnCount(void):Number \nReturns the number of columns in the item.
+ScriptTreeWidgetItem::setBackgroundColor(Number column, String color):void \nSets the background color of the label in the given column to the specified color.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptTreeWidgetItem::setForegroundColor(Number column, String color):void \nSets the foreground color of the label in the given column to the specified color.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptTreeWidgetItem::isExpanded(void):bool \nReturns true if the item is expanded, otherwise returns false.
 ScriptTreeWidgetItem::setExpanded(bool expand):void \nExpands the item if expand is true, otherwise collapses the item.
-ScriptTreeWidgetItem::setData (int column, quint8 role, String value):void \nSets the value for the item's column and role to the given value.\nThe role describes the type of data specified by value.
-ScriptTreeWidgetItem::data(int column, quint8 role):String \nReturns the value for the item's column and role to the given value.\nThe role describes the type of data specified by value.
+ScriptTreeWidgetItem::setData (Number column, Number role, String value):void \nSets the value for the item's column and role to the given value.\nThe role describes the type of data specified by value.
+ScriptTreeWidgetItem::data(Number column, Number role):String \nReturns the value for the item's column and role to the given value.\nThe role describes the type of data specified by value.
 ScriptTreeWidgetItem::setDisabled(bool disabled):void \nDisables the item if disabled is true; otherwise enables the item.
 ScriptTreeWidgetItem::isDisabled(void):bool \nReturns true if the item is disabled; otherwise returns false.

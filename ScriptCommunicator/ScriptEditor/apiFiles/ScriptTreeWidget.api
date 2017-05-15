@@ -5,38 +5,38 @@ ScriptTreeWidget::setBackgroundColor(String color):void \nSets the background co
 ScriptTreeWidget::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptTreeWidget::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
 ScriptTreeWidget::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptTreeWidget::setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
-ScriptTreeWidget::setToolTip(String text, int duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
+ScriptTreeWidget::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptTreeWidget::setToolTip(String text, Number duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptTreeWidget::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptTreeWidget::setFocus(void):void \nGives the keyboard input focus to this widget.
-ScriptTreeWidget::width(void):int \nReturns the width of the widget excluding any window frame.
-ScriptTreeWidget::height(void):int \nReturns the height of the widget excluding any window frame.
-ScriptTreeWidget::setAdditionalData(int key, String data):void \nSets/stores an additional data entry.
-ScriptTreeWidget::getAdditionalData(int key):String \nReturns an additional data entry.
+ScriptTreeWidget::width(void):Number \nReturns the width of the widget excluding any window frame.
+ScriptTreeWidget::height(void):Number \nReturns the height of the widget excluding any window frame.
+ScriptTreeWidget::setAdditionalData(Number key, String data):void \nSets/stores an additional data entry.
+ScriptTreeWidget::getAdditionalData(Number key):String \nReturns an additional data entry.
 ScriptTreeWidget::blockSignals(bool block):bool \nIf block is true, signals emitted by this object are blocked\n(i.e., emitting a signal will not invoke anything connected to it).\nIf block is false, no such blocking will occur.\nThe return value is the previous value of the blocking state.
 ScriptTreeWidget::getClassName(void):String \nReturns the class name of this object.
 ScriptTreeWidget::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
 ScriptTreeWidget::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
 ScriptTreeWidget::createScriptTreeWidgetItem(void):ScriptTreeWidgetItem \nCreates a script tree widget item.
 ScriptTreeWidget::setHeaderLabels(Array<String> labels):void \nAdds a column in the header for each item in the labels list, and sets the label for each column.\nNote that setHeaderLabels() won't remove existing columns.
-ScriptTreeWidget::setColumnWidth(int column, int size):void \nSets the width of a column.
-ScriptTreeWidget::getColumnWidth(int column):int \nReturns the width of a column.
+ScriptTreeWidget::setColumnWidth(Number column, Number size):void \nSets the width of a column.
+ScriptTreeWidget::getColumnWidth(Number column):Number \nReturns the width of a column.
 ScriptTreeWidget::addTopLevelItem(ScriptTreeWidgetItem item):void \nAppends the item as a top-level item in the widget.
-ScriptTreeWidget::insertTopLevelItem (int index, ScriptTreeWidgetItem item):void \nInserts the item at index in the top level in the view.\nIf the item has already been inserted somewhere else it won't be inserted.
-ScriptTreeWidget::topLevelItemCount(void):int \nReturns the number of top level items.
+ScriptTreeWidget::insertTopLevelItem (Number index, ScriptTreeWidgetItem item):void \nInserts the item at index in the top level in the view.\nIf the item has already been inserted somewhere else it won't be inserted.
+ScriptTreeWidget::topLevelItemCount(void):Number \nReturns the number of top level items.
 ScriptTreeWidget::invisibleRootItem(void):ScriptTreeWidgetItem \nReturns the tree widget's invisible root item.\nThe invisible root item provides access to the tree widget's top-level items through\nthe ScriptTreeWidgetItem API, making it possible to write functions that can treat top-level\nitems and their children in a uniform way; for example, recursive functions.
 ScriptTreeWidget::itemAbove(ScriptTreeWidgetItem item):ScriptTreeWidgetItem \nReturns the item above the given item.\nIf to item is above then it returns null.
 ScriptTreeWidget::itemBelow(ScriptTreeWidgetItem item):ScriptTreeWidgetItem \nReturns the item below the given item.\nIf to item is below then it returns null.
-ScriptTreeWidget::takeTopLevelItem(int index):ScriptTreeWidgetItem \nRemoves the top-level item at the given index in the tree and returns it, otherwise returns null.
-ScriptTreeWidget::topLevelItem(int index):ScriptTreeWidgetItem \nReturns the top level item at the given index, or null if the item does not exist.
-ScriptTreeWidget::resizeColumnToContents(int column):void \nResizes the column given to the size of its contents.
-ScriptTreeWidget::columnCount(void):int \nReturns the number of columns displayed in the tree widget.
-ScriptTreeWidget::setColumnCount(int columns):void \nSets the number of columns displayed in the tree widget.
+ScriptTreeWidget::takeTopLevelItem(Number index):ScriptTreeWidgetItem \nRemoves the top-level item at the given index in the tree and returns it, otherwise returns null.
+ScriptTreeWidget::topLevelItem(Number index):ScriptTreeWidgetItem \nReturns the top level item at the given index, or null if the item does not exist.
+ScriptTreeWidget::resizeColumnToContents(Number column):void \nResizes the column given to the size of its contents.
+ScriptTreeWidget::columnCount(void):Number \nReturns the number of columns displayed in the tree widget.
+ScriptTreeWidget::setColumnCount(Number columns):void \nSets the number of columns displayed in the tree widget.
 ScriptTreeWidget::expandItem(ScriptTreeWidgetItem item):void \nExpands the item. This causes the tree containing the item's children to be expanded.
 ScriptTreeWidget::expandAll(void):void \nExpands all expandable items.
 ScriptTreeWidget::setCurrentItem (ScriptTreeWidgetItem item):void \nSets the current item in the tree widget.
 ScriptTreeWidget::currentItem(void):ScriptTreeWidgetItem \nReturns current item in the tree widget.
-ScriptTreeWidget::sortItems(int column, bool ascendingOrder=true):void \nSorts the items in the widget in the specified order(true=AscendingOrder,\nfalse=DescendingOrder) by the values in the given column.
+ScriptTreeWidget::sortItems(Number column, bool ascendingOrder=true):void \nSorts the items in the widget in the specified order(true=AscendingOrder,\nfalse=DescendingOrder) by the values in the given column.
 ScriptTreeWidget::currentItemChangedSignal.connect(ScriptTreeWidgetItem current, ScriptTreeWidgetItem previous) \nThis signal is emitted if the current item changes. The current item is specified by current, and this replaces the previous current item.
-ScriptTreeWidget::itemClickedSignal.connect(ScriptTreeWidgetItem item, int column) \nThis signal is emitted if an item has been clicked.
-ScriptTreeWidget::itemDoubleClickedSignal.connect(ScriptTreeWidgetItem item, int column) \nThis signal is emitted if an item has been double clicked.
+ScriptTreeWidget::itemClickedSignal.connect(ScriptTreeWidgetItem item, Number column) \nThis signal is emitted if an item has been clicked.
+ScriptTreeWidget::itemDoubleClickedSignal.connect(ScriptTreeWidgetItem item, Number column) \nThis signal is emitted if an item has been Number clicked.

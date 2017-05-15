@@ -1,0 +1,5 @@
+Number::toString(radix):String \nReturns a string representing the specified Number object. \nradix: Optional. An integer between 2 and 36 specifying the base to use for representing numeric values.
+Number::toLocaleString():String \nReturns a string with a language sensitive representation of this number.
+Number::toFixed(fractionDigits):String \nFormats a number using fixed-point notation. \nfractionDiagits: Optional. The number of digits to appear after the decimal point; this may be a value between 0 and 20, inclusive, and implementations may optionally support a larger range of values.\nIf this argument is omitted, it is treated as 0.
+Number::toExponential(fractionDigits):String \nReturns a string representing the Number object in exponential notation.\nfractionDigits: Optional. An integer specifying the number of digits after the decimal point.\Defaults to as many digits as necessary to specify the number.
+Number::toPrecision(precision):String \nReturns a string representing the Number object to the specified precision.\nprecision: Optional. An integer specifying the number of significant digits.

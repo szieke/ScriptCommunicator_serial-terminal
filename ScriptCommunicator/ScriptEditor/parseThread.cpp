@@ -64,6 +64,10 @@ void ParseThread::parseSingleLineForFunctionsWithResultObjects(QString singleLin
                 {
                     element.resultType = "String";
                 }
+                else if(element.resultType.startsWith("Array<Number>"))
+                {
+                    element.resultType = "Number";
+                }
                 else if(element.resultType.startsWith("Array<ScriptXmlAttribute>"))
                 {
                     element.resultType = "ScriptXmlAttribute";
@@ -80,6 +84,8 @@ void ParseThread::parseSingleLineForFunctionsWithResultObjects(QString singleLin
             else
             {
                 if(element.resultType.startsWith("String") ||
+                   element.resultType.startsWith("Number") ||
+                   element.resultType.startsWith("Date") ||
                    element.resultType.startsWith("ScriptSqlField") ||
                    element.resultType.startsWith("ScriptSqlRecord") ||
                    element.resultType.startsWith("ScriptSqlError") ||
@@ -1072,7 +1078,7 @@ static void getTypeFromNode(esprima::Node* node, ParsedEntry& subEntry)
     esprima::BooleanLiteral* boolLiteral = dynamic_cast<esprima::BooleanLiteral*>(node);
     if(boolLiteral)
     {
-        subEntry.valueType = "Bool";
+        subEntry.valueType = "bool";
     }
     esprima::NewExpression* newExp = dynamic_cast<esprima::NewExpression*>(node);
     if(newExp)
@@ -1473,7 +1479,7 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
     }
     else
     {
-        if(m_functionsWithResultObjects.contains(entry.valueType))
+        if (m_autoCompletionApiFiles.contains(entry.valueType + ".api"))
         {
             addObjectToAutoCompletionList(entry.completeName, entry.valueType, false);
         }

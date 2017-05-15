@@ -1,3 +1,3 @@
-ScriptXmlReader::readFile(String fileName, bool isRelativePath=true):qint32 \nReads and parses a xml file. The parsed xml file is stored internally.
+ScriptXmlReader::readFile(String fileName, bool isRelativePath=true):Number \nReads and parses a xml file. The parsed xml file is stored internally.
 ScriptXmlReader::elementsByTagName(String name):Array<ScriptXmlElement> \nReturns a list containing all xml elements with the name 'name'.\nNote: The xml root element is not included.
 ScriptXmlReader::getRootElement(void):ScriptXmlElement \nReturns the root xml element.
