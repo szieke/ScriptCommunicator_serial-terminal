@@ -1022,6 +1022,7 @@ static void getTypeFromMemberExpression(esprima::MemberExpression* memExpression
         if(id)
         {
             subEntry.valueType += QString(".") + id->name.c_str();
+
         }
     }
 
@@ -1046,12 +1047,6 @@ static void getTypeFromCallExpression(esprima::CallExpression* callExpression, P
     {
         subEntry.valueType = id->name.c_str();
 
-        if((subEntry.valueType != "String") && (subEntry.valueType != "Date") &&
-           (subEntry.valueType != "Array") && (subEntry.valueType != "Number"))
-        {
-            subEntry.valueType = "";
-        }
-
         if(subEntry.valueType == "Array")
         {
             if(callExpression->arguments.size() > 0)
@@ -1069,12 +1064,23 @@ static void getTypeFromCallExpression(esprima::CallExpression* callExpression, P
                 }
             }
         }
+        else
+        {
+            if(!subEntry.valueType.endsWith("()"))
+            {
+                subEntry.valueType+= "()";
+            }
+        }
     }
 
     esprima::MemberExpression* memExpression = dynamic_cast<esprima::MemberExpression*>(callExpression->callee);
     if(memExpression)
     {
         getTypeFromMemberExpression(memExpression, subEntry);
+        if(!subEntry.valueType.endsWith("()"))
+        {
+            subEntry.valueType+= "()";
+        }
 
     }
 }
@@ -1486,6 +1492,8 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
 
         if(m_functionsWithResultObjects.contains(split[0]))
         {
+            split[1].replace("()", "");
+
             for(int i = 0; i < m_functionsWithResultObjects[split[0]].size(); i++)
             {
                 if((m_functionsWithResultObjects[split[0]][i].functionName == (split[1] + "(")) ||
@@ -1538,12 +1546,14 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
             }
             else
             {
-                valueType = "Dummy";
+                valueType = "Array";
+                isArray = false;
             }
         }
 
         if (m_autoCompletionApiFiles.contains(valueType + ".api"))
         {
+
             addObjectToAutoCompletionList(entry.completeName, valueType, false, isArray);
         }
         else if (m_creatorObjects.contains(entry.valueType))
@@ -1749,6 +1759,8 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
 
     }//while (iter != loadedScripts.constEnd())
 
+
+    QMap<QString, QString> parsedTypes;
     for(int i = 0; i < result.size(); i++)
     {
         //Add the prototyp function to their correspondig objects/classes and
@@ -1789,22 +1801,26 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                         //Add the current variable to the autocompletion list.
                         addParsedEntiresToAutoCompletionList(result[i][j], m_autoCompletionEntries, "", result[i][j].name);
                     }
+
+                    result[i][j].valueType = result[i][j].params[0];
+
                 }
             }
         }
 
-        QMap<QString, QString> parsedTypes;
         for(auto el : result[i])
         {
             getAllParsedTypes(parsedTypes, el, "");
         }
+    }
 
-        bool entryChanged = false;
 
-        do
+    bool entryChanged = false;
+    do
+    {
+        entryChanged = false;
+        for(int i = 0; i < result.size(); i++)
         {
-            entryChanged = false;
-
             for(int j = 0; j < result[i].size(); j++)
             {
                 if(replaceAllParsedTypes(parsedTypes, result[i][j], ""))
@@ -1812,8 +1828,9 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                     entryChanged = true;
                 }
             }
-        }while(entryChanged);
-    }
+        }
+    }while(entryChanged);
+
     return result;
 }
 /**

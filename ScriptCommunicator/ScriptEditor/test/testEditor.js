@@ -12,6 +12,8 @@ var testArray1 = Array("ww", "ee");
 var testArray2 = ["ww", "ee"];
 var testArray3= Array(1, 2);
 var testArray4 = [1, 2];
+var testArray5 = scriptFile.readBinaryFile("path");
+
 
 var test5= "";
 
@@ -27,6 +29,4 @@ var string = classVar.testString;
 
 var date2 = classVar.testDate2;
 
-
-
-
+var mapVar = classSingelton1.testMap;

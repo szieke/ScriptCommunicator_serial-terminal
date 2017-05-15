@@ -1,7 +1,8 @@
 ﻿var map3 = {
 "HST" : {
         baudrate : HST_BAUDRATE,
-        send : scriptThread.stringToArray("HST\n"),
+		send : scriptThread.getAllObjectPropertiesAndFunctions("HST\n"),
+        unknown : obj.testFunc("dd"),
 		send2 : [ 60, 35, 83],
     },
 	

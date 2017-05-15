@@ -481,20 +481,20 @@ void QsciAPIs::updateAutoCompletionList(const QStringList &context,
             if(with_context.isEmpty())
             {
 
-                if(new_context.size() == 4)
+                if(new_context.size() >= 3)
                 {
-                    lastCompleteWord(new_context[1], with_context, unambig);
+                    lastCompleteWord(new_context[new_context.size() - 3], with_context, unambig);
 
-                    if(!with_context.isEmpty())
+                    if(!with_context.isEmpty() && apiSearchString.contains("["))
                     {
-                        apiSearchString.remove("::" + new_context[2]);
+                        apiSearchString.remove("::" + new_context[new_context.size() - 2]);
                     }
                 }
 
                 if(with_context.isEmpty())
                 {
-                    apiSearchString = new_context[0];
-                    lastCompleteWord(new_context[0], with_context, unambig);
+                    apiSearchString = new_context[new_context.size() - 2];
+                    lastCompleteWord(new_context[new_context.size() - 2], with_context, unambig);
                 }
 
             }
