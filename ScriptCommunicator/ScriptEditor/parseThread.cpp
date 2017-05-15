@@ -1051,6 +1051,24 @@ static void getTypeFromCallExpression(esprima::CallExpression* callExpression, P
         {
             subEntry.valueType = "";
         }
+
+        if(subEntry.valueType == "Array")
+        {
+            if(callExpression->arguments.size() > 0)
+            {
+                esprima::StringLiteral* strLiteral = dynamic_cast<esprima::StringLiteral*>(callExpression->arguments[0]);
+                if(strLiteral)
+                {
+                    subEntry.valueType = "Array<String>";
+                }
+
+                esprima::NumericLiteral* numLiteral = dynamic_cast<esprima::NumericLiteral*>(callExpression->arguments[0]);
+                if(numLiteral)
+                {
+                    subEntry.valueType = "Array<Number>";
+                }
+            }
+        }
     }
 
     esprima::MemberExpression* memExpression = dynamic_cast<esprima::MemberExpression*>(callExpression->callee);
@@ -1113,6 +1131,22 @@ static void getTypeFromNode(esprima::Node* node, ParsedEntry& subEntry)
     if(arrayExp)
     {
         subEntry.valueType = "Array";
+
+        if(arrayExp->elements.size() > 0)
+        {
+            esprima::StringLiteral* strLiteral = dynamic_cast<esprima::StringLiteral*>(arrayExp->elements[0]);
+            if(strLiteral)
+            {
+                subEntry.valueType = "Array<String>";
+            }
+
+            esprima::NumericLiteral* numLiteral = dynamic_cast<esprima::NumericLiteral*>(arrayExp->elements[0]);
+            if(numLiteral)
+            {
+                subEntry.valueType = "Array<Number>";
+            }
+        }
+
     }
 
 
@@ -1479,14 +1513,43 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
     }
     else
     {
-        if (m_autoCompletionApiFiles.contains(entry.valueType + ".api"))
+        QString valueType = entry.valueType;
+        bool isArray = false;
+
+        if(entry.valueType.startsWith("Array"))
         {
-            addObjectToAutoCompletionList(entry.completeName, entry.valueType, false);
+            isArray = true;
+
+            if(entry.valueType.startsWith("Array<String>"))
+            {
+                valueType = "String";
+            }
+            else if(entry.valueType.startsWith("Array<Number>"))
+            {
+                valueType = "Number";
+            }
+            else if(entry.valueType.startsWith("Array<ScriptXmlAttribute>"))
+            {
+                valueType = "ScriptXmlAttribute";
+            }
+            else if(entry.valueType.startsWith("Array<ScriptXmlElement>"))
+            {
+                valueType = "ScriptXmlElement";
+            }
+            else
+            {
+                valueType = "Dummy";
+            }
+        }
+
+        if (m_autoCompletionApiFiles.contains(valueType + ".api"))
+        {
+            addObjectToAutoCompletionList(entry.completeName, valueType, false, isArray);
         }
         else if (m_creatorObjects.contains(entry.valueType))
         {
-            addObjectToAutoCompletionList(entry.completeName, m_creatorObjects[entry.valueType], false);
-            entry.valueType = m_creatorObjects[entry.valueType];
+            addObjectToAutoCompletionList(entry.completeName, m_creatorObjects[valueType], false, isArray);
+            entry.valueType = m_creatorObjects[valueType];
             entryChanged = true;
         }
     }
@@ -1515,13 +1578,13 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
     QMap<int,QVector<ParsedEntry>> result;
 
     QMap<int, QString>::const_iterator iter = loadedScripts.constBegin();
+    QMap<QString, QVector<ParsedEntry>> prototypeFunctionsSingleFile;
+    QMap<QString, ParsedEntry> objects;
 
     //Parse all files.
     while (iter != loadedScripts.constEnd())
     {
         QVector<ParsedEntry> fileResult;
-        QMap<QString, QVector<ParsedEntry>> prototypeFunctionsSingleFile;
-        QMap<QString, ParsedEntry> objects;
         esprima::Pool pool;
         esprima::Program *program = NULL;
         try
@@ -1676,51 +1739,62 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
 
 
 
+        if(!fileResult.isEmpty())
+        {
+            //Add the result for the current file to the result list.
+            result[iter.key()] = fileResult;
+        }
+
+        iter++;
+
+    }//while (iter != loadedScripts.constEnd())
+
+    for(int i = 0; i < result.size(); i++)
+    {
         //Add the prototyp function to their correspondig objects/classes and
         //add the parsed entries to the autocompletion list.
-        for(int j = 0; j < fileResult.size(); j++)
+        for(int j = 0; j < result[i].size(); j++)
         {
 
-            if(prototypeFunctionsSingleFile.contains(fileResult[j].name))
+            if(prototypeFunctionsSingleFile.contains(result[i][j].name))
             {//The current object/class has prototype functions.
 
                 //Add the prototyp function to the current objects/classes
-                for (auto member : prototypeFunctionsSingleFile[fileResult[j].name])
+                for (auto member : prototypeFunctionsSingleFile[result[i][j].name])
                 {
-                    fileResult[j].subElements.append(member);
+                    result[i][j].subElements.append(member);
                 }
             }
 
             //Remove the prototype functions.
-            prototypeFunctionsSingleFile.remove(fileResult[j].name);
+            prototypeFunctionsSingleFile.remove(result[i][j].name);
 
-            if(fileResult[j].type != PARSED_ENTRY_TYPE_VAR)
+            if(result[i][j].type != PARSED_ENTRY_TYPE_VAR)
             {
                 //Add the parsed entries to the autocompletion list.
-                addParsedEntiresToAutoCompletionList(fileResult[j], m_autoCompletionEntries, "", fileResult[j].name);
+                addParsedEntiresToAutoCompletionList(result[i][j], m_autoCompletionEntries, "", result[i][j].name);
             }
             else
             {
-                if(!fileResult[j].params.isEmpty())
+                if(!result[i][j].params.isEmpty())
                 {//The the declaration of the current variable has an assignement of another variable/object
                  //e.g. var map2 = map1;
 
-                    if(objects.contains(fileResult[j].params[0]))
+                    if(objects.contains(result[i][j].params[0]))
                     {//The assigned object is in the objects list.
 
                         //Add all subelements of the assigned variable/object to the current variable.
-                        fileResult[j].subElements = objects[fileResult[j].params[0]].subElements;
+                        result[i][j].subElements = objects[result[i][j].params[0]].subElements;
 
                         //Add the current variable to the autocompletion list.
-                        addParsedEntiresToAutoCompletionList(fileResult[j], m_autoCompletionEntries, "", fileResult[j].name);
+                        addParsedEntiresToAutoCompletionList(result[i][j], m_autoCompletionEntries, "", result[i][j].name);
                     }
                 }
             }
         }
 
-
         QMap<QString, QString> parsedTypes;
-        for(auto el : fileResult)
+        for(auto el : result[i])
         {
             getAllParsedTypes(parsedTypes, el, "");
         }
@@ -1731,24 +1805,15 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
         {
             entryChanged = false;
 
-            for(int j = 0; j < fileResult.size(); j++)
+            for(int j = 0; j < result[i].size(); j++)
             {
-                if(replaceAllParsedTypes(parsedTypes, fileResult[j], ""))
+                if(replaceAllParsedTypes(parsedTypes, result[i][j], ""))
                 {
                     entryChanged = true;
                 }
             }
         }while(entryChanged);
-
-        if(!fileResult.isEmpty())
-        {
-            //Add the result for the current file to the result list.
-            result[iter.key()] = fileResult;
-        }
-
-        iter++;
-
-    }//while (iter != loadedScripts.constEnd())
+    }
     return result;
 }
 /**
