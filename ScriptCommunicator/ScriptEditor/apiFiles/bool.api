@@ -1,0 +1,2 @@
+bool::toString(radix):String \nReturns a boolean value as a string.
+bool::valueOf():bool \nReturns the primitive value of a Boolean object:

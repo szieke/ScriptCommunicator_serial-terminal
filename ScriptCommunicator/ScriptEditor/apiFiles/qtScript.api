@@ -35,3 +35,6 @@ Math::round(x):Number \Returns the value of a number rounded to the nearest inte
 Math::sin(x):Number \nReturns the sine of a number.
 Math::sqrt(x):Number \nReturns the square root of a number.
 Math::tan(x):Number \nReturns the tangent of a number.
+RegExp::exec(string):Array<String> \nReturns an array of captured texts.
+RegExp::test(string):bool \nTests for a match in a string. Returns true if it finds a match, otherwise it returns false.
+RegExp::toString():String \nReturns a string representing the given object.

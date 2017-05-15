@@ -277,6 +277,7 @@ void MainWindow::indicatorClickTimerSlot()
 {
     m_indicatorClickTimer.stop();
     handleDoubleClicksInEditor(m_lastIndicatorClickPosition, 0, m_ctrlIsPressed ? QsciScintillaBase::SCMOD_CTRL : QsciScintillaBase:: SCMOD_NORM);
+
 }
 
 /**
@@ -337,6 +338,24 @@ void MainWindow::mouseMoveTimerSlot()
                   }
 
                   ++iter;
+                }
+
+                if(!wordIsInOutline)
+                {
+                    QTreeWidgetItemIterator iter(ui->uiTreeWidget);
+                    while (*iter)
+                    {
+                        bool isOk = false;
+                        ParsedUiObject* entry  = (ParsedUiObject*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
+
+                      if ("UI_" + entry->objectName == completeWord)
+                      {
+                          wordIsInOutline = true;
+                          break;
+                      }
+
+                      ++iter;
+                    }
                 }
 
                 if(wordIsInOutline)
@@ -472,7 +491,7 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
             bool isOk = false;
             ParsedEntry* entry  = (ParsedEntry*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
 
-            //The double clicked word is in teh scripts outline.
+            //The double clicked word is in the scripts outline.
             if (entry->completeName == text)
             {
                 functionListDoubleClicked((*iter), 0);
@@ -497,6 +516,24 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
                 //Scroll to the found item.
                 ui->outlineTreeWidget->scrollToItem((*iter));
               break;
+            }
+            else
+            {
+                QTreeWidgetItemIterator iter(ui->uiTreeWidget);
+                while (*iter)
+                {
+                    bool isOk = false;
+                    ParsedUiObject* entry  = (ParsedUiObject*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
+
+                  if ("UI_" + entry->objectName == text)
+                  {
+                      uiViewDoubleClicked((*iter), 0);
+                      break;
+                  }
+
+                  ++iter;
+                }
+
             }
 
           ++iter;
@@ -1737,6 +1774,8 @@ void MainWindow::uiViewDoubleClicked(QTreeWidgetItem* item, int column)
         //Check of entry is valid.
         if((entry != 0) && !entry->objectName.isEmpty())
         {
+            clearCurrentIndicator();
+
             int index = 0;
             if(!checkIfDocumentAlreadyLoaded(entry->uiFile, index))
             {//The ui file is not already loaded.
@@ -1768,7 +1807,6 @@ void MainWindow::uiViewDoubleClicked(QTreeWidgetItem* item, int column)
                     textEditor->ensureLineVisible(foundLine);
                 }
 
-                clearCurrentIndicator();
                 ui->documentsTabWidget->setCurrentIndex(index);
                 textEditor->setFocus();
             }
