@@ -14,7 +14,9 @@ function Class(arg0)
 	var testTimer = scriptThread.createTimer();
 	var testDate1 = Date();
 	var testDate2 = new Date();
+	var testClassArray = [33, 55];
 	
+	//testClassArray. Autocompletion geht an dieser Stelle nicht.
 	
 	var reset = function(arg1)
     {

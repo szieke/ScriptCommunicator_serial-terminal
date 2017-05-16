@@ -51,6 +51,7 @@ typedef struct ParsedEntry ParsedEntry;
 struct ParsedEntry
 {
     int line;//The line number.
+    int endLine;//The end line.
     int column;//The column.
     QString name;//The entry name.
     QString completeName;//The complete name (inkludes the parents).

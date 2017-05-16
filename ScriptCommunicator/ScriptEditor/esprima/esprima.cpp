@@ -3281,9 +3281,12 @@ struct EsprimaParser {
 
         template <typename T>
         T *close(T *node) {
+
             if (node->loc == NULL) {
                 marker->apply(node);
             }
+
+            marker->end();
 
             parser.visitBinary(node);
 

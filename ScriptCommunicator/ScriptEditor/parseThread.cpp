@@ -1188,8 +1188,9 @@ static void parseEsprimaObjectExpression(esprima::ObjectExpression* objExp, Pars
         esprima::StringLiteral* literal = dynamic_cast<esprima::StringLiteral*>(objExp->properties[j]->key);
 
         ParsedEntry subEntry;
-        subEntry.line = objExp->loc->start->line - 1;
-        subEntry.column = objExp->loc->start->column;
+        subEntry.line = objExp->properties[j]->loc->start->line - 1;
+        subEntry.column = objExp->properties[j]->loc->start->column;
+        subEntry.endLine = objExp->properties[j]->loc->end->line - 1;
         if(id)
         {
             subEntry.name = id->name.c_str();
@@ -1258,8 +1259,10 @@ static void parseEsprimaObjectExpression(esprima::ObjectExpression* objExp, Pars
 static void parseEsprimaFunctionDeclaration(esprima::FunctionDeclaration* function, ParsedEntry* entry, int tabIndex)
 {
 
-    entry->line = function->id->loc->start->line - 1;
-    entry->column = function->id->loc->start->column;
+    entry->line = function->body->loc->start->line - 1;
+    entry->column = function->body->loc->start->column;
+    entry->endLine = function->body->loc->end->line - 1;
+
     entry->name = function->id->name.c_str();
     entry->type = PARSED_ENTRY_TYPE_FUNCTION;
     entry->tabIndex = tabIndex;
@@ -1277,9 +1280,11 @@ static void parseEsprimaFunctionDeclaration(esprima::FunctionDeclaration* functi
         esprima::VariableDeclaration* subVarDecl = dynamic_cast<esprima::VariableDeclaration*>(function->body->body[j]);
         if(subVarDecl)
         {
-            subEntry.line = subVarDecl->loc->start->line - 1;
-            subEntry.column = subVarDecl->loc->start->column;
+
+            subEntry.line = subVarDecl->declarations[0]->loc->start->line - 1;
+            subEntry.column = subVarDecl->declarations[0]->loc->start->column;
             subEntry.name = subVarDecl->declarations[0]->id->name.c_str();
+            subEntry.endLine = subVarDecl->declarations[0]->loc->end->line - 1;
             subEntry.params = QStringList();
             subEntry.tabIndex = tabIndex;
 
@@ -1316,8 +1321,9 @@ static void parseEsprimaFunctionDeclaration(esprima::FunctionDeclaration* functi
                         esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(memExp->property);
                         if(funcExp && memExp && id)
                         {
-                            subEntry.line = memExp->loc->start->line - 1;
-                            subEntry.column = memExp->loc->start->column;
+                            subEntry.line = assignmentStatement->loc->start->line - 1;
+                            subEntry.column = assignmentStatement->loc->start->column;
+                            subEntry.endLine = assignmentStatement->loc->end->line - 1;
                             subEntry.name = id->name.c_str();
                             subEntry.type = PARSED_ENTRY_TYPE_CLASS_THIS_FUNCTION;
                             subEntry.params = QStringList();
@@ -1359,6 +1365,7 @@ static void parseEsprimaNewExpression(esprima::NewExpression* newExp, ParsedEntr
             {
                 subEntry.line = subVarDecl->loc->start->line - 1;
                 subEntry.column = subVarDecl->loc->start->column;
+                subEntry.endLine = subVarDecl->loc->end->line - 1;
                 subEntry.name = subVarDecl->declarations[0]->id->name.c_str();
                 subEntry.params = QStringList();
                 subEntry.tabIndex = tabIndex;
@@ -1408,8 +1415,9 @@ static void parseEsprimaNewExpression(esprima::NewExpression* newExp, ParsedEntr
                         esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(memExp->property);
                         if(funcExp && memExp && id)
                         {
-                            subEntry.line = memExp->loc->start->line - 1;
-                            subEntry.column = memExp->loc->start->column;
+                            subEntry.line = assignmentStatement->loc->start->line - 1;
+                            subEntry.column = assignmentStatement->loc->start->column;
+                            subEntry.endLine = assignmentStatement->loc->start->line - 1;
                             subEntry.name = id->name.c_str();
                             subEntry.type = PARSED_ENTRY_TYPE_CLASS_THIS_FUNCTION;
                             subEntry.params = QStringList();
@@ -1621,9 +1629,10 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
             esprima::VariableDeclaration* varDecl = dynamic_cast<esprima::VariableDeclaration*>(program->body[i]);
             if(varDecl)
             {
-                entry.line = varDecl->loc->start->line - 1;
-                entry.column = varDecl->loc->start->column;
+                entry.line = varDecl->declarations[0]->loc->start->line - 1;
+                entry.column = varDecl->declarations[0]->loc->start->column;
                 entry.name = varDecl->declarations[0]->id->name.c_str();
+                entry.endLine = varDecl->declarations[0]->loc->end->line - 1;
                 entry.completeName = entry.name;
                 entry.params = QStringList();
                 entry.tabIndex = iter.key();
@@ -1721,8 +1730,9 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                                     {//Prototyp function
 
                                         ParsedEntry prot;
-                                        prot.line = left->loc->start->line -1;
-                                        prot.column = left->loc->start->column;
+                                        prot.line = assExp->loc->start->line -1;
+                                        prot.column = assExp->loc->start->column;
+                                        prot.endLine = assExp->loc->end->line -1;
                                         prot.name = property->name.c_str();
                                         prot.params = QStringList();
                                         prot.tabIndex = iter.key();
