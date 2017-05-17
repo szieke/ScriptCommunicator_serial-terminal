@@ -946,6 +946,123 @@ void ParseThread::parseTableWidetInsert(const QString objectName, QStringList li
     }
 }
 
+
+static void parseEsprimaObjectExpression(esprima::ObjectExpression* objExp, ParsedEntry* parent, int tabIndex,
+                                         QMap<QString, ParsedEntry>* objects = NULL);
+
+static void getTypeFromNode(esprima::Node* node, ParsedEntry& subEntry);
+static void parseEsprimaFunctionDeclaration(esprima::FunctionDeclaration* function, ParsedEntry* entry, int tabIndex,
+                                            QMap<QString, ParsedEntry>* objects = NULL);
+
+static void parseEsprimaFunctionExpression(esprima::FunctionExpression* funcExp, ParsedEntry* parent, int tabIndex,
+                                           QMap<QString, ParsedEntry>* objects = NULL)
+{
+    for(int j = 0; j < funcExp->body->body.size(); j++)
+    {
+        ParsedEntry subEntry;
+
+        esprima::VariableDeclaration* subVarDecl = dynamic_cast<esprima::VariableDeclaration*>(funcExp->body->body[j]);
+        if(subVarDecl)
+        {
+            subEntry.line = subVarDecl->declarations[0]->loc->start->line - 1;
+            subEntry.column = subVarDecl->declarations[0]->loc->start->column;
+            subEntry.endLine = subVarDecl->declarations[0]->loc->end->line - 1;
+            subEntry.name = subVarDecl->declarations[0]->id->name.c_str();
+            subEntry.params = QStringList();
+            subEntry.tabIndex = tabIndex;
+            subEntry.completeName = parent->name.isEmpty() ? subEntry.name : parent->completeName + "." + subEntry.name;
+
+            esprima::FunctionExpression* funcExp = dynamic_cast<esprima::FunctionExpression*>(subVarDecl->declarations[0]->init);
+            esprima::ObjectExpression* objExp = dynamic_cast<esprima::ObjectExpression*>(subVarDecl->declarations[0]->init);
+            if(funcExp)
+            {//Function
+
+                subEntry.type = PARSED_ENTRY_TYPE_CLASS_FUNCTION;
+                for(int j = 0; j < funcExp->params.size(); j++)
+                {
+                    subEntry.params.append(funcExp->params[j]->name.c_str());
+                }
+
+                parseEsprimaFunctionExpression(funcExp, &subEntry, tabIndex, objects);
+            }
+            else if(objExp)
+            {//Map/Array
+
+                subEntry.type = PARSED_ENTRY_TYPE_MAP;
+                parseEsprimaObjectExpression(objExp, &subEntry, tabIndex,objects);
+                if(objects)
+                {
+                    (*objects)[subEntry.completeName] = subEntry;
+                }
+            }
+            else
+            {//Variable
+
+               subEntry.type = PARSED_ENTRY_TYPE_CLASS_VAR;
+
+               getTypeFromNode(subVarDecl->declarations[0]->init, subEntry);
+            }
+
+            parent->subElements.append(subEntry);
+        }
+        else
+        {
+            esprima::ExpressionStatement* expStatement = dynamic_cast<esprima::ExpressionStatement*>(funcExp->body->body[j]);
+            if(expStatement)
+            {
+                esprima::AssignmentExpression* assignmentStatement = dynamic_cast<esprima::AssignmentExpression*>(expStatement->expression);
+                if(assignmentStatement)
+                {
+                    subEntry.line = assignmentStatement->loc->start->line - 1;
+                    subEntry.column = assignmentStatement->loc->start->column;
+                    subEntry.endLine = assignmentStatement->loc->end->line - 1;
+                    subEntry.params = QStringList();
+                    subEntry.tabIndex = tabIndex;
+
+                    esprima::MemberExpression* memExp = dynamic_cast<esprima::MemberExpression*>(assignmentStatement->left);
+                    if(memExp)
+                    {
+                        esprima::FunctionExpression* funcExp = dynamic_cast<esprima::FunctionExpression*>(assignmentStatement->right);
+                        esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(memExp->property);
+                        if(funcExp && memExp && id)
+                        {
+                            subEntry.name = id->name.c_str();
+                            subEntry.completeName = parent->name.isEmpty() ? subEntry.name : parent->completeName + "." + subEntry.name;
+                            subEntry.type = PARSED_ENTRY_TYPE_CLASS_THIS_FUNCTION;
+
+                            for(int j = 0; j < funcExp->params.size(); j++)
+                            {
+                                subEntry.params.append(funcExp->params[j]->name.c_str());
+                            }
+
+                            parseEsprimaFunctionExpression(funcExp, &subEntry, tabIndex, objects);
+                            parent->subElements.append(subEntry);
+                        }
+                    }
+/*
+                    esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(assignmentStatement->left);
+                    if(id)
+                    {
+                        subEntry.name = id->name.c_str();
+                        subEntry.completeName = parent->name.isEmpty() ? subEntry.name : parent->completeName + "." + subEntry.name;
+                        subEntry.type = PARSED_ENTRY_TYPE_VAR;
+                        parent->subElements.append(subEntry);
+                    }
+                    */
+                }
+            }
+
+            esprima::FunctionDeclaration* funcDecl = dynamic_cast<esprima::FunctionDeclaration*>(funcExp->body->body[j]);
+            if(funcDecl)
+            {
+                parseEsprimaFunctionDeclaration(funcDecl, &subEntry, tabIndex, objects);
+                parent->subElements.append(subEntry);
+            }
+        }
+
+    }
+}
+
 /**
  * Searches all dynamically created objects created by standard objects (like String).
  * @param currentText
@@ -1037,6 +1154,32 @@ static void getTypeFromMemberExpression(esprima::MemberExpression* memExpression
              subEntry.valueType += QString(".") + id->name.c_str();
         }
     }
+
+    esprima::ThisExpression* thisExpr = dynamic_cast<esprima::ThisExpression*>(memExpression->object);
+    if(thisExpr)
+    {
+        esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(memExpression->property);
+        if(id)
+        {
+            QString tmpCompleteName = subEntry.completeName;
+            tmpCompleteName.remove("." + subEntry.name);
+
+            int index = tmpCompleteName.lastIndexOf(".");
+            if(index != -1)
+            {
+                subEntry.valueType = tmpCompleteName;
+                subEntry.valueType.remove(index, subEntry.valueType.length() - index);
+                subEntry.valueType += ".";
+                tmpCompleteName = "";
+            }
+
+            if(!tmpCompleteName.isEmpty())
+            {
+                subEntry.valueType = tmpCompleteName + ".";
+            }
+            subEntry.valueType += id->name.c_str();
+        }
+    }
 }
 
 static void getTypeFromCallExpression(esprima::CallExpression* callExpression, ParsedEntry& subEntry)
@@ -1063,6 +1206,11 @@ static void getTypeFromCallExpression(esprima::CallExpression* callExpression, P
                     subEntry.valueType = "Array<Number>";
                 }
             }
+        }
+        else if((subEntry.valueType == "Date") || (subEntry.valueType == "String") ||
+                (subEntry.valueType == "Number"))
+        {
+
         }
         else
         {
@@ -1180,7 +1328,7 @@ static void getTypeFromNode(esprima::Node* node, ParsedEntry& subEntry)
  *      The tab index to which the expression belongs to.
  */
 static void parseEsprimaObjectExpression(esprima::ObjectExpression* objExp, ParsedEntry* parent, int tabIndex,
-                                         QMap<QString, ParsedEntry>* objects = NULL)
+                                         QMap<QString, ParsedEntry>* objects)
 {
     for(int j = 0; j < objExp->properties.size(); j++)
     {
@@ -1232,6 +1380,8 @@ static void parseEsprimaObjectExpression(esprima::ObjectExpression* objExp, Pars
             {
                 subEntry.params.append(funcExp->params[j]->name.c_str());
             }
+
+            parseEsprimaFunctionExpression(funcExp, &subEntry, tabIndex, objects);
         }
         else
         {
@@ -1256,7 +1406,8 @@ static void parseEsprimaObjectExpression(esprima::ObjectExpression* objExp, Pars
  * @param tabIndex
  *      The tab index to which the declaration belongs to.
  */
-static void parseEsprimaFunctionDeclaration(esprima::FunctionDeclaration* function, ParsedEntry* entry, int tabIndex)
+static void parseEsprimaFunctionDeclaration(esprima::FunctionDeclaration* function, ParsedEntry* entry, int tabIndex,
+                                            QMap<QString, ParsedEntry>* objects)
 {
 
     entry->line = function->body->loc->start->line - 1;
@@ -1264,6 +1415,7 @@ static void parseEsprimaFunctionDeclaration(esprima::FunctionDeclaration* functi
     entry->endLine = function->body->loc->end->line - 1;
 
     entry->name = function->id->name.c_str();
+    entry->completeName = entry->name;
     entry->type = PARSED_ENTRY_TYPE_FUNCTION;
     entry->tabIndex = tabIndex;
 
@@ -1284,6 +1436,7 @@ static void parseEsprimaFunctionDeclaration(esprima::FunctionDeclaration* functi
             subEntry.line = subVarDecl->declarations[0]->loc->start->line - 1;
             subEntry.column = subVarDecl->declarations[0]->loc->start->column;
             subEntry.name = subVarDecl->declarations[0]->id->name.c_str();
+            subEntry.completeName = entry->name.isEmpty() ? subEntry.name : entry->completeName + "." + subEntry.name;
             subEntry.endLine = subVarDecl->declarations[0]->loc->end->line - 1;
             subEntry.params = QStringList();
             subEntry.tabIndex = tabIndex;
@@ -1302,6 +1455,8 @@ static void parseEsprimaFunctionDeclaration(esprima::FunctionDeclaration* functi
                 {
                     subEntry.params.append(funcExp->params[j]->name.c_str());
                 }
+
+                parseEsprimaFunctionExpression(funcExp, &subEntry, tabIndex, objects);
             }
 
             entry->subElements.append(subEntry);
@@ -1342,6 +1497,9 @@ static void parseEsprimaFunctionDeclaration(esprima::FunctionDeclaration* functi
     }
 }
 
+
+
+
 /**
  * Parses an (esprima) new expression.
  * @param newExp
@@ -1357,82 +1515,7 @@ static void parseEsprimaNewExpression(esprima::NewExpression* newExp, ParsedEntr
     esprima::FunctionExpression* funcExp = dynamic_cast<esprima::FunctionExpression*>(newExp->callee);
     if(funcExp)
     {
-        for(int j = 0; j < funcExp->body->body.size(); j++)
-        {
-            ParsedEntry subEntry;
-            esprima::VariableDeclaration* subVarDecl = dynamic_cast<esprima::VariableDeclaration*>(funcExp->body->body[j]);
-            if(subVarDecl)
-            {
-                subEntry.line = subVarDecl->loc->start->line - 1;
-                subEntry.column = subVarDecl->loc->start->column;
-                subEntry.endLine = subVarDecl->loc->end->line - 1;
-                subEntry.name = subVarDecl->declarations[0]->id->name.c_str();
-                subEntry.params = QStringList();
-                subEntry.tabIndex = tabIndex;
-                subEntry.completeName = parent->name.isEmpty() ? subEntry.name : parent->completeName + "." + subEntry.name;
-
-                esprima::FunctionExpression* funcExp = dynamic_cast<esprima::FunctionExpression*>(subVarDecl->declarations[0]->init);
-                esprima::ObjectExpression* objExp = dynamic_cast<esprima::ObjectExpression*>(subVarDecl->declarations[0]->init);
-                if(funcExp)
-                {//Function
-
-                    subEntry.type = PARSED_ENTRY_TYPE_CLASS_FUNCTION;
-                    for(int j = 0; j < funcExp->params.size(); j++)
-                    {
-                        subEntry.params.append(funcExp->params[j]->name.c_str());
-                    }
-                }
-                else if(objExp)
-                {//Map/Array
-
-                    subEntry.type = PARSED_ENTRY_TYPE_MAP;
-                    parseEsprimaObjectExpression(objExp, &subEntry, tabIndex,objects);
-                    if(objects)
-                    {
-                        (*objects)[subEntry.completeName] = subEntry;
-                    }
-                }
-                else
-                {//Variable
-
-                   subEntry.type = PARSED_ENTRY_TYPE_CLASS_VAR;
-
-                   getTypeFromNode(subVarDecl->declarations[0]->init, subEntry);
-                }
-
-                parent->subElements.append(subEntry);
-            }
-            else
-            {
-                esprima::ExpressionStatement* expStatement = dynamic_cast<esprima::ExpressionStatement*>(funcExp->body->body[j]);
-                if(expStatement)
-                {
-                    esprima::AssignmentExpression* assignmentStatement = dynamic_cast<esprima::AssignmentExpression*>(expStatement->expression);
-                    if(assignmentStatement)
-                    {
-                        esprima::MemberExpression* memExp = dynamic_cast<esprima::MemberExpression*>(assignmentStatement->left);
-                        esprima::FunctionExpression* funcExp = dynamic_cast<esprima::FunctionExpression*>(assignmentStatement->right);
-                        esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(memExp->property);
-                        if(funcExp && memExp && id)
-                        {
-                            subEntry.line = assignmentStatement->loc->start->line - 1;
-                            subEntry.column = assignmentStatement->loc->start->column;
-                            subEntry.endLine = assignmentStatement->loc->start->line - 1;
-                            subEntry.name = id->name.c_str();
-                            subEntry.type = PARSED_ENTRY_TYPE_CLASS_THIS_FUNCTION;
-                            subEntry.params = QStringList();
-                            subEntry.tabIndex = tabIndex;
-                            for(int j = 0; j < funcExp->params.size(); j++)
-                            {
-                                subEntry.params.append(funcExp->params[j]->name.c_str());
-                            }
-                            parent->subElements.append(subEntry);
-                        }
-                    }
-                }
-            }
-
-        }
+        parseEsprimaFunctionExpression(funcExp, parent, tabIndex, objects);
     }
 }
 
@@ -1481,13 +1564,38 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
 
     entry.completeName = (parentName.isEmpty()) ? entry.name : parentName + "::"  + entry.name;
 
-    if(parsedTypes.contains(entry.valueType))
+    QString tmpType = entry.valueType;
+    QString tmpCompleteName = entry.completeName;
+    int index = entry.completeName.lastIndexOf("::");
+    while(index != -1)
     {
-        if(!parsedTypes[entry.valueType].isEmpty())
+        tmpCompleteName.remove(index, tmpCompleteName.length() - index);
+        tmpType = tmpCompleteName + "." + entry.valueType;
+
+        if(parsedTypes.contains(tmpType))
         {
-            entry.valueType = parsedTypes[entry.valueType];
+            if(!parsedTypes[tmpType].isEmpty())
+            {
+                entry.valueType = parsedTypes[tmpType];
+                tmpType = "";
+                break;
+            }
+        }
+
+        index = tmpCompleteName.lastIndexOf("::");
+    }
+
+    if(!tmpType.isEmpty())
+    {
+        if(parsedTypes.contains(entry.valueType))
+        {
+            if(!parsedTypes[entry.valueType].isEmpty())
+            {
+                entry.valueType = parsedTypes[entry.valueType];
+            }
         }
     }
+
 
     if (entry.valueType.indexOf(".") != -1)
     {
@@ -1705,7 +1813,7 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                 if(funcDecl)
                 {//Function
 
-                    parseEsprimaFunctionDeclaration(funcDecl, &entry, iter.key());
+                    parseEsprimaFunctionDeclaration(funcDecl, &entry, iter.key(), &objects);
                     fileResult.append(entry);
                     objects[entry.name] = entry;
                 }
@@ -1742,6 +1850,9 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                                         {
                                             prot.params.append(right->params[j]->name.c_str());
                                         }
+
+                                         parseEsprimaFunctionExpression(right, &prot, iter.key(), &objects);
+
                                         if(!prototypeFunctionsSingleFile.contains(subObject->name.c_str()))
                                         {
                                           prototypeFunctionsSingleFile[subObject->name.c_str()] = QVector<ParsedEntry>();
@@ -1946,7 +2057,7 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
     {
         //Get all global function and variables (with the esprima parser).
         parsedEntries = getAllFunctionsAndGlobalVariables(loadedScripts);
-
+#if 0
         int counter = 1;
         do
         {
@@ -1981,6 +2092,7 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
                 m_autoCompletionEntries[el] << el;
             }
         }
+#endif
     }
 
    emit parsingFinishedSignal(m_autoCompletionEntries, m_autoCompletionApiFiles, m_parsedUiObjects, parsedEntries, true, parseOnlyUIFiles);

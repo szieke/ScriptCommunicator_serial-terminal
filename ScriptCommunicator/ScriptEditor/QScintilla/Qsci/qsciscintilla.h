@@ -2028,6 +2028,8 @@ protected:
     ///Wheel event
     void wheelEvent(QWheelEvent* event);
 
+    virtual QString getContextString(int line) = 0;
+
 private slots:
     void handleCallTipClick(int dir);
     void handleCharAdded(int charadded);

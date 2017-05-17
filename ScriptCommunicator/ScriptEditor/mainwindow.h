@@ -246,6 +246,8 @@ private:
     ///Displays a dialog if the current script has been changed.
     bool maybeSave(int index);
 
+    bool checkIfElementsInOutlineTree(QString name);
+
     ///Loads a file.
     bool loadFile(const QString &fileName);
 
@@ -298,9 +300,6 @@ private:
 
     ///Shortcut for finding text in the current script file.
     QShortcut* m_findShortcut;
-
-    ///All function which are displayed in the outline.
-    QStringList m_allFunctions;
 
     ///The parse timer.
     QTimer m_parseTimer;

@@ -176,7 +176,7 @@ void MainWindow::parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEn
             for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
             {
                 SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
-                textEditor->initAutoCompletion(m_allFunctions, autoCompletionEntries, autoCompletionApiFiles);
+                textEditor->initAutoCompletion(autoCompletionEntries, autoCompletionApiFiles);
             }
 
             insertFillScriptViewAndDisplayErrors(parsedEntries);
@@ -276,7 +276,9 @@ void MainWindow::clearCurrentIndicator(void)
 void MainWindow::indicatorClickTimerSlot()
 {
     m_indicatorClickTimer.stop();
-    handleDoubleClicksInEditor(m_lastIndicatorClickPosition, 0, m_ctrlIsPressed ? QsciScintillaBase::SCMOD_CTRL : QsciScintillaBase:: SCMOD_NORM);
+    SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
+    int line = textEditor->lineAt(m_lastMouseMoveEvent.pos());
+    handleDoubleClicksInEditor(m_lastIndicatorClickPosition, line, m_ctrlIsPressed ? QsciScintillaBase::SCMOD_CTRL : QsciScintillaBase:: SCMOD_NORM);
 
 }
 
@@ -301,6 +303,29 @@ void MainWindow::indicatorClickedSlot(int line, int index, Qt::KeyboardModifiers
     }
 }
 
+
+bool MainWindow::checkIfElementsInOutlineTree(QString name)
+{
+    //Check if the word is in the outline.
+    bool wordIsInOutline = false;
+    QTreeWidgetItemIterator iter(ui->outlineTreeWidget);
+    while (*iter)
+    {
+        bool isOk = false;
+        ParsedEntry* entry  = (ParsedEntry*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
+
+      if (entry->completeName == name)
+      {
+          wordIsInOutline = true;
+          break;
+      }
+
+      ++iter;
+    }
+
+    return wordIsInOutline;
+}
+
 /**
  * Is called if the mouse move timer times out.
  */
@@ -323,22 +348,46 @@ void MainWindow::mouseMoveTimerSlot()
             QString completeWord = textEditor->wordAtPosition(pos, true);
             if(!completeWord.isEmpty())
             {
-                //Check if the word is in the outline.
                 bool wordIsInOutline = false;
-                QTreeWidgetItemIterator iter(ui->outlineTreeWidget);
-                while (*iter)
+
+                QString contextString = textEditor->getContextString(line);
+                if(!contextString.isEmpty())
                 {
-                    bool isOk = false;
-                    ParsedEntry* entry  = (ParsedEntry*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
+                    int index = 0;
 
-                  if (entry->completeName == completeWord)
-                  {
-                      wordIsInOutline = true;
-                      break;
-                  }
+                    if(completeWord.startsWith("this."))
+                    {
+                        //Remove this.
+                        completeWord.remove(0, 5);
+                        index = contextString.lastIndexOf("::");
+                        if(index != -1)
+                        {
+                            contextString.remove(index, contextString.length() - index);
+                        }
+                    }
+                    contextString = contextString.replace("::", ".");
 
-                  ++iter;
+                    do
+                    {
+                        //Check the local variables.
+                        wordIsInOutline = checkIfElementsInOutlineTree(contextString + "." + completeWord);
+
+                        index = contextString.lastIndexOf(".");
+
+                        if(index != -1)
+                        {
+                            contextString.remove(index, contextString.length() - index);
+                        }
+
+                    }while((index != -1) && !wordIsInOutline);
                 }
+
+                if(!wordIsInOutline)
+                {
+                    //Check if the word is in the outline.
+                    wordIsInOutline = checkIfElementsInOutlineTree(completeWord);
+                }
+
 
                 if(!wordIsInOutline)
                 {
@@ -474,7 +523,6 @@ void MainWindow::parseTimeout(bool parseOnlyUIFiles)
 void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifiers)
 {
     (void)position;
-    (void)line;
     const bool ctrl = (modifiers & QsciScintillaBase::SCMOD_CTRL) != 0;
 
     if(ui->documentsTabWidget->currentWidget() && ui->documentsTabWidget->currentWidget()->layout() && ctrl)
@@ -484,6 +532,52 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
         QString text = textEditor->wordAtPosition(m_lastIndicatorClickPosition, true);
 
+
+        bool isLocalVariable = false;
+        QString searchString = textEditor->getContextString(line);
+        if(!searchString.isEmpty())
+        {
+            int index = 0;
+            if(text.startsWith("this."))
+            {
+                //Remove this.
+                text.remove(0, 5);
+                index = searchString.lastIndexOf("::");
+                if(index != -1)
+                {
+                    searchString.remove(index, searchString.length() - index);
+                }
+            }
+            searchString = searchString.replace("::", ".");
+
+
+            do
+            {
+               //Check the local variables.
+               isLocalVariable = checkIfElementsInOutlineTree(searchString + "." + text);
+
+               if(isLocalVariable)
+               {
+                   searchString += "." + text;
+               }
+               else
+               {
+                   index = searchString.lastIndexOf(".");
+                   if(index != -1)
+                   {
+                       searchString.remove(index, searchString.length() - index);
+                   }
+               }
+
+            }while((index != -1) && !isLocalVariable);
+
+        }
+
+        if(!isLocalVariable)
+        {
+            searchString = text;
+        }
+
         //Iterate over all elements in the scripts outline.
         QTreeWidgetItemIterator iter(ui->outlineTreeWidget);
         while (*iter)
@@ -492,7 +586,7 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
             ParsedEntry* entry  = (ParsedEntry*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
 
             //The double clicked word is in the scripts outline.
-            if (entry->completeName == text)
+            if (entry->completeName == searchString)
             {
                 functionListDoubleClicked((*iter), 0);
 
@@ -525,7 +619,7 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
                     bool isOk = false;
                     ParsedUiObject* entry  = (ParsedUiObject*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
 
-                  if ("UI_" + entry->objectName == text)
+                  if ("UI_" + entry->objectName == searchString)
                   {
                       uiViewDoubleClicked((*iter), 0);
                       break;
@@ -2303,12 +2397,13 @@ bool MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
     bool hasError = false;
     for(auto el : parsedEntries)
     {
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(el.tabIndex)->layout()->itemAt(0)->widget());
+
         if(el.type == PARSED_ENTRY_TYPE_PARSE_ERROR)
         {
             if(ui->documentsTabWidget->widget(el.tabIndex))
             {
                 QsciStyle myStyle(-1,"Annotation",QColor(255,0,0),QColor(255,150,150),QFont("Courier New",-1,-1,true),true);
-                SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(el.tabIndex)->layout()->itemAt(0)->widget());
                 textEditor->annotate(el.line - 1, el.name,myStyle);
                 hasError = true;
             }
@@ -2327,7 +2422,7 @@ bool MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
                     || (el.type == PARSED_ENTRY_TYPE_MAP_FUNC) || (el.type == PARSED_ENTRY_TYPE_CLASS_THIS_FUNCTION) ||
                     (el.type == PARSED_ENTRY_TYPE_PROTOTYPE_FUNC))
             {
-                m_allFunctions.append(el.name);
+                textEditor->addFunction(el);
 
                 textInTreeWidget += "(";
 
@@ -2483,7 +2578,6 @@ void MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
     QString currentCompleteTreeString = "";
     QTreeWidgetItem* root = ui->outlineTreeWidget->invisibleRootItem();
     QMap<QString, bool> expandMap;
-    m_allFunctions.clear();
 
     //Convert all parsed entries to a string.
     QMap<int,QVector<ParsedEntry>>::const_iterator iter = parsedEntries.constBegin();
@@ -2538,6 +2632,7 @@ void MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
             fileElement->setIcon(0, QIcon(":/images/document.png"));
             root->addChild(fileElement);
             ui->outlineTreeWidget->expandItem(fileElement);
+            textEditor->clearAllFunctions();
 
             if(inserSubElementsToScriptView(fileElement, iter.value(), ""))
             {

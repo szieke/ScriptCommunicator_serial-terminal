@@ -361,7 +361,49 @@ bool QsciScintilla::callTip(int startPos)
 
     ct_cursor = 0;
     ct_shifts.clear();
-    ct_entries = apis->callTips(context, commas, call_tips_style, ct_shifts);
+
+
+    ct_entries.clear();
+
+    int line = SendScintilla(SCI_LINEFROMPOSITION, pos);
+    QString contextString = getContextString(line);
+    if(!contextString.isEmpty())
+    {
+        if(context[0] == "this")
+        {
+            context.pop_front();
+        }
+        QStringList oldTmpContext = contextString.split("::");
+        QStringList newTmpContext = oldTmpContext;
+        newTmpContext.append(context);
+        bool exit = false;
+
+        while(!exit && ct_entries.isEmpty())
+        {
+
+            if(oldTmpContext.size() == 0)
+            {
+                exit = true;
+            }
+
+            ct_entries = apis->callTips(newTmpContext, commas, call_tips_style, ct_shifts);
+
+            if(!exit)
+            {
+                oldTmpContext.pop_back();
+                newTmpContext = oldTmpContext;
+                newTmpContext.append(context);
+            }
+        }
+
+
+    }
+
+    if(ct_entries.isEmpty())
+    {
+        ct_entries = apis->callTips(context, commas, call_tips_style, ct_shifts);
+    }
+
 
     int nr_entries = ct_entries.count();
 
@@ -727,6 +769,8 @@ void QsciScintilla::startAutoCompletion(AutoCompletionSource acs,
 
     if(!context.isEmpty())
     {
+        int caret = SendScintilla(SCI_GETCURRENTPOS);
+
         // Get the last word's raw data and length.
         ScintillaBytes s = textAsBytes(context.last());
         last_data = s.data();
@@ -739,7 +783,54 @@ void QsciScintilla::startAutoCompletion(AutoCompletionSource acs,
         {
 
             if (apis)
-                apis->updateAutoCompletionList(context, wlist);
+            {
+                int line = SendScintilla(SCI_LINEFROMPOSITION, caret);
+                QString contextString = getContextString(line);
+
+                if(!contextString.isEmpty())
+                {
+                    if(context[0] == "this")
+                    {
+                        context.pop_front();
+                    }
+                    QStringList oldTmpContext = contextString.split("::");
+                    QStringList newTmpContext = oldTmpContext;
+                    newTmpContext.append(context);
+                    bool exit = false;
+
+                    while(!exit)
+                    {
+
+                        if(oldTmpContext.isEmpty())
+                        {
+                            exit = true;
+                        }
+
+                        QStringList tmpWlist;
+                        apis->updateAutoCompletionList(newTmpContext, tmpWlist);
+                        wlist.append(tmpWlist);
+
+                        if(!exit)
+                        {
+                            oldTmpContext.pop_back();
+                            newTmpContext = oldTmpContext;
+                            newTmpContext.append(context);
+                        }
+
+                        if(newTmpContext.isEmpty() || newTmpContext[0].isEmpty())
+                        {
+                            exit = true;
+                        }
+
+                    }
+
+
+                }
+                else
+                {
+                    apis->updateAutoCompletionList(context, wlist);
+                }
+            }
         }
 
         if (acs == AcsAll || acs == AcsDocument)
@@ -753,7 +844,6 @@ void QsciScintilla::startAutoCompletion(AutoCompletionSource acs,
 
             int pos = 0;
             int dlen = SendScintilla(SCI_GETLENGTH);
-            int caret = SendScintilla(SCI_GETCURRENTPOS);
             int clen = caret - start;
             char *orig_context = new char[clen + 1];
 

@@ -8,6 +8,15 @@
 	
 }
 
+
+
+function testFunction()
+{
+	var testVar = 0;
+	testVar.toExponential(); 
+	
+}
+
 function Class(arg0)
 {
 	var testString= scriptThread.getAllObjectPropertiesAndFunctions();
@@ -16,22 +25,22 @@ function Class(arg0)
 	var testDate2 = new Date();
 	var testClassArray = [33, 55];
 	
-	//testClassArray. Autocompletion geht an dieser Stelle nicht.
 	
 	var reset = function(arg1)
     {
-	  var test = "";
+	  var test = this.testClassArray;
 	}	
 	
 	this.start = function(arg2)
     {
 		var test = "";
-        reset();
 	}
+
 }
 
 Class.prototype.getInfo = function(arg) 
 {
+	var test = this.testClassArray; 
     return this.waitForResponse;
 }
 
@@ -45,19 +54,32 @@ var array1 =
 };
 var map1 = 
 {
-	ERROR : {name: {subName :""}, ignoreReceivedData: true, progress: 0, testFunc: function (arg4) 
-	{ return ""}},
+	ERROR : {name: {subName :""}, ignoreReceivedData: true, progress: 0, 
+		testFunc: function (arg4) 
+		{ 
+			var zzz = ""
+			return ""
+		}
+	},
 }
+
+
 
 var classSingelton1 = new function()
 {
     var waitForResponse = 100;
-	var testMap = {ignoreReceivedData: true, name: {subName :"", testFunc: function (arg4) 
-	{ return ""}}}; 
+	var testMap = {ignoreReceivedData: true, name: {subName :"", 
+		testFunc: function (arg4) 
+		{ 
+			var zzz = 0; 
+			var test = ignoreReceivedData;  //Geht nicht
+			var test2= map1;  //Geht nicht
+			return ""
+		}
+	}}; 
 	var reset = function(arg5)
     {
-	  var test = "";
-	  waitForResponse = false;
+	  var test = Date();
 	}	
 	
 	this.start = function(arg6)
@@ -66,7 +88,15 @@ var classSingelton1 = new function()
 	}
 }
 
+
 classSingelton1.prototype.getInfo = function(arg) 
 {
-    return this.waitForResponse;
+	var test = "";
+	
+	 function testFunc(arg4) 
+		{ 
+			var zzz = 0; 
+			return ""
+		}
+    return this.waitForResponse.toExponential();
 }

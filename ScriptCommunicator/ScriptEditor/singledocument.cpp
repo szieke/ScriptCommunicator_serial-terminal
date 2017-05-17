@@ -20,7 +20,8 @@
  */
 SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
     QsciScintilla(parent), m_mainWindow(mainWindow), m_documentName(""), m_fileLastModified(QDateTime::currentDateTime()),
-    m_fileMustBeParsed(true), m_clickIndicatorStart(-1), m_clickIndicatorEnd(-1), m_clickIndicatorIdentifier(1)
+    m_fileMustBeParsed(true), m_clickIndicatorStart(-1), m_clickIndicatorEnd(-1), m_clickIndicatorIdentifier(1),
+    m_functions()
 {
 
     connect(this, SIGNAL(textChanged()), m_mainWindow, SLOT(documentWasModified()));
@@ -47,6 +48,28 @@ void SingleDocument::keyPressEventChild(QKeyEvent *event)
         m_mainWindow->m_ctrlIsPressed = true;
         m_mainWindow->m_mouseEventTimer.start(100);
     }
+}
+
+
+QString SingleDocument::getContextString(int line)
+{
+    QString result;
+    for(auto el : m_functions)
+    {
+        if((el.endLine >= line) && (el.line <= line))
+        {//Context found.
+
+            result = el.completeName;
+        }
+    }
+
+    return result;
+}
+
+///Adds a function the current document.
+void SingleDocument::addFunction(ParsedEntry& function)
+{
+    m_functions.append(function);
 }
 
 void SingleDocument::mouseMoveEventChild(QMouseEvent *event)
@@ -155,7 +178,7 @@ void SingleDocument::initLexer(QString script)
  * @param additionalElements
  *      Additional elements for the autocompletion api.
  */
-void SingleDocument::initAutoCompletion(QStringList& additionalElements, QMap<QString, QStringList>& autoCompletionEntries,
+void SingleDocument::initAutoCompletion(QMap<QString, QStringList>& autoCompletionEntries,
                                         QMap<QString, QStringList>& autoCompletionApiFiles)
 {
 
@@ -180,11 +203,6 @@ void SingleDocument::initAutoCompletion(QStringList& additionalElements, QMap<QS
             {
                 apis->add(el);
             }
-        }
-
-        for(auto el : additionalElements)
-        {
-            apis->add(el);
         }
         apis->prepare();
 

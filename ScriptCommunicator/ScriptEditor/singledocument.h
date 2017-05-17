@@ -5,6 +5,7 @@
 #include <Qsci/qsciscintilla.h>
 #include <QDomDocument>
 #include <QDateTime>
+#include "parseThread.h"
 
 
 
@@ -46,13 +47,21 @@ public:
     QString getDocumentName(void){return m_documentName;}
 
     ///Initializes the autocompletion.
-    void initAutoCompletion(QStringList &additionalElements, QMap<QString, QStringList> &autoCompletionEntries, QMap<QString, QStringList>& autoCompletionApiFiles);
+    void initAutoCompletion(QMap<QString, QStringList> &autoCompletionEntries, QMap<QString, QStringList>& autoCompletionApiFiles);
 
     ///Sets m_fileMustBeParsed.
     void setFileMustBeParsed(bool fileMustBeParsed){m_fileMustBeParsed = fileMustBeParsed;}
 
     ///Returns m_fileMustBeParsed.
     bool getFileMustBeParsed(void){return m_fileMustBeParsed;}
+
+    ///Clears the vector which contains all function.
+    void clearAllFunctions(void){m_functions.clear();}
+
+    ///Adds a function the current document.
+    void addFunction(ParsedEntry& function);
+
+    QString getContextString(int line);
 
 protected:
 
@@ -63,6 +72,7 @@ protected:
    void keyPressEventChild(QKeyEvent *event);
 
    void keyReleaseEvent(QKeyEvent *event);
+
 
 private:
 
@@ -103,6 +113,9 @@ private:
 
     ///The id of the indicator which is used to underline clickable words.
     int m_clickIndicatorIdentifier;
+
+    ///All function which belongs to the current document.
+    QVector<ParsedEntry> m_functions;
 };
 
 #endif // SINGLEDOCUMENT_H

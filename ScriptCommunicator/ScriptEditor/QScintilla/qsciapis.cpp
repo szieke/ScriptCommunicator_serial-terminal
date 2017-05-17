@@ -463,6 +463,13 @@ void QsciAPIs::updateAutoCompletionList(const QStringList &context,
         QStringList with_context;
         QString apiSearchString;
 
+        /*
+        if((context[0].size() > 1) && (context[0] == "this"))
+        {
+            new_context.pop_front();
+        }
+        */
+
         for(int i = 0; i < (new_context.size() - 1);)
         {
             apiSearchString += new_context[i];
