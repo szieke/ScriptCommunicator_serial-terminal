@@ -128,6 +128,8 @@ private:
     ///Removes all unnecessary characters (e.g. comments).
     void removeAllUnnecessaryCharacters(QString& currentText);
 
+    void replaceAllParsedObject(QMap<QString, ParsedEntry>& objects, ParsedEntry& entry);
+
     bool replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, ParsedEntry& entry, QString parentName);
 
     ///Removes all square brackets and all between them.

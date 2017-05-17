@@ -64,7 +64,6 @@ var map1 =
 }
 
 
-
 var classSingelton1 = new function()
 {
     var waitForResponse = 100;
@@ -72,14 +71,18 @@ var classSingelton1 = new function()
 		testFunc: function (arg4) 
 		{ 
 			var zzz = 0; 
-			var test = ignoreReceivedData;  //Geht nicht
-			var test2= map1;  //Geht nicht
+			var testSub = this.subName; 
+			var test2= map1; 
 			return ""
 		}
 	}}; 
+	
+	var testMap2 = testMap;
+	var testArray = array1
 	var reset = function(arg5)
     {
 	  var test = Date();
+		var test2 = this.testMap ;
 	}	
 	
 	this.start = function(arg6)

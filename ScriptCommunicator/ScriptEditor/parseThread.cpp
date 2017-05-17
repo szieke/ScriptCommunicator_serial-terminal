@@ -1161,10 +1161,17 @@ static void getTypeFromMemberExpression(esprima::MemberExpression* memExpression
         esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(memExpression->property);
         if(id)
         {
+            int index;
             QString tmpCompleteName = subEntry.completeName;
-            tmpCompleteName.remove("." + subEntry.name);
 
-            int index = tmpCompleteName.lastIndexOf(".");
+            index = tmpCompleteName.lastIndexOf(".");
+            if(index != -1)
+            {
+                tmpCompleteName.remove(index, tmpCompleteName.length() - index);
+            }
+
+
+            index = tmpCompleteName.lastIndexOf(".");
             if(index != -1)
             {
                 subEntry.valueType = tmpCompleteName;
@@ -1557,6 +1564,41 @@ static getAllParsedTypes(QMap<QString, QString>& parsedTypes, ParsedEntry& entry
         getAllParsedTypes(parsedTypes, el, key);
     }
 }
+
+void ParseThread::replaceAllParsedObject(QMap<QString, ParsedEntry>& objects, ParsedEntry& entry)
+{
+    QString tmpType = entry.valueType;
+    QString tmpCompleteName = entry.completeName;
+    int index = tmpCompleteName.lastIndexOf(".");
+    while(index != -1)
+    {
+        tmpCompleteName.remove(index, tmpCompleteName.length() - index);
+        tmpType = tmpCompleteName + "." + entry.valueType;
+
+        if(objects.contains(tmpType))
+        {
+            entry.valueType = tmpType;
+            break;
+        }
+        index = tmpCompleteName.lastIndexOf(".");
+    }
+
+    if(objects.contains(entry.valueType))
+    {//The assigned object is in the objects list.
+
+        //Add all subelements of the assigned variable/object to the current variable.
+        entry.subElements = objects[entry.valueType].subElements;
+
+        //Add the current variable to the autocompletion list.
+        addParsedEntiresToAutoCompletionList(entry, m_autoCompletionEntries, "", entry.completeName);
+    }
+
+    for(int i = 0; i < entry.subElements.size(); i++)
+    {
+        replaceAllParsedObject(objects, entry.subElements[i]);
+    }
+}
+
 bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, ParsedEntry& entry,
                                         QString parentName)
 {
@@ -1934,6 +1976,15 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
             getAllParsedTypes(parsedTypes, el, "");
         }
     }
+
+    for(int i = 0; i < result.size(); i++)
+    {
+        for(int j = 0; j < result[i].size(); j++)
+        {
+            replaceAllParsedObject(objects, result[i][j]);
+        }
+    }
+
 
 
     bool entryChanged = false;
