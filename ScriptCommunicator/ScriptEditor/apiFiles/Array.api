@@ -19,5 +19,5 @@ Array::map(callbackfn [, thisArg]):Array \nCreates a new array with the result o
 Array::filter(callbackfn [, thisArg]):Array  \nCreates a new array with every element in an array that pass a test.
 Array::reduce(callbackfn [, initialValue]):value \nReduce the values of an array to a single value (going left-to-right).
 Array::reduceRight(callbackfn [, initialValue]):value \nReduce the values of an array to a single value (going right-to-left).
-Array::isArray() \nReturns true if an object is an array, false if it is not.
+Array::isArray():bool \nReturns true if an object is an array, false if it is not.
 Array::length This read-property [Number] returns the length of the array.

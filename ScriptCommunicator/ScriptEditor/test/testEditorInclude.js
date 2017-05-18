@@ -4,6 +4,7 @@
 		send : scriptThread.getAllObjectPropertiesAndFunctions("HST\n"),
         unknown : obj.testFunc("dd"),
 		send2 : [ 60, 35, 83],
+		send3 : Array("")
     },
 	
 }
@@ -14,6 +15,10 @@ function testFunction()
 {
 	var testVar = 0;
 	testVar.toExponential(); 
+	var stringResult = conv.byteArrayToString(Array(1,2,3));
+	var splitResult = stringResult.split("\n");
+	var splitResultElement1 = splitResult.concat();
+	var testBool = splitResultElement1.isArray()
 	
 }
 
@@ -50,7 +55,10 @@ var array1 =
 	ignoreReceivedData: true, 
 	progress: 0, 
 	testFunc: function (arg3) 
-	{ return ""}
+	{ 
+		var testVar = "";
+		return ""
+		}
 };
 var map1 = 
 {
@@ -79,10 +87,14 @@ var classSingelton1 = new function()
 	
 	var testMap2 = testMap;
 	var testArray = array1
+    var stringResult = conv.byteArrayToString(Array(1,2,3));
 	var reset = function(arg5)
     {
 	  var test = Date();
 		var test2 = this.testMap ;
+			var splitResult = this.stringResult.split("\n");
+			var splitResultElement1 = splitResult.concat();
+			var testBool = splitResultElement1.isArray()
 	}	
 	
 	this.start = function(arg6)

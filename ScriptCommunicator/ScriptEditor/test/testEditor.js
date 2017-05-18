@@ -32,6 +32,8 @@ var date2 = classVar.testDate2;
 var mapVar = classSingelton1.testMap;
 
 var stringResult = conv.byteArrayToString(Array(1,2,3));
-var splitResult = stringResult.split("\n");//Der Typ von splitResult wird nicht erkannt.
+var splitResult = stringResult.split("\n");
+var splitResultElement1 = splitResult.concat();
+var testBool = splitResultElement1.isArray()
 
-var UPLOAD_COMON_CURL_ARGS = Array(0, 2); //Hier wird nur Array und nicht Array<Number> erkannt
+
