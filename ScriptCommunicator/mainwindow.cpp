@@ -277,7 +277,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     connect(m_settingsDialog, SIGNAL(deleteLogFileSignal(QString)),this, SLOT(deleteLogFileSlot(QString)));
     connect(m_settingsDialog, SIGNAL(configHasToBeSavedSignal()),this, SLOT(configHasToBeSavedSlot()));
     connect(m_settingsDialog, SIGNAL(conectionTypeChangesSignal()),this, SLOT(conectionTypeChangesSlot()));
-    connect(m_settingsDialog, SIGNAL(appendTimestampAtLogsChangedSignal()),this, SLOT(reopenLogsSlot()));
+    connect(m_settingsDialog, SIGNAL(appendTimestampAtLogsChangedSignal()),this, SLOT(reLogsSlot()));
 
     qRegisterMetaType<Settings>("Settings");
     connect(this, SIGNAL(connectDataConnectionSignal(Settings, bool)),m_mainInterface,
@@ -3614,7 +3614,8 @@ void MainWindow::openTheManualSlot(void)
         QMessageBox::critical(this, "error", "could not open " + name);
     }
 #else
-    if(!QDesktopServices::openUrl(QUrl(getScriptCommunicatorFilesFolder() + "/" + name, QUrl::TolerantMode)))
+    name = getScriptCommunicatorFilesFolder() + "/" + name;
+    if(!QDesktopServices::openUrl(QUrl::fromLocalFile(name)))
     {
         QMessageBox::critical(this, "error", "could not open " + name);
     }
