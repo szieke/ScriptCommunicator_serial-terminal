@@ -24,7 +24,7 @@ function testFunction()
 
 function Class(arg0)
 {
-	var testString= scriptThread.getAllObjectPropertiesAndFunctions();
+	var testStringArray= scriptThread.getAllObjectPropertiesAndFunctions();
 	var testTimer = scriptThread.createTimer();
 	var testDate1 = Date();
 	var testDate2 = new Date();
@@ -54,6 +54,8 @@ var array1 =
 	name: "ERROR", 
 	ignoreReceivedData: true, 
 	progress: 0, 
+	testDate1 : Date(),
+	testDate2 : new Date(),
 	testFunc: function (arg3) 
 	{ 
 		var testVar = "";
@@ -62,9 +64,11 @@ var array1 =
 };
 var map1 = 
 {
-	ERROR : {name: {subName :""}, ignoreReceivedData: true, progress: 0, 
+	ERROR : {name: {subName :""}, ignoreReceivedData: true, testDate1 : Date(), testDate2 : new Date(),rogress: 0, 
 		testFunc: function (arg4) 
 		{ 
+		var testDate1 = Date();
+		   var testDate2 = new Date();
 			var zzz = ""
 			return ""
 		}
@@ -90,11 +94,11 @@ var classSingelton1 = new function()
     var stringResult = conv.byteArrayToString(Array(1,2,3));
 	var reset = function(arg5)
     {
-	  var test = Date();
+		var test = Date();
 		var test2 = this.testMap ;
-			var splitResult = this.stringResult.split("\n");
-			var splitResultElement1 = splitResult.concat();
-			var testBool = splitResultElement1.isArray()
+	    var splitResult = this.stringResult.split("\n");
+	    var splitResultElement1 = splitResult.concat();
+		var testBool = splitResultElement1.isArray()
 	}	
 	
 	this.start = function(arg6)

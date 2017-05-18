@@ -62,6 +62,7 @@ struct ParsedEntry
     int tabIndex;//The tab (dodument) to which this entry belongs to.
     QVector<ParsedEntry> subElements;//The sub entries.
     QString valueType;//The value type of the element (variable).
+    bool isArrayIndex;//True if the value is from an array index.
 };
 
 ///This thread parses all documents (parseSlot).

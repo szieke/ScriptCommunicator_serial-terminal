@@ -13,7 +13,7 @@ var testArray2 = ["ww", "ee"];
 var testArray3= Array(1, 2);
 var testArray4 = [1, 2];
 var testArray5 = scriptFile.readBinaryFile("path");
-
+var testStringFromArray = testArray2[0];
 
 var test5= "";
 
@@ -25,9 +25,9 @@ var array2 = array1;
 var classVar = new Class("www");
 
 var timer = classVar.testTimer;
-var string = classVar.testString;
+var stringArray = classVar.testStringArray;
 
-var date2 = classVar.testDate2;
+var date2 = classVar.testDate1;
 
 var mapVar = classSingelton1.testMap;
 
@@ -37,3 +37,25 @@ var splitResultElement1 = splitResult.concat();
 var testBool = splitResultElement1.isArray()
 
 
+var ports = scriptThread.availableSerialPorts();
+for ( var a in ports)
+{
+	var portname2 = ports[a];
+	
+	for ( var b in PORT_AUTODISCOVERY_DATA)
+	{
+		var portname = ports[p];
+	}
+}
+
+function testFunc()
+{
+	while(1)
+	{
+		var whileVar1 = ""; 
+		while(1)
+		{
+			var whileVar2 = "";
+		}
+	}
+}
