@@ -1,19 +1,19 @@
 ﻿
+
+
 UI_TableWidget.insertWidget(2, 0, "ComboBox");
-var UI_tableComboBox1 = UI_TableWidget.getWidget(2, 0)
-UI_tableComboBox1.addItem("val1");
-UI_tableComboBox1.addItem("val2");
-UI_tableComboBox1.setCurrentIndex(0)
-UI_tableComboBox1.currentTextChangedSignal.connect(tableComboBox1TextChanged)
-UI_tableComboBox1.setAdditionalData(0, 2);
-UI_tableComboBox1.setAdditionalData(1, 0);
+var tableComboBox1 = UI_TableWidget.getWidget(2, 0)
 
-UI_TableWidget.insertWidget(2, 1, "LineEdit");
-var UI_tableLineEdit1 = UI_TableWidget.getWidget(2, 1)
-UI_tableLineEdit1.textChangedSignal.connect(tableLineEdit1TextChanged);
-UI_tableLineEdit1.setAdditionalData(0, 2);
-UI_tableLineEdit1.setAdditionalData(1, 1);
+UI_TableWidget.insertWidget(1, 1, "LineEdit");
+var lineEdit1 = UI_TableWidget.getWidget(1, 1)
 
+var comboBox = UI_comboLk42;
+var comboString = comboBox.currentText();
+
+var stringResult = conv.byteArrayToString(Array(1,2,3));
+var splitResult = stringResult.split("\n");
+var splitResultElement1 = splitResult.concat();
+var testBool = splitResult.isArray();
 scriptThread.loadScript("testEditorInclude.js");
 
 var HST_BAUDRATE = 19200; 
@@ -21,7 +21,7 @@ var sleeptime = 10;
 var timeout = 2000 / sleeptime;
 var str = "" + val;
 var idx = UI_comboLk42.currentIndex();
-var comboString = UI_comboLk42.currentText();
+
 
 var testArray1 = Array("ww", "ee");
 var testArray2 = ["ww", "ee"];
@@ -45,32 +45,5 @@ var date2 = classVar.testDate1;
 
 var mapVar = classSingelton1.testMap;
 
-var stringResult = conv.byteArrayToString(Array(1,2,3));
-var splitResult = stringResult.split("\n");
-var splitResultElement1 = splitResult.concat();
-var testBool = splitResultElement1.isArray()
 
-
-var ports = scriptThread.availableSerialPorts();
-for ( var a in ports)
-{
-	var portname2 = ports[a];
-	
-	for ( var b in PORT_AUTODISCOVERY_DATA)
-	{
-		var portname = ports[p];
-	}
-}
-
-function testFunc()
-{
-	while(1)
-	{
-		var whileVar1 = ""; 
-		while(1)
-		{
-			var whileVar2 = "";
-		}
-	}
-}
 

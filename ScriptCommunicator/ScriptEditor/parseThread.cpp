@@ -148,74 +148,6 @@ static inline void removeAllLeft(QString& text, QString character)
     }
 }
 
-/**
- * Searches a single object type.
- * @param className
- *      The class name.
- * @param searchString
- *      The search sring.
- * @param lines
- *      The lines in which shall be searched.
- */
-void ParseThread::searchSingleType(QString className, QString searchString, QStringList& lines, bool isArray,
-                                    bool withOutDotsAndBracked, bool replaceExistingEntry, bool matchExact)
-{
-    int index;
-    for(int i = 0; i < lines.length();i++)
-    {
-        index = lines[i].indexOf(searchString);
-        if(index != -1)
-        {
-            if(withOutDotsAndBracked)
-            {
-                if(lines[i].indexOf(".", index) != -1)
-                {
-                    continue;
-                }
-                if(lines[i].indexOf("[", index) != -1)
-                {
-                    continue;
-                }
-            }
-
-            if(matchExact)
-            {
-                if(lines[i].length() != (index + searchString.length()))
-                {
-                    continue;
-                }
-            }
-            QString objectName =  lines[i].left(index);
-
-            index = lines[i].indexOf("=");
-            if(index != -1)
-            {
-                objectName = lines[i].left(index);
-            }
-
-            removeAllLeft(objectName, "{");
-            removeAllLeft(objectName, ")");
-
-            bool containsInvalidChars = false;
-            for(auto character : objectName)
-            {
-                if(!character.isLetterOrNumber() && (character != '_') && (character != '[')
-                        && (character != ']'))
-                {
-                    containsInvalidChars = true;
-                    break;
-                }
-            }
-
-            if(containsInvalidChars)
-            {
-                continue;
-            }
-
-            addObjectToAutoCompletionList(objectName, className, false, isArray, replaceExistingEntry);
-        }
-    }
-}
 
 /**
  * Removes all unnecessary characters (e.g. comments).
@@ -243,32 +175,6 @@ void ParseThread::removeAllUnnecessaryCharacters(QString& currentText)
     currentText.replace("\r", "");
 }
 
-/**
- * Removes all square brackets and all between them.
- * @param currentText
- *      The text.
- */
-void ParseThread::removeAllBetweenSquareBrackets(QString& currentText)
-{
-    int index1 = 0;
-    int index2 = 0;
-    bool textRemoved = true;
-
-    while(textRemoved)
-    {
-        index1 = currentText.indexOf("[");
-        index2 = currentText.indexOf("]", index1);
-
-        if((index1 != -1) && (index2 != -1) && (index2 > index1))
-        {
-            currentText.remove(index1, (index2 - index1) + 1);
-        }
-        else
-        {
-            textRemoved = false;
-        }
-    }
-}
 /**
  * Parses a widget list from a user interface file (auto-completion).
  * @param uiFileName
@@ -537,6 +443,7 @@ void ParseThread::addObjectToAutoCompletionList(QString& objectName, QString& cl
                 m_tableWidgets.remove(index);
             }
             m_tableWidgets.append(autoCompletionName);
+            m_creatorObjects[autoCompletionName] = className;
         }
         else
         {
@@ -649,147 +556,6 @@ void ParseThread::checkDocumentForUiFiles(QString& currentText, QString activeDo
     }
 }
 
-/**
- * Searches all functions which return objects to for a specific object.
- * @param lines
- *      The current lines.
- * @param currentText
- *      The text in which shall be searched.
- * @param functions
- *      The functions for the current object.
- * @param objectName
- *      The name of the current object.
- */
-void ParseThread::seachAllFunctionForSpecificObject(QStringList& lines, QString &currentText,
-                                                    QVector<FunctionWithResultObject>& functions, QString objectName)
-{
-    if(currentText.contains("=" + objectName + "."))
-    {//The text contains an assignment of a function from the current objet.
-
-        for(auto el : functions)
-        {
-            searchSingleType(el.resultType, "=" + objectName + "." + el.functionName, lines, el.isArray);
-        }
-    }
-}
-
-/**
- * Searches all dynamically created objects created by custom objects (like ScriptTimer).
- * @param lines
- *      The current lines.
- * @param currentText
- *      The text in which shall be searched.
- */
-void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStringList &linesWithBrackets , QString &currentText, int passNumber)
-{
-
-    if(passNumber == 1)
-    {//Static object are only searched in the first pass.
-
-        //Search for the static objects.
-        seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects["scriptThread"], "scriptThread");
-        seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects["scriptFile"], "scriptFile");
-        seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects["conv"], "conv");
-        seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects["seq"], "seq");
-        seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects["scriptSql"], "scriptSql");
-        seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects["cust"], "cust");
-
-
-        //Search for GUI elements created by a table widget.
-        for(auto el : m_tableWidgets)
-        {
-            parseTableWidgetInsert(el, lines);
-            seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects["ScriptTableWidget"], el);
-        }
-
-
-        //Search for all functions of the GUI elements (created by a table widget) which returns another object.
-        QStringList keys = m_tableWidgetObjects.keys();
-        for(int i = 0; i < keys.length(); i++)
-        {
-            searchSingleTableSubWidgets(keys[i], m_tableWidgetObjects.value(keys[i]), lines);
-        }
-
-    }//if(passNumber == 1)
-
-
-    QMap<QString, QString> tmpCreatorList = m_creatorObjects;
-    QMap<QString, QString>::iterator i;
-    for (i = tmpCreatorList.begin(); i != tmpCreatorList.end(); ++i)
-    {
-        if(m_functionsWithResultObjects.contains(i.value()))
-        {
-            //Search for alle functions of the current object wich returns another object.
-            seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects[i.value()], i.key());
-        }
-
-        //Search for assignments of the current object.
-        searchSingleType(i.value(), "=" + i.key(), linesWithBrackets, m_arrayList.contains(i.key()), true, false, true);
-
-        if(m_arrayList.contains(i.key()))
-        {//Object is an array.
-
-            //Search for assignments of an array element from the current object.
-            searchSingleType(i.value(), "=" + i.key() + "[", linesWithBrackets);
-        }
-    }
-}
-
-/**
- * Searches objects which are returned by a ScriptTableWidget.
- * @param objectName
- *      The object name of the ScriptTableWidget.
- * @param subObjects
- *      All objects which have been created by the current ScriptTableWidget (ScriptTableWidget::insertWidget).
- * @param lines
- *      The lines in which shall be searched.
- */
-void ParseThread::searchSingleTableSubWidgets(QString objectName, QVector<TableWidgetSubObject> subObjects, QStringList& lines)
-{
-    int index;
-    QString searchString = objectName+ ".getWidget";
-    for(int i = 0; i < lines.length();i++)
-    {
-
-        index = lines[i].indexOf(searchString);
-        if(index != -1)
-        {
-            QString objectName =  lines[i].left(index);
-
-            index = lines[i].indexOf("=");
-            if(index != -1)
-            {
-                objectName = lines[i].left(index);
-            }
-
-            removeAllLeft(objectName, "{");
-            removeAllLeft(objectName, ")");
-
-            index = lines[i].indexOf("(", index);
-            int endIndex = lines[i].indexOf(")", index);
-            if((index != -1) && (endIndex != -1))
-            {
-                QString args = lines[i].mid(index + 1, endIndex - (index + 1));
-                QStringList list = args.split(",");
-                if(list.length() >= 2)
-                {
-                    bool isOk;
-                    int row = list[0].toUInt(&isOk);
-                    int column = list[1].toUInt(&isOk);
-
-                    //Search the corresponding widget in subObjects.
-                    for(int j = 0; j < subObjects.length(); j++)
-                    {
-                        if((row == subObjects[j].row) && (column == subObjects[j].column))
-                        {
-                            addObjectToAutoCompletionList(objectName, subObjects[j].className, false);
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 /**
  * Searches all ScriptTableWidget::insertWidgets calls of a specific ScriptTableWidget object.
@@ -946,6 +712,7 @@ static void parseEsprimaFunctionExpression(esprima::FunctionExpression* funcExp,
             subEntry.name = subVarDecl->declarations[0]->id->name.c_str();
             subEntry.params = QStringList();
             subEntry.tabIndex = tabIndex;
+            subEntry.isArrayIndex = false;
             subEntry.completeName = parent->name.isEmpty() ? subEntry.name : parent->completeName + "." + subEntry.name;
 
             esprima::FunctionExpression* funcExp = dynamic_cast<esprima::FunctionExpression*>(subVarDecl->declarations[0]->init);
@@ -1024,6 +791,7 @@ static void parseEsprimaFunctionExpression(esprima::FunctionExpression* funcExp,
                     subEntry.endLine = assignmentStatement->loc->end->line - 1;
                     subEntry.params = QStringList();
                     subEntry.tabIndex = tabIndex;
+                    subEntry.isArrayIndex = false;
 
                     esprima::MemberExpression* memExp = dynamic_cast<esprima::MemberExpression*>(assignmentStatement->left);
                     if(memExp)
@@ -1058,56 +826,6 @@ static void parseEsprimaFunctionExpression(esprima::FunctionExpression* funcExp,
         }
 
     }
-}
-
-/**
- * Searches all dynamically created objects created by standard objects (like String).
- * @param currentText
- *      The text in which shall be searched.
- */
-void ParseThread::checkDocumentForStandardDynamicObjects(QStringList& lines, QString &currentText, QStringList &linesWithBrackets, int passNumber)
-{
-    if(passNumber == 1)
-    {//Only the first pass the following code shall be executed.
-
-        searchSingleType("Dummy", "=Array(", linesWithBrackets, true);
-        searchSingleType("Dummy", "=newArray(", linesWithBrackets, true);
-
-        searchSingleType("Date", "=Date(", linesWithBrackets);
-        searchSingleType("Date", "=newDate(", linesWithBrackets);
-
-        searchSingleType("String", "=\"", linesWithBrackets);
-        searchSingleType("String", "='", linesWithBrackets);
-    }
-
-    QVector<QString> tmpList = m_stringList;
-    for(auto el : tmpList)
-    {
-        seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects["String"], el);
-        searchSingleType("String", "=" + el, linesWithBrackets, m_arrayList.contains(el), true, false, true);
-        searchSingleType("String", "=" + el + "[", linesWithBrackets);
-
-
-    }
-
-    tmpList = m_arrayList;
-    for(auto el : tmpList)
-    {
-        seachAllFunctionForSpecificObject(lines,currentText,  m_functionsWithResultObjects["Array"], el);
-    }
-
-   QMap<QString, QString> tmpCreatorList = m_creatorObjects;
-   QMap<QString, QString>::iterator i;
-   for (i = tmpCreatorList.begin(); i != tmpCreatorList.end(); ++i)
-   {
-      if(i.value() == "Date")
-       {
-           if(m_functionsWithResultObjects.contains(i.value()))
-           {
-               seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects[i.value()], i.key());
-           }
-       }
-   }
 }
 
 
@@ -1242,6 +960,19 @@ static void getTypeFromCallExpression(esprima::CallExpression* callExpression, P
             subEntry.valueType+= "()";
         }
 
+        if(subEntry.valueType.endsWith("getWidget()"))
+        {//Possibly ScriptTable.getWidget.
+
+            for(auto el : callExpression->arguments)
+            {
+                esprima::NumericLiteral* numLiteral = dynamic_cast<esprima::NumericLiteral*>(el);
+                if(numLiteral)
+                {
+                    subEntry.additionalInformation.append(QString("%1").arg(numLiteral->value));
+                }
+            }
+        }
+
     }
 }
 
@@ -1351,6 +1082,7 @@ static void parseEsprimaObjectExpression(esprima::ObjectExpression* objExp, Pars
         subEntry.line = objExp->properties[j]->loc->start->line - 1;
         subEntry.column = objExp->properties[j]->loc->start->column;
         subEntry.endLine = objExp->properties[j]->loc->end->line - 1;
+        subEntry.isArrayIndex = false;
         if(id)
         {
             subEntry.name = id->name.c_str();
@@ -1423,8 +1155,8 @@ static void parseEsprimaFunctionDeclaration(esprima::FunctionDeclaration* functi
                                             QMap<QString, ParsedEntry>* objects)
 {
 
-    entry->line = function->body->loc->start->line - 1;
-    entry->column = function->body->loc->start->column;
+    entry->line = function->id->loc->start->line - 1;
+    entry->column = function->id->loc->start->column;
     entry->endLine = function->body->loc->end->line - 1;
 
     entry->name = function->id->name.c_str();
@@ -1499,6 +1231,7 @@ static void parseEsprimaFunctionDeclaration(esprima::FunctionDeclaration* functi
                             subEntry.column = assignmentStatement->loc->start->column;
                             subEntry.endLine = assignmentStatement->loc->end->line - 1;
                             subEntry.name = id->name.c_str();
+                            subEntry.isArrayIndex = false;
                             subEntry.type = PARSED_ENTRY_TYPE_CLASS_THIS_FUNCTION;
                             subEntry.params = QStringList();
                             subEntry.tabIndex = tabIndex;
@@ -1664,6 +1397,37 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
     {
         QStringList split = entry.valueType.split(".");
 
+        if((split.size() >= 2) && m_tableWidgets.contains(split[0]))
+        {
+            if(split[1] == "getWidget()")
+            {
+                bool isOk;
+                int row = entry.additionalInformation[0].toInt(&isOk);
+                int column = entry.additionalInformation[1].toInt(&isOk);
+                QVector<TableWidgetSubObject> tableWidgetObjects = m_tableWidgetObjects[split[0]];
+                for(auto el : tableWidgetObjects)
+                {
+                    if((row == el.row) && (column == el.column))
+                    {
+                        split.pop_front();
+                        split.pop_front();
+                        split.push_front(el.className);
+                        entry.valueType = "";
+
+                        for(auto splitEl : split)
+                        {
+                            entry.valueType += splitEl + ".";
+                        }
+                        //Remove the last '.'.
+                        entry.valueType.remove(entry.valueType.size() - 1, 1);
+
+
+                        return true;
+                    }
+                }
+            }
+        }
+
         QString creatorName = entry.completeName;
         int tmpIndex = creatorName.lastIndexOf(entry.name);
         if(tmpIndex != -1)
@@ -1812,10 +1576,12 @@ static void parseEsprimaVariableDeclaration(esprima::VariableDeclaration* varDec
     entry.line = varDecl->declarations[0]->loc->start->line - 1;
     entry.column = varDecl->declarations[0]->loc->start->column;
     entry.name = varDecl->declarations[0]->id->name.c_str();
+    entry.isArrayIndex = false;
     entry.endLine = varDecl->declarations[0]->loc->end->line - 1;
     entry.completeName = parent.completeName.isEmpty() ? entry.name : parent.completeName + "." + entry.name;
     entry.params = QStringList();
     entry.tabIndex = tabIndex;
+    entry.isArrayIndex = false;
 
 
     esprima::NewExpression* newExp = dynamic_cast<esprima::NewExpression*>(varDecl->declarations[0]->init);
@@ -2082,6 +1848,7 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
             entry.type = PARSED_ENTRY_TYPE_PARSE_ERROR;
             entry.tabIndex = iter.key();
             entry.name = e.description.c_str();
+            entry.isArrayIndex = false;
             fileResult.append(entry);
             result[iter.key()] = fileResult;
             iter++;
@@ -2285,6 +2052,14 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                         addParsedEntiresToAutoCompletionList(result[i][j], m_autoCompletionEntries, "", result[i][j].name);
                     }
 
+                    if(m_tableWidgets.contains(result[i][j].valueType))
+                    {
+
+                        m_tableWidgets.append(result[i][j].name);
+                        m_tableWidgetObjects[result[i][j].name] = m_tableWidgetObjects[result[i][j].valueType];
+                        result[i][j].valueType = "ScriptTableWidget";
+                    }
+
                     result[i][j].valueType = result[i][j].params[0];
 
                 }
@@ -2385,12 +2160,6 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
     //Remove all unnecessary characters (e.g. comments).
     removeAllUnnecessaryCharacters(currentText);
 
-    //Get all lines (with square brackets).
-    QStringList linesWithBrackets = currentText.split(splitRegexp);
-
-    //Remove all brackets and all between them.
-    removeAllBetweenSquareBrackets(currentText);
-
     //Get all lines (without square brackets).
     QStringList lines = currentText.split(splitRegexp);
 
@@ -2433,33 +2202,6 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
         }
         //Get all global function and variables (with the esprima parser).
         parsedEntries = getAllFunctionsAndGlobalVariables(loadedScripts);
-#if 0
-        int counter = 1;
-        do
-        {
-            m_objectAddedToCompletionList = false;
-
-            //Call several times to get all objects created by dynamic objects.
-            checkDocumentForCustomDynamicObjects(lines, linesWithBrackets, currentText, counter);
-            counter++;
-        }while(m_objectAddedToCompletionList);
-
-
-        counter = 1;
-        do
-        {
-            m_objectAddedToCompletionList = false;
-
-            //Call several times to get all objects created by dynamic objects.
-            checkDocumentForStandardDynamicObjects(lines, currentText, linesWithBrackets, counter);
-            counter++;
-        }while(m_objectAddedToCompletionList);
-
-
-        //Search all objects with an unknown type.
-        searchSingleType("Dummy", "=", lines);
-
-#endif
 
         //Add all objects with an unknown type.
         for(auto el : m_unknownTypeObjects)

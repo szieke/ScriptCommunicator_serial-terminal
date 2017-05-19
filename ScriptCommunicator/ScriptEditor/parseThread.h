@@ -63,6 +63,7 @@ struct ParsedEntry
     QVector<ParsedEntry> subElements;//The sub entries.
     QString valueType;//The value type of the element (variable).
     bool isArrayIndex;//True if the value is from an array index.
+    QStringList additionalInformation;//Additional information.
 };
 
 ///This thread parses all documents (parseSlot).
@@ -95,24 +96,8 @@ private:
     ///Returns all functions and gloabl variables in the loaded script files.
     QMap<int,QVector<ParsedEntry>> getAllFunctionsAndGlobalVariables(QMap<int, QString> loadedScripts);
 
-    ///Searches objects which are returned by a ScriptTableWidget.
-    void searchSingleTableSubWidgets(QString objectName, QVector<TableWidgetSubObject> subObjects, QStringList& lines);
-
     ///Searches all ScriptTableWidget::insertWidgets calls of a specific ScriptTableWidget object.
     void parseTableWidgetInsert(const QString objectName, QStringList lines);
-
-    ///Searches a single object type.
-    void searchSingleType(QString className, QString searchString, QStringList& lines, bool isArray=false,
-                                        bool withOutDotsAndBracked= false, bool replaceExistingEntry=false, bool matchExact = false);
-
-    ///Searches all functions which return objects to for a specific object.
-    void seachAllFunctionForSpecificObject(QStringList& lines, QString &currentText,
-                                                        QVector<FunctionWithResultObject>& functions, QString objectName);
-    ///Searches all dynamically created objects created by custom objects (like ScriptTimer).
-    void checkDocumentForCustomDynamicObjects(QStringList& lines, QStringList &linesWithBrackets , QString &currentText, int passNumber);
-
-    ///Searches all dynamically created objects created by standard objects (like String).
-    void checkDocumentForStandardDynamicObjects(QStringList& lines, QString &currentText, QStringList &linesWithBrackets, int passNumber);
 
     ///Checks if in the current document user interface files are loaded.
     void checkDocumentForUiFiles(QString& currentText, QString activeDocument);
@@ -133,8 +118,6 @@ private:
 
     bool replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, ParsedEntry& entry, QString parentName);
 
-    ///Removes all square brackets and all between them.
-    void removeAllBetweenSquareBrackets(QString& currentText);
 
     ///Parses a single line from an api file and adds functions which return objects to m_functionsWithResultObjects.
     void parseSingleLineForFunctionsWithResultObjects(QString singleEntry);

@@ -55,6 +55,7 @@
 #include "esprima/esprima.h"
 
 
+
 ///Pointer to the main window.
 MainWindow* g_mainWindow = 0;
 
@@ -1978,7 +1979,7 @@ void MainWindow::functionListDoubleClicked(QTreeWidgetItem* item, int column)
                 QString regEx;
                 if(entry->type == PARSED_ENTRY_TYPE_FUNCTION)
                 {
-                    regEx = QString("function.*[ |/]%1").arg(entry->name);
+                    regEx = QString("function.*[ |/]%1.*[ |/](").arg(entry->name);
 
                 }
                 else if(entry->type == PARSED_ENTRY_TYPE_CLASS_THIS_FUNCTION)
@@ -2491,6 +2492,7 @@ static void saveExpandedState(QTreeWidgetItem* parent, QMap<QString, bool>& expa
         QTreeWidgetItem* subEl = parent->child(i);
         expandMap[key + ":" + subEl->text(0)] = subEl->isExpanded();
 
+
         if(subEl->childCount() > 0)
         {
             saveExpandedState(subEl, expandMap, key + subEl->text(0));
@@ -2597,6 +2599,7 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
     //Save the expanded state of all tree widget elements.
     saveExpandedState(root, expandMap, "");
 
+
     //Add all parsed entries to the script outline.
     QMap<int,QVector<ParsedEntry>>::const_iterator  iter = parsedEntries.constBegin();
     while (iter != parsedEntries.constEnd())
@@ -2635,7 +2638,8 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
 
                 if(savedCompleteTreeStrings[iter.key()] == currentCompleteTreeStrings[iter.key()])
                 {//The tree wigdet content has not changed.
-                    break;
+                    iter++;
+                    continue;
                 }
 
                 savedCompleteTreeStrings[iter.key()] = currentCompleteTreeStrings[iter.key()];
@@ -2649,7 +2653,14 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
                 dummyEntry->tabIndex = iter.key();
 
                 fileElement->setData(0, PARSED_ENTRY, (quint64)dummyEntry);
-                fileElement->setText(0, ui->documentsTabWidget->tabText(iter.key()));
+
+                QString textData = ui->documentsTabWidget->tabText(iter.key());
+                if(textData.endsWith("*"))
+                {
+                    //Remove the last "*".
+                    textData.remove(textData.length() - 1, 1);
+                }
+                fileElement->setText(0, textData);
                 fileElement->setToolTip(0, textEditor->getDocumentName());
                 fileElement->setIcon(0, QIcon(":/images/document.png"));
                 root->insertChild(iter.key(), fileElement);
