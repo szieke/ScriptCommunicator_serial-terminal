@@ -2134,6 +2134,7 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
         if(fileInfo.lastModified() != timeIter.value())
         {
             uiFileChanged = true;
+            parseOnlyUIFiles = false;
             break;
         }
 
@@ -2147,6 +2148,7 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
         return;
     }
     m_parsedUiFilesFromFile.clear();
+
 
     QString currentText;
     //Creates a string which contains the text of all loaded scripts.
