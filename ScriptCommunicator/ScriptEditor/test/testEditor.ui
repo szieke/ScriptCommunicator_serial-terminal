@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>249</width>
-    <height>111</height>
+    <width>447</width>
+    <height>334</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -52,6 +52,16 @@
      <string>PWM</string>
     </property>
    </item>
+  </widget>
+  <widget class="QTableWidget" name="TableWidget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>80</y>
+     <width>256</width>
+     <height>192</height>
+    </rect>
+   </property>
   </widget>
  </widget>
  <tabstops>

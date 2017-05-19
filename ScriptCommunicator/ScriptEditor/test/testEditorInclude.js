@@ -33,7 +33,7 @@ function Class(arg0)
 	
 	var reset = function(arg1)
     {
-	  var test = this.testClassArray;
+		var test = this.testClassArray;
 	}	
 	
 	this.start = function(arg2)

@@ -73,7 +73,7 @@ MainWindow* getMainWindow()
 MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTimer(), m_parseThread(0), m_parsingFinished(true),
     m_lockFiles(), m_unsavedInfoFiles(), m_checkForFileChangesTimer(),
     m_lastMouseMoveEvent(QEvent::None,QPointF(),Qt::NoButton, Qt::NoButton, Qt::NoModifier), m_mouseEventTimer(),
-    m_ctrlIsPressed(false), m_indicatorClickTimer(), m_lastIndicatorClickPosition(0)
+    m_ctrlIsPressed(false), m_indicatorClickTimer(), m_lastIndicatorClickPosition(0), m_showParseError(true)
 {
     ui->setupUi(this);
 
@@ -173,18 +173,39 @@ void MainWindow::parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEn
 
         if(!parseOnlyUIFiles)
         {
+            bool hasError = insertFillScriptViewAndDisplayErrors(parsedEntries);
+
+            if(hasError)
+            {//One document contains an error.
+
+                QMap<QString, QStringList>::const_iterator  iter = autoCompletionEntries.constBegin();
+                while (iter != autoCompletionEntries.constEnd())
+                {
+                    m_autoCompletionEntries[iter.key()] = iter.value();
+                    iter++;
+                }
+
+            }
+            else
+            {
+                m_autoCompletionEntries = autoCompletionEntries;
+            }
+
             for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
             {
                 SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
-                textEditor->initAutoCompletion(autoCompletionEntries, autoCompletionApiFiles);
+                textEditor->initAutoCompletion(m_autoCompletionEntries, autoCompletionApiFiles);
             }
 
-            insertFillScriptViewAndDisplayErrors(parsedEntries);
+            m_showParseError = true;
+
+
         }
 
 
         insertAllUiObjectsInUiView(parsedUiObjects);
     }
+
 
     m_parsingFinished = true;
 }
@@ -730,6 +751,7 @@ void MainWindow::documentsTabCloseRequestedSlot(int index)
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
             textEditor->setFileMustBeParsed(true);
         }
+        m_showParseError = true;
         m_parseTimer.start(200);
     }
 
@@ -875,6 +897,7 @@ void MainWindow::reloadSlot()
 
         textEditor->updateLastModified();
         textEditor->setFileMustBeParsed(true);
+        m_showParseError = true;
         m_parseTimer.start(200);
     }
     else
@@ -2105,6 +2128,9 @@ void MainWindow::documentWasModified(int index)
          ui->documentsTabWidget->setTabText(index, shownName);
     }
 
+    m_showParseError = false;
+    m_parseTimer.start(2000);
+
 }
 
 /**
@@ -2384,13 +2410,9 @@ bool MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(el.tabIndex)->layout()->itemAt(0)->widget());
 
         if(el.type == PARSED_ENTRY_TYPE_PARSE_ERROR)
-        {
-            if(ui->documentsTabWidget->widget(el.tabIndex))
-            {
-                QsciStyle myStyle(-1,"Annotation",QColor(255,0,0),QColor(255,150,150),QFont("Courier New",-1,-1,true),true);
-                textEditor->annotate(el.line - 1, el.name,myStyle);
-                hasError = true;
-            }
+        {//Do nothing.
+            hasError = true;
+
         }
         else
         {
@@ -2559,8 +2581,9 @@ static void parsedEntryToString(const QVector<ParsedEntry>& parsedEntries,
  * @param parsedEntries
  *      The parsed entries.
  */
-void MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEntry>>& parsedEntries)
+bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEntry>>& parsedEntries)
 {
+    bool hasError = false;
     static QMap<int, QString> savedCompleteTreeStrings;
     QMap<int, QString> currentCompleteTreeStrings;
     QTreeWidgetItem* root = ui->outlineTreeWidget->invisibleRootItem();
@@ -2581,57 +2604,105 @@ void MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
         //Add all elements for the current documents tab.
         if(ui->documentsTabWidget->widget(iter.key()))
         {
+
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(iter.key())->layout()->itemAt(0)->widget());
 
-
-            if(!currentCompleteTreeStrings.contains(iter.key()))
-            {
-                currentCompleteTreeStrings[iter.key()] = "";
-            }
-
-            if(!savedCompleteTreeStrings.contains(iter.key()))
-            {
-                savedCompleteTreeStrings[iter.key()] = "";
-            }
-
-            currentCompleteTreeStrings[iter.key()] += textEditor->getDocumentName() + ui->documentsTabWidget->tabText(iter.key());
-            parsedEntryToString(iter.value(), currentCompleteTreeStrings[iter.key()]);
-
-            if(savedCompleteTreeStrings[iter.key()] == currentCompleteTreeStrings[iter.key()])
-            {//The tree wigdet content has not changed.
-                break;
-            }
-
-            savedCompleteTreeStrings[iter.key()] = currentCompleteTreeStrings[iter.key()];
 
             //Clear all annotations.
             textEditor->clearAnnotations();
 
-            clearOutlineWindow(iter.key());
-
-            //Add the element for the current documents tab.
-            QTreeWidgetItem* fileElement = new QTreeWidgetItem();
-            ParsedEntry* dummyEntry = new ParsedEntry();
-            dummyEntry->type = PARSED_ENTRY_TYPE_FILE;
-            dummyEntry->tabIndex = iter.key();
-
-            fileElement->setData(0, PARSED_ENTRY, (quint64)dummyEntry);
-            fileElement->setText(0, ui->documentsTabWidget->tabText(iter.key()));
-            fileElement->setToolTip(0, textEditor->getDocumentName());
-            fileElement->setIcon(0, QIcon(":/images/document.png"));
-            root->insertChild(iter.key(), fileElement);
-            ui->outlineTreeWidget->expandItem(fileElement);
-            textEditor->clearAllFunctions();
-
-            if(inserSubElementsToScriptView(fileElement, iter.value(), ""))
+            if(root->child(iter.key()))
             {
-                fileElement->setTextColor(0, QColor(255,0,0));
+                root->child(iter.key())->setTextColor(0, QColor(0,0,0));
             }
 
-            for(int i = 0; i < fileElement->columnCount(); i++)
+            if(iter.value()[0].type != PARSED_ENTRY_TYPE_PARSE_ERROR)
             {
-                fileElement->sortChildren(i, Qt::AscendingOrder);
+
+                if(!currentCompleteTreeStrings.contains(iter.key()))
+                {
+                    currentCompleteTreeStrings[iter.key()] = "";
+                }
+
+                if(!savedCompleteTreeStrings.contains(iter.key()))
+                {
+                    savedCompleteTreeStrings[iter.key()] = "";
+                }
+
+
+                currentCompleteTreeStrings[iter.key()] += textEditor->getDocumentName() + ui->documentsTabWidget->tabText(iter.key());
+                parsedEntryToString(iter.value(), currentCompleteTreeStrings[iter.key()]);
+
+                if(savedCompleteTreeStrings[iter.key()] == currentCompleteTreeStrings[iter.key()])
+                {//The tree wigdet content has not changed.
+                    break;
+                }
+
+                savedCompleteTreeStrings[iter.key()] = currentCompleteTreeStrings[iter.key()];
+
+                clearOutlineWindow(iter.key());
+
+                //Add the element for the current documents tab.
+                QTreeWidgetItem* fileElement = new QTreeWidgetItem();
+                ParsedEntry* dummyEntry = new ParsedEntry();
+                dummyEntry->type = PARSED_ENTRY_TYPE_FILE;
+                dummyEntry->tabIndex = iter.key();
+
+                fileElement->setData(0, PARSED_ENTRY, (quint64)dummyEntry);
+                fileElement->setText(0, ui->documentsTabWidget->tabText(iter.key()));
+                fileElement->setToolTip(0, textEditor->getDocumentName());
+                fileElement->setIcon(0, QIcon(":/images/document.png"));
+                root->insertChild(iter.key(), fileElement);
+                ui->outlineTreeWidget->expandItem(fileElement);
+                textEditor->clearAllFunctions();
+
+                if(inserSubElementsToScriptView(fileElement, iter.value(), ""))
+                {
+                    fileElement->setTextColor(0, QColor(255,0,0));
+                }
+
+                for(int i = 0; i < fileElement->columnCount(); i++)
+                {
+                    fileElement->sortChildren(i, Qt::AscendingOrder);
+                }
+
             }
+            else
+            {
+
+                hasError = true;
+                savedCompleteTreeStrings[iter.key()] = "";
+
+                if(m_showParseError)
+                {
+
+                    QsciStyle myStyle(-1,"Annotation",QColor(255,0,0),QColor(255,150,150),QFont("Courier New",-1,-1,true),true);
+                    textEditor->annotate(iter.value()[0].line - 1, iter.value()[0].name,myStyle);
+
+                    if(root->child(iter.key()))
+                    {
+                        root->child(iter.key())->setTextColor(0, QColor(255,0,0));
+                    }
+                    else
+                    {
+                        //Add the element for the current documents tab.
+                        QTreeWidgetItem* fileElement = new QTreeWidgetItem();
+                        ParsedEntry* dummyEntry = new ParsedEntry();
+                        dummyEntry->type = PARSED_ENTRY_TYPE_FILE;
+                        dummyEntry->tabIndex = iter.key();
+
+                        fileElement->setData(0, PARSED_ENTRY, (quint64)dummyEntry);
+                        fileElement->setText(0, ui->documentsTabWidget->tabText(iter.key()));
+                        fileElement->setToolTip(0, textEditor->getDocumentName());
+                        fileElement->setIcon(0, QIcon(":/images/document.png"));
+                        fileElement->setTextColor(0, QColor(255,0,0));
+                        root->insertChild(iter.key(), fileElement);
+                    }
+                }
+
+            }
+
+
         }
 
         iter++;
@@ -2639,6 +2710,8 @@ void MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
 
     //Restore the expanded state of all tree widget elements.
     restoreExpandedState(ui->outlineTreeWidget, root, expandMap, "");
+
+    return hasError;
 }
 
 /**
@@ -2693,6 +2766,7 @@ bool MainWindow::loadFile(const QString &fileName)
     statusBar()->showMessage(tr("File loaded"), 5000);
 
     //Parse all files.
+    m_showParseError = true;
     m_parseTimer.start(200);
     return true;
 }
@@ -2737,6 +2811,7 @@ bool MainWindow::saveFile(const QString &fileName)
     textEditor->setFileMustBeParsed(true);
 
     //Parse all files.
+    m_showParseError = true;
     m_parseTimer.start(200);
 
     return true;

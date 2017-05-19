@@ -99,7 +99,7 @@ private:
     void searchSingleTableSubWidgets(QString objectName, QVector<TableWidgetSubObject> subObjects, QStringList& lines);
 
     ///Searches all ScriptTableWidget::insertWidgets calls of a specific ScriptTableWidget object.
-    void parseTableWidetInsert(const QString objectName, QStringList lines);
+    void parseTableWidgetInsert(const QString objectName, QStringList lines);
 
     ///Searches a single object type.
     void searchSingleType(QString className, QString searchString, QStringList& lines, bool isArray=false,

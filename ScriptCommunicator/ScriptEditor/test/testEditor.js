@@ -1,4 +1,19 @@
 ﻿
+UI_TableWidget.insertWidget(2, 0, "ComboBox");
+var UI_tableComboBox1 = UI_TableWidget.getWidget(2, 0)
+UI_tableComboBox1.addItem("val1");
+UI_tableComboBox1.addItem("val2");
+UI_tableComboBox1.setCurrentIndex(0)
+UI_tableComboBox1.currentTextChangedSignal.connect(tableComboBox1TextChanged)
+UI_tableComboBox1.setAdditionalData(0, 2);
+UI_tableComboBox1.setAdditionalData(1, 0);
+
+UI_TableWidget.insertWidget(2, 1, "LineEdit");
+var UI_tableLineEdit1 = UI_TableWidget.getWidget(2, 1)
+UI_tableLineEdit1.textChangedSignal.connect(tableLineEdit1TextChanged);
+UI_tableLineEdit1.setAdditionalData(0, 2);
+UI_tableLineEdit1.setAdditionalData(1, 1);
+
 scriptThread.loadScript("testEditorInclude.js");
 
 var HST_BAUDRATE = 19200; 
@@ -23,7 +38,6 @@ classSingelton1.getInfo();
 var map2 = map1;
 var array2 = array1;
 var classVar = new Class("www");
-
 var timer = classVar.testTimer;
 var stringArray = classVar.testStringArray;
 
@@ -59,3 +73,4 @@ function testFunc()
 		}
 	}
 }
+

@@ -698,7 +698,7 @@ void ParseThread::checkDocumentForCustomDynamicObjects(QStringList& lines, QStri
         //Search for GUI elements created by a table widget.
         for(auto el : m_tableWidgets)
         {
-            parseTableWidetInsert(el, lines);
+            parseTableWidgetInsert(el, lines);
             seachAllFunctionForSpecificObject(lines, currentText, m_functionsWithResultObjects["ScriptTableWidget"], el);
         }
 
@@ -798,7 +798,7 @@ void ParseThread::searchSingleTableSubWidgets(QString objectName, QVector<TableW
  * @param lines
  *      The lines in which shall be searched.
  */
-void ParseThread::parseTableWidetInsert(const QString objectName, QStringList lines)
+void ParseThread::parseTableWidgetInsert(const QString objectName, QStringList lines)
 {
     int index;
     for(int i = 0; i < lines.length();i++)
@@ -2426,6 +2426,11 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
     QMap<int,QVector<ParsedEntry>> parsedEntries;
     if(!parseOnlyUIFiles)
     {
+        //Search for GUI elements created by a table widget.
+        for(auto el : m_tableWidgets)
+        {
+            parseTableWidgetInsert(el, lines);
+        }
         //Get all global function and variables (with the esprima parser).
         parsedEntries = getAllFunctionsAndGlobalVariables(loadedScripts);
 #if 0
@@ -2455,6 +2460,7 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
         searchSingleType("Dummy", "=", lines);
 
 #endif
+
         //Add all objects with an unknown type.
         for(auto el : m_unknownTypeObjects)
         {
