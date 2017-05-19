@@ -314,7 +314,7 @@ bool MainWindow::checkIfElementsInOutlineTree(QString name)
         bool isOk = false;
         ParsedEntry* entry  = (ParsedEntry*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
 
-      if (entry->completeName == name)
+      if (entry && (entry->completeName == name))
       {
           wordIsInOutline = true;
           break;
@@ -589,26 +589,6 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
             if (entry->completeName == searchString)
             {
                 functionListDoubleClicked((*iter), 0);
-
-                //Deselect all selected items.
-                for(auto el : ui->outlineTreeWidget->selectedItems())
-                {
-                    el->setSelected(false);
-                }
-
-                //Expand all parents items.
-                QTreeWidgetItem* item = (*iter)->parent();
-                while(item)
-                {
-                    item->setExpanded(true);
-                    item = item->parent();
-                }
-
-                //Select the found item.
-                (*iter)->setSelected(true);
-
-                //Scroll to the found item.
-                ui->outlineTreeWidget->scrollToItem((*iter));
               break;
             }
             else
@@ -752,6 +732,9 @@ void MainWindow::documentsTabCloseRequestedSlot(int index)
         }
         m_parseTimer.start(200);
     }
+
+    clearOutlineWindow(index);
+    setStateLoadAllIncludedScriptsButton();
 
 }
 
@@ -2251,14 +2234,14 @@ bool MainWindow::maybeSave(int index)
 /**
  * Clears the outline window.
  */
-void MainWindow::clearOutlineWindow(void)
+void MainWindow::clearOutlineWindow(int tabIndex)
 {
     QTreeWidgetItemIterator it(ui->outlineTreeWidget);
     while (*it)
     {
         bool isOk = false;
         ParsedEntry* entry  = (ParsedEntry*)(*it)->data(0, PARSED_ENTRY).toULongLong(&isOk);
-        if(entry != 0)
+        if((entry != 0) && (tabIndex == entry->tabIndex))
         {
             (*it)->setData(0, PARSED_ENTRY, (quint64)0);
             delete entry;
@@ -2266,7 +2249,8 @@ void MainWindow::clearOutlineWindow(void)
       ++it;
     }
 
-    ui->outlineTreeWidget->clear();
+    //Remouve the file item.
+    ui->outlineTreeWidget->takeTopLevelItem(tabIndex);
 }
 
 
@@ -2563,6 +2547,9 @@ static void parsedEntryToString(const QVector<ParsedEntry>& parsedEntries,
 
         //Add the value type to the string.
         currentCompleteTreeString += el.valueType;
+
+        //Add the start/end line to the string.
+        currentCompleteTreeString += QString("%1%2").arg(el.line).arg(el.endLine);
     }
 }
 
@@ -2574,63 +2561,65 @@ static void parsedEntryToString(const QVector<ParsedEntry>& parsedEntries,
  */
 void MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEntry>>& parsedEntries)
 {
-    static QString savedCompleteTreeString = "";
-    QString currentCompleteTreeString = "";
+    static QMap<int, QString> savedCompleteTreeStrings;
+    QMap<int, QString> currentCompleteTreeStrings;
     QTreeWidgetItem* root = ui->outlineTreeWidget->invisibleRootItem();
     QMap<QString, bool> expandMap;
 
-    //Convert all parsed entries to a string.
-    QMap<int,QVector<ParsedEntry>>::const_iterator iter = parsedEntries.constBegin();
-    while (iter != parsedEntries.constEnd())
+    if(root->childCount() != savedCompleteTreeStrings.size())
     {
-        if(ui->documentsTabWidget->widget(iter.key()))
-        {
-            SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(iter.key())->layout()->itemAt(0)->widget());
-            currentCompleteTreeString += textEditor->getDocumentName() + ui->documentsTabWidget->tabText(iter.key());
-            parsedEntryToString(iter.value(), currentCompleteTreeString);
-        }
-        iter++;
+        savedCompleteTreeStrings.clear();
     }
-
-   if(savedCompleteTreeString == currentCompleteTreeString)
-   {//The tree wigdet content has not changed.
-       return;
-   }
-
-    savedCompleteTreeString = currentCompleteTreeString;
 
     //Save the expanded state of all tree widget elements.
     saveExpandedState(root, expandMap, "");
 
-    clearOutlineWindow();
-
-    //Clear all annotations.
-    for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
-    {
-        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
-        textEditor->clearAnnotations();
-    }
-
     //Add all parsed entries to the script outline.
-    iter = parsedEntries.constBegin();
+    QMap<int,QVector<ParsedEntry>>::const_iterator  iter = parsedEntries.constBegin();
     while (iter != parsedEntries.constEnd())
     {
-        //Add the element for the current documents tab.
-        QTreeWidgetItem* fileElement = new QTreeWidgetItem(root);
-        ParsedEntry* dummyEntry = new ParsedEntry();
-        dummyEntry->type = PARSED_ENTRY_TYPE_FILE;
-        dummyEntry->tabIndex = iter.key();
-
-        fileElement->setData(0, PARSED_ENTRY, (quint64)dummyEntry);
-        fileElement->setText(0, ui->documentsTabWidget->tabText(iter.key()));
-
         //Add all elements for the current documents tab.
         if(ui->documentsTabWidget->widget(iter.key()))
         {
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(iter.key())->layout()->itemAt(0)->widget());
+
+
+            if(!currentCompleteTreeStrings.contains(iter.key()))
+            {
+                currentCompleteTreeStrings[iter.key()] = "";
+            }
+
+            if(!savedCompleteTreeStrings.contains(iter.key()))
+            {
+                savedCompleteTreeStrings[iter.key()] = "";
+            }
+
+            currentCompleteTreeStrings[iter.key()] += textEditor->getDocumentName() + ui->documentsTabWidget->tabText(iter.key());
+            parsedEntryToString(iter.value(), currentCompleteTreeStrings[iter.key()]);
+
+            if(savedCompleteTreeStrings[iter.key()] == currentCompleteTreeStrings[iter.key()])
+            {//The tree wigdet content has not changed.
+                break;
+            }
+
+            savedCompleteTreeStrings[iter.key()] = currentCompleteTreeStrings[iter.key()];
+
+            //Clear all annotations.
+            textEditor->clearAnnotations();
+
+            clearOutlineWindow(iter.key());
+
+            //Add the element for the current documents tab.
+            QTreeWidgetItem* fileElement = new QTreeWidgetItem();
+            ParsedEntry* dummyEntry = new ParsedEntry();
+            dummyEntry->type = PARSED_ENTRY_TYPE_FILE;
+            dummyEntry->tabIndex = iter.key();
+
+            fileElement->setData(0, PARSED_ENTRY, (quint64)dummyEntry);
+            fileElement->setText(0, ui->documentsTabWidget->tabText(iter.key()));
             fileElement->setToolTip(0, textEditor->getDocumentName());
             fileElement->setIcon(0, QIcon(":/images/document.png"));
-            root->addChild(fileElement);
+            root->insertChild(iter.key(), fileElement);
             ui->outlineTreeWidget->expandItem(fileElement);
             textEditor->clearAllFunctions();
 

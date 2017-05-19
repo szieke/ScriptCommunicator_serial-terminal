@@ -261,7 +261,7 @@ private:
     void insertFillScriptViewAndDisplayErrors(QMap<int, QVector<ParsedEntry> > &parsedEntries);
 
     ///Clears the outline window.
-    void clearOutlineWindow(void);
+    void clearOutlineWindow(int tabIndex);
 
     ///Clears the ui window.
     void clearUiWindow(void);
