@@ -1,47 +1,4 @@
-﻿var map3 = {
-"HST" : {
-        baudrate : HST_BAUDRATE,
-		send : scriptThread.getAllObjectPropertiesAndFunctions("HST\n"),
-        unknown : obj.testFunc("dd"),
-		send2 : [ 60, 35, 83],
-		send3 : Array("")
-    },
-	
-}
-
-
-
-function testFunction()
-{
-	var testVar = 0;
-	testVar.toExponential(); 
-	var stringResult = conv.byteArrayToString(Array(1,2,3));
-	var splitResult = stringResult.split("\n");
-	var splitResultElement1 = splitResult.concat();
-	var testBool = splitResultElement1.isArray()
-	
-	while(1)
-	{
-		var whileVar1 = ""; 
-		switch(e)
-		{
-			case 1 :
-			{
-				var caseVar1 = "";
-				var ports = scriptThread.availableSerialPorts();
-				for ( var a in ports)
-				{
-					var portname2 = ports[a];
-					for (var b = 0;  b < counter; b++)
-					{
-						var portname = ports[p];
-					}
-				}
-			}
-		}
-	}
-	
-}
+﻿
 
 function Class(arg0)
 {
@@ -70,7 +27,7 @@ function Class(arg0)
 				{
 					var caseVar1 = "";
 					var ports = scriptThread.availableSerialPorts();
-					for ( var a in ports)
+					for ( var a in ports) 
 					{
 						var portname2 = ports[a];
 						for (var b = 0;  b < counter; b++)
@@ -136,6 +93,49 @@ Class.prototype.getInfo = function(arg)
     return this.waitForResponse;
 }
 
+var map3 = {
+"HST" : {
+        baudrate : HST_BAUDRATE,
+		send : scriptThread.getAllObjectPropertiesAndFunctions("HST\n"),
+        unknown : obj.testFunc("dd"),
+		send2 : [ 60, 35, 83],
+		send3 : Array("")
+    },
+	
+}
+
+
+
+function testFunction()
+{
+	var testVar = 0;
+	testVar.toExponential(); 
+	var stringResult = conv.byteArrayToString(Array(1,2,3));
+	var splitResult = stringResult.split("\n");
+	var splitResultElement1 = splitResult.concat();
+	var testBool = splitResultElement1.isArray()
+	
+	while(1)
+	{
+		var whileVar1 = ""; 
+		switch(e)
+		{
+			case 1 :
+			{
+				var caseVar1 = "";
+				var ports = scriptThread.availableSerialPorts();
+				for ( var a in testArray4)
+				{
+					for (var b = ports.length - 1;  b >= 0 ; b--)
+					{
+						var portname = ports[p];
+					}
+				}
+			}
+		}
+	}
+	
+}
 var array1 = 
 {
 	name: "ERROR", 

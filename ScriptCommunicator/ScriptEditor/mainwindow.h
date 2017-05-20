@@ -257,6 +257,8 @@ private:
     ///Inserts a subelement into the script view.
     bool inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<ParsedEntry> parsedEntries, QString parentName);
 
+    void insertFileElementForTabIndex(int tabIndex);
+
     ///Inserts all parsed elements in the  script view and displays all parse errors (annotations).
     bool insertFillScriptViewAndDisplayErrors(QMap<int, QVector<ParsedEntry> > &parsedEntries);
 
