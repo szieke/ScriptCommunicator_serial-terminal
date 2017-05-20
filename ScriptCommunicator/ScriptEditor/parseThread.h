@@ -24,6 +24,7 @@ typedef struct
     QString functionName;//The name of the function.
     QString resultType;//The result type of the function.
     bool isArray;//True if the result type is an array.
+    bool isProperty;//True if this element is a property.
 
 }FunctionWithResultObject;
 
@@ -120,7 +121,7 @@ private:
 
 
     ///Parses a single line from an api file and adds functions which return objects to m_functionsWithResultObjects.
-    void parseSingleLineForFunctionsWithResultObjects(QString singleEntry);
+    void parseSingleLineForFunctionsWithResultObjects(QString &singleEntry);
 
     ///Contains the auto-completion entries for all parsed api files.
     QMap<QString, QStringList> m_autoCompletionApiFiles;

@@ -9,14 +9,14 @@ encodeURI(uri):String \nThis function is used to encode a URI.\nThis function en
 encodeURIComponent(uri):String \nThis function encodes a URI component.\nThis function encodes special characters. In addition, it encodes the following characters: , / ? : @ & = + $ #
 JSON::parse(text [, reveiver]):JSON \nParses a string as JSON, optionally transforming the value produced by parsing.
 JSON::stringify(value [, replacer [, space]]):JSON \nConverts a JavaScript value to a JSON string, optionally replacing values if a replacer function is specified,\nor optionally including only the specified properties if a replacer array is specified.
-Math::E \nThis property represents the base of natural logarithms, e, approximately 2.718.
-Math::LN10 \nThis property represents the natural logarithm of 10, approximately 2.302.
-Math::LN2 \nThis property represents the natural logarithm of 2, approximately 0.693.
-Math::LOG2E \nThis property represents the base 2 logarithm of e, approximately 1.442.
-Math::LOG10E \nThis property represents the base 10 logarithm of e, approximately 0.434.
-Math::PI \nThis property represents the ratio of the circumference of a circle to its diameter, approximately 3.14159.
-Math::SQRT1_2 \nThis property represents the square root of 1/2 which is approximately 0.707.
-Math::SQRT2 \nThis property represents the square root of 2, approximately 1.414.
+Math::E:Number \nThis property represents the base of natural logarithms, e, approximately 2.718.
+Math::LN10:Number \nThis property represents the natural logarithm of 10, approximately 2.302.
+Math::LN2:Number \nThis property represents the natural logarithm of 2, approximately 0.693.
+Math::LOG2E:Number \nThis property represents the base 2 logarithm of e, approximately 1.442.
+Math::LOG10E:Number \nThis property represents the base 10 logarithm of e, approximately 0.434.
+Math::PI:Number \nThis property represents the ratio of the circumference of a circle to its diameter, approximately 3.14159.
+Math::SQRT1_2:Number \nThis property represents the square root of 1/2 which is approximately 0.707.
+Math::SQRT2:Number \nThis property represents the square root of 2, approximately 1.414.
 Math::abs(x):Number \nReturns the absolute value of a number.
 Math::acos(x):Number \nReturns the arccosine (in radians) of a number.
 Math::asin(x):Number \nReturns the arcsine (in radians) of a number.

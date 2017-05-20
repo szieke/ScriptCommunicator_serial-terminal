@@ -90,6 +90,11 @@ QString QsciAPIsPrepared::apiBaseName(const QString &api)
     QString base = api;
     int tail = base.indexOf('(');
 
+    if (tail == -1)
+    {//Possibly a property.
+        tail = base.indexOf("\n");
+    }
+
     if (tail >= 0)
         base.truncate(tail);
 
@@ -824,11 +829,19 @@ QStringList QsciAPIs::callTips(const QStringList &context, int commas,
 
                     int tail = api.indexOf('(');
 
-                    if (tail < 0)
-                        continue;
+                    if(tail == -1)
+                    {//Possibly a property.
+                        tail = api.indexOf('\n');
 
-                    if (!enoughCommas(api, commas))
-                        continue;
+                        if (tail < 0)
+                            continue;
+                    }
+                    else
+                    {
+                        if (!enoughCommas(api, commas))
+                            continue;
+                    }
+
 
                     if (style == QsciScintilla::CallTipsNoContext)
                     {

@@ -20,4 +20,4 @@ ScriptGroupBox::setObjectName(String name):void \nSets the name of the current o
 ScriptGroupBox::setTitle(String title):void \nSets the group box title.
 ScriptGroupBox::title(void):String \nReturns the group box title.
 ScriptGroupBox::addPlotWidget(void):ScriptPlotWidget \nAdds a plot widget to the group box.
-ScriptGroupBox::addCanvas2DWidget(void):ScriptCanvasObject \nAdds a Canvas2D object to the group box.
+ScriptGroupBox::addCanvas2DWidget(void):ScriptCanvas2DWidget \nAdds a Canvas2D widget to the group box.

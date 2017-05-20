@@ -26,14 +26,18 @@ QString getScriptEditorFilesFolder(void)
  * Parses a single line from an api file and adds functions which return objects to m_functionsWithResultObjects.
  * @param singleLine
  *      The current line
+ * @return
+ *      True if the current entry is a property.
  */
-void ParseThread::parseSingleLineForFunctionsWithResultObjects(QString singleLine)
+void ParseThread::parseSingleLineForFunctionsWithResultObjects(QString& singleLine)
 {
+
     QStringList split = singleLine.split(":");
     if(split.length() >= 4)
     {
         FunctionWithResultObject element;
         element.isArray = false;
+        element.isProperty = false;
         QString className = split[0];
         element.functionName = split[2];
 
@@ -46,14 +50,19 @@ void ParseThread::parseSingleLineForFunctionsWithResultObjects(QString singleLin
             element.functionName.remove(index + 1, element.functionName.length() - (index + 1));
         }
         else
-        {//Invalid entry.
-            return;
+        {
+            element.isProperty = true;
         }
 
         index = element.resultType.indexOf("\\n");
         if(index != -1)
         {
             element.resultType.remove(index, element.resultType.length() - index);
+
+            if(element.isProperty)
+            {
+                singleLine.replace(":" + element.resultType, "");
+            }
             element.resultType.replace(" ", "");//Remove all spaces
 
             if(element.resultType.startsWith("Array"))
@@ -90,6 +99,7 @@ void ParseThread::parseSingleLineForFunctionsWithResultObjects(QString singleLin
 
         m_functionsWithResultObjects[className].append(element);
     }
+
 }
 
 ParseThread::ParseThread(QObject *parent) : QThread(parent), m_autoCompletionApiFiles(), m_autoCompletionEntries(), m_objectAddedToCompletionList(false),
