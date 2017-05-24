@@ -666,6 +666,8 @@ bool MainWindow::addTab(QString script, bool setTabIndex)
         connect(textEditor, SIGNAL(zoomInSignal()), this, SLOT(zoomInSlot()));
         connect(textEditor, SIGNAL(zoomOutSignal()), this, SLOT(zoomOutSlot()));
 
+        connect(textEditor, SIGNAL(modificationChanged(bool)), this, SLOT(modificationChangedSlot()));
+
         connect(textEditor,SIGNAL(SCN_DOUBLECLICK(int,int,int)),
                  this,SLOT(handleDoubleClicksInEditor(int,int,int)));
         connect(textEditor, SIGNAL(indicatorClicked(int,int,Qt::KeyboardModifiers)), this,
@@ -2008,7 +2010,7 @@ void MainWindow::uiViewDoubleClicked(QTreeWidgetItem* item, int column)
         ParsedUiObject* entry  = (ParsedUiObject*)item->data(0, PARSED_ENTRY).toULongLong(&isOk);
 
         //Check of entry is valid.
-        if((entry != 0) && !entry->objectName.isEmpty())
+        if((entry != 0))
         {
             clearCurrentIndicator();
 
@@ -2034,13 +2036,17 @@ void MainWindow::uiViewDoubleClicked(QTreeWidgetItem* item, int column)
             if(checkIfDocumentAlreadyLoaded(entry->uiFile, index))
             {//The ui file is loaded.
 
-                //Serach for the clicked item/text.
                 SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(index)->layout()->itemAt(0)->widget());
-                if(textEditor->findFirst("name=\"" + entry->objectName, false, true, false, true, true, 0, 0, true, false))
+
+                if(!entry->objectName.isEmpty())
                 {
-                    int foundLine, column;
-                    textEditor->getCursorPosition(&foundLine, &column);
-                    textEditor->ensureLineVisible(foundLine);
+                    //Serach for the clicked item/text.
+                    if(textEditor->findFirst("name=\"" + entry->objectName, false, true, false, true, true, 0, 0, true, false))
+                    {
+                        int foundLine, column;
+                        textEditor->getCursorPosition(&foundLine, &column);
+                        textEditor->ensureLineVisible(foundLine);
+                    }
                 }
 
                 ui->documentsTabWidget->setCurrentIndex(index);
@@ -2211,6 +2217,13 @@ QString MainWindow::createNewDocumentTitle(void)
     return newTitle;
 }
 
+/**
+ * Is called if the modified property of a document has been changed.
+ */
+void MainWindow::modificationChangedSlot(void)
+{
+    documentWasModified(ui->documentsTabWidget->currentIndex());
+}
 
 
 /**
@@ -2657,7 +2670,7 @@ static void parsedEntryToString(const QVector<ParsedEntry>& parsedEntries,
  * @param tabIndex
  *      The index of the tab to which the file element belongs to.
  */
-void MainWindow::insertFileElementForTabIndex(int tabIndex)
+void MainWindow::insertFileElementForTabIndex(int tabIndex, QColor textColor)
 {
     QTreeWidgetItem* root = ui->outlineTreeWidget->invisibleRootItem();
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(tabIndex)->layout()->itemAt(0)->widget());
@@ -2679,6 +2692,8 @@ void MainWindow::insertFileElementForTabIndex(int tabIndex)
     fileElement->setText(0, textData);
     fileElement->setToolTip(0, textEditor->getDocumentName());
     fileElement->setIcon(0, QIcon(":/images/document.png"));
+    fileElement->setTextColor(0, textColor);
+
     root->insertChild(tabIndex, fileElement);
     ui->outlineTreeWidget->expandItem(fileElement);
     textEditor->clearAllFunctions();
@@ -2716,7 +2731,7 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
 
         if(ui->outlineTreeWidget->topLevelItem(i) == 0)
         {
-            insertFileElementForTabIndex(i);
+            insertFileElementForTabIndex(i, QColor(0,0,0));
         }
         else
         {
@@ -2787,7 +2802,7 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
 
                 clearOutlineWindow(iter.key());
 
-                insertFileElementForTabIndex(iter.key());
+                insertFileElementForTabIndex(iter.key(), QColor(0,0,0));
 
                 QTreeWidgetItem* fileElement = ui->outlineTreeWidget->topLevelItem(iter.key());
 
@@ -2821,17 +2836,7 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
                     else
                     {
                         //Add the element for the current documents tab.
-                        QTreeWidgetItem* fileElement = new QTreeWidgetItem();
-                        ParsedEntry* dummyEntry = new ParsedEntry();
-                        dummyEntry->type = PARSED_ENTRY_TYPE_FILE;
-                        dummyEntry->tabIndex = iter.key();
-
-                        fileElement->setData(0, PARSED_ENTRY, (quint64)dummyEntry);
-                        fileElement->setText(0, ui->documentsTabWidget->tabText(iter.key()));
-                        fileElement->setToolTip(0, textEditor->getDocumentName());
-                        fileElement->setIcon(0, QIcon(":/images/document.png"));
-                        fileElement->setTextColor(0, QColor(255,0,0));
-                        root->insertChild(iter.key(), fileElement);
+                        insertFileElementForTabIndex(iter.key(), QColor(255,0,0));
                     }
                 }
 
@@ -2842,6 +2847,27 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
 
         iter++;
     }
+
+    /*************Remove all ui files from the script outline******************************/
+    QList<int> uiFileIndexes;
+    for(int i = 0; i < root->childCount(); i++)
+    {
+        QTreeWidgetItem* item = ui->outlineTreeWidget->topLevelItem(i);
+        if(item->text(0).endsWith(".ui"))
+        {
+            uiFileIndexes.append(i);
+        }
+    }
+
+    for(auto el : uiFileIndexes)
+    {
+        QTreeWidgetItem* item = ui->outlineTreeWidget->takeTopLevelItem(el);
+        if(item)
+        {
+            delete item;
+        }
+    }
+    /**********************************************************************************************/
 
     //Restore the expanded state of all tree widget elements.
     restoreExpandedState(ui->outlineTreeWidget, root, expandMap, "");

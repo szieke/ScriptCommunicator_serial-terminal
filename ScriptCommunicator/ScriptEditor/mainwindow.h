@@ -148,6 +148,9 @@ private slots:
     ///Opens the find dialog.
     void find();
 
+    ///Is called if the modified property of a document has been changed.
+    void modificationChangedSlot(void);
+
     ///Checks if the current script file has been changed. If the files has been changed
     ///it displays this in the window title.
     void documentWasModified(int index=-1);
@@ -262,7 +265,7 @@ private:
     bool inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<ParsedEntry> parsedEntries, QString parentName);
 
     ///Inserts a file element in the scripts outline.
-    void insertFileElementForTabIndex(int tabIndex);
+    void insertFileElementForTabIndex(int tabIndex, QColor textColor);
 
     ///Inserts all parsed elements in the  script view and displays all parse errors (annotations).
     bool insertFillScriptViewAndDisplayErrors(QMap<int, QVector<ParsedEntry> > &parsedEntries);
