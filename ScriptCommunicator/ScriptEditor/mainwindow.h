@@ -260,11 +260,13 @@ private:
     ///Inserts a subelement into the script view.
     bool inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<ParsedEntry> parsedEntries, QString parentName);
 
+    void insertFileElementForTabIndex(int tabIndex);
+
     ///Inserts all parsed elements in the  script view and displays all parse errors (annotations).
-    void insertFillScriptViewAndDisplayErrors(QMap<int, QVector<ParsedEntry> > &parsedEntries);
+    bool insertFillScriptViewAndDisplayErrors(QMap<int, QVector<ParsedEntry> > &parsedEntries);
 
     ///Clears the outline window.
-    void clearOutlineWindow(void);
+    void clearOutlineWindow(int tabIndex);
 
     ///Clears the ui window.
     void clearUiWindow(void);
@@ -339,6 +341,12 @@ private:
 
     ///The position of the last click indicator event.
     long m_lastIndicatorClickPosition;
+
+    ///The saved auto completion entries.
+    QMap<QString, QStringList> m_autoCompletionEntries;
+
+    ///True if parse error shall be displayed.
+    bool m_showParseError;
 
 };
 

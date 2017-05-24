@@ -95,7 +95,8 @@ HEADERS      = \
     singledocument.h \
     parseThread.h \
     version.h \
-    esprima/esprima.h
+    esprima/esprima.h \
+    esprima/esprimaparsefunctions.h
 SOURCES      = main.cpp \
     QScintilla/InputMethod.cpp \
     QScintilla/ListBoxQt.cpp \

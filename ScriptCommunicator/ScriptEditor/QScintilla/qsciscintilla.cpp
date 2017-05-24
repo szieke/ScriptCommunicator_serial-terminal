@@ -317,30 +317,33 @@ bool QsciScintilla::callTip(int startPos)
         pos = startPos;
     }
 
-    // Move backwards through the line looking for the start of the current
-    // call tip and working out which argument it is.
-    while ((ch = getCharacter(pos)) != '\0')
+    if(startPos == -1)
     {
-        if (ch == ',')
-            ++commas;
-        else if (ch == ')')
+        // Move backwards through the line looking for the start of the current
+        // call tip and working out which argument it is.
+        while ((ch = getCharacter(pos)) != '\0')
         {
-            int depth = 1;
-
-            // Ignore everything back to the start of the corresponding
-            // parenthesis.
-            while ((ch = getCharacter(pos)) != '\0')
+            if (ch == ',')
+                ++commas;
+            else if (ch == ')')
             {
-                if (ch == ')')
-                    ++depth;
-                else if (ch == '(' && --depth == 0)
-                    break;
+                int depth = 1;
+
+                // Ignore everything back to the start of the corresponding
+                // parenthesis.
+                while ((ch = getCharacter(pos)) != '\0')
+                {
+                    if (ch == ')')
+                        ++depth;
+                    else if (ch == '(' && --depth == 0)
+                        break;
+                }
             }
-        }
-        else if (ch == '(')
-        {
-            found = true;
-            break;
+            else if (ch == '(')
+            {
+                found = true;
+                break;
+            }
         }
     }
 
@@ -348,8 +351,10 @@ bool QsciScintilla::callTip(int startPos)
     SendScintilla(SCI_CALLTIPCANCEL);
 
     // Done if there is no new call tip to set.
-    if (!found)
-        return false;
+    if (!found && (startPos != -1))
+    {
+        pos = SendScintilla(SCI_WORDENDPOSITION, startPos, true);
+    }
 
     QStringList context = apiContext(pos, pos, ctPos);
 

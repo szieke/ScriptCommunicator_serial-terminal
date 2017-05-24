@@ -8,6 +8,7 @@
 #include <QStringList>
 #include <QDomDocument>
 #include <QDateTime>
+#include "esprima/esprimaparsefunctions.h"
 
 ///Object created by ScriptTable::InsertWidget.
 typedef struct
@@ -24,46 +25,11 @@ typedef struct
     QString functionName;//The name of the function.
     QString resultType;//The result type of the function.
     bool isArray;//True if the result type is an array.
+    bool isProperty;//True if this element is a property.
 
 }FunctionWithResultObject;
 
-//The type of an parsed entry.
-typedef enum
-{
-    PARSED_ENTRY_TYPE_VAR = 0,//Variable
-    PARSED_ENTRY_TYPE_CONST,//Const value
-    PARSED_ENTRY_TYPE_FUNCTION,//Function
-    PARSED_ENTRY_TYPE_CLASS,//Class
-    PARSED_ENTRY_TYPE_CLASS_FUNCTION,//Class function
-    PARSED_ENTRY_TYPE_CLASS_THIS_FUNCTION,//Class this function
-    PARSED_ENTRY_TYPE_CLASS_VAR,//Class variable
-    PARSED_ENTRY_TYPE_MAP,//Map
-    PARSED_ENTRY_TYPE_MAP_VAR,//Map variable
-    PARSED_ENTRY_TYPE_MAP_FUNC,//Map function
-    PARSED_ENTRY_TYPE_PARSE_ERROR,//Parse error
-    PARSED_ENTRY_TYPE_PROTOTYPE_FUNC,//Prototype function.
-    PARSED_ENTRY_TYPE_FILE//File
 
-}ParsedEntryType;
-
-///A parsed entry.
-typedef struct ParsedEntry ParsedEntry;
-struct ParsedEntry
-{
-    int line;//The line number.
-    int endLine;//The end line.
-    int column;//The column.
-    QString name;//The entry name.
-    QString completeName;//The complete name (inkludes the parents).
-    bool findWithCase;//False if for this entry the case is ignored during search.
-    bool findWholeWord;//True if for this entry the whole complete name shall be searched during search.
-    ParsedEntryType type;//The type of this entry.
-    QStringList params;//The parameters.
-    int tabIndex;//The tab (dodument) to which this entry belongs to.
-    QVector<ParsedEntry> subElements;//The sub entries.
-    QString valueType;//The value type of the element (variable).
-    bool isArrayIndex;//True if the value is from an array index.
-};
 
 ///This thread parses all documents (parseSlot).
 class ParseThread : public QThread
@@ -95,24 +61,8 @@ private:
     ///Returns all functions and gloabl variables in the loaded script files.
     QMap<int,QVector<ParsedEntry>> getAllFunctionsAndGlobalVariables(QMap<int, QString> loadedScripts);
 
-    ///Searches objects which are returned by a ScriptTableWidget.
-    void searchSingleTableSubWidgets(QString objectName, QVector<TableWidgetSubObject> subObjects, QStringList& lines);
-
     ///Searches all ScriptTableWidget::insertWidgets calls of a specific ScriptTableWidget object.
-    void parseTableWidetInsert(const QString objectName, QStringList lines);
-
-    ///Searches a single object type.
-    void searchSingleType(QString className, QString searchString, QStringList& lines, bool isArray=false,
-                                        bool withOutDotsAndBracked= false, bool replaceExistingEntry=false, bool matchExact = false);
-
-    ///Searches all functions which return objects to for a specific object.
-    void seachAllFunctionForSpecificObject(QStringList& lines, QString &currentText,
-                                                        QVector<FunctionWithResultObject>& functions, QString objectName);
-    ///Searches all dynamically created objects created by custom objects (like ScriptTimer).
-    void checkDocumentForCustomDynamicObjects(QStringList& lines, QStringList &linesWithBrackets , QString &currentText, int passNumber);
-
-    ///Searches all dynamically created objects created by standard objects (like String).
-    void checkDocumentForStandardDynamicObjects(QStringList& lines, QString &currentText, QStringList &linesWithBrackets, int passNumber);
+    void parseTableWidgetInsert(const QString objectName, QStringList lines);
 
     ///Checks if in the current document user interface files are loaded.
     void checkDocumentForUiFiles(QString& currentText, QString activeDocument);
@@ -133,11 +83,9 @@ private:
 
     bool replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, ParsedEntry& entry, QString parentName);
 
-    ///Removes all square brackets and all between them.
-    void removeAllBetweenSquareBrackets(QString& currentText);
 
     ///Parses a single line from an api file and adds functions which return objects to m_functionsWithResultObjects.
-    void parseSingleLineForFunctionsWithResultObjects(QString singleEntry);
+    void parseSingleLineForFunctionsWithResultObjects(QString &singleEntry);
 
     ///Contains the auto-completion entries for all parsed api files.
     QMap<QString, QStringList> m_autoCompletionApiFiles;

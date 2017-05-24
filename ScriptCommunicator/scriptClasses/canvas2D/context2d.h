@@ -425,13 +425,12 @@ signals:
     ///Scripts can connect to this signal.
     void keyReleaseSignal(QString key, int keyCode, quint32 modifiers);
 
+    ///Is emitted if the size of the canvas widget has been changed.
+    void sizeChangeSignal(int width, int height);
+
     ///Is emitted if the canvas widget has been changed.
     ///This signal is private and must not be used inside a script.
     void changed(const QImage &image);
-
-    ///Is emitted by the change timer.
-    ///This signal is private and must not be used inside a script.
-    void sizeChangeSignal(int width, int height);
 
     ///Is emitted i print.
     ///This signal is private and must not be used inside a script.

@@ -35,7 +35,7 @@
             <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
            </property>
            <property name="selectionMode">
-            <enum>QAbstractItemView::SingleSelection</enum>
+            <enum>QAbstractItemView::NoSelection</enum>
            </property>
            <property name="expandsOnDoubleClick">
             <bool>false</bool>
@@ -59,6 +59,9 @@
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
           <widget class="QTreeWidget" name="uiTreeWidget">
+           <property name="selectionMode">
+            <enum>QAbstractItemView::NoSelection</enum>
+           </property>
            <property name="expandsOnDoubleClick">
             <bool>false</bool>
            </property>
