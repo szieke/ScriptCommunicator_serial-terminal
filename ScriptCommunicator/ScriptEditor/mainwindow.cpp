@@ -83,6 +83,7 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     connect(ui->documentsTabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabIndexChangedSlot(int)));
     connect(ui->documentsTabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(documentsTabCloseRequestedSlot(int)));
     connect(ui->infoTabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(infoTabCloseRequestedSlot(int)));
+    connect(ui->documentsTabWidget->tabBar(), SIGNAL(tabMoved(int,int)), this, SLOT(tabMoved(int,int)));
 
     if(scripts.isEmpty())
     {
@@ -710,6 +711,146 @@ bool MainWindow::addTab(QString script, bool setTabIndex)
     }
 
     return tabAdded;
+}
+
+
+/**
+ * Saves the expanded state of all tree widget elements.
+ *
+ * @param parent
+ *      The parent tree widget item.
+ * @param expandMap
+ *      The map in which the expanded states are saved.
+ * @param key
+ *      The key of the parent tree widget in the expand map.
+ */
+static void saveExpandedState(QTreeWidgetItem* parent, QMap<QString, bool>& expandMap, QString key)
+{
+    for(int i = 0; i < parent->childCount(); i++)
+    {
+        QTreeWidgetItem* subEl = parent->child(i);
+        expandMap[key + ":" + subEl->text(0)] = subEl->isExpanded();
+
+
+        if(subEl->childCount() > 0)
+        {
+            saveExpandedState(subEl, expandMap, key + subEl->text(0));
+        }
+    }
+}
+
+/**
+ * Restores the expanded state of all tree widget elements.
+ *
+ * @parm treeWidget
+ *      The tree widget.
+ * @param parent
+ *      The parent tree widget item.
+ * @param expandMap
+ *      The map in which the expanded states are saved.
+ * @param key
+ *      The key of the parent tree widget in the expand map.
+ */
+static void restoreExpandedState(QTreeWidget *treeWidget, QTreeWidgetItem* parent, QMap<QString, bool>& expandMap, QString key)
+{
+    for(int i = 0; i < parent->childCount(); i++)
+    {
+        QTreeWidgetItem* subEl = parent->child(i);
+        if(expandMap.contains(key + ":" + subEl->text(0)))
+        {
+            if(expandMap[key + ":" + subEl->text(0)])
+            {
+                treeWidget->expandItem(subEl);
+            }
+            else
+            {
+                treeWidget->collapseItem(subEl);
+            }
+        }
+
+        if(subEl->childCount() > 0)
+        {
+            restoreExpandedState(treeWidget, subEl, expandMap, key + subEl->text(0));
+        }
+    }
+}
+
+/**
+ * Is called if the user moves a tab.
+ * @param from
+ *      The old tab index.
+ * @param to
+ *      The new tab index.
+ */
+void MainWindow::tabMoved(int from, int to)
+{
+    int treeIndexFrom = -1;
+    int treeIndexTo = -1;
+
+
+    QTreeWidgetItem* root = ui->outlineTreeWidget->invisibleRootItem();
+
+    SingleDocument* textEditorFrom = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(from)->layout()->itemAt(0)->widget());
+    SingleDocument* textEditorTo = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(to)->layout()->itemAt(0)->widget());
+
+    for(int i = 0; i < root->childCount(); i++)
+    {
+        QTreeWidgetItem* item = ui->outlineTreeWidget->topLevelItem(i);
+        if(textEditorFrom->getDocumentName() == item->toolTip(0))
+        {
+            treeIndexFrom = i;
+        }
+
+        if(textEditorTo->getDocumentName() == item->toolTip(0))
+        {
+            treeIndexTo = i;
+        }
+    }
+
+    if((treeIndexFrom != -1) && (treeIndexTo != -1))
+    {
+        //Save the expanded state of all tree widget elements.
+        QMap<QString, bool> expandMap;
+        saveExpandedState(root, expandMap, "");
+
+        QTreeWidgetItem* item = ui->outlineTreeWidget->takeTopLevelItem(treeIndexFrom);
+        ui->outlineTreeWidget->insertTopLevelItem(treeIndexTo, item);
+
+        //Restore the expanded state of all tree widget elements.
+        restoreExpandedState(ui->outlineTreeWidget, root, expandMap, "");
+    }
+
+    QTreeWidgetItemIterator it(ui->outlineTreeWidget);
+    while (*it)
+    {
+        bool isOk = false;
+        ParsedEntry* entry  = (ParsedEntry*)(*it)->data(0, PARSED_ENTRY).toULongLong(&isOk);
+        if(entry != 0)
+        {
+            if(entry->tabIndex == from)
+            {
+                entry->tabIndex = to;
+            }
+            else if (to > from)
+            {
+                if ((entry->tabIndex <= to) && (entry->tabIndex > from))
+                {
+                    entry->tabIndex--;
+                }
+            }
+            else if (to < from)
+            {
+                if ((entry->tabIndex >= to) && (entry->tabIndex < from))
+                {
+                    entry->tabIndex++;
+                }
+            }
+
+
+        }
+      ++it;
+    }
+
 }
 
 /**
@@ -2476,67 +2617,6 @@ bool MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
     return hasError;
 }
 
-
-/**
- * Saves the expanded state of all tree widget elements.
- *
- * @param parent
- *      The parent tree widget item.
- * @param expandMap
- *      The map in which the expanded states are saved.
- * @param key
- *      The key of the parent tree widget in the expand map.
- */
-static void saveExpandedState(QTreeWidgetItem* parent, QMap<QString, bool>& expandMap, QString key)
-{
-    for(int i = 0; i < parent->childCount(); i++)
-    {
-        QTreeWidgetItem* subEl = parent->child(i);
-        expandMap[key + ":" + subEl->text(0)] = subEl->isExpanded();
-
-
-        if(subEl->childCount() > 0)
-        {
-            saveExpandedState(subEl, expandMap, key + subEl->text(0));
-        }
-    }
-}
-
-/**
- * Restores the expanded state of all tree widget elements.
- *
- * @parm treeWidget
- *      The tree widget.
- * @param parent
- *      The parent tree widget item.
- * @param expandMap
- *      The map in which the expanded states are saved.
- * @param key
- *      The key of the parent tree widget in the expand map.
- */
-static void restoreExpandedState(QTreeWidget *treeWidget, QTreeWidgetItem* parent, QMap<QString, bool>& expandMap, QString key)
-{
-    for(int i = 0; i < parent->childCount(); i++)
-    {
-        QTreeWidgetItem* subEl = parent->child(i);
-        if(expandMap.contains(key + ":" + subEl->text(0)))
-        {
-            if(expandMap[key + ":" + subEl->text(0)])
-            {
-                treeWidget->expandItem(subEl);
-            }
-            else
-            {
-                treeWidget->collapseItem(subEl);
-            }
-        }
-
-        if(subEl->childCount() > 0)
-        {
-            restoreExpandedState(treeWidget, subEl, expandMap, key + subEl->text(0));
-        }
-    }
-}
 
 /**
  * Converts the parsed entries to a string.
