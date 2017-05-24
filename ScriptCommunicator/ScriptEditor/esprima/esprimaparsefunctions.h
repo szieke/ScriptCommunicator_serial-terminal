@@ -44,31 +44,184 @@ struct ParsedEntry
     QStringList additionalInformation;//Additional information.
 };
 
+
+/********************************************Function declarations***************************************************/
+
+/**
+ * Parses an (esprima) object expression.
+ *
+ * @param objExp
+ *      The object expression.
+ * @param parent
+ *      The parent entry.
+ * @param tabIndex
+ *      The tab index to which the expression belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaObjectExpression(esprima::ObjectExpression* objExp, ParsedEntry* parent, int tabIndex,
                                          QMap<QString, ParsedEntry>* objects = NULL);
 
+/**
+ * Reads the type from a node.
+ *
+ * @param node
+ *      The node.
+ * @param entry
+ *      The parsed entry to which the type is written to.
+ */
 static void getTypeFromNode(esprima::Node* node, ParsedEntry& subEntry);
+
+
+/**
+ * Parses an (esprima) function declaration.
+ *
+ * @param function
+ *      The function declaration.
+ * @param parent
+ *      The parent entry.
+ * @param entry
+ *      The parsed entry.
+ * @param tabIndex
+ *      The tab index to which the declaration belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaFunctionDeclaration(esprima::FunctionDeclaration* function, ParsedEntry *parent, ParsedEntry* entry, int tabIndex,
                                             QMap<QString, ParsedEntry>* objects = NULL);
 
+/**
+ * This function parses if statements.
+ *
+ * @param ifStatement
+ *      The statement.
+ * @param parent
+ *      The parent of parsed entry.
+ * @param tabIndex
+ *      The tab index to which the node belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaIfStatement(esprima::IfStatement* ifStatement, ParsedEntry& parent, int tabIndex,
                                       QMap<QString, ParsedEntry>* objects = NULL);
 
+/**
+ * This function parses switch statements.
+ *
+ * @param switchStatement
+ *      The statement.
+ * @param parent
+ *      The parent of parsed entry.
+ * @param tabIndex
+ *      The tab index to which the node belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaSwitchStatement(esprima::SwitchStatement* switchStatement, ParsedEntry& parent, int tabIndex,
                                       QMap<QString, ParsedEntry>* objects);
 
+/**
+ * This function parses for statements.
+ *
+ * @param forStatement
+ *      The statement.
+ * @param parent
+ *      The parent of parsed entry.
+ * @param tabIndex
+ *      The tab index to which the node belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaForStatement(esprima::ForStatement* forStatement, ParsedEntry& parent, int tabIndex,
                                       QMap<QString, ParsedEntry>* objects);
 
+/**
+ * This function parses while statements.
+ *
+ * @param whileStatement
+ *      The statement.
+ * @param parent
+ *      The parent of parsed entry.
+ * @param tabIndex
+ *      The tab index to which the node belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaWhileStatement(esprima::WhileStatement* whileStatement, ParsedEntry& parent, int tabIndex,
                                       QMap<QString, ParsedEntry>* objects);
 
+/**
+ * This function parses do while statements.
+ *
+ * @param doWhileStatement
+ *      The statement.
+ * @param parent
+ *      The parent of parsed entry.
+ * @param tabIndex
+ *      The tab index to which the node belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaDoWhileStatement(esprima::DoWhileStatement* doWhileStatement, ParsedEntry& parent, int tabIndex,
                                       QMap<QString, ParsedEntry>* objects);
 
+/**
+ * This function parses for in statements.
+ *
+ * @param forInStatement
+ *      The statement.
+ * @param parent
+ *      The parent of parsed entry.
+ * @param tabIndex
+ *      The tab index to which the node belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaForInStatement(esprima::ForInStatement* forInStatement, ParsedEntry& parent, int tabIndex,
                                       QMap<QString, ParsedEntry>* objects);
 
+/**
+ * Reads the type from a call expression.
+ *
+ * @param callExpression
+ *      The call expression.
+ * @param entry
+ *      The parsed entry to which the type is written to.
+ */
+static void getTypeFromCallExpression(esprima::CallExpression* callExpression, ParsedEntry& subEntry);
+
+/**
+ * This function parses variable declarations.
+ *
+ * @param varDecl
+ *      variable declaration.
+ * @param parent
+ *      The parent of parsed entry.
+ * @param entry
+ *      The parsed entry.
+ * @param tabIndex
+ *      The tab index to which the node belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
+static void parseEsprimaVariableDeclaration(esprima::VariableDeclaration* varDecl, ParsedEntry &parent, ParsedEntry& entry, int tabIndex,
+                                      QMap<QString, ParsedEntry>* objects = NULL);
+
+/***********************************************************************************************************************************/
+
+
+/**
+ * Parses control statements
+ *
+ * @param node
+ *      The node.
+ * @param parent
+ *      The parent entry.
+ * @param tabIndex
+ *      The tab index to which the expression belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void checkForControlStatements(esprima::Node* node, ParsedEntry& parent, int tabIndex,
                                       QMap<QString, ParsedEntry>* objects)
 {
@@ -108,6 +261,19 @@ static void checkForControlStatements(esprima::Node* node, ParsedEntry& parent, 
     }
 }
 
+
+/**
+ * Parses an (esprima) function expression.
+ *
+ * @param funcExp
+ *      The function expression.
+ * @param parent
+ *      The parent entry.
+ * @param tabIndex
+ *      The tab index to which the expression belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaFunctionExpression(esprima::FunctionExpression* funcExp, ParsedEntry* parent, int tabIndex,
                                            QMap<QString, ParsedEntry>* objects = NULL)
 
@@ -214,26 +380,31 @@ static void parseEsprimaFunctionExpression(esprima::FunctionExpression* funcExp,
     }
 }
 
-
-static void getTypeFromCallExpression(esprima::CallExpression* callExpression, ParsedEntry& subEntry);
-
-static void getTypeFromMemberExpression(esprima::MemberExpression* memExpression, ParsedEntry& subEntry)
+/**
+ * Reads the type from a member expression.
+ *
+ * @param memExpression
+ *      The member expression.
+ * @param entry
+ *      The parsed entry to which the type is written to.
+ */
+static void getTypeFromMemberExpression(esprima::MemberExpression* memExpression, ParsedEntry& entry)
 {
     esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(memExpression->object);
     if(id)
     {
-        subEntry.valueType += id->name.c_str();
+        entry.valueType += id->name.c_str();
 
         if(memExpression->computed)
         {
-            subEntry.isArrayIndex = true;
+            entry.isArrayIndex = true;
         }
         else
         {
             id = dynamic_cast<esprima::Identifier*>(memExpression->property);
             if(id)
             {
-                subEntry.valueType += QString(".") + id->name.c_str();
+                entry.valueType += QString(".") + id->name.c_str();
             }
         }
     }
@@ -241,12 +412,12 @@ static void getTypeFromMemberExpression(esprima::MemberExpression* memExpression
     esprima::CallExpression* callExp = dynamic_cast<esprima::CallExpression*>(memExpression->object);
     if(callExp)
     {
-        getTypeFromCallExpression(callExp, subEntry);
+        getTypeFromCallExpression(callExp, entry);
 
         id = dynamic_cast<esprima::Identifier*>(memExpression->property);
         if(id)
         {
-            subEntry.valueType += QString(".") + id->name.c_str();
+            entry.valueType += QString(".") + id->name.c_str();
 
         }
     }
@@ -257,9 +428,9 @@ static void getTypeFromMemberExpression(esprima::MemberExpression* memExpression
         esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(memExpression->property);
         if(id)
         {
-            getTypeFromMemberExpression(mem, subEntry);
+            getTypeFromMemberExpression(mem, entry);
 
-             subEntry.valueType += QString(".") + id->name.c_str();
+             entry.valueType += QString(".") + id->name.c_str();
         }
     }
 
@@ -270,7 +441,7 @@ static void getTypeFromMemberExpression(esprima::MemberExpression* memExpression
         if(id)
         {
             int index;
-            QString tmpCompleteName = subEntry.completeName;
+            QString tmpCompleteName = entry.completeName;
 
             index = tmpCompleteName.lastIndexOf(".");
             if(index != -1)
@@ -282,57 +453,65 @@ static void getTypeFromMemberExpression(esprima::MemberExpression* memExpression
             index = tmpCompleteName.lastIndexOf(".");
             if(index != -1)
             {
-                subEntry.valueType = tmpCompleteName;
-                subEntry.valueType.remove(index, subEntry.valueType.length() - index);
-                subEntry.valueType += ".";
+                entry.valueType = tmpCompleteName;
+                entry.valueType.remove(index, entry.valueType.length() - index);
+                entry.valueType += ".";
                 tmpCompleteName = "";
             }
 
 
             if(!tmpCompleteName.isEmpty())
             {
-                subEntry.valueType = tmpCompleteName + ".";
+                entry.valueType = tmpCompleteName + ".";
             }
-            subEntry.valueType += id->name.c_str();
+            entry.valueType += id->name.c_str();
         }
     }
 }
 
-static void getTypeFromCallExpression(esprima::CallExpression* callExpression, ParsedEntry& subEntry)
+/**
+ * Reads the type from a call expression.
+ *
+ * @param callExpression
+ *      The call expression.
+ * @param entry
+ *      The parsed entry to which the type is written to.
+ */
+static void getTypeFromCallExpression(esprima::CallExpression* callExpression, ParsedEntry& entry)
 {
 
     esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(callExpression->callee);
     if(id)
     {
-        subEntry.valueType = id->name.c_str();
+        entry.valueType = id->name.c_str();
 
-        if(subEntry.valueType == "Array")
+        if(entry.valueType == "Array")
         {
             if(callExpression->arguments.size() > 0)
             {
                 esprima::StringLiteral* strLiteral = dynamic_cast<esprima::StringLiteral*>(callExpression->arguments[0]);
                 if(strLiteral)
                 {
-                    subEntry.valueType = "Array<String>";
+                    entry.valueType = "Array<String>";
                 }
 
                 esprima::NumericLiteral* numLiteral = dynamic_cast<esprima::NumericLiteral*>(callExpression->arguments[0]);
                 if(numLiteral)
                 {
-                    subEntry.valueType = "Array<Number>";
+                    entry.valueType = "Array<Number>";
                 }
             }
         }
-        else if((subEntry.valueType == "Date") || (subEntry.valueType == "String") ||
-                (subEntry.valueType == "Number"))
+        else if((entry.valueType == "Date") || (entry.valueType == "String") ||
+                (entry.valueType == "Number"))
         {
 
         }
         else
         {
-            if(!subEntry.valueType.endsWith("()"))
+            if(!entry.valueType.endsWith("()"))
             {
-                subEntry.valueType+= "()";
+                entry.valueType+= "()";
             }
         }
     }
@@ -340,13 +519,13 @@ static void getTypeFromCallExpression(esprima::CallExpression* callExpression, P
     esprima::MemberExpression* memExpression = dynamic_cast<esprima::MemberExpression*>(callExpression->callee);
     if(memExpression)
     {
-        getTypeFromMemberExpression(memExpression, subEntry);
-        if(!subEntry.valueType.endsWith("()"))
+        getTypeFromMemberExpression(memExpression, entry);
+        if(!entry.valueType.endsWith("()"))
         {
-            subEntry.valueType+= "()";
+            entry.valueType+= "()";
         }
 
-        if(subEntry.valueType.endsWith("getWidget()"))
+        if(entry.valueType.endsWith("getWidget()"))
         {//Possibly ScriptTable.getWidget.
 
             for(auto el : callExpression->arguments)
@@ -354,7 +533,7 @@ static void getTypeFromCallExpression(esprima::CallExpression* callExpression, P
                 esprima::NumericLiteral* numLiteral = dynamic_cast<esprima::NumericLiteral*>(el);
                 if(numLiteral)
                 {
-                    subEntry.additionalInformation.append(QString("%1").arg(numLiteral->value));
+                    entry.additionalInformation.append(QString("%1").arg(numLiteral->value));
                 }
             }
         }
@@ -362,24 +541,33 @@ static void getTypeFromCallExpression(esprima::CallExpression* callExpression, P
     }
 }
 
-static void getTypeFromNode(esprima::Node* node, ParsedEntry& subEntry)
+
+/**
+ * Reads the type from a node.
+ *
+ * @param node
+ *      The node.
+ * @param entry
+ *      The parsed entry to which the type is written to.
+ */
+static void getTypeFromNode(esprima::Node* node, ParsedEntry& entry)
 {
     esprima::StringLiteral* strLiteral = dynamic_cast<esprima::StringLiteral*>(node);
     if(strLiteral)
     {
-        subEntry.valueType = "String";
+        entry.valueType = "String";
     }
 
     esprima::NumericLiteral* numLiteral = dynamic_cast<esprima::NumericLiteral*>(node);
     if(numLiteral)
     {
-        subEntry.valueType = "Number";
+        entry.valueType = "Number";
     }
 
     esprima::BooleanLiteral* boolLiteral = dynamic_cast<esprima::BooleanLiteral*>(node);
     if(boolLiteral)
     {
-        subEntry.valueType = "bool";
+        entry.valueType = "bool";
     }
     esprima::NewExpression* newExp = dynamic_cast<esprima::NewExpression*>(node);
     if(newExp)
@@ -387,46 +575,46 @@ static void getTypeFromNode(esprima::Node* node, ParsedEntry& subEntry)
         esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(newExp->callee);
         if(id)
         {
-            subEntry.valueType = id->name.c_str();
+            entry.valueType = id->name.c_str();
         }
     }
 
     esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(node);
     if(id)
     {
-        subEntry.valueType = id->name.c_str();
+        entry.valueType = id->name.c_str();
     }
 
     esprima::MemberExpression* memExpression = dynamic_cast<esprima::MemberExpression*>(node);
     if(memExpression)
     {
-        getTypeFromMemberExpression(memExpression, subEntry);
+        getTypeFromMemberExpression(memExpression, entry);
 
     }
 
     esprima::BinaryExpression* binExp = dynamic_cast<esprima::BinaryExpression*>(node);
     if(binExp)
     {
-        getTypeFromNode(binExp->left, subEntry);
+        getTypeFromNode(binExp->left, entry);
     }
 
     esprima::ArrayExpression* arrayExp = dynamic_cast<esprima::ArrayExpression*>(node);
     if(arrayExp)
     {
-        subEntry.valueType = "Array";
+        entry.valueType = "Array";
 
         if(arrayExp->elements.size() > 0)
         {
             esprima::StringLiteral* strLiteral = dynamic_cast<esprima::StringLiteral*>(arrayExp->elements[0]);
             if(strLiteral)
             {
-                subEntry.valueType = "Array<String>";
+                entry.valueType = "Array<String>";
             }
 
             esprima::NumericLiteral* numLiteral = dynamic_cast<esprima::NumericLiteral*>(arrayExp->elements[0]);
             if(numLiteral)
             {
-                subEntry.valueType = "Array<Number>";
+                entry.valueType = "Array<Number>";
             }
         }
 
@@ -435,26 +623,29 @@ static void getTypeFromNode(esprima::Node* node, ParsedEntry& subEntry)
 
     if(node == 0)
     {
-        subEntry.valueType = "";
+        entry.valueType = "";
     }
 
     esprima::CallExpression* callExpression = dynamic_cast<esprima::CallExpression*>(node);
     if(callExpression)
     {
-        subEntry.valueType = "";
-        getTypeFromCallExpression(callExpression, subEntry);
+        entry.valueType = "";
+        getTypeFromCallExpression(callExpression, entry);
     }
 
 }
 
 /**
  * Parses an (esprima) object expression.
+ *
  * @param objExp
  *      The object expression.
  * @param parent
  *      The parent entry.
  * @param tabIndex
  *      The tab index to which the expression belongs to.
+ * @param objects
+ *      The map which contains all objects.
  */
 static void parseEsprimaObjectExpression(esprima::ObjectExpression* objExp, ParsedEntry* parent, int tabIndex,
                                          QMap<QString, ParsedEntry>* objects)
@@ -523,19 +714,19 @@ static void parseEsprimaObjectExpression(esprima::ObjectExpression* objExp, Pars
 }
 
 
-static void parseEsprimaVariableDeclaration(esprima::VariableDeclaration* varDecl, ParsedEntry &parent, ParsedEntry& entry, int tabIndex,
-                                      QMap<QString, ParsedEntry>* objects = NULL);
-
-
-
 /**
  * Parses an (esprima) function declaration.
+ *
  * @param function
  *      The function declaration.
  * @param parent
  *      The parent entry.
+ * @param entry
+ *      The parsed entry.
  * @param tabIndex
  *      The tab index to which the declaration belongs to.
+ * @param objects
+ *      The map which contains all objects.
  */
 static void parseEsprimaFunctionDeclaration(esprima::FunctionDeclaration* function, ParsedEntry* parent, ParsedEntry* entry, int tabIndex,
                                             QMap<QString, ParsedEntry>* objects)
@@ -610,16 +801,17 @@ static void parseEsprimaFunctionDeclaration(esprima::FunctionDeclaration* functi
 }
 
 
-
-
 /**
  * Parses an (esprima) new expression.
+ *
  * @param newExp
  *      The new expression.
  * @param parent
  *      The parent entry.
  * @param tabIndex
  *      The tab index to which the expression belongs to.
+ * @param objects
+ *      The map which contains all objects.
  */
 static void parseEsprimaNewExpression(esprima::NewExpression* newExp, ParsedEntry* parent, int tabIndex,
                                       QMap<QString, ParsedEntry>* objects = NULL)
@@ -632,6 +824,20 @@ static void parseEsprimaNewExpression(esprima::NewExpression* newExp, ParsedEntr
 }
 
 
+/**
+ * This function parses variable declarations.
+ *
+ * @param varDecl
+ *      variable declaration.
+ * @param parent
+ *      The parent of parsed entry.
+ * @param entry
+ *      The parsed entry.
+ * @param tabIndex
+ *      The tab index to which the node belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaVariableDeclaration(esprima::VariableDeclaration* varDecl, ParsedEntry& parent, ParsedEntry& entry, int tabIndex,
                                       QMap<QString, ParsedEntry>* objects )
 {
@@ -720,7 +926,18 @@ static void parseEsprimaVariableDeclaration(esprima::VariableDeclaration* varDec
 }
 
 
-
+/**
+ * This function parses block statements.
+ *
+ * @param blockStatement
+ *      The statement.
+ * @param parent
+ *      The parent of parsed entry.
+ * @param tabIndex
+ *      The tab index to which the node belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaBlockStatement(esprima::BlockStatement* blockStatement, ParsedEntry& parent, int tabIndex,
                                       QMap<QString, ParsedEntry>* objects = NULL)
 {
@@ -740,6 +957,18 @@ static void parseEsprimaBlockStatement(esprima::BlockStatement* blockStatement, 
     }
 }
 
+/**
+ * This function parses if statements.
+ *
+ * @param ifStatement
+ *      The statement.
+ * @param parent
+ *      The parent of parsed entry.
+ * @param tabIndex
+ *      The tab index to which the node belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaIfStatement(esprima::IfStatement* ifStatement, ParsedEntry& parent, int tabIndex,
                                       QMap<QString, ParsedEntry>* objects)
 {
@@ -756,10 +985,21 @@ static void parseEsprimaIfStatement(esprima::IfStatement* ifStatement, ParsedEnt
         parseEsprimaBlockStatement(blockStatement, parent, tabIndex, objects);
 
     }
-
-
 }
 
+
+/**
+ * This function parses switch case statements.
+ *
+ * @param switchCase
+ *      The statement.
+ * @param parent
+ *      The parent of parsed entry.
+ * @param tabIndex
+ *      The tab index to which the node belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaSwitchCase(esprima::SwitchCase* switchCase, ParsedEntry& parent, int tabIndex,
                                       QMap<QString, ParsedEntry>* objects)
 {
@@ -775,6 +1015,18 @@ static void parseEsprimaSwitchCase(esprima::SwitchCase* switchCase, ParsedEntry&
     }
 }
 
+/**
+ * This function parses switch statements.
+ *
+ * @param switchStatement
+ *      The statement.
+ * @param parent
+ *      The parent of parsed entry.
+ * @param tabIndex
+ *      The tab index to which the node belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaSwitchStatement(esprima::SwitchStatement* switchStatement, ParsedEntry& parent, int tabIndex,
                                       QMap<QString, ParsedEntry>* objects)
 {
@@ -784,6 +1036,18 @@ static void parseEsprimaSwitchStatement(esprima::SwitchStatement* switchStatemen
     }
 }
 
+/**
+ * This function parses for statements.
+ *
+ * @param forStatement
+ *      The statement.
+ * @param parent
+ *      The parent of parsed entry.
+ * @param tabIndex
+ *      The tab index to which the node belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaForStatement(esprima::ForStatement* forStatement, ParsedEntry& parent, int tabIndex,
                                       QMap<QString, ParsedEntry>* objects)
 {
@@ -805,6 +1069,18 @@ static void parseEsprimaForStatement(esprima::ForStatement* forStatement, Parsed
     }
 }
 
+/**
+ * This function parses while statements.
+ *
+ * @param whileStatement
+ *      The statement.
+ * @param parent
+ *      The parent of parsed entry.
+ * @param tabIndex
+ *      The tab index to which the node belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaWhileStatement(esprima::WhileStatement* whileStatement, ParsedEntry& parent, int tabIndex,
                                       QMap<QString, ParsedEntry>* objects)
 {
@@ -815,6 +1091,18 @@ static void parseEsprimaWhileStatement(esprima::WhileStatement* whileStatement, 
     }
 }
 
+/**
+ * This function parses do while statements.
+ *
+ * @param doWhileStatement
+ *      The statement.
+ * @param parent
+ *      The parent of parsed entry.
+ * @param tabIndex
+ *      The tab index to which the node belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaDoWhileStatement(esprima::DoWhileStatement* doWhileStatement, ParsedEntry& parent, int tabIndex,
                                       QMap<QString, ParsedEntry>* objects)
 {
@@ -825,6 +1113,18 @@ static void parseEsprimaDoWhileStatement(esprima::DoWhileStatement* doWhileState
     }
 }
 
+/**
+ * This function parses for in statements.
+ *
+ * @param forInStatement
+ *      The statement.
+ * @param parent
+ *      The parent of parsed entry.
+ * @param tabIndex
+ *      The tab index to which the node belongs to.
+ * @param objects
+ *      The map which contains all objects.
+ */
 static void parseEsprimaForInStatement(esprima::ForInStatement* forInStatement, ParsedEntry& parent, int tabIndex,
                                       QMap<QString, ParsedEntry>* objects)
 {
@@ -854,7 +1154,18 @@ static void parseEsprimaForInStatement(esprima::ForInStatement* forInStatement, 
 }
 
 
-static void checkForProrotypFunction(esprima::Node* node, int tabIndex, QMap<QString, ParsedEntry>* objects,
+/**
+ * This function checks for prototyp functions (e.g.
+ * classSingelton1.prototype.getInfo = function(arg))
+ *
+ * @param node
+ *      The esprima node.
+ * @param tabIndex
+ *      The tab index to which the node belongs to.
+ * @param prototypeFunctions
+ *      The map which contains all prototyp functions.
+ */
+static void checkForPrototypFunction(esprima::Node* node, int tabIndex, QMap<QString, ParsedEntry>* objects,
                                      QMap<QString, QVector<ParsedEntry>>& prototypeFunctions)
 {
     esprima::ExpressionStatement* expStatement = dynamic_cast<esprima::ExpressionStatement*>(node);
@@ -908,6 +1219,7 @@ static void checkForProrotypFunction(esprima::Node* node, int tabIndex, QMap<QSt
 
 /**
  * Adds a parsed entry (and his subentries) to the auto completion list.
+ *
  * @param entry
  *      The parsed entry.
  * @param autoCompletionEntries

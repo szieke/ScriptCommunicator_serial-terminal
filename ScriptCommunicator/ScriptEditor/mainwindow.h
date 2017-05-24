@@ -249,6 +249,7 @@ private:
     ///Displays a dialog if the current script has been changed.
     bool maybeSave(int index);
 
+    ///Returns true if outlineTreeWidget contains an element with the given name.
     bool checkIfElementsInOutlineTree(QString name);
 
     ///Loads a file.
@@ -260,6 +261,7 @@ private:
     ///Inserts a subelement into the script view.
     bool inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<ParsedEntry> parsedEntries, QString parentName);
 
+    ///Inserts a file element in the scripts outline.
     void insertFileElementForTabIndex(int tabIndex);
 
     ///Inserts all parsed elements in the  script view and displays all parse errors (annotations).
@@ -289,6 +291,7 @@ private:
     ///Returns the unsaved info file name for a file.
     QString getUnsavedInfoFileName(QString fileName){return getTmpDirectory(fileName) + "/" + QFileInfo(fileName).fileName() + ".unsaved";}
 
+    ///Creates a document title for a new document.
     QString createNewDocumentTitle(void);
 
     ///Returns the current file name without the path.

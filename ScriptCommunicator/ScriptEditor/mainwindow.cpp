@@ -161,6 +161,14 @@ MainWindow::~MainWindow()
  *      Contains all auto-completion entries (all but for the parsed api files).
  * @param autoCompletionApiFiles
  *      Contains the auto-completion entries for all parsed api files.
+ * @param parsedUiObjects
+ *      Contains the parsed UI objects.
+ * @param parsedEntries
+ *      Contains all parsed entries.
+ * @param doneParsing
+ *      True if any file has been parsed.
+ * @param parseOnlyUIFiles
+ *      True if only ui file have been parsed.
  */
 void MainWindow::parsingFinishedSlot(QMap<QString, QStringList> autoCompletionEntries, QMap<QString, QStringList> autoCompletionApiFiles,
                                      QMap<QString, QStringList> parsedUiObjects, QMap<int,QVector<ParsedEntry>> parsedEntries, bool doneParsing,
@@ -327,6 +335,12 @@ void MainWindow::indicatorClickedSlot(int line, int index, Qt::KeyboardModifiers
 }
 
 
+/**
+ * Returns true if outlineTreeWidget contains an element with the given name.
+ *
+ * @param name
+ *      The name.
+ */
 bool MainWindow::checkIfElementsInOutlineTree(QString name)
 {
     //Check if the word is in the outline.
@@ -477,42 +491,20 @@ void MainWindow::parseTimeout(bool parseOnlyUIFiles)
         QMap<int, QString> loadedScriptsIndex;
         bool fileMustBeParsed = false;
 
-        //Note: The document from the current tab must be the first entry in loadedScripts (if variable with the same
-        //name exists in differnt documents).
-        SingleDocument* currentEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-
-        if(currentEditor->getFileMustBeParsed())
-        {
-            fileMustBeParsed = true;
-        }
-        currentEditor->setFileMustBeParsed(false);
-
-        if(!currentEditor->getDocumentName().endsWith(".ui"))
-        {
-            loadedScripts[ui->documentsTabWidget->currentIndex()] = currentEditor->text();
-            loadedScriptsIndex[ui->documentsTabWidget->currentIndex()] = currentEditor->getDocumentName();
-        }
-        else
-        {
-            loadedUiFiles[currentEditor->getDocumentName()] = currentEditor->text();
-        }
-
         //Get the text of all open documents.
         for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
         {
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
-            if(currentEditor != textEditor)
+            if(!textEditor->getDocumentName().endsWith(".ui"))
             {
-                if(!textEditor->getDocumentName().endsWith(".ui"))
-                {
-                    loadedScripts[i] = textEditor->text();
-                    loadedScriptsIndex[i] = textEditor->getDocumentName();
-                }
-                else
-                {
-                    loadedUiFiles[textEditor->getDocumentName()] = textEditor->text();
-                }
+                loadedScripts[i] = textEditor->text();
+                loadedScriptsIndex[i] = textEditor->getDocumentName();
             }
+            else
+            {
+                loadedUiFiles[textEditor->getDocumentName()] = textEditor->text();
+            }
+
 
             if(textEditor->getFileMustBeParsed())
             {
@@ -2183,7 +2175,7 @@ void MainWindow::functionListDoubleClicked(QTreeWidgetItem* item, int column)
 }
 
 /**
- * Creates a document title for a new document
+ * Creates a document title for a new document.
  * @return
  *      The document title.
  */
@@ -2659,7 +2651,12 @@ static void parsedEntryToString(const QVector<ParsedEntry>& parsedEntries,
     }
 }
 
-
+/**
+ * Inserts a file element in the scripts outline.
+ *
+ * @param tabIndex
+ *      The index of the tab to which the file element belongs to.
+ */
 void MainWindow::insertFileElementForTabIndex(int tabIndex)
 {
     QTreeWidgetItem* root = ui->outlineTreeWidget->invisibleRootItem();

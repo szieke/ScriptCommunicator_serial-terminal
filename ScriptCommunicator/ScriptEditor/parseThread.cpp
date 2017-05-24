@@ -25,6 +25,7 @@ QString getScriptEditorFilesFolder(void)
 
 /**
  * Parses a single line from an api file and adds functions which return objects to m_functionsWithResultObjects.
+ *
  * @param singleLine
  *      The current line
  * @return
@@ -145,6 +146,7 @@ void ParseThread::run()
 
 /**
  * Removes in text all left of character.
+ *
  * @param text
  *      The string.
  * @param character
@@ -162,13 +164,12 @@ static inline void removeAllLeft(QString& text, QString character)
 
 /**
  * Removes all unnecessary characters (e.g. comments).
+ *
  * @param currentText
  *      The text.
  */
 void ParseThread::removeAllUnnecessaryCharacters(QString& currentText)
 {
-
-
     //Remove all '/**/' comments.
     QRegExp comment("/\\*(.|[\r\n])*\\*/");
     comment.setMinimal(true);
@@ -188,6 +189,7 @@ void ParseThread::removeAllUnnecessaryCharacters(QString& currentText)
 
 /**
  * Parses a widget list from a user interface file (auto-completion).
+ *
  * @param uiFileName
  *      The user interface file.
  * @param docElem
@@ -351,8 +353,13 @@ void ParseThread::parseWidgetList(QString uiFileName, QDomElement& docElem, bool
  *      The class name.
  * @param isGuiElement
  *      True if the object is a GUI element.
+ * @param isArray
+ *      True if the object is an array.
+ * @param replaceExistingEntry
+ *      True if the object shall be replaced if m_autoCompletionEntries contains it already.
  */
-void ParseThread::addObjectToAutoCompletionList(QString& objectName, QString& className, bool isGuiElement, bool isArray, bool replaceExistingEntry)
+void ParseThread::addObjectToAutoCompletionList(QString& objectName, QString& className, bool isGuiElement,
+                                                bool isArray, bool replaceExistingEntry)
 {
     QString autoCompletionName = isGuiElement ? "UI_" + objectName : objectName;
 
@@ -518,8 +525,13 @@ void ParseThread::parseUiFile(QString uiFileName, QString fileContent)
  * Checks if in the current document user interface files are loaded.
  * If user interface are loaded then they will be parsed and added to the auto-completion
  * list (m_autoCompletionEntries).
+ *
+ * @param currentText
+ *      The test which shall be parsed.
+ * @param activeDocumentPath
+ *      The path of the current documents (is used to create absolut pathes for scriptThread.loadUserInterfaceFile).
  */
-void ParseThread::checkDocumentForUiFiles(QString& currentText, QString activeDocument)
+void ParseThread::checkDocumentForUiFiles(QString& currentText, QString currentDocumentPath)
 {
     int index;
 
@@ -558,7 +570,7 @@ void ParseThread::checkDocumentForUiFiles(QString& currentText, QString activeDo
 
         if(isRelativePath)
         {
-            uiFile = QFileInfo(activeDocument).absolutePath() + "/" + uiFile;
+            uiFile = QFileInfo(currentDocumentPath).absolutePath() + "/" + uiFile;
         }
 
         parseUiFile(uiFile, "");
@@ -679,7 +691,14 @@ void ParseThread::parseTableWidgetInsert(const QString objectName, QStringList l
     }
 }
 
-
+/**
+ * Replace the object in entries type (if objects contains it).
+ *
+ * @param objects
+ *      The parsed objects.
+ * @param entry
+ *      The entry.
+ */
 void ParseThread::replaceAllParsedObject(QMap<QString, ParsedEntry>& objects, ParsedEntry& entry)
 {
     QString tmpType = entry.valueType;
@@ -714,6 +733,17 @@ void ParseThread::replaceAllParsedObject(QMap<QString, ParsedEntry>& objects, Pa
     }
 }
 
+/**
+ * Replaces a type of an entry with the correspondig parsed type.
+ *
+ * @param parsedTypes
+ *      The parsed types.
+ * @param entry
+ *      The entry.
+ * @param parentName
+ *      The complete name of entries parent.
+ * @return
+ */
 bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, ParsedEntry& entry,
                                         QString parentName)
 {
@@ -721,6 +751,7 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
 
     entry.completeName = (parentName.isEmpty()) ? entry.name : parentName + "::"  + entry.name;
 
+    /******************************Look in the upper contexts for the type***************************/
     QString tmpType = entry.valueType;
     QString tmpCompleteName = entry.completeName;
     tmpCompleteName.replace("::", ".");
@@ -742,9 +773,11 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
 
         index = tmpCompleteName.lastIndexOf(".");
     }
+    /********************************************************************************************************/
 
     if(!tmpType.isEmpty())
-    {
+    {//The type was not found in an upper context.
+
         if(parsedTypes.contains(entry.valueType))
         {
             if(!parsedTypes[entry.valueType].isEmpty())
@@ -765,6 +798,7 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
     {
         QStringList split = entry.valueType.split(".");
 
+        //Look for UI elements created with a table widget.
         if((split.size() >= 2) && m_tableWidgets.contains(split[0]))
         {
             if(split[1] == "getWidget()")
@@ -796,6 +830,9 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
             }
         }
 
+        /**********************************************************************************************/
+        //Check if the object in the type of entry is declared in the same contex as entry
+        //(in this case m_creatorObjects contains this object).
         QString creatorName = entry.completeName;
         int tmpIndex = creatorName.lastIndexOf(entry.name);
         if(tmpIndex != -1)
@@ -818,7 +855,9 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
                 }
             }
         }
+        /**********************************************************************************************/
 
+        //Check if m_creatorObjects contains the object in the type of entry.
         if (m_creatorObjects.contains(creatorName))
         {
             split[0] = m_creatorObjects[creatorName];
@@ -843,6 +882,7 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
             }
         }
 
+         //Check if m_functionsWithResultObjects contains the object in the type of entry.
         if(m_functionsWithResultObjects.contains(split[0]))
         {
             split[1].replace("()", "");
@@ -914,7 +954,6 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
 
         if (m_autoCompletionApiFiles.contains(valueType + ".api"))
         {
-
             addObjectToAutoCompletionList(entry.completeName, valueType, false, isArray);
         }
         else if (m_creatorObjects.contains(entry.valueType))
@@ -926,6 +965,7 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
 
     }
 
+    //Call replaceAllParsedTypes for all sub elements.
     for(int i = 0; i < entry.subElements.size(); i++)
     {
         if(replaceAllParsedTypes(parsedTypes, entry.subElements[i], entry.completeName))
@@ -937,7 +977,14 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
     return entryChanged;
 }
 
-
+/**
+ * Creates the complete name of an entry (includes all parents).
+ *
+ * @param entry
+ *      The entry.
+ * @param parent
+ *      The parent entry.
+ */
 static void createCompleteName(ParsedEntry& entry, ParsedEntry& parent)
 {
     entry.completeName = parent.completeName.isEmpty() ? entry.name : parent.completeName + "." + entry.name;
@@ -950,6 +997,7 @@ static void createCompleteName(ParsedEntry& entry, ParsedEntry& parent)
 
 /**
  * Returns all functions and gloabl variables in the loaded script files.
+ *
  * @param loadedScripts
  *      The loaded scripts.
  * @return
@@ -1021,7 +1069,7 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
                 }
                 else
                 {
-                    checkForProrotypFunction(program->body[i], iter.key(), &objects,prototypeFunctions);
+                    checkForPrototypFunction(program->body[i], iter.key(), &objects,prototypeFunctions);
                 }
             }
         }
@@ -1136,8 +1184,15 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
  *      All loaded ui files.
  * @param loadedScripts
  *      All loaded scripts.
+ * @param loadedScriptsIndex
+ *      The (tab) indexes of the loaded scripts.
+ * @param loadedFileChanged
+ *      True if the loaded files have been changed.
+ * @param parseOnlyUIFiles
+ *      True of only UI files shall be parsed.
  */
-void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QString> loadedScripts, QMap<int, QString> loadedScriptsIndex, bool loadedFileChanged, bool parseOnlyUIFiles)
+void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QString> loadedScripts,
+                            QMap<int, QString> loadedScriptsIndex, bool loadedFileChanged, bool parseOnlyUIFiles)
 {
 
     //Clear all parsed objects (all but m_autoCompletionApiFiles).

@@ -65,7 +65,7 @@ private:
     void parseTableWidgetInsert(const QString objectName, QStringList lines);
 
     ///Checks if in the current document user interface files are loaded.
-    void checkDocumentForUiFiles(QString& currentText, QString activeDocument);
+    void checkDocumentForUiFiles(QString& currentText, QString currentDocumentPath);
 
     ///Adds on obect to the auto-completion list.
     void addObjectToAutoCompletionList(QString& objectName, QString& className, bool isGuiElement, bool isArray=false, bool replaceExistingEntry=false);
@@ -79,10 +79,11 @@ private:
     ///Removes all unnecessary characters (e.g. comments).
     void removeAllUnnecessaryCharacters(QString& currentText);
 
+    ///Replace the object in entries type (if objects contains it).
     void replaceAllParsedObject(QMap<QString, ParsedEntry>& objects, ParsedEntry& entry);
 
+    ///Replaces a type of an entry with the correspondig parsed type.
     bool replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, ParsedEntry& entry, QString parentName);
-
 
     ///Parses a single line from an api file and adds functions which return objects to m_functionsWithResultObjects.
     void parseSingleLineForFunctionsWithResultObjects(QString &singleEntry);
