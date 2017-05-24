@@ -175,6 +175,9 @@ private slots:
     ///Is called if an info tab shall be closed.
     void infoTabCloseRequestedSlot(int index);
 
+    ///Is called if the user moves a tab.
+    void tabMoved(int from, int to);
+
     ///Is called if a documents tab shall be closed.
     void documentsTabCloseRequestedSlot(int index);
 
