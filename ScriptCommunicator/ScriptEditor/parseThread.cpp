@@ -751,6 +751,7 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
 
     entry.completeName = (parentName.isEmpty()) ? entry.name : parentName + "::"  + entry.name;
 
+
     /******************************Look in the upper contexts for the type***************************/
     QString tmpType = entry.valueType;
     QString tmpCompleteName = entry.completeName;
@@ -784,7 +785,7 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
             {
                 entry.valueType = parsedTypes[entry.valueType];
 
-                if(entry.isArrayIndex)
+                if(entry.isObjectArrayIndex)
                 {//Array element.
                     entry.valueType.replace("Array<", "");
                     entry.valueType.replace(">", "");
@@ -863,7 +864,7 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
             split[0] = m_creatorObjects[creatorName];
             split[1] = split[split.size() - 1];
             bool isArrayIndex = false;
-            if(entry.isArrayIndex)
+            if(entry.isObjectArrayIndex)
             {
                 isArrayIndex = true;
             }
@@ -893,7 +894,7 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
                     (m_functionsWithResultObjects[split[0]][i].functionName == split[1]))
                 {
                     bool isArray = m_functionsWithResultObjects[split[0]][i].isArray;
-                    if(entry.isArrayIndex)
+                    if(entry.isFunctionArrayIndex)
                     {
                         isArray = false;
 
@@ -1028,7 +1029,8 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
             entry.type = PARSED_ENTRY_TYPE_PARSE_ERROR;
             entry.tabIndex = iter.key();
             entry.name = e.description.c_str();
-            entry.isArrayIndex = false;
+            entry.isFunctionArrayIndex = false;
+            entry.isObjectArrayIndex = false;
             fileResult.append(entry);
             result[iter.key()] = fileResult;
             iter++;

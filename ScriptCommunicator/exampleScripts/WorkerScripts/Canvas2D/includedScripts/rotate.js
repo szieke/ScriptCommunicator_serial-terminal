@@ -1,11 +1,11 @@
-/***************************************************************************************
+﻿/***************************************************************************************
 This worker script (worker scripts can be added in the script window) demonstrates the usage of the 
 ScriptCanvas2D class.
 ****************************************************************************************/
 
 function renderRotate()
 {
-  for (i=1;i<6;i++)
+  for (var i=1;i<6;i++)
   { // Loop through rings (from inside to out)
     ctxRotate.save();
     ctxRotate.fillStyle = 'rgb('+(51*i)+','+(255-51*i)+',255)';

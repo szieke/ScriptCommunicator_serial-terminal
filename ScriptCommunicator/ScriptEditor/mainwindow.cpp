@@ -270,6 +270,8 @@ void MainWindow::checkForFileChanges(void)
                         //Set the tab text.
                         ui->documentsTabWidget->setTabText(ui->documentsTabWidget->currentIndex(), strippedName(textEditor->getDocumentName()));
                         statusBar()->showMessage(tr("File reloaded"), 10000);
+
+                        m_parseTimer.start(200);
                     }
                     else
                     {
@@ -967,6 +969,8 @@ void MainWindow::tabIndexChangedSlot(int index)
         }
 
         setWindowTitle(tr("ScriptCommunicator %1 - Script Editor %2[*]").arg(SCRIPT_COMMUNICATOR_VERSION).arg(nameInTitle));
+
+        textEditor->setFocus();
     }
 
     setStateLoadAllIncludedScriptsButton();

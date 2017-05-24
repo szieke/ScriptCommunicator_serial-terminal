@@ -1,4 +1,4 @@
-/*************************************************************************
+﻿/*************************************************************************
 This worker script (worker scripts can be added in the script window) demonstrates the loading of a dynamic link library. The libray must export following function
 extern "C" Q_DECL_EXPORT void init(QScriptEngine* engine);
 For details the the testDll Project.
@@ -32,7 +32,8 @@ function sendDataArray(data)
 //the user has pressed the button
 function pushButtonClicked()
 {
-	var array = UI_lineEdit.text().split(" ");
+	var text = UI_lineEdit.text();
+	var array = text.split(" ");
 	var byteArray = Array();
 	
 	for(var i = 0; i < array.length; i++)

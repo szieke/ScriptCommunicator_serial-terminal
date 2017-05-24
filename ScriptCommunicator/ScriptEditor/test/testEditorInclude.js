@@ -16,7 +16,7 @@ function Class(arg0)
 
 		UI_TableWidget.insertWidget(4, 1, "DateEdit");
 		var dateEdit1 = UI_TableWidget.getWidget(4, 1)
-		var test = this.testClassArray;
+		var test = this.testClassArray.splice();   //Typ wird nicht erkannt.
 		
 		while(1)
 		{

@@ -40,7 +40,8 @@ struct ParsedEntry
     int tabIndex;//The tab (dodument) to which this entry belongs to.
     QVector<ParsedEntry> subElements;//The sub entries.
     QString valueType;//The value type of the element (variable).
-    bool isArrayIndex;//True if the value is from an array index.
+    bool isObjectArrayIndex;//True if the value is from an object array index.
+    bool isFunctionArrayIndex;//True if the value is from an function array index.
     QStringList additionalInformation;//Additional information.
 };
 
@@ -292,7 +293,8 @@ static void parseEsprimaFunctionExpression(esprima::FunctionExpression* funcExp,
             subEntry.name = subVarDecl->declarations[0]->id->name.c_str();
             subEntry.params = QStringList();
             subEntry.tabIndex = tabIndex;
-            subEntry.isArrayIndex = false;
+            subEntry.isFunctionArrayIndex = false;
+            subEntry.isObjectArrayIndex = false;
             subEntry.completeName = parent->name.isEmpty() ? subEntry.name : parent->completeName + "." + subEntry.name;
 
             esprima::FunctionExpression* funcExp = dynamic_cast<esprima::FunctionExpression*>(subVarDecl->declarations[0]->init);
@@ -343,7 +345,8 @@ static void parseEsprimaFunctionExpression(esprima::FunctionExpression* funcExp,
                     subEntry.endLine = assignmentStatement->loc->end->line - 1;
                     subEntry.params = QStringList();
                     subEntry.tabIndex = tabIndex;
-                    subEntry.isArrayIndex = false;
+                    subEntry.isFunctionArrayIndex = false;
+                    subEntry.isObjectArrayIndex = false;
 
                     esprima::MemberExpression* memExp = dynamic_cast<esprima::MemberExpression*>(assignmentStatement->left);
                     if(memExp)
@@ -397,7 +400,7 @@ static void getTypeFromMemberExpression(esprima::MemberExpression* memExpression
 
         if(memExpression->computed)
         {
-            entry.isArrayIndex = true;
+            entry.isObjectArrayIndex = true;
         }
         else
         {
@@ -434,6 +437,30 @@ static void getTypeFromMemberExpression(esprima::MemberExpression* memExpression
         }
     }
 
+    esprima::NewExpression* newExp = dynamic_cast<esprima::NewExpression*>(memExpression->object);
+    if(newExp)
+    {
+        esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(newExp->callee);
+        if(id)
+        {
+            entry.valueType = id->name.c_str();
+
+            if((entry.valueType != "Date") && (entry.valueType != "String") &&
+               (entry.valueType != "Number") && (entry.valueType != "RegExp"))
+            {
+                entry.valueType += "()";
+            }
+
+            id = dynamic_cast<esprima::Identifier*>(memExpression->property);
+            if(id)
+            {
+                entry.valueType += QString(".") + id->name.c_str();
+            }
+
+
+        }
+    }
+
     esprima::ThisExpression* thisExpr = dynamic_cast<esprima::ThisExpression*>(memExpression->object);
     if(thisExpr)
     {
@@ -452,19 +479,18 @@ static void getTypeFromMemberExpression(esprima::MemberExpression* memExpression
 
             index = tmpCompleteName.lastIndexOf(".");
             if(index != -1)
-            {
+            {//There is an upper context.
+
                 entry.valueType = tmpCompleteName;
                 entry.valueType.remove(index, entry.valueType.length() - index);
                 entry.valueType += ".";
-                tmpCompleteName = "";
+                entry.valueType += id->name.c_str();
             }
-
-
-            if(!tmpCompleteName.isEmpty())
+            else
             {
-                entry.valueType = tmpCompleteName + ".";
+               entry.valueType = id->name.c_str();
             }
-            entry.valueType += id->name.c_str();
+
         }
     }
 }
@@ -503,7 +529,7 @@ static void getTypeFromCallExpression(esprima::CallExpression* callExpression, P
             }
         }
         else if((entry.valueType == "Date") || (entry.valueType == "String") ||
-                (entry.valueType == "Number"))
+                (entry.valueType == "Number") || (entry.valueType == "RegExp"))
         {
 
         }
@@ -659,7 +685,8 @@ static void parseEsprimaObjectExpression(esprima::ObjectExpression* objExp, Pars
         subEntry.line = objExp->properties[j]->loc->start->line - 1;
         subEntry.column = objExp->properties[j]->loc->start->column;
         subEntry.endLine = objExp->properties[j]->loc->end->line - 1;
-        subEntry.isArrayIndex = false;
+        subEntry.isFunctionArrayIndex = false;
+        subEntry.isObjectArrayIndex = false;
         if(id)
         {
             subEntry.name = id->name.c_str();
@@ -779,7 +806,8 @@ static void parseEsprimaFunctionDeclaration(esprima::FunctionDeclaration* functi
                             subEntry.column = assignmentStatement->loc->start->column;
                             subEntry.endLine = assignmentStatement->loc->end->line - 1;
                             subEntry.name = id->name.c_str();
-                            subEntry.isArrayIndex = false;
+                            subEntry.isFunctionArrayIndex = false;
+                            subEntry.isObjectArrayIndex = false;
                             subEntry.type = PARSED_ENTRY_TYPE_CLASS_THIS_FUNCTION;
                             subEntry.params = QStringList();
                             subEntry.tabIndex = tabIndex;
@@ -844,12 +872,12 @@ static void parseEsprimaVariableDeclaration(esprima::VariableDeclaration* varDec
     entry.line = varDecl->declarations[0]->loc->start->line - 1;
     entry.column = varDecl->declarations[0]->loc->start->column;
     entry.name = varDecl->declarations[0]->id->name.c_str();
-    entry.isArrayIndex = false;
+    entry.isFunctionArrayIndex = false;
+    entry.isObjectArrayIndex = false;
     entry.endLine = varDecl->declarations[0]->loc->end->line - 1;
     entry.completeName = parent.completeName.isEmpty() ? entry.name : parent.completeName + "." + entry.name;
     entry.params = QStringList();
     entry.tabIndex = tabIndex;
-    entry.isArrayIndex = false;
 
 
     esprima::NewExpression* newExp = dynamic_cast<esprima::NewExpression*>(varDecl->declarations[0]->init);
@@ -916,7 +944,7 @@ static void parseEsprimaVariableDeclaration(esprima::VariableDeclaration* varDec
 
                     if(dynamic_cast<esprima::MemberExpression*>(decl->init)->computed)
                     {
-                        entry.isArrayIndex = true;
+                        entry.isFunctionArrayIndex = true;
                     }
                 }
             }
@@ -1139,7 +1167,7 @@ static void parseEsprimaForInStatement(esprima::ForInStatement* forInStatement, 
         {
 
             entry.valueType = type->name.c_str();
-            entry.isArrayIndex = true;
+            entry.isFunctionArrayIndex = true;
         }
 
         parent.subElements.append(entry);

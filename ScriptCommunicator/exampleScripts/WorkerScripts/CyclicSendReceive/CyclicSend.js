@@ -1,4 +1,4 @@
-/********************************************************************************************************
+﻿/********************************************************************************************************
 * The script demonstrates how to send data from GUI elements cyclically. To receive this data following
 * must be done:
 * run CyclicReceive.js in a second ScriptCommunicator instance
@@ -21,9 +21,7 @@ function sendValue(id, data)
 	}
 	else
 	{
-		var sendArray = Array();
-		sendArray[0] = 0xff;
-		sendArray[1] = id;
+		var sendArray = Array(0xff, id);
 		appendByteArrayAtByteArray(sendArray, data, data.length);
 		appendNumberAtByteArray(sendArray, 0xfe, 1);
 		scriptThread.sendDataArray(sendArray)
