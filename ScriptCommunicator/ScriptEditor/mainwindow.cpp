@@ -2424,7 +2424,7 @@ void MainWindow::clearOutlineWindow(int tabIndex)
       ++it;
     }
 
-    //Remouve the file item.
+    //Remove the file item.
     ui->outlineTreeWidget->takeTopLevelItem(tabIndex);
 }
 
@@ -2848,26 +2848,25 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
         iter++;
     }
 
-    /*************Remove all ui files from the script outline******************************/
-    QList<int> uiFileIndexes;
-    for(int i = 0; i < root->childCount(); i++)
+    //Remove all ui files from the script outline.
+    bool elementDeleted = false;
+    do
     {
-        QTreeWidgetItem* item = ui->outlineTreeWidget->topLevelItem(i);
-        if(item->text(0).endsWith(".ui"))
-        {
-            uiFileIndexes.append(i);
-        }
-    }
+        elementDeleted = false;
 
-    for(auto el : uiFileIndexes)
-    {
-        QTreeWidgetItem* item = ui->outlineTreeWidget->takeTopLevelItem(el);
-        if(item)
+        for(int i = 0; i < root->childCount(); i++)
         {
-            delete item;
+            QTreeWidgetItem* item = ui->outlineTreeWidget->topLevelItem(i);
+            if(item->text(0).endsWith(".ui"))
+            {
+                //Remove and delete the item.
+                ui->outlineTreeWidget->takeTopLevelItem(i);
+                delete item;
+                elementDeleted = true;
+                break;
+            }
         }
-    }
-    /**********************************************************************************************/
+    }while(elementDeleted);
 
     //Restore the expanded state of all tree widget elements.
     restoreExpandedState(ui->outlineTreeWidget, root, expandMap, "");
