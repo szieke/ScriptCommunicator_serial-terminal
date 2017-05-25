@@ -1,7 +1,9 @@
 ﻿
-var ilen = ("" + i).length;  //Typ wird nicht erkannt.
-var idx1 = (0 == i) ? "" : "_" + ("000000".substring(ilen) + i);//Typ wird nicht erkannt.
-var idx2= (0 == i) ? 0 : 1;//Typ wird nicht erkannt.
+var testddd = ""
+var idx1 = (0 == i) ? "" : "_" + ("000000".substring(ilen) + i);
+var idx2= (0 == i) ? 0 : 1;
+var idx2= (0 == i) ? true : false;
+var idx2= (0 == i) ? testddd : testddd;
 
 
 UI_TableWidget.insertWidget(2, 0, "ComboBox");

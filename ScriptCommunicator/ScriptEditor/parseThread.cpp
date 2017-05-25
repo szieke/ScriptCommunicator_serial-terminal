@@ -105,7 +105,7 @@ void ParseThread::parseSingleLineForFunctionsWithResultObjects(QString& singleLi
 }
 
 ParseThread::ParseThread(QObject *parent) : QThread(parent), m_autoCompletionApiFiles(), m_autoCompletionEntries(), m_objectAddedToCompletionList(false),
-    m_creatorObjects(), m_stringList(), m_unknownTypeObjects(), m_arrayList(), m_tableWidgets(),
+    m_creatorObjects(), m_unknownTypeObjects(), m_arrayList(), m_tableWidgets(),
     m_tableWidgetObjects(), m_parsedUiFiles(), m_parsedUiFilesFromFile()
 {
     if(m_autoCompletionApiFiles.isEmpty())
@@ -358,7 +358,7 @@ void ParseThread::parseWidgetList(QString uiFileName, QDomElement& docElem, bool
  * @param replaceExistingEntry
  *      True if the object shall be replaced if m_autoCompletionEntries contains it already.
  */
-void ParseThread::addObjectToAutoCompletionList(QString& objectName, QString& className, bool isGuiElement,
+void ParseThread::addObjectToAutoCompletionList(QString objectName, QString className, bool isGuiElement,
                                                 bool isArray, bool replaceExistingEntry)
 {
     QString autoCompletionName = isGuiElement ? "UI_" + objectName : objectName;
@@ -444,16 +444,7 @@ void ParseThread::addObjectToAutoCompletionList(QString& objectName, QString& cl
             }
         }
 
-        if(className == "String")
-        {
-            int index = m_stringList.indexOf(autoCompletionName);
-            if(index != -1)
-            {
-                m_stringList.remove(index);
-            }
-            m_stringList.append(autoCompletionName);
-        }
-        else if(className == "ScriptTableWidget")
+        if(className == "ScriptTableWidget")
         {
             int index = m_tableWidgets.indexOf(autoCompletionName);
             if(index != -1)
@@ -461,12 +452,22 @@ void ParseThread::addObjectToAutoCompletionList(QString& objectName, QString& cl
                 m_tableWidgets.remove(index);
             }
             m_tableWidgets.append(autoCompletionName);
+
+            if(isArray)
+            {
+                className = "Array<" + className + ">";
+            }
             m_creatorObjects[autoCompletionName] = className;
         }
         else
         {
             if((className != "Dummy"))
             {
+                if(isArray)
+                {
+                    className = "Array<" + className + ">";
+                }
+
                 m_creatorObjects[autoCompletionName] = className;
             }
         }
@@ -767,6 +768,11 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
             if(!parsedTypes[tmpType].isEmpty())
             {
                 entry.valueType = parsedTypes[tmpType];
+                if(entry.isObjectArrayIndex)
+                {//Array element.
+                    entry.valueType.replace("Array<", "");
+                    entry.valueType.replace(">", "");
+                }
                 tmpType = "";
                 break;
             }
@@ -1203,7 +1209,6 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
     m_tableWidgetObjects.clear();
     m_parsedUiObjects.clear();
     m_parsedUiFiles.clear();
-    m_stringList.clear();
     m_arrayList.clear();
     m_tableWidgets.clear();
     m_unknownTypeObjects.clear();

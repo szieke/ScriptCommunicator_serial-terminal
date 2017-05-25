@@ -412,6 +412,18 @@ static void getTypeFromMemberExpression(esprima::MemberExpression* memExpression
         }
     }
 
+    esprima::BinaryExpression* binExp = dynamic_cast<esprima::BinaryExpression*>(memExpression->object);
+    if(binExp)
+    {
+        getTypeFromNode(binExp->left, entry);
+
+        esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(memExpression->property);
+        if(id)
+        {
+            entry.valueType += QString(".") + id->name.c_str();
+        }
+    }
+
     esprima::CallExpression* callExp = dynamic_cast<esprima::CallExpression*>(memExpression->object);
     if(callExp)
     {
@@ -423,17 +435,32 @@ static void getTypeFromMemberExpression(esprima::MemberExpression* memExpression
             entry.valueType += QString(".") + id->name.c_str();
 
         }
+        if(memExpression->computed)
+        {
+            entry.isFunctionArrayIndex = true;
+        }
     }
 
     esprima::MemberExpression* mem = dynamic_cast<esprima::MemberExpression*>(memExpression->object);
     if(mem)
     {
+         getTypeFromMemberExpression(mem, entry);
+
         esprima::Identifier* id = dynamic_cast<esprima::Identifier*>(memExpression->property);
         if(id)
         {
-            getTypeFromMemberExpression(mem, entry);
-
              entry.valueType += QString(".") + id->name.c_str();
+             if(memExpression->computed)
+             {
+                 entry.isFunctionArrayIndex = true;
+             }
+        }
+        else
+        {
+            if(memExpression->computed)
+            {
+                entry.isObjectArrayIndex = true;
+            }
         }
     }
 
@@ -493,6 +520,19 @@ static void getTypeFromMemberExpression(esprima::MemberExpression* memExpression
 
         }
     }
+}
+
+/**
+ * Reads the type from a condional expression.
+ *
+ * @param condExp
+ *      The condional expression.
+ * @param entry
+ *      The parsed entry to which the type is written to.
+ */
+static void getTypeFromConditionalExpression(esprima::ConditionalExpression* condExp, ParsedEntry& entry)
+{
+    getTypeFromNode(condExp->consequent, entry);
 }
 
 /**
@@ -642,6 +682,12 @@ static void getTypeFromNode(esprima::Node* node, ParsedEntry& entry)
             {
                 entry.valueType = "Array<Number>";
             }
+
+            esprima::BooleanLiteral* boolLiteral = dynamic_cast<esprima::BooleanLiteral*>(arrayExp->elements[0]);
+            if(boolLiteral)
+            {
+                entry.valueType = "Array<bool>";
+            }
         }
 
     }
@@ -657,6 +703,13 @@ static void getTypeFromNode(esprima::Node* node, ParsedEntry& entry)
     {
         entry.valueType = "";
         getTypeFromCallExpression(callExpression, entry);
+    }
+
+    esprima::ConditionalExpression* condExp = dynamic_cast<esprima::ConditionalExpression*>(node);
+    if(condExp)
+    {
+        entry.valueType = "";
+        getTypeFromConditionalExpression(condExp, entry);
     }
 
 }

@@ -68,7 +68,7 @@ private:
     void checkDocumentForUiFiles(QString& currentText, QString currentDocumentPath);
 
     ///Adds on obect to the auto-completion list.
-    void addObjectToAutoCompletionList(QString& objectName, QString& className, bool isGuiElement, bool isArray=false, bool replaceExistingEntry=false);
+    void addObjectToAutoCompletionList(QString objectName, QString className, bool isGuiElement, bool isArray=false, bool replaceExistingEntry=false);
 
     ///Parses a widget list from a user interface file (auto-completion).
     void parseWidgetList(QString uiFileName, QDomElement& docElem, bool parseActions);
@@ -99,9 +99,6 @@ private:
 
     ///Contains all Objects which can create other objects.
     QMap<QString, QString> m_creatorObjects;
-
-    ///Contains all String Objects.
-    QVector<QString> m_stringList;
 
     ///Contains all Objects with a unknown type.
     QVector<QString> m_unknownTypeObjects;

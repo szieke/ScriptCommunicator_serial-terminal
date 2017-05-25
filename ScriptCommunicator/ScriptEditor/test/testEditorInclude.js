@@ -6,7 +6,8 @@ function Class(arg0)
 	var testTimer = scriptThread.createTimer();
 	var testDate1 = Date();
 	var testDate2 = new Date();
-	var testClassArray = [33, 55];
+	var testClassArray = ["33", "55"];
+	var testClassString = "";
 	
 	
 	var reset = function(arg1)
@@ -16,7 +17,9 @@ function Class(arg0)
 
 		UI_TableWidget.insertWidget(4, 1, "DateEdit");
 		var dateEdit1 = UI_TableWidget.getWidget(4, 1)
-		var test = this.testClassArray.splice();   //Typ wird nicht erkannt.
+		var test = this.testClassArray[0];
+		var test2 = this.testClassString.split(" ");
+		var test3 = this.testClassString.split(" ")[0];
 		
 		while(1)
 		{
@@ -69,6 +72,12 @@ function Class(arg0)
 Class.prototype.getInfo = function(arg) 
 {
 	var test = this.testClassArray; 
+	var test2 = this.testClassArray[0]; 
+	var testddd = ""
+	var idx1 = (0 == i) ? "" : "_" + ("000000".substring(ilen) + i);
+	var idx2= (0 == i) ? 0 : 1;
+	var idx2= (0 == i) ? true : false;
+	var idx2= (0 == i) ? testddd : testddd;
 	
 	while(1)
 	{
@@ -112,7 +121,7 @@ function testFunction()
 	testVar.toExponential(); 
 	var stringResult = conv.byteArrayToString(Array(1,2,3));
 	var splitResult = stringResult.split("\n");
-	var splitResultElement1 = splitResult.concat();
+	var splitResultElement1 = splitResult.concat();  //Hier wird nur Array erkannt (und nicht Array<String>)
 	var testBool = splitResultElement1.isArray()
 	
 	while(1)
@@ -145,6 +154,11 @@ var array1 =
 	testDate2 : new Date(),
 	testFunc: function (arg3) 
 	{ 
+		var testddd = ""
+		var idx1 = (0 == i) ? "" : "_" + ("000000".substring(ilen) + i);
+		var idx2= (0 == i) ? 0 : 1;
+		var idx3= (0 == i) ? true : false;
+		var idx4= (0 == i) ? testddd : testddd;
 		var testVar = "";
 		while(1)
 		{
@@ -177,6 +191,11 @@ var map1 =
 			var testDate1 = Date();
 		    var testDate2 = new Date();
 			var zzz = ""
+			var testddd = ""
+			var idx1 = (0 == i) ? "" : "_" + ("000000".substring(ilen) + i);
+			var idx2= (0 == i) ? 0 : 1;
+			var idx2= (0 == i) ? true : false;
+			var idx2= (0 == i) ? testddd : testddd;
 			while(1)
 			{
 				var whileVar1= ""; 
@@ -299,6 +318,11 @@ var classSingelton1 = new function()
 classSingelton1.prototype.getInfo = function(arg) 
 {
 	var test = "";
+	var testddd = ""
+	var idx1 = (0 == i) ? "" : "_" + ("000000".substring(ilen) + i);
+	var idx2= (0 == i) ? 0 : 1;
+	var idx2= (0 == i) ? true : false;
+	var idx2= (0 == i) ? testddd : testddd;
 	
 	while(1)
 	{
