@@ -864,6 +864,7 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
         }
         /**********************************************************************************************/
 
+        QString arrayType;
         //Check if m_creatorObjects contains the object in the type of entry.
         if (m_creatorObjects.contains(creatorName))
         {
@@ -877,13 +878,12 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
 
             if(split[0].startsWith("Array<"))
             {
-                if(isArrayIndex)
+                split[0].replace("Array<", "");
+                split[0].replace(">", "");
+
+                if(!isArrayIndex)
                 {
-                    split[0].replace("Array<", "");
-                    split[0].replace(">", "");
-                }
-                else
-                {
+                    arrayType = split[0];
                     split[0] = "Array";
                 }
             }
@@ -906,7 +906,13 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
 
                     }
 
-                    addObjectToAutoCompletionList(entry.completeName, m_functionsWithResultObjects[split[0]][i].resultType, false,
+                    QString resultType = m_functionsWithResultObjects[split[0]][i].resultType;
+                    if((resultType == "Dummy") && !arrayType.isEmpty())
+                    {
+                        resultType = arrayType;
+                    }
+
+                    addObjectToAutoCompletionList(entry.completeName, resultType, false,
                             isArray, true);
 
                     entry.valueType = "";
@@ -915,7 +921,7 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
                     {
                         entry.valueType = "Array<";
                     }
-                    entry.valueType += m_functionsWithResultObjects[split[0]][i].resultType;
+                    entry.valueType += resultType;
 
                     if(isArray)
                     {

@@ -121,8 +121,8 @@ function testFunction()
 	testVar.toExponential(); 
 	var stringResult = conv.byteArrayToString(Array(1,2,3));
 	var splitResult = stringResult.split("\n");
-	var splitResultElement1 = splitResult.concat();  //Hier wird nur Array erkannt (und nicht Array<String>)
-	var testBool = splitResultElement1.isArray()
+	var splitResultElement1 = splitResult.concat()[0];  
+	var testBool = splitResult.isArray()
 	
 	while(1)
 	{
@@ -263,7 +263,7 @@ var classSingelton1 = new function()
 		var test = Date();
 		var test2 = this.testMap ;
 	    var splitResult = this.stringResult.split("\n");
-	    var splitResultElement1 = splitResult.concat();//Hier wird nur Array erkannt (und nicht Array<String>)
+	    var splitResultElement1 = splitResult.concat();
 		var testBool = splitResultElement1.isArray()
 		while(1)
 		{
