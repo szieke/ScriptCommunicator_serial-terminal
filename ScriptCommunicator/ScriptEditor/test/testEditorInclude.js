@@ -263,7 +263,7 @@ var classSingelton1 = new function()
 		var test = Date();
 		var test2 = this.testMap ;
 	    var splitResult = this.stringResult.split("\n");
-	    var splitResultElement1 = splitResult.concat();
+	    var splitResultElement1 = splitResult.concat();//Hier wird nur Array erkannt (und nicht Array<String>)
 		var testBool = splitResultElement1.isArray()
 		while(1)
 		{

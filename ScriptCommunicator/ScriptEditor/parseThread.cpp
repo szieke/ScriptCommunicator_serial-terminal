@@ -1059,25 +1059,28 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
             }//if(varDecl)
             else
             {
-                checkForControlStatements(program->body[i], entry, iter.key(), &objects);
-
-                for(auto el : entry.subElements)
+                if(checkForControlStatements(program->body[i], entry, iter.key(), &objects))
                 {
-                    fileResult.append(el);
-                }
-
-                esprima::FunctionDeclaration* funcDecl = dynamic_cast<esprima::FunctionDeclaration*>(program->body[i]);
-                if(funcDecl)
-                {//Function
-
-                    ParsedEntry dummyParent;
-                    parseEsprimaFunctionDeclaration(funcDecl, &dummyParent, &entry, iter.key(), &objects);
-                    fileResult.append(entry);
-                    objects[entry.name] = entry;
+                    for(auto el : entry.subElements)
+                    {
+                        fileResult.append(el);
+                    }
                 }
                 else
                 {
-                    checkForPrototypFunction(program->body[i], iter.key(), &objects,prototypeFunctions);
+                    esprima::FunctionDeclaration* funcDecl = dynamic_cast<esprima::FunctionDeclaration*>(program->body[i]);
+                    if(funcDecl)
+                    {//Function
+
+                        ParsedEntry dummyParent;
+                        parseEsprimaFunctionDeclaration(funcDecl, &dummyParent, &entry, iter.key(), &objects);
+                        fileResult.append(entry);
+                        objects[entry.name] = entry;
+                    }
+                    else
+                    {
+                        checkForPrototypFunction(program->body[i], iter.key(), &objects,prototypeFunctions);
+                    }
                 }
             }
         }
