@@ -43,6 +43,9 @@ public:
     ///Sets the document name/path.
     void setDocumentName(QString name, QFont font);
 
+    ///Sets the font size of the line number margin.
+    void setLineNumberMarginFontSize(int pointSize);
+
     ///Returns the document name/path.
     QString getDocumentName(void){return m_documentName;}
 
@@ -61,6 +64,7 @@ public:
     ///Adds a function the current document.
     void addFunction(ParsedEntry& function);
 
+    ///Returns the current context string.
     QString getContextString(int line);
 
 protected:

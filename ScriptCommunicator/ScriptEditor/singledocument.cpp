@@ -50,7 +50,13 @@ void SingleDocument::keyPressEventChild(QKeyEvent *event)
     }
 }
 
-
+/**
+ * Returns the current context string.
+ * @param line
+ *      The context line.
+ * @return
+ *      The context string.
+ */
 QString SingleDocument::getContextString(int line)
 {
     QString result;
@@ -127,6 +133,17 @@ void SingleDocument::updateLastModified(void)
 }
 
 /**
+ * Sets the font size of the line number margin.
+ * @param pointSize
+ *      The font size.
+ */
+void SingleDocument::setLineNumberMarginFontSize(int pointSize)
+{
+    setMarginsFont(QFont("Courier New", pointSize));
+    setMarginWidth(0, QString("00%1").arg(lines()));
+}
+
+/**
  * Sets the document name/path.
  * @param name
  *      The document name.
@@ -136,6 +153,7 @@ void SingleDocument::setDocumentName(QString name, QFont font)
     m_documentName = name;
     initLexer(name);
     lexer()->setFont(font, -1);
+    setLineNumberMarginFontSize(font.pointSize());
 }
 
 /**

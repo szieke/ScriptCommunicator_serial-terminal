@@ -1933,6 +1933,7 @@ void MainWindow::setFont()
         {
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
             textEditor->lexer()->setFont(m_currentFont, -1);
+            textEditor->setLineNumberMarginFontSize(m_currentFont.pointSize());
         }
     }
 }
@@ -1982,6 +1983,8 @@ void MainWindow::zoomOutSlot()
     {
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
         textEditor->lexer()->setFont(m_currentFont, -1);
+        textEditor->setLineNumberMarginFontSize(m_currentFont.pointSize());
+
     }
 }
 
@@ -1995,6 +1998,7 @@ void MainWindow::zoomInSlot()
     {
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
         textEditor->lexer()->setFont(m_currentFont, -1);
+        textEditor->setLineNumberMarginFontSize(m_currentFont.pointSize());
     }
 }
 
@@ -2830,7 +2834,7 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
                 if(m_showParseError)
                 {
 
-                    QsciStyle myStyle(-1,"Annotation",QColor(255,0,0),QColor(255,150,150),QFont("Courier New",-1,-1,true),true);
+                    QsciStyle myStyle(-1,"Annotation",QColor(255,0,0),QColor(255,150,150),m_currentFont,true);
                     textEditor->annotate(iter.value()[0].line - 1, iter.value()[0].name,myStyle);
 
                     if(root->child(iter.key()))
