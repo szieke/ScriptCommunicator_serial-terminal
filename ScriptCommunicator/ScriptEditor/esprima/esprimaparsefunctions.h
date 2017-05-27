@@ -1368,7 +1368,7 @@ static void addParsedEntiresToAutoCompletionList(const ParsedEntry& entry, QMap<
 }
 
 
-static getAllParsedTypes(QMap<QString, QString>& parsedTypes, ParsedEntry& entry, QString parentName)
+static void getAllParsedTypes(QMap<QString, QString>& parsedTypes, ParsedEntry& entry, QString parentName)
 {
     QString key = (parentName.isEmpty()) ? entry.name : parentName + "." + entry.name;
 
