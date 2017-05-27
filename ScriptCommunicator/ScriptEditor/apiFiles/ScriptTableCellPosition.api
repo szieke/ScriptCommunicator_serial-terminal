@@ -1,0 +1,2 @@
+ScriptTableCellPosition::row:Number \nThe row of the entry.
+ScriptTableCellPosition::column:Number \nThe column of the entry.

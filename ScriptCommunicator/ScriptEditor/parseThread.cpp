@@ -829,6 +829,7 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
                         }
                         //Remove the last '.'.
                         entry.valueType.remove(entry.valueType.size() - 1, 1);
+                        m_creatorObjects[entry.completeName] = entry.valueType;
 
 
                         return true;
