@@ -103,25 +103,41 @@ void DragDropLineEdit::dropEvent(QDropEvent *event)
         event->acceptProposedAction();
     }
 }
-/**
- * The user has pressed a key.
- *
- * @param event
- *      The key event.
- */
-void SendConsole::keyPressEvent(QKeyEvent *event)
-{
-    if(m_mainWindow->m_userInterface->interactiveConsoleCheckBox->isChecked())
-    {
-        const Settings* settings = m_mainWindow->m_settingsDialog->settings();
 
-        m_mainWindow->m_sendWindow->sendDataWithTheMainInterface(event->text().toLocal8Bit().replace("\r", settings->consoleSendOnEnter.toLocal8Bit()), this);
-    }
-    else
+
+/**
+ * Is called if the document's content changes.
+ *
+ * @param from
+ *      The position of the character in the document where the change occurred.
+ * @param charsRemoved
+ *      The number of chars removed.
+ * @param charsAdded
+ *      The number of chars added.
+ */
+void SendConsole::contentsChangeSlot(int from, int charsRemoved, int charsAdded)
+{
+    (void)charsRemoved;
+
+    if(m_mainWindow->m_userInterface->interactiveConsoleCheckBox->isChecked() && (charsAdded != 0))
     {
-        QTextEdit::keyPressEvent( event );
+        QString added = toPlainText().mid(from,charsAdded);
+
+        if(!added.isEmpty())
+        {
+            QTextCursor cursor = textCursor();
+            cursor.clearSelection();
+            cursor.setPosition(from);
+            cursor.setPosition(from + (charsAdded - charsRemoved), QTextCursor::KeepAnchor);
+            cursor.removeSelectedText();
+
+
+            const Settings* settings = m_mainWindow->m_settingsDialog->settings();
+            m_mainWindow->m_sendWindow->sendDataWithTheMainInterface(added.toLocal8Bit().replace("\n", settings->consoleSendOnEnter.toLocal8Bit()), this);
+        }
     }
 }
+
 
 /**
  * Use Ctrl + mouse wheel to increase/decrease font size in consoles.
@@ -3456,6 +3472,9 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
 
     if(consoleString->size() > 0)
     {
+        textEdit->blockSignals(true);
+        textEdit->document()->blockSignals(true);
+
         //Store the scroll bar position.
         int val = textEdit->verticalScrollBar()->value();
 
@@ -3474,6 +3493,9 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
         {   //Move the scroll bar to the end.
             textEdit->horizontalScrollBar()->setSliderPosition(0);
         }
+
+        textEdit->blockSignals(false);
+        textEdit->document()->blockSignals(false);
     }
 }
 

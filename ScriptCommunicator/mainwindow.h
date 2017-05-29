@@ -96,19 +96,18 @@ protected:
 ///Class for the consoles in the main window.
 class SendConsole : public QTextEdit
 {
+     Q_OBJECT
+
 public:
     explicit SendConsole(QWidget *parent = 0) : QTextEdit(parent), m_mainWindow(0)
     {
-
+        connect(this->document(), SIGNAL(contentsChange(int,int,int)), this, SLOT(contentsChangeSlot(int,int,int)), Qt::QueuedConnection);
     }
 
     virtual ~SendConsole()
     {
 
     }
-
-    ///The user has pressed a key.
-    void keyPressEvent(QKeyEvent *event);
 
     ///The user scrolled within console.
     void wheelEvent(QWheelEvent *event);
@@ -118,6 +117,12 @@ public:
     {
         m_mainWindow = mainWindow;
     }
+
+
+public slots:
+
+    ///Is called if the document's content changes.
+   void contentsChangeSlot(int from, int charsRemoved, int charsAdded);
 
 private:
     ///Pointer to the main window.
