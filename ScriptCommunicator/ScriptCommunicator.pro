@@ -31,6 +31,7 @@ LIBS += -ldl
 INCLUDEPATH += scriptClasses \
 scriptClasses/scriptUiClasses \
 cheetahSpi \
+aardvarkI2cSpi \
 pcan \
 scriptClasses/canvas2D \
 quazip \
@@ -113,7 +114,9 @@ SOURCES += \
     quazip/unzip.c \
     quazip/zip.c \
     scriptClasses/scriptUiClasses/scriptPlotwidget.cpp \
-    scriptClasses/scriptConverter.cpp
+    scriptClasses/scriptConverter.cpp \
+    aardvarkI2cSpi/aardvark.c \
+    aardvarkI2cSpi/aardvarkI2cSpi.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -229,7 +232,9 @@ HEADERS += \
     scriptClasses/scriptObject.h \
     scriptClasses/scriptTimer.h \
     scriptClasses/scriptConverter.h \
-    ScriptEditor/version.h
+    ScriptEditor/version.h \
+    aardvarkI2cSpi/aardvark.h \
+    aardvarkI2cSpi/aardvarkI2cSpi.h
 
 FORMS += \
     mainwindow.ui \

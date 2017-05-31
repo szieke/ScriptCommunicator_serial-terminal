@@ -546,6 +546,9 @@ private slots:
     ///Slot function for the cheetah scan button.
     void cheetahScanButtonSlot(void);
 
+    ///Slot function for the aardvard I2c/Spi scan button.
+    void aardvardI2cSpiScanButtonSlot(void);
+
     ///This slot function is called if the connection type has been changed.
     void conectionTypeChangesSlot(QString text);
 

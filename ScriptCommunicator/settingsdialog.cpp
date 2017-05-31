@@ -30,6 +30,7 @@
 #include <QLineEdit>
 #include <QFileDialog>
 #include "cheetahspi.h"
+#include "aardvarkI2cSpi.h"
 #include <QColorDialog>
 #include <QNetworkInterface>
 #include <QScrollBar>
@@ -81,6 +82,9 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     connect(m_userInterface->cheetahScanPushButton, SIGNAL(clicked()),
             this, SLOT(cheetahScanButtonSlot()));
+
+    connect(m_userInterface->aardvardI2cSpiScan, SIGNAL(clicked()),
+            this, SLOT(aardvardI2cSpiScanButtonSlot()));
 
     QShortcut* shortcut = new QShortcut(QKeySequence("Ctrl+Shift+X"), this);
     QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(close()));
@@ -435,6 +439,8 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     m_userInterface->cheetahPlainTextEdit->appendPlainText(CheetahSpi::detectDevices());
 
+    m_userInterface->aardvardI2cSpiDevices->appendPlainText(AardvarkI2cSpi::detectDevices());
+
     detectPcanSlot();
 
     QRegExpValidator* v = new QRegExpValidator(m_userInterface->pcanFilterFromLineEdit);
@@ -724,6 +730,15 @@ void SettingsDialog::cheetahScanButtonSlot(void)
 }
 
 /**
+ * Slot function for the aardvard I2c/Spi scan button.
+ */
+void SettingsDialog::aardvardI2cSpiScanButtonSlot(void)
+{
+    m_userInterface->aardvardI2cSpiDevices->clear();
+    m_userInterface->aardvardI2cSpiDevices->appendPlainText(AardvarkI2cSpi::detectDevices());
+}
+
+/**
  * This slot function is called if the value of the script editor path line edit has been changed.
  * @param path
  *      The new path.
@@ -960,7 +975,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     }
     else if(settings.connectionType == CONNECTION_TYPE_CHEETAH_SPI_MASTER)
     {
-        m_userInterface->connectionTypeComboBox->setCurrentText("spi master");
+        m_userInterface->connectionTypeComboBox->setCurrentText("cheetah");
     }
     else if(settings.connectionType == CONNECTION_TYPE_PCAN)
     {
@@ -1524,7 +1539,7 @@ void SettingsDialog::initializeInterfaceTabs(void)
         m_userInterface->pcanFilterFromLineEdit->setEnabled(false);
         m_userInterface->pcanFilterToLineEdit->setEnabled(false);
 
-        if(m_userInterface->connectionTypeComboBox->currentText() == "spi master")
+        if(m_userInterface->connectionTypeComboBox->currentText() == "cheetah")
         {
             m_userInterface->cheetahChipSelectComboBox->setEnabled(true);
 

@@ -55,7 +55,6 @@
 /* This #include can be customized to conform to the user's build paths. */
 #include "cheetah.h"
 
-
 /*=========================================================================
 | VERSION CHECK
  ========================================================================*/
