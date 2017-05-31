@@ -80,7 +80,14 @@ QString CheetahSpi::detectDevices(void)
     }
     else
     {
-        text = "could not load: " + LIBRARAY_NAME;
+        if(count == CH_UNABLE_TO_LOAD_LIBRARY)
+        {
+            text = "could not load: " + LIBRARAY_NAME;
+        }
+        else
+        {
+            text = ch_status_string(count);
+        }
     }
 
     return text;
