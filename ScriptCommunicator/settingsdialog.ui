@@ -1158,7 +1158,7 @@ for TCP clients.</string>
               <string>spi</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_15">
-              <item row="1" column="1">
+              <item row="2" column="1">
                <widget class="QLineEdit" name="aardvardSpiBaudrate">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
@@ -1174,7 +1174,7 @@ for TCP clients.</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="3" rowspan="2">
+              <item row="0" column="3" rowspan="3">
                <spacer name="horizontalSpacer_12">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -1187,7 +1187,7 @@ for TCP clients.</string>
                 </property>
                </spacer>
               </item>
-              <item row="1" column="0">
+              <item row="2" column="0">
                <widget class="QLabel" name="label_34">
                 <property name="text">
                  <string>baudrate (kHz)</string>
@@ -1197,35 +1197,28 @@ for TCP clients.</string>
               <item row="0" column="0">
                <widget class="QLabel" name="label_33">
                 <property name="text">
-                 <string>mode</string>
+                 <string>polarity</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QComboBox" name="aardvardSpiMode">
+               <widget class="QComboBox" name="aardvardSpiPolarity">
+                <property name="sizeAdjustPolicy">
+                 <enum>QComboBox::AdjustToContents</enum>
+                </property>
                 <item>
                  <property name="text">
-                  <string>Mode 0</string>
+                  <string>Rising/Falling</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>Mode 1</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Mode 2</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Mode 3</string>
+                  <string>Falling/Rising</string>
                  </property>
                 </item>
                </widget>
               </item>
-              <item row="2" column="1">
+              <item row="3" column="1">
                <spacer name="verticalSpacer_10">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -1237,6 +1230,30 @@ for TCP clients.</string>
                  </size>
                 </property>
                </spacer>
+              </item>
+              <item row="1" column="1">
+               <widget class="QComboBox" name="aardvardSpiPhase">
+                <property name="sizeAdjustPolicy">
+                 <enum>QComboBox::AdjustToContents</enum>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Sample/Setup</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Setup/Sample</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_51">
+                <property name="text">
+                 <string>phase</string>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -1357,7 +1374,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="2" column="15">
-               <widget class="QComboBox" name="aardvardGpioOutValue7_8">
+               <widget class="QComboBox" name="aardvardGpioOutValue0">
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -1378,7 +1395,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="2" column="13">
-               <widget class="QComboBox" name="aardvardGpioOutValue7_7">
+               <widget class="QComboBox" name="aardvardGpioOutValue1">
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -1419,7 +1436,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="1" column="9">
-               <widget class="QComboBox" name="aardvardGpioMode7_5">
+               <widget class="QComboBox" name="aardvardGpioMode3">
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -1438,7 +1455,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="2" column="7">
-               <widget class="QComboBox" name="aardvardGpioOutValue7_4">
+               <widget class="QComboBox" name="aardvardGpioOutValue4">
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -1471,7 +1488,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="1" column="11">
-               <widget class="QComboBox" name="aardvardGpioMode7_6">
+               <widget class="QComboBox" name="aardvardGpioMode2">
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -1511,7 +1528,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="2" column="9">
-               <widget class="QComboBox" name="aardvardGpioOutValue7_5">
+               <widget class="QComboBox" name="aardvardGpioOutValue3">
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -1552,7 +1569,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="1" column="15">
-               <widget class="QComboBox" name="aardvardGpioMode7_8">
+               <widget class="QComboBox" name="aardvardGpioMode0">
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -1571,7 +1588,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="1" column="5">
-               <widget class="QComboBox" name="aardvardGpioMode7_3">
+               <widget class="QComboBox" name="aardvardGpioMode5">
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -1590,7 +1607,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="2" column="3">
-               <widget class="QComboBox" name="aardvardGpioOutValue7_2">
+               <widget class="QComboBox" name="aardvardGpioOutValue6">
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -1611,7 +1628,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="1" column="13">
-               <widget class="QComboBox" name="aardvardGpioMode7_7">
+               <widget class="QComboBox" name="aardvardGpioMode1">
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -1637,7 +1654,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="2" column="5">
-               <widget class="QComboBox" name="aardvardGpioOutValue7_3">
+               <widget class="QComboBox" name="aardvardGpioOutValue5">
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -1658,7 +1675,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="1" column="7">
-               <widget class="QComboBox" name="aardvardGpioMode7_4">
+               <widget class="QComboBox" name="aardvardGpioMode4">
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -1684,7 +1701,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="2" column="11">
-               <widget class="QComboBox" name="aardvardGpioOutValue7_6">
+               <widget class="QComboBox" name="aardvardGpioOutValue2">
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -1698,7 +1715,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="1" column="3">
-               <widget class="QComboBox" name="aardvardGpioMode7_2">
+               <widget class="QComboBox" name="aardvardGpioMode6">
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -1724,7 +1741,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="3" column="3">
-               <widget class="QLineEdit" name="aardvardGpioInValue7_2">
+               <widget class="QLineEdit" name="aardvardGpioInValue6">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1737,7 +1754,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="3" column="15">
-               <widget class="QLineEdit" name="aardvardGpioInValue7_8">
+               <widget class="QLineEdit" name="aardvardGpioInValue0">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1750,7 +1767,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="3" column="5">
-               <widget class="QLineEdit" name="aardvardGpioInValue7_3">
+               <widget class="QLineEdit" name="aardvardGpioInValue5">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1763,7 +1780,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="3" column="13">
-               <widget class="QLineEdit" name="aardvardGpioInValue7_7">
+               <widget class="QLineEdit" name="aardvardGpioInValue1">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1776,7 +1793,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="3" column="9">
-               <widget class="QLineEdit" name="aardvardGpioInValue7_5">
+               <widget class="QLineEdit" name="aardvardGpioInValue3">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1789,7 +1806,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="3" column="7">
-               <widget class="QLineEdit" name="aardvardGpioInValue7_4">
+               <widget class="QLineEdit" name="aardvardGpioInValue4">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1802,7 +1819,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="3" column="11">
-               <widget class="QLineEdit" name="aardvardGpioInValue7_6">
+               <widget class="QLineEdit" name="aardvardGpioInValue2">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                   <horstretch>0</horstretch>

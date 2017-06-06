@@ -293,7 +293,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     connect(m_settingsDialog, SIGNAL(deleteLogFileSignal(QString)),this, SLOT(deleteLogFileSlot(QString)));
     connect(m_settingsDialog, SIGNAL(configHasToBeSavedSignal()),this, SLOT(configHasToBeSavedSlot()));
     connect(m_settingsDialog, SIGNAL(conectionTypeChangesSignal()),this, SLOT(conectionTypeChangesSlot()));
-    connect(m_settingsDialog, SIGNAL(appendTimestampAtLogsChangedSignal()),this, SLOT(reLogsSlot()));
+    //connect(m_settingsDialog, SIGNAL(appendTimestampAtLogsChangedSignal()),this, SLOT(reLogsSlot()));
 
     qRegisterMetaType<Settings>("Settings");
     connect(this, SIGNAL(connectDataConnectionSignal(Settings, bool)),m_mainInterface,
@@ -1829,6 +1829,30 @@ bool MainWindow::loadSettings()
                     }
 
                 }
+                {//aardvardI2cSpi
+
+                    QDomNodeList nodeList = docElem.elementsByTagName("aardvardI2cSpi");
+                    if(!nodeList.isEmpty())
+                    {
+                        QDomNode node = nodeList.at(0);
+                        currentSettings.aardvardI2cSpi.devicePort = node.attributes().namedItem("devicePort").nodeValue().toUInt();
+                        currentSettings.aardvardI2cSpi.deviceMode = (AardvardI2cSpiDeviceMode)node.attributes().namedItem("deviceMode").nodeValue().toUInt();
+                        currentSettings.aardvardI2cSpi.device5VPin4IsOn = (node.attributes().namedItem("device5VPin4IsOn").nodeValue() == "1") ? true : false;
+                        currentSettings.aardvardI2cSpi.device5VPin6IsOn = (node.attributes().namedItem("device5VPin6IsOn").nodeValue() == "1") ? true : false;
+                        currentSettings.aardvardI2cSpi.i2cBaudrate = node.attributes().namedItem("i2cBaudrate").nodeValue().toUInt();
+                        currentSettings.aardvardI2cSpi.i2cPullupsOn = (node.attributes().namedItem("i2cPullupsOn").nodeValue() == "1") ? true : false;
+                        currentSettings.aardvardI2cSpi.spiPolarity = (AardvarkSpiPolarity)node.attributes().namedItem("spiPolarity").nodeValue().toUInt();
+                        currentSettings.aardvardI2cSpi.spiPhase = (AardvarkSpiPhase)node.attributes().namedItem("spiPhase").nodeValue().toUInt();
+                        currentSettings.aardvardI2cSpi.spiBaudrate = node.attributes().namedItem("spiBaudrate").nodeValue().toUInt();
+
+                        for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+                        {
+                            currentSettings.aardvardI2cSpi.pinConfigs[i].isInput = (node.attributes().namedItem(QString("pinConfigIsInput%1").arg(i)).nodeValue() == "1") ? true : false;
+                            currentSettings.aardvardI2cSpi.pinConfigs[i].withPullups = (node.attributes().namedItem(QString("pinConfigWithPullups%1").arg(i)).nodeValue() == "1") ? true : false;
+                            currentSettings.aardvardI2cSpi.pinConfigs[i].outValue = node.attributes().namedItem(QString("pinConfigOutValue%1").arg(i)).nodeValue().toUInt();
+                        }
+                    }
+                }
 
                 m_settingsDialog->blockSignals(true);
                 m_settingsDialog->setAllSettingsSlot(currentSettings, true);
@@ -2316,7 +2340,7 @@ void MainWindow::saveSettings()
             xmlWriter.writeAttribute("version", VERSION);
 
             {//console settings
-                std::map<QString, QString> consoleSetting =
+                std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("maxCharsInConsole"), QString("%1").arg(currentSettings->maxCharsInConsole)),
                  std::make_pair(QString("generateTimeStampsInConsole"), QString("%1").arg(currentSettings->generateTimeStampsInConsole)),
                  std::make_pair(QString("showSendDataInConsole"), QString("%1").arg(currentSettings->showSendDataInConsole)),
@@ -2354,10 +2378,10 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("consoleDecimalsType"), QString("%1").arg(currentSettings->consoleDecimalsType)),
                 };
 
-                writeXmlElement(xmlWriter, "consoleSettings", consoleSetting);
+                writeXmlElement(xmlWriter, "consoleSettings", settingsMap);
             }
             {//log settings
-                std::map<QString, QString> consoleSetting =
+                std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("htmlLogFile"), QString("%1").arg(currentSettings->htmlLogFile)),
                  std::make_pair(QString("htmlLogFileName"), convertToRelativePath(m_mainConfigFile, currentSettings->htmlLogfileName)),
                  std::make_pair(QString("textLogFile"), QString("%1").arg(currentSettings->textLogFile)),
@@ -2385,10 +2409,10 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("logDecimalsType"), QString("%1").arg(currentSettings->logDecimalsType)),
                 };
 
-                writeXmlElement(xmlWriter, "logSettings", consoleSetting);
+                writeXmlElement(xmlWriter, "logSettings", settingsMap);
             }
             {//serial port
-                std::map<QString, QString> consoleSetting =
+                std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("baudRate"), QString("%1").arg(currentSettings->serialPort.baudRate)),
                  std::make_pair(QString("dataBits"), QString("%1").arg(currentSettings->serialPort.dataBits)),
                  std::make_pair(QString("flowControl"), currentSettings->serialPort.stringFlowControl),
@@ -2400,10 +2424,10 @@ void MainWindow::saveSettings()
 
                 };
 
-                writeXmlElement(xmlWriter, "serialPortSetting", consoleSetting);
+                writeXmlElement(xmlWriter, "serialPortSetting", settingsMap);
             }
             {//socket
-                std::map<QString, QString> consoleSetting =
+                std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("connectionType"), QString("%1").arg(currentSettings->connectionType)),
                  std::make_pair(QString("destinationPort"), QString("%1").arg(currentSettings->socketSettings.destinationPort)),
                  std::make_pair(QString("destinationIpAddress"), currentSettings->socketSettings.destinationIpAddress),
@@ -2417,20 +2441,20 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("proxyPassword"), currentSettings->socketSettings.proxyPassword),
                 };
 
-                writeXmlElement(xmlWriter, "socketSetting", consoleSetting);
+                writeXmlElement(xmlWriter, "socketSetting", settingsMap);
             }
             {//cheetah spi
-                std::map<QString, QString> consoleSetting =
+                std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("port"), QString("%1").arg(currentSettings->cheetahSpi.port)),
                  std::make_pair(QString("mode"), QString("%1").arg(currentSettings->cheetahSpi.mode)),
                  std::make_pair(QString("baudRate"), QString("%1").arg(currentSettings->cheetahSpi.baudRate)),
                  std::make_pair(QString("chipSelect"), QString("%1").arg(currentSettings->cheetahSpi.chipSelect)),
                 };
 
-                writeXmlElement(xmlWriter, "cheetahSpiSetting", consoleSetting);
+                writeXmlElement(xmlWriter, "cheetahSpiSetting", settingsMap);
             }
             {//cheetah pcan
-                std::map<QString, QString> consoleSetting =
+                std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("baudRate"), QString("%1").arg(currentSettings->pcanInterface.baudRate)),
                  std::make_pair(QString("busOffAutoReset"), QString("%1").arg(currentSettings->pcanInterface.busOffAutoReset)),
                  std::make_pair(QString("channel"), QString("%1").arg(currentSettings->pcanInterface.channel)),
@@ -2440,13 +2464,13 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("filterTo"), QString("%1").arg(currentSettings->pcanInterface.filterTo)),
                 };
 
-                writeXmlElement(xmlWriter, "pcanSetting", consoleSetting);
+                writeXmlElement(xmlWriter, "pcanSetting", settingsMap);
             }
             {//send window
                 QList<int> windowSplitterSizes = m_sendWindow->getWindowSplitter()->sizes();
                 QList<int> cyclicAreSizes = m_sendWindow->getCyclicAreaSplitter()->sizes();
 
-                std::map<QString, QString> consoleSetting =
+                std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("sequenceFileName"), convertToRelativePath(m_mainConfigFile, m_sendWindow->getCurrentSequenceFileName())),
                  std::make_pair(QString("sendString"), m_sendWindow->getCurrentSendString()),
                  std::make_pair(QString("cyclicScript"), m_sendWindow->getCurrentCyclicScript()),
@@ -2462,7 +2486,7 @@ void MainWindow::saveSettings()
 
                 };
 
-                writeXmlElement(xmlWriter, "sendWindow", consoleSetting);
+                writeXmlElement(xmlWriter, "sendWindow", settingsMap);
             }
             {//main window position and size
 
@@ -2471,7 +2495,7 @@ void MainWindow::saveSettings()
                 QList<int> sendAreaSplitterSizes = m_userInterface->SendAreaSplitter->sizes();
                 QList<int> sendAreaInputsSplitterSizes = m_userInterface->SendAreaInputsSplitter->sizes();
 
-                std::map<QString, QString> consoleSetting =
+                std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("left"), QString("%1").arg(rect.left())),
                  std::make_pair(QString("top"), QString("%1").arg(rect.top())),
                  std::make_pair(QString("width"), QString("%1").arg(rect.width())),
@@ -2488,26 +2512,26 @@ void MainWindow::saveSettings()
 
 
                 };
-                writeXmlElement(xmlWriter, "mainWindowPositionAndSize", consoleSetting);
+                writeXmlElement(xmlWriter, "mainWindowPositionAndSize", settingsMap);
             }
             {//send window position and size
 
                 QRect rect = windowPositionAndSize(m_sendWindow);
-                std::map<QString, QString> consoleSetting =
+                std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("left"), QString("%1").arg(rect.left())),
                  std::make_pair(QString("top"), QString("%1").arg(rect.top())),
                  std::make_pair(QString("width"), QString("%1").arg(rect.width())),
                  std::make_pair(QString("height"), QString("%1").arg(rect.height())),
                  std::make_pair(QString("visible"), QString("%1").arg(m_sendWindow->isVisible()))
                 };
-                writeXmlElement(xmlWriter, "sendWindowPositionAndSize", consoleSetting);
+                writeXmlElement(xmlWriter, "sendWindowPositionAndSize", settingsMap);
 
 
             }
             {//settings dialog position and size
 
                 QRect rect = windowPositionAndSize(m_settingsDialog);
-                std::map<QString, QString> consoleSetting =
+                std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("left"), QString("%1").arg(rect.left())),
                  std::make_pair(QString("top"), QString("%1").arg(rect.top())),
                  std::make_pair(QString("width"), QString("%1").arg(rect.width())),
@@ -2515,23 +2539,23 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("visible"), QString("%1").arg(m_settingsDialog->isVisible())),
                  std::make_pair(QString("settingsDialogTabIndex"), QString("%1").arg(currentSettings->settingsDialogTabIndex))
                 };
-                writeXmlElement(xmlWriter, "settingsDialogPositionAndSize", consoleSetting);
+                writeXmlElement(xmlWriter, "settingsDialogPositionAndSize", settingsMap);
             }
             {//script window position and size
 
                 QRect rect = windowPositionAndSize(m_scriptWindow);
-                std::map<QString, QString> consoleSetting =
+                std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("left"), QString("%1").arg(rect.left())),
                  std::make_pair(QString("top"), QString("%1").arg(rect.top())),
                  std::make_pair(QString("width"), QString("%1").arg(rect.width())),
                  std::make_pair(QString("height"), QString("%1").arg(rect.height())),
                  std::make_pair(QString("visible"), QString("%1").arg(m_scriptWindow->isVisible()))
                 };
-                writeXmlElement(xmlWriter, "scriptWindowPositionAndSize", consoleSetting);
+                writeXmlElement(xmlWriter, "scriptWindowPositionAndSize", settingsMap);
             }
             {//script window
                 QList<int> sizes = m_scriptWindow->getSplitterSizes();
-                std::map<QString, QString> consoleSetting =
+                std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("scriptConfigFileName"), convertToRelativePath(m_mainConfigFile, m_scriptWindow->getCurrentScriptConfigFileName())),
                  std::make_pair(QString("scriptEditorPath"), currentSettings->scriptEditorPath),
                  std::make_pair(QString("useExternalScriptEditor"),QString("%1").arg(currentSettings->useExternalScriptEditor)),
@@ -2540,11 +2564,11 @@ void MainWindow::saveSettings()
                 };
 
 
-                writeXmlElement(xmlWriter, "scriptWindow", consoleSetting);
+                writeXmlElement(xmlWriter, "scriptWindow", settingsMap);
             }
             {//search console
 
-                std::map<QString, QString> consoleSetting =
+                std::map<QString, QString> settingsMap =
                 {
                     std::make_pair(QString("lastSearchStrings"), m_searchConsole->getLastSearchStrings()),
                     std::make_pair(QString("directionDownRadioButton"), QString("%1").arg(m_userInterface->directionDownRadioButton->isChecked())),
@@ -2552,11 +2576,11 @@ void MainWindow::saveSettings()
                     std::make_pair(QString("matchWholeWordCheckBox"), QString("%1").arg(m_userInterface->matchWholeWordCheckBox->isChecked()))
                 };
 
-                writeXmlElement(xmlWriter, "searchConsole", consoleSetting);
+                writeXmlElement(xmlWriter, "searchConsole", settingsMap);
             }
             {//send history
 
-                std::map<QString, QString> consoleSetting =
+                std::map<QString, QString> settingsMap =
                 {
                     std::make_pair(QString("startIndexSpinBox"), QString("%1").arg(m_userInterface->startIndexSpinBox->value())),
                     std::make_pair(QString("endIndexSpinBox"), QString("%1").arg(m_userInterface->endIndexSpinBox->value())),
@@ -2565,7 +2589,7 @@ void MainWindow::saveSettings()
                     std::make_pair(QString("historyFormatComboBox"), m_userInterface->historyFormatComboBox->currentText())
                 };
 
-                writeXmlElement(xmlWriter, "sendHistory", consoleSetting);
+                writeXmlElement(xmlWriter, "sendHistory", settingsMap);
 
                 xmlWriter.writeStartElement("historyData");
                 for(qint32 i = 0; i < m_handleData->m_sendHistory.size(); i++)
@@ -2582,15 +2606,13 @@ void MainWindow::saveSettings()
                 }
                 xmlWriter.writeEndElement();//historyData
             }
-
-
             {//create sce file window settings.
 
                 Ui::CreateSceFile* windowUi = m_scriptWindow->getCreateSceFileDialog()->getUI();
                 QRect rect = windowPositionAndSize(m_scriptWindow->getCreateSceFileDialog());
                 QList<int> splitterSizes = windowUi->splitter->sizes();
 
-                std::map<QString, QString> createSceSettings =
+                std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("left"), QString("%1").arg(rect.left())),
                  std::make_pair(QString("top"), QString("%1").arg(rect.top())),
                  std::make_pair(QString("width"), QString("%1").arg(rect.width())),
@@ -2599,11 +2621,10 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("configFileName"), m_scriptWindow->getCreateSceFileDialog()->getConfigFileName()),
                  std::make_pair(QString("visible"), QString("%1").arg(m_scriptWindow->getCreateSceFileDialog()->isVisible())),
                 };
-                writeXmlElement(xmlWriter, "createSceWindow", createSceSettings);
+                writeXmlElement(xmlWriter, "createSceWindow", settingsMap);
             }
-
             {//update settings
-                std::map<QString, QString> updateSetting =
+                std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("proxyIpAddress"), QString("%1").arg(currentSettings->updateSettings.proxyIpAddress)),
                  std::make_pair(QString("proxyPassword"), QString("%1").arg(currentSettings->updateSettings.proxyPassword)),
                  std::make_pair(QString("proxyPort"), QString("%1").arg(currentSettings->updateSettings.proxyPort)),
@@ -2611,7 +2632,29 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("proxyUserName"), QString("%1").arg(currentSettings->updateSettings.proxyUserName)),
                 };
 
-                writeXmlElement(xmlWriter, "updateSetting", updateSetting);
+                writeXmlElement(xmlWriter, "updateSetting", settingsMap);
+            }
+            {//aardvard I2C/SPI
+                std::map<QString, QString> settingsMap =
+                {std::make_pair(QString("devicePort"), QString("%1").arg(currentSettings->aardvardI2cSpi.devicePort)),
+                 std::make_pair(QString("deviceMode"), QString("%1").arg(currentSettings->aardvardI2cSpi.deviceMode)),
+                 std::make_pair(QString("device5VPin4IsOn"), QString("%1").arg(currentSettings->aardvardI2cSpi.device5VPin4IsOn)),
+                 std::make_pair(QString("device5VPin6IsOn"), QString("%1").arg(currentSettings->aardvardI2cSpi.device5VPin6IsOn)),
+                 std::make_pair(QString("i2cBaudrate"), QString("%1").arg(currentSettings->aardvardI2cSpi.i2cBaudrate)),
+                 std::make_pair(QString("i2cPullupsOn"), QString("%1").arg(currentSettings->aardvardI2cSpi.i2cPullupsOn)),
+                 std::make_pair(QString("spiPolarity"), QString("%1").arg(currentSettings->aardvardI2cSpi.spiPolarity)),
+                 std::make_pair(QString("spiPhase"), QString("%1").arg(currentSettings->aardvardI2cSpi.spiPhase)),
+                 std::make_pair(QString("spiBaudrate"), QString("%1").arg(currentSettings->aardvardI2cSpi.spiBaudrate)),
+                };
+
+                for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+                {
+                    settingsMap[QString("pinConfigIsInput%1").arg(i)] = QString("%1").arg(currentSettings->aardvardI2cSpi.pinConfigs[i].isInput);
+                    settingsMap[QString("pinConfigWithPullups%1").arg(i)] = QString("%1").arg(currentSettings->aardvardI2cSpi.pinConfigs[i].withPullups);
+                    settingsMap[QString("pinConfigOutValue%1").arg(i)] = QString("%1").arg(currentSettings->aardvardI2cSpi.pinConfigs[i].outValue);
+                }
+
+                writeXmlElement(xmlWriter, "aardvardI2cSpi", settingsMap);
             }
 
             xmlWriter.writeEndElement();//"settings"

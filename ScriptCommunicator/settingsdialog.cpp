@@ -50,6 +50,32 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 {
     m_userInterface->setupUi(this);
 
+
+    m_aardvardI2cGpioGuiElements[0].mode = m_userInterface->aardvardGpioMode0;
+    m_aardvardI2cGpioGuiElements[0].outValue = m_userInterface->aardvardGpioOutValue0;
+    m_aardvardI2cGpioGuiElements[0].inValue = m_userInterface->aardvardGpioInValue0;
+    m_aardvardI2cGpioGuiElements[1].mode = m_userInterface->aardvardGpioMode1;
+    m_aardvardI2cGpioGuiElements[1].outValue = m_userInterface->aardvardGpioOutValue1;
+    m_aardvardI2cGpioGuiElements[1].inValue = m_userInterface->aardvardGpioInValue1;
+    m_aardvardI2cGpioGuiElements[2].mode = m_userInterface->aardvardGpioMode2;
+    m_aardvardI2cGpioGuiElements[2].outValue = m_userInterface->aardvardGpioOutValue2;
+    m_aardvardI2cGpioGuiElements[2].inValue = m_userInterface->aardvardGpioInValue2;
+    m_aardvardI2cGpioGuiElements[3].mode = m_userInterface->aardvardGpioMode3;
+    m_aardvardI2cGpioGuiElements[3].outValue = m_userInterface->aardvardGpioOutValue3;
+    m_aardvardI2cGpioGuiElements[3].inValue = m_userInterface->aardvardGpioInValue3;
+    m_aardvardI2cGpioGuiElements[4].mode = m_userInterface->aardvardGpioMode4;
+    m_aardvardI2cGpioGuiElements[4].outValue = m_userInterface->aardvardGpioOutValue4;
+    m_aardvardI2cGpioGuiElements[4].inValue = m_userInterface->aardvardGpioInValue4;
+    m_aardvardI2cGpioGuiElements[5].mode = m_userInterface->aardvardGpioMode5;
+    m_aardvardI2cGpioGuiElements[5].outValue = m_userInterface->aardvardGpioOutValue5;
+    m_aardvardI2cGpioGuiElements[5].inValue = m_userInterface->aardvardGpioInValue5;
+    m_aardvardI2cGpioGuiElements[6].mode = m_userInterface->aardvardGpioMode6;
+    m_aardvardI2cGpioGuiElements[6].outValue = m_userInterface->aardvardGpioOutValue6;
+    m_aardvardI2cGpioGuiElements[6].inValue = m_userInterface->aardvardGpioInValue6;
+    m_aardvardI2cGpioGuiElements[7].mode = m_userInterface->aardvardGpioMode7;
+    m_aardvardI2cGpioGuiElements[7].outValue = m_userInterface->aardvardGpioOutValue7;
+    m_aardvardI2cGpioGuiElements[7].inValue = m_userInterface->aardvardGpioInValue7;
+
     int width  = -1;
     if(m_userInterface->connectionTypeComboBox->width() > m_userInterface->endianessComboBox->width())
     {
@@ -82,9 +108,6 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     connect(m_userInterface->cheetahScanPushButton, SIGNAL(clicked()),
             this, SLOT(cheetahScanButtonSlot()));
-
-    connect(m_userInterface->aardvardI2cSpiScan, SIGNAL(clicked()),
-            this, SLOT(aardvardI2cSpiScanButtonSlot()));
 
     QShortcut* shortcut = new QShortcut(QKeySequence("Ctrl+Shift+X"), this);
     QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(close()));
@@ -389,6 +412,38 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
             this, SLOT(editCustomConsoleScriptSlot()));
     connect(m_userInterface->logEditScriptPushButton, SIGNAL(clicked()),
             this, SLOT(editCustomLogScriptSlot()));
+
+    connect(m_userInterface->aardvardI2cSpiPort, SIGNAL(textChanged(QString)),
+            this, SLOT(textFromGuiElementChangedSlot(QString)));
+    connect(m_userInterface->aardvardI2cSpiMode, SIGNAL(currentTextChanged(QString)),
+            this, SLOT(textFromGuiElementChangedSlot(QString)));
+    connect(m_userInterface->aardvardI2cSpi5VPin4, SIGNAL(currentTextChanged(QString)),
+            this, SLOT(textFromGuiElementChangedSlot(QString)));
+    connect(m_userInterface->aardvardI2cSpi5VPin6, SIGNAL(currentTextChanged(QString)),
+            this, SLOT(textFromGuiElementChangedSlot(QString)));
+    connect(m_userInterface->aardvardI2cBaudrate, SIGNAL(textChanged(QString)),
+            this, SLOT(textFromGuiElementChangedSlot(QString)));
+    connect(m_userInterface->aardvardI2cPullUp, SIGNAL(currentTextChanged(QString)),
+            this, SLOT(textFromGuiElementChangedSlot(QString)));
+    connect(m_userInterface->aardvardSpiPolarity, SIGNAL(currentTextChanged(QString)),
+            this, SLOT(textFromGuiElementChangedSlot(QString)));
+    connect(m_userInterface->aardvardSpiPhase, SIGNAL(currentTextChanged(QString)),
+            this, SLOT(textFromGuiElementChangedSlot(QString)));
+    connect(m_userInterface->aardvardSpiBaudrate, SIGNAL(textChanged(QString)),
+            this, SLOT(textFromGuiElementChangedSlot(QString)));
+
+    connect(m_userInterface->aardvardI2cSpiScan, SIGNAL(clicked()),
+            this, SLOT(aardvardI2cSpiScanButtonSlot()));
+    connect(m_userInterface->aardvardI2cSpiScan, SIGNAL(clicked()),
+            this, SLOT(aardvardI2cSpiFreeBusButtonSlot()));
+
+    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+    {
+        connect(m_aardvardI2cGpioGuiElements[i].mode, SIGNAL(currentTextChanged(QString)),
+                this, SLOT(textFromGuiElementChangedSlot(QString)));
+        connect(m_aardvardI2cGpioGuiElements[i].outValue, SIGNAL(currentTextChanged(QString)),
+                this, SLOT(textFromGuiElementChangedSlot(QString)));
+    }
 
     m_userInterface->serialPortInfoListBox->installEventFilter(this);
 
@@ -739,6 +794,14 @@ void SettingsDialog::aardvardI2cSpiScanButtonSlot(void)
 }
 
 /**
+ * Slot function for the aardvard I2c/Spi free bus button.
+ */
+void SettingsDialog::aardvardI2cSpiFreeBusButtonSlot(void)
+{
+
+}
+
+/**
  * This slot function is called if the value of the script editor path line edit has been changed.
  * @param path
  *      The new path.
@@ -1069,7 +1132,32 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
 
     }
 
-    updateSettings();
+    //aardvard I2C/SPI settings
+    m_userInterface->aardvardI2cSpiPort->setText(QString("%1").arg(settings.aardvardI2cSpi.devicePort));
+    m_userInterface->aardvardI2cSpiMode->setCurrentIndex((int)settings.aardvardI2cSpi.deviceMode);
+    m_userInterface->aardvardI2cSpi5VPin4->setCurrentText(settings.aardvardI2cSpi.device5VPin4IsOn ? "On" : "Off");
+    m_userInterface->aardvardI2cSpi5VPin6->setCurrentText(settings.aardvardI2cSpi.device5VPin6IsOn ? "On" : "Off");
+    m_userInterface->aardvardI2cBaudrate->setText(QString("%1").arg(settings.aardvardI2cSpi.i2cBaudrate));
+    m_userInterface->aardvardI2cPullUp->setCurrentText(settings.aardvardI2cSpi.i2cPullupsOn ? "On" : "Off");
+    m_userInterface->aardvardSpiPolarity->setCurrentIndex((int)settings.aardvardI2cSpi.spiPolarity);
+    m_userInterface->aardvardSpiPhase->setCurrentIndex((int)settings.aardvardI2cSpi.spiPhase);
+    m_userInterface->aardvardSpiBaudrate->setText(QString("%1").arg(settings.aardvardI2cSpi.spiBaudrate));
+
+
+    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+    {
+        if(settings.aardvardI2cSpi.pinConfigs[i].isInput)
+        {
+            m_aardvardI2cGpioGuiElements[i].mode->setCurrentText(settings.aardvardI2cSpi.pinConfigs[i].withPullups ? "in pullup" : "in");
+        }
+        else
+        {
+            m_aardvardI2cGpioGuiElements[i].mode->setCurrentText("out");
+        }
+        m_aardvardI2cGpioGuiElements[i].outValue->setCurrentText(settings.aardvardI2cSpi.pinConfigs[i].outValue ? "1" : "0");
+    }
+
+    updateSettings(true);
 
     initializeInterfaceTabs();
 }
@@ -1444,9 +1532,165 @@ void SettingsDialog::setInterfaceSettingsCanBeChanged(bool interfaceSettingsCanB
 }
 
 /**
- * Initializes the interface tabs.
+ * Initializes the aardvard I2C SPI interface tab.
  */
-void SettingsDialog::initializeInterfaceTabs(void)
+void SettingsDialog::initializeAardvardIc2SpiTab(void)
+{
+    m_userInterface->aardvardI2cBaudrate->setEnabled(false);
+    m_userInterface->aardvardI2cPullUp->setEnabled(false);
+    m_userInterface->aardvardI2cFreeBus->setEnabled(false);
+
+    m_userInterface->aardvardSpiPolarity->setEnabled(false);
+    m_userInterface->aardvardSpiPhase->setEnabled(false);
+    m_userInterface->aardvardSpiBaudrate->setEnabled(false);
+
+     if(m_interfaceSettingsCanBeChanged)
+     {
+         m_userInterface->aardvardI2cSpiPort->setEnabled(true);
+         m_userInterface->aardvardI2cSpiMode->setEnabled(true);
+         m_userInterface->aardvardI2cSpiScan->setEnabled(true);
+         m_userInterface->aardvardI2cSpi5VPin4->setEnabled(true);
+         m_userInterface->aardvardI2cSpi5VPin6->setEnabled(true);
+
+         if(m_userInterface->aardvardI2cSpiMode->currentText() == "I2C Master")
+         {
+             m_userInterface->aardvardI2cBaudrate->setEnabled(true);
+             m_userInterface->aardvardI2cPullUp->setEnabled(true);
+             m_userInterface->aardvardI2cFreeBus->setEnabled(true);
+         }
+         else if(m_userInterface->aardvardI2cSpiMode->currentText() == "SPI Master")
+         {
+             m_userInterface->aardvardSpiPolarity->setEnabled(true);
+             m_userInterface->aardvardSpiPhase->setEnabled(true);
+             m_userInterface->aardvardSpiBaudrate->setEnabled(true);
+         }
+     }
+     else
+     {
+         m_userInterface->aardvardI2cSpiPort->setEnabled(false);
+         m_userInterface->aardvardI2cSpiMode->setEnabled(false);
+         m_userInterface->aardvardI2cSpiScan->setEnabled(false);
+         m_userInterface->aardvardI2cSpi5VPin4->setEnabled(false);
+         m_userInterface->aardvardI2cSpi5VPin6->setEnabled(false);
+     }
+
+
+     for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+     {
+         if(m_aardvardI2cGpioGuiElements[i].mode->currentText() == "out")
+         {
+             m_aardvardI2cGpioGuiElements[i].outValue->setEnabled(true);
+         }
+         else
+         {
+             m_aardvardI2cGpioGuiElements[i].outValue->setEnabled(false);
+         }
+     }
+}
+
+/**
+ * Initializes the pcan interface tab.
+ */
+void SettingsDialog::initializePcanTab(void)
+{
+    if(m_interfaceSettingsCanBeChanged)
+    {
+
+        m_userInterface->pcan5VoltComboBox->setEnabled(true);
+        m_userInterface->pcanBaudratecomboBox->setEnabled(true);
+        m_userInterface->pcanBusOffResetComboBox->setEnabled(true);
+        m_userInterface->pcanDetectPushButton->setEnabled(true);
+        m_userInterface->pcanDevicesComboBox->setEnabled(true);
+        m_userInterface->pcanExtendedRadioButton->setEnabled(true);
+        m_userInterface->pcanStandardRadioButton->setEnabled(true);
+        m_userInterface->pcanFilterFromLineEdit->setEnabled(true);
+        m_userInterface->pcanFilterToLineEdit->setEnabled(true);
+
+    }
+    else
+    {
+        m_userInterface->pcan5VoltComboBox->setEnabled(false);
+        m_userInterface->pcanBaudratecomboBox->setEnabled(false);
+        m_userInterface->pcanBusOffResetComboBox->setEnabled(false);
+        m_userInterface->pcanDetectPushButton->setEnabled(false);
+        m_userInterface->pcanDevicesComboBox->setEnabled(false);
+        m_userInterface->pcanExtendedRadioButton->setEnabled(false);
+        m_userInterface->pcanStandardRadioButton->setEnabled(false);
+        m_userInterface->pcanFilterFromLineEdit->setEnabled(false);
+        m_userInterface->pcanFilterToLineEdit->setEnabled(false);
+    }
+}
+
+/**
+ * Initializes the update tab.
+ */
+void SettingsDialog::initializeUpdateTab(void)
+{
+    //Update proxy settings.
+    m_userInterface->updateNoProxy->setEnabled(true);
+    m_userInterface->updateUseSystemProxy->setEnabled(true);
+    m_userInterface->updateUseSpecificProxy->setEnabled(true);
+    if(m_userInterface->updateUseSpecificProxy->isChecked())
+    {
+        m_userInterface->updateProxyAddress->setEnabled(true);
+        m_userInterface->updateProxyPort->setEnabled(true);
+        m_userInterface->updateProxyUserName->setEnabled(true);
+        m_userInterface->updateProxyPassword->setEnabled(true);
+    }
+    else
+    {
+        m_userInterface->updateProxyAddress->setEnabled(false);
+        m_userInterface->updateProxyPort->setEnabled(false);
+
+        if(m_userInterface->updateUseSystemProxy->isChecked())
+        {
+            m_userInterface->updateProxyUserName->setEnabled(true);
+            m_userInterface->updateProxyPassword->setEnabled(true);
+        }
+        else
+        {
+            m_userInterface->updateProxyUserName->setEnabled(false);
+            m_userInterface->updateProxyPassword->setEnabled(false);
+        }
+    }
+}
+
+/**
+ * Initializes the cheetah interface tab.
+ */
+void SettingsDialog::initializeCheetahTab(void)
+{
+    if(m_interfaceSettingsCanBeChanged)
+    {
+        m_userInterface->cheetahPortLineEdit->setEnabled(true);
+        m_userInterface->cheetahSpiModeComboBox->setEnabled(true);
+        m_userInterface->cheetahBaudrateLineEdit->setEnabled(true);
+        m_userInterface->cheetahScanPushButton->setEnabled(true);
+        m_userInterface->cheetahChipSelectComboBox->setEnabled(true);
+
+    }
+    else
+    {
+        m_userInterface->cheetahPortLineEdit->setEnabled(false);
+        m_userInterface->cheetahSpiModeComboBox->setEnabled(false);
+        m_userInterface->cheetahBaudrateLineEdit->setEnabled(false);
+        m_userInterface->cheetahScanPushButton->setEnabled(false);
+
+        if(m_userInterface->connectionTypeComboBox->currentText() == "cheetah")
+        {
+            m_userInterface->cheetahChipSelectComboBox->setEnabled(true);
+        }
+        else
+        {
+            m_userInterface->cheetahChipSelectComboBox->setEnabled(false);
+        }
+    }
+}
+
+/**
+ * Initializes the sockets interface tab.
+ */
+void SettingsDialog::initializeSocketsTab(void)
 {
     if(m_interfaceSettingsCanBeChanged)
     {
@@ -1455,22 +1699,6 @@ void SettingsDialog::initializeInterfaceTabs(void)
         m_userInterface->socketAddressLineEdit->setEnabled(true);
         m_userInterface->socketOwnPortLineEdit->setEnabled(true);
 
-        m_userInterface->cheetahPortLineEdit->setEnabled(true);
-        m_userInterface->cheetahSpiModeComboBox->setEnabled(true);
-        m_userInterface->cheetahBaudrateLineEdit->setEnabled(true);
-        m_userInterface->cheetahScanPushButton->setEnabled(true);
-        m_userInterface->cheetahChipSelectComboBox->setEnabled(true);
-
-        m_userInterface->pcan5VoltComboBox->setEnabled(true);
-        m_userInterface->pcanBaudratecomboBox->setEnabled(true);
-        m_userInterface->pcanBusOffResetComboBox->setEnabled(true);
-        m_userInterface->pcanDetectPushButton->setEnabled(true);
-        m_userInterface->pcanDevicesComboBox->setEnabled(true);
-
-        m_userInterface->pcanExtendedRadioButton->setEnabled(true);
-        m_userInterface->pcanStandardRadioButton->setEnabled(true);
-        m_userInterface->pcanFilterFromLineEdit->setEnabled(true);
-        m_userInterface->pcanFilterToLineEdit->setEnabled(true);
 
         if(m_userInterface->socketsTypeComboBox->currentText() == "TCP client")
         {
@@ -1488,7 +1716,7 @@ void SettingsDialog::initializeInterfaceTabs(void)
             m_userInterface->socketPartnerPortLineEdit->setEnabled(true);
         }
 
-        //Socket proxy settins.
+        //Socket proxy settings.
         m_userInterface->noProxyRadioButton->setEnabled(true);
         m_userInterface->useSystemProxyRadioButton->setEnabled(true);
         m_userInterface->useSpecificProxyRadioButton->setEnabled(true);
@@ -1525,30 +1753,6 @@ void SettingsDialog::initializeInterfaceTabs(void)
         m_userInterface->socketAddressLineEdit->setEnabled(false);
         m_userInterface->socketOwnPortLineEdit->setEnabled(false);
 
-        m_userInterface->cheetahPortLineEdit->setEnabled(false);
-        m_userInterface->cheetahSpiModeComboBox->setEnabled(false);
-        m_userInterface->cheetahBaudrateLineEdit->setEnabled(false);
-        m_userInterface->cheetahScanPushButton->setEnabled(false);
-        m_userInterface->pcan5VoltComboBox->setEnabled(false);
-        m_userInterface->pcanBaudratecomboBox->setEnabled(false);
-        m_userInterface->pcanBusOffResetComboBox->setEnabled(false);
-        m_userInterface->pcanDetectPushButton->setEnabled(false);
-        m_userInterface->pcanDevicesComboBox->setEnabled(false);
-        m_userInterface->pcanExtendedRadioButton->setEnabled(false);
-        m_userInterface->pcanStandardRadioButton->setEnabled(false);
-        m_userInterface->pcanFilterFromLineEdit->setEnabled(false);
-        m_userInterface->pcanFilterToLineEdit->setEnabled(false);
-
-        if(m_userInterface->connectionTypeComboBox->currentText() == "cheetah")
-        {
-            m_userInterface->cheetahChipSelectComboBox->setEnabled(true);
-
-        }
-        else
-        {
-            m_userInterface->cheetahChipSelectComboBox->setEnabled(false);
-        }
-
         m_userInterface->noProxyRadioButton->setEnabled(false);
         m_userInterface->useSystemProxyRadioButton->setEnabled(false);
         m_userInterface->useSpecificProxyRadioButton->setEnabled(false);
@@ -1558,34 +1762,19 @@ void SettingsDialog::initializeInterfaceTabs(void)
         m_userInterface->proxyPasswordLineEdit->setEnabled(false);
 
     }
+}
 
-    //Update proxy settings.
-    m_userInterface->updateNoProxy->setEnabled(true);
-    m_userInterface->updateUseSystemProxy->setEnabled(true);
-    m_userInterface->updateUseSpecificProxy->setEnabled(true);
-    if(m_userInterface->updateUseSpecificProxy->isChecked())
-    {
-        m_userInterface->updateProxyAddress->setEnabled(true);
-        m_userInterface->updateProxyPort->setEnabled(true);
-        m_userInterface->updateProxyUserName->setEnabled(true);
-        m_userInterface->updateProxyPassword->setEnabled(true);
-    }
-    else
-    {
-        m_userInterface->updateProxyAddress->setEnabled(false);
-        m_userInterface->updateProxyPort->setEnabled(false);
+/**
+ * Initializes the interface tabs.
+ */
+void SettingsDialog::initializeInterfaceTabs(void)
+{
 
-        if(m_userInterface->updateUseSystemProxy->isChecked())
-        {
-            m_userInterface->updateProxyUserName->setEnabled(true);
-            m_userInterface->updateProxyPassword->setEnabled(true);
-        }
-        else
-        {
-            m_userInterface->updateProxyUserName->setEnabled(false);
-            m_userInterface->updateProxyPassword->setEnabled(false);
-        }
-    }
+    initializeSocketsTab();
+    initializePcanTab();
+    initializeUpdateTab();
+    initializeCheetahTab();
+    initializeAardvardIc2SpiTab();
 }
 
 /**
@@ -1925,8 +2114,12 @@ void SettingsDialog::setDecimalComboBox(DecimalType type, QComboBox* typeBox)
 /**
  * Updates the settings struct (m_currentSettings).
  */
-void SettingsDialog::updateSettings()
+void SettingsDialog::updateSettings(bool forceUpdate)
 {
+    if(signalsBlocked() && !forceUpdate)
+    {
+        return;
+    }
     m_currentSettings.serialPort.name = m_userInterface->serialPortInfoListBox->currentText();
 
     // Baud Rate
@@ -2204,7 +2397,7 @@ void SettingsDialog::updateSettings()
         }
     }
 
-    //Update settings,
+    //update settings
     m_currentSettings.updateSettings.proxyIpAddress = m_userInterface->updateProxyAddress->text();
     m_currentSettings.updateSettings.proxyPort = m_userInterface->updateProxyPort->text().toUInt();
     m_currentSettings.updateSettings.proxyUserName = m_userInterface->updateProxyUserName->text();
@@ -2223,6 +2416,24 @@ void SettingsDialog::updateSettings()
     else
     {
         m_currentSettings.updateSettings.proxySettings = 0;
+    }
+
+    //aardvard I2C/SPI settings
+    m_currentSettings.aardvardI2cSpi.devicePort = m_userInterface->aardvardI2cSpiPort->text().toUInt();
+    m_currentSettings.aardvardI2cSpi.deviceMode = (AardvardI2cSpiDeviceMode)m_userInterface->aardvardI2cSpiMode->currentIndex();
+    m_currentSettings.aardvardI2cSpi.device5VPin4IsOn = (m_userInterface->aardvardI2cSpi5VPin4->currentText() == "On") ? true : false;
+    m_currentSettings.aardvardI2cSpi.device5VPin6IsOn = (m_userInterface->aardvardI2cSpi5VPin6->currentText() == "On") ? true : false;
+    m_currentSettings.aardvardI2cSpi.i2cBaudrate = m_userInterface->aardvardI2cBaudrate->text().toUInt();
+    m_currentSettings.aardvardI2cSpi.i2cPullupsOn = (m_userInterface->aardvardI2cPullUp->currentText() == "On") ? true : false;
+    m_currentSettings.aardvardI2cSpi.spiPolarity = (AardvarkSpiPolarity)m_userInterface->aardvardSpiPolarity->currentIndex();
+    m_currentSettings.aardvardI2cSpi.spiPhase = (AardvarkSpiPhase)m_userInterface->aardvardSpiPhase->currentIndex();
+    m_currentSettings.aardvardI2cSpi.spiBaudrate= m_userInterface->aardvardSpiBaudrate->text().toUInt();
+
+    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+    {
+        m_currentSettings.aardvardI2cSpi.pinConfigs[i].isInput = (m_aardvardI2cGpioGuiElements[i].mode->currentText().contains("in")) ? true : false;
+        m_currentSettings.aardvardI2cSpi.pinConfigs[i].withPullups = (m_aardvardI2cGpioGuiElements[i].mode->currentText() == "in pullup") ? true : false;
+        m_currentSettings.aardvardI2cSpi.pinConfigs[i].outValue = (m_aardvardI2cGpioGuiElements[i].outValue->currentText() == "1") ? true : false;
     }
 
 }

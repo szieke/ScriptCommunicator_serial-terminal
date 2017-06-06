@@ -32,6 +32,7 @@
 #include <QToolButton>
 #include <QComboBox>
 #include <QSignalMapper>
+#include "aardvark.h"
 
 QT_USE_NAMESPACE
 
@@ -130,6 +131,56 @@ typedef struct
     quint8 chipSelect;
 }CheetahSpiSettings;
 
+
+///aardvard I2C/SPI device mode.
+typedef enum
+{
+    AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER = 0,
+    AARDVARD_I2C_SPI_DEVICE_MODE_SPI_MASTER,
+    AARDVARD_I2C_SPI_DEVICE_MODE_GPIO
+}AardvardI2cSpiDeviceMode;
+
+///The number of aardvard I2C/SPI GPIOs.
+#define AARDVARD_I2C_SPI_GPIO_COUNT 8
+
+///aardvard I2C/SPI GPIO configuration.
+typedef struct
+{
+    bool isInput;
+    bool withPullups;
+    bool outValue;
+}AardvardI2cSpiGpioConfig;
+
+///Settings for a aardvard I2C/SPI interface.
+typedef struct
+{
+    quint16 devicePort;
+    AardvardI2cSpiDeviceMode deviceMode;
+    bool device5VPin4IsOn;
+    bool device5VPin6IsOn;
+
+    quint16 i2cBaudrate;
+    bool i2cPullupsOn;
+
+    AardvarkSpiPolarity spiPolarity;
+    AardvarkSpiPhase spiPhase;
+    quint16 spiBaudrate;
+
+    AardvardI2cSpiGpioConfig pinConfigs[AARDVARD_I2C_SPI_GPIO_COUNT];
+
+}AardvardI2cSpiSettings;
+
+
+///The GUI elements for one aardvard I2C/SPI GPIO.
+typedef struct
+{
+    QComboBox* mode;
+    QComboBox* outValue;
+    QLineEdit* inValue;
+
+}AardvardI2cGpioGuiElements;
+
+
 ///Settings for a pcan interface.
 typedef struct
 {
@@ -141,6 +192,7 @@ typedef struct
     QString filterFrom;
     QString filterTo;
 }PcanSettings;
+
 
 ///Struct which holds all settings from the settings window.
 struct Settings
@@ -165,6 +217,9 @@ struct Settings
 
     ///Settings for the pcan interface.
     PcanSettings pcanInterface;
+
+    ///Settings for the aardvard I2C/SPI interface.
+    AardvardI2cSpiSettings aardvardI2cSpi;
 
     ///The target endianess of the target.
     Endianess targetEndianess;
@@ -397,7 +452,7 @@ public:
     const Settings* settings() const;
 
     ///Updates the settings struct (m_currentSettings).
-    void updateSettings();
+    void updateSettings(bool forceUpdate = false);
 
     ///Shows the script window.
     void show(void);
@@ -419,6 +474,21 @@ public:
 
     ///Initializes the interface tabs.
     void initializeInterfaceTabs(void);
+
+    ///Initializes the aardvard I2C SPI interface tab.
+    void initializeAardvardIc2SpiTab(void);
+
+    ///Initializes the pcan interface tab.
+    void initializePcanTab(void);
+
+    ///Initializes the update tab.
+    void initializeUpdateTab(void);
+
+    ///Initializes the cheetah interface tab.
+    void initializeCheetahTab(void);
+
+    ///Initializes the sockets interface tab.
+    void initializeSocketsTab(void);
 
     ///Returns the current pcan baudrate;
     quint16 getPcanBaudrate();
@@ -549,6 +619,9 @@ private slots:
     ///Slot function for the aardvard I2c/Spi scan button.
     void aardvardI2cSpiScanButtonSlot(void);
 
+    ///Slot function for the aardvard I2c/Spi free bus button.
+    void aardvardI2cSpiFreeBusButtonSlot(void);
+
     ///This slot function is called if the connection type has been changed.
     void conectionTypeChangesSlot(QString text);
 
@@ -560,6 +633,7 @@ private slots:
 
     ///The state of the 'append time stamp at logs' check box has been changed.
     void appendTimestampAtLogsChangedSlot(int newState);
+
 
 Q_SIGNALS:
 
@@ -622,6 +696,9 @@ private:
 
     ///PCAN Interface.
     PCANBasicClass* m_pcanInterface;
+
+    ///The GUI elements for all aardvard I2C/SPI GPIOs.
+    AardvardI2cGpioGuiElements m_aardvardI2cGpioGuiElements[AARDVARD_I2C_SPI_GPIO_COUNT];
 
 };
 
