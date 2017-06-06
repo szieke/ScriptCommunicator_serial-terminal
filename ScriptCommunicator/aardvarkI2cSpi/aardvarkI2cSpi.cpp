@@ -24,6 +24,7 @@
 
 #include "aardvarkI2cSpi.h"
 
+
 #if defined(WIN32) || defined(_WIN32)
 static const QString LIBRARAY_NAME = "aardvark.dll";
 #else
@@ -94,4 +95,44 @@ QString AardvarkI2cSpi::detectDevices(void)
 
 
     return text;
+}
+
+/**
+ * Connects to a aarvard I2C SPI interface.
+ * @param settings
+ *      The interface settings.
+ * @return
+ *      True on success.
+ */
+bool AardvarkI2cSpi::connectToDevice(AardvardI2cSpiSettings& settings)
+{
+    (void)settings;
+    return true;
+}
+
+/**
+ * Disconnects from the aarvard I2C SPI interface.
+ */
+void AardvarkI2cSpi::disconnect(void)
+{
+    if (m_handle > 0)
+    {
+        aa_close(m_handle);
+        m_handle = 0;
+    }
+}
+
+/**
+ * Sends and receive data with the aarvard I2C SPI interface.
+ * @param sendData
+ *      The send data.
+ * @param receivedData
+ *      The received data.
+ * @return
+ *      True on success.
+ */
+bool AardvarkI2cSpi::sendReceiveData(const QByteArray& sendData, QByteArray* receivedData)
+{
+    *receivedData = sendData;
+    return true;
 }

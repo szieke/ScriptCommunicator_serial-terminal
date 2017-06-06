@@ -1044,6 +1044,10 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     {
         m_userInterface->connectionTypeComboBox->setCurrentText("pcan");
     }
+    else if(settings.connectionType == CONNECTION_TYPE_AARDVARD)
+    {
+        m_userInterface->connectionTypeComboBox->setCurrentText("aardvard");
+    }
     else
     {
         m_userInterface->connectionTypeComboBox->setCurrentText("socket");
@@ -2294,6 +2298,10 @@ void SettingsDialog::updateSettings(bool forceUpdate)
     else if(m_userInterface->connectionTypeComboBox->currentText() == "pcan")
     {
         m_currentSettings.connectionType = CONNECTION_TYPE_PCAN;
+    }
+    else if(m_userInterface->connectionTypeComboBox->currentText() == "aardvard")
+    {
+        m_currentSettings.connectionType = CONNECTION_TYPE_AARDVARD;
     }
     else
     {

@@ -411,8 +411,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>358</width>
+            <height>337</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0,1">
@@ -884,8 +884,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>278</width>
+            <height>196</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,0,1">
@@ -1147,8 +1147,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>769</width>
+            <height>352</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_18">
@@ -2177,8 +2177,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>327</width>
+            <height>234</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_12" stretch="2,1">
@@ -2453,8 +2453,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>757</width>
+            <height>329</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
@@ -3056,8 +3056,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>353</width>
+            <height>278</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3292,8 +3292,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>718</width>
+            <height>412</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -4010,8 +4010,8 @@ Note: The reopen buton in the main window is only visible if this option is sele
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>404</width>
+            <height>271</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -4403,6 +4403,11 @@ in the log, the decimal console and the send window)</string>
         <item>
          <property name="text">
           <string>pcan</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>aardvard</string>
          </property>
         </item>
        </widget>

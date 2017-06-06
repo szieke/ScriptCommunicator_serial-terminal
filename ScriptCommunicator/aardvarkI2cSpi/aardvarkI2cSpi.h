@@ -27,6 +27,7 @@
 
 #include "mainwindow.h"
 #include "aardvark.h"
+#include "settingsdialog.h"
 #include <QObject>
 
 ///Class which represents a aardvard  I2c/Spi interface.
@@ -41,6 +42,15 @@ public:
 
     ///Returns a string which contains informations about all detected devices.
     static QString detectDevices(void);
+
+    ///Connects to a aarvard I2C SPI interface.
+    bool connectToDevice(AardvardI2cSpiSettings& settings);
+
+    ///Disconnects from the aarvard I2C SPI interface.
+    void disconnect(void);
+
+    ///Sends and receive data with the aarvard I2C SPI interface.
+    bool sendReceiveData(const QByteArray& sendData, QByteArray* receivedData);
 
 private:
         Aardvark m_handle;

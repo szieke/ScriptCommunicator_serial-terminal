@@ -49,7 +49,7 @@
  */
 MainInterfaceThread::MainInterfaceThread(MainWindow* mainWindow):m_exit(false),
     m_serial(0),m_tcpServer(0),m_tcpServerSockets(),m_tcpClientSocket(0),
-    m_udpServerSocket(0), m_udpClientSocket(0), m_cheetahSpi(0), m_isConnected(false), m_showAdditionalInformationTimer(0), m_pcanInterface(0),
+    m_udpServerSocket(0), m_udpClientSocket(0), m_cheetahSpi(0), m_aardvarkI2cSpi(0), m_isConnected(false), m_showAdditionalInformationTimer(0), m_pcanInterface(0),
     m_numberOfSentBytes(0), m_lastNumberOfSentBytes(0), m_numberOfReceivedBytes(0),m_lastNumberOfReceivedBytes(0),  m_dataRateTimer(0)
 {
     m_mainWindow = mainWindow;
@@ -403,6 +403,8 @@ void MainInterfaceThread::run(void)
 
     m_cheetahSpi = new CheetahSpi(this);
 
+    m_aardvarkI2cSpi = new AardvarkI2cSpi(this);
+
     m_showAdditionalInformationTimer = new QTimer(this);
     connect(m_showAdditionalInformationTimer, SIGNAL(timeout()),this, SLOT(showAdditionalInformationTimerSlot()));
     m_showAdditionalInformationTimer->start(250);
@@ -550,6 +552,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
 
     m_udpServerSocket->close();
     m_cheetahSpi->disconnect();
+    m_aardvarkI2cSpi->disconnect();
     m_pcanInterface->close();
     m_isConnected = false;
 
@@ -689,8 +692,8 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
             }
             else
             {
-                showMessageBox(QMessageBox::Critical, tr("spi error"),
-                                          tr("could not open to cheetah spi device: port=%1, baudarte=%2, mode=%3")
+                showMessageBox(QMessageBox::Critical, tr("cheetah spi error"),
+                                          tr("could not open cheetah spi device: port=%1, baudarte=%2 (kHz), mode=%3")
                                           .arg(m_currentGlobalSettings.cheetahSpi.port)
                                           .arg(m_currentGlobalSettings.cheetahSpi.baudRate)
                                           .arg(m_currentGlobalSettings.cheetahSpi.mode));
@@ -698,6 +701,52 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
                 emit dataConnectionStatusSignal(false, tr("open error"), false);
                 emit showAdditionalConnectionInformationSignal("");
             }
+        }
+        else if(m_currentGlobalSettings.connectionType == CONNECTION_TYPE_AARDVARD)
+        {
+            m_isConnected = m_aardvarkI2cSpi->connectToDevice(m_currentGlobalSettings.aardvardI2cSpi);
+
+            QString mode;
+            quint16 baudrate;
+            if(m_currentGlobalSettings.aardvardI2cSpi.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER)
+            {
+                mode = "i2c master";
+                baudrate = m_currentGlobalSettings.aardvardI2cSpi.i2cBaudrate;
+            }
+            else if(m_currentGlobalSettings.aardvardI2cSpi.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_SPI_MASTER)
+            {
+                mode = "spi master";
+                baudrate = m_currentGlobalSettings.aardvardI2cSpi.spiBaudrate;
+            }
+            else
+            {
+                mode = "gpio";
+            }
+
+            if(m_isConnected)
+            {
+                QString message = QString("Connected to aardvard interface: port=%1, mode=%2").arg(m_currentGlobalSettings.cheetahSpi.port).arg(mode);
+                if(m_currentGlobalSettings.aardvardI2cSpi.deviceMode != AARDVARD_I2C_SPI_DEVICE_MODE_GPIO)
+                {
+                    message += QString(", baudarte=%1 (kHz)").arg(baudrate);
+                }
+                emit dataConnectionStatusSignal(true, message, false);
+
+            }
+            else
+            {
+                QString message = QString("could not open aardvard device: port=%1, mode=%2").arg(m_currentGlobalSettings.cheetahSpi.port).arg(mode);
+                if(m_currentGlobalSettings.aardvardI2cSpi.deviceMode != AARDVARD_I2C_SPI_DEVICE_MODE_GPIO)
+                {
+                    message += QString(", baudarte=%1 (kHz)").arg(baudrate);
+                }
+
+                showMessageBox(QMessageBox::Critical, "aardvard error",message);
+                m_isConnected = false;
+                emit dataConnectionStatusSignal(false, "open error", false);
+                emit showAdditionalConnectionInformationSignal("");
+            }
+
         }
         else if(m_currentGlobalSettings.connectionType == CONNECTION_TYPE_PCAN)
         {
@@ -911,6 +960,19 @@ bool MainInterfaceThread::sendDataWithTheMainInterface(const QByteArray &data, b
         {
             QByteArray receivedData;
             if(!m_cheetahSpi->sendReceiveData(data,&receivedData, m_mainWindow->getSettingsDialog()->settings()->cheetahSpi.chipSelect))
+            {
+                success = false;
+            }
+
+            if(!receivedData.isEmpty())
+            {
+                dataReceived(receivedData);
+            }
+        }
+        else if(m_currentGlobalSettings.connectionType == CONNECTION_TYPE_AARDVARD)
+        {
+            QByteArray receivedData;
+            if(!m_aardvarkI2cSpi->sendReceiveData(data,&receivedData))
             {
                 success = false;
             }

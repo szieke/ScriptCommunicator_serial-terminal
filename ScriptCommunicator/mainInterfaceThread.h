@@ -29,6 +29,7 @@
 #include <QTimer>
 #include "cheetahspi.h"
 #include "PCANBasicClass.h"
+#include "aardvarkI2cSpi.h"
 #include <QNetworkProxy>
 
 
@@ -231,6 +232,9 @@ private:
 
     ///Pointer to the cheetah spi interface.
     CheetahSpi* m_cheetahSpi;
+
+    ///Pointer to the aardvard I2C SPI interface.
+    AardvarkI2cSpi* m_aardvarkI2cSpi;
 
     ///True of the main interface is connected.
     bool m_isConnected;
