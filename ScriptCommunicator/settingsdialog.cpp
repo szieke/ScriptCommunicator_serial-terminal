@@ -69,12 +69,7 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     m_aardvardI2cGpioGuiElements[5].mode = m_userInterface->aardvardGpioMode5;
     m_aardvardI2cGpioGuiElements[5].outValue = m_userInterface->aardvardGpioOutValue5;
     m_aardvardI2cGpioGuiElements[5].inValue = m_userInterface->aardvardGpioInValue5;
-    m_aardvardI2cGpioGuiElements[6].mode = m_userInterface->aardvardGpioMode6;
-    m_aardvardI2cGpioGuiElements[6].outValue = m_userInterface->aardvardGpioOutValue6;
-    m_aardvardI2cGpioGuiElements[6].inValue = m_userInterface->aardvardGpioInValue6;
-    m_aardvardI2cGpioGuiElements[7].mode = m_userInterface->aardvardGpioMode7;
-    m_aardvardI2cGpioGuiElements[7].outValue = m_userInterface->aardvardGpioOutValue7;
-    m_aardvardI2cGpioGuiElements[7].inValue = m_userInterface->aardvardGpioInValue7;
+
 
     int width  = -1;
     if(m_userInterface->connectionTypeComboBox->width() > m_userInterface->endianessComboBox->width())
@@ -839,6 +834,19 @@ void SettingsDialog::show(void)
 }
 
 /**
+ * Is called if the input states of the aardvard I2c/Spi device have been changed.
+ * @param states
+ *      The new states.
+ */
+void SettingsDialog::aardvardI2cSpiInputStatesChangedSlot(bool* states)
+{
+    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+    {
+        m_aardvardI2cGpioGuiElements[i].inValue->setText(states[i] ? "1" : "0");
+    }
+}
+
+/**
  * Sets all settings in the gui and the settings struct (m_currentSettings).
  * @param settings
  *      The new settings.
@@ -1540,6 +1548,7 @@ void SettingsDialog::setInterfaceSettingsCanBeChanged(bool interfaceSettingsCanB
  */
 void SettingsDialog::initializeAardvardIc2SpiTab(void)
 {
+
     m_userInterface->aardvardI2cBaudrate->setEnabled(false);
     m_userInterface->aardvardI2cPullUp->setEnabled(false);
     m_userInterface->aardvardI2cFreeBus->setEnabled(false);
@@ -1547,6 +1556,12 @@ void SettingsDialog::initializeAardvardIc2SpiTab(void)
     m_userInterface->aardvardSpiPolarity->setEnabled(false);
     m_userInterface->aardvardSpiPhase->setEnabled(false);
     m_userInterface->aardvardSpiBaudrate->setEnabled(false);
+
+    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+    {
+        m_aardvardI2cGpioGuiElements[i].mode->setEnabled(false);
+        m_aardvardI2cGpioGuiElements[i].outValue->setEnabled(false);
+    }
 
      if(m_interfaceSettingsCanBeChanged)
      {
@@ -1568,6 +1583,7 @@ void SettingsDialog::initializeAardvardIc2SpiTab(void)
              m_userInterface->aardvardSpiPhase->setEnabled(true);
              m_userInterface->aardvardSpiBaudrate->setEnabled(true);
          }
+
      }
      else
      {
@@ -1578,17 +1594,28 @@ void SettingsDialog::initializeAardvardIc2SpiTab(void)
          m_userInterface->aardvardI2cSpi5VPin6->setEnabled(false);
      }
 
-
-     for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+     int startIndex = 0;
+     int endIndex = 0;
+     if(m_userInterface->aardvardI2cSpiMode->currentText() == "I2C Master")
      {
-         if(m_aardvardI2cGpioGuiElements[i].mode->currentText() == "out")
-         {
-             m_aardvardI2cGpioGuiElements[i].outValue->setEnabled(true);
-         }
-         else
-         {
-             m_aardvardI2cGpioGuiElements[i].outValue->setEnabled(false);
-         }
+         startIndex = 2;
+         endIndex = AARDVARD_I2C_SPI_GPIO_COUNT - 1;
+     }
+     else if(m_userInterface->aardvardI2cSpiMode->currentText() == "SPI Master")
+     {
+         startIndex = 0;
+         endIndex = 1;
+     }
+     else
+     {
+         startIndex = 0;
+         endIndex = AARDVARD_I2C_SPI_GPIO_COUNT - 1;
+     }
+
+     for(int i = startIndex; i <= endIndex; i++)
+     {
+         m_aardvardI2cGpioGuiElements[i].mode->setEnabled(true);
+         m_aardvardI2cGpioGuiElements[i].outValue->setEnabled((m_aardvardI2cGpioGuiElements[i].mode->currentText() == "out") ? true : false);
      }
 }
 
@@ -1849,6 +1876,23 @@ void SettingsDialog::textFromGuiElementChangedSlot(QString text)
     initializeInterfaceTabs();
     updateSettings();
     emit configHasToBeSavedSignal();
+
+
+    QObject* obj = sender();
+    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+    {
+        if(m_aardvardI2cGpioGuiElements[i].mode == obj)
+        {
+            emit pinConfigChangedSignal(m_currentSettings.aardvardI2cSpi.pinConfigs[i], i);
+            break;
+        }
+
+        if(m_aardvardI2cGpioGuiElements[i].outValue == obj)
+        {
+            emit outputValueChangedSignal(m_currentSettings.aardvardI2cSpi.pinConfigs[i].outValue, i);
+            break;
+        }
+    }
 }
 
 /**

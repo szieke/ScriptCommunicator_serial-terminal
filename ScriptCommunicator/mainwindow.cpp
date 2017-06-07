@@ -290,6 +290,15 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
     connect(m_mainInterface, SIGNAL(setConnectionButtonsSignal(bool)), this, SLOT(setConnectionButtonsSlot(bool)), Qt::QueuedConnection);
 
+
+    qRegisterMetaType<AardvardI2cSpiGpioConfig>("AardvardI2cSpiGpioConfig");
+    connect(m_mainInterface->m_aardvarkI2cSpi, SIGNAL(inputStatesChangedSignal(bool*)), m_settingsDialog,
+            SLOT(aardvardI2cSpiInputStatesChangedSlot(bool*)), Qt::QueuedConnection);
+    connect(m_settingsDialog, SIGNAL(pinConfigChangedSignal(AardvardI2cSpiGpioConfig,quint8)), m_mainInterface->m_aardvarkI2cSpi,
+            SLOT(pinConfigChangedSlot(AardvardI2cSpiGpioConfig,quint8)), Qt::QueuedConnection);
+    connect(m_settingsDialog, SIGNAL(outputValueChangedSignal(bool,quint8)), m_mainInterface->m_aardvarkI2cSpi,
+            SLOT(outputValueChangedSlot(bool,quint8)), Qt::QueuedConnection);
+
     connect(m_settingsDialog, SIGNAL(deleteLogFileSignal(QString)),this, SLOT(deleteLogFileSlot(QString)));
     connect(m_settingsDialog, SIGNAL(configHasToBeSavedSignal()),this, SLOT(configHasToBeSavedSlot()));
     connect(m_settingsDialog, SIGNAL(conectionTypeChangesSignal()),this, SLOT(conectionTypeChangesSlot()));

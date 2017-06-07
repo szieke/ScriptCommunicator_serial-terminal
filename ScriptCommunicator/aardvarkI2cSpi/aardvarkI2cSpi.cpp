@@ -30,12 +30,112 @@ static const QString LIBRARAY_NAME = "aardvark.dll";
 #else
 static const QString LIBRARAY_NAME = "aardvark.so";
 #endif
-AardvarkI2cSpi::AardvarkI2cSpi(QObject *parent): QObject(parent), m_handle(0)
+AardvarkI2cSpi::AardvarkI2cSpi(QObject *parent): QObject(parent), m_handle(0), m_inputTimer()
 {
+    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+    {
+        m_inputStates[i] = false;
+    }
+
+    connect(&m_inputTimer, SIGNAL(timeout()),this, SLOT(inputTimerSlot()), Qt::QueuedConnection);
 }
 AardvarkI2cSpi::~AardvarkI2cSpi()
 {
 
+}
+
+static quint32 testCounter = 0;
+
+/**
+ * Reads all inputs of the aardvard I2c/Spi device.
+ *
+ * @param inputStates
+ *      The array in which the read states are written to.
+ */
+void AardvarkI2cSpi::readAllInputs(bool inputStates[AARDVARD_I2C_SPI_GPIO_COUNT])
+{
+    static bool dummyInputStates = false;
+
+    if(m_handle)
+    {
+        testCounter++;
+
+        if(testCounter > 10)
+        {
+            testCounter = 0;
+            dummyInputStates = dummyInputStates ? false : true;
+        }
+
+        for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+        {
+            inputStates[i] = dummyInputStates;
+        }
+    }
+    else
+    {
+        for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+        {
+            inputStates[i] = false;
+        }
+    }
+}
+
+/**
+ * Slot function of m_inputTimer.
+ * Reads all inputs of the aardvard I2c/Spi device.
+ */
+void AardvarkI2cSpi::inputTimerSlot(void)
+{
+    bool inputStates[AARDVARD_I2C_SPI_GPIO_COUNT];
+
+    readAllInputs(inputStates);
+
+    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+    {
+        if(inputStates[i] != m_inputStates[i])
+        {//State changed.
+
+            emit inputStatesChangedSignal(inputStates);
+            break;
+        }
+    }
+
+    //Copy the read states.
+    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+    {
+        m_inputStates[i] = inputStates[i];
+    }
+}
+
+
+/**
+ * Is called if the pin configuration has been changed (in the GUI).
+ * @param config
+ *      The new configuration.
+ * @param guiPinNumber
+ *      The GUI pin number.
+ */
+void AardvarkI2cSpi::pinConfigChangedSlot(AardvardI2cSpiGpioConfig config, quint8 guiPinNumber)
+{
+    (void)config;
+    (void)guiPinNumber;
+    testCounter = 10;
+
+}
+
+
+/**
+ * Is called if the value of an output pin has been changed (in the GUI).
+ * @param state
+ *      The new state/value of the output pin.
+ * @param guiPinNumber
+ *      The GUI pin number.
+ */
+void AardvarkI2cSpi::outputValueChangedSlot(bool state, quint8 guiPinNumber)
+{
+    (void)state;
+    (void)guiPinNumber;
+    testCounter = 10;
 }
 
 /**
@@ -45,7 +145,6 @@ AardvarkI2cSpi::~AardvarkI2cSpi()
  */
 QString AardvarkI2cSpi::detectDevices(void)
 {
-
 
     u16  ports[16];
     u32 unique_ids[16];
@@ -106,7 +205,14 @@ QString AardvarkI2cSpi::detectDevices(void)
  */
 bool AardvarkI2cSpi::connectToDevice(AardvardI2cSpiSettings& settings)
 {
-    (void)settings;
+    m_settings = settings;
+    m_handle = 1;//ToDo: entfernen
+
+    //Read/save the input states.
+    readAllInputs(m_inputStates);
+    emit inputStatesChangedSignal(m_inputStates);
+
+    m_inputTimer.start(250);
     return true;
 }
 
@@ -115,11 +221,17 @@ bool AardvarkI2cSpi::connectToDevice(AardvardI2cSpiSettings& settings)
  */
 void AardvarkI2cSpi::disconnect(void)
 {
+    m_inputTimer.stop();
+
     if (m_handle > 0)
     {
         aa_close(m_handle);
         m_handle = 0;
     }
+
+    //Read/save the input states.
+    readAllInputs(m_inputStates);
+    emit inputStatesChangedSignal(m_inputStates);
 }
 
 /**

@@ -411,8 +411,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>358</width>
-            <height>337</height>
+            <width>905</width>
+            <height>445</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0,1">
@@ -884,8 +884,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>278</width>
-            <height>196</height>
+            <width>905</width>
+            <height>445</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,0,1">
@@ -1147,8 +1147,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>769</width>
-            <height>352</height>
+            <width>905</width>
+            <height>445</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_18">
@@ -1350,7 +1350,14 @@ for TCP clients.</string>
               <string>gpio</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_17">
-              <item row="1" column="4">
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_43">
+                <property name="text">
+                 <string>in value</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="2">
                <spacer name="horizontalSpacer_16">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -1366,15 +1373,15 @@ for TCP clients.</string>
                 </property>
                </spacer>
               </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label_43">
+              <item row="0" column="7">
+               <widget class="QLabel" name="label_47">
                 <property name="text">
-                 <string>in value</string>
+                 <string>Pin7/SCK</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="15">
-               <widget class="QComboBox" name="aardvardGpioOutValue0">
+              <item row="2" column="3">
+               <widget class="QComboBox" name="aardvardGpioOutValue5">
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -1387,15 +1394,8 @@ for TCP clients.</string>
                 </item>
                </widget>
               </item>
-              <item row="0" column="11">
-               <widget class="QLabel" name="label_48">
-                <property name="text">
-                 <string>02</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="13">
-               <widget class="QComboBox" name="aardvardGpioOutValue1">
+              <item row="2" column="9">
+               <widget class="QComboBox" name="aardvardGpioOutValue2">
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -1408,8 +1408,8 @@ for TCP clients.</string>
                 </item>
                </widget>
               </item>
-              <item row="3" column="1">
-               <widget class="QLineEdit" name="aardvardGpioInValue7">
+              <item row="3" column="13">
+               <widget class="QLineEdit" name="aardvardGpioInValue0">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -1421,213 +1421,46 @@ for TCP clients.</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_39">
-                <property name="text">
-                 <string>pin</string>
+              <item row="3" column="5">
+               <widget class="QLineEdit" name="aardvardGpioInValue4">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
-              <item row="0" column="13">
-               <widget class="QLabel" name="label_49">
-                <property name="text">
-                 <string>01</string>
+              <item row="3" column="9">
+               <widget class="QLineEdit" name="aardvardGpioInValue2">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
                 </property>
                </widget>
               </item>
-              <item row="1" column="9">
-               <widget class="QComboBox" name="aardvardGpioMode3">
-                <item>
-                 <property name="text">
-                  <string>in</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>out</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>in pullup</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="2" column="7">
-               <widget class="QComboBox" name="aardvardGpioOutValue4">
-                <item>
-                 <property name="text">
-                  <string>0</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>1</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QComboBox" name="aardvardGpioMode7">
-                <item>
-                 <property name="text">
-                  <string>in</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>out</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>in pullup</string>
-                 </property>
-                </item>
+              <item row="3" column="7">
+               <widget class="QLineEdit" name="aardvardGpioInValue3">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
                </widget>
               </item>
               <item row="1" column="11">
-               <widget class="QComboBox" name="aardvardGpioMode2">
-                <item>
-                 <property name="text">
-                  <string>in</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>out</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>in pullup</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QComboBox" name="aardvardGpioOutValue7">
-                <item>
-                 <property name="text">
-                  <string>0</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>1</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="0" column="7">
-               <widget class="QLabel" name="label_46">
-                <property name="text">
-                 <string>04</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="9">
-               <widget class="QComboBox" name="aardvardGpioOutValue3">
-                <item>
-                 <property name="text">
-                  <string>0</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>1</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_42">
-                <property name="text">
-                 <string>out value</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="16">
-               <spacer name="horizontalSpacer_14">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>40</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLabel" name="label_40">
-                <property name="text">
-                 <string>07</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="15">
-               <widget class="QComboBox" name="aardvardGpioMode0">
-                <item>
-                 <property name="text">
-                  <string>in</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>out</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>in pullup</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="1" column="5">
-               <widget class="QComboBox" name="aardvardGpioMode5">
-                <item>
-                 <property name="text">
-                  <string>in</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>out</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>in pullup</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="2" column="3">
-               <widget class="QComboBox" name="aardvardGpioOutValue6">
-                <item>
-                 <property name="text">
-                  <string>0</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>1</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_41">
-                <property name="text">
-                 <string>mode</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="13">
                <widget class="QComboBox" name="aardvardGpioMode1">
                 <item>
                  <property name="text">
@@ -1646,35 +1479,7 @@ for TCP clients.</string>
                 </item>
                </widget>
               </item>
-              <item row="0" column="9">
-               <widget class="QLabel" name="label_47">
-                <property name="text">
-                 <string>03</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="5">
-               <widget class="QComboBox" name="aardvardGpioOutValue5">
-                <item>
-                 <property name="text">
-                  <string>0</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>1</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="0" column="5">
-               <widget class="QLabel" name="label_45">
-                <property name="text">
-                 <string>05</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="7">
+              <item row="1" column="5">
                <widget class="QComboBox" name="aardvardGpioMode4">
                 <item>
                  <property name="text">
@@ -1693,29 +1498,55 @@ for TCP clients.</string>
                 </item>
                </widget>
               </item>
-              <item row="0" column="15">
+              <item row="0" column="13">
                <widget class="QLabel" name="label_50">
                 <property name="text">
-                 <string>00</string>
+                 <string>Pin1/SCL</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="11">
-               <widget class="QComboBox" name="aardvardGpioOutValue2">
-                <item>
-                 <property name="text">
-                  <string>0</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>1</string>
-                 </property>
-                </item>
+              <item row="0" column="3">
+               <widget class="QLabel" name="label_45">
+                <property name="text">
+                 <string>Pin9/SS0</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="11">
+               <widget class="QLineEdit" name="aardvardGpioInValue1">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="3">
+               <widget class="QLineEdit" name="aardvardGpioInValue5">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="readOnly">
+                 <bool>true</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_41">
+                <property name="text">
+                 <string>mode</string>
+                </property>
                </widget>
               </item>
               <item row="1" column="3">
-               <widget class="QComboBox" name="aardvardGpioMode6">
+               <widget class="QComboBox" name="aardvardGpioMode5">
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -1733,102 +1564,165 @@ for TCP clients.</string>
                 </item>
                </widget>
               </item>
-              <item row="0" column="3">
-               <widget class="QLabel" name="label_44">
+              <item row="1" column="13">
+               <widget class="QComboBox" name="aardvardGpioMode0">
+                <item>
+                 <property name="text">
+                  <string>in</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>out</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>in pullup</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="2" column="11">
+               <widget class="QComboBox" name="aardvardGpioOutValue1">
+                <item>
+                 <property name="text">
+                  <string>0</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>1</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="2" column="5">
+               <widget class="QComboBox" name="aardvardGpioOutValue4">
+                <item>
+                 <property name="text">
+                  <string>0</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>1</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="1" column="7">
+               <widget class="QComboBox" name="aardvardGpioMode3">
+                <item>
+                 <property name="text">
+                  <string>in</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>out</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>in pullup</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="1" column="9">
+               <widget class="QComboBox" name="aardvardGpioMode2">
+                <item>
+                 <property name="text">
+                  <string>in</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>out</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>in pullup</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_39">
                 <property name="text">
-                 <string>06</string>
+                 <string>pin</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="3">
-               <widget class="QLineEdit" name="aardvardGpioInValue6">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
+              <item row="0" column="11">
+               <widget class="QLabel" name="label_49">
+                <property name="text">
+                 <string>Pin3/SDA</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="15">
-               <widget class="QLineEdit" name="aardvardGpioInValue0">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
+              <item row="0" column="5">
+               <widget class="QLabel" name="label_46">
+                <property name="text">
+                 <string>Pin8/MOSI</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="5">
-               <widget class="QLineEdit" name="aardvardGpioInValue5">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_42">
+                <property name="text">
+                 <string>out value</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="13">
-               <widget class="QLineEdit" name="aardvardGpioInValue1">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
+              <item row="2" column="7">
+               <widget class="QComboBox" name="aardvardGpioOutValue3">
+                <item>
+                 <property name="text">
+                  <string>0</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>1</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="0" column="14">
+               <spacer name="horizontalSpacer_14">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
                 </property>
-                <property name="readOnly">
-                 <bool>true</bool>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="9">
+               <widget class="QLabel" name="label_48">
+                <property name="text">
+                 <string>Pin5/MISO</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="9">
-               <widget class="QLineEdit" name="aardvardGpioInValue3">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="7">
-               <widget class="QLineEdit" name="aardvardGpioInValue4">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="11">
-               <widget class="QLineEdit" name="aardvardGpioInValue2">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
+              <item row="2" column="13">
+               <widget class="QComboBox" name="aardvardGpioOutValue0">
+                <item>
+                 <property name="text">
+                  <string>0</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>1</string>
+                 </property>
+                </item>
                </widget>
               </item>
               <item row="4" column="0">
@@ -1844,23 +1738,7 @@ for TCP clients.</string>
                 </property>
                </spacer>
               </item>
-              <item row="1" column="2">
-               <spacer name="horizontalSpacer_15">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Fixed</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>10</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="14">
+              <item row="1" column="12">
                <spacer name="horizontalSpacer_22">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -1877,23 +1755,7 @@ for TCP clients.</string>
                </spacer>
               </item>
               <item row="1" column="6">
-               <spacer name="horizontalSpacer_17">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeType">
-                 <enum>QSizePolicy::Fixed</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>10</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="1" column="12">
-               <spacer name="horizontalSpacer_21">
+               <spacer name="horizontalSpacer_19">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -1909,7 +1771,23 @@ for TCP clients.</string>
                </spacer>
               </item>
               <item row="1" column="10">
-               <spacer name="horizontalSpacer_20">
+               <spacer name="horizontalSpacer_21">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Fixed</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>10</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="1">
+               <spacer name="horizontalSpacer_15">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -1925,7 +1803,23 @@ for TCP clients.</string>
                </spacer>
               </item>
               <item row="1" column="8">
-               <spacer name="horizontalSpacer_19">
+               <spacer name="horizontalSpacer_20">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Fixed</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>10</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="4">
+               <spacer name="horizontalSpacer_17">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
                 </property>
@@ -2177,8 +2071,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>327</width>
-            <height>234</height>
+            <width>905</width>
+            <height>445</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_12" stretch="2,1">
@@ -2453,8 +2347,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>757</width>
-            <height>329</height>
+            <width>905</width>
+            <height>445</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
@@ -3056,8 +2950,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>353</width>
-            <height>278</height>
+            <width>905</width>
+            <height>445</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3292,8 +3186,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>718</width>
-            <height>412</height>
+            <width>905</width>
+            <height>445</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -4010,8 +3904,8 @@ Note: The reopen buton in the main window is only visible if this option is sele
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>404</width>
-            <height>271</height>
+            <width>905</width>
+            <height>445</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">

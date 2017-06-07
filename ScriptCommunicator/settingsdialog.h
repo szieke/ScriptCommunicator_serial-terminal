@@ -142,7 +142,7 @@ typedef enum
 }AardvardI2cSpiDeviceMode;
 
 ///The number of aardvard I2C/SPI GPIOs.
-#define AARDVARD_I2C_SPI_GPIO_COUNT 8
+#define AARDVARD_I2C_SPI_GPIO_COUNT 6
 
 ///aardvard I2C/SPI GPIO configuration.
 typedef struct
@@ -515,6 +515,9 @@ public slots:
 
     ///Sets all settings in the gui and the settings struct (m_currentSettings).
     void setAllSettingsSlot(Settings& settings, bool setTabIndex);
+
+    ///Is called if the input states of the aardvard I2c/Spi device have been changed.
+    void aardvardI2cSpiInputStatesChangedSlot(bool* states);
 private slots:
 
     ///Is called if the user presses the search console script button.
@@ -637,6 +640,13 @@ private slots:
 
 
 Q_SIGNALS:
+
+
+    ///Is emitted if the pin configuration has been changed (in the GUI).
+    void pinConfigChangedSignal(AardvardI2cSpiGpioConfig config, quint8 guiPinNumber);
+
+    ///Is emitted if the value of an output pin has been changed (in the GUI).
+    void outputValueChangedSignal(bool state, quint8 guiPinNumber);
 
     ///The state of the 'append time stamp at logs' check box has been changed.
     void appendTimestampAtLogsChangedSignal(void);
