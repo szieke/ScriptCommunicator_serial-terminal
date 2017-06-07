@@ -119,6 +119,20 @@ void AardvarkI2cSpi::pinConfigChangedSlot(AardvardI2cSpiGpioConfig config, quint
 {
     (void)config;
     (void)guiPinNumber;
+
+    if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER)
+    {
+
+    }
+    else if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_SPI_MASTER)
+    {
+
+    }
+    else
+    {//AARDVARD_I2C_SPI_DEVICE_MODE_GPIO
+
+    }
+
     testCounter = 10;
 
 }
@@ -135,7 +149,33 @@ void AardvarkI2cSpi::outputValueChangedSlot(bool state, quint8 guiPinNumber)
 {
     (void)state;
     (void)guiPinNumber;
+
+    if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER)
+    {
+
+    }
+    else if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_SPI_MASTER)
+    {
+
+    }
+    else
+    {//AARDVARD_I2C_SPI_DEVICE_MODE_GPIO
+
+    }
+
     testCounter = 10;
+}
+
+
+/**
+ * Is called if the i2c bus shall be released.
+ */
+void AardvarkI2cSpi::freeI2cBusSlot(void)
+{
+    if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER)
+    {
+        testCounter = 10;
+    }
 }
 
 /**
@@ -197,23 +237,142 @@ QString AardvarkI2cSpi::detectDevices(void)
 }
 
 /**
+ * Configures pins of the aardvard I2c/Spi device.
+ * @param startIndex
+ *      The pin start index.
+ * @param endIndex
+*       The pin end index.
+ * @param pinConfigs
+ *      The pin configuration array.
+ */
+void AardvarkI2cSpi::configurePins(int startIndex, int endIndex,  AardvardI2cSpiGpioConfig* pinConfigs)
+{
+    u08 directionBitmask = 0;
+    u08 pullupBitmask = 0;
+    u08 setBitmask = 0;
+    for(int i = startIndex; i <= endIndex; i++)
+    {
+        if(pinConfigs[i].isInput)
+        {
+            if(pinConfigs[i].withPullups)
+            {
+                pullupBitmask += 1 << i;
+            }
+        }
+        else
+        {
+            directionBitmask += 1 << i;
+
+            if(pinConfigs[i].outValue)
+            {
+                setBitmask += 1 << i;
+            }
+        }
+    }
+
+    (void)aa_gpio_direction(m_handle, directionBitmask);
+    (void)aa_gpio_pullup (m_handle, pullupBitmask);
+    (void)aa_gpio_set (m_handle, setBitmask);
+}
+
+/**
  * Connects to a aarvard I2C SPI interface.
  * @param settings
  *      The interface settings.
+ * @param deviceBitrate
+ *      The actual bitrate set.
  * @return
  *      True on success.
  */
-bool AardvarkI2cSpi::connectToDevice(AardvardI2cSpiSettings& settings)
+bool AardvarkI2cSpi::connectToDevice(AardvardI2cSpiSettings& settings, int& deviceBitrate)
 {
+    bool succeeded = false;
+    m_handle = 0;
     m_settings = settings;
-    m_handle = 1;//ToDo: entfernen
 
-    //Read/save the input states.
-    readAllInputs(m_inputStates);
-    emit inputStatesChangedSignal(m_inputStates);
 
-    m_inputTimer.start(250);
-    return true;
+    if(0)
+    {
+        int startIndex = 0;
+        int endIndex = 0;
+        if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER)
+        {
+            startIndex = 2;
+            endIndex = AARDVARD_I2C_SPI_GPIO_COUNT - 1;
+
+            if(AA_CONFIG_ERROR != aa_configure(m_handle,  AA_CONFIG_GPIO_I2C))
+            {
+                succeeded = true;
+
+                if(settings.i2cPullupsOn)
+                {
+                    //Enable the I2C bus pullup resistors (2.2k resistors).
+                    (void)aa_i2c_pullup(m_handle, AA_I2C_PULLUP_BOTH);
+                }
+                deviceBitrate = aa_i2c_bitrate(m_handle, m_settings.i2cBaudrate);
+            }
+        }
+        else if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_SPI_MASTER)
+        {
+            startIndex = 0;
+            endIndex = 1;
+
+            if(AA_CONFIG_ERROR != aa_configure(m_handle,  AA_CONFIG_SPI_GPIO))
+            {
+                succeeded = true;
+
+                (void)aa_spi_configure(m_handle, m_settings.spiPolarity, m_settings.spiPhase, m_settings.spiBitorder);
+                deviceBitrate = aa_i2c_bitrate(m_handle, m_settings.spiBaudrate);
+
+                (void)aa_spi_master_ss_polarity (m_handle,m_settings.spiSSPolarity);
+
+                //Turn off the external I2C line pullups
+                (void)aa_i2c_pullup(m_handle, AA_I2C_PULLUP_NONE);
+            }
+
+        }
+        else
+        {//AARDVARD_I2C_SPI_DEVICE_MODE_GPIO
+
+            startIndex = 0;
+            endIndex = AARDVARD_I2C_SPI_GPIO_COUNT - 1;
+            if(AA_CONFIG_ERROR != aa_configure(m_handle,  AA_CONFIG_GPIO_ONLY))
+            {
+                succeeded = true;
+
+                //Turn off the external I2C line pullups
+                (void)aa_i2c_pullup(m_handle, AA_I2C_PULLUP_NONE);
+            }
+        }
+
+        if(succeeded)
+        {
+            if(settings.device5VIsOn)
+            {
+                (void)aa_target_power(m_handle, AA_TARGET_POWER_BOTH);
+            }
+
+            configurePins(startIndex, endIndex,  m_settings.pinConfigs);
+        }
+
+    }
+    else
+    {//ToDo: entfernen
+
+        m_handle = 1;
+        succeeded = true;
+    }
+
+    if(succeeded)
+    {
+        //Read/save the input states.
+        readAllInputs(m_inputStates);
+        emit inputStatesChangedSignal(m_inputStates);
+
+        m_inputTimer.start(250);
+    }
+
+    return succeeded;
 }
 
 /**
@@ -245,6 +404,47 @@ void AardvarkI2cSpi::disconnect(void)
  */
 bool AardvarkI2cSpi::sendReceiveData(const QByteArray& sendData, QByteArray* receivedData)
 {
-    *receivedData = sendData;
-    return true;
+    bool succeeded = false;
+
+    if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER)
+    {
+        *receivedData = sendData;
+        succeeded = true;
+    }
+    else if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_SPI_MASTER)
+    {
+
+        if(0)
+        {
+            aa_u08* inBuffer = new aa_u08[sendData.size()];
+
+            if(sendData.size() == aa_spi_write(m_handle, sendData.size(), (const aa_u08 *)sendData.constData(), sendData.size(), inBuffer))
+            {
+                succeeded = true;
+
+                for(int i = 0; i < sendData.size(); i++)
+                {
+                    receivedData->append(inBuffer[i]);
+                }
+            }
+            else
+            {
+                succeeded = false;
+            }
+
+            delete[] inBuffer;
+        }
+        else
+        {
+            *receivedData = sendData;
+            succeeded = true;
+        }
+    }
+    else
+    {//AARDVARD_I2C_SPI_DEVICE_MODE_GPIO
+
+        succeeded = false;
+    }
+
+    return succeeded;
 }

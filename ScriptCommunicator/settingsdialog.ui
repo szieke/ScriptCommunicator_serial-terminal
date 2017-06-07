@@ -411,8 +411,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>358</width>
+            <height>337</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0,1">
@@ -884,8 +884,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>278</width>
+            <height>196</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,0,1">
@@ -1158,48 +1158,35 @@ for TCP clients.</string>
               <string>spi</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_15">
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="aardvardSpiBaudrate">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
+              <item row="1" column="1">
+               <widget class="QComboBox" name="aardvardSpiPhase">
+                <property name="sizeAdjustPolicy">
+                 <enum>QComboBox::AdjustToContents</enum>
                 </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
+                <item>
+                 <property name="text">
+                  <string>Sample/Setup</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Setup/Sample</string>
+                 </property>
+                </item>
                </widget>
               </item>
-              <item row="0" column="3" rowspan="3">
-               <spacer name="horizontalSpacer_12">
+              <item row="4" column="1">
+               <spacer name="verticalSpacer_10">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Vertical</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>124</width>
-                  <height>20</height>
+                  <width>20</width>
+                  <height>40</height>
                  </size>
                 </property>
                </spacer>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_34">
-                <property name="text">
-                 <string>baudrate (kHz)</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_33">
-                <property name="text">
-                 <string>polarity</string>
-                </property>
-               </widget>
               </item>
               <item row="0" column="1">
                <widget class="QComboBox" name="aardvardSpiPolarity">
@@ -1218,40 +1205,95 @@ for TCP clients.</string>
                 </item>
                </widget>
               </item>
-              <item row="3" column="1">
-               <spacer name="verticalSpacer_10">
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_34">
+                <property name="text">
+                 <string>baudrate (kHz)</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="4" rowspan="3">
+               <spacer name="horizontalSpacer_12">
                 <property name="orientation">
-                 <enum>Qt::Vertical</enum>
+                 <enum>Qt::Horizontal</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
-                  <width>20</width>
-                  <height>40</height>
+                  <width>124</width>
+                  <height>20</height>
                  </size>
                 </property>
                </spacer>
               </item>
-              <item row="1" column="1">
-               <widget class="QComboBox" name="aardvardSpiPhase">
-                <property name="sizeAdjustPolicy">
-                 <enum>QComboBox::AdjustToContents</enum>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_33">
+                <property name="text">
+                 <string>polarity</string>
                 </property>
-                <item>
-                 <property name="text">
-                  <string>Sample/Setup</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Setup/Sample</string>
-                 </property>
-                </item>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="aardvardSpiBaudrate">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                </widget>
               </item>
               <item row="1" column="0">
                <widget class="QLabel" name="label_51">
                 <property name="text">
                  <string>phase</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <widget class="QComboBox" name="aardvardSpiSSPolarity">
+                <item>
+                 <property name="text">
+                  <string>Active Low</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Active High</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_40">
+                <property name="text">
+                 <string>ss polarity</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="3">
+               <widget class="QComboBox" name="aardvardSpiBitorder">
+                <item>
+                 <property name="text">
+                  <string>MSB</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>LSB</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="1" column="2">
+               <widget class="QLabel" name="label_32">
+                <property name="text">
+                 <string>bitorder</string>
                 </property>
                </widget>
               </item>
@@ -1843,19 +1885,23 @@ for TCP clients.</string>
               <string>device</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_14">
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="aardvardI2cSpiPort">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
+              <item row="5" column="1">
+               <spacer name="verticalSpacer_8">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
                 </property>
-                <property name="maximumSize">
+                <property name="sizeHint" stdset="0">
                  <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
+                  <width>20</width>
+                  <height>3</height>
                  </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="3" column="1">
+               <widget class="QPushButton" name="aardvardI2cSpiScan">
+                <property name="text">
+                 <string>scan</string>
                 </property>
                </widget>
               </item>
@@ -1884,38 +1930,26 @@ for TCP clients.</string>
                 </item>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_30">
-                <property name="text">
-                 <string>mode      </string>
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="aardvardI2cSpiPort">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
                 </property>
-               </widget>
-              </item>
-              <item row="0" column="4">
-               <widget class="QComboBox" name="aardvardI2cSpi5VPin4">
-                <item>
-                 <property name="text">
-                  <string>Off</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>On</string>
-                 </property>
-                </item>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                </widget>
               </item>
               <item row="0" column="0">
                <widget class="QLabel" name="label_29">
                 <property name="text">
                  <string>port</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="3">
-               <widget class="QLabel" name="label_31">
-                <property name="text">
-                 <string>5V Pin 4</string>
                 </property>
                </widget>
               </item>
@@ -1935,8 +1969,15 @@ for TCP clients.</string>
                 </property>
                </spacer>
               </item>
-              <item row="1" column="4">
-               <widget class="QComboBox" name="aardvardI2cSpi5VPin6">
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_30">
+                <property name="text">
+                 <string>mode      </string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QComboBox" name="aardvardI2cSpi5V">
                 <item>
                  <property name="text">
                   <string>Off</string>
@@ -1949,30 +1990,10 @@ for TCP clients.</string>
                 </item>
                </widget>
               </item>
-              <item row="1" column="3">
-               <widget class="QLabel" name="label_32">
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_31">
                 <property name="text">
-                 <string>5V Pin 6</string>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="1">
-               <spacer name="verticalSpacer_8">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>3</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="2" column="1">
-               <widget class="QPushButton" name="aardvardI2cSpiScan">
-                <property name="text">
-                 <string>scan</string>
+                 <string>5V Pin 4/6</string>
                 </property>
                </widget>
               </item>
@@ -2071,8 +2092,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>327</width>
+            <height>234</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_12" stretch="2,1">
@@ -2347,8 +2368,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>757</width>
+            <height>329</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
@@ -2950,8 +2971,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>353</width>
+            <height>278</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3186,8 +3207,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>718</width>
+            <height>412</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -3904,8 +3925,8 @@ Note: The reopen buton in the main window is only visible if this option is sele
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>404</width>
+            <height>271</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">

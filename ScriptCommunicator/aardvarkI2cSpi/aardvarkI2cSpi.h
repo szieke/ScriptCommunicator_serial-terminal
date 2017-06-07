@@ -66,7 +66,7 @@ public:
     static QString detectDevices(void);
 
     ///Connects to a aarvard I2C SPI interface.
-    bool connectToDevice(AardvardI2cSpiSettings& settings);
+    bool connectToDevice(AardvardI2cSpiSettings& settings, int& deviceBitrate);
 
     ///Disconnects from the aarvard I2C SPI interface.
     void disconnect(void);
@@ -91,10 +91,17 @@ public slots:
     ///Is called if the value of an output pin has been changed (in the GUI).
     void outputValueChangedSlot(bool state, quint8 guiPinNumber);
 
+    ///Is called if the i2c bus shall be released.
+    void freeI2cBusSlot(void);
+
+
 private:
 
     ///Reads all inputs of the aardvard I2c/Spi device.
     void readAllInputs(bool inputStates[]);
+
+    ///Configures pins of the aardvard I2c/Spi device.
+    void configurePins(int startIndex, int endIndex,  AardvardI2cSpiGpioConfig *pinConfigs);
 
     ///Handle to aardvard I2c/Spi device.
     Aardvark m_handle;

@@ -157,13 +157,14 @@ typedef struct
 {
     quint16 devicePort;
     AardvardI2cSpiDeviceMode deviceMode;
-    bool device5VPin4IsOn;
-    bool device5VPin6IsOn;
+    bool device5VIsOn;
 
     quint16 i2cBaudrate;
     bool i2cPullupsOn;
 
     AardvarkSpiPolarity spiPolarity;
+    AardvarkSpiSSPolarity spiSSPolarity;
+    AardvarkSpiBitorder spiBitorder;
     AardvarkSpiPhase spiPhase;
     quint16 spiBaudrate;
 
@@ -647,6 +648,9 @@ Q_SIGNALS:
 
     ///Is emitted if the value of an output pin has been changed (in the GUI).
     void outputValueChangedSignal(bool state, quint8 guiPinNumber);
+
+    ///Is called if the aardvard i2c bus shall be released.
+    void freeAardvardI2cBusSignal(void);
 
     ///The state of the 'append time stamp at logs' check box has been changed.
     void appendTimestampAtLogsChangedSignal(void);

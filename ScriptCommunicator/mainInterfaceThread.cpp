@@ -704,19 +704,20 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
         }
         else if(m_currentGlobalSettings.connectionType == CONNECTION_TYPE_AARDVARD)
         {
-            m_isConnected = m_aardvarkI2cSpi->connectToDevice(m_currentGlobalSettings.aardvardI2cSpi);
+            int deviceBitrate;
+            m_isConnected = m_aardvarkI2cSpi->connectToDevice(m_currentGlobalSettings.aardvardI2cSpi, deviceBitrate);
 
             QString mode;
-            quint16 baudrate;
+            quint16 baudrateSetValue;
             if(m_currentGlobalSettings.aardvardI2cSpi.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER)
             {
                 mode = "i2c master";
-                baudrate = m_currentGlobalSettings.aardvardI2cSpi.i2cBaudrate;
+                baudrateSetValue = m_currentGlobalSettings.aardvardI2cSpi.i2cBaudrate;
             }
             else if(m_currentGlobalSettings.aardvardI2cSpi.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_SPI_MASTER)
             {
                 mode = "spi master";
-                baudrate = m_currentGlobalSettings.aardvardI2cSpi.spiBaudrate;
+                baudrateSetValue = m_currentGlobalSettings.aardvardI2cSpi.spiBaudrate;
             }
             else
             {
@@ -728,7 +729,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
                 QString message = QString("Connected to aardvard interface: port=%1, mode=%2").arg(m_currentGlobalSettings.cheetahSpi.port).arg(mode);
                 if(m_currentGlobalSettings.aardvardI2cSpi.deviceMode != AARDVARD_I2C_SPI_DEVICE_MODE_GPIO)
                 {
-                    message += QString(", baudarte=%1 (kHz)").arg(baudrate);
+                    message += QString(", baudarte=%1 (kHz)").arg(deviceBitrate);
                 }
                 emit dataConnectionStatusSignal(true, message, false);
 
@@ -738,7 +739,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
                 QString message = QString("could not open aardvard device: port=%1, mode=%2").arg(m_currentGlobalSettings.cheetahSpi.port).arg(mode);
                 if(m_currentGlobalSettings.aardvardI2cSpi.deviceMode != AARDVARD_I2C_SPI_DEVICE_MODE_GPIO)
                 {
-                    message += QString(", baudarte=%1 (kHz)").arg(baudrate);
+                    message += QString(", baudarte=%1 (kHz)").arg(baudrateSetValue);
                 }
 
                 showMessageBox(QMessageBox::Critical, "aardvard error",message);
