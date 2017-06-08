@@ -50,7 +50,8 @@
 MainInterfaceThread::MainInterfaceThread(MainWindow* mainWindow):m_exit(false),
     m_serial(0),m_tcpServer(0),m_tcpServerSockets(),m_tcpClientSocket(0),
     m_udpServerSocket(0), m_udpClientSocket(0), m_cheetahSpi(0), m_aardvarkI2cSpi(0), m_isConnected(false), m_showAdditionalInformationTimer(0), m_pcanInterface(0),
-    m_numberOfSentBytes(0), m_lastNumberOfSentBytes(0), m_numberOfReceivedBytes(0),m_lastNumberOfReceivedBytes(0),  m_dataRateTimer(0)
+    m_numberOfSentBytes(0), m_lastNumberOfSentBytes(0), m_numberOfReceivedBytes(0),m_lastNumberOfReceivedBytes(0),  m_dataRateTimer(0),
+    m_isInitialized(false)
 {
     m_mainWindow = mainWindow;
 }
@@ -73,7 +74,7 @@ void MainInterfaceThread::pcanReceivedDataSlot(void)
     while(!data.isEmpty())
     {
         messages.append(data);
-        m_numberOfReceivedBytes += data.size() - 9;
+        m_numberOfReceivedBytes += data.size() - PCANBasicClass::BYTES_METADATA_RECEIVE;
 
         data = m_pcanInterface->readLastMessage();
     }
@@ -233,6 +234,19 @@ void MainInterfaceThread::dataReceived(QByteArray& data)
 {
     emit dataReceivedSignal(data);
     m_numberOfReceivedBytes += data.size();
+
+    if(isConnectedWithCan())
+    {
+        ///Remove the bytes for the metadata.
+        m_numberOfSentBytes -= PCANBasicClass::BYTES_METADATA_RECEIVE;
+    }
+
+    if(m_aardvarkI2cSpi->isConnected())
+    {
+        ///Remove the bytes for the metadata.
+        m_numberOfSentBytes -= AardvarkI2cSpi::RECEIVE_CONTROL_BYTES_COUNT;
+    }
+
 }
 
 /**
@@ -416,6 +430,8 @@ void MainInterfaceThread::run(void)
     connect(m_dataRateTimer, SIGNAL(timeout()),this, SLOT(dataRateTimerSlot()));
     m_dataRateTimer->start(DATA_RATE_TIME_BASE_SECONDS * 1000);
 
+    m_isInitialized = true;
+
     exec();
 
     m_showAdditionalInformationTimer->stop();
@@ -433,25 +449,49 @@ void MainInterfaceThread::sendDataSlot(const QByteArray data, uint id)
 {
     if(data.size() > 0)
     {
+        QByteArray receivedData;
+
         emit sendDataWithWorkerScriptsSignal(data);
 
         bool serialPortSignalBlocked;
-        if(sendDataWithTheMainInterface(data, true, &serialPortSignalBlocked))
+        if(sendDataWithTheMainInterface(data, receivedData, true, &serialPortSignalBlocked))
         {
-            sendingFinishedSignal(true, id);
-            sendingFinishedSignal(data, true, id);
-            m_numberOfSentBytes += data.size();
-
-            if(isConnectedWithCan())
+            bool isI2cRead = false;
+            if((m_currentGlobalSettings.connectionType == CONNECTION_TYPE_AARDVARD) &&
+              (m_currentGlobalSettings.aardvardI2cSpi.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER))
             {
-                ///1 Byte type and 4 bytes CAN id.
-                m_numberOfSentBytes -= PCANBasicClass::BYTES_METADATA_SEND;
+                isI2cRead = (data.size() == AardvarkI2cSpi::SEND_CONTROL_BYTES_COUNT) ? true : false;
             }
 
-            if(serialPortSignalBlocked && (m_serial->bytesAvailable() != 0))
-            {//During waitForBytesWritten the serial port receive signal has been blocked. For this reason
-             //serialPortReceivedDataSlot is manually called if bytes have been received.
-                serialPortReceivedDataSlot();
+            if(!isI2cRead)
+            {
+                sendingFinishedSignal(true, id);
+                sendingFinishedSignal(data, true, id);
+                m_numberOfSentBytes += data.size();
+
+                if(isConnectedWithCan())
+                {
+                    ///Remove the bytes for the metadata.
+                    m_numberOfSentBytes -= PCANBasicClass::BYTES_METADATA_SEND;
+                }
+
+                if((m_currentGlobalSettings.connectionType == CONNECTION_TYPE_AARDVARD) &&
+                  (m_currentGlobalSettings.aardvardI2cSpi.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER))
+                {
+                    ///Remove the bytes for the I2C metadata.
+                    m_numberOfSentBytes -= AardvarkI2cSpi::SEND_CONTROL_BYTES_COUNT;
+                }
+
+                if(serialPortSignalBlocked && (m_serial->bytesAvailable() != 0))
+                {//During waitForBytesWritten the serial port receive signal has been blocked. For this reason
+                 //serialPortReceivedDataSlot is manually called if bytes have been received.
+                    serialPortReceivedDataSlot();
+                }
+            }
+
+            if(!receivedData.isEmpty())
+            {
+                dataReceived(receivedData);
             }
 
         }
@@ -868,7 +908,8 @@ void MainInterfaceThread::showMessageBox(QMessageBox::Icon icon, QString title, 
  * @return
  *      True for success.
  */
-bool MainInterfaceThread::sendDataWithTheMainInterface(const QByteArray &data, bool waitForSendingFinished, bool* serialPortSignalBlocked)
+bool MainInterfaceThread::sendDataWithTheMainInterface(const QByteArray &data, QByteArray& receivedData,
+                bool waitForSendingFinished, bool* serialPortSignalBlocked)
 {
     bool success = true;
     *serialPortSignalBlocked = false;
@@ -959,28 +1000,18 @@ bool MainInterfaceThread::sendDataWithTheMainInterface(const QByteArray &data, b
         }
         else if(m_currentGlobalSettings.connectionType == CONNECTION_TYPE_CHEETAH_SPI_MASTER)
         {
-            QByteArray receivedData;
             if(!m_cheetahSpi->sendReceiveData(data,&receivedData, m_mainWindow->getSettingsDialog()->settings()->cheetahSpi.chipSelect))
             {
                 success = false;
-            }
-
-            if(!receivedData.isEmpty())
-            {
-                dataReceived(receivedData);
+                receivedData.clear();
             }
         }
         else if(m_currentGlobalSettings.connectionType == CONNECTION_TYPE_AARDVARD)
         {
-            QByteArray receivedData;
             if(!m_aardvarkI2cSpi->sendReceiveData(data,&receivedData))
             {
                 success = false;
-            }
-
-            if(!receivedData.isEmpty())
-            {
-                dataReceived(receivedData);
+                receivedData.clear();
             }
         }
         else if(m_currentGlobalSettings.connectionType == CONNECTION_TYPE_PCAN)

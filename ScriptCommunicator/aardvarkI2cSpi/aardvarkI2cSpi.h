@@ -62,6 +62,12 @@ public:
 
     virtual ~AardvarkI2cSpi();
 
+    ///The number of control bytes for sending data.
+    static const qint32 SEND_CONTROL_BYTES_COUNT = 5;
+
+    ///The number of control bytes for receiving data.
+    static const qint32 RECEIVE_CONTROL_BYTES_COUNT = 3;
+
     ///Returns a string which contains informations about all detected devices.
     static QString detectDevices(void);
 
@@ -72,7 +78,12 @@ public:
     void disconnect(void);
 
     ///Sends and receive data with the aarvard I2C SPI interface.
-    bool sendReceiveData(const QByteArray& sendData, QByteArray* receivedData);
+    bool sendReceiveData(const QByteArray& data, QByteArray* receivedData);
+
+    ///Return true if the interface is connected.
+    bool isConnected(void){return (m_handle > 0) ? true : false;}
+
+    static QString flagsToString(AardvarkI2cFlags flags);
 
 signals:
 
@@ -86,10 +97,10 @@ public slots:
     void inputTimerSlot(void);
 
     ///Is called if the pin configuration has been changed (in the GUI).
-    void pinConfigChangedSlot(AardvardI2cSpiGpioConfig config, quint8 guiPinNumber);
+    void pinConfigChangedSlot(AardvardI2cSpiSettings settings);
 
     ///Is called if the value of an output pin has been changed (in the GUI).
-    void outputValueChangedSlot(bool state, quint8 guiPinNumber);
+    void outputValueChangedSlot(AardvardI2cSpiSettings settings);
 
     ///Is called if the i2c bus shall be released.
     void freeI2cBusSlot(void);
@@ -101,7 +112,7 @@ private:
     void readAllInputs(bool inputStates[]);
 
     ///Configures pins of the aardvard I2c/Spi device.
-    void configurePins(int startIndex, int endIndex,  AardvardI2cSpiGpioConfig *pinConfigs);
+    void configurePins(bool onlySetOutputs);
 
     ///Handle to aardvard I2c/Spi device.
     Aardvark m_handle;

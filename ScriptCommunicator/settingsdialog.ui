@@ -1147,8 +1147,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>725</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_18">
@@ -2368,29 +2368,13 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>757</width>
-            <height>329</height>
+            <width>905</width>
+            <height>445</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
            <item row="0" column="0">
             <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" columnstretch="0,0,0,0,0,0,0,1,0">
-             <item row="4" column="1">
-              <widget class="QCheckBox" name="consoleShowDecimalCheckBox">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>show decimal console</string>
-               </property>
-               <property name="text">
-                <string>decimal</string>
-               </property>
-              </widget>
-             </item>
              <item row="3" column="2">
               <widget class="QCheckBox" name="consoleShowMixedCheckBox">
                <property name="toolTip">
@@ -2420,19 +2404,6 @@ for TCP clients.</string>
                </property>
                <property name="toolTip">
                 <string>the update intervall of the consoles</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="1">
-              <widget class="QCheckBox" name="consoleShowCanMetaCheckBox">
-               <property name="toolTip">
-                <string>show can meta information (id and type) in conole</string>
-               </property>
-               <property name="text">
-                <string>can meta</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -2758,19 +2729,6 @@ for TCP clients.</string>
                </property>
               </widget>
              </item>
-             <item row="5" column="0">
-              <widget class="QCheckBox" name="showCanTabCheckBox">
-               <property name="toolTip">
-                <string>show the can tab</string>
-               </property>
-               <property name="statusTip">
-                <string/>
-               </property>
-               <property name="text">
-                <string>can tab</string>
-               </property>
-              </widget>
-             </item>
              <item row="9" column="2">
               <spacer name="verticalSpacer_6">
                <property name="orientation">
@@ -2911,6 +2869,35 @@ for TCP clients.</string>
                </property>
               </widget>
              </item>
+             <item row="5" column="0">
+              <widget class="QCheckBox" name="showCanTabCheckBox">
+               <property name="toolTip">
+                <string>show the can tab</string>
+               </property>
+               <property name="statusTip">
+                <string/>
+               </property>
+               <property name="text">
+                <string>can tab</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QCheckBox" name="consoleShowDecimalCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>show decimal console</string>
+               </property>
+               <property name="text">
+                <string>decimal</string>
+               </property>
+              </widget>
+             </item>
              <item row="4" column="2">
               <widget class="QComboBox" name="consoleDecimalsType">
                <property name="toolTip">
@@ -2948,6 +2935,46 @@ for TCP clients.</string>
                </item>
               </widget>
              </item>
+             <item row="4" column="3">
+              <widget class="QComboBox" name="consoleI2cMetadata">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;show I2C meta information (address &amp;amp; flags) in consoles&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <item>
+                <property name="text">
+                 <string>i2c adress &amp; flags</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>i2c address</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>i2c flags</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>none</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item row="3" column="3">
+              <widget class="QCheckBox" name="consoleShowCanMetaCheckBox">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;show CAN meta information (id and type) in consoles&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="text">
+                <string>can meta</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
             </layout>
            </item>
           </layout>
@@ -2971,8 +2998,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>353</width>
-            <height>278</height>
+            <width>905</width>
+            <height>445</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3207,8 +3234,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>718</width>
-            <height>412</height>
+            <width>905</width>
+            <height>445</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -3477,6 +3504,33 @@ for TCP clients.</string>
               <string>general</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_2">
+              <item row="3" column="0" colspan="2">
+               <widget class="QComboBox" name="logI2cMetadata">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;show I2C meta information (address &amp;amp; flags) in consoles&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>i2c adress &amp; flags</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>i2c address</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>i2c flags</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>none</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
               <item row="0" column="1">
                <widget class="QCheckBox" name="LogWriteReceivedCheckBox">
                 <property name="sizePolicy">
@@ -3496,7 +3550,7 @@ for TCP clients.</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="3">
+              <item row="0" column="4">
                <widget class="QCheckBox" name="logWithTimeStampCheckBox">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -3512,7 +3566,7 @@ for TCP clients.</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="4">
+              <item row="0" column="5">
                <widget class="QLineEdit" name="logWithTimeStampLineEdit">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
@@ -3531,7 +3585,7 @@ for TCP clients.</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="5">
+              <item row="0" column="6">
                <widget class="QLabel" name="label_17">
                 <property name="toolTip">
                  <string>new line at byte</string>
@@ -3557,7 +3611,7 @@ for TCP clients.</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="4">
+              <item row="1" column="5">
                <widget class="QComboBox" name="logTimestampAtByteComboBox">
                 <property name="maximumSize">
                  <size>
@@ -3570,7 +3624,7 @@ for TCP clients.</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="6">
+              <item row="1" column="7">
                <widget class="QLineEdit" name="logNewLineAfterNumberBytes">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
@@ -3602,7 +3656,7 @@ for TCP clients.</string>
                 </property>
                </widget>
               </item>
-              <item row="0" column="6">
+              <item row="0" column="7">
                <widget class="QComboBox" name="logNewLineAt">
                 <property name="maximumSize">
                  <size>
@@ -3618,44 +3672,7 @@ for TCP clients.</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="2">
-               <widget class="QComboBox" name="logDecimalsType">
-                <property name="toolTip">
-                 <string>the type of the decimals in the log</string>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>int8</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>int16</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>int32</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>uint8</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>uint16</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>uint32</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="2" column="5">
+              <item row="2" column="6">
                <widget class="QLabel" name="label_4">
                 <property name="toolTip">
                  <string>new line after x ms send/receive pause (0=off)</string>
@@ -3665,7 +3682,7 @@ for TCP clients.</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="6">
+              <item row="2" column="7">
                <widget class="QLineEdit" name="logNewLineAfterPause">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
@@ -3687,29 +3704,13 @@ for TCP clients.</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="5">
+              <item row="1" column="6">
                <widget class="QLabel" name="label_3">
                 <property name="toolTip">
                  <string>new line after x number of sent/received bytes (0=off)</string>
                 </property>
                 <property name="text">
                  <string>new line after x bytes</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="0">
-               <widget class="QCheckBox" name="LogWriteCanMetaCheckBox">
-                <property name="toolTip">
-                 <string>write can meta information (id and type)</string>
-                </property>
-                <property name="statusTip">
-                 <string/>
-                </property>
-                <property name="text">
-                 <string>can meta</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -3729,35 +3730,7 @@ for TCP clients.</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="0" colspan="2">
-               <widget class="QFontComboBox" name="htmlLogFontComboBox">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="minimumSize">
-                 <size>
-                  <width>0</width>
-                  <height>0</height>
-                 </size>
-                </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="toolTip">
-                 <string>log font</string>
-                </property>
-                <property name="editable">
-                 <bool>false</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="4" column="2">
+              <item row="4" column="3">
                <widget class="QComboBox" name="htmlLogFontSizeComboBox">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -3804,7 +3777,7 @@ for TCP clients.</string>
                 </property>
                </widget>
               </item>
-              <item row="1" column="3">
+              <item row="1" column="4">
                <widget class="QCheckBox" name="logTimestampAtByteCheckBox">
                 <property name="toolTip">
                  <string>create time stamp at byte</string>
@@ -3814,7 +3787,7 @@ for TCP clients.</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="3" colspan="2">
+              <item row="2" column="4" colspan="2">
                <widget class="QLineEdit" name="LogTimestampFormat">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -3855,7 +3828,7 @@ for TCP clients.</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="3" colspan="2">
+              <item row="4" column="4" colspan="2">
                <widget class="QCheckBox" name="logAppendTimestampCheckBox">
                 <property name="toolTip">
                  <string>If selected a time stamp is appended at the corresponding log filename.
@@ -3875,7 +3848,7 @@ Note: The reopen buton in the main window is only visible if this option is sele
                 </property>
                </widget>
               </item>
-              <item row="2" column="7">
+              <item row="2" column="8">
                <spacer name="horizontalSpacer_2">
                 <property name="orientation">
                  <enum>Qt::Horizontal</enum>
@@ -3887,6 +3860,87 @@ Note: The reopen buton in the main window is only visible if this option is sele
                  </size>
                 </property>
                </spacer>
+              </item>
+              <item row="4" column="0" colspan="3">
+               <widget class="QFontComboBox" name="htmlLogFontComboBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>log font</string>
+                </property>
+                <property name="editable">
+                 <bool>false</bool>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="2">
+               <widget class="QComboBox" name="logDecimalsType">
+                <property name="toolTip">
+                 <string>the type of the decimals in the log</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>int8</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>int16</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>int32</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>uint8</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>uint16</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>uint32</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="3" column="2">
+               <widget class="QCheckBox" name="LogWriteCanMetaCheckBox">
+                <property name="toolTip">
+                 <string>write can meta information (id and type)</string>
+                </property>
+                <property name="statusTip">
+                 <string/>
+                </property>
+                <property name="text">
+                 <string>can meta</string>
+                </property>
+                <property name="checked">
+                 <bool>true</bool>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>

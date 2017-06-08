@@ -283,6 +283,12 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->consoleDecimalsType, SIGNAL(currentTextChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
 
+    connect(m_userInterface->consoleI2cMetadata, SIGNAL(currentTextChanged(QString)),
+            this, SLOT(textFromGuiElementChangedSlot(QString)));
+
+    connect(m_userInterface->logI2cMetadata, SIGNAL(currentTextChanged(QString)),
+            this, SLOT(textFromGuiElementChangedSlot(QString)));
+
     connect(m_userInterface->logDecimalsType, SIGNAL(currentTextChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
 
@@ -891,6 +897,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     m_userInterface->ConsoleBufferLineEdit->setText(QString("%1").arg(settings.maxCharsInConsole));
     m_userInterface->consoleFontComboBox->setCurrentText(settings.stringConsoleFont);
     m_userInterface->consoleFontSizeComboBox->setCurrentText(settings.stringConsoleFontSize);
+    m_userInterface->consoleI2cMetadata->setCurrentIndex((int)settings.i2cMetaInformationInConsole);
     m_userInterface->consoleShowAsciiCheckBox->setChecked(settings.showAsciiInConsole);
     m_userInterface->PrintTimeStampLineEdit->setText(QString("%1").arg(settings.timeStampIntervalConsole));
     m_userInterface->ConsoleUpdateIntervallLineEdit->setText(QString("%1").arg(settings.updateIntervalConsole));
@@ -1005,6 +1012,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     m_userInterface->logCustomLineEdit->setText(settings.customLogfileName);
     m_userInterface->logTimestampAtByteCheckBox->setChecked(settings.logCreateTimestampAt);
     setDecimalComboBox(settings.logDecimalsType, m_userInterface->logDecimalsType);
+    m_userInterface->logI2cMetadata->setCurrentIndex((int)settings.i2cMetaInformationInLog);
 
     if(settings.logTimestampAt == 10)
     {
@@ -1888,13 +1896,13 @@ void SettingsDialog::textFromGuiElementChangedSlot(QString text)
     {
         if(m_aardvardI2cGpioGuiElements[i].mode == obj)
         {
-            emit pinConfigChangedSignal(m_currentSettings.aardvardI2cSpi.pinConfigs[i], i);
+            emit pinConfigChangedSignal(m_currentSettings.aardvardI2cSpi);
             break;
         }
 
         if(m_aardvardI2cGpioGuiElements[i].outValue == obj)
         {
-            emit outputValueChangedSignal(m_currentSettings.aardvardI2cSpi.pinConfigs[i].outValue, i);
+            emit outputValueChangedSignal(m_currentSettings.aardvardI2cSpi);
             break;
         }
     }
@@ -2217,6 +2225,7 @@ void SettingsDialog::updateSettings(bool forceUpdate)
     m_currentSettings.lockScrollingInConsole = m_actionLockScrolling->isChecked();
     m_currentSettings.stringConsoleFont = m_userInterface->consoleFontComboBox->currentText();
     m_currentSettings.stringConsoleFontSize = m_userInterface->consoleFontSizeComboBox->currentText();
+    m_currentSettings.i2cMetaInformationInConsole = (I2cMetadata)m_userInterface->consoleI2cMetadata->currentIndex();
     m_currentSettings.showDecimalInConsole = m_userInterface->consoleShowDecimalCheckBox->isChecked();
     m_currentSettings.showHexInConsole = m_userInterface->consoleShowHexCheckBox->isChecked();
     m_currentSettings.showAsciiInConsole = m_userInterface->consoleShowAsciiCheckBox->isChecked();
@@ -2297,6 +2306,7 @@ void SettingsDialog::updateSettings(bool forceUpdate)
     m_currentSettings.logCreateTimestampAt= m_userInterface->logTimestampAtByteCheckBox->isChecked();
     updatesDecimalsTypes(&m_currentSettings.logDecimalsType, m_userInterface->logDecimalsType);
     m_currentSettings.logDebugCustomLog = m_userInterface->logDebugCustomLogCheckBox->isChecked();
+    m_currentSettings.i2cMetaInformationInLog = (I2cMetadata)m_userInterface->logI2cMetadata->currentIndex();
 
     //Log time satmp at byte.
     if (m_userInterface->logTimestampAtByteComboBox->currentIndex() == 2)

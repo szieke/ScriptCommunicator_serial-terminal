@@ -52,6 +52,7 @@ typedef struct
     StoredDataType type;
     QByteArray data;
     bool isFromCan;
+    bool isFromI2c;
     bool isSend;
 
 }StoredData;
@@ -118,7 +119,7 @@ public:
     ~MainWindowHandleData();
 
     ///Appends data to the m_storedData.
-    void appendDataToStoredData(QByteArray &data, bool isSend, bool isUserMessage, bool isFromCan, bool forceTimeStamp);
+    void appendDataToStoredData(QByteArray &data, bool isSend, bool isUserMessage, bool isFromCan, bool forceTimeStamp, bool isFromI2c);
 
     ///Creates the string for the mixed console.
     QString createMixedConsoleString(const QByteArray &data, bool hasCanMeta);
@@ -128,10 +129,12 @@ public:
 
     ///Appends data to the console strings (m_consoleDataBufferAscii, m_consoleDataBufferHex;
     ///m_consoleDataBufferDec)
-    void appendDataToConsoleStrings(QByteArray& data, const Settings *currentSettings, bool isSend, bool isUserMessage, bool isTimeStamp, bool isFromCan, bool isNewLine);
+    void appendDataToConsoleStrings(QByteArray& data, const Settings *currentSettings, bool isSend, bool isUserMessage,
+                                    bool isTimeStamp, bool isFromCan, bool isFromI2c, bool isNewLine);
 
     ///Appends data the log file.
-    void appendDataToLog(const QByteArray& data, bool isSend, bool isUserMessage, bool isTimeStamp, bool isFromCan, bool isNewLine);
+    void appendDataToLog(const QByteArray& data, bool isSend, bool isUserMessage, bool isTimeStamp, bool isFromCan,
+                         bool isFromI2c, bool isNewLine);
 
     ///Clears all stored data.
     void clear(void);
@@ -208,17 +211,19 @@ private:
 
     ///Append a time stamp to a stored data vector.
     void appendTimestamp(QVector<StoredData>* storedDataVector, bool isSend, bool isUserMessage,
-                         bool isFromCan, QString timeStampFormat);
+                         bool isFromCan, bool isFromI2c, QString timeStampFormat);
 
     ///Append a new line to a stored data vector.
     void appendNewLine(QVector<StoredData>* storedDataVector, bool isSend,
-                                     bool isFromCan);
+                                     bool isFromCan, bool isFromI2c);
 
     ///Appends data to the unprocessed console data.
-    void appendUnprocessConsoleData(QByteArray &data, bool isSend, bool isUserMessage, bool isFromCan, bool forceTimeStamp=false, bool isRecursivCall=false);
+    void appendUnprocessConsoleData(QByteArray &data, bool isSend, bool isUserMessage, bool isFromCan, bool isFromI2c,
+                                    bool forceTimeStamp=false, bool isRecursivCall=false);
 
     ///Appends data to the unprocessed log data.
-    void appendUnprocessLogData(const QByteArray &data, bool isSend, bool isUserMessage, bool isFromCan, bool forceTimeStamp=false, bool isRecursivCall=false);
+    void appendUnprocessLogData(const QByteArray &data, bool isSend, bool isUserMessage, bool isFromCan,
+                                bool isFromI2c, bool forceTimeStamp=false, bool isRecursivCall=false);
 
     ///Processes the data in m_storedData (creates the log and the console strings).
     ///Note: m_storedData is cleared in this function.

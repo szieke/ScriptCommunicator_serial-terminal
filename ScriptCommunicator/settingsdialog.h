@@ -71,6 +71,15 @@ typedef enum
 
 }DecimalType;
 
+typedef enum
+{
+    I2C_METADATA_ADDRESS_AND_FLAGS = 0,
+    I2C_METADATA_ADDRESS,
+    I2C_METADATA_FLAGS,
+    I2C_METADATA_NONE
+
+}I2cMetadata;
+
 ///Endianess.
 typedef enum
 {
@@ -248,8 +257,11 @@ struct Settings
     ///Max. numbers of chars in the consoles.
     quint32 maxCharsInConsole;
 
-    ///True if the can meta information (id and type) shall be shown in the consoles.
+    ///True if the CAN meta information (id and type) shall be shown in the consoles.
     bool showCanMetaInformationInConsole;
+
+    ///The I2C meta information which shall be shown in the consoles.
+    I2cMetadata i2cMetaInformationInConsole;
 
     ///True if the received/sended data (main interface) shall be displayed as decimal numbers in console.
     bool showDecimalInConsole;
@@ -358,6 +370,9 @@ struct Settings
 
     ///True if the can meta information (id and type) shall be written into the logs.
     bool writeCanMetaInformationInToLog;
+
+    ///The I2C meta information which shall be written into the logs.
+    I2cMetadata i2cMetaInformationInLog;
 
     ///True if timestamps shall be created in the log.
     bool generateTimeStampsInLog;
@@ -644,10 +659,10 @@ Q_SIGNALS:
 
 
     ///Is emitted if the pin configuration has been changed (in the GUI).
-    void pinConfigChangedSignal(AardvardI2cSpiGpioConfig config, quint8 guiPinNumber);
+    void pinConfigChangedSignal(AardvardI2cSpiSettings settings);
 
     ///Is emitted if the value of an output pin has been changed (in the GUI).
-    void outputValueChangedSignal(bool state, quint8 guiPinNumber);
+    void outputValueChangedSignal(AardvardI2cSpiSettings settings);
 
     ///Is called if the aardvard i2c bus shall be released.
     void freeAardvardI2cBusSignal(void);

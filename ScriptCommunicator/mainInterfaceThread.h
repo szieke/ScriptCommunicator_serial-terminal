@@ -78,6 +78,9 @@ public:
     ///and emits the dataReceivedSignal signal.
     void dataReceived(QByteArray& data);
 
+    ///Returns m_isInitialized.
+    bool isInitialized(void){return m_isInitialized;}
+
     ///The max. number for queued send orders.
     static const qint32 MAX_NUMBER_IN_SEND_QUEUE = 20;
 
@@ -200,7 +203,8 @@ private:
    void showMessageBox(QMessageBox::Icon icon, QString title, QString text);
 
     ///Sends data with the main interface.
-    bool sendDataWithTheMainInterface(const QByteArray &data, bool waitForSendingFinished, bool *serialPortSignalBlocked);
+    bool sendDataWithTheMainInterface(const QByteArray &data, QByteArray& receivedData,
+                                      bool waitForSendingFinished, bool *serialPortSignalBlocked);
 
     ///If true, then the main interface thread shall exit.
     bool m_exit;
@@ -259,6 +263,9 @@ private:
 
     ///Data rate timer.
     QTimer* m_dataRateTimer;
+
+    ///True if the main interface thread is initialized.
+    bool m_isInitialized;
 
 };
 

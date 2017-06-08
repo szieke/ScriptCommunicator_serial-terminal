@@ -30,6 +30,7 @@
 #include <QCoreApplication>
 #include <QApplication>
 #include <QAction>
+#include "aardvarkI2cSpi.h"
 
 
 ///Is set to true if a thread has been terminated.
@@ -90,8 +91,8 @@ void CustomConsoleLogObject::createThread(bool debug)
                 m_mainWindow, SLOT(showMessageBoxSlot(QMessageBox::Icon,QString,QString,QMessageBox::StandardButtons)),
                 Qt::QueuedConnection);
 
-        connect(this, SIGNAL(executeScriptSignal(QByteArray*,QString*,bool,bool,bool,bool,QString*,bool*)),
-                m_script, SLOT(executeScriptSlot(QByteArray*,QString*,bool,bool,bool,bool,QString*,bool*)), Qt::QueuedConnection);
+        connect(this, SIGNAL(executeScriptSignal(QByteArray*,QString*,bool,bool,bool,bool,bool,QString*,bool*)),
+                m_script, SLOT(executeScriptSlot(QByteArray*,QString*,bool,bool,bool,bool,bool,QString*,bool*)), Qt::QueuedConnection);
 
         connect(this, SIGNAL(loadCustomScriptSignal(QString,bool*)),
                 m_script, SLOT(loadCustomScriptSlot(QString,bool*)), Qt::QueuedConnection);
@@ -118,8 +119,8 @@ void CustomConsoleLogObject::createThread(bool debug)
 void CustomConsoleLogObject::terminateThread()
 {
     //Disconnect all external signals.
-    disconnect(this, SIGNAL(executeScriptSignal(QByteArray*,QString*,bool,bool,bool,bool,QString*,bool*)),
-               m_script, SLOT(executeScriptSlot(QByteArray*,QString*,bool,bool,bool,bool,QString*,bool*)));
+    disconnect(this, SIGNAL(executeScriptSignal(QByteArray*,QString*,bool,bool,bool,bool,bool,QString*,bool*)),
+               m_script, SLOT(executeScriptSlot(QByteArray*,QString*,bool,bool,bool,bool,bool,QString*,bool*)));
 
     disconnect(this, SIGNAL(loadCustomScriptSignal(QString,bool*)),
                m_script, SLOT(loadCustomScriptSlot(QString,bool*)));
@@ -402,6 +403,8 @@ void CustomConsoleLogThread::loadCustomScriptSlot(QString scriptPath, bool* hasS
  *      The isUserMessage argument for the 'createString' function.
  * @param isFromCan
  *      The isFromCan argument for the 'createString' function.
+ * @param isFromI2c
+ *      The isFromI2c argument for the 'createString' function.
  * @param isLog
  *      The isLog argument for the 'createString' function.
  *  * @param errorOccured
@@ -410,14 +413,35 @@ void CustomConsoleLogThread::loadCustomScriptSlot(QString scriptPath, bool* hasS
  *      The result (the created string).
  */
 void CustomConsoleLogThread::executeScriptSlot(QByteArray* data, QString* timeStamp,
-                                               bool isSend, bool isUserMessage, bool isFromCan, bool isLog,
+                                               bool isSend, bool isUserMessage, bool isFromCan, bool isFromI2c, bool isLog,
                                                QString* result, bool* errorOccured)
 {
     *errorOccured = false;
-    QScriptValue scriptArray = m_scriptEngine->newArray(data->size());
+    QScriptValue scriptArray;
+
+    if(isFromI2c && isSend)
+    {
+        //The number of bytes to read is not inserted into scriptArray.
+        scriptArray = m_scriptEngine->newArray(data->size()- (AardvarkI2cSpi::SEND_CONTROL_BYTES_COUNT - AardvarkI2cSpi::RECEIVE_CONTROL_BYTES_COUNT));
+    }
+    else
+    {
+        scriptArray = m_scriptEngine->newArray(data->size());
+    }
+
+    int elementCounter = 0;
     for(int i = 0; i < data->size(); i++)
     {
-        scriptArray.setProperty(i, QScriptValue(m_scriptEngine, (unsigned char)data->at(i)));
+        if(isFromI2c && isSend)
+        {
+            if((i >= AardvarkI2cSpi::RECEIVE_CONTROL_BYTES_COUNT) && (i < AardvarkI2cSpi::SEND_CONTROL_BYTES_COUNT))
+            {
+                //The number of bytes to read is not inserted into scriptArray.
+                continue;
+            }
+        }
+        scriptArray.setProperty(elementCounter, QScriptValue(m_scriptEngine, (unsigned char)data->at(i)));
+        elementCounter++;
     }
     quint32 type;
     if(isUserMessage)
@@ -426,14 +450,20 @@ void CustomConsoleLogThread::executeScriptSlot(QByteArray* data, QString* timeSt
     }
     else
     {
-        if (isSend)
+        if(isFromCan)
         {
-            type = isFromCan ? 3 : 1;
+            type = isSend ? 3 : 2;
+        }
+        else if(isFromI2c)
+        {
+            type = isSend ? 6 : 5;
+
         }
         else
         {
-            type = isFromCan ? 2 : 0;
+            type = isSend ? 1 : 0;
         }
+
     }
 
     //Call the createString function.
@@ -462,6 +492,8 @@ void CustomConsoleLogThread::executeScriptSlot(QByteArray* data, QString* timeSt
  *      True if the data is a user message (from MessageDialog or from a script).
  * @param isFromCan
  *      True if the data is from CAN.
+ * @param isFromI2c
+ *      True if the data is from I2C.
  * @param isLog
  *      True if this call is for the custom log (false=custom console).
  *  * @param errorOccured
@@ -471,7 +503,7 @@ void CustomConsoleLogThread::executeScriptSlot(QByteArray* data, QString* timeSt
  *      If the call fails then a error message will be returned.
  */
 QString CustomConsoleLogObject::callScriptFunction(QByteArray* data, QString& timeStamp,
-                                                   bool isSend, bool isUserMessage, bool isFromCan,
+                                                   bool isSend, bool isUserMessage, bool isFromCan, bool isFromI2c,
                                                    bool isLog, bool* errorOccured)
 {
     QString result;
@@ -485,7 +517,7 @@ QString CustomConsoleLogObject::callScriptFunction(QByteArray* data, QString& ti
             m_scriptFunctionIsFinished = false;
             QDateTime callTime = QDateTime::currentDateTime();
 
-            emit executeScriptSignal(data, &timeStamp, isSend, isUserMessage, isFromCan, isLog, &result, errorOccured);
+            emit executeScriptSignal(data, &timeStamp, isSend, isUserMessage, isFromCan, isFromI2c, isLog, &result, errorOccured);
             while(!m_scriptFunctionIsFinished)
             {
                 QThread::usleep(1);
@@ -518,7 +550,7 @@ QString CustomConsoleLogObject::callScriptFunction(QByteArray* data, QString& ti
     {
         if(!m_script->m_isSuspendedByDebuger)
         {
-            m_script->executeScriptSlot(data, &timeStamp, isSend, isUserMessage, isFromCan, isLog, &result,errorOccured);
+            m_script->executeScriptSlot(data, &timeStamp, isSend, isUserMessage, isFromCan, isFromI2c, isLog, &result,errorOccured);
         }
     }
 

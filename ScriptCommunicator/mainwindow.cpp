@@ -198,7 +198,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     QMainWindow(0),
     m_userInterface(new Ui::MainWindow), m_isConnected(false),
     m_sendWindowPositionAndSizeloaded(false), m_scriptWindowPositionAndSizeloaded(false),
-    m_isConnectedWithCan(false), m_commandLineScripts(scripts),
+    m_isConnectedWithCan(false), m_isConnectedWithI2c(false), m_commandLineScripts(scripts),
     m_isFirstProgramStart(false), m_mouseGrabWidget(0), m_searchConsole(0),
     m_dataRateSend(0), m_dataRateReceive(0), m_handleData(0), m_ignoreNextResizeEventTime(QDateTime::currentDateTime()), m_toolBoxSplitterSizeSecond(0),
     m_sendAreaSplitterSizeSecond(0), m_sendAreaInputsSplitterSizeSecond(0), m_toolBoxSplitterSizesSecond(), m_currentToolBoxIndex(0), m_mainConfigLockFile(),
@@ -248,7 +248,10 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     m_mainInterface = new MainInterfaceThread(this);
     m_mainInterface->moveToThread(m_mainInterface);
     m_mainInterface->start(QThread::TimeCriticalPriority);
-    QThread::msleep(10);//Let the interface thread run.
+    while(!m_mainInterface->isInitialized())
+    {
+        QThread::msleep(10);//Let the interface thread run.
+    }
 
     connect(m_sendWindow, SIGNAL(sequenceTableHasChangedSignal()),this, SLOT(setUpSequencesPageSlot()));
 
@@ -292,12 +295,13 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
 
     qRegisterMetaType<AardvardI2cSpiGpioConfig>("AardvardI2cSpiGpioConfig");
+    qRegisterMetaType<AardvardI2cSpiGpioConfig>("AardvardI2cSpiSettings");
     connect(m_mainInterface->m_aardvarkI2cSpi, SIGNAL(inputStatesChangedSignal(bool*)), m_settingsDialog,
             SLOT(aardvardI2cSpiInputStatesChangedSlot(bool*)), Qt::QueuedConnection);
-    connect(m_settingsDialog, SIGNAL(pinConfigChangedSignal(AardvardI2cSpiGpioConfig,quint8)), m_mainInterface->m_aardvarkI2cSpi,
-            SLOT(pinConfigChangedSlot(AardvardI2cSpiGpioConfig,quint8)), Qt::QueuedConnection);
-    connect(m_settingsDialog, SIGNAL(outputValueChangedSignal(bool,quint8)), m_mainInterface->m_aardvarkI2cSpi,
-            SLOT(outputValueChangedSlot(bool,quint8)), Qt::QueuedConnection);
+    connect(m_settingsDialog, SIGNAL(pinConfigChangedSignal(AardvardI2cSpiSettings)), m_mainInterface->m_aardvarkI2cSpi,
+            SLOT(pinConfigChangedSlot(AardvardI2cSpiSettings)), Qt::QueuedConnection);
+    connect(m_settingsDialog, SIGNAL(outputValueChangedSignal(AardvardI2cSpiSettings)), m_mainInterface->m_aardvarkI2cSpi,
+            SLOT(outputValueChangedSlot(AardvardI2cSpiSettings)), Qt::QueuedConnection);
     connect(m_settingsDialog, SIGNAL(freeAardvardI2cBusSignal()), m_mainInterface->m_aardvarkI2cSpi,
             SLOT(freeI2cBusSlot()), Qt::QueuedConnection);
 
@@ -1275,6 +1279,7 @@ bool MainWindow::loadSettings()
                         currentSettings.showMixedConsole = node.attributes().namedItem("showMixedConsole").nodeValue().toUInt();
                         currentSettings.showBinaryConsole = node.attributes().namedItem("showBinaryConsole").nodeValue().toUInt();
                         currentSettings.showCanMetaInformationInConsole = node.attributes().namedItem("showCanMetaInformationInConsole").nodeValue().toUInt();
+                        currentSettings.i2cMetaInformationInConsole = (I2cMetadata)node.attributes().namedItem("i2cMetaInformationInConsole").nodeValue().toUInt();
                         currentSettings.showCanTab = node.attributes().namedItem("showCanTab").nodeValue().toUInt();
                         currentSettings.consoleReceiveColor = node.attributes().namedItem("consoleReceiveColor").nodeValue();
                         currentSettings.consoleSendColor = node.attributes().namedItem("consoleSendColor").nodeValue();
@@ -1375,6 +1380,7 @@ bool MainWindow::loadSettings()
                         currentSettings.logScript = node.attributes().namedItem("logScript").nodeValue();
                         currentSettings.logCreateTimestampAt = node.attributes().namedItem("logCreateTimestampAt").nodeValue().toUInt();
                         currentSettings.logDecimalsType = (DecimalType)node.attributes().namedItem("logDecimalsType").nodeValue().toUInt();
+                        currentSettings.i2cMetaInformationInLog = (I2cMetadata)node.attributes().namedItem("i2cMetaInformationInLog").nodeValue().toUInt();
 
                         if(node.attributes().namedItem("logTimestampAt").nodeValue() != "")
                         {
@@ -2232,12 +2238,12 @@ void MainWindow::inititializeTab(void)
             m_userInterface->tabWidget->setCurrentIndex(index);
         }
 
+
         m_handleData->reInsertDataInConsole();
 
         m_userInterface->tabWidget->blockSignals(false);
 
         tabIndexChangedSlot(m_userInterface->tabWidget->currentIndex());
-
 
         //Prevent the click events in the settings dialog.
         for(quint32 i = 0; i < 10; i++)
@@ -2368,6 +2374,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("showMixedConsole"), QString("%1").arg(currentSettings->showMixedConsole)),
                  std::make_pair(QString("showBinaryConsole"), QString("%1").arg(currentSettings->showBinaryConsole)),
                  std::make_pair(QString("showCanMetaInformationInConsole"), QString("%1").arg(currentSettings->showCanMetaInformationInConsole)),
+                 std::make_pair(QString("i2cMetaInformationInConsole"), QString("%1").arg(currentSettings->i2cMetaInformationInConsole)),
                  std::make_pair(QString("showCanTab"), QString("%1").arg(currentSettings->showCanTab)),
                  std::make_pair(QString("consoleReceiveColor"), QString("%1").arg(currentSettings->consoleReceiveColor)),
                  std::make_pair(QString("consoleSendColor"), QString("%1").arg(currentSettings->consoleSendColor)),
@@ -2419,6 +2426,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("logCreateTimestampAt"), QString("%1").arg(currentSettings->logCreateTimestampAt)),
                  std::make_pair(QString("logTimestampAt"), QString("%1").arg(currentSettings->logTimestampAt)),
                  std::make_pair(QString("logDecimalsType"), QString("%1").arg(currentSettings->logDecimalsType)),
+                 std::make_pair(QString("i2cMetaInformationInLog"), QString("%1").arg(currentSettings->i2cMetaInformationInLog)),
                 };
 
                 writeXmlElement(xmlWriter, "logSettings", settingsMap);
@@ -3068,14 +3076,21 @@ void MainWindow::dataConnectionStatusSlot(bool isConnected, QString message, boo
 
         m_isConnected = true;
         m_isConnectedWithCan = (currentSettings->connectionType == CONNECTION_TYPE_PCAN) ? true : false;
+        m_isConnectedWithI2c = false;
         showConnect = false;
         m_userInterface->actionConnect->setText("Disconnect");
         m_settingsDialog->getUserInterface()->connectButton->setText("disconnect");
+
+        if(currentSettings->connectionType == CONNECTION_TYPE_AARDVARD)
+        {
+            m_isConnectedWithI2c = (currentSettings->aardvardI2cSpi.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER) ? true : false;
+        }
     }
     else
     {
         m_isConnected = false;
         m_isConnectedWithCan = false;
+        m_isConnectedWithI2c = false;
         showConnect = isWaiting ? false : true;
         m_userInterface->actionConnect->setText(isWaiting ? "Stop waiting" : "Connect");
         m_settingsDialog->getUserInterface()->connectButton->setText(isWaiting ? "stop waiting" : "connect");
@@ -3565,7 +3580,7 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
 void MainWindow::messageEnteredSlot(QString message, bool forceTimeStamp)
 {
     QByteArray array = message.toLocal8Bit();
-    m_handleData->appendDataToStoredData(array, true, true, m_isConnectedWithCan, forceTimeStamp);
+    m_handleData->appendDataToStoredData(array, true, true, m_isConnectedWithCan, forceTimeStamp, m_isConnectedWithI2c);
 }
 
 /**
