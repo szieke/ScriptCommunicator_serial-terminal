@@ -74,7 +74,8 @@ MainWindow* getMainWindow()
 MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTimer(), m_parseThread(0), m_parsingFinished(true),
     m_lockFiles(), m_unsavedInfoFiles(), m_checkForFileChangesTimer(),
     m_lastMouseMoveEvent(QEvent::None,QPointF(),Qt::NoButton, Qt::NoButton, Qt::NoModifier), m_mouseEventTimer(),
-    m_ctrlIsPressed(false), m_indicatorClickTimer(), m_lastIndicatorClickPosition(0), m_showParseError(true)
+    m_ctrlIsPressed(false), m_indicatorClickTimer(), m_lastIndicatorClickPosition(0), m_showParseError(true),
+    m_scriptsToLoadAfterStart(scripts)
 {
     ui->setupUi(this);
 
@@ -85,17 +86,6 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     connect(ui->infoTabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(infoTabCloseRequestedSlot(int)));
     connect(ui->documentsTabWidget->tabBar(), SIGNAL(tabMoved(int,int)), this, SLOT(tabMoved(int,int)));
 
-    if(scripts.isEmpty())
-    {
-        addTab("", false);
-    }
-    else
-    {
-        for(auto el : scripts)
-        {
-            addTab(el, true);
-        }
-    }
 
     initActions();
     statusBar()->showMessage(tr("Ready"));
@@ -1358,9 +1348,6 @@ void MainWindow::showEvent(QShowEvent *event)
 
     readSettings();
 
-    SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-    textEditor->setFocus();
-
 }
 
 /**
@@ -2342,10 +2329,23 @@ void MainWindow::readSettings()
         m_currentFont.setWeight(settings.value("fontWeight", QFont().weight()).toInt(&ok));
         m_currentFont.setItalic(settings.value("fontItalic", QFont().italic()).toBool());
 
+        if(m_scriptsToLoadAfterStart.isEmpty())
+        {
+            addTab("", false);
+        }
+        else
+        {
+            for(auto el : m_scriptsToLoadAfterStart)
+            {
+                addTab(el, true);
+            }
+        }
+
         restoreState(settings.value("mainWindowState", QByteArray()).toByteArray());
 
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
         textEditor->lexer()->readSettings(settings);
+        textEditor->setFocus();
     }
     else
     {

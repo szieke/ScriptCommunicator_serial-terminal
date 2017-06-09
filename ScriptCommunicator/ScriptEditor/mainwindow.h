@@ -354,6 +354,9 @@ private:
     ///True if parse error shall be displayed.
     bool m_showParseError;
 
+    ///Scripts wich shalll be loaded after start (from command-line).
+    QStringList m_scriptsToLoadAfterStart;
+
 };
 
 ///Return a main window pointer.
