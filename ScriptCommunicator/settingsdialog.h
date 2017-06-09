@@ -35,6 +35,7 @@
 #include "aardvark.h"
 #include "aardvarkI2cSpi.h"
 
+
 QT_USE_NAMESPACE
 
 QT_BEGIN_NAMESPACE

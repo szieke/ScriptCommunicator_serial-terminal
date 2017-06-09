@@ -50,7 +50,6 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 {
     m_userInterface->setupUi(this);
 
-
     m_aardvardI2cGpioGuiElements[0].mode = m_userInterface->aardvardGpioMode0;
     m_aardvardI2cGpioGuiElements[0].outValue = m_userInterface->aardvardGpioOutValue0;
     m_aardvardI2cGpioGuiElements[0].inValue = m_userInterface->aardvardGpioInValue0;

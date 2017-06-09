@@ -294,9 +294,9 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     connect(m_mainInterface, SIGNAL(setConnectionButtonsSignal(bool)), this, SLOT(setConnectionButtonsSlot(bool)), Qt::QueuedConnection);
 
 
+    qRegisterMetaType<Settings>("Settings");
+    qRegisterMetaType<AardvardI2cSpiSettings>("AardvardI2cSpiSettings");
     qRegisterMetaType<QVector<bool>>("QVector<bool>");
-    qRegisterMetaType<AardvardI2cSpiGpioConfig>("AardvardI2cSpiGpioConfig");
-    qRegisterMetaType<AardvardI2cSpiGpioConfig>("AardvardI2cSpiSettings");
     connect(m_mainInterface->m_aardvarkI2cSpi, SIGNAL(inputStatesChangedSignal(QVector<bool>)), m_settingsDialog,
             SLOT(aardvardI2cSpiInputStatesChangedSlot(QVector<bool>)), Qt::QueuedConnection);
     connect(m_settingsDialog, SIGNAL(pinConfigChangedSignal(AardvardI2cSpiSettings)), m_mainInterface->m_aardvarkI2cSpi,
@@ -311,7 +311,6 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     connect(m_settingsDialog, SIGNAL(conectionTypeChangesSignal()),this, SLOT(conectionTypeChangesSlot()));
     //connect(m_settingsDialog, SIGNAL(appendTimestampAtLogsChangedSignal()),this, SLOT(reLogsSlot()));
 
-    qRegisterMetaType<Settings>("Settings");
     connect(this, SIGNAL(connectDataConnectionSignal(Settings, bool)),m_mainInterface,
             SLOT(connectDataConnectionSlot(Settings, bool)), Qt::QueuedConnection);
     connect(m_mainInterface, SIGNAL(dataConnectionStatusSignal(bool, QString, bool)),this, SLOT(dataConnectionStatusSlot(bool, QString, bool)), Qt::QueuedConnection);

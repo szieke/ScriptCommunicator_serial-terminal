@@ -30,7 +30,7 @@ static const QString LIBRARAY_NAME = "aardvark.dll";
 #else
 static const QString LIBRARAY_NAME = "aardvark.so";
 #endif
-AardvarkI2cSpi::AardvarkI2cSpi(QObject *parent): QObject(parent), m_handle(-1), m_inputTimer()
+AardvarkI2cSpi::AardvarkI2cSpi(QObject *parent): QObject(parent), m_handle(0), m_inputTimer()
 {
     for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
     {
@@ -44,7 +44,6 @@ AardvarkI2cSpi::~AardvarkI2cSpi()
 
 }
 
-static quint32 testCounter = 0;
 
 /**
  * Reads all inputs of the aardvard I2c/Spi device.
@@ -54,50 +53,32 @@ static quint32 testCounter = 0;
  */
 void AardvarkI2cSpi::readAllInputs(QVector<bool>& inputStates)
 {
-    static bool dummyInputStates = false;
+    inputStates.clear();
 
-    //if (m_handle > 0)
-    if (m_handle == -1)//ToDo: entfernen
+    if (m_handle > 0)
     {
-        if(0)
+        quint32 result = (quint32)aa_gpio_get(m_handle);
+        quint32 bitMask = 0;
+
+        for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
         {
-            quint32 result = (quint32)aa_gpio_get(m_handle);
-            quint32 bitMask = 0;
-
-            for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+            bitMask = 1 << i;
+            if((result & bitMask) != 0)
             {
-                bitMask = 1 << i;
-                if((result & bitMask) != 0)
-                {
-                    inputStates.append(true);
-                }
-                else
-                {
-                    inputStates.append(false);
-                }
+                inputStates.append(true);
             }
-        }
-        else
-        {
-            testCounter++;
-
-            if(testCounter > 10)
+            else
             {
-                testCounter = 0;
-                dummyInputStates = dummyInputStates ? false : true;
+                inputStates.append(false);
+            }
             }
 
-            for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
-            {
-                inputStates.append(dummyInputStates);
-            }
-        }
     }
     else
     {
         for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
         {
-            inputStates[i] = false;
+            inputStates.append(false);
         }
     }
 }
@@ -142,8 +123,6 @@ void AardvarkI2cSpi::pinConfigChangedSlot(AardvardI2cSpiSettings settings)
         configurePins(false);
     }
 
-    testCounter = 10;
-
 }
 
 
@@ -160,8 +139,6 @@ void AardvarkI2cSpi::outputValueChangedSlot(AardvardI2cSpiSettings settings)
     {
         configurePins(true);
     }
-
-    testCounter = 10;
 }
 
 
@@ -172,8 +149,6 @@ void AardvarkI2cSpi::freeI2cBusSlot(void)
 {
     if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER)
     {
-        testCounter = 10;
-
         if (m_handle > 0)
         {
             (void)aa_i2c_free_bus (m_handle);
@@ -307,11 +282,10 @@ void AardvarkI2cSpi::configurePins(bool onlySetOutputs)
 bool AardvarkI2cSpi::connectToDevice(AardvardI2cSpiSettings& settings, int& deviceBitrate)
 {
     bool succeeded = false;
-    m_handle = 0;
+    m_handle = aa_open(settings.devicePort);
     m_settings = settings;
 
-
-    if(0)
+    if (m_handle > 0)
     {
         if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER)
         {
@@ -364,13 +338,6 @@ bool AardvarkI2cSpi::connectToDevice(AardvardI2cSpiSettings& settings, int& devi
 
             configurePins(false);
         }
-
-    }
-    else
-    {//ToDo: entfernen
-
-        m_handle = -1;
-        succeeded = true;
     }
 
     if(succeeded)
@@ -380,6 +347,10 @@ bool AardvarkI2cSpi::connectToDevice(AardvardI2cSpiSettings& settings, int& devi
         emit inputStatesChangedSignal(m_inputStates);
 
         m_inputTimer.start(250);
+    }
+    else
+    {
+        disconnect();
     }
 
     return succeeded;
@@ -457,174 +428,118 @@ bool AardvarkI2cSpi::sendReceiveData(const QByteArray& data, QByteArray* receive
 
     if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER)
     {
-        if(0)
+        if(data.size() >= SEND_CONTROL_BYTES_COUNT)
         {
-            if(data.size() >= SEND_CONTROL_BYTES_COUNT)
-            {
-                AardvarkI2cFlags flags = (AardvarkI2cFlags)data[0];
-                quint16 slaveAddress = (quint16)data[2] + ((quint16)data[1] << 8);
-                quint16 bytesToRead = (quint16)data[4] + ((quint16)data[3] << 8);
+            AardvarkI2cFlags flags = (AardvarkI2cFlags)data[0];
+            quint16 slaveAddress = (quint16)data[2] + ((quint16)data[1] << 8);
+            quint16 bytesToRead = (quint16)data[4] + ((quint16)data[3] << 8);
 
-                //Remove the metadata.
-                QByteArray sendData = data.mid(SEND_CONTROL_BYTES_COUNT);
+            //Remove the metadata.
+            QByteArray sendData = data.mid(SEND_CONTROL_BYTES_COUNT);
 
-                if(bytesToRead == 0)
-                {//Only write.
+            if(bytesToRead == 0)
+            {//Only write.
 
-                    if(!sendData.isEmpty())
+                if(!sendData.isEmpty())
+                {
+                    if(sendData.size() == aa_i2c_write(m_handle, slaveAddress, flags, sendData.size(), (const aa_u08 *)sendData.constData()))
                     {
-                        if(sendData.size() == aa_i2c_write(m_handle, slaveAddress, flags, sendData.size(), (const aa_u08 *)sendData.constData()))
-                        {
-                            succeeded = true;
-                        }
-                        else
-                        {
-                            succeeded = false;
-                        }
+                        succeeded = true;
                     }
                     else
                     {
                         succeeded = false;
                     }
                 }
-                else  if(sendData.isEmpty())
-                {//Only read.
+                else
+                {
+                    succeeded = false;
+                }
+            }
+            else  if(sendData.isEmpty())
+            {//Only read.
 
-                    aa_u08* inBuffer = new aa_u08[bytesToRead];
-                    if(bytesToRead == aa_i2c_read(m_handle, slaveAddress, flags, bytesToRead, inBuffer))
+                aa_u08* inBuffer = new aa_u08[bytesToRead];
+                if(bytesToRead == aa_i2c_read(m_handle, slaveAddress, flags, bytesToRead, inBuffer))
+                {
+                    succeeded = true;
+
+                    receivedData->append(flags);
+                    receivedData->append((slaveAddress >> 8) & 0xff);
+                    receivedData->append(slaveAddress & 0xff);
+
+                    for(int i = 0; i < bytesToRead; i++)
                     {
-                        succeeded = true;
-
-                        receivedData->append(flags);
-                        receivedData->append((slaveAddress >> 8) & 0xff);
-                        receivedData->append(slaveAddress & 0xff);
-
-                        for(int i = 0; i < bytesToRead; i++)
-                        {
-                            receivedData->append(inBuffer[i]);
-                        }
-
+                        receivedData->append(inBuffer[i]);
                     }
-                    else
-                    {
-                        succeeded = false;
-                    }
-
-                    delete[] inBuffer;
 
                 }
                 else
-                {//Write and read.
-
-                    aa_u16 bytesWritten = 0;
-                    aa_u16 bytesRead = 0;
-                    aa_u08* inBuffer = new aa_u08[bytesToRead];
-
-                    (void)aa_i2c_write_read(m_handle, slaveAddress, flags, sendData.size(), (const aa_u08 *)sendData.constData(), &bytesWritten,
-                                                 bytesToRead,inBuffer, &bytesRead);
-
-                    if((sendData.size() == bytesWritten) && (bytesToRead == bytesRead))
-                    {
-                        succeeded = true;
-
-                        receivedData->append(flags);
-                        receivedData->append((slaveAddress >> 8) & 0xff);
-                        receivedData->append(slaveAddress & 0xff);
-
-                        for(int i = 0; i < bytesToRead; i++)
-                        {
-                            receivedData->append(inBuffer[i]);
-                        }
-                    }
-                    else
-                    {
-                        succeeded = false;
-                    }
-
-                    delete[] inBuffer;
+                {
+                    succeeded = false;
                 }
 
-            }//if(sendData.size() >= 5)
-            else
-            {
-                succeeded = false;
+                delete[] inBuffer;
+
             }
-        }
+            else
+            {//Write and read.
+
+                aa_u16 bytesWritten = 0;
+                aa_u16 bytesRead = 0;
+                aa_u08* inBuffer = new aa_u08[bytesToRead];
+
+                (void)aa_i2c_write_read(m_handle, slaveAddress, flags, sendData.size(), (const aa_u08 *)sendData.constData(), &bytesWritten,
+                                             bytesToRead,inBuffer, &bytesRead);
+
+                if((sendData.size() == bytesWritten) && (bytesToRead == bytesRead))
+                {
+                    succeeded = true;
+
+                    receivedData->append(flags);
+                    receivedData->append((slaveAddress >> 8) & 0xff);
+                    receivedData->append(slaveAddress & 0xff);
+
+                    for(int i = 0; i < bytesToRead; i++)
+                    {
+                        receivedData->append(inBuffer[i]);
+                    }
+                }
+                else
+                {
+                    succeeded = false;
+                }
+
+                delete[] inBuffer;
+            }
+
+        }//if(sendData.size() >= 5)
         else
         {
-            if(data.size() >= SEND_CONTROL_BYTES_COUNT)
-            {
-                AardvarkI2cFlags flags = (AardvarkI2cFlags)data[0];
-                quint16 slaveAddress = (quint16)data[2] + ((quint16)data[1] << 8);
-                quint16 bytesToRead = (quint16)data[4] + ((quint16)data[3] << 8);
-
-                //Remove the metadata.
-                QByteArray sendData = data.mid(SEND_CONTROL_BYTES_COUNT);
-
-                if(bytesToRead == 0)
-                {//Only write.
-                    if(!sendData.isEmpty())
-                    {
-                         succeeded = true;
-                    }
-                    else
-                    {
-                        succeeded = false;
-                    }
-                }
-                else if(sendData.isEmpty())
-                {//Only read.
-                    receivedData->append("read");
-                    receivedData->push_front(slaveAddress & 0xff);
-                    receivedData->push_front((slaveAddress >> 8) & 0xff);
-                    receivedData->push_front(flags);
-                    succeeded = true;
-                }
-                else
-                {//Write and read.
-                    *receivedData = sendData;
-                    receivedData->push_front(slaveAddress & 0xff);
-                    receivedData->push_front((slaveAddress >> 8) & 0xff);
-                    receivedData->push_front(flags);
-
-                    succeeded = true;
-                }
-
-            }
-            else
-            {
-                succeeded = false;
-            }
+            succeeded = false;
         }
+
     }
     else if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_SPI_MASTER)
     {
+        aa_u08* inBuffer = new aa_u08[data.size()];
 
-        if(0)
+        if(data.size() == aa_spi_write(m_handle, data.size(), (const aa_u08 *)data.constData(), data.size(), inBuffer))
         {
-            aa_u08* inBuffer = new aa_u08[data.size()];
+            succeeded = true;
 
-            if(data.size() == aa_spi_write(m_handle, data.size(), (const aa_u08 *)data.constData(), data.size(), inBuffer))
+            for(int i = 0; i < data.size(); i++)
             {
-                succeeded = true;
-
-                for(int i = 0; i < data.size(); i++)
-                {
-                    receivedData->append(inBuffer[i]);
-                }
+                receivedData->append(inBuffer[i]);
             }
-            else
-            {
-                succeeded = false;
-            }
-
-            delete[] inBuffer;
         }
         else
         {
-            *receivedData = data;
-            succeeded = true;
+            succeeded = false;
         }
+
+        delete[] inBuffer;
+
     }
     else
     {//AARDVARD_I2C_SPI_DEVICE_MODE_GPIO
