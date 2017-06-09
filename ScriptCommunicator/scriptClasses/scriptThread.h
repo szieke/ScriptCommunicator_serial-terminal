@@ -260,8 +260,11 @@ public:
     ///Returns true if the main interface is connected.
     Q_INVOKABLE bool isConnected(void){return m_isConnected;}
 
-    ///Returns true if the main interface is a can interface (and is connected).
+    ///Returns true if the main interface is a CAN interface (and is connected).
     Q_INVOKABLE bool isConnectedWithCan(void){return m_isConnectedWithCan;}
+
+    ///Returns true if the main interface is a CAN interface (and is connected).
+    Q_INVOKABLE bool isConnectedWithI2c(void){return m_isConnectedWithI2c;}
 
     ///Disconnects the main interface.
     Q_INVOKABLE void disconnect(void){emit connectDataConnectionSignal(*m_settingsDialog->settings(), false);}
@@ -816,8 +819,11 @@ private:
     ///True, if the main interface is connected.
     bool m_isConnected;
 
-    ///True, if the main interface is a can interface (and is connected).
+    ///True, if the main interface is a CAN interface (and is connected).
     bool m_isConnectedWithCan;
+
+    ///True, if the main interface is a I2C interface (and is connected).
+    bool m_isConnectedWithI2c;
 
     ///The send id, which is send to the send data during sending data.
     quint32 m_sendId;

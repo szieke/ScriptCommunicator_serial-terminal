@@ -175,9 +175,7 @@ QString MainInterfaceThread::serialPortPinoutSignalsToInfoString(void)
 }
 
 /**
- * True if the main interface thread is connected.
- * @return
- *      True the main interface is connected.
+ * Returns true if the main interface thread is connected.
  */
 bool MainInterfaceThread::isConnected()
 {
@@ -185,12 +183,27 @@ bool MainInterfaceThread::isConnected()
 }
 
 /**
- * True if the main interface thread is connected with a can interface.
- * @return
+ * Returns true if the main interface thread is connected with a CAN interface.
  */
 bool MainInterfaceThread::isConnectedWithCan()
 {
     return m_pcanInterface->isConnected();
+}
+
+/**
+ * Returns true if the main interface thread is connected with a I2C interface.
+ */
+bool MainInterfaceThread::isConnectedWithI2c()
+{
+    bool result = false;
+
+    if((m_aardvarkI2cSpi->isConnected()) &&
+          (m_currentGlobalSettings.aardvardI2cSpi.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER))
+    {
+        result = true;
+    }
+
+    return result;
 }
 
 /**
@@ -199,7 +212,6 @@ bool MainInterfaceThread::isConnectedWithCan()
 void MainInterfaceThread::tcpServerOnNewConnectionSlot(void)
 {
     QTcpSocket* socket = m_tcpServer->nextPendingConnection();
-    //m_tcpServer->close();
 
 
     m_tcpServerSockets.append(socket);

@@ -1,0 +1,5 @@
+ScriptCheetahSpiInterface::detectDevices(void):String \nReturns a string which contains informations about all detected devices.
+ScriptCheetahSpiInterface::connect(Number port, Number mode, Number baudrate):bool \nConnects to a cheetah spi interface (the baudrate is in kHz).
+ScriptCheetahSpiInterface::disconnect(void):void \nDisconnects from the cheetah spi interface.
+ScriptCheetahSpiInterface::sendReceiveData(Array<Number>, Number chipSelect):bool \nSends and receive data with the cheetah spi interface\n(the received data must be read with readAll).
+ScriptCheetahSpiInterface::readAll(void):Array<Number> \nReturns all received data from the last sendReceiveData call.

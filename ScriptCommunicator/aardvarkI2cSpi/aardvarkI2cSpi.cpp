@@ -34,7 +34,7 @@ AardvarkI2cSpi::AardvarkI2cSpi(QObject *parent): QObject(parent), m_handle(-1), 
 {
     for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
     {
-        m_inputStates[i] = false;
+        m_inputStates.append(false);
     }
 
     connect(&m_inputTimer, SIGNAL(timeout()),this, SLOT(inputTimerSlot()), Qt::QueuedConnection);
@@ -52,7 +52,7 @@ static quint32 testCounter = 0;
  * @param inputStates
  *      The array in which the read states are written to.
  */
-void AardvarkI2cSpi::readAllInputs(bool inputStates[AARDVARD_I2C_SPI_GPIO_COUNT])
+void AardvarkI2cSpi::readAllInputs(QVector<bool>& inputStates)
 {
     static bool dummyInputStates = false;
 
@@ -69,11 +69,11 @@ void AardvarkI2cSpi::readAllInputs(bool inputStates[AARDVARD_I2C_SPI_GPIO_COUNT]
                 bitMask = 1 << i;
                 if((result & bitMask) != 0)
                 {
-                    inputStates[i] = true;
+                    inputStates.append(true);
                 }
                 else
                 {
-                    inputStates[i] = false;
+                    inputStates.append(false);
                 }
             }
         }
@@ -89,7 +89,7 @@ void AardvarkI2cSpi::readAllInputs(bool inputStates[AARDVARD_I2C_SPI_GPIO_COUNT]
 
             for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
             {
-                inputStates[i] = dummyInputStates;
+                inputStates.append(dummyInputStates);
             }
         }
     }
@@ -108,7 +108,7 @@ void AardvarkI2cSpi::readAllInputs(bool inputStates[AARDVARD_I2C_SPI_GPIO_COUNT]
  */
 void AardvarkI2cSpi::inputTimerSlot(void)
 {
-    bool inputStates[AARDVARD_I2C_SPI_GPIO_COUNT];
+    QVector<bool> inputStates;
 
     readAllInputs(inputStates);
 
@@ -123,10 +123,8 @@ void AardvarkI2cSpi::inputTimerSlot(void)
     }
 
     //Copy the read states.
-    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
-    {
-        m_inputStates[i] = inputStates[i];
-    }
+    m_inputStates = inputStates;
+
 }
 
 
@@ -405,7 +403,14 @@ void AardvarkI2cSpi::disconnect(void)
     emit inputStatesChangedSignal(m_inputStates);
 }
 
-
+/**
+ * Converts AardvarkI2cFlags to a string.
+ *
+ * @param flags
+ *      The flags.
+ * @return
+ *      The created string.
+ */
 QString AardvarkI2cSpi::flagsToString(AardvarkI2cFlags flags)
 {
     QString result;

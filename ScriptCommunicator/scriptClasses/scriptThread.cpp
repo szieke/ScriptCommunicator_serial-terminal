@@ -397,6 +397,7 @@ void ScriptThread::run()
         m_isConnected = m_scriptWindow->m_mainInterfaceThread->isConnected();
 
         m_isConnectedWithCan = m_scriptWindow->m_mainInterfaceThread->isConnectedWithCan();
+        m_isConnectedWithI2c = m_scriptWindow->m_mainInterfaceThread->isConnectedWithI2c();
 
         //create the script engine
         m_scriptEngine = new QScriptEngine();
@@ -1457,6 +1458,7 @@ void ScriptThread::dataConnectionStatusSlot(bool isConnected, QString message, b
     (void)isWaiting;
     m_isConnected = isConnected;
     m_isConnectedWithCan = m_scriptWindow->m_mainInterfaceThread->isConnectedWithCan();
+    m_isConnectedWithI2c = m_scriptWindow->m_mainInterfaceThread->isConnectedWithI2c();
 
 }
 

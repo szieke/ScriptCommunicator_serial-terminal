@@ -25,11 +25,11 @@
 #ifndef AARDVARD_I2C_SPI_H
 #define AARDVARD_I2C_SPI_H
 
-#include "mainwindow.h"
+
 #include "aardvark.h"
-#include "settingsdialog.h"
 #include <QObject>
 #include <QTimer>
+#include <QVector>
 
 
 /*
@@ -51,6 +51,46 @@
       SCL   = 0x01   HW Pin1   GUI Pin0
       SDA   = 0x02   HW Pin3   GUI Pin1
  */
+
+///The number of aardvard I2C/SPI GPIOs.
+#define AARDVARD_I2C_SPI_GPIO_COUNT 6
+
+///aardvard I2C/SPI device mode.
+typedef enum
+{
+    AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER = 0,
+    AARDVARD_I2C_SPI_DEVICE_MODE_SPI_MASTER,
+    AARDVARD_I2C_SPI_DEVICE_MODE_GPIO
+}AardvardI2cSpiDeviceMode;
+
+
+///aardvard I2C/SPI GPIO configuration.
+typedef struct
+{
+    bool isInput;
+    bool withPullups;
+    bool outValue;
+}AardvardI2cSpiGpioConfig;
+
+///Settings for a aardvard I2C/SPI interface.
+typedef struct
+{
+    quint16 devicePort;
+    AardvardI2cSpiDeviceMode deviceMode;
+    bool device5VIsOn;
+
+    quint16 i2cBaudrate;
+    bool i2cPullupsOn;
+
+    AardvarkSpiPolarity spiPolarity;
+    AardvarkSpiSSPolarity spiSSPolarity;
+    AardvarkSpiBitorder spiBitorder;
+    AardvarkSpiPhase spiPhase;
+    quint16 spiBaudrate;
+
+    AardvardI2cSpiGpioConfig pinConfigs[AARDVARD_I2C_SPI_GPIO_COUNT];
+
+}AardvardI2cSpiSettings;
 
 ///Class which represents a aardvard  I2c/Spi interface.
 class AardvarkI2cSpi : public QObject
@@ -83,12 +123,14 @@ public:
     ///Return true if the interface is connected.
     bool isConnected(void){return (m_handle > 0) ? true : false;}
 
+    ///Converts AardvarkI2cFlags to a string.
     static QString flagsToString(AardvarkI2cFlags flags);
 
 signals:
 
     ///Is emitted if the input states of the aardvard I2c/Spi device have been changed.
-    void inputStatesChangedSignal(bool* states);
+    ///Note: states contains AARDVARD_I2C_SPI_GPIO_COUNT elements.
+    void inputStatesChangedSignal(QVector<bool> states);
 
 public slots:
 
@@ -109,7 +151,7 @@ public slots:
 private:
 
     ///Reads all inputs of the aardvard I2c/Spi device.
-    void readAllInputs(bool inputStates[]);
+    void readAllInputs(QVector<bool>& inputStates);
 
     ///Configures pins of the aardvard I2c/Spi device.
     void configurePins(bool onlySetOutputs);
@@ -121,7 +163,7 @@ private:
     QTimer m_inputTimer;
 
     ///The states of all inputs (aardvard I2c/Spi device).
-    bool m_inputStates[AARDVARD_I2C_SPI_GPIO_COUNT];
+    QVector<bool> m_inputStates;
 
     ///The current settings.
     AardvardI2cSpiSettings m_settings;

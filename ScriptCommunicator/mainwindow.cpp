@@ -294,10 +294,11 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     connect(m_mainInterface, SIGNAL(setConnectionButtonsSignal(bool)), this, SLOT(setConnectionButtonsSlot(bool)), Qt::QueuedConnection);
 
 
+    qRegisterMetaType<QVector<bool>>("QVector<bool>");
     qRegisterMetaType<AardvardI2cSpiGpioConfig>("AardvardI2cSpiGpioConfig");
     qRegisterMetaType<AardvardI2cSpiGpioConfig>("AardvardI2cSpiSettings");
-    connect(m_mainInterface->m_aardvarkI2cSpi, SIGNAL(inputStatesChangedSignal(bool*)), m_settingsDialog,
-            SLOT(aardvardI2cSpiInputStatesChangedSlot(bool*)), Qt::QueuedConnection);
+    connect(m_mainInterface->m_aardvarkI2cSpi, SIGNAL(inputStatesChangedSignal(QVector<bool>)), m_settingsDialog,
+            SLOT(aardvardI2cSpiInputStatesChangedSlot(QVector<bool>)), Qt::QueuedConnection);
     connect(m_settingsDialog, SIGNAL(pinConfigChangedSignal(AardvardI2cSpiSettings)), m_mainInterface->m_aardvarkI2cSpi,
             SLOT(pinConfigChangedSlot(AardvardI2cSpiSettings)), Qt::QueuedConnection);
     connect(m_settingsDialog, SIGNAL(outputValueChangedSignal(AardvardI2cSpiSettings)), m_mainInterface->m_aardvarkI2cSpi,

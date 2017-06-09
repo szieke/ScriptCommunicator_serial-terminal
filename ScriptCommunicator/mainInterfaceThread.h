@@ -67,8 +67,11 @@ public:
     ///True if the main interface thread is connected.
     bool isConnected();
 
-    ///True if the main interface thread is connected with a can interface.
+    ///True if the main interface thread is connected with a CAN interface.
     bool isConnectedWithCan();
+
+    ///True if the main interface thread is connected with a I2C interface.
+    bool isConnectedWithI2c();
 
     ///Converts the serial port pinout signal to an information string
     ///(RTS=0, CTS=0, DSR=0, DCD=0, DTR=0, RI=0).

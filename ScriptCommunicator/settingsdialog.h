@@ -33,6 +33,7 @@
 #include <QComboBox>
 #include <QSignalMapper>
 #include "aardvark.h"
+#include "aardvarkI2cSpi.h"
 
 QT_USE_NAMESPACE
 
@@ -141,45 +142,6 @@ typedef struct
     quint8 chipSelect;
 }CheetahSpiSettings;
 
-
-///aardvard I2C/SPI device mode.
-typedef enum
-{
-    AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER = 0,
-    AARDVARD_I2C_SPI_DEVICE_MODE_SPI_MASTER,
-    AARDVARD_I2C_SPI_DEVICE_MODE_GPIO
-}AardvardI2cSpiDeviceMode;
-
-///The number of aardvard I2C/SPI GPIOs.
-#define AARDVARD_I2C_SPI_GPIO_COUNT 6
-
-///aardvard I2C/SPI GPIO configuration.
-typedef struct
-{
-    bool isInput;
-    bool withPullups;
-    bool outValue;
-}AardvardI2cSpiGpioConfig;
-
-///Settings for a aardvard I2C/SPI interface.
-typedef struct
-{
-    quint16 devicePort;
-    AardvardI2cSpiDeviceMode deviceMode;
-    bool device5VIsOn;
-
-    quint16 i2cBaudrate;
-    bool i2cPullupsOn;
-
-    AardvarkSpiPolarity spiPolarity;
-    AardvarkSpiSSPolarity spiSSPolarity;
-    AardvarkSpiBitorder spiBitorder;
-    AardvarkSpiPhase spiPhase;
-    quint16 spiBaudrate;
-
-    AardvardI2cSpiGpioConfig pinConfigs[AARDVARD_I2C_SPI_GPIO_COUNT];
-
-}AardvardI2cSpiSettings;
 
 
 ///The GUI elements for one aardvard I2C/SPI GPIO.
@@ -533,7 +495,7 @@ public slots:
     void setAllSettingsSlot(Settings& settings, bool setTabIndex);
 
     ///Is called if the input states of the aardvard I2c/Spi device have been changed.
-    void aardvardI2cSpiInputStatesChangedSlot(bool* states);
+    void aardvardI2cSpiInputStatesChangedSlot(QVector<bool> states);
 private slots:
 
     ///Is called if the user presses the search console script button.

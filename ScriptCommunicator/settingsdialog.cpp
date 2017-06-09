@@ -844,11 +844,11 @@ void SettingsDialog::show(void)
 /**
  * Is called if the input states of the aardvard I2c/Spi device have been changed.
  * @param states
- *      The new states.
+ *      The new states (states contains AARDVARD_I2C_SPI_GPIO_COUNT elements).
  */
-void SettingsDialog::aardvardI2cSpiInputStatesChangedSlot(bool* states)
+void SettingsDialog::aardvardI2cSpiInputStatesChangedSlot(QVector<bool> states)
 {
-    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+    for(int i = 0; (i < AARDVARD_I2C_SPI_GPIO_COUNT) && (i < states.size()); i++)
     {
         m_aardvardI2cGpioGuiElements[i].inValue->setText(states[i] ? "1" : "0");
     }

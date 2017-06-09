@@ -6,7 +6,7 @@ scriptThread::createTcpServer(void):ScriptTcpServer \nCreates a TCP server.
 scriptThread::createTcpClient(void):ScriptTcpClient \nCreates a TCP socket.
 scriptThread::createTimer(void):ScriptTimer \nCreates a timer.
 scriptThread::createSerialPort(void):ScriptSerialPort \nCreates a serial port.
-scriptThread::createCheetahSpiInterface(void):ScriptSpiInterface \nCreates a cheetah spi interface.
+scriptThread::createCheetahSpiInterface(void):ScriptCheetahSpiInterface \nCreates a cheetah spi interface.
 scriptThread::createPcanInterface(void):ScriptPcanInterface \nCreates a pcan interface.
 scriptThread::createPlotWindow(void):ScriptPlotWindow \nCreates a plot window.
 scriptThread::createXmlReader(void):ScriptXmlReader \nCreates a XML reader.
@@ -17,7 +17,8 @@ scriptThread::sendDataArray(Array<Number> data, Number repetitionCount=0, Number
 scriptThread::sendCanMessage(Number type, Number canId, Array<Number> data, Number repetitionCount=0, Number pause=0, bool addToMainWindowSendHistory=false):bool \nSends a can message with the main interface (in MainInterfaceThread). f more then 8 data bytes are given several can messages with the same can id will be sent.
 scriptThread::sendString(String string, Number repetitionCount=0, Number pause=0, bool addToMainWindowSendHistory=false):bool \nSends a string (String) with the main interface (in MainInterfaceThread).
 scriptThread::isConnected(void):bool \nReturns true if the main interface is connected.
-scriptThread::isConnectedWithCan(void):bool \nReturns true if the main interface is a can interface (and is connected).
+scriptThread::isConnectedWithCan(void):bool \nReturns true if the main interface is a CAN interface (and is connected).
+scriptThread::isConnectedWithI2c(void):bool \nReturns true if the main interface is a I2C interface (and is connected).
 scriptThread::disconnect(void):void \nDisconnects the main interface.
 scriptThread::connectPcan(Number channel, Number baudrate, Number connectTimeout = 2000, bool busOffAutoReset = true, bool powerSupply = false, bool filterExtended = true, Number filterFrom = 0, Number filterTo = 0x1fffffff):bool \nConnects the main interface (PCAN).Note: A successful call will modify the corresponding settings in the settings dialog.
 scriptThread::setSerialPortPins(bool setRTS, bool setDTR):void \nSets the serial port (main interface) RTS and DTR pins.
