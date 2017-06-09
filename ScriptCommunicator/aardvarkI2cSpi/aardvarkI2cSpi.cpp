@@ -335,6 +335,10 @@ bool AardvarkI2cSpi::connectToDevice(AardvardI2cSpiSettings& settings, int& devi
             {
                 (void)aa_target_power(m_handle, AA_TARGET_POWER_BOTH);
             }
+            else
+            {
+                (void)aa_target_power(m_handle, AA_TARGET_POWER_NONE);
+            }
 
             configurePins(false);
         }
@@ -365,6 +369,11 @@ void AardvarkI2cSpi::disconnect(void)
 
     if (m_handle > 0)
     {
+        (void)aa_target_power(m_handle, AA_TARGET_POWER_NONE);//5v off.
+        (void)aa_gpio_set (m_handle, 0);//Set all outputs to 0.
+        (void)aa_gpio_direction(m_handle, 0);//All pins are inputs
+        (void)aa_gpio_pullup (m_handle, 0);//No pullups.
+
         aa_close(m_handle);
         m_handle = 0;
     }
