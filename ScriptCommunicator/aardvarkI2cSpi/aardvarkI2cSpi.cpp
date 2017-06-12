@@ -370,6 +370,7 @@ void AardvarkI2cSpi::disconnect(void)
     if (m_handle > 0)
     {
         (void)aa_target_power(m_handle, AA_TARGET_POWER_NONE);//5v off.
+        (void)aa_configure(m_handle, AA_CONFIG_GPIO_ONLY);
         (void)aa_gpio_set (m_handle, 0);//Set all outputs to 0.
         (void)aa_gpio_direction(m_handle, 0);//All pins are inputs
         (void)aa_gpio_pullup (m_handle, 0);//No pullups.

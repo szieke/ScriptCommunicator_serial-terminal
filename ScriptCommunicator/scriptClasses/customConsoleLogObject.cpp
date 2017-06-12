@@ -203,7 +203,6 @@ bool CustomConsoleLogObject::loadCustomScript(QString scriptPath, bool debug)
     {
         createThread(debug);
     }
-    m_script->setScriptPath(m_scriptPath);
 
 
     if(!debug)

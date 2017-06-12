@@ -213,13 +213,6 @@ public:
     ///The default value for m_blockTime.
     static const quint32 DEFAULT_BLOCK_TIME= 10000;
 
-    ///Sets the script file path.
-    void setScriptPath(QString scriptPath)
-    {
-        m_scriptPath = scriptPath;
-        m_scriptFileObject->setScriptFileName(m_scriptPath);
-    }
-
     ///Returns m_runsInDebugger.
     bool getRunsInDebugger(void){return m_runsInDebugger;}
 
