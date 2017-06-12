@@ -1762,6 +1762,90 @@ void ScriptThread::setSerialPortPins(bool setRTS, bool setDTR)
     emit setSerialPortPinsSignal(setRTS, setDTR);
 }
 
+
+/**
+ * Connects the main interface (Aardvard I2C/SPI).
+ *
+ * @param aardvardI2cSpiSettings
+ *      The new settings (AardvardI2cSpiSettings structure).
+ * @param connectTimeout
+ *      Connect timeout(ms)
+ * @return
+ *      True on success.
+ */
+bool ScriptThread::connectAardvardI2cSpiDevice(QScriptValue aardvardI2cSpiSettings, quint32 connectTimeout)
+{
+    bool succeeded = false;
+
+    m_settingsDialog->updateSettings();
+    Settings oldSettings = *m_settingsDialog->settings();
+    Settings settings = *m_settingsDialog->settings();
+    settings.connectionType = CONNECTION_TYPE_AARDVARD;
+
+
+    if(aardvardI2cSpiSettings.property("devicePort").isValid() &&
+       aardvardI2cSpiSettings.property("deviceMode").isValid() &&
+       aardvardI2cSpiSettings.property("device5VIsOn").isValid() &&
+       aardvardI2cSpiSettings.property("i2cBaudrate").isValid() &&
+       aardvardI2cSpiSettings.property("i2cPullupsOn").isValid() &&
+       aardvardI2cSpiSettings.property("spiPolarity").isValid() &&
+       aardvardI2cSpiSettings.property("spiSSPolarity").isValid() &&
+       aardvardI2cSpiSettings.property("spiBitorder").isValid() &&
+       aardvardI2cSpiSettings.property("spiPhase").isValid() &&
+       aardvardI2cSpiSettings.property("spiBaudrate").isValid() &&
+       aardvardI2cSpiSettings.property("pinConfigs").isValid())
+    {
+        succeeded = true;
+        settings.aardvardI2cSpi.devicePort = aardvardI2cSpiSettings.property("devicePort").toUInt16();
+        settings.aardvardI2cSpi.deviceMode = (AardvardI2cSpiDeviceMode)aardvardI2cSpiSettings.property("deviceMode").toUInt16();
+        settings.aardvardI2cSpi.device5VIsOn = aardvardI2cSpiSettings.property("device5VIsOn").toBool();
+        settings.aardvardI2cSpi.i2cBaudrate = aardvardI2cSpiSettings.property("i2cBaudrate").toUInt16();
+        settings.aardvardI2cSpi.i2cPullupsOn = aardvardI2cSpiSettings.property("i2cPullupsOn").toBool();
+        settings.aardvardI2cSpi.spiSSPolarity = (AardvarkSpiSSPolarity)aardvardI2cSpiSettings.property("spiSSPolarity").toUInt16();
+        settings.aardvardI2cSpi.spiBitorder = (AardvarkSpiBitorder)aardvardI2cSpiSettings.property("spiBitorder").toUInt16();
+        settings.aardvardI2cSpi.spiPhase = (AardvarkSpiPhase)aardvardI2cSpiSettings.property("spiPhase").toUInt16();
+        settings.aardvardI2cSpi.spiBaudrate = aardvardI2cSpiSettings.property("spiBaudrate").toUInt16();
+
+        QScriptValue pinConfigs = aardvardI2cSpiSettings.property("pinConfigs");
+        for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+        {
+            if(pinConfigs.property(i).property("isInput").isValid() &&
+               pinConfigs.property(i).property("withPullups").isValid() &&
+               pinConfigs.property(i).property("outValue").isValid())
+            {
+                settings.aardvardI2cSpi.pinConfigs[i].isInput = pinConfigs.property(i).property("isInput").toBool();
+                settings.aardvardI2cSpi.pinConfigs[i].withPullups = pinConfigs.property(i).property("withPullups").toBool();
+                settings.aardvardI2cSpi.pinConfigs[i].outValue = pinConfigs.property(i).property("outValue").toBool();
+            }
+            else
+            {
+                succeeded = false;
+                break;
+            }
+        }
+
+    }
+
+    if(succeeded)
+    {
+        emit setAllSettingsSignal(settings, false);
+        emit connectDataConnectionSignal(settings, true);
+
+        waitForMainInterfaceToConnect(connectTimeout);
+
+        if(!m_isConnected)
+        {
+            emit setAllSettingsSignal(oldSettings, false);
+            emit connectDataConnectionSignal(oldSettings, false);
+        }
+
+        succeeded = m_isConnected;
+    }
+    return succeeded;
+
+
+}
+
 /**
  * Connects the main interface (serial port).
  * Note: A successful call will modify the corresponding settings in the settings dialog.
@@ -3011,6 +3095,7 @@ QStringList ScriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object
     }
     return resultList;
 }
+
 
 /**
  * Returns the serial port settings of the main interface.

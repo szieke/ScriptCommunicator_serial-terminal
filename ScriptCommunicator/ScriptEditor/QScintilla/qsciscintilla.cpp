@@ -377,6 +377,10 @@ bool QsciScintilla::callTip(int startPos)
         if(context[0] == "this")
         {
             context.pop_front();
+            if((context.size() == 1) && (context[0].isEmpty()))
+            {
+                return false;
+            }
         }
         QStringList oldTmpContext = contextString.split("::");
         QStringList newTmpContext = oldTmpContext;

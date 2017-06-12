@@ -44,6 +44,7 @@
 #include "scriptObject.h"
 #include <QLibrary>
 #include "scriptConverter.h"
+#include "aardvarkI2cSpi.h"
 
 
 class ScriptWidget;
@@ -289,6 +290,13 @@ public:
     ///ClearToSendSignal = 0x80,
     Q_INVOKABLE quint32 getSerialPortSignals(void){uint32_t bits;emit getSerialPortSignalsSignal(&bits);return bits;}
 
+    ///Returns a string which contains informations about all detected devices.
+    Q_INVOKABLE QString detectAardvardI2cSpiDevices(void){return AardvarkI2cSpi::detectDevices();}
+
+    ///Connects the main interface (Aardvard I2C/SPI).
+    ///Note: A successful call will modify the corresponding settings in the settings dialog.
+    Q_INVOKABLE bool connectAardvardI2cSpiDevice(QScriptValue aardvardI2cSpiSettings, quint32 connectTimeout = 5000);
+
     ///Connects the main interface (serial port).
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
     Q_INVOKABLE bool connectSerialPort(QString name, qint32 baudRate = 115200, quint32 connectTimeout= 1000, quint32 dataBits = 8, QString parity = "None",
@@ -301,6 +309,12 @@ public:
     ///Connects the main interface (cheetah spi).
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
     Q_INVOKABLE bool connectCheetahSpi(quint32 port, qint16 mode, quint32 baudrate, quint8 chipSelectBits = 1, quint32 connectTimeout = 1000);
+
+    ///Returns the serial port settings of the main interface.
+    Q_INVOKABLE QScriptValue getMainInterfaceSerialPortSettings(void);
+
+    ///Returns the socket (UDP, TCP client/server) settings of the main interface.
+    Q_INVOKABLE QScriptValue getMainInterfaceSocketSettings(void);
 
     ///This function stops the current script thread.
     Q_INVOKABLE void stopScript(void);
@@ -550,11 +564,6 @@ public:
     ///in an empty list.
     Q_INVOKABLE QStringList getAllObjectPropertiesAndFunctions(QScriptValue object, bool printInScriptWindowConsole=false);
 
-    ///Returns the serial port settings of the main interface.
-    Q_INVOKABLE QScriptValue getMainInterfaceSerialPortSettings(void);
-
-    ///Returns the socket (UDP, TCP client/server) settings of the main interface.
-    Q_INVOKABLE QScriptValue getMainInterfaceSocketSettings(void);
 
     ///Returns the title of the main window.
     Q_INVOKABLE QString getMainWindowTitle(void);
