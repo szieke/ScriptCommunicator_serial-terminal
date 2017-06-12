@@ -1820,10 +1820,16 @@ bool ScriptThread::connectAardvardI2cSpiDevice(QScriptValue aardvardI2cSpiSettin
             else
             {
                 succeeded = false;
+                messageBox("Critical", m_scriptFileName, "The AardvardI2cSpiSettings structure in connectAardvardI2cSpiDevice is incomplete.");
+
                 break;
             }
         }
 
+    }
+    else
+    {
+        messageBox("Critical", m_scriptFileName, "The AardvardI2cSpiSettings structure in connectAardvardI2cSpiDevice is incomplete.");
     }
 
     if(succeeded)
