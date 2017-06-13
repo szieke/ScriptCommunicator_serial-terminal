@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>774</width>
-    <height>732</height>
+    <width>1391</width>
+    <height>877</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <widget class="QTabWidget" name="tabWidget">
+    <widget class="QTabWidget" name="TabWidget">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -40,11 +40,11 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>730</width>
-            <height>668</height>
+            <width>1347</width>
+            <height>813</height>
            </rect>
           </property>
-          <layout class="QGridLayout" name="gridLayout_3" columnstretch="1,1,1,1,0">
+          <layout class="QGridLayout" name="gridLayout_3">
            <item row="0" column="0">
             <widget class="QGroupBox" name="groupBox_10">
              <property name="title">
@@ -265,241 +265,158 @@
              </layout>
             </widget>
            </item>
-           <item row="2" column="0" rowspan="2" colspan="2">
-            <widget class="QGroupBox" name="groupBox">
+           <item row="0" column="2" colspan="2">
+            <widget class="QGroupBox" name="groupBox_12">
              <property name="title">
-              <string>i2c</string>
+              <string>spi configuration</string>
              </property>
-             <layout class="QGridLayout" name="gridLayout">
-              <item row="4" column="1">
-               <widget class="QLineEdit" name="I2cReadBytes"/>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_2">
-                <property name="text">
-                 <string>bytes to write</string>
+             <layout class="QGridLayout" name="gridLayout_15">
+              <item row="1" column="1">
+               <widget class="QComboBox" name="AardvardSpiPhase">
+                <property name="sizeAdjustPolicy">
+                 <enum>QComboBox::AdjustToContents</enum>
                 </property>
+                <item>
+                 <property name="text">
+                  <string>Sample/Setup</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Setup/Sample</string>
+                 </property>
+                </item>
                </widget>
+              </item>
+              <item row="4" column="1">
+               <spacer name="verticalSpacer_10">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
               </item>
               <item row="0" column="1">
-               <widget class="QLineEdit" name="I2cAddress"/>
+               <widget class="QComboBox" name="AardvardSpiPolarity">
+                <property name="sizeAdjustPolicy">
+                 <enum>QComboBox::AdjustToContents</enum>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Rising/Falling</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Falling/Rising</string>
+                 </property>
+                </item>
+               </widget>
               </item>
-              <item row="1" column="1">
-               <widget class="QLineEdit" name="I2cFlags"/>
-              </item>
-              <item row="3" column="1">
-               <widget class="QSpinBox" name="I2cNumberOfBytesToRead"/>
-              </item>
-              <item row="3" column="0">
-               <widget class="QLabel" name="label">
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_34">
                 <property name="text">
-                 <string>number of bytes to read</string>
+                 <string>baudrate (kHz)</string>
                 </property>
                </widget>
               </item>
-              <item row="4" column="0">
-               <widget class="QLabel" name="label_3">
+              <item row="0" column="4" rowspan="3">
+               <spacer name="horizontalSpacer_12">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>124</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_33">
                 <property name="text">
-                 <string>read bytes</string>
+                 <string>polarity</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QLineEdit" name="AardvardSpiBaudrate">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>16777215</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>1000</string>
                 </property>
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QLabel" name="label_5">
+               <widget class="QLabel" name="label_51">
                 <property name="text">
-                 <string>flags</string>
+                 <string>phase</string>
                 </property>
                </widget>
               </item>
-              <item row="5" column="1">
-               <spacer name="verticalSpacer">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
+              <item row="0" column="3">
+               <widget class="QComboBox" name="AardvardSpiSSPolarity">
+                <item>
+                 <property name="text">
+                  <string>Active Low</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Active High</string>
+                 </property>
+                </item>
+               </widget>
               </item>
               <item row="0" column="2">
-               <widget class="QPushButton" name="I2cExecute">
+               <widget class="QLabel" name="label_40">
                 <property name="text">
-                 <string>execute</string>
+                 <string>ss polarity</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="I2cBytesToSend">
-                <property name="text">
-                 <string>0</string>
-                </property>
+              <item row="1" column="3">
+               <widget class="QComboBox" name="AardvardSpiBitorder">
+                <item>
+                 <property name="text">
+                  <string>MSB</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>LSB</string>
+                 </property>
+                </item>
                </widget>
               </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_4">
+              <item row="1" column="2">
+               <widget class="QLabel" name="label_32">
                 <property name="text">
-                 <string>address</string>
+                 <string>bitorder</string>
                 </property>
                </widget>
               </item>
              </layout>
             </widget>
            </item>
-           <item row="4" column="4">
-            <layout class="QVBoxLayout" name="verticalLayout_2">
-             <item>
-              <widget class="QPushButton" name="ClearConsole">
-               <property name="text">
-                <string>clear</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="verticalSpacer_3">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>40</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-           <item row="4" column="0" colspan="4">
-            <widget class="QTextEdit" name="Console">
-             <property name="palette">
-              <palette>
-               <active>
-                <colorrole role="Text">
-                 <brush brushstyle="SolidPattern">
-                  <color alpha="255">
-                   <red>0</red>
-                   <green>255</green>
-                   <blue>0</blue>
-                  </color>
-                 </brush>
-                </colorrole>
-                <colorrole role="Base">
-                 <brush brushstyle="SolidPattern">
-                  <color alpha="255">
-                   <red>0</red>
-                   <green>0</green>
-                   <blue>0</blue>
-                  </color>
-                 </brush>
-                </colorrole>
-               </active>
-               <inactive>
-                <colorrole role="Text">
-                 <brush brushstyle="SolidPattern">
-                  <color alpha="255">
-                   <red>0</red>
-                   <green>255</green>
-                   <blue>0</blue>
-                  </color>
-                 </brush>
-                </colorrole>
-                <colorrole role="Base">
-                 <brush brushstyle="SolidPattern">
-                  <color alpha="255">
-                   <red>0</red>
-                   <green>0</green>
-                   <blue>0</blue>
-                  </color>
-                 </brush>
-                </colorrole>
-               </inactive>
-               <disabled>
-                <colorrole role="Text">
-                 <brush brushstyle="SolidPattern">
-                  <color alpha="255">
-                   <red>120</red>
-                   <green>120</green>
-                   <blue>120</blue>
-                  </color>
-                 </brush>
-                </colorrole>
-                <colorrole role="Base">
-                 <brush brushstyle="SolidPattern">
-                  <color alpha="255">
-                   <red>240</red>
-                   <green>240</green>
-                   <blue>240</blue>
-                  </color>
-                 </brush>
-                </colorrole>
-               </disabled>
-              </palette>
-             </property>
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-             <property name="acceptRichText">
-              <bool>false</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="2" colspan="3">
-            <widget class="QGroupBox" name="groupBox_3">
-             <property name="title">
-              <string>spi</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout_2">
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="SpiReadBytes"/>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_9">
-                <property name="text">
-                 <string>read bytes</string>
-                </property>
-               </widget>
-              </item>
-              <item row="3" column="1">
-               <spacer name="verticalSpacer_2">
-                <property name="orientation">
-                 <enum>Qt::Vertical</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>20</width>
-                  <height>40</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
-              <item row="0" column="2">
-               <widget class="QPushButton" name="SpiExecute">
-                <property name="text">
-                 <string>execute</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLineEdit" name="SpiBytesToSend">
-                <property name="text">
-                 <string>0</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_7">
-                <property name="text">
-                 <string>bytes to write</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item row="1" column="0" colspan="5">
+           <item row="0" column="4">
             <widget class="QGroupBox" name="groupBox_13">
              <property name="title">
               <string>gpio</string>
@@ -992,31 +909,147 @@
              </layout>
             </widget>
            </item>
-           <item row="0" column="2" colspan="3">
-            <widget class="QGroupBox" name="groupBox_12">
+           <item row="2" column="0" colspan="5">
+            <layout class="QHBoxLayout" name="horizontalLayout_3">
+             <item>
+              <widget class="QTextEdit" name="Console">
+               <property name="palette">
+                <palette>
+                 <active>
+                  <colorrole role="Text">
+                   <brush brushstyle="SolidPattern">
+                    <color alpha="255">
+                     <red>0</red>
+                     <green>255</green>
+                     <blue>0</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
+                  <colorrole role="Base">
+                   <brush brushstyle="SolidPattern">
+                    <color alpha="255">
+                     <red>0</red>
+                     <green>0</green>
+                     <blue>0</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
+                 </active>
+                 <inactive>
+                  <colorrole role="Text">
+                   <brush brushstyle="SolidPattern">
+                    <color alpha="255">
+                     <red>0</red>
+                     <green>255</green>
+                     <blue>0</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
+                  <colorrole role="Base">
+                   <brush brushstyle="SolidPattern">
+                    <color alpha="255">
+                     <red>0</red>
+                     <green>0</green>
+                     <blue>0</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
+                 </inactive>
+                 <disabled>
+                  <colorrole role="Text">
+                   <brush brushstyle="SolidPattern">
+                    <color alpha="255">
+                     <red>120</red>
+                     <green>120</green>
+                     <blue>120</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
+                  <colorrole role="Base">
+                   <brush brushstyle="SolidPattern">
+                    <color alpha="255">
+                     <red>240</red>
+                     <green>240</green>
+                     <blue>240</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
+                 </disabled>
+                </palette>
+               </property>
+               <property name="readOnly">
+                <bool>true</bool>
+               </property>
+               <property name="acceptRichText">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_2">
+               <item>
+                <widget class="QPushButton" name="ClearConsole">
+                 <property name="text">
+                  <string>clear</string>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <spacer name="verticalSpacer_3">
+                 <property name="orientation">
+                  <enum>Qt::Vertical</enum>
+                 </property>
+                 <property name="sizeHint" stdset="0">
+                  <size>
+                   <width>20</width>
+                   <height>40</height>
+                  </size>
+                 </property>
+                </spacer>
+               </item>
+              </layout>
+             </item>
+            </layout>
+           </item>
+           <item row="1" column="4">
+            <widget class="QGroupBox" name="groupBox_3">
              <property name="title">
-              <string>spi configuration</string>
+              <string>spi</string>
              </property>
-             <layout class="QGridLayout" name="gridLayout_15">
-              <item row="1" column="1">
-               <widget class="QComboBox" name="AardvardSpiPhase">
-                <property name="sizeAdjustPolicy">
-                 <enum>QComboBox::AdjustToContents</enum>
+             <layout class="QGridLayout" name="gridLayout_2">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_7">
+                <property name="text">
+                 <string>bytes to write</string>
                 </property>
-                <item>
-                 <property name="text">
-                  <string>Sample/Setup</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Setup/Sample</string>
-                 </property>
-                </item>
                </widget>
               </item>
-              <item row="4" column="1">
-               <spacer name="verticalSpacer_10">
+              <item row="0" column="1">
+               <layout class="QHBoxLayout" name="horizontalLayout_2">
+                <item>
+                 <spacer name="horizontalSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
+                 <widget class="QPushButton" name="SpiExecute">
+                  <property name="text">
+                   <string>execute</string>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item row="2" column="1">
+               <spacer name="verticalSpacer_2">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
                 </property>
@@ -1028,117 +1061,145 @@
                 </property>
                </spacer>
               </item>
-              <item row="0" column="1">
-               <widget class="QComboBox" name="AardvardSpiPolarity">
-                <property name="sizeAdjustPolicy">
-                 <enum>QComboBox::AdjustToContents</enum>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>Rising/Falling</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Falling/Rising</string>
-                 </property>
-                </item>
-               </widget>
+              <item row="1" column="0" colspan="2">
+               <widget class="QTextEdit" name="SpiBytesToSend"/>
               </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_34">
-                <property name="text">
-                 <string>baudrate (kHz)</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="4" rowspan="3">
-               <spacer name="horizontalSpacer_12">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>124</width>
-                  <height>20</height>
-                 </size>
-                </property>
-               </spacer>
-              </item>
+             </layout>
+            </widget>
+           </item>
+           <item row="1" column="0" colspan="4">
+            <widget class="QGroupBox" name="groupBox">
+             <property name="title">
+              <string>i2c</string>
+             </property>
+             <layout class="QGridLayout" name="gridLayout">
               <item row="0" column="0">
-               <widget class="QLabel" name="label_33">
+               <widget class="QLabel" name="label_4">
                 <property name="text">
-                 <string>polarity</string>
+                 <string>address (hex)</string>
                 </property>
                </widget>
               </item>
-              <item row="2" column="1">
-               <widget class="QLineEdit" name="AardvardSpiBaudrate">
+              <item row="0" column="1">
+               <widget class="QLineEdit" name="I2cAddress">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>16777215</width>
+                  <width>60</width>
                   <height>16777215</height>
                  </size>
                 </property>
                 <property name="text">
-                 <string>1000</string>
+                 <string>000</string>
+                </property>
+                <property name="maxLength">
+                 <number>3</number>
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_51">
+              <item row="0" column="2">
+               <widget class="QLabel" name="label_5">
                 <property name="text">
-                 <string>phase</string>
+                 <string>flags (hex)</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="3">
-               <widget class="QComboBox" name="AardvardSpiSSPolarity">
-                <item>
-                 <property name="text">
-                  <string>Active Low</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>Active High</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="QLabel" name="label_40">
+               <widget class="QLineEdit" name="I2cFlags">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>60</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
                 <property name="text">
-                 <string>ss polarity</string>
+                 <string>0</string>
+                </property>
+                <property name="maxLength">
+                 <number>2</number>
                 </property>
                </widget>
               </item>
-              <item row="1" column="3">
-               <widget class="QComboBox" name="AardvardSpiBitorder">
-                <item>
-                 <property name="text">
-                  <string>MSB</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>LSB</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="1" column="2">
-               <widget class="QLabel" name="label_32">
+              <item row="0" column="4">
+               <widget class="QLabel" name="label">
                 <property name="text">
-                 <string>bitorder</string>
+                 <string>number of bytes to read</string>
                 </property>
                </widget>
+              </item>
+              <item row="0" column="5">
+               <widget class="QSpinBox" name="I2cNumberOfBytesToRead"/>
+              </item>
+              <item row="0" column="6">
+               <spacer name="horizontalSpacer_2">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>40</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="0" column="7">
+               <widget class="QPushButton" name="I2cExecute">
+                <property name="text">
+                 <string>execute</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="0">
+               <layout class="QVBoxLayout" name="verticalLayout_3">
+                <item>
+                 <widget class="QLabel" name="label_2">
+                  <property name="text">
+                   <string>bytes to write</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <spacer name="verticalSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Vertical</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>20</width>
+                    <height>40</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+               </layout>
+              </item>
+              <item row="2" column="1">
+               <spacer name="verticalSpacer_4">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="1" colspan="7">
+               <widget class="QTextEdit" name="I2cBytesToSend"/>
               </item>
              </layout>
             </widget>

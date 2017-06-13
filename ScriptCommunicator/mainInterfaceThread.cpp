@@ -475,9 +475,10 @@ void MainInterfaceThread::sendDataSlot(const QByteArray data, uint id)
                 isI2cRead = (data.size() == AardvarkI2cSpi::SEND_CONTROL_BYTES_COUNT) ? true : false;
             }
 
+            sendingFinishedSignal(true, id);
+
             if(!isI2cRead)
             {
-                sendingFinishedSignal(true, id);
                 sendingFinishedSignal(data, true, id);
                 m_numberOfSentBytes += data.size();
 

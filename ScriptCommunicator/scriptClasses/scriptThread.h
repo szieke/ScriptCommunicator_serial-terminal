@@ -255,6 +255,11 @@ public:
     ///If more then 8 data bytes are given several can messages with the same can id will be sent.
     Q_INVOKABLE bool sendCanMessage(quint8 type, quint32 canId, QVector<unsigned char> data, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false);
 
+    ///Accesses the I2C bus (write/read).
+    ///Note: This functions works only if the main interface is an I2C bus (master mode).
+    Q_INVOKABLE bool accessI2cMaster(quint8 flags, quint16 slaveAddress, quint16 numberOfBytesToRead, QVector<unsigned char> dataToSend = QVector<unsigned char>(),
+                                     int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false);
+
     ///Sends a string (QString) with the main interface (in MainInterfaceThread).
     Q_INVOKABLE bool sendString(QString string, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false);
 
@@ -291,11 +296,11 @@ public:
     Q_INVOKABLE quint32 getSerialPortSignals(void){uint32_t bits;emit getSerialPortSignalsSignal(&bits);return bits;}
 
     ///Returns a string which contains informations about all detected devices.
-    Q_INVOKABLE QString detectAardvardI2cSpiDevices(void){return AardvarkI2cSpi::detectDevices();}
+    Q_INVOKABLE QString aardvardI2cSpiDetectDevices(void){return AardvarkI2cSpi::detectDevices();}
 
     ///Connects the main interface (Aardvard I2C/SPI).
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
-    Q_INVOKABLE bool connectAardvardI2cSpiDevice(QScriptValue aardvardI2cSpiSettings, quint32 connectTimeout = 5000);
+    Q_INVOKABLE bool aardvardI2cSpiConnect(QScriptValue aardvardI2cSpiSettings, quint32 connectTimeout = 5000);
 
     ///Connects the main interface (serial port).
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
@@ -309,6 +314,15 @@ public:
     ///Connects the main interface (cheetah spi).
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
     Q_INVOKABLE bool connectCheetahSpi(quint32 port, qint16 mode, quint32 baudrate, quint8 chipSelectBits = 1, quint32 connectTimeout = 1000);
+
+    ///Sets the value of an output pin (Aardvard I2C/SPI device).
+    Q_INVOKABLE bool aardvardI2cSpiSetOutput(quint8 pinIndex, bool high);
+
+    ///Changes the configuration of a pin (Aardvard I2C/SPI device).
+    Q_INVOKABLE bool aardvardI2cSpiChangePinConfiguration(quint8 pinIndex, bool isInput, bool withPullups=false);
+
+    ///Returns the Aardvard I2C/SPI settings of the main interface.
+    Q_INVOKABLE QScriptValue aardvardI2cSpiGetMainInterfaceSettings(void);
 
     ///Returns the serial port settings of the main interface.
     Q_INVOKABLE QScriptValue getMainInterfaceSerialPortSettings(void);
@@ -615,6 +629,11 @@ public:
 
 signals:
 
+    ///Is emitted if the input states of the Ardvard I2c/Spi device (main interface) have been changed.
+    ///Note: states contains AARDVARD_I2C_SPI_GPIO_COUNT elements.
+    ///Scripts can connect a function to this signal.
+    void aardvardI2cSpiInputStatesChangedSignal(QVector<bool> states);
+
     ///Is emitted if the clear console button in the main window is pressed.
     ///Scripts can connect a function to this signal.
     void mainWindowClearConsoleClickedSignal(void);
@@ -648,15 +667,19 @@ signals:
     ///Scripts can connect a function to this signal.
     void globalRealChangedSignal(QString name, double number);
 
-    ///This signal is emitted if data has been received with the main interface (only if the main interface is not a can interface,
-    ///use canMessagesReceivedSignal if the main interface is a can interface).
+    ///This signal is emitted if data has been received with the main interface (only if the main interface is not a CAN or I2C interface,
+    ///use canMessagesReceivedSignal if the main interface is a can interface and i2cDataReceivedSignal if the main interface is
+    ///an I2C interface).
     ///Scripts can connect a function to this signal.
     void dataReceivedSignal(QVector<unsigned char> data);
+
+    ///This signal is emitted if data has been received with the main interface and the main interface is an I2C bus.
+    ///Scripts can connect a function to this signal.
+    void i2cDataReceivedSignal(quint8 flags, quint16 address, QVector<unsigned char> data);
 
     ///This signal is emitted in setMainWindowAndTaskBarIcon.
     ///This signal must not be used from script.
     void setMainWindowAndTaskBarIconSignal(QString iconFile);
-
 
     ///This signal is emitted if a can message (or several) has been received with the main interface.
     ///Scripts can connect a function to this signal.
@@ -743,12 +766,24 @@ signals:
     ///This signal must not be used from script.
     void getSerialPortSignalsSignal(uint32_t* bits);
 
+    ///Is emitted in setAardvardI2cSpiOutput.
+    ///This signal must not be used from script.
+    void setAardvardI2cSpiOutputSignal(AardvardI2cSpiSettings settings);
+
+    ///Is emitted in changeAardvardI2cSpiPinConfiguration.
+    ///This signal must not be used from script.
+    void changeAardvardI2cSpiPinConfigurationSignal(AardvardI2cSpiSettings settings);
+
 protected:
     ///The thread main function.
     void run();
 
 
 private slots:
+
+    ///Is called if the input states of the Ardvard I2c/Spi device (main interface) have been changed.
+    ///Note: states contains AARDVARD_I2C_SPI_GPIO_COUNT elements.
+    void aardvardI2cSpiInputStatesChangedSlot(QVector<bool> states){emit aardvardI2cSpiInputStatesChangedSignal(states);}
 
     ///The script is suspended by the debugger.
     void suspendedByDebuggerSlot();

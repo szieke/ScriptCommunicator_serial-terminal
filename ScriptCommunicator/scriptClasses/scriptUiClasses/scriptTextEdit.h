@@ -106,6 +106,20 @@ public:
     ///Sets the update rate of the script text edit.
     Q_INVOKABLE void setUpdateRate(int updateRate){m_updateRate = updateRate;}
 
+    ///If block is true, signals emitted by this object are blocked (i.e., emitting a signal will not invoke anything connected to it).
+    ///If block is false, no such blocking will occur.
+    ///The return value is the previous value of the blocking state.
+    Q_INVOKABLE bool blockSignals(bool block)
+    {
+        if(!block && m_textEdit->signalsBlocked())
+        {//The signals shall be reenabled.
+
+            //Add all data.
+            storedTimerElapsedSlot();
+        }
+        return m_textEdit->blockSignals(block);
+    }
+
 public Q_SLOTS:
 
     ///This slot function sets font size.

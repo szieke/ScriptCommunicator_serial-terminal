@@ -344,6 +344,16 @@ void ScriptThread::run()
         connect(m_scriptWindow->m_mainInterfaceThread, SIGNAL(canMessagesReceivedSignal(QVector<QByteArray>)),
                 this, SLOT(canMessagesReceivedSlot(QVector<QByteArray>)), Qt::QueuedConnection);
 
+        connect(this, SIGNAL(setAardvardI2cSpiOutputSignal(AardvardI2cSpiSettings)),
+                m_scriptWindow->m_mainInterfaceThread->m_aardvarkI2cSpi, SLOT(outputValueChangedSlot(AardvardI2cSpiSettings)), Qt::QueuedConnection);
+
+        connect(m_scriptWindow->m_mainInterfaceThread->m_aardvarkI2cSpi, SIGNAL(inputStatesChangedSignal(QVector<bool>)),
+                this, SLOT(aardvardI2cSpiInputStatesChangedSlot(QVector<bool>)), Qt::QueuedConnection);
+
+
+        connect(this, SIGNAL(changeAardvardI2cSpiPinConfigurationSignal(AardvardI2cSpiSettings)),
+                m_scriptWindow->m_mainInterfaceThread->m_aardvarkI2cSpi, SLOT(pinConfigChangedSlot(AardvardI2cSpiSettings)), Qt::QueuedConnection);
+
 
         connect(m_scriptWindow->m_mainInterfaceThread, SIGNAL(sendDataWithWorkerScriptsSignal(QByteArray)),
                 this, SLOT(sendDataFromMainInterfaceSlot(QByteArray)), Qt::QueuedConnection);
@@ -408,6 +418,7 @@ void ScriptThread::run()
 
 
         qScriptRegisterSequenceMetaType<QVector<unsigned char> >(m_scriptEngine);
+        qScriptRegisterSequenceMetaType<QVector<bool> >(m_scriptEngine);
         qScriptRegisterSequenceMetaType<QVector<quint8> >(m_scriptEngine);
         qScriptRegisterSequenceMetaType<QVector<quint32> >(m_scriptEngine);
         qScriptRegisterSequenceMetaType<QVector<QVector<unsigned char>> >(m_scriptEngine);
@@ -1417,25 +1428,45 @@ void ScriptThread::dataReceivedSlot(QByteArray data)
 {
     if(m_state == RUNNING)
     {
-        if(QObject::receivers(SIGNAL(dataReceivedSignal(QVector<unsigned char>))) > 0)
+        if(!m_isConnectedWithI2c)
         {
-            QVector<unsigned char> dataVector;
-
-            for(auto val : data)
+            if(QObject::receivers(SIGNAL(dataReceivedSignal(QVector<unsigned char>))) > 0)
             {
-                dataVector.push_back((unsigned char) val);
-            }
-            if(m_scriptRunsInDebugger)
-            {
-                m_savedReceivedData.append(dataVector);
-                if(!m_debugReceiveTimer.isActive())
+                QVector<unsigned char> dataVector;
+                for(auto val : data)
                 {
-                    m_debugReceiveTimer.start();
+                    dataVector.push_back((unsigned char) val);
+                }
+                if(m_scriptRunsInDebugger)
+                {
+                    m_savedReceivedData.append(dataVector);
+                    if(!m_debugReceiveTimer.isActive())
+                    {
+                        m_debugReceiveTimer.start();
+                    }
+                }
+                else
+                {
+                    emit dataReceivedSignal(dataVector);
                 }
             }
-            else
+        }
+        else
+        {//Connected with abn I2C interface.
+
+            if(QObject::receivers(SIGNAL(i2cDataReceivedSignal(quint8, quint16, QVector<unsigned char>))) > 0)
             {
-                emit dataReceivedSignal(dataVector);
+                quint8 flags = (quint8)data[0];
+                quint16 address = (quint16)data[2] + ((quint16)data[1] << 8);
+                data.remove(0, AardvarkI2cSpi::RECEIVE_CONTROL_BYTES_COUNT);
+
+                QVector<unsigned char> dataVector;
+                for(auto val : data)
+                {
+                    dataVector.push_back((unsigned char) val);
+                }
+
+                emit i2cDataReceivedSignal(flags, address, dataVector);
             }
         }
     }
@@ -1556,17 +1587,51 @@ bool ScriptThread::sendDataArray(QVector<unsigned char> data, int repetitionCoun
  */
 bool ScriptThread::sendCanMessage(quint8 type, quint32 canId, QVector<unsigned char> data, int repetitionCount, int pause, bool addToMainWindowSendHistory)
 {
-    QByteArray byteArray;
-    byteArray.push_back(type);
+    bool result = false;
 
-    byteArray.push_back((canId >> 24) & 0xff);
-    byteArray.push_back((canId >> 16) & 0xff);
-    byteArray.push_back((canId >> 8) & 0xff);
-    byteArray.push_back(canId & 0xff);
+    if(m_isConnectedWithCan)
+    {
+        QByteArray byteArray;
+        byteArray.push_back(type);
 
-    byteArray.append(QByteArray(reinterpret_cast<const char*>(data.constData()), data.size()));
+        byteArray.push_back((canId >> 24) & 0xff);
+        byteArray.push_back((canId >> 16) & 0xff);
+        byteArray.push_back((canId >> 8) & 0xff);
+        byteArray.push_back(canId & 0xff);
 
-    return sendByteArray(byteArray, repetitionCount, pause, addToMainWindowSendHistory);
+        byteArray.append(QByteArray(reinterpret_cast<const char*>(data.constData()), data.size()));
+
+        result = sendByteArray(byteArray, repetitionCount, pause, addToMainWindowSendHistory);
+    }
+
+    return result;
+}
+
+bool ScriptThread::accessI2cMaster(quint8 flags, quint16 slaveAddress, quint16 numberOfBytesToRead, QVector<unsigned char> dataToSend,
+                                   int repetitionCount, int pause, bool addToMainWindowSendHistory)
+{
+    bool result = false;
+
+    if(m_isConnectedWithI2c)
+    {
+        QByteArray byteArray;
+        byteArray.push_back(flags);
+
+        byteArray.push_back((slaveAddress >> 8) & 0xff);
+        byteArray.push_back(slaveAddress & 0xff);
+
+        byteArray.push_back((numberOfBytesToRead >> 8) & 0xff);
+        byteArray.push_back(numberOfBytesToRead & 0xff);
+
+        if(!dataToSend.isEmpty())
+        {
+            byteArray.append(QByteArray(reinterpret_cast<const char*>(dataToSend.constData()), dataToSend.size()));
+        }
+
+        result =  sendByteArray(byteArray, repetitionCount, pause, addToMainWindowSendHistory);
+    }
+
+    return result;
 }
 
 /**
@@ -1773,7 +1838,7 @@ void ScriptThread::setSerialPortPins(bool setRTS, bool setDTR)
  * @return
  *      True on success.
  */
-bool ScriptThread::connectAardvardI2cSpiDevice(QScriptValue aardvardI2cSpiSettings, quint32 connectTimeout)
+bool ScriptThread::aardvardI2cSpiConnect(QScriptValue aardvardI2cSpiSettings, quint32 connectTimeout)
 {
     bool succeeded = false;
 
@@ -3100,6 +3165,96 @@ QStringList ScriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object
         emit appendTextToConsoleSignal(resultString, true, false);
     }
     return resultList;
+}
+
+/**
+ * Sets the value of an output pin (Aardvard I2C/SPI device).
+ *
+ * @param pinIndex
+ *      The index of the pin.
+ * @param high
+ *      True for 1 and false for 0.
+ * return
+ *      True on success.
+ */
+bool ScriptThread::aardvardI2cSpiSetOutput(quint8 pinIndex, bool high)
+{
+    bool result = false;
+    Settings settings = *m_settingsDialog->settings();
+
+    if(pinIndex < AARDVARD_I2C_SPI_GPIO_COUNT)
+    {
+        result = true;
+        settings.aardvardI2cSpi.pinConfigs[pinIndex].outValue = high;
+        emit setAardvardI2cSpiOutputSignal(settings.aardvardI2cSpi);
+        emit setAllSettingsSignal(settings, false);
+    }
+
+    return result;
+}
+
+/**
+ * Changes the configuration of a pin (Aardvard I2C/SPI device).
+ *
+ * @param pinIndex
+ *      The index of the pin.
+ * @param isInput
+ *      True if the pin shall be configured as input.
+ * @param withPullups
+ *      True of the input pin shall have a pullup (not possible with output).
+ * return
+ *      True on success.
+ */
+bool ScriptThread::aardvardI2cSpiChangePinConfiguration(quint8 pinIndex, bool isInput, bool withPullups)
+{
+    bool result = false;
+    Settings settings = *m_settingsDialog->settings();
+
+    if(pinIndex < AARDVARD_I2C_SPI_GPIO_COUNT)
+    {
+        result = true;
+        settings.aardvardI2cSpi.pinConfigs[pinIndex].outValue = 0;
+        settings.aardvardI2cSpi.pinConfigs[pinIndex].isInput = isInput;
+        settings.aardvardI2cSpi.pinConfigs[pinIndex].withPullups = withPullups;
+        emit changeAardvardI2cSpiPinConfigurationSignal(settings.aardvardI2cSpi);
+        emit setAllSettingsSignal(settings, false);
+    }
+
+    return result;
+}
+
+/**
+ * Returns the Aardvard I2C/SPI settings of the main interface.
+ * @return
+ *      The settings.
+ */
+QScriptValue ScriptThread::aardvardI2cSpiGetMainInterfaceSettings(void)
+{
+    const Settings* settings = m_settingsDialog->settings();
+    QScriptValue ret = m_scriptEngine->newObject();
+
+    ret.setProperty("devicePort", settings->aardvardI2cSpi.devicePort);
+    ret.setProperty("deviceMode", settings->aardvardI2cSpi.deviceMode);
+    ret.setProperty("device5VIsOn", settings->aardvardI2cSpi.device5VIsOn);
+    ret.setProperty("i2cBaudrate", settings->aardvardI2cSpi.i2cBaudrate);
+    ret.setProperty("i2cPullupsOn", settings->aardvardI2cSpi.i2cPullupsOn);
+    ret.setProperty("spiSSPolarity", settings->aardvardI2cSpi.spiSSPolarity);
+    ret.setProperty("spiBitorder", settings->aardvardI2cSpi.spiBitorder);
+    ret.setProperty("spiPhase", settings->aardvardI2cSpi.spiPhase);
+    ret.setProperty("spiBaudrate", settings->aardvardI2cSpi.spiBaudrate);
+
+    QScriptValue pinConfigs = m_scriptEngine->newArray(AARDVARD_I2C_SPI_GPIO_COUNT);
+    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+    {
+        QScriptValue el = m_scriptEngine->newObject();
+        el.setProperty("isInput", settings->aardvardI2cSpi.pinConfigs[i].isInput);
+        el.setProperty("withPullups", settings->aardvardI2cSpi.pinConfigs[i].withPullups);
+        el.setProperty("outValue", settings->aardvardI2cSpi.pinConfigs[i].outValue);
+        pinConfigs.setProperty(i, el);
+    }
+    ret.setProperty("pinConfigs", pinConfigs);
+
+    return ret;
 }
 
 

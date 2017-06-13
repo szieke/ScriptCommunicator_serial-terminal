@@ -34,3 +34,4 @@ Makefile*
 CMakeLists.txt.user
 ScriptCommunicator/exampleScripts/WorkerScripts/Gui/testFileFromGuiExample.txt
 ScriptCommunicator/ScriptEditor/test/test.js
+ScriptCommunicator/exampleScripts/WorkerScripts/TestAardvardI2cSpi/aardvardI2cSpi_settings.txt

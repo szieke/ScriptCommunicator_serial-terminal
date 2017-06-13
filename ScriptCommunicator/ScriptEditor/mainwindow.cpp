@@ -1048,6 +1048,7 @@ void MainWindow::cutSlot()
 {
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
     textEditor->cut();
+    textEditor->removeUndlineFromWordWhichCanBeClicked();
 }
 
 /**
@@ -1057,6 +1058,7 @@ void MainWindow::copySlot()
 {
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
     textEditor->copy();
+    textEditor->removeUndlineFromWordWhichCanBeClicked();
 }
 
 /**
@@ -1066,6 +1068,7 @@ void MainWindow::pasteSlot()
 {
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
     textEditor->paste();
+    textEditor->removeUndlineFromWordWhichCanBeClicked();
 }
 
 /**
@@ -2238,6 +2241,7 @@ void MainWindow::documentWasModified(int index)
     {
         textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(index)->layout()->itemAt(0)->widget());
     }
+    textEditor->removeUndlineFromWordWhichCanBeClicked();
     setWindowModified(textEditor->isModified());
     textEditor->setMarginWidth(0, QString("00%1").arg(textEditor->lines()));
     textEditor->setFileMustBeParsed(true);
