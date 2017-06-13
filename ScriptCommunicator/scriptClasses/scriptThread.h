@@ -257,8 +257,12 @@ public:
 
     ///Accesses the I2C bus (write/read).
     ///Note: This functions works only if the main interface is an I2C bus (master mode).
-    Q_INVOKABLE bool accessI2cMaster(quint8 flags, quint16 slaveAddress, quint16 numberOfBytesToRead, QVector<unsigned char> dataToSend = QVector<unsigned char>(),
+    Q_INVOKABLE bool i2cMasterReadWrite(quint8 flags, quint16 slaveAddress, quint16 numberOfBytesToRead, QVector<unsigned char> dataToSend = QVector<unsigned char>(),
                                      int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false);
+
+    ///Frees the main interface I2C bus (this function can be used if the no stop condition was created
+    ///during the last i2cMasterReadWrite call)
+    Q_INVOKABLE void i2cMasterFreeBus(void){emit i2cMasterFreeBusSignal();}
 
     ///Sends a string (QString) with the main interface (in MainInterfaceThread).
     Q_INVOKABLE bool sendString(QString string, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false);
@@ -773,6 +777,10 @@ signals:
     ///Is emitted in changeAardvardI2cSpiPinConfiguration.
     ///This signal must not be used from script.
     void changeAardvardI2cSpiPinConfigurationSignal(AardvardI2cSpiSettings settings);
+
+    ///Is emitted in i2cMasterFreeBus.
+    ///This signal must not be used from script.
+    void i2cMasterFreeBusSignal(void);
 
 protected:
     ///The thread main function.

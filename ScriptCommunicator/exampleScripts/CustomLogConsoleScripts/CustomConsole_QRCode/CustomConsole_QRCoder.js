@@ -27,18 +27,18 @@ var QRCodeArray =  CSVToArray(QRCode);
   *
   * The created log strings are directly (without interpreting the content)  written into the custom log file.
   *
-  * If the data is send with a CAN interface then the first bytes have the following meaning:
+  * If the data is send with a CAN interface then the first bytes are:
   * Byte 0= message type (0=standard, 1=standard remote-transfer-request, 2=extended, 3=extended remote-transfer-request)
   * Byte 1-4 (MSB)= can id 
   * Byte 5-12= the data.  
   *
-  * If the data is received with a CAN interface then the first bytes have the following meaning:
+  * If the data is received with a CAN interface then the first bytes are:
   * Byte 0= message type (0=standard, 1=standard remote-transfer-request, 2=extended, 3=extended remote-transfer-request)
   * Byte 1-4 (MSB)= can id 
   * Byte 5-8 (MSB)=timestamp (difference between the first received CAN message (after the last connect) and the current)
   * Byte 9-16= the data.  
   *
-  * If the data is send or received with a I2C interface then the first bytes have the following meaning:
+  * If the data is send or received with a I2C interface then the first bytes are:
   * Byte 0= flags bits (1=10 bit address, 2=combined FMT, 4=no stop condition)
   * Byte 1-2 (MSB)= I2C address
   * Byte 3-n= the data.  

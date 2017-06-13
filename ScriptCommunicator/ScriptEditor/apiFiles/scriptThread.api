@@ -121,7 +121,7 @@ scriptThread::globalDataArrayChangedSignal.connect(String name, Array<Number> da
 scriptThread::globalUnsignedChangedSignal.connect(String name, Number number)\nIs emitted if an unsigned number in the global unsigned number map has been changed
 scriptThread::globalSignedChangedSignal.connect(String name, Number number)\nIs emitted if a signed number in the global signed number map has been changed
 scriptThread::globalRealChangedSignal.connect(String name, Number number)\nIs emitted if a real number in the global real number map has been changed
-scriptThread::dataReceivedSignal.connect(Array<Number> data)\nThis signal is emitted if data has been received with the main interface (only if the main interface is not a can interface, \nuse canMessagesReceivedSignal if the main interface is a can interface).
+scriptThread::dataReceivedSignal.connect(Array<Number> data)\nThis signal is emitted if data has been received with the main interface\n(only if the main interface is not a CAN or I2C interface, use canMessagesReceivedSignal if the main interface is a can interface and\ni2cDataReceivedSignal if the main interface is an I2C interface).
 scriptThread::canMessagesReceivedSignal.connect(Array<Number> types, Array<Number> messageIds, Array<Number> timestamps, Array<Array<Number>>  data)\nThis signal is emitted if a can message (or several) has been received with the main interface.	
 scriptThread::sendDataFromMainInterfaceSignal.connect(Array<Number> data)\nIs emitted if the main interface shall send data.\nScripts can use this signal to send the main interface data with an additional interface.		
 scriptThread::mainWindowClearConsoleClickedSignal.connect(void)\nIs emitted if the clear console button in the main window is pressed.

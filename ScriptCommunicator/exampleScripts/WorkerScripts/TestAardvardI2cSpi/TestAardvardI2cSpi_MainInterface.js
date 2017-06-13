@@ -19,6 +19,11 @@ function dialogFinishedSlot(e)
 	scriptThread.stopScript()
 }
 
+function freeI2cBusSlot()
+{
+	scriptThread.i2cMasterFreeBus();
+	UI_Console.append("free I2C bus");
+}
 function executeI2cSlot()
 {
 	
@@ -54,7 +59,7 @@ function executeI2cSlot()
 		dataToSend = convertHexStringToByteArray(UI_I2cBytesToSend.toPlainText());
 	}
 	
-	if(scriptThread.accessI2cMaster(flags, slaveAddress, numberOfBytesToRead,  dataToSend))
+	if(scriptThread.i2cMasterReadWrite(flags, slaveAddress, numberOfBytesToRead,  dataToSend))
 	{
 		UI_Console.append("execute I2C: flags=0x" + flags.toString(16) + " address=0x" + slaveAddress.toString(16) + " data= " + conv.byteArrayToHexString(dataToSend));
 	}

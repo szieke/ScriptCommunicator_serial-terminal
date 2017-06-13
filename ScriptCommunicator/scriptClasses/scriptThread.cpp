@@ -350,9 +350,12 @@ void ScriptThread::run()
         connect(m_scriptWindow->m_mainInterfaceThread->m_aardvarkI2cSpi, SIGNAL(inputStatesChangedSignal(QVector<bool>)),
                 this, SLOT(aardvardI2cSpiInputStatesChangedSlot(QVector<bool>)), Qt::QueuedConnection);
 
+        connect(this, SIGNAL(setAardvardI2cSpiOutputSignal(AardvardI2cSpiSettings)),
+                m_scriptWindow->m_mainInterfaceThread->m_aardvarkI2cSpi, SLOT(outputValueChangedSlot(AardvardI2cSpiSettings)), Qt::QueuedConnection);
 
-        connect(this, SIGNAL(changeAardvardI2cSpiPinConfigurationSignal(AardvardI2cSpiSettings)),
-                m_scriptWindow->m_mainInterfaceThread->m_aardvarkI2cSpi, SLOT(pinConfigChangedSlot(AardvardI2cSpiSettings)), Qt::QueuedConnection);
+
+        connect(this, SIGNAL(i2cMasterFreeBusSignal()),
+                m_scriptWindow->m_mainInterfaceThread->m_aardvarkI2cSpi, SLOT(freeI2cBusSlot()), Qt::QueuedConnection);
 
 
         connect(m_scriptWindow->m_mainInterfaceThread, SIGNAL(sendDataWithWorkerScriptsSignal(QByteArray)),
@@ -1607,7 +1610,7 @@ bool ScriptThread::sendCanMessage(quint8 type, quint32 canId, QVector<unsigned c
     return result;
 }
 
-bool ScriptThread::accessI2cMaster(quint8 flags, quint16 slaveAddress, quint16 numberOfBytesToRead, QVector<unsigned char> dataToSend,
+bool ScriptThread::i2cMasterReadWrite(quint8 flags, quint16 slaveAddress, quint16 numberOfBytesToRead, QVector<unsigned char> dataToSend,
                                    int repetitionCount, int pause, bool addToMainWindowSendHistory)
 {
     bool result = false;

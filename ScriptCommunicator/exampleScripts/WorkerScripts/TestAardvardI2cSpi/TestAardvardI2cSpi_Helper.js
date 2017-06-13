@@ -254,6 +254,7 @@ function initializeGuiElements()
 	 UI_SpiExecute.clickedSignal.connect(executeSpiSlot);
 	 UI_I2cAddress.textChangedSignal.connect(UI_I2cAddress, hexTextLineTextChangedSlot);
 	 UI_I2cFlags.textChangedSignal.connect(UI_I2cFlags, hexTextLineTextChangedSlot);
+	 UI_AardvardI2cFreeBus.clickedSignal.connect(freeI2cBusSlot);
 
 }
 
