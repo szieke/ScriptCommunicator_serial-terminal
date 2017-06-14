@@ -1194,6 +1194,20 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
         }
     }while(entryChanged);
 
+
+    //Add the objects with an unknown type.
+    for(int i = 0; i < result.size(); i++)
+    {
+        for(int j = 0; j < result[i].size(); j++)
+        {
+            if(!m_autoCompletionEntries.contains(result[i][j].completeName))
+            {
+                m_autoCompletionEntries[result[i][j].completeName] << result[i][j].completeName;
+            }
+        }
+    }
+
+
     return result;
 }
 /**
