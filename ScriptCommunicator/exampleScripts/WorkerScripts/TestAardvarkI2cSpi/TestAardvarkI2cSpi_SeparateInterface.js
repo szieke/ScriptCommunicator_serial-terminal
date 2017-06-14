@@ -112,7 +112,7 @@ function connectSlot()
 	
 	if(!g_interface.isConnected())
 	{
-		/************************Create the AardvarkI2cSpiSettings strucure**********************/
+		/************************Create the AardvarkI2cSpiSettings structure**********************/
 		settings = Array();
 		settings.devicePort =  parseInt(UI_AardvarkI2cSpiPort.text());
 		settings.deviceMode =  UI_AardvarkI2cSpiMode.currentIndex();

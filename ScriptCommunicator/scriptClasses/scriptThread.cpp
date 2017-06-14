@@ -1609,6 +1609,23 @@ bool ScriptThread::sendCanMessage(quint8 type, quint32 canId, QVector<unsigned c
     return result;
 }
 
+/**
+ * Accesses the I2C bus (write/read).
+ * Note: This functions works only if the main interface is an I2C bus (master mode).
+ *
+ * @param flags
+ * @param slaveAddress
+ * @param numberOfBytesToRead
+ * @param dataToSend
+ *  @param repetitionCount
+ *      The data array is repeated until the number has been reached.
+ *  @param pause
+ *      The pause (ms) between two repetitions.
+ *  @param addToMainWindowSendHistory
+ *      True if the data shall be added to the send history in the main window.
+ * @return
+ *      True for success.
+ */
 bool ScriptThread::i2cMasterReadWrite(quint8 flags, quint16 slaveAddress, quint16 numberOfBytesToRead, QVector<unsigned char> dataToSend,
                                    int repetitionCount, int pause, bool addToMainWindowSendHistory)
 {

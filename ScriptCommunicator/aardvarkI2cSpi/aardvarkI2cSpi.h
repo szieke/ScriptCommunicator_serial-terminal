@@ -64,30 +64,31 @@ typedef enum
 }AardvarkI2cSpiDeviceMode;
 
 
-///aardvark I2C/SPI GPIO configuration.
+///Aardvark I2C/SPI GPIO configuration.
 typedef struct
 {
-    bool isInput;
-    bool withPullups;
-    bool outValue;
+    bool isInput;///True if the pin is an input.
+    bool withPullups;///True if the pin shall have a pullup (works only with inputs).
+    bool outValue;///The value of the output.
 }AardvarkI2cSpiGpioConfig;
 
-///Settings for a aardvark I2C/SPI interface.
+///Settings for an Aardvark I2C/SPI interface.
 typedef struct
 {
-    quint16 devicePort;
-    AardvarkI2cSpiDeviceMode deviceMode;
-    bool device5VIsOn;
+    quint16 devicePort;///The device port.
+    AardvarkI2cSpiDeviceMode deviceMode;///The device mode.
+    bool device5VIsOn;///True if the 5V pins shall be on.
 
-    quint16 i2cBaudrate;
-    bool i2cPullupsOn;
+    quint16 i2cBaudrate;///The I2C baudrate.
+    bool i2cPullupsOn;///True if the I2C pullups shall be enabled.
 
-    AardvarkSpiPolarity spiPolarity;
-    AardvarkSpiSSPolarity spiSSPolarity;
-    AardvarkSpiBitorder spiBitorder;
-    AardvarkSpiPhase spiPhase;
-    quint16 spiBaudrate;
+    AardvarkSpiPolarity spiPolarity;///The SPI Polarity
+    AardvarkSpiSSPolarity spiSSPolarity;///The SPI slave select polarity.
+    AardvarkSpiBitorder spiBitorder;///The SPI bitorder.
+    AardvarkSpiPhase spiPhase;///The SPI phase.
+    quint16 spiBaudrate;///The SPI baudrate.
 
+    ///The pin configuration.
     AardvarkI2cSpiGpioConfig pinConfigs[AARDVARK_I2C_SPI_GPIO_COUNT];
 
 }AardvarkI2cSpiSettings;
