@@ -72,7 +72,7 @@
 #include <QSerialPortInfo>
 #include "ui_mainwindow.h"
 #include "scriptTimer.h"
-
+#include "scriptAardvarkI2cSpi.h"
 
 
 //Global data maps (scripts can exchange data with the maps).
@@ -344,14 +344,14 @@ void ScriptThread::run()
         connect(m_scriptWindow->m_mainInterfaceThread, SIGNAL(canMessagesReceivedSignal(QVector<QByteArray>)),
                 this, SLOT(canMessagesReceivedSlot(QVector<QByteArray>)), Qt::QueuedConnection);
 
-        connect(this, SIGNAL(setAardvardI2cSpiOutputSignal(AardvardI2cSpiSettings)),
-                m_scriptWindow->m_mainInterfaceThread->m_aardvarkI2cSpi, SLOT(outputValueChangedSlot(AardvardI2cSpiSettings)), Qt::QueuedConnection);
+        connect(this, SIGNAL(setAardvarkI2cSpiOutputSignal(AardvarkI2cSpiSettings)),
+                m_scriptWindow->m_mainInterfaceThread->m_aardvarkI2cSpi, SLOT(outputValueChangedSlot(AardvarkI2cSpiSettings)), Qt::QueuedConnection);
 
         connect(m_scriptWindow->m_mainInterfaceThread->m_aardvarkI2cSpi, SIGNAL(inputStatesChangedSignal(QVector<bool>)),
-                this, SLOT(aardvardI2cSpiInputStatesChangedSlot(QVector<bool>)), Qt::QueuedConnection);
+                this, SLOT(aardvarkI2cSpiInputStatesChangedSlot(QVector<bool>)), Qt::QueuedConnection);
 
-        connect(this, SIGNAL(setAardvardI2cSpiOutputSignal(AardvardI2cSpiSettings)),
-                m_scriptWindow->m_mainInterfaceThread->m_aardvarkI2cSpi, SLOT(outputValueChangedSlot(AardvardI2cSpiSettings)), Qt::QueuedConnection);
+        connect(this, SIGNAL(setAardvarkI2cSpiOutputSignal(AardvarkI2cSpiSettings)),
+                m_scriptWindow->m_mainInterfaceThread->m_aardvarkI2cSpi, SLOT(outputValueChangedSlot(AardvarkI2cSpiSettings)), Qt::QueuedConnection);
 
 
         connect(this, SIGNAL(i2cMasterFreeBusSignal()),
@@ -585,6 +585,17 @@ QScriptValue ScriptThread::createCheetahSpiInterface(void)
 {
     ScriptCheetahSpi* spiInterface = new ScriptCheetahSpi(this);
     return m_scriptEngine->newQObject(spiInterface, QScriptEngine::ScriptOwnership);
+}
+
+/**
+ * Creates an Aardvark I2c/SPI interface.
+ * @return
+ *      The created interface.
+ */
+QScriptValue ScriptThread::aardvarkI2cSpiCreateInterface(void)
+{
+    ScriptAardvarkI2cSpi* aardvarkInterface = new ScriptAardvarkI2cSpi(this);
+    return m_scriptEngine->newQObject(aardvarkInterface, QScriptEngine::ScriptOwnership);
 }
 
 /**
@@ -1455,7 +1466,7 @@ void ScriptThread::dataReceivedSlot(QByteArray data)
             }
         }
         else
-        {//Connected with abn I2C interface.
+        {//Connected with an I2C interface.
 
             if(QObject::receivers(SIGNAL(i2cDataReceivedSignal(quint8, quint16, QVector<unsigned char>))) > 0)
             {
@@ -1832,73 +1843,27 @@ void ScriptThread::setSerialPortPins(bool setRTS, bool setDTR)
 
 
 /**
- * Connects the main interface (Aardvard I2C/SPI).
+ * Connects the main interface (Aardvark I2C/SPI).
  *
- * @param aardvardI2cSpiSettings
- *      The new settings (AardvardI2cSpiSettings structure).
+ * @param aardvarkI2cSpiSettings
+ *      The new settings (AardvarkI2cSpiSettings structure).
  * @param connectTimeout
  *      Connect timeout(ms)
  * @return
  *      True on success.
  */
-bool ScriptThread::aardvardI2cSpiConnect(QScriptValue aardvardI2cSpiSettings, quint32 connectTimeout)
+bool ScriptThread::aardvarkI2cSpiConnect(QScriptValue aardvarkI2cSpiSettings, quint32 connectTimeout)
 {
     bool succeeded = false;
 
     m_settingsDialog->updateSettings();
     Settings oldSettings = *m_settingsDialog->settings();
     Settings settings = *m_settingsDialog->settings();
-    settings.connectionType = CONNECTION_TYPE_AARDVARD;
+    settings.connectionType = CONNECTION_TYPE_AARDVARK;
 
 
-    if(aardvardI2cSpiSettings.property("devicePort").isValid() &&
-       aardvardI2cSpiSettings.property("deviceMode").isValid() &&
-       aardvardI2cSpiSettings.property("device5VIsOn").isValid() &&
-       aardvardI2cSpiSettings.property("i2cBaudrate").isValid() &&
-       aardvardI2cSpiSettings.property("i2cPullupsOn").isValid() &&
-       aardvardI2cSpiSettings.property("spiPolarity").isValid() &&
-       aardvardI2cSpiSettings.property("spiSSPolarity").isValid() &&
-       aardvardI2cSpiSettings.property("spiBitorder").isValid() &&
-       aardvardI2cSpiSettings.property("spiPhase").isValid() &&
-       aardvardI2cSpiSettings.property("spiBaudrate").isValid() &&
-       aardvardI2cSpiSettings.property("pinConfigs").isValid())
-    {
-        succeeded = true;
-        settings.aardvardI2cSpi.devicePort = aardvardI2cSpiSettings.property("devicePort").toUInt16();
-        settings.aardvardI2cSpi.deviceMode = (AardvardI2cSpiDeviceMode)aardvardI2cSpiSettings.property("deviceMode").toUInt16();
-        settings.aardvardI2cSpi.device5VIsOn = aardvardI2cSpiSettings.property("device5VIsOn").toBool();
-        settings.aardvardI2cSpi.i2cBaudrate = aardvardI2cSpiSettings.property("i2cBaudrate").toUInt16();
-        settings.aardvardI2cSpi.i2cPullupsOn = aardvardI2cSpiSettings.property("i2cPullupsOn").toBool();
-        settings.aardvardI2cSpi.spiSSPolarity = (AardvarkSpiSSPolarity)aardvardI2cSpiSettings.property("spiSSPolarity").toUInt16();
-        settings.aardvardI2cSpi.spiBitorder = (AardvarkSpiBitorder)aardvardI2cSpiSettings.property("spiBitorder").toUInt16();
-        settings.aardvardI2cSpi.spiPhase = (AardvarkSpiPhase)aardvardI2cSpiSettings.property("spiPhase").toUInt16();
-        settings.aardvardI2cSpi.spiBaudrate = aardvardI2cSpiSettings.property("spiBaudrate").toUInt16();
-
-        QScriptValue pinConfigs = aardvardI2cSpiSettings.property("pinConfigs");
-        for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
-        {
-            if(pinConfigs.property(i).property("isInput").isValid() &&
-               pinConfigs.property(i).property("withPullups").isValid() &&
-               pinConfigs.property(i).property("outValue").isValid())
-            {
-                settings.aardvardI2cSpi.pinConfigs[i].isInput = pinConfigs.property(i).property("isInput").toBool();
-                settings.aardvardI2cSpi.pinConfigs[i].withPullups = pinConfigs.property(i).property("withPullups").toBool();
-                settings.aardvardI2cSpi.pinConfigs[i].outValue = pinConfigs.property(i).property("outValue").toBool();
-            }
-            else
-            {
-                succeeded = false;
-                messageBox("Critical", m_scriptFileName, "The AardvardI2cSpiSettings structure in connectAardvardI2cSpiDevice is incomplete.");
-
-                break;
-            }
-        }
-
-    }
-    else
-    {
-        messageBox("Critical", m_scriptFileName, "The AardvardI2cSpiSettings structure in connectAardvardI2cSpiDevice is incomplete.");
-    }
+    succeeded = ScriptAardvarkI2cSpi::scriptValueToConfig(aardvarkI2cSpiSettings, settings.aardvarkI2cSpi,
+                                                            this, "aardvarkI2cSpiConnect");
 
     if(succeeded)
     {
@@ -3171,7 +3136,7 @@ QStringList ScriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object
 }
 
 /**
- * Sets the value of an output pin (Aardvard I2C/SPI device).
+ * Sets the value of an output pin (Aardvark I2C/SPI device).
  *
  * @param pinIndex
  *      The index of the pin.
@@ -3180,16 +3145,16 @@ QStringList ScriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object
  * return
  *      True on success.
  */
-bool ScriptThread::aardvardI2cSpiSetOutput(quint8 pinIndex, bool high)
+bool ScriptThread::aardvarkI2cSpiSetOutput(quint8 pinIndex, bool high)
 {
     bool result = false;
     Settings settings = *m_settingsDialog->settings();
 
-    if(pinIndex < AARDVARD_I2C_SPI_GPIO_COUNT)
+    if(pinIndex < AARDVARK_I2C_SPI_GPIO_COUNT)
     {
         result = true;
-        settings.aardvardI2cSpi.pinConfigs[pinIndex].outValue = high;
-        emit setAardvardI2cSpiOutputSignal(settings.aardvardI2cSpi);
+        settings.aardvarkI2cSpi.pinConfigs[pinIndex].outValue = high;
+        emit setAardvarkI2cSpiOutputSignal(settings.aardvarkI2cSpi);
         emit setAllSettingsSignal(settings, false);
     }
 
@@ -3197,7 +3162,7 @@ bool ScriptThread::aardvardI2cSpiSetOutput(quint8 pinIndex, bool high)
 }
 
 /**
- * Changes the configuration of a pin (Aardvard I2C/SPI device).
+ * Changes the configuration of a pin (Aardvark I2C/SPI device).
  *
  * @param pinIndex
  *      The index of the pin.
@@ -3208,18 +3173,18 @@ bool ScriptThread::aardvardI2cSpiSetOutput(quint8 pinIndex, bool high)
  * return
  *      True on success.
  */
-bool ScriptThread::aardvardI2cSpiChangePinConfiguration(quint8 pinIndex, bool isInput, bool withPullups)
+bool ScriptThread::aardvarkI2cSpiChangePinConfiguration(quint8 pinIndex, bool isInput, bool withPullups)
 {
     bool result = false;
     Settings settings = *m_settingsDialog->settings();
 
-    if(pinIndex < AARDVARD_I2C_SPI_GPIO_COUNT)
+    if(pinIndex < AARDVARK_I2C_SPI_GPIO_COUNT)
     {
         result = true;
-        settings.aardvardI2cSpi.pinConfigs[pinIndex].outValue = 0;
-        settings.aardvardI2cSpi.pinConfigs[pinIndex].isInput = isInput;
-        settings.aardvardI2cSpi.pinConfigs[pinIndex].withPullups = withPullups;
-        emit changeAardvardI2cSpiPinConfigurationSignal(settings.aardvardI2cSpi);
+        settings.aardvarkI2cSpi.pinConfigs[pinIndex].outValue = 0;
+        settings.aardvarkI2cSpi.pinConfigs[pinIndex].isInput = isInput;
+        settings.aardvarkI2cSpi.pinConfigs[pinIndex].withPullups = withPullups;
+        emit changeAardvarkI2cSpiPinConfigurationSignal(settings.aardvarkI2cSpi);
         emit setAllSettingsSignal(settings, false);
     }
 
@@ -3227,37 +3192,14 @@ bool ScriptThread::aardvardI2cSpiChangePinConfiguration(quint8 pinIndex, bool is
 }
 
 /**
- * Returns the Aardvard I2C/SPI settings of the main interface.
+ * Returns the Aardvark I2C/SPI settings of the main interface.
  * @return
  *      The settings.
  */
-QScriptValue ScriptThread::aardvardI2cSpiGetMainInterfaceSettings(void)
+QScriptValue ScriptThread::aardvarkI2cSpiGetMainInterfaceSettings(void)
 {
     const Settings* settings = m_settingsDialog->settings();
-    QScriptValue ret = m_scriptEngine->newObject();
-
-    ret.setProperty("devicePort", settings->aardvardI2cSpi.devicePort);
-    ret.setProperty("deviceMode", settings->aardvardI2cSpi.deviceMode);
-    ret.setProperty("device5VIsOn", settings->aardvardI2cSpi.device5VIsOn);
-    ret.setProperty("i2cBaudrate", settings->aardvardI2cSpi.i2cBaudrate);
-    ret.setProperty("i2cPullupsOn", settings->aardvardI2cSpi.i2cPullupsOn);
-    ret.setProperty("spiSSPolarity", settings->aardvardI2cSpi.spiSSPolarity);
-    ret.setProperty("spiBitorder", settings->aardvardI2cSpi.spiBitorder);
-    ret.setProperty("spiPhase", settings->aardvardI2cSpi.spiPhase);
-    ret.setProperty("spiBaudrate", settings->aardvardI2cSpi.spiBaudrate);
-
-    QScriptValue pinConfigs = m_scriptEngine->newArray(AARDVARD_I2C_SPI_GPIO_COUNT);
-    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
-    {
-        QScriptValue el = m_scriptEngine->newObject();
-        el.setProperty("isInput", settings->aardvardI2cSpi.pinConfigs[i].isInput);
-        el.setProperty("withPullups", settings->aardvardI2cSpi.pinConfigs[i].withPullups);
-        el.setProperty("outValue", settings->aardvardI2cSpi.pinConfigs[i].outValue);
-        pinConfigs.setProperty(i, el);
-    }
-    ret.setProperty("pinConfigs", pinConfigs);
-
-    return ret;
+    return ScriptAardvarkI2cSpi::convertConfigToScriptValue(&settings->aardvarkI2cSpi, this);
 }
 
 

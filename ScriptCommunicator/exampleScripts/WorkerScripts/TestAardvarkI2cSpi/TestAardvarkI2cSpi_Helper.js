@@ -1,16 +1,16 @@
 ﻿
 
-function initializeGUI()
+function initializeGUI(isConnected)
 {
-	UI_AardvardI2cBaudrate.setEnabled(false);
-    UI_AardvardI2cPullUp.setEnabled(false);
-    UI_AardvardI2cFreeBus.setEnabled(false);
+	UI_AardvarkI2cBaudrate.setEnabled(false);
+    UI_AardvarkI2cPullUp.setEnabled(false);
+    UI_AardvarkI2cFreeBus.setEnabled(false);
 
-    UI_AardvardSpiPolarity.setEnabled(false);
-    UI_AardvardSpiSSPolarity.setEnabled(false);
-    UI_AardvardSpiBitorder.setEnabled(false);
-    UI_AardvardSpiPhase.setEnabled(false);
-    UI_AardvardSpiBaudrate.setEnabled(false);
+    UI_AardvarkSpiPolarity.setEnabled(false);
+    UI_AardvarkSpiSSPolarity.setEnabled(false);
+    UI_AardvarkSpiBitorder.setEnabled(false);
+    UI_AardvarkSpiPhase.setEnabled(false);
+    UI_AardvarkSpiBaudrate.setEnabled(false);
 
     for(var i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
     {
@@ -27,42 +27,51 @@ function initializeGUI()
 	UI_SpiBytesToSend.setEnabled(false);
 	UI_SpiExecute.setEnabled(false);
 
+	var isConnected = false;
+	if(typeof g_interface != 'undefined')
+	{
+		isConnected = g_interface.isConnected();
+	}
+	else
+	{
+		isConnected = scriptThread.isConnected();
+	}
 
-     if(!g_isConnected)
+     if(!isConnected)
      {
-         UI_AardvardI2cSpiPort.setEnabled(true);
-         UI_AardvardI2cSpiMode.setEnabled(true);
-         UI_AardvardI2cSpiScan.setEnabled(true);
-         UI_AardvardI2cSpi5V.setEnabled(true);
+         UI_AardvarkI2cSpiPort.setEnabled(true);
+         UI_AardvarkI2cSpiMode.setEnabled(true);
+         UI_AardvarkI2cSpiScan.setEnabled(true);
+         UI_AardvarkI2cSpi5V.setEnabled(true);
 
-         if(UI_AardvardI2cSpiMode.currentText() == "I2C Master")
+         if(UI_AardvarkI2cSpiMode.currentText() == "I2C Master")
          {
-             UI_AardvardI2cBaudrate.setEnabled(true);
-             UI_AardvardI2cPullUp.setEnabled(true);
+             UI_AardvarkI2cBaudrate.setEnabled(true);
+             UI_AardvarkI2cPullUp.setEnabled(true);
          }
-         else if(UI_AardvardI2cSpiMode.currentText() == "SPI Master")
+         else if(UI_AardvarkI2cSpiMode.currentText() == "SPI Master")
          {
-             UI_AardvardSpiPolarity.setEnabled(true);
-             UI_AardvardSpiSSPolarity.setEnabled(true);
-             UI_AardvardSpiBitorder.setEnabled(true);
-             UI_AardvardSpiPhase.setEnabled(true);
-             UI_AardvardSpiBaudrate.setEnabled(true);
+             UI_AardvarkSpiPolarity.setEnabled(true);
+             UI_AardvarkSpiSSPolarity.setEnabled(true);
+             UI_AardvarkSpiBitorder.setEnabled(true);
+             UI_AardvarkSpiPhase.setEnabled(true);
+             UI_AardvarkSpiBaudrate.setEnabled(true);
          }
 
      }
      else
      {
-         UI_AardvardI2cSpiPort.setEnabled(false);
-         UI_AardvardI2cSpiMode.setEnabled(false);
-         UI_AardvardI2cSpiScan.setEnabled(false);
-         UI_AardvardI2cSpi5V.setEnabled(false);
+         UI_AardvarkI2cSpiPort.setEnabled(false);
+         UI_AardvarkI2cSpiMode.setEnabled(false);
+         UI_AardvarkI2cSpiScan.setEnabled(false);
+         UI_AardvarkI2cSpi5V.setEnabled(false);
 		 
-		 if(UI_AardvardI2cSpiMode.currentText() == "I2C Master")
+		 if(UI_AardvarkI2cSpiMode.currentText() == "I2C Master")
          {			 
 			 UI_I2cExecute.setEnabled(true);
-			 UI_AardvardI2cFreeBus.setEnabled(true);
+			 UI_AardvarkI2cFreeBus.setEnabled(true);
          }
-         else if(UI_AardvardI2cSpiMode.currentText() == "SPI Master")
+         else if(UI_AardvarkI2cSpiMode.currentText() == "SPI Master")
          {
 			 UI_SpiExecute.setEnabled(true);
          }
@@ -70,7 +79,7 @@ function initializeGUI()
 
      var startIndex = 0;
      var endIndex = 0;
-     if(UI_AardvardI2cSpiMode.currentText() == "I2C Master")
+     if(UI_AardvarkI2cSpiMode.currentText() == "I2C Master")
      {
          startIndex = 2;
          endIndex = AARDVARD_I2C_SPI_GPIO_COUNT - 1;
@@ -80,7 +89,7 @@ function initializeGUI()
 		 UI_I2cBytesToSend.setEnabled(true);
 		 UI_I2cNumberOfBytesToRead.setEnabled(true);
      }
-     else if(UI_AardvardI2cSpiMode.currentText() == "SPI Master")
+     else if(UI_AardvarkI2cSpiMode.currentText() == "SPI Master")
      {
          startIndex = 0;
          endIndex = 1;
@@ -193,48 +202,48 @@ function initializeGuiElements()
 	
 	g_aardvardI2cGpioGuiElements = Array();
 	g_aardvardI2cGpioGuiElements[0] = Array();
-	g_aardvardI2cGpioGuiElements[0].mode = UI_AardvardGpioMode0;
+	g_aardvardI2cGpioGuiElements[0].mode = UI_AardvarkGpioMode0;
 	g_aardvardI2cGpioGuiElements[0].mode.setAdditionalData(0, "Pin1/SCL");//Store the pin name. 
-	g_aardvardI2cGpioGuiElements[0].outValue = UI_AardvardGpioOutValue0;
+	g_aardvardI2cGpioGuiElements[0].outValue = UI_AardvarkGpioOutValue0;
 	g_aardvardI2cGpioGuiElements[0].outValue.setAdditionalData(0, "Pin1/SCL");//Store the pin name.
-	g_aardvardI2cGpioGuiElements[0].inValue = UI_AardvardGpioInValue0;
+	g_aardvardI2cGpioGuiElements[0].inValue = UI_AardvarkGpioInValue0;
 
 	g_aardvardI2cGpioGuiElements[1] = Array();
-	g_aardvardI2cGpioGuiElements[1].mode = UI_AardvardGpioMode1;
+	g_aardvardI2cGpioGuiElements[1].mode = UI_AardvarkGpioMode1;
 	g_aardvardI2cGpioGuiElements[1].mode.setAdditionalData(0, "Pin3/SDA");//Store the pin name. 
-	g_aardvardI2cGpioGuiElements[1].outValue = UI_AardvardGpioOutValue1;
+	g_aardvardI2cGpioGuiElements[1].outValue = UI_AardvarkGpioOutValue1;
 	g_aardvardI2cGpioGuiElements[1].outValue.setAdditionalData(0, "Pin3/SDA");//Store the pin name. 
-	g_aardvardI2cGpioGuiElements[1].inValue = UI_AardvardGpioInValue1;
+	g_aardvardI2cGpioGuiElements[1].inValue = UI_AardvarkGpioInValue1;
 
 	g_aardvardI2cGpioGuiElements[2] = Array();
-	g_aardvardI2cGpioGuiElements[2].mode = UI_AardvardGpioMode2;
+	g_aardvardI2cGpioGuiElements[2].mode = UI_AardvarkGpioMode2;
 	g_aardvardI2cGpioGuiElements[2].mode.setAdditionalData(0, "Pin5/MISO");//Store the pin name. 
-	g_aardvardI2cGpioGuiElements[2].outValue = UI_AardvardGpioOutValue2;
+	g_aardvardI2cGpioGuiElements[2].outValue = UI_AardvarkGpioOutValue2;
 	g_aardvardI2cGpioGuiElements[2].outValue.setAdditionalData(0, "Pin5/MISO");//Store the pin name. 
-	g_aardvardI2cGpioGuiElements[2].inValue = UI_AardvardGpioInValue2;
+	g_aardvardI2cGpioGuiElements[2].inValue = UI_AardvarkGpioInValue2;
 
 	g_aardvardI2cGpioGuiElements[3] = Array();
-	g_aardvardI2cGpioGuiElements[3].mode = UI_AardvardGpioMode3;
+	g_aardvardI2cGpioGuiElements[3].mode = UI_AardvarkGpioMode3;
 	g_aardvardI2cGpioGuiElements[3].mode.setAdditionalData(0, "Pin7/SCK");//Store the pin name. 
-	g_aardvardI2cGpioGuiElements[3].outValue = UI_AardvardGpioOutValue3;
+	g_aardvardI2cGpioGuiElements[3].outValue = UI_AardvarkGpioOutValue3;
 	g_aardvardI2cGpioGuiElements[3].outValue.setAdditionalData(0, "Pin7/SCK");//Store the pin name. 
-	g_aardvardI2cGpioGuiElements[3].inValue = UI_AardvardGpioInValue3;
+	g_aardvardI2cGpioGuiElements[3].inValue = UI_AardvarkGpioInValue3;
 
 	g_aardvardI2cGpioGuiElements[4] = Array();
-	g_aardvardI2cGpioGuiElements[4].mode = UI_AardvardGpioMode4;
+	g_aardvardI2cGpioGuiElements[4].mode = UI_AardvarkGpioMode4;
 	g_aardvardI2cGpioGuiElements[4].mode.setAdditionalData(0, "Pin8/MOSI");//Store the pin name. 
-	g_aardvardI2cGpioGuiElements[4].outValue = UI_AardvardGpioOutValue4;
+	g_aardvardI2cGpioGuiElements[4].outValue = UI_AardvarkGpioOutValue4;
 	g_aardvardI2cGpioGuiElements[4].outValue.setAdditionalData(0, "Pin8/MOSI");//Store the pin name. 
-	g_aardvardI2cGpioGuiElements[4].inValue = UI_AardvardGpioInValue4;
+	g_aardvardI2cGpioGuiElements[4].inValue = UI_AardvarkGpioInValue4;
 
 	g_aardvardI2cGpioGuiElements[5] = Array();
-	g_aardvardI2cGpioGuiElements[5].mode = UI_AardvardGpioMode5;
+	g_aardvardI2cGpioGuiElements[5].mode = UI_AardvarkGpioMode5;
 	g_aardvardI2cGpioGuiElements[5].mode.setAdditionalData(0, "Pin9/SS0");//Store the pin name. 
-	g_aardvardI2cGpioGuiElements[5].outValue = UI_AardvardGpioOutValue5;
+	g_aardvardI2cGpioGuiElements[5].outValue = UI_AardvarkGpioOutValue5;
 	g_aardvardI2cGpioGuiElements[5].outValue.setAdditionalData(0, "Pin9/SS0");//Store the pin name. 
-	g_aardvardI2cGpioGuiElements[5].inValue = UI_AardvardGpioInValue5;
+	g_aardvardI2cGpioGuiElements[5].inValue = UI_AardvarkGpioInValue5;
 
-	UI_AardvardI2cSpiMode.currentIndexChangedSignal.connect(initializeGUI);
+	UI_AardvarkI2cSpiMode.currentIndexChangedSignal.connect(initializeGUI);
 
 	for(var i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
 	 {
@@ -245,7 +254,7 @@ function initializeGuiElements()
 		 g_aardvardI2cGpioGuiElements[i].outValue.currentIndexChangedSignal.connect(g_aardvardI2cGpioGuiElements[i].outValue, outValueChangedSlot);
 	 }
 	 
-	 UI_AardvardI2cSpiScan.clickedSignal.connect(detectAardvardI2cSpiDevicesSlot);
+	 UI_AardvarkI2cSpiScan.clickedSignal.connect(detectAardvarkI2cSpiDevicesSlot);
 	 
 	 UI_I2cBytesToSend.textChangedSignal.connect(UI_I2cBytesToSend, hexTextEditTextChangedSlot);
 	 UI_SpiBytesToSend.textChangedSignal.connect(UI_SpiBytesToSend, hexTextEditTextChangedSlot);
@@ -254,7 +263,7 @@ function initializeGuiElements()
 	 UI_SpiExecute.clickedSignal.connect(executeSpiSlot);
 	 UI_I2cAddress.textChangedSignal.connect(UI_I2cAddress, hexTextLineTextChangedSlot);
 	 UI_I2cFlags.textChangedSignal.connect(UI_I2cFlags, hexTextLineTextChangedSlot);
-	 UI_AardvardI2cFreeBus.clickedSignal.connect(freeI2cBusSlot);
+	 UI_AardvarkI2cFreeBus.clickedSignal.connect(freeI2cBusSlot);
 
 }
 
@@ -297,30 +306,30 @@ function getValueOfStringArray(stringArray, key)
 }
 
 //Load the GUI settings.
-function loadUiSettings()
+function loadUiSettings(fileName)
 {
-	if(scriptFile.checkFileExists("aardvardI2cSpi_settings.txt"))
+	if(scriptFile.checkFileExists(fileName))
 	{
-		var settings = scriptFile.readFile("aardvardI2cSpi_settings.txt");
+		var settings = scriptFile.readFile(fileName);
 		var stringArray = settings.split("\r\n");
 		
-		UI_AardvardI2cSpiPort.setText(getValueOfStringArray(stringArray, "UI_AardvardI2cSpiPort"));
-		UI_AardvardI2cSpiMode.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvardI2cSpiMode"));
-		UI_AardvardI2cSpi5V.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvardI2cSpi5V"));
+		UI_AardvarkI2cSpiPort.setText(getValueOfStringArray(stringArray, "UI_AardvarkI2cSpiPort"));
+		UI_AardvarkI2cSpiMode.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvarkI2cSpiMode"));
+		UI_AardvarkI2cSpi5V.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvarkI2cSpi5V"));
 		
-		UI_AardvardI2cBaudrate.setText(getValueOfStringArray(stringArray, "UI_AardvardI2cBaudrate"));
-		UI_AardvardI2cPullUp.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvardI2cPullUp"));
+		UI_AardvarkI2cBaudrate.setText(getValueOfStringArray(stringArray, "UI_AardvarkI2cBaudrate"));
+		UI_AardvarkI2cPullUp.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvarkI2cPullUp"));
 		
-		UI_AardvardSpiPolarity.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvardSpiPolarity"));
-		UI_AardvardSpiPhase.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvardSpiPhase"));
-		UI_AardvardSpiBaudrate.setText(getValueOfStringArray(stringArray, "UI_AardvardSpiBaudrate"));
-		UI_AardvardSpiSSPolarity.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvardSpiSSPolarity"));
-		UI_AardvardSpiBitorder.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvardSpiBitorder"));
+		UI_AardvarkSpiPolarity.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvarkSpiPolarity"));
+		UI_AardvarkSpiPhase.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvarkSpiPhase"));
+		UI_AardvarkSpiBaudrate.setText(getValueOfStringArray(stringArray, "UI_AardvarkSpiBaudrate"));
+		UI_AardvarkSpiSSPolarity.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvarkSpiSSPolarity"));
+		UI_AardvarkSpiBitorder.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvarkSpiBitorder"));
 		
 		for(var i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
 		{
-			g_aardvardI2cGpioGuiElements[i].mode.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvardGpioMode" + i ));
-			g_aardvardI2cGpioGuiElements[i].outValue.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvardGpioOutValue" + i));
+			g_aardvardI2cGpioGuiElements[i].mode.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvarkGpioMode" + i ));
+			g_aardvardI2cGpioGuiElements[i].outValue.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvarkGpioOutValue" + i));
 		}
 		
 		UI_I2cAddress.setText(getValueOfStringArray(stringArray, "UI_I2cAddress"));
@@ -335,25 +344,25 @@ function loadUiSettings()
 
 
 //Save the GUI settings.
-function saveUiSettings()
+function saveUiSettings(fileName)
 {
-	settings = "UI_AardvardI2cSpiPort=" + UI_AardvardI2cSpiPort.text() + "\r\n";
-	settings += "UI_AardvardI2cSpiMode=" + UI_AardvardI2cSpiMode.currentText() + "\r\n";
-	settings += "UI_AardvardI2cSpi5V=" + UI_AardvardI2cSpi5V.currentText() + "\r\n";
+	settings = "UI_AardvarkI2cSpiPort=" + UI_AardvarkI2cSpiPort.text() + "\r\n";
+	settings += "UI_AardvarkI2cSpiMode=" + UI_AardvarkI2cSpiMode.currentText() + "\r\n";
+	settings += "UI_AardvarkI2cSpi5V=" + UI_AardvarkI2cSpi5V.currentText() + "\r\n";
 	
-	settings += "UI_AardvardI2cBaudrate=" + UI_AardvardI2cBaudrate.text() + "\r\n";
-	settings += "UI_AardvardI2cPullUp=" + UI_AardvardI2cPullUp.currentText() + "\r\n";
+	settings += "UI_AardvarkI2cBaudrate=" + UI_AardvarkI2cBaudrate.text() + "\r\n";
+	settings += "UI_AardvarkI2cPullUp=" + UI_AardvarkI2cPullUp.currentText() + "\r\n";
 	
-	settings += "UI_AardvardSpiPolarity=" + UI_AardvardSpiPolarity.currentText() + "\r\n";
-	settings += "UI_AardvardSpiPhase=" + UI_AardvardSpiPhase.currentText() + "\r\n";
-	settings += "UI_AardvardSpiBaudrate=" + UI_AardvardSpiBaudrate.text() + "\r\n";
-	settings += "UI_AardvardSpiSSPolarity=" + UI_AardvardSpiSSPolarity.currentText() + "\r\n";
-	settings += "UI_AardvardSpiBitorder=" + UI_AardvardSpiBitorder.currentText() + "\r\n";
+	settings += "UI_AardvarkSpiPolarity=" + UI_AardvarkSpiPolarity.currentText() + "\r\n";
+	settings += "UI_AardvarkSpiPhase=" + UI_AardvarkSpiPhase.currentText() + "\r\n";
+	settings += "UI_AardvarkSpiBaudrate=" + UI_AardvarkSpiBaudrate.text() + "\r\n";
+	settings += "UI_AardvarkSpiSSPolarity=" + UI_AardvarkSpiSSPolarity.currentText() + "\r\n";
+	settings += "UI_AardvarkSpiBitorder=" + UI_AardvarkSpiBitorder.currentText() + "\r\n";
 	
 	for(var i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
     {
-		settings += "UI_AardvardGpioMode" + i + "=" + g_aardvardI2cGpioGuiElements[i].mode.currentText() + "\r\n";
-		settings += "UI_AardvardGpioOutValue" + i + "=" + g_aardvardI2cGpioGuiElements[i].outValue.currentText() + "\r\n";
+		settings += "UI_AardvarkGpioMode" + i + "=" + g_aardvardI2cGpioGuiElements[i].mode.currentText() + "\r\n";
+		settings += "UI_AardvarkGpioOutValue" + i + "=" + g_aardvardI2cGpioGuiElements[i].outValue.currentText() + "\r\n";
     }
 	
 	settings += "UI_I2cAddress=" + UI_I2cAddress.text() + "\r\n";
@@ -363,7 +372,7 @@ function saveUiSettings()
 	
 	settings += "UI_SpiBytesToSend=" + UI_SpiBytesToSend.toPlainText() + "\r\n";
 	
-	scriptFile.writeFile("aardvardI2cSpi_settings.txt", true, settings, true);
+	scriptFile.writeFile(fileName, true, settings, true);
 }
 
 

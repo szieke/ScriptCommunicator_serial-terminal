@@ -224,6 +224,9 @@ public:
     ///Creates a cheetah spi interface.
     Q_INVOKABLE QScriptValue createCheetahSpiInterface(void);
 
+    ///Creates an Aardvark I2c/SPI interface.
+    Q_INVOKABLE QScriptValue aardvarkI2cSpiCreateInterface(void);
+
     ///Creates a pcan interface.
     Q_INVOKABLE QScriptValue createPcanInterface(void);
 
@@ -299,12 +302,12 @@ public:
     ///ClearToSendSignal = 0x80,
     Q_INVOKABLE quint32 getSerialPortSignals(void){uint32_t bits;emit getSerialPortSignalsSignal(&bits);return bits;}
 
-    ///Returns a string which contains informations about all detected devices.
-    Q_INVOKABLE QString aardvardI2cSpiDetectDevices(void){return AardvarkI2cSpi::detectDevices();}
+    ///Returns a string which contains informations about all detected Aardvark I2C/SPI devices.
+    Q_INVOKABLE QString aardvarkI2cSpiDetectDevices(void){return AardvarkI2cSpi::detectDevices();}
 
-    ///Connects the main interface (Aardvard I2C/SPI).
+    ///Connects the main interface (Aardvark I2C/SPI).
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
-    Q_INVOKABLE bool aardvardI2cSpiConnect(QScriptValue aardvardI2cSpiSettings, quint32 connectTimeout = 5000);
+    Q_INVOKABLE bool aardvarkI2cSpiConnect(QScriptValue aardvarkI2cSpiSettings, quint32 connectTimeout = 5000);
 
     ///Connects the main interface (serial port).
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
@@ -319,14 +322,14 @@ public:
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
     Q_INVOKABLE bool connectCheetahSpi(quint32 port, qint16 mode, quint32 baudrate, quint8 chipSelectBits = 1, quint32 connectTimeout = 1000);
 
-    ///Sets the value of an output pin (Aardvard I2C/SPI device).
-    Q_INVOKABLE bool aardvardI2cSpiSetOutput(quint8 pinIndex, bool high);
+    ///Sets the value of an output pin (Aardvark I2C/SPI device).
+    Q_INVOKABLE bool aardvarkI2cSpiSetOutput(quint8 pinIndex, bool high);
 
-    ///Changes the configuration of a pin (Aardvard I2C/SPI device).
-    Q_INVOKABLE bool aardvardI2cSpiChangePinConfiguration(quint8 pinIndex, bool isInput, bool withPullups=false);
+    ///Changes the configuration of a pin (Aardvark I2C/SPI device).
+    Q_INVOKABLE bool aardvarkI2cSpiChangePinConfiguration(quint8 pinIndex, bool isInput, bool withPullups=false);
 
-    ///Returns the Aardvard I2C/SPI settings of the main interface.
-    Q_INVOKABLE QScriptValue aardvardI2cSpiGetMainInterfaceSettings(void);
+    ///Returns the Aardvark I2C/SPI settings of the main interface.
+    Q_INVOKABLE QScriptValue aardvarkI2cSpiGetMainInterfaceSettings(void);
 
     ///Returns the serial port settings of the main interface.
     Q_INVOKABLE QScriptValue getMainInterfaceSerialPortSettings(void);
@@ -630,13 +633,16 @@ public:
     ///Returns m_scriptRunsInDebugger.
     bool runsInDebugger(void){return m_scriptRunsInDebugger;}
 
+    ///Returns the path of the script which is executed by the thread.
+    QString getScriptFileName(void){return m_scriptFileName;}
+
 
 signals:
 
     ///Is emitted if the input states of the Ardvard I2c/Spi device (main interface) have been changed.
-    ///Note: states contains AARDVARD_I2C_SPI_GPIO_COUNT elements.
+    ///Note: states contains AARDVARK_I2C_SPI_GPIO_COUNT elements.
     ///Scripts can connect a function to this signal.
-    void aardvardI2cSpiInputStatesChangedSignal(QVector<bool> states);
+    void aardvarkI2cSpiInputStatesChangedSignal(QVector<bool> states);
 
     ///Is emitted if the clear console button in the main window is pressed.
     ///Scripts can connect a function to this signal.
@@ -770,13 +776,13 @@ signals:
     ///This signal must not be used from script.
     void getSerialPortSignalsSignal(uint32_t* bits);
 
-    ///Is emitted in setAardvardI2cSpiOutput.
+    ///Is emitted in setAardvarkI2cSpiOutput.
     ///This signal must not be used from script.
-    void setAardvardI2cSpiOutputSignal(AardvardI2cSpiSettings settings);
+    void setAardvarkI2cSpiOutputSignal(AardvarkI2cSpiSettings settings);
 
-    ///Is emitted in changeAardvardI2cSpiPinConfiguration.
+    ///Is emitted in changeAardvarkI2cSpiPinConfiguration.
     ///This signal must not be used from script.
-    void changeAardvardI2cSpiPinConfigurationSignal(AardvardI2cSpiSettings settings);
+    void changeAardvarkI2cSpiPinConfigurationSignal(AardvarkI2cSpiSettings settings);
 
     ///Is emitted in i2cMasterFreeBus.
     ///This signal must not be used from script.
@@ -790,8 +796,8 @@ protected:
 private slots:
 
     ///Is called if the input states of the Ardvard I2c/Spi device (main interface) have been changed.
-    ///Note: states contains AARDVARD_I2C_SPI_GPIO_COUNT elements.
-    void aardvardI2cSpiInputStatesChangedSlot(QVector<bool> states){emit aardvardI2cSpiInputStatesChangedSignal(states);}
+    ///Note: states contains AARDVARK_I2C_SPI_GPIO_COUNT elements.
+    void aardvarkI2cSpiInputStatesChangedSlot(QVector<bool> states){emit aardvarkI2cSpiInputStatesChangedSignal(states);}
 
     ///The script is suspended by the debugger.
     void suspendedByDebuggerSlot();

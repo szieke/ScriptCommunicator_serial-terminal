@@ -198,7 +198,7 @@ bool MainInterfaceThread::isConnectedWithI2c()
     bool result = false;
 
     if((m_aardvarkI2cSpi->isConnected()) &&
-          (m_currentGlobalSettings.aardvardI2cSpi.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER))
+          (m_currentGlobalSettings.aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_MASTER))
     {
         result = true;
     }
@@ -469,8 +469,8 @@ void MainInterfaceThread::sendDataSlot(const QByteArray data, uint id)
         if(sendDataWithTheMainInterface(data, receivedData, true, &serialPortSignalBlocked))
         {
             bool isI2cRead = false;
-            if((m_currentGlobalSettings.connectionType == CONNECTION_TYPE_AARDVARD) &&
-              (m_currentGlobalSettings.aardvardI2cSpi.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER))
+            if((m_currentGlobalSettings.connectionType == CONNECTION_TYPE_AARDVARK) &&
+              (m_currentGlobalSettings.aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_MASTER))
             {
                 isI2cRead = (data.size() == AardvarkI2cSpi::SEND_CONTROL_BYTES_COUNT) ? true : false;
             }
@@ -488,8 +488,8 @@ void MainInterfaceThread::sendDataSlot(const QByteArray data, uint id)
                     m_numberOfSentBytes -= PCANBasicClass::BYTES_METADATA_SEND;
                 }
 
-                if((m_currentGlobalSettings.connectionType == CONNECTION_TYPE_AARDVARD) &&
-                  (m_currentGlobalSettings.aardvardI2cSpi.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER))
+                if((m_currentGlobalSettings.connectionType == CONNECTION_TYPE_AARDVARK) &&
+                  (m_currentGlobalSettings.aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_MASTER))
                 {
                     ///Remove the bytes for the I2C metadata.
                     m_numberOfSentBytes -= AardvarkI2cSpi::SEND_CONTROL_BYTES_COUNT;
@@ -755,22 +755,22 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
                 emit showAdditionalConnectionInformationSignal("");
             }
         }
-        else if(m_currentGlobalSettings.connectionType == CONNECTION_TYPE_AARDVARD)
+        else if(m_currentGlobalSettings.connectionType == CONNECTION_TYPE_AARDVARK)
         {
             int deviceBitrate;
-            m_isConnected = m_aardvarkI2cSpi->connectToDevice(m_currentGlobalSettings.aardvardI2cSpi, deviceBitrate);
+            m_isConnected = m_aardvarkI2cSpi->connectToDevice(m_currentGlobalSettings.aardvarkI2cSpi, deviceBitrate);
 
             QString mode;
             quint16 baudrateSetValue;
-            if(m_currentGlobalSettings.aardvardI2cSpi.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER)
+            if(m_currentGlobalSettings.aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_MASTER)
             {
                 mode = "i2c master";
-                baudrateSetValue = m_currentGlobalSettings.aardvardI2cSpi.i2cBaudrate;
+                baudrateSetValue = m_currentGlobalSettings.aardvarkI2cSpi.i2cBaudrate;
             }
-            else if(m_currentGlobalSettings.aardvardI2cSpi.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_SPI_MASTER)
+            else if(m_currentGlobalSettings.aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_SPI_MASTER)
             {
                 mode = "spi master";
-                baudrateSetValue = m_currentGlobalSettings.aardvardI2cSpi.spiBaudrate;
+                baudrateSetValue = m_currentGlobalSettings.aardvarkI2cSpi.spiBaudrate;
             }
             else
             {
@@ -779,8 +779,8 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
 
             if(m_isConnected)
             {
-                QString message = QString("Connected to aardvard interface: port=%1, mode=%2").arg(m_currentGlobalSettings.cheetahSpi.port).arg(mode);
-                if(m_currentGlobalSettings.aardvardI2cSpi.deviceMode != AARDVARD_I2C_SPI_DEVICE_MODE_GPIO)
+                QString message = QString("Connected to aardvark interface: port=%1, mode=%2").arg(m_currentGlobalSettings.cheetahSpi.port).arg(mode);
+                if(m_currentGlobalSettings.aardvarkI2cSpi.deviceMode != AARDVARK_I2C_SPI_DEVICE_MODE_GPIO)
                 {
                     message += QString(", baudarte=%1 (kHz)").arg(deviceBitrate);
                 }
@@ -789,13 +789,13 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
             }
             else
             {
-                QString message = QString("could not open aardvard device: port=%1, mode=%2").arg(m_currentGlobalSettings.cheetahSpi.port).arg(mode);
-                if(m_currentGlobalSettings.aardvardI2cSpi.deviceMode != AARDVARD_I2C_SPI_DEVICE_MODE_GPIO)
+                QString message = QString("could not open aardvark device: port=%1, mode=%2").arg(m_currentGlobalSettings.cheetahSpi.port).arg(mode);
+                if(m_currentGlobalSettings.aardvarkI2cSpi.deviceMode != AARDVARK_I2C_SPI_DEVICE_MODE_GPIO)
                 {
                     message += QString(", baudarte=%1 (kHz)").arg(baudrateSetValue);
                 }
 
-                showMessageBox(QMessageBox::Critical, "aardvard error",message);
+                showMessageBox(QMessageBox::Critical, "aardvark error",message);
                 m_isConnected = false;
                 emit dataConnectionStatusSignal(false, "open error", false);
                 emit showAdditionalConnectionInformationSignal("");
@@ -1019,7 +1019,7 @@ bool MainInterfaceThread::sendDataWithTheMainInterface(const QByteArray &data, Q
                 receivedData.clear();
             }
         }
-        else if(m_currentGlobalSettings.connectionType == CONNECTION_TYPE_AARDVARD)
+        else if(m_currentGlobalSettings.connectionType == CONNECTION_TYPE_AARDVARK)
         {
             if(!m_aardvarkI2cSpi->sendReceiveData(data,&receivedData))
             {

@@ -234,7 +234,8 @@ HEADERS += \
     scriptClasses/scriptConverter.h \
     ScriptEditor/version.h \
     aardvarkI2cSpi/aardvark.h \
-    aardvarkI2cSpi/aardvarkI2cSpi.h
+    aardvarkI2cSpi/aardvarkI2cSpi.h \
+    scriptClasses/scriptAardvarkI2cSpi.h
 
 FORMS += \
     mainwindow.ui \

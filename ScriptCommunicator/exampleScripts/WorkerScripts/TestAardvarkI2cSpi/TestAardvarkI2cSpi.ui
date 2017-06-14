@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>Dialog</class>
  <widget class="QDialog" name="Dialog">
@@ -25,9 +25,9 @@
      <property name="currentIndex">
       <number>0</number>
      </property>
-     <widget class="QWidget" name="tabAardvardI2cSpi">
+     <widget class="QWidget" name="tabAardvarkI2cSpi">
       <attribute name="title">
-       <string>AardvardI2cSpi</string>
+       <string>AardvarkI2cSpi</string>
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_14">
        <item>
@@ -52,7 +52,7 @@
              </property>
              <layout class="QGridLayout" name="gridLayout_14">
               <item row="3" column="1">
-               <widget class="QComboBox" name="AardvardI2cSpi5V">
+               <widget class="QComboBox" name="AardvarkI2cSpi5V">
                 <item>
                  <property name="text">
                   <string>Off</string>
@@ -79,14 +79,14 @@
                </spacer>
               </item>
               <item row="4" column="1">
-               <widget class="QPushButton" name="AardvardI2cSpiScan">
+               <widget class="QPushButton" name="AardvarkI2cSpiScan">
                 <property name="text">
                  <string>scan</string>
                 </property>
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QComboBox" name="AardvardI2cSpiMode">
+               <widget class="QComboBox" name="AardvarkI2cSpiMode">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -111,7 +111,7 @@
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QLineEdit" name="AardvardI2cSpiPort">
+               <widget class="QLineEdit" name="AardvarkI2cSpiPort">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -167,7 +167,7 @@
                </widget>
               </item>
               <item row="7" column="1">
-               <widget class="QPushButton" name="AardvardI2cConnect">
+               <widget class="QPushButton" name="AardvarkI2cConnect">
                 <property name="text">
                  <string>connect</string>
                 </property>
@@ -196,7 +196,7 @@
                </spacer>
               </item>
               <item row="2" column="1">
-               <widget class="QPushButton" name="AardvardI2cFreeBus">
+               <widget class="QPushButton" name="AardvarkI2cFreeBus">
                 <property name="text">
                  <string>free bus</string>
                 </property>
@@ -216,7 +216,7 @@
                </spacer>
               </item>
               <item row="0" column="1">
-               <widget class="QLineEdit" name="AardvardI2cBaudrate">
+               <widget class="QLineEdit" name="AardvarkI2cBaudrate">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -242,7 +242,7 @@
                </widget>
               </item>
               <item row="1" column="1">
-               <widget class="QComboBox" name="AardvardI2cPullUp">
+               <widget class="QComboBox" name="AardvarkI2cPullUp">
                 <item>
                  <property name="text">
                   <string>On</string>
@@ -272,7 +272,7 @@
              </property>
              <layout class="QGridLayout" name="gridLayout_15">
               <item row="1" column="1">
-               <widget class="QComboBox" name="AardvardSpiPhase">
+               <widget class="QComboBox" name="AardvarkSpiPhase">
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToContents</enum>
                 </property>
@@ -302,7 +302,7 @@
                </spacer>
               </item>
               <item row="0" column="1">
-               <widget class="QComboBox" name="AardvardSpiPolarity">
+               <widget class="QComboBox" name="AardvarkSpiPolarity">
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToContents</enum>
                 </property>
@@ -346,7 +346,7 @@
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QLineEdit" name="AardvardSpiBaudrate">
+               <widget class="QLineEdit" name="AardvarkSpiBaudrate">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -372,7 +372,7 @@
                </widget>
               </item>
               <item row="0" column="3">
-               <widget class="QComboBox" name="AardvardSpiSSPolarity">
+               <widget class="QComboBox" name="AardvarkSpiSSPolarity">
                 <item>
                  <property name="text">
                   <string>Active Low</string>
@@ -393,7 +393,7 @@
                </widget>
               </item>
               <item row="1" column="3">
-               <widget class="QComboBox" name="AardvardSpiBitorder">
+               <widget class="QComboBox" name="AardvarkSpiBitorder">
                 <item>
                  <property name="text">
                   <string>MSB</string>
@@ -453,7 +453,7 @@
                </widget>
               </item>
               <item row="2" column="3">
-               <widget class="QComboBox" name="AardvardGpioOutValue5">
+               <widget class="QComboBox" name="AardvarkGpioOutValue5">
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -467,7 +467,7 @@
                </widget>
               </item>
               <item row="2" column="9">
-               <widget class="QComboBox" name="AardvardGpioOutValue2">
+               <widget class="QComboBox" name="AardvarkGpioOutValue2">
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -481,7 +481,7 @@
                </widget>
               </item>
               <item row="3" column="13">
-               <widget class="QLineEdit" name="AardvardGpioInValue0">
+               <widget class="QLineEdit" name="AardvarkGpioInValue0">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -494,7 +494,7 @@
                </widget>
               </item>
               <item row="3" column="5">
-               <widget class="QLineEdit" name="AardvardGpioInValue4">
+               <widget class="QLineEdit" name="AardvarkGpioInValue4">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -507,7 +507,7 @@
                </widget>
               </item>
               <item row="3" column="9">
-               <widget class="QLineEdit" name="AardvardGpioInValue2">
+               <widget class="QLineEdit" name="AardvarkGpioInValue2">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -520,7 +520,7 @@
                </widget>
               </item>
               <item row="3" column="7">
-               <widget class="QLineEdit" name="AardvardGpioInValue3">
+               <widget class="QLineEdit" name="AardvarkGpioInValue3">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -533,7 +533,7 @@
                </widget>
               </item>
               <item row="1" column="11">
-               <widget class="QComboBox" name="AardvardGpioMode1">
+               <widget class="QComboBox" name="AardvarkGpioMode1">
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -552,7 +552,7 @@
                </widget>
               </item>
               <item row="1" column="5">
-               <widget class="QComboBox" name="AardvardGpioMode4">
+               <widget class="QComboBox" name="AardvarkGpioMode4">
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -585,7 +585,7 @@
                </widget>
               </item>
               <item row="3" column="11">
-               <widget class="QLineEdit" name="AardvardGpioInValue1">
+               <widget class="QLineEdit" name="AardvarkGpioInValue1">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -598,7 +598,7 @@
                </widget>
               </item>
               <item row="3" column="3">
-               <widget class="QLineEdit" name="AardvardGpioInValue5">
+               <widget class="QLineEdit" name="AardvarkGpioInValue5">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                   <horstretch>0</horstretch>
@@ -618,7 +618,7 @@
                </widget>
               </item>
               <item row="1" column="3">
-               <widget class="QComboBox" name="AardvardGpioMode5">
+               <widget class="QComboBox" name="AardvarkGpioMode5">
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -637,7 +637,7 @@
                </widget>
               </item>
               <item row="1" column="13">
-               <widget class="QComboBox" name="AardvardGpioMode0">
+               <widget class="QComboBox" name="AardvarkGpioMode0">
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -656,7 +656,7 @@
                </widget>
               </item>
               <item row="2" column="11">
-               <widget class="QComboBox" name="AardvardGpioOutValue1">
+               <widget class="QComboBox" name="AardvarkGpioOutValue1">
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -670,7 +670,7 @@
                </widget>
               </item>
               <item row="2" column="5">
-               <widget class="QComboBox" name="AardvardGpioOutValue4">
+               <widget class="QComboBox" name="AardvarkGpioOutValue4">
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -684,7 +684,7 @@
                </widget>
               </item>
               <item row="1" column="7">
-               <widget class="QComboBox" name="AardvardGpioMode3">
+               <widget class="QComboBox" name="AardvarkGpioMode3">
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -703,7 +703,7 @@
                </widget>
               </item>
               <item row="1" column="9">
-               <widget class="QComboBox" name="AardvardGpioMode2">
+               <widget class="QComboBox" name="AardvarkGpioMode2">
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -750,7 +750,7 @@
                </widget>
               </item>
               <item row="2" column="7">
-               <widget class="QComboBox" name="AardvardGpioOutValue3">
+               <widget class="QComboBox" name="AardvarkGpioOutValue3">
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -784,7 +784,7 @@
                </widget>
               </item>
               <item row="2" column="13">
-               <widget class="QComboBox" name="AardvardGpioOutValue0">
+               <widget class="QComboBox" name="AardvarkGpioOutValue0">
                 <item>
                  <property name="text">
                   <string>0</string>

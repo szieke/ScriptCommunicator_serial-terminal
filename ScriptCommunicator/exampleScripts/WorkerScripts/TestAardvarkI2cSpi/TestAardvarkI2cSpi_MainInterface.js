@@ -1,6 +1,6 @@
 ﻿/*************************************************************************
 This worker script (worker scripts can be added in the script window) demonstrates the usage of the 
-Aardvard I2C/SPI varerface (used as main varerface).
+Aardvark I2C/SPI varerface (used as main varerface).
 ***************************************************************************/
 
 const AARDVARD_I2C_SPI_GPIO_COUNT = 6;
@@ -8,8 +8,8 @@ const AARDVARD_I2C_SPI_GPIO_COUNT = 6;
 //Is called if this script shall be exited.
 function stopScript() 
 {
-	saveUiSettings();
-    scriptThread.appendTextToConsole("script test Aardvard I2C/SPI (MainInterface) stopped");
+	saveUiSettings("aardvarkI2cSpi_mainInf_settings.txt");
+    scriptThread.appendTextToConsole("script test Aardvark I2C/SPI (MainInterface) stopped");
 	scriptThread.disconnect();
 }
 
@@ -95,22 +95,22 @@ function executeSpiSlot()
 function connectSlot()
 {
 	
-	if(!g_isConnected)
+	if(!scriptThread.isConnected())
 	{
-		/************************Create the AardvardI2cSpiSettings strucure**********************/
+		/************************Create the AardvarkI2cSpiSettings strucure**********************/
 		settings = Array();
-		settings.devicePort =  parseInt(UI_AardvardI2cSpiPort.text());
-		settings.deviceMode =  UI_AardvardI2cSpiMode.currentIndex();
-		settings.device5VIsOn =  (UI_AardvardI2cSpi5V.currentText() == "On") ? true : false
+		settings.devicePort =  parseInt(UI_AardvarkI2cSpiPort.text());
+		settings.deviceMode =  UI_AardvarkI2cSpiMode.currentIndex();
+		settings.device5VIsOn =  (UI_AardvarkI2cSpi5V.currentText() == "On") ? true : false
 		
-		settings.i2cBaudrate =  parseInt(UI_AardvardI2cBaudrate.text());
-		settings.i2cPullupsOn = (UI_AardvardI2cPullUp.currentText() == "On") ? true : false
+		settings.i2cBaudrate =  parseInt(UI_AardvarkI2cBaudrate.text());
+		settings.i2cPullupsOn = (UI_AardvarkI2cPullUp.currentText() == "On") ? true : false
 		
-		settings.spiPolarity =  UI_AardvardSpiPolarity.currentIndex();
-		settings.spiSSPolarity =  UI_AardvardSpiSSPolarity.currentIndex();
-		settings.spiBitorder =  UI_AardvardSpiBitorder.currentIndex();
-		settings.spiPhase =  UI_AardvardSpiPhase.currentIndex();
-		settings.spiBaudrate =  parseInt(UI_AardvardSpiBaudrate.text());
+		settings.spiPolarity =  UI_AardvarkSpiPolarity.currentIndex();
+		settings.spiSSPolarity =  UI_AardvarkSpiSSPolarity.currentIndex();
+		settings.spiBitorder =  UI_AardvarkSpiBitorder.currentIndex();
+		settings.spiPhase =  UI_AardvarkSpiPhase.currentIndex();
+		settings.spiBaudrate =  parseInt(UI_AardvarkSpiBaudrate.text());
 
 		settings.pinConfigs =  Array();
 		for(var i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
@@ -122,12 +122,15 @@ function connectSlot()
 		}
 		/*********************************************************************************************************/
 		
-		g_isConnected = scriptThread.aardvardI2cSpiConnect(settings);
+		if(!scriptThread.aardvarkI2cSpiConnect(settings))
+		{
+			UI_Console.append("connect error");
+		}
+			
 	}
 	else
 	{
 		scriptThread.disconnect();
-		g_isConnected = false;
 		
 		for(var i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
 		{
@@ -135,17 +138,17 @@ function connectSlot()
 		}
 	}
 		
-	if(g_isConnected)
+	if(scriptThread.isConnected())
 	{
-		UI_AardvardI2cConnect.setText("disconnect");
+		UI_AardvarkI2cConnect.setText("disconnect");
 		
-		var readSettings = scriptThread.aardvardI2cSpiGetMainInterfaceSettings();
+		var readSettings = scriptThread.aardvarkI2cSpiGetMainInterfaceSettings();
 		var consoleString = "connected: <br>" + settingsStructToString(readSettings);
 		UI_Console.append(consoleString);
 	}
 	else
 	{
-		UI_AardvardI2cConnect.setText("connect");
+		UI_AardvarkI2cConnect.setText("connect");
 	}
 	
 	initializeGUI();
@@ -161,7 +164,7 @@ function dataReceivedSlot(data)
 	UI_Console.append("SPI data received: data=" + conv.byteArrayToHexString(data));
 }
 
-function aardvardI2cSpiInputStatesChangedSlot(states)
+function aardvarkI2cSpiInputStatesChangedSlot(states)
 {
 	for(var i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
 		{
@@ -170,7 +173,7 @@ function aardvardI2cSpiInputStatesChangedSlot(states)
 }
 function outValueChangedSlot()
 {
-	scriptThread.aardvardI2cSpiSetOutput(this.getAdditionalData(1), (this.currentText()== 1) ? true : false);
+	scriptThread.aardvarkI2cSpiSetOutput(this.getAdditionalData(1), (this.currentText()== 1) ? true : false);
 	UI_Console.append("output value changed:  pin= " + this.getAdditionalData(0) + " value=" + this.currentText());
 	initializeGUI();
 }
@@ -185,31 +188,30 @@ function pinModeChangedSlot()
 		g_aardvardI2cGpioGuiElements[this.getAdditionalData(1)].outValue.setCurrentText("0");
 	}
 	
-	scriptThread.aardvardI2cSpiChangePinConfiguration(this.getAdditionalData(1), isInput, withPullups);
+	scriptThread.aardvarkI2cSpiChangePinConfiguration(this.getAdditionalData(1), isInput, withPullups);
 	UI_Console.append("pin mode changed:  pin= " + this.getAdditionalData(0) + " value=" + this.currentText());
 	initializeGUI();
 }
 
-function detectAardvardI2cSpiDevicesSlot()
+function detectAardvarkI2cSpiDevicesSlot()
 {
-	UI_Console.append(scriptThread.aardvardI2cSpiDetectDevices());
+	UI_Console.append(scriptThread.aardvarkI2cSpiDetectDevices());
 }
 
-scriptThread.appendTextToConsole('script test Aardvard I2C/SPI (MainInterface) started');
-scriptThread.loadUserInterfaceFile("TestAardvardI2cSpi.ui");
-scriptThread.loadScript("TestAardvardI2cSpi_Helper.js");
+scriptThread.appendTextToConsole('script test Aardvark I2C/SPI (MainInterface) started');
+scriptThread.loadUserInterfaceFile("TestAardvarkI2cSpi.ui");
+scriptThread.loadScript("TestAardvarkI2cSpi_Helper.js");
 
 UI_Dialog.finishedSignal.connect(dialogFinishedSlot);
-UI_AardvardI2cConnect.clickedSignal.connect(connectSlot);
-scriptThread.aardvardI2cSpiInputStatesChangedSignal.connect(aardvardI2cSpiInputStatesChangedSlot);
+UI_AardvarkI2cConnect.clickedSignal.connect(connectSlot);
+scriptThread.aardvarkI2cSpiInputStatesChangedSignal.connect(aardvarkI2cSpiInputStatesChangedSlot);
 scriptThread.i2cDataReceivedSignal.connect(i2cDataReceivedSlot);
 scriptThread.dataReceivedSignal.connect(dataReceivedSlot);
 
 scriptThread.disconnect();
-var g_isConnected = false;
 
 initializeGuiElements();
 initializeGUI();
-loadUiSettings();
-detectAardvardI2cSpiDevicesSlot();
+loadUiSettings("aardvarkI2cSpi_mainInf_settings.txt");
+detectAardvarkI2cSpiDevicesSlot();
 

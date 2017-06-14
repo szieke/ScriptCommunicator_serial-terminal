@@ -241,7 +241,7 @@ private:
     ///Pointer to the cheetah spi interface.
     CheetahSpi* m_cheetahSpi;
 
-    ///Pointer to the aardvard I2C SPI interface.
+    ///Pointer to the aardvark I2C SPI interface.
     AardvarkI2cSpi* m_aardvarkI2cSpi;
 
     ///True of the main interface is connected.

@@ -50,24 +50,24 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 {
     m_userInterface->setupUi(this);
 
-    m_aardvardI2cGpioGuiElements[0].mode = m_userInterface->aardvardGpioMode0;
-    m_aardvardI2cGpioGuiElements[0].outValue = m_userInterface->aardvardGpioOutValue0;
-    m_aardvardI2cGpioGuiElements[0].inValue = m_userInterface->aardvardGpioInValue0;
-    m_aardvardI2cGpioGuiElements[1].mode = m_userInterface->aardvardGpioMode1;
-    m_aardvardI2cGpioGuiElements[1].outValue = m_userInterface->aardvardGpioOutValue1;
-    m_aardvardI2cGpioGuiElements[1].inValue = m_userInterface->aardvardGpioInValue1;
-    m_aardvardI2cGpioGuiElements[2].mode = m_userInterface->aardvardGpioMode2;
-    m_aardvardI2cGpioGuiElements[2].outValue = m_userInterface->aardvardGpioOutValue2;
-    m_aardvardI2cGpioGuiElements[2].inValue = m_userInterface->aardvardGpioInValue2;
-    m_aardvardI2cGpioGuiElements[3].mode = m_userInterface->aardvardGpioMode3;
-    m_aardvardI2cGpioGuiElements[3].outValue = m_userInterface->aardvardGpioOutValue3;
-    m_aardvardI2cGpioGuiElements[3].inValue = m_userInterface->aardvardGpioInValue3;
-    m_aardvardI2cGpioGuiElements[4].mode = m_userInterface->aardvardGpioMode4;
-    m_aardvardI2cGpioGuiElements[4].outValue = m_userInterface->aardvardGpioOutValue4;
-    m_aardvardI2cGpioGuiElements[4].inValue = m_userInterface->aardvardGpioInValue4;
-    m_aardvardI2cGpioGuiElements[5].mode = m_userInterface->aardvardGpioMode5;
-    m_aardvardI2cGpioGuiElements[5].outValue = m_userInterface->aardvardGpioOutValue5;
-    m_aardvardI2cGpioGuiElements[5].inValue = m_userInterface->aardvardGpioInValue5;
+    m_aardvarkI2cGpioGuiElements[0].mode = m_userInterface->aardvarkGpioMode0;
+    m_aardvarkI2cGpioGuiElements[0].outValue = m_userInterface->aardvarkGpioOutValue0;
+    m_aardvarkI2cGpioGuiElements[0].inValue = m_userInterface->aardvarkGpioInValue0;
+    m_aardvarkI2cGpioGuiElements[1].mode = m_userInterface->aardvarkGpioMode1;
+    m_aardvarkI2cGpioGuiElements[1].outValue = m_userInterface->aardvarkGpioOutValue1;
+    m_aardvarkI2cGpioGuiElements[1].inValue = m_userInterface->aardvarkGpioInValue1;
+    m_aardvarkI2cGpioGuiElements[2].mode = m_userInterface->aardvarkGpioMode2;
+    m_aardvarkI2cGpioGuiElements[2].outValue = m_userInterface->aardvarkGpioOutValue2;
+    m_aardvarkI2cGpioGuiElements[2].inValue = m_userInterface->aardvarkGpioInValue2;
+    m_aardvarkI2cGpioGuiElements[3].mode = m_userInterface->aardvarkGpioMode3;
+    m_aardvarkI2cGpioGuiElements[3].outValue = m_userInterface->aardvarkGpioOutValue3;
+    m_aardvarkI2cGpioGuiElements[3].inValue = m_userInterface->aardvarkGpioInValue3;
+    m_aardvarkI2cGpioGuiElements[4].mode = m_userInterface->aardvarkGpioMode4;
+    m_aardvarkI2cGpioGuiElements[4].outValue = m_userInterface->aardvarkGpioOutValue4;
+    m_aardvarkI2cGpioGuiElements[4].inValue = m_userInterface->aardvarkGpioInValue4;
+    m_aardvarkI2cGpioGuiElements[5].mode = m_userInterface->aardvarkGpioMode5;
+    m_aardvarkI2cGpioGuiElements[5].outValue = m_userInterface->aardvarkGpioOutValue5;
+    m_aardvarkI2cGpioGuiElements[5].inValue = m_userInterface->aardvarkGpioInValue5;
 
 
     int width  = -1;
@@ -413,37 +413,37 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->logEditScriptPushButton, SIGNAL(clicked()),
             this, SLOT(editCustomLogScriptSlot()));
 
-    connect(m_userInterface->aardvardI2cSpiPort, SIGNAL(textChanged(QString)),
+    connect(m_userInterface->aardvarkI2cSpiPort, SIGNAL(textChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
-    connect(m_userInterface->aardvardI2cSpiMode, SIGNAL(currentTextChanged(QString)),
+    connect(m_userInterface->aardvarkI2cSpiMode, SIGNAL(currentTextChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
-    connect(m_userInterface->aardvardI2cSpi5V, SIGNAL(currentTextChanged(QString)),
+    connect(m_userInterface->aardvarkI2cSpi5V, SIGNAL(currentTextChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
-    connect(m_userInterface->aardvardI2cBaudrate, SIGNAL(textChanged(QString)),
+    connect(m_userInterface->aardvarkI2cBaudrate, SIGNAL(textChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
-    connect(m_userInterface->aardvardI2cPullUp, SIGNAL(currentTextChanged(QString)),
+    connect(m_userInterface->aardvarkI2cPullUp, SIGNAL(currentTextChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
-    connect(m_userInterface->aardvardSpiPolarity, SIGNAL(currentTextChanged(QString)),
+    connect(m_userInterface->aardvarkSpiPolarity, SIGNAL(currentTextChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
-    connect(m_userInterface->aardvardSpiBitorder, SIGNAL(currentTextChanged(QString)),
+    connect(m_userInterface->aardvarkSpiBitorder, SIGNAL(currentTextChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
-    connect(m_userInterface->aardvardSpiSSPolarity, SIGNAL(currentTextChanged(QString)),
+    connect(m_userInterface->aardvarkSpiSSPolarity, SIGNAL(currentTextChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
-    connect(m_userInterface->aardvardSpiPhase, SIGNAL(currentTextChanged(QString)),
+    connect(m_userInterface->aardvarkSpiPhase, SIGNAL(currentTextChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
-    connect(m_userInterface->aardvardSpiBaudrate, SIGNAL(textChanged(QString)),
+    connect(m_userInterface->aardvarkSpiBaudrate, SIGNAL(textChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
 
-    connect(m_userInterface->aardvardI2cSpiScan, SIGNAL(clicked()),
-            this, SLOT(aardvardI2cSpiScanButtonSlot()));
-    connect(m_userInterface->aardvardI2cFreeBus, SIGNAL(clicked()),
-            this, SLOT(aardvardI2cSpiFreeBusButtonSlot()));
+    connect(m_userInterface->aardvarkI2cSpiScan, SIGNAL(clicked()),
+            this, SLOT(aardvarkI2cSpiScanButtonSlot()));
+    connect(m_userInterface->aardvarkI2cFreeBus, SIGNAL(clicked()),
+            this, SLOT(aardvarkI2cSpiFreeBusButtonSlot()));
 
-    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+    for(int i = 0; i < AARDVARK_I2C_SPI_GPIO_COUNT; i++)
     {
-        connect(m_aardvardI2cGpioGuiElements[i].mode, SIGNAL(currentTextChanged(QString)),
+        connect(m_aardvarkI2cGpioGuiElements[i].mode, SIGNAL(currentTextChanged(QString)),
                 this, SLOT(textFromGuiElementChangedSlot(QString)));
-        connect(m_aardvardI2cGpioGuiElements[i].outValue, SIGNAL(currentTextChanged(QString)),
+        connect(m_aardvarkI2cGpioGuiElements[i].outValue, SIGNAL(currentTextChanged(QString)),
                 this, SLOT(textFromGuiElementChangedSlot(QString)));
     }
 
@@ -496,7 +496,7 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     m_userInterface->cheetahPlainTextEdit->appendPlainText(CheetahSpi::detectDevices());
 
-    m_userInterface->aardvardI2cSpiDevices->appendPlainText(AardvarkI2cSpi::detectDevices());
+    m_userInterface->aardvarkI2cSpiDevices->appendPlainText(AardvarkI2cSpi::detectDevices());
 
     detectPcanSlot();
 
@@ -787,20 +787,20 @@ void SettingsDialog::cheetahScanButtonSlot(void)
 }
 
 /**
- * Slot function for the aardvard I2c/Spi scan button.
+ * Slot function for the aardvark I2c/Spi scan button.
  */
-void SettingsDialog::aardvardI2cSpiScanButtonSlot(void)
+void SettingsDialog::aardvarkI2cSpiScanButtonSlot(void)
 {
-    m_userInterface->aardvardI2cSpiDevices->clear();
-    m_userInterface->aardvardI2cSpiDevices->appendPlainText(AardvarkI2cSpi::detectDevices());
+    m_userInterface->aardvarkI2cSpiDevices->clear();
+    m_userInterface->aardvarkI2cSpiDevices->appendPlainText(AardvarkI2cSpi::detectDevices());
 }
 
 /**
- * Slot function for the aardvard I2c/Spi free bus button.
+ * Slot function for the aardvark I2c/Spi free bus button.
  */
-void SettingsDialog::aardvardI2cSpiFreeBusButtonSlot(void)
+void SettingsDialog::aardvarkI2cSpiFreeBusButtonSlot(void)
 {
-    emit freeAardvardI2cBusSignal();
+    emit freeAardvarkI2cBusSignal();
 }
 
 /**
@@ -841,15 +841,15 @@ void SettingsDialog::show(void)
 }
 
 /**
- * Is called if the input states of the aardvard I2c/Spi device have been changed.
+ * Is called if the input states of the aardvark I2c/Spi device have been changed.
  * @param states
- *      The new states (states contains AARDVARD_I2C_SPI_GPIO_COUNT elements).
+ *      The new states (states contains AARDVARK_I2C_SPI_GPIO_COUNT elements).
  */
-void SettingsDialog::aardvardI2cSpiInputStatesChangedSlot(QVector<bool> states)
+void SettingsDialog::aardvarkI2cSpiInputStatesChangedSlot(QVector<bool> states)
 {
-    for(int i = 0; (i < AARDVARD_I2C_SPI_GPIO_COUNT) && (i < states.size()); i++)
+    for(int i = 0; (i < AARDVARK_I2C_SPI_GPIO_COUNT) && (i < states.size()); i++)
     {
-        m_aardvardI2cGpioGuiElements[i].inValue->setText(states[i] ? "1" : "0");
+        m_aardvarkI2cGpioGuiElements[i].inValue->setText(states[i] ? "1" : "0");
     }
 }
 
@@ -1061,9 +1061,9 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     {
         m_userInterface->connectionTypeComboBox->setCurrentText("pcan");
     }
-    else if(settings.connectionType == CONNECTION_TYPE_AARDVARD)
+    else if(settings.connectionType == CONNECTION_TYPE_AARDVARK)
     {
-        m_userInterface->connectionTypeComboBox->setCurrentText("aardvard");
+        m_userInterface->connectionTypeComboBox->setCurrentText("aardvark");
     }
     else
     {
@@ -1153,30 +1153,30 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
 
     }
 
-    //aardvard I2C/SPI settings
-    m_userInterface->aardvardI2cSpiPort->setText(QString("%1").arg(settings.aardvardI2cSpi.devicePort));
-    m_userInterface->aardvardI2cSpiMode->setCurrentIndex((int)settings.aardvardI2cSpi.deviceMode);
-    m_userInterface->aardvardI2cSpi5V->setCurrentText(settings.aardvardI2cSpi.device5VIsOn ? "On" : "Off");
-    m_userInterface->aardvardI2cBaudrate->setText(QString("%1").arg(settings.aardvardI2cSpi.i2cBaudrate));
-    m_userInterface->aardvardI2cPullUp->setCurrentText(settings.aardvardI2cSpi.i2cPullupsOn ? "On" : "Off");
-    m_userInterface->aardvardSpiPolarity->setCurrentIndex((int)settings.aardvardI2cSpi.spiPolarity);
-    m_userInterface->aardvardSpiSSPolarity->setCurrentIndex((int)settings.aardvardI2cSpi.spiSSPolarity);
-    m_userInterface->aardvardSpiBitorder->setCurrentIndex((int)settings.aardvardI2cSpi.spiBitorder);
-    m_userInterface->aardvardSpiPhase->setCurrentIndex((int)settings.aardvardI2cSpi.spiPhase);
-    m_userInterface->aardvardSpiBaudrate->setText(QString("%1").arg(settings.aardvardI2cSpi.spiBaudrate));
+    //aardvark I2C/SPI settings
+    m_userInterface->aardvarkI2cSpiPort->setText(QString("%1").arg(settings.aardvarkI2cSpi.devicePort));
+    m_userInterface->aardvarkI2cSpiMode->setCurrentIndex((int)settings.aardvarkI2cSpi.deviceMode);
+    m_userInterface->aardvarkI2cSpi5V->setCurrentText(settings.aardvarkI2cSpi.device5VIsOn ? "On" : "Off");
+    m_userInterface->aardvarkI2cBaudrate->setText(QString("%1").arg(settings.aardvarkI2cSpi.i2cBaudrate));
+    m_userInterface->aardvarkI2cPullUp->setCurrentText(settings.aardvarkI2cSpi.i2cPullupsOn ? "On" : "Off");
+    m_userInterface->aardvarkSpiPolarity->setCurrentIndex((int)settings.aardvarkI2cSpi.spiPolarity);
+    m_userInterface->aardvarkSpiSSPolarity->setCurrentIndex((int)settings.aardvarkI2cSpi.spiSSPolarity);
+    m_userInterface->aardvarkSpiBitorder->setCurrentIndex((int)settings.aardvarkI2cSpi.spiBitorder);
+    m_userInterface->aardvarkSpiPhase->setCurrentIndex((int)settings.aardvarkI2cSpi.spiPhase);
+    m_userInterface->aardvarkSpiBaudrate->setText(QString("%1").arg(settings.aardvarkI2cSpi.spiBaudrate));
 
 
-    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+    for(int i = 0; i < AARDVARK_I2C_SPI_GPIO_COUNT; i++)
     {
-        if(settings.aardvardI2cSpi.pinConfigs[i].isInput)
+        if(settings.aardvarkI2cSpi.pinConfigs[i].isInput)
         {
-            m_aardvardI2cGpioGuiElements[i].mode->setCurrentText(settings.aardvardI2cSpi.pinConfigs[i].withPullups ? "in pullup" : "in");
+            m_aardvarkI2cGpioGuiElements[i].mode->setCurrentText(settings.aardvarkI2cSpi.pinConfigs[i].withPullups ? "in pullup" : "in");
         }
         else
         {
-            m_aardvardI2cGpioGuiElements[i].mode->setCurrentText("out");
+            m_aardvarkI2cGpioGuiElements[i].mode->setCurrentText("out");
         }
-        m_aardvardI2cGpioGuiElements[i].outValue->setCurrentText(settings.aardvardI2cSpi.pinConfigs[i].outValue ? "1" : "0");
+        m_aardvarkI2cGpioGuiElements[i].outValue->setCurrentText(settings.aardvarkI2cSpi.pinConfigs[i].outValue ? "1" : "0");
     }
 
     updateSettings(true);
@@ -1554,66 +1554,66 @@ void SettingsDialog::setInterfaceSettingsCanBeChanged(bool interfaceSettingsCanB
 }
 
 /**
- * Initializes the aardvard I2C SPI interface tab.
+ * Initializes the aardvark I2C SPI interface tab.
  */
-void SettingsDialog::initializeAardvardIc2SpiTab(void)
+void SettingsDialog::initializeAardvarkIc2SpiTab(void)
 {
 
-    m_userInterface->aardvardI2cBaudrate->setEnabled(false);
-    m_userInterface->aardvardI2cPullUp->setEnabled(false);
-    m_userInterface->aardvardI2cFreeBus->setEnabled(false);
+    m_userInterface->aardvarkI2cBaudrate->setEnabled(false);
+    m_userInterface->aardvarkI2cPullUp->setEnabled(false);
+    m_userInterface->aardvarkI2cFreeBus->setEnabled(false);
 
-    m_userInterface->aardvardSpiPolarity->setEnabled(false);
-    m_userInterface->aardvardSpiSSPolarity->setEnabled(false);
-    m_userInterface->aardvardSpiBitorder->setEnabled(false);
-    m_userInterface->aardvardSpiPhase->setEnabled(false);
-    m_userInterface->aardvardSpiBaudrate->setEnabled(false);
+    m_userInterface->aardvarkSpiPolarity->setEnabled(false);
+    m_userInterface->aardvarkSpiSSPolarity->setEnabled(false);
+    m_userInterface->aardvarkSpiBitorder->setEnabled(false);
+    m_userInterface->aardvarkSpiPhase->setEnabled(false);
+    m_userInterface->aardvarkSpiBaudrate->setEnabled(false);
 
-    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+    for(int i = 0; i < AARDVARK_I2C_SPI_GPIO_COUNT; i++)
     {
-        m_aardvardI2cGpioGuiElements[i].mode->setEnabled(false);
-        m_aardvardI2cGpioGuiElements[i].outValue->setEnabled(false);
+        m_aardvarkI2cGpioGuiElements[i].mode->setEnabled(false);
+        m_aardvarkI2cGpioGuiElements[i].outValue->setEnabled(false);
     }
 
      if(m_interfaceSettingsCanBeChanged)
      {
-         m_userInterface->aardvardI2cSpiPort->setEnabled(true);
-         m_userInterface->aardvardI2cSpiMode->setEnabled(true);
-         m_userInterface->aardvardI2cSpiScan->setEnabled(true);
-         m_userInterface->aardvardI2cSpi5V->setEnabled(true);
+         m_userInterface->aardvarkI2cSpiPort->setEnabled(true);
+         m_userInterface->aardvarkI2cSpiMode->setEnabled(true);
+         m_userInterface->aardvarkI2cSpiScan->setEnabled(true);
+         m_userInterface->aardvarkI2cSpi5V->setEnabled(true);
 
-         if(m_userInterface->aardvardI2cSpiMode->currentText() == "I2C Master")
+         if(m_userInterface->aardvarkI2cSpiMode->currentText() == "I2C Master")
          {
-             m_userInterface->aardvardI2cBaudrate->setEnabled(true);
-             m_userInterface->aardvardI2cPullUp->setEnabled(true);
+             m_userInterface->aardvarkI2cBaudrate->setEnabled(true);
+             m_userInterface->aardvarkI2cPullUp->setEnabled(true);
          }
-         else if(m_userInterface->aardvardI2cSpiMode->currentText() == "SPI Master")
+         else if(m_userInterface->aardvarkI2cSpiMode->currentText() == "SPI Master")
          {
-             m_userInterface->aardvardSpiPolarity->setEnabled(true);
-             m_userInterface->aardvardSpiSSPolarity->setEnabled(true);
-             m_userInterface->aardvardSpiBitorder->setEnabled(true);
-             m_userInterface->aardvardSpiPhase->setEnabled(true);
-             m_userInterface->aardvardSpiBaudrate->setEnabled(true);
+             m_userInterface->aardvarkSpiPolarity->setEnabled(true);
+             m_userInterface->aardvarkSpiSSPolarity->setEnabled(true);
+             m_userInterface->aardvarkSpiBitorder->setEnabled(true);
+             m_userInterface->aardvarkSpiPhase->setEnabled(true);
+             m_userInterface->aardvarkSpiBaudrate->setEnabled(true);
          }
 
      }
      else
      {
-         m_userInterface->aardvardI2cSpiPort->setEnabled(false);
-         m_userInterface->aardvardI2cSpiMode->setEnabled(false);
-         m_userInterface->aardvardI2cSpiScan->setEnabled(false);
-         m_userInterface->aardvardI2cSpi5V->setEnabled(false);
+         m_userInterface->aardvarkI2cSpiPort->setEnabled(false);
+         m_userInterface->aardvarkI2cSpiMode->setEnabled(false);
+         m_userInterface->aardvarkI2cSpiScan->setEnabled(false);
+         m_userInterface->aardvarkI2cSpi5V->setEnabled(false);
      }
 
      int startIndex = 0;
      int endIndex = 0;
-     if(m_userInterface->aardvardI2cSpiMode->currentText() == "I2C Master")
+     if(m_userInterface->aardvarkI2cSpiMode->currentText() == "I2C Master")
      {
-         m_userInterface->aardvardI2cFreeBus->setEnabled(true);
+         m_userInterface->aardvarkI2cFreeBus->setEnabled(true);
          startIndex = 2;
-         endIndex = AARDVARD_I2C_SPI_GPIO_COUNT - 1;
+         endIndex = AARDVARK_I2C_SPI_GPIO_COUNT - 1;
      }
-     else if(m_userInterface->aardvardI2cSpiMode->currentText() == "SPI Master")
+     else if(m_userInterface->aardvarkI2cSpiMode->currentText() == "SPI Master")
      {
          startIndex = 0;
          endIndex = 1;
@@ -1621,13 +1621,13 @@ void SettingsDialog::initializeAardvardIc2SpiTab(void)
      else
      {
          startIndex = 0;
-         endIndex = AARDVARD_I2C_SPI_GPIO_COUNT - 1;
+         endIndex = AARDVARK_I2C_SPI_GPIO_COUNT - 1;
      }
 
      for(int i = startIndex; i <= endIndex; i++)
      {
-         m_aardvardI2cGpioGuiElements[i].mode->setEnabled(true);
-         m_aardvardI2cGpioGuiElements[i].outValue->setEnabled((m_aardvardI2cGpioGuiElements[i].mode->currentText() == "out") ? true : false);
+         m_aardvarkI2cGpioGuiElements[i].mode->setEnabled(true);
+         m_aardvarkI2cGpioGuiElements[i].outValue->setEnabled((m_aardvarkI2cGpioGuiElements[i].mode->currentText() == "out") ? true : false);
      }
 }
 
@@ -1817,7 +1817,7 @@ void SettingsDialog::initializeInterfaceTabs(void)
     initializePcanTab();
     initializeUpdateTab();
     initializeCheetahTab();
-    initializeAardvardIc2SpiTab();
+    initializeAardvarkIc2SpiTab();
 }
 
 /**
@@ -1891,17 +1891,17 @@ void SettingsDialog::textFromGuiElementChangedSlot(QString text)
 
 
     QObject* obj = sender();
-    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+    for(int i = 0; i < AARDVARK_I2C_SPI_GPIO_COUNT; i++)
     {
-        if(m_aardvardI2cGpioGuiElements[i].mode == obj)
+        if(m_aardvarkI2cGpioGuiElements[i].mode == obj)
         {
-            emit pinConfigChangedSignal(m_currentSettings.aardvardI2cSpi);
+            emit pinConfigChangedSignal(m_currentSettings.aardvarkI2cSpi);
             break;
         }
 
-        if(m_aardvardI2cGpioGuiElements[i].outValue == obj)
+        if(m_aardvarkI2cGpioGuiElements[i].outValue == obj)
         {
-            emit outputValueChangedSignal(m_currentSettings.aardvardI2cSpi);
+            emit outputValueChangedSignal(m_currentSettings.aardvarkI2cSpi);
             break;
         }
     }
@@ -2357,9 +2357,9 @@ void SettingsDialog::updateSettings(bool forceUpdate)
     {
         m_currentSettings.connectionType = CONNECTION_TYPE_PCAN;
     }
-    else if(m_userInterface->connectionTypeComboBox->currentText() == "aardvard")
+    else if(m_userInterface->connectionTypeComboBox->currentText() == "aardvark")
     {
-        m_currentSettings.connectionType = CONNECTION_TYPE_AARDVARD;
+        m_currentSettings.connectionType = CONNECTION_TYPE_AARDVARK;
     }
     else
     {
@@ -2484,23 +2484,23 @@ void SettingsDialog::updateSettings(bool forceUpdate)
         m_currentSettings.updateSettings.proxySettings = 0;
     }
 
-    //aardvard I2C/SPI settings
-    m_currentSettings.aardvardI2cSpi.devicePort = m_userInterface->aardvardI2cSpiPort->text().toUInt();
-    m_currentSettings.aardvardI2cSpi.deviceMode = (AardvardI2cSpiDeviceMode)m_userInterface->aardvardI2cSpiMode->currentIndex();
-    m_currentSettings.aardvardI2cSpi.device5VIsOn = (m_userInterface->aardvardI2cSpi5V->currentText() == "On") ? true : false;
-    m_currentSettings.aardvardI2cSpi.i2cBaudrate = m_userInterface->aardvardI2cBaudrate->text().toUInt();
-    m_currentSettings.aardvardI2cSpi.i2cPullupsOn = (m_userInterface->aardvardI2cPullUp->currentText() == "On") ? true : false;
-    m_currentSettings.aardvardI2cSpi.spiPolarity = (AardvarkSpiPolarity)m_userInterface->aardvardSpiPolarity->currentIndex();
-    m_currentSettings.aardvardI2cSpi.spiSSPolarity = (AardvarkSpiSSPolarity)m_userInterface->aardvardSpiSSPolarity->currentIndex();
-    m_currentSettings.aardvardI2cSpi.spiBitorder = (AardvarkSpiBitorder)m_userInterface->aardvardSpiBitorder->currentIndex();
-    m_currentSettings.aardvardI2cSpi.spiPhase = (AardvarkSpiPhase)m_userInterface->aardvardSpiPhase->currentIndex();
-    m_currentSettings.aardvardI2cSpi.spiBaudrate= m_userInterface->aardvardSpiBaudrate->text().toUInt();
+    //aardvark I2C/SPI settings
+    m_currentSettings.aardvarkI2cSpi.devicePort = m_userInterface->aardvarkI2cSpiPort->text().toUInt();
+    m_currentSettings.aardvarkI2cSpi.deviceMode = (AardvarkI2cSpiDeviceMode)m_userInterface->aardvarkI2cSpiMode->currentIndex();
+    m_currentSettings.aardvarkI2cSpi.device5VIsOn = (m_userInterface->aardvarkI2cSpi5V->currentText() == "On") ? true : false;
+    m_currentSettings.aardvarkI2cSpi.i2cBaudrate = m_userInterface->aardvarkI2cBaudrate->text().toUInt();
+    m_currentSettings.aardvarkI2cSpi.i2cPullupsOn = (m_userInterface->aardvarkI2cPullUp->currentText() == "On") ? true : false;
+    m_currentSettings.aardvarkI2cSpi.spiPolarity = (AardvarkSpiPolarity)m_userInterface->aardvarkSpiPolarity->currentIndex();
+    m_currentSettings.aardvarkI2cSpi.spiSSPolarity = (AardvarkSpiSSPolarity)m_userInterface->aardvarkSpiSSPolarity->currentIndex();
+    m_currentSettings.aardvarkI2cSpi.spiBitorder = (AardvarkSpiBitorder)m_userInterface->aardvarkSpiBitorder->currentIndex();
+    m_currentSettings.aardvarkI2cSpi.spiPhase = (AardvarkSpiPhase)m_userInterface->aardvarkSpiPhase->currentIndex();
+    m_currentSettings.aardvarkI2cSpi.spiBaudrate= m_userInterface->aardvarkSpiBaudrate->text().toUInt();
 
-    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+    for(int i = 0; i < AARDVARK_I2C_SPI_GPIO_COUNT; i++)
     {
-        m_currentSettings.aardvardI2cSpi.pinConfigs[i].isInput = (m_aardvardI2cGpioGuiElements[i].mode->currentText().contains("in")) ? true : false;
-        m_currentSettings.aardvardI2cSpi.pinConfigs[i].withPullups = (m_aardvardI2cGpioGuiElements[i].mode->currentText() == "in pullup") ? true : false;
-        m_currentSettings.aardvardI2cSpi.pinConfigs[i].outValue = (m_aardvardI2cGpioGuiElements[i].outValue->currentText() == "1") ? true : false;
+        m_currentSettings.aardvarkI2cSpi.pinConfigs[i].isInput = (m_aardvarkI2cGpioGuiElements[i].mode->currentText().contains("in")) ? true : false;
+        m_currentSettings.aardvarkI2cSpi.pinConfigs[i].withPullups = (m_aardvarkI2cGpioGuiElements[i].mode->currentText() == "in pullup") ? true : false;
+        m_currentSettings.aardvarkI2cSpi.pinConfigs[i].outValue = (m_aardvarkI2cGpioGuiElements[i].outValue->currentText() == "1") ? true : false;
     }
 
 }

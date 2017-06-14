@@ -32,7 +32,10 @@ static const QString LIBRARAY_NAME = "aardvark.so";
 #endif
 AardvarkI2cSpi::AardvarkI2cSpi(QObject *parent): QObject(parent), m_handle(0), m_inputTimer()
 {
-    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+
+    memset(&m_settings, 0, sizeof(m_settings));
+
+    for(int i = 0; i < AARDVARK_I2C_SPI_GPIO_COUNT; i++)
     {
         m_inputStates.append(false);
     }
@@ -46,7 +49,7 @@ AardvarkI2cSpi::~AardvarkI2cSpi()
 
 
 /**
- * Reads all inputs of the aardvard I2c/Spi device.
+ * Reads all inputs of the aardvark I2c/Spi device.
  *
  * @param inputStates
  *      The array in which the read states are written to.
@@ -60,7 +63,7 @@ void AardvarkI2cSpi::readAllInputs(QVector<bool>& inputStates)
         quint32 result = (quint32)aa_gpio_get(m_handle);
         quint32 bitMask = 0;
 
-        for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+        for(int i = 0; i < AARDVARK_I2C_SPI_GPIO_COUNT; i++)
         {
             bitMask = 1 << i;
             if((result & bitMask) != 0)
@@ -76,7 +79,7 @@ void AardvarkI2cSpi::readAllInputs(QVector<bool>& inputStates)
     }
     else
     {
-        for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+        for(int i = 0; i < AARDVARK_I2C_SPI_GPIO_COUNT; i++)
         {
             inputStates.append(false);
         }
@@ -85,7 +88,7 @@ void AardvarkI2cSpi::readAllInputs(QVector<bool>& inputStates)
 
 /**
  * Slot function of m_inputTimer.
- * Reads all inputs of the aardvard I2c/Spi device.
+ * Reads all inputs of the aardvark I2c/Spi device.
  */
 void AardvarkI2cSpi::inputTimerSlot(void)
 {
@@ -93,7 +96,7 @@ void AardvarkI2cSpi::inputTimerSlot(void)
 
     readAllInputs(inputStates);
 
-    for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+    for(int i = 0; i < AARDVARK_I2C_SPI_GPIO_COUNT; i++)
     {
         if(inputStates[i] != m_inputStates[i])
         {//State changed.
@@ -114,7 +117,7 @@ void AardvarkI2cSpi::inputTimerSlot(void)
  * @param settings
  *      The interface settings.
  */
-void AardvarkI2cSpi::pinConfigChangedSlot(AardvardI2cSpiSettings settings)
+void AardvarkI2cSpi::pinConfigChangedSlot(AardvarkI2cSpiSettings settings)
 {
     m_settings = settings;
 
@@ -131,7 +134,7 @@ void AardvarkI2cSpi::pinConfigChangedSlot(AardvardI2cSpiSettings settings)
  * @param settings
  *      The interface settings.
  */
-void AardvarkI2cSpi::outputValueChangedSlot(AardvardI2cSpiSettings settings)
+void AardvarkI2cSpi::outputValueChangedSlot(AardvarkI2cSpiSettings settings)
 {
     m_settings = settings;
 
@@ -147,7 +150,7 @@ void AardvarkI2cSpi::outputValueChangedSlot(AardvardI2cSpiSettings settings)
  */
 void AardvarkI2cSpi::freeI2cBusSlot(void)
 {
-    if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER)
+    if(m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_MASTER)
     {
         if (m_handle > 0)
         {
@@ -212,7 +215,7 @@ QString AardvarkI2cSpi::detectDevices(void)
 }
 
 /**
- * Configures pins of the aardvard I2c/Spi device.
+ * Configures pins of the aardvark I2c/Spi device.
  *
  * @param onlySetOutputs
  *      True if only the output values shall be set.
@@ -225,21 +228,21 @@ void AardvarkI2cSpi::configurePins(bool onlySetOutputs)
     int startIndex = 0;
     int endIndex = 0;
 
-    if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER)
+    if(m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_MASTER)
     {
         startIndex = 2;
-        endIndex = AARDVARD_I2C_SPI_GPIO_COUNT - 1;
+        endIndex = AARDVARK_I2C_SPI_GPIO_COUNT - 1;
     }
-    else if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_SPI_MASTER)
+    else if(m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_SPI_MASTER)
     {
         startIndex = 0;
         endIndex = 1;
     }
     else
-    {//AARDVARD_I2C_SPI_DEVICE_MODE_GPIO
+    {//AARDVARK_I2C_SPI_DEVICE_MODE_GPIO
 
         startIndex = 0;
-        endIndex = AARDVARD_I2C_SPI_GPIO_COUNT - 1;
+        endIndex = AARDVARK_I2C_SPI_GPIO_COUNT - 1;
     }
 
     for(int i = startIndex; i <= endIndex; i++)
@@ -279,7 +282,7 @@ void AardvarkI2cSpi::configurePins(bool onlySetOutputs)
  * @return
  *      True on success.
  */
-bool AardvarkI2cSpi::connectToDevice(AardvardI2cSpiSettings& settings, int& deviceBitrate)
+bool AardvarkI2cSpi::connectToDevice(AardvarkI2cSpiSettings& settings, int& deviceBitrate)
 {
     bool succeeded = false;
     m_handle = aa_open(settings.devicePort);
@@ -287,7 +290,7 @@ bool AardvarkI2cSpi::connectToDevice(AardvardI2cSpiSettings& settings, int& devi
 
     if (m_handle > 0)
     {
-        if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER)
+        if(m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_MASTER)
         {
             if(AA_CONFIG_ERROR != aa_configure(m_handle,  AA_CONFIG_GPIO_I2C))
             {
@@ -301,7 +304,7 @@ bool AardvarkI2cSpi::connectToDevice(AardvardI2cSpiSettings& settings, int& devi
                 deviceBitrate = aa_i2c_bitrate(m_handle, m_settings.i2cBaudrate);
             }
         }
-        else if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_SPI_MASTER)
+        else if(m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_SPI_MASTER)
         {
             if(AA_CONFIG_ERROR != aa_configure(m_handle,  AA_CONFIG_SPI_GPIO))
             {
@@ -318,7 +321,7 @@ bool AardvarkI2cSpi::connectToDevice(AardvardI2cSpiSettings& settings, int& devi
 
         }
         else
-        {//AARDVARD_I2C_SPI_DEVICE_MODE_GPIO
+        {//AARDVARK_I2C_SPI_DEVICE_MODE_GPIO
 
             if(AA_CONFIG_ERROR != aa_configure(m_handle,  AA_CONFIG_GPIO_ONLY))
             {
@@ -436,7 +439,9 @@ bool AardvarkI2cSpi::sendReceiveData(const QByteArray& data, QByteArray* receive
 {
     bool succeeded = false;
 
-    if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER)
+    receivedData->clear();
+
+    if(m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_MASTER)
     {
         if(data.size() >= SEND_CONTROL_BYTES_COUNT)
         {
@@ -530,7 +535,7 @@ bool AardvarkI2cSpi::sendReceiveData(const QByteArray& data, QByteArray* receive
         }
 
     }
-    else if(m_settings.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_SPI_MASTER)
+    else if(m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_SPI_MASTER)
     {
         aa_u08* inBuffer = new aa_u08[data.size()];
 
@@ -552,7 +557,7 @@ bool AardvarkI2cSpi::sendReceiveData(const QByteArray& data, QByteArray* receive
 
     }
     else
-    {//AARDVARD_I2C_SPI_DEVICE_MODE_GPIO
+    {//AARDVARK_I2C_SPI_DEVICE_MODE_GPIO
 
         succeeded = false;
     }

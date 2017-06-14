@@ -295,15 +295,15 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
 
     qRegisterMetaType<Settings>("Settings");
-    qRegisterMetaType<AardvardI2cSpiSettings>("AardvardI2cSpiSettings");
+    qRegisterMetaType<AardvarkI2cSpiSettings>("AardvarkI2cSpiSettings");
     qRegisterMetaType<QVector<bool>>("QVector<bool>");
     connect(m_mainInterface->m_aardvarkI2cSpi, SIGNAL(inputStatesChangedSignal(QVector<bool>)), m_settingsDialog,
-            SLOT(aardvardI2cSpiInputStatesChangedSlot(QVector<bool>)), Qt::QueuedConnection);
-    connect(m_settingsDialog, SIGNAL(pinConfigChangedSignal(AardvardI2cSpiSettings)), m_mainInterface->m_aardvarkI2cSpi,
-            SLOT(pinConfigChangedSlot(AardvardI2cSpiSettings)), Qt::QueuedConnection);
-    connect(m_settingsDialog, SIGNAL(outputValueChangedSignal(AardvardI2cSpiSettings)), m_mainInterface->m_aardvarkI2cSpi,
-            SLOT(outputValueChangedSlot(AardvardI2cSpiSettings)), Qt::QueuedConnection);
-    connect(m_settingsDialog, SIGNAL(freeAardvardI2cBusSignal()), m_mainInterface->m_aardvarkI2cSpi,
+            SLOT(aardvarkI2cSpiInputStatesChangedSlot(QVector<bool>)), Qt::QueuedConnection);
+    connect(m_settingsDialog, SIGNAL(pinConfigChangedSignal(AardvarkI2cSpiSettings)), m_mainInterface->m_aardvarkI2cSpi,
+            SLOT(pinConfigChangedSlot(AardvarkI2cSpiSettings)), Qt::QueuedConnection);
+    connect(m_settingsDialog, SIGNAL(outputValueChangedSignal(AardvarkI2cSpiSettings)), m_mainInterface->m_aardvarkI2cSpi,
+            SLOT(outputValueChangedSlot(AardvarkI2cSpiSettings)), Qt::QueuedConnection);
+    connect(m_settingsDialog, SIGNAL(freeAardvarkI2cBusSignal()), m_mainInterface->m_aardvarkI2cSpi,
             SLOT(freeI2cBusSlot()), Qt::QueuedConnection);
 
     connect(m_settingsDialog, SIGNAL(deleteLogFileSignal(QString)),this, SLOT(deleteLogFileSlot(QString)));
@@ -1846,28 +1846,28 @@ bool MainWindow::loadSettings()
                     }
 
                 }
-                {//aardvardI2cSpi
+                {//aardvarkI2cSpi
 
-                    QDomNodeList nodeList = docElem.elementsByTagName("aardvardI2cSpi");
+                    QDomNodeList nodeList = docElem.elementsByTagName("aardvarkI2cSpi");
                     if(!nodeList.isEmpty())
                     {
                         QDomNode node = nodeList.at(0);
-                        currentSettings.aardvardI2cSpi.devicePort = node.attributes().namedItem("devicePort").nodeValue().toUInt();
-                        currentSettings.aardvardI2cSpi.deviceMode = (AardvardI2cSpiDeviceMode)node.attributes().namedItem("deviceMode").nodeValue().toUInt();
-                        currentSettings.aardvardI2cSpi.device5VIsOn = (node.attributes().namedItem("device5VIsOn").nodeValue() == "1") ? true : false;
-                        currentSettings.aardvardI2cSpi.i2cBaudrate = node.attributes().namedItem("i2cBaudrate").nodeValue().toUInt();
-                        currentSettings.aardvardI2cSpi.i2cPullupsOn = (node.attributes().namedItem("i2cPullupsOn").nodeValue() == "1") ? true : false;
-                        currentSettings.aardvardI2cSpi.spiPolarity = (AardvarkSpiPolarity)node.attributes().namedItem("spiPolarity").nodeValue().toUInt();
-                        currentSettings.aardvardI2cSpi.spiSSPolarity = (AardvarkSpiSSPolarity)node.attributes().namedItem("spiSSPolarity").nodeValue().toUInt();
-                        currentSettings.aardvardI2cSpi.spiBitorder = (AardvarkSpiBitorder)node.attributes().namedItem("spiBitorder").nodeValue().toUInt();
-                        currentSettings.aardvardI2cSpi.spiPhase = (AardvarkSpiPhase)node.attributes().namedItem("spiPhase").nodeValue().toUInt();
-                        currentSettings.aardvardI2cSpi.spiBaudrate = node.attributes().namedItem("spiBaudrate").nodeValue().toUInt();
+                        currentSettings.aardvarkI2cSpi.devicePort = node.attributes().namedItem("devicePort").nodeValue().toUInt();
+                        currentSettings.aardvarkI2cSpi.deviceMode = (AardvarkI2cSpiDeviceMode)node.attributes().namedItem("deviceMode").nodeValue().toUInt();
+                        currentSettings.aardvarkI2cSpi.device5VIsOn = (node.attributes().namedItem("device5VIsOn").nodeValue() == "1") ? true : false;
+                        currentSettings.aardvarkI2cSpi.i2cBaudrate = node.attributes().namedItem("i2cBaudrate").nodeValue().toUInt();
+                        currentSettings.aardvarkI2cSpi.i2cPullupsOn = (node.attributes().namedItem("i2cPullupsOn").nodeValue() == "1") ? true : false;
+                        currentSettings.aardvarkI2cSpi.spiPolarity = (AardvarkSpiPolarity)node.attributes().namedItem("spiPolarity").nodeValue().toUInt();
+                        currentSettings.aardvarkI2cSpi.spiSSPolarity = (AardvarkSpiSSPolarity)node.attributes().namedItem("spiSSPolarity").nodeValue().toUInt();
+                        currentSettings.aardvarkI2cSpi.spiBitorder = (AardvarkSpiBitorder)node.attributes().namedItem("spiBitorder").nodeValue().toUInt();
+                        currentSettings.aardvarkI2cSpi.spiPhase = (AardvarkSpiPhase)node.attributes().namedItem("spiPhase").nodeValue().toUInt();
+                        currentSettings.aardvarkI2cSpi.spiBaudrate = node.attributes().namedItem("spiBaudrate").nodeValue().toUInt();
 
-                        for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+                        for(int i = 0; i < AARDVARK_I2C_SPI_GPIO_COUNT; i++)
                         {
-                            currentSettings.aardvardI2cSpi.pinConfigs[i].isInput = (node.attributes().namedItem(QString("pinConfigIsInput%1").arg(i)).nodeValue() == "1") ? true : false;
-                            currentSettings.aardvardI2cSpi.pinConfigs[i].withPullups = (node.attributes().namedItem(QString("pinConfigWithPullups%1").arg(i)).nodeValue() == "1") ? true : false;
-                            currentSettings.aardvardI2cSpi.pinConfigs[i].outValue = node.attributes().namedItem(QString("pinConfigOutValue%1").arg(i)).nodeValue().toUInt();
+                            currentSettings.aardvarkI2cSpi.pinConfigs[i].isInput = (node.attributes().namedItem(QString("pinConfigIsInput%1").arg(i)).nodeValue() == "1") ? true : false;
+                            currentSettings.aardvarkI2cSpi.pinConfigs[i].withPullups = (node.attributes().namedItem(QString("pinConfigWithPullups%1").arg(i)).nodeValue() == "1") ? true : false;
+                            currentSettings.aardvarkI2cSpi.pinConfigs[i].outValue = node.attributes().namedItem(QString("pinConfigOutValue%1").arg(i)).nodeValue().toUInt();
                         }
                     }
                 }
@@ -2654,28 +2654,28 @@ void MainWindow::saveSettings()
 
                 writeXmlElement(xmlWriter, "updateSetting", settingsMap);
             }
-            {//aardvard I2C/SPI
+            {//aardvark I2C/SPI
                 std::map<QString, QString> settingsMap =
-                {std::make_pair(QString("devicePort"), QString("%1").arg(currentSettings->aardvardI2cSpi.devicePort)),
-                 std::make_pair(QString("deviceMode"), QString("%1").arg(currentSettings->aardvardI2cSpi.deviceMode)),
-                 std::make_pair(QString("device5VIsOn"), QString("%1").arg(currentSettings->aardvardI2cSpi.device5VIsOn)),
-                 std::make_pair(QString("i2cBaudrate"), QString("%1").arg(currentSettings->aardvardI2cSpi.i2cBaudrate)),
-                 std::make_pair(QString("i2cPullupsOn"), QString("%1").arg(currentSettings->aardvardI2cSpi.i2cPullupsOn)),
-                 std::make_pair(QString("spiPolarity"), QString("%1").arg(currentSettings->aardvardI2cSpi.spiPolarity)),
-                 std::make_pair(QString("spiSSPolarity"), QString("%1").arg(currentSettings->aardvardI2cSpi.spiSSPolarity)),
-                 std::make_pair(QString("spiBitorder"), QString("%1").arg(currentSettings->aardvardI2cSpi.spiBitorder)),
-                 std::make_pair(QString("spiPhase"), QString("%1").arg(currentSettings->aardvardI2cSpi.spiPhase)),
-                 std::make_pair(QString("spiBaudrate"), QString("%1").arg(currentSettings->aardvardI2cSpi.spiBaudrate)),
+                {std::make_pair(QString("devicePort"), QString("%1").arg(currentSettings->aardvarkI2cSpi.devicePort)),
+                 std::make_pair(QString("deviceMode"), QString("%1").arg(currentSettings->aardvarkI2cSpi.deviceMode)),
+                 std::make_pair(QString("device5VIsOn"), QString("%1").arg(currentSettings->aardvarkI2cSpi.device5VIsOn)),
+                 std::make_pair(QString("i2cBaudrate"), QString("%1").arg(currentSettings->aardvarkI2cSpi.i2cBaudrate)),
+                 std::make_pair(QString("i2cPullupsOn"), QString("%1").arg(currentSettings->aardvarkI2cSpi.i2cPullupsOn)),
+                 std::make_pair(QString("spiPolarity"), QString("%1").arg(currentSettings->aardvarkI2cSpi.spiPolarity)),
+                 std::make_pair(QString("spiSSPolarity"), QString("%1").arg(currentSettings->aardvarkI2cSpi.spiSSPolarity)),
+                 std::make_pair(QString("spiBitorder"), QString("%1").arg(currentSettings->aardvarkI2cSpi.spiBitorder)),
+                 std::make_pair(QString("spiPhase"), QString("%1").arg(currentSettings->aardvarkI2cSpi.spiPhase)),
+                 std::make_pair(QString("spiBaudrate"), QString("%1").arg(currentSettings->aardvarkI2cSpi.spiBaudrate)),
                 };
 
-                for(int i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+                for(int i = 0; i < AARDVARK_I2C_SPI_GPIO_COUNT; i++)
                 {
-                    settingsMap[QString("pinConfigIsInput%1").arg(i)] = QString("%1").arg(currentSettings->aardvardI2cSpi.pinConfigs[i].isInput);
-                    settingsMap[QString("pinConfigWithPullups%1").arg(i)] = QString("%1").arg(currentSettings->aardvardI2cSpi.pinConfigs[i].withPullups);
-                    settingsMap[QString("pinConfigOutValue%1").arg(i)] = QString("%1").arg(currentSettings->aardvardI2cSpi.pinConfigs[i].outValue);
+                    settingsMap[QString("pinConfigIsInput%1").arg(i)] = QString("%1").arg(currentSettings->aardvarkI2cSpi.pinConfigs[i].isInput);
+                    settingsMap[QString("pinConfigWithPullups%1").arg(i)] = QString("%1").arg(currentSettings->aardvarkI2cSpi.pinConfigs[i].withPullups);
+                    settingsMap[QString("pinConfigOutValue%1").arg(i)] = QString("%1").arg(currentSettings->aardvarkI2cSpi.pinConfigs[i].outValue);
                 }
 
-                writeXmlElement(xmlWriter, "aardvardI2cSpi", settingsMap);
+                writeXmlElement(xmlWriter, "aardvarkI2cSpi", settingsMap);
             }
 
             xmlWriter.writeEndElement();//"settings"
@@ -3081,9 +3081,9 @@ void MainWindow::dataConnectionStatusSlot(bool isConnected, QString message, boo
         m_userInterface->actionConnect->setText("Disconnect");
         m_settingsDialog->getUserInterface()->connectButton->setText("disconnect");
 
-        if(currentSettings->connectionType == CONNECTION_TYPE_AARDVARD)
+        if(currentSettings->connectionType == CONNECTION_TYPE_AARDVARK)
         {
-            m_isConnectedWithI2c = (currentSettings->aardvardI2cSpi.deviceMode == AARDVARD_I2C_SPI_DEVICE_MODE_I2C_MASTER) ? true : false;
+            m_isConnectedWithI2c = (currentSettings->aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_MASTER) ? true : false;
         }
     }
     else

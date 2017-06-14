@@ -57,7 +57,7 @@ typedef enum
     CONNECTION_TYPE_UDP_SOCKET,
     CONNECTION_TYPE_CHEETAH_SPI_MASTER,
     CONNECTION_TYPE_PCAN,
-    CONNECTION_TYPE_AARDVARD
+    CONNECTION_TYPE_AARDVARK
 
 }ConnectionType;
 
@@ -145,14 +145,14 @@ typedef struct
 
 
 
-///The GUI elements for one aardvard I2C/SPI GPIO.
+///The GUI elements for one aardvark I2C/SPI GPIO.
 typedef struct
 {
     QComboBox* mode;
     QComboBox* outValue;
     QLineEdit* inValue;
 
-}AardvardI2cGpioGuiElements;
+}AardvarkI2cGpioGuiElements;
 
 
 ///Settings for a pcan interface.
@@ -192,8 +192,8 @@ struct Settings
     ///Settings for the pcan interface.
     PcanSettings pcanInterface;
 
-    ///Settings for the aardvard I2C/SPI interface.
-    AardvardI2cSpiSettings aardvardI2cSpi;
+    ///Settings for the aardvark I2C/SPI interface.
+    AardvarkI2cSpiSettings aardvarkI2cSpi;
 
     ///The target endianess of the target.
     Endianess targetEndianess;
@@ -455,8 +455,8 @@ public:
     ///Initializes the interface tabs.
     void initializeInterfaceTabs(void);
 
-    ///Initializes the aardvard I2C SPI interface tab.
-    void initializeAardvardIc2SpiTab(void);
+    ///Initializes the aardvark I2C SPI interface tab.
+    void initializeAardvarkIc2SpiTab(void);
 
     ///Initializes the pcan interface tab.
     void initializePcanTab(void);
@@ -495,8 +495,8 @@ public slots:
     ///Sets all settings in the gui and the settings struct (m_currentSettings).
     void setAllSettingsSlot(Settings& settings, bool setTabIndex);
 
-    ///Is called if the input states of the aardvard I2c/Spi device have been changed.
-    void aardvardI2cSpiInputStatesChangedSlot(QVector<bool> states);
+    ///Is called if the input states of the aardvark I2c/Spi device have been changed.
+    void aardvarkI2cSpiInputStatesChangedSlot(QVector<bool> states);
 private slots:
 
     ///Is called if the user presses the search console script button.
@@ -599,11 +599,11 @@ private slots:
     ///Slot function for the cheetah scan button.
     void cheetahScanButtonSlot(void);
 
-    ///Slot function for the aardvard I2c/Spi scan button.
-    void aardvardI2cSpiScanButtonSlot(void);
+    ///Slot function for the aardvark I2c/Spi scan button.
+    void aardvarkI2cSpiScanButtonSlot(void);
 
-    ///Slot function for the aardvard I2c/Spi free bus button.
-    void aardvardI2cSpiFreeBusButtonSlot(void);
+    ///Slot function for the aardvark I2c/Spi free bus button.
+    void aardvarkI2cSpiFreeBusButtonSlot(void);
 
     ///This slot function is called if the connection type has been changed.
     void conectionTypeChangesSlot(QString text);
@@ -622,13 +622,13 @@ Q_SIGNALS:
 
 
     ///Is emitted if the pin configuration has been changed (in the GUI).
-    void pinConfigChangedSignal(AardvardI2cSpiSettings settings);
+    void pinConfigChangedSignal(AardvarkI2cSpiSettings settings);
 
     ///Is emitted if the value of an output pin has been changed (in the GUI).
-    void outputValueChangedSignal(AardvardI2cSpiSettings settings);
+    void outputValueChangedSignal(AardvarkI2cSpiSettings settings);
 
-    ///Is called if the aardvard i2c bus shall be released.
-    void freeAardvardI2cBusSignal(void);
+    ///Is called if the aardvark i2c bus shall be released.
+    void freeAardvarkI2cBusSignal(void);
 
     ///The state of the 'append time stamp at logs' check box has been changed.
     void appendTimestampAtLogsChangedSignal(void);
@@ -690,8 +690,8 @@ private:
     ///PCAN Interface.
     PCANBasicClass* m_pcanInterface;
 
-    ///The GUI elements for all aardvard I2C/SPI GPIOs.
-    AardvardI2cGpioGuiElements m_aardvardI2cGpioGuiElements[AARDVARD_I2C_SPI_GPIO_COUNT];
+    ///The GUI elements for all aardvark I2C/SPI GPIOs.
+    AardvarkI2cGpioGuiElements m_aardvarkI2cGpioGuiElements[AARDVARK_I2C_SPI_GPIO_COUNT];
 
 };
 
