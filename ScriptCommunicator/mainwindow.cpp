@@ -1459,19 +1459,6 @@ bool MainWindow::loadSettings()
                     }
 
                 }
-                {//cheetah spi
-
-                    QDomNodeList nodeList = docElem.elementsByTagName("cheetahSpiSetting");
-                    if(!nodeList.isEmpty())
-                    {
-                        QDomNode node = nodeList.at(0);
-
-                        currentSettings.cheetahSpi.port = node.attributes().namedItem("port").nodeValue().toUInt();
-                        currentSettings.cheetahSpi.mode = node.attributes().namedItem("mode").nodeValue().toUInt();
-                        currentSettings.cheetahSpi.baudRate = node.attributes().namedItem("baudRate").nodeValue().toUInt();
-                        currentSettings.cheetahSpi.chipSelect = node.attributes().namedItem("chipSelect").nodeValue().toUInt();
-                    }
-                }
                 {//pcan
 
                     QDomNodeList nodeList = docElem.elementsByTagName("pcanSetting");
@@ -2463,17 +2450,7 @@ void MainWindow::saveSettings()
 
                 writeXmlElement(xmlWriter, "socketSetting", settingsMap);
             }
-            {//cheetah spi
-                std::map<QString, QString> settingsMap =
-                {std::make_pair(QString("port"), QString("%1").arg(currentSettings->cheetahSpi.port)),
-                 std::make_pair(QString("mode"), QString("%1").arg(currentSettings->cheetahSpi.mode)),
-                 std::make_pair(QString("baudRate"), QString("%1").arg(currentSettings->cheetahSpi.baudRate)),
-                 std::make_pair(QString("chipSelect"), QString("%1").arg(currentSettings->cheetahSpi.chipSelect)),
-                };
-
-                writeXmlElement(xmlWriter, "cheetahSpiSetting", settingsMap);
-            }
-            {//cheetah pcan
+            {//pcan
                 std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("baudRate"), QString("%1").arg(currentSettings->pcanInterface.baudRate)),
                  std::make_pair(QString("busOffAutoReset"), QString("%1").arg(currentSettings->pcanInterface.busOffAutoReset)),

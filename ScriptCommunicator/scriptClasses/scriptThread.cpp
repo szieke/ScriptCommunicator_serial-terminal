@@ -54,7 +54,6 @@
 #include "scriptListWidget.h"
 #include "scriptTreeWidget.h"
 #include "scriptToolButton.h"
-#include "scriptCheetahSpi.h"
 #include "scriptPcan.h"
 #include <QDateTime>
 #include "scriptSplitter.h"
@@ -269,7 +268,6 @@ void ScriptThread::run()
         qRegisterMetaType<ScriptTcpClient*>("ScriptTcpClient*");
         qRegisterMetaType<ScriptTcpServer*>("ScriptTcpServer*");
         qRegisterMetaType<ScriptUdpSocket*>("ScriptUdpSocket*");
-        qRegisterMetaType<ScriptCheetahSpi*>("ScriptCheetahSpi*");
         qRegisterMetaType<ScriptPlotWindow*>("ScriptPlotWindow*");
         qRegisterMetaType<ScriptPcan*>("ScriptPcan*");
         qRegisterMetaType<Qt::WindowFlags>("Qt::WindowFlags");
@@ -576,16 +574,6 @@ QScriptValue ScriptThread::createSerialPort(void)
     return m_scriptEngine->newQObject(serialPort, QScriptEngine::ScriptOwnership);
 }
 
-/**
- * Creates cheetah spi interface.
- * @return
- *      The created interface.
- */
-QScriptValue ScriptThread::createCheetahSpiInterface(void)
-{
-    ScriptCheetahSpi* spiInterface = new ScriptCheetahSpi(this);
-    return m_scriptEngine->newQObject(spiInterface, QScriptEngine::ScriptOwnership);
-}
 
 /**
  * Creates an Aardvark I2c/SPI interface.
@@ -1994,49 +1982,6 @@ bool ScriptThread::connectSerialPort(QString name, qint32 baudRate, quint32 conn
 
 }
 
-/**
- * Connects the main interface (cheetah spi).
- * Note: A successful call will modify the corresponding settings in the settings dialog.
- * @param port
- *      The cheetah spi port.
- * @param mode
- *      The spi mode (0-3)
- * @param baudrate
- *      The baudrate of the interface (kHz).
- * @param chipSelectBits
- *      The chip select bits (1-7).
- * @param connectTimeout
- *      Connect timeout(ms)
- * @return
- *      True on success.
- */
-bool ScriptThread::connectCheetahSpi(quint32 port, qint16 mode, quint32 baudrate, quint8 chipSelectBits, quint32 connectTimeout)
-{
-    bool succeeded = false;
-
-    m_settingsDialog->updateSettings();
-    Settings oldSettings = *m_settingsDialog->settings();
-    Settings settings = *m_settingsDialog->settings();
-    settings.connectionType = CONNECTION_TYPE_CHEETAH_SPI_MASTER;
-    settings.cheetahSpi.port = port;
-    settings.cheetahSpi.mode = mode;
-    settings.cheetahSpi.baudRate = baudrate;
-    settings.cheetahSpi.chipSelect = chipSelectBits;
-
-     emit setAllSettingsSignal(settings, false);
-    emit connectDataConnectionSignal(settings, true);
-
-    waitForMainInterfaceToConnect(connectTimeout);
-
-    if(!m_isConnected)
-    {
-        emit setAllSettingsSignal(oldSettings, false);
-        emit connectDataConnectionSignal(oldSettings, false);
-    }
-
-    succeeded = m_isConnected;
-    return succeeded;
-}
 
 /**
  * This function stops the current script thread.

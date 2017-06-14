@@ -55,7 +55,6 @@ typedef enum
     CONNECTION_TYPE_TCP_CLIENT,
     CONNECTION_TYPE_TCP_SERVER,
     CONNECTION_TYPE_UDP_SOCKET,
-    CONNECTION_TYPE_CHEETAH_SPI_MASTER,
     CONNECTION_TYPE_PCAN,
     CONNECTION_TYPE_AARDVARK
 
@@ -134,16 +133,6 @@ typedef struct
     QString proxyPassword;
 }UpdateSetings;
 
-///Settings for a cheetah spi interface.
-typedef struct
-{
-    quint16 port;
-    quint16 baudRate;
-    quint16 mode;
-    quint8 chipSelect;
-}CheetahSpiSettings;
-
-
 
 ///The GUI elements for one aardvark I2C/SPI GPIO.
 typedef struct
@@ -185,9 +174,6 @@ struct Settings
 
     ///Settings for the serial port.
     SerialPortSettings serialPort;
-
-    ///Settings for a cheetah spi interface.
-    CheetahSpiSettings cheetahSpi;
 
     ///Settings for the pcan interface.
     PcanSettings pcanInterface;
@@ -464,9 +450,6 @@ public:
     ///Initializes the update tab.
     void initializeUpdateTab(void);
 
-    ///Initializes the cheetah interface tab.
-    void initializeCheetahTab(void);
-
     ///Initializes the sockets interface tab.
     void initializeSocketsTab(void);
 
@@ -595,9 +578,6 @@ private slots:
 
     ///This slot function is called if the value of the script editor path line edit has been changed.
     void scriptEditorPathLineEditTextChangedSlot(QString path);
-
-    ///Slot function for the cheetah scan button.
-    void cheetahScanButtonSlot(void);
 
     ///Slot function for the aardvark I2c/Spi scan button.
     void aardvarkI2cSpiScanButtonSlot(void);

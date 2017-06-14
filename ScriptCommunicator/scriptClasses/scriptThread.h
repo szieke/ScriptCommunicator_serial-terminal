@@ -50,7 +50,6 @@
 class ScriptWidget;
 class ScriptPlotWindow;
 class ScriptTreeWidgetItem;
-class ScriptCheetahSpi;
 class ScriptPcan;
 class ScriptWindow;
 class ScriptTabWidget;
@@ -221,9 +220,6 @@ public:
     ///Creates a serial port.
     Q_INVOKABLE QScriptValue createSerialPort(void);
 
-    ///Creates a cheetah spi interface.
-    Q_INVOKABLE QScriptValue createCheetahSpiInterface(void);
-
     ///Creates an Aardvark I2c/SPI interface.
     Q_INVOKABLE QScriptValue aardvarkI2cSpiCreateInterface(void);
 
@@ -317,10 +313,6 @@ public:
     ///Connects the main interface (UDP or TCP socket).
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
     Q_INVOKABLE bool connectSocket(bool isTcp, bool isServer, QString ip, quint32 destinationPort, quint32 ownPort, quint32 connectTimeout = 5000);
-
-    ///Connects the main interface (cheetah spi).
-    ///Note: A successful call will modify the corresponding settings in the settings dialog.
-    Q_INVOKABLE bool connectCheetahSpi(quint32 port, qint16 mode, quint32 baudrate, quint8 chipSelectBits = 1, quint32 connectTimeout = 1000);
 
     ///Sets the value of an output pin (Aardvark I2C/SPI device).
     Q_INVOKABLE bool aardvarkI2cSpiSetOutput(quint8 pinIndex, bool high);

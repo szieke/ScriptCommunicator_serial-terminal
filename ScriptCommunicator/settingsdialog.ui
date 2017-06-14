@@ -411,8 +411,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>358</width>
+            <height>337</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0,1">
@@ -862,269 +862,6 @@ for TCP clients.</string>
               <bool>true</bool>
              </property>
             </widget>
-           </item>
-          </layout>
-         </widget>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="cheetahTab">
-      <attribute name="title">
-       <string>cheetah spi</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_5">
-       <item>
-        <widget class="QScrollArea" name="scrollArea_5">
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents_5">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>905</width>
-            <height>445</height>
-           </rect>
-          </property>
-          <layout class="QGridLayout" name="gridLayout_5" columnstretch="0,0,1">
-           <item row="6" column="0" colspan="2">
-            <widget class="QLabel" name="label_28">
-             <property name="text">
-              <string>Note: Only master mode is supported.</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
-            <widget class="QLineEdit" name="cheetahPortLineEdit">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>16777215</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="0">
-            <widget class="QLabel" name="label_6">
-             <property name="text">
-              <string>port</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="label_7">
-             <property name="text">
-              <string>mode</string>
-             </property>
-            </widget>
-           </item>
-           <item row="1" column="1">
-            <widget class="QComboBox" name="cheetahSpiModeComboBox">
-             <item>
-              <property name="text">
-               <string>Mode 0</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Mode 1</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Mode 2</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>Mode 3</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item row="2" column="0">
-            <widget class="QLabel" name="label_8">
-             <property name="text">
-              <string>baudrate (kHz)</string>
-             </property>
-            </widget>
-           </item>
-           <item row="2" column="1">
-            <widget class="QLineEdit" name="cheetahBaudrateLineEdit">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>16777215</width>
-               <height>16777215</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_9">
-             <property name="text">
-              <string>chip select bits</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <widget class="QComboBox" name="cheetahChipSelectComboBox">
-             <item>
-              <property name="text">
-               <string>1</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>2</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>3</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>4</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>5</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>6</string>
-              </property>
-             </item>
-             <item>
-              <property name="text">
-               <string>7</string>
-              </property>
-             </item>
-            </widget>
-           </item>
-           <item row="4" column="1">
-            <widget class="QPushButton" name="cheetahScanPushButton">
-             <property name="text">
-              <string>scan</string>
-             </property>
-            </widget>
-           </item>
-           <item row="7" column="1">
-            <spacer name="verticalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="0" column="2" rowspan="8">
-            <widget class="QPlainTextEdit" name="cheetahPlainTextEdit">
-             <property name="palette">
-              <palette>
-               <active>
-                <colorrole role="Text">
-                 <brush brushstyle="SolidPattern">
-                  <color alpha="255">
-                   <red>0</red>
-                   <green>255</green>
-                   <blue>0</blue>
-                  </color>
-                 </brush>
-                </colorrole>
-                <colorrole role="Base">
-                 <brush brushstyle="SolidPattern">
-                  <color alpha="255">
-                   <red>0</red>
-                   <green>0</green>
-                   <blue>0</blue>
-                  </color>
-                 </brush>
-                </colorrole>
-               </active>
-               <inactive>
-                <colorrole role="Text">
-                 <brush brushstyle="SolidPattern">
-                  <color alpha="255">
-                   <red>0</red>
-                   <green>255</green>
-                   <blue>0</blue>
-                  </color>
-                 </brush>
-                </colorrole>
-                <colorrole role="Base">
-                 <brush brushstyle="SolidPattern">
-                  <color alpha="255">
-                   <red>0</red>
-                   <green>0</green>
-                   <blue>0</blue>
-                  </color>
-                 </brush>
-                </colorrole>
-               </inactive>
-               <disabled>
-                <colorrole role="Text">
-                 <brush brushstyle="SolidPattern">
-                  <color alpha="255">
-                   <red>120</red>
-                   <green>120</green>
-                   <blue>120</blue>
-                  </color>
-                 </brush>
-                </colorrole>
-                <colorrole role="Base">
-                 <brush brushstyle="SolidPattern">
-                  <color alpha="255">
-                   <red>240</red>
-                   <green>240</green>
-                   <blue>240</blue>
-                  </color>
-                 </brush>
-                </colorrole>
-               </disabled>
-              </palette>
-             </property>
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="1">
-            <spacer name="verticalSpacer_7">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
            </item>
           </layout>
          </widget>
@@ -2092,8 +1829,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>327</width>
+            <height>234</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_12" stretch="2,1">
@@ -2368,8 +2105,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>758</width>
+            <height>329</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
@@ -2998,8 +2735,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>353</width>
+            <height>278</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3234,8 +2971,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>737</width>
+            <height>415</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -3979,8 +3716,8 @@ Note: The reopen buton in the main window is only visible if this option is sele
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>905</width>
-            <height>445</height>
+            <width>404</width>
+            <height>271</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -4362,11 +4099,6 @@ in the log, the decimal console and the send window)</string>
         <item>
          <property name="text">
           <string>socket</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>cheetah</string>
          </property>
         </item>
         <item>

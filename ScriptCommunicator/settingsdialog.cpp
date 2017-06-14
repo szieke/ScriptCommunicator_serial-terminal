@@ -29,7 +29,6 @@
 #include <QIntValidator>
 #include <QLineEdit>
 #include <QFileDialog>
-#include "cheetahspi.h"
 #include "aardvarkI2cSpi.h"
 #include <QColorDialog>
 #include <QNetworkInterface>
@@ -99,9 +98,6 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     m_userInterface->htmlLogFontSizeComboBox->addItems(listFontSize);
     m_userInterface->htmlLogFontSizeComboBox->setCurrentText("10");
-
-    connect(m_userInterface->cheetahScanPushButton, SIGNAL(clicked()),
-            this, SLOT(cheetahScanButtonSlot()));
 
     QShortcut* shortcut = new QShortcut(QKeySequence("Ctrl+Shift+X"), this);
     QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(close()));
@@ -303,9 +299,6 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->pcanStandardRadioButton, SIGNAL(clicked()),
             this, SLOT(setFilterRadioButtonPressedSlot()));
 
-    connect(m_userInterface->cheetahChipSelectComboBox, SIGNAL(currentTextChanged(QString)),
-            this, SLOT(textFromGuiElementChangedSlot(QString)));
-
     // connect color buttons via signal mapper to function which opens color dialog
     mapColorButtons = new QSignalMapper(this);
     mapColorButtons->setMapping(m_userInterface->consoleSendColorButton, m_userInterface->consoleSendColorButton);
@@ -487,14 +480,6 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     }
 
     m_userInterface->tabWidget->setCurrentIndex(0);
-
-    m_userInterface->cheetahPortLineEdit->setValidator(new QIntValidator(0, INT_MAX, m_userInterface->cheetahPortLineEdit));
-    m_userInterface->cheetahPortLineEdit->setText("0");
-
-    m_userInterface->cheetahBaudrateLineEdit->setValidator(new QIntValidator(0, INT_MAX, m_userInterface->cheetahBaudrateLineEdit));
-    m_userInterface->cheetahBaudrateLineEdit->setText("12000");
-
-    m_userInterface->cheetahPlainTextEdit->appendPlainText(CheetahSpi::detectDevices());
 
     m_userInterface->aardvarkI2cSpiDevices->appendPlainText(AardvarkI2cSpi::detectDevices());
 
@@ -777,14 +762,6 @@ void SettingsDialog::conectionTypeChangesSlot(QString text)
     emit conectionTypeChangesSignal();
 }
 
-/**
- * Slot function for the cheetah scan button.
- */
-void SettingsDialog::cheetahScanButtonSlot(void)
-{
-    m_userInterface->cheetahPlainTextEdit->clear();
-    m_userInterface->cheetahPlainTextEdit->appendPlainText(CheetahSpi::detectDevices());
-}
 
 /**
  * Slot function for the aardvark I2c/Spi scan button.
@@ -1053,10 +1030,6 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     {
         m_userInterface->connectionTypeComboBox->setCurrentText("serial port");
     }
-    else if(settings.connectionType == CONNECTION_TYPE_CHEETAH_SPI_MASTER)
-    {
-        m_userInterface->connectionTypeComboBox->setCurrentText("cheetah");
-    }
     else if(settings.connectionType == CONNECTION_TYPE_PCAN)
     {
         m_userInterface->connectionTypeComboBox->setCurrentText("pcan");
@@ -1096,11 +1069,6 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
 
     }
 
-    //Cheetah settings
-    m_userInterface->cheetahPortLineEdit->setText(QString("%1").arg(settings.cheetahSpi.port));
-    m_userInterface->cheetahBaudrateLineEdit->setText(QString("%1").arg(settings.cheetahSpi.baudRate));
-    m_userInterface->cheetahSpiModeComboBox->setCurrentIndex(settings.cheetahSpi.mode);
-    m_userInterface->cheetahChipSelectComboBox->setCurrentText(QString("%1").arg(settings.cheetahSpi.chipSelect));
 
     //Pcan settings
     m_userInterface->pcan5VoltComboBox->setCurrentText(settings.pcanInterface.powerSupply ? "on" : "off");
@@ -1699,38 +1667,6 @@ void SettingsDialog::initializeUpdateTab(void)
 }
 
 /**
- * Initializes the cheetah interface tab.
- */
-void SettingsDialog::initializeCheetahTab(void)
-{
-    if(m_interfaceSettingsCanBeChanged)
-    {
-        m_userInterface->cheetahPortLineEdit->setEnabled(true);
-        m_userInterface->cheetahSpiModeComboBox->setEnabled(true);
-        m_userInterface->cheetahBaudrateLineEdit->setEnabled(true);
-        m_userInterface->cheetahScanPushButton->setEnabled(true);
-        m_userInterface->cheetahChipSelectComboBox->setEnabled(true);
-
-    }
-    else
-    {
-        m_userInterface->cheetahPortLineEdit->setEnabled(false);
-        m_userInterface->cheetahSpiModeComboBox->setEnabled(false);
-        m_userInterface->cheetahBaudrateLineEdit->setEnabled(false);
-        m_userInterface->cheetahScanPushButton->setEnabled(false);
-
-        if(m_userInterface->connectionTypeComboBox->currentText() == "cheetah")
-        {
-            m_userInterface->cheetahChipSelectComboBox->setEnabled(true);
-        }
-        else
-        {
-            m_userInterface->cheetahChipSelectComboBox->setEnabled(false);
-        }
-    }
-}
-
-/**
  * Initializes the sockets interface tab.
  */
 void SettingsDialog::initializeSocketsTab(void)
@@ -1816,7 +1752,6 @@ void SettingsDialog::initializeInterfaceTabs(void)
     initializeSocketsTab();
     initializePcanTab();
     initializeUpdateTab();
-    initializeCheetahTab();
     initializeAardvarkIc2SpiTab();
 }
 
@@ -2357,14 +2292,11 @@ void SettingsDialog::updateSettings(bool forceUpdate)
     {
         m_currentSettings.connectionType = CONNECTION_TYPE_PCAN;
     }
-    else if(m_userInterface->connectionTypeComboBox->currentText() == "aardvark")
+    else
     {
         m_currentSettings.connectionType = CONNECTION_TYPE_AARDVARK;
     }
-    else
-    {
-        m_currentSettings.connectionType = CONNECTION_TYPE_CHEETAH_SPI_MASTER;
-    }
+
 
     m_currentSettings.socketSettings.destinationIpAddress = m_userInterface->socketAddressLineEdit->text();
     m_currentSettings.socketSettings.destinationPort = m_userInterface->socketPartnerPortLineEdit->text().toUInt();
@@ -2391,11 +2323,6 @@ void SettingsDialog::updateSettings(bool forceUpdate)
         m_currentSettings.socketSettings.proxySettings = 0;
     }
 
-    //cheetah settings
-    m_currentSettings.cheetahSpi.mode = m_userInterface->cheetahSpiModeComboBox->currentText().split(" ").at(1).toUInt();
-    m_currentSettings.cheetahSpi.port = m_userInterface->cheetahPortLineEdit->text().toUInt();
-    m_currentSettings.cheetahSpi.baudRate = m_userInterface->cheetahBaudrateLineEdit->text().toUInt();
-    m_currentSettings.cheetahSpi.chipSelect = m_userInterface->cheetahChipSelectComboBox->currentText().toUInt();
 
     //pcan settings
     m_currentSettings.pcanInterface.baudRate = getPcanBaudrate();

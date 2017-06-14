@@ -50,8 +50,6 @@ SOURCES += \
     scriptClasses/scriptThread.cpp \
     mainInterfaceThread.cpp \
     addmessagedialog.cpp \
-    cheetahSpi/cheetah.c \
-    cheetahSpi/cheetahspi.cpp \
     pcan/PCANBasicClass.cpp \
     canTab.cpp \
     scriptClasses/scriptSlots.cpp \
@@ -150,9 +148,6 @@ HEADERS += \
     scriptClasses/scriptUiClasses/scriptRadioButton.h \
     scriptClasses/scriptUiClasses/scriptSpinBox.h \
     addmessagedialog.h \
-    cheetahSpi/cheetah.h \
-    cheetahSpi/cheetahspi.h \
-    scriptClasses/scriptCheetahSpi.h \
     scriptClasses/scriptUiClasses/scriptListWidget.h \
     scriptClasses/scriptUiClasses/scriptTreeWidget.h \
     scriptClasses/scriptUiClasses/scriptTreeWidgetItem.h \
