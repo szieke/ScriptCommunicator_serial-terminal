@@ -415,7 +415,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
         {
             defaultConfig = configFile;
 
-            QStringList list = readMainConfigFileList(true);
+            QStringList list = readMainConfigFileList(false);
             int index = list.indexOf("<DEFAULT_CONFIG_FILE>:" + configFile);
             if(index == -1)
             {//configFile is not the default config.
@@ -4735,7 +4735,7 @@ void MainWindow::copyConfigSlot()
         }
 
 
-        QStringList list = readMainConfigFileList(true);
+        QStringList list = readMainConfigFileList(false);
         int index = list.indexOf("<DEFAULT_CONFIG_FILE>:" + tmpFileName);
         if(index == -1)
         {
@@ -4803,7 +4803,7 @@ bool MainWindow::createConfig(bool isCallFromButton)
                 m_scriptWindow->getCreateSceFileDialog()->close();
             }
 
-            QStringList list = readMainConfigFileList(true);
+            QStringList list = readMainConfigFileList(false);
             int index = list.indexOf("<DEFAULT_CONFIG_FILE>:" + tmpFileName);
             if(index == -1)
             {
@@ -4917,7 +4917,7 @@ void MainWindow::loadPreviousConfigSlot()
                 m_scriptWindow->getCreateSceFileDialog()->close();
             }
 
-            QStringList list = readMainConfigFileList(true);
+            QStringList list = readMainConfigFileList(false);
             int index = list.indexOf("<DEFAULT_CONFIG_FILE>:" + result);
             if(index == -1)
             {
@@ -4984,7 +4984,7 @@ void MainWindow::loadConfigSlot()
                 m_scriptWindow->getCreateSceFileDialog()->close();
             }
 
-            QStringList list = readMainConfigFileList(true);
+            QStringList list = readMainConfigFileList(false);
             int index = list.indexOf("<DEFAULT_CONFIG_FILE>:" + tmpFileName);
             if(index == -1)
             {

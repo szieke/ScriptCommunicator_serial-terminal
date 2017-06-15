@@ -1554,6 +1554,7 @@ void SettingsDialog::initializeAardvarkIc2SpiTab(void)
          {
              m_userInterface->aardvarkI2cBaudrate->setEnabled(true);
              m_userInterface->aardvarkI2cPullUp->setEnabled(true);
+             m_userInterface->aardvarkI2cFreeBus->setEnabled(true);
          }
          else if(m_userInterface->aardvarkI2cSpiMode->currentText() == "SPI Master")
          {
@@ -1577,7 +1578,6 @@ void SettingsDialog::initializeAardvarkIc2SpiTab(void)
      int endIndex = 0;
      if(m_userInterface->aardvarkI2cSpiMode->currentText() == "I2C Master")
      {
-         m_userInterface->aardvarkI2cFreeBus->setEnabled(true);
          startIndex = 2;
          endIndex = AARDVARK_I2C_SPI_GPIO_COUNT - 1;
      }

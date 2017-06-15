@@ -178,7 +178,7 @@ public:
     Q_INVOKABLE void disconnect(void){m_interface->disconnect();}
 
 
-    ///Sends and receive data with the I2C interface (master mode),
+    ///Sends and receive data with the I2C interface (master mode)
     ///(the received data must be read with masterI2cReadLastReceivedData).
     Q_INVOKABLE bool masterI2cSendReceiveData(quint8 flags, quint16 slaveAddress, quint16 numberOfBytesToRead,
                                               QVector<unsigned char> dataToSend = QVector<unsigned char>())
@@ -226,7 +226,7 @@ public:
         return dataVector;
     }
 
-    ///Sends and receive data with the SPI interface (master mode),
+    ///Sends and receive data with the SPI interface (master mode)
     ///(the received data must be read with masterSpiReadLastReceivedData).
     Q_INVOKABLE bool masterSpiSendReceiveData(QVector<unsigned char> dataToSend)
     {
@@ -292,8 +292,8 @@ public:
 
 signals:
 
-    ///Is emitted if the input states of the Ardvard I2c/Spi device have been changed.
-    ///Note: states contains AARDVARK_I2C_SPI_GPIO_COUNT elements.
+    ///Is emitted if the input states of the Ardvard I2C/SPI device have been changed.
+    ///Elements of state::0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
     ///Scripts can connect a function to this signal.
     void inputStatesChangedSignal(QVector<bool> states);
 
