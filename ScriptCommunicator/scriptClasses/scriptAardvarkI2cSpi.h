@@ -152,7 +152,7 @@ public:
     }
 
     ///Frees the main interface I2C bus (this function can be used if the no stop condition was created
-    ///during the last masterI2cSendReceiveData call)
+    ///during the last i2cMasterReadWrite call)
     Q_INVOKABLE void i2cMasterFreeBus(void){m_interface->freeI2cBusSlot();}
 
     ///Returns a string which contains informations about all detected devices.
@@ -178,9 +178,9 @@ public:
     Q_INVOKABLE void disconnect(void){m_interface->disconnect();}
 
 
-    ///Sends and receive data with the I2C interface (master mode)
-    ///(the received data must be read with masterI2cReadLastReceivedData).
-    Q_INVOKABLE bool masterI2cSendReceiveData(quint8 flags, quint16 slaveAddress, quint16 numberOfBytesToRead,
+    ///Accesses the I2C bus (write/read).
+    ///The received data can be read with i2cMasterReadLastReceivedData.
+    Q_INVOKABLE bool i2cMasterReadWrite(quint8 flags, quint16 slaveAddress, quint16 numberOfBytesToRead,
                                               QVector<unsigned char> dataToSend = QVector<unsigned char>())
     {
         bool succeeded = false;
@@ -215,7 +215,7 @@ public:
     }
 
     ///Returns last received data from the I2C interface (master mode).
-    Q_INVOKABLE QVector<unsigned char> masterI2cReadLastReceivedData(void)
+    Q_INVOKABLE QVector<unsigned char> i2cMasterReadLastReceivedData(void)
     {
         QVector<unsigned char> dataVector;
         for(auto val : m_masterI2cLastReceivedData)
@@ -227,8 +227,8 @@ public:
     }
 
     ///Sends and receive data with the SPI interface (master mode)
-    ///(the received data must be read with masterSpiReadLastReceivedData).
-    Q_INVOKABLE bool masterSpiSendReceiveData(QVector<unsigned char> dataToSend)
+    ///(the received data must be read with spiMasterReadLastReceivedData).
+    Q_INVOKABLE bool spiMasterSendReceiveData(QVector<unsigned char> dataToSend)
     {
         bool succeeded = false;
 
@@ -244,7 +244,7 @@ public:
     }
 
     ///Returns last received data from the SPI interface (master mode).
-    Q_INVOKABLE QVector<unsigned char> masterSpiReadLastReceivedData(void)
+    Q_INVOKABLE QVector<unsigned char> spiMasterReadLastReceivedData(void)
     {
         QVector<unsigned char> dataVector;
         for(auto val : m_masterSpiLastReceivedData)
@@ -256,6 +256,7 @@ public:
     }
 
     ///Sets the value of an output pin.
+    ///Possible pin indexes:0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
     Q_INVOKABLE bool setOutput(quint8 pinIndex, bool high)
     {
         bool result = false;
@@ -270,7 +271,8 @@ public:
         return result;
     }
 
-    ///Changes the pin configuration.
+    ///Changes the configuration of a pin.
+    ///Possible pin indexes:0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
     Q_INVOKABLE bool changePinConfiguration(quint8 pinIndex, bool isInput, bool withPullups)
     {
         bool result = false;
@@ -287,7 +289,7 @@ public:
         return result;
     }
 
-    ///Return true if the interface is connected.
+    ///Returns true if the interface is connected.
     Q_INVOKABLE bool isConnected(void){return m_interface->isConnected();}
 
 signals:

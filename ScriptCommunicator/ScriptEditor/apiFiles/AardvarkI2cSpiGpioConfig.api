@@ -1,0 +1,3 @@
+AardvarkI2cSpiGpioConfig::isInput:bool \nTrue if the pin is an input.
+AardvarkI2cSpiGpioConfig::withPullups:bool \nTrue if the pin shall have a pullup (works only with inputs).
+AardvarkI2cSpiGpioConfig::outValue:bool \nThe value of the output.

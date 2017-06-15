@@ -59,11 +59,11 @@ function executeI2cSlot()
 		dataToSend = convertHexStringToByteArray(UI_I2cBytesToSend.toPlainText());
 	}
 	
-	if(g_interface.masterI2cSendReceiveData(flags, slaveAddress, numberOfBytesToRead,  dataToSend))
+	if(g_interface.i2cMasterReadWrite(flags, slaveAddress, numberOfBytesToRead,  dataToSend))
 	{
 		UI_Console.append("execute I2C: flags=0x" + flags.toString(16) + " address=0x" + slaveAddress.toString(16) + " data= " + conv.byteArrayToHexString(dataToSend));
 		
-		var receivedData = g_interface.masterI2cReadLastReceivedData();
+		var receivedData = g_interface.i2cMasterReadLastReceivedData();
 		if(receivedData.length != 0)
 		{
 			UI_Console.append("I2C data received: flags=0x" + flags.toString(16) + " address=0x" + slaveAddress.toString(16) + " data=" + conv.byteArrayToHexString(receivedData));
@@ -84,11 +84,11 @@ function executeSpiSlot()
 	{
 		var dataToSend = convertHexStringToByteArray(UI_SpiBytesToSend.toPlainText());
 		
-		if(g_interface.masterSpiSendReceiveData(dataToSend))
+		if(g_interface.spiMasterSendReceiveData(dataToSend))
 		{
 			UI_Console.append("send SPI data: " + conv.byteArrayToHexString(dataToSend));
 			
-			var receivedData = g_interface.masterSpiReadLastReceivedData();
+			var receivedData = g_interface.spiMasterReadLastReceivedData();
 			if(receivedData.length != 0)
 			{
 				UI_Console.append("SPI data received: data=" + conv.byteArrayToHexString(receivedData));

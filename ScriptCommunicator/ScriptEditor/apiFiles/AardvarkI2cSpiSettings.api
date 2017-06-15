@@ -1,0 +1,11 @@
+AardvarkI2cSpiSettings::devicePort:Number \nThe device port.
+AardvarkI2cSpiSettings::deviceMode:Number \nThe device mode (0=I2C master and GPIO, 1=SPI master and GPIO, 2=GPIO).
+AardvarkI2cSpiSettings::device5VIsOn:bool \nTrue if the 5V pins shall be on.
+AardvarkI2cSpiSettings::i2cBaudrate:Number \nThe I2C baudrate.
+AardvarkI2cSpiSettings::i2cPullupsOn:bool \nTrue if the I2C pullups shall be enabled.
+AardvarkI2cSpiSettings::spiPolarity:Number \nThe SPI Polarity (0=rising/falling, 1=faling/rising).
+AardvarkI2cSpiSettings::spiSSPolarity:Number \nThe SPI slave select polarity (0=active low, 1=active high).
+AardvarkI2cSpiSettings::spiBitorder:Number \nThe SPI bitorder (0=MSB, 1=LSB).
+AardvarkI2cSpiSettings::spiPhase:Number \nThe SPI phase (0=sample setup, 1=setup sample).
+AardvarkI2cSpiSettings::spiBaudrate:Number \nThe SPI baudrate.
+AardvarkI2cSpiSettings::pinConfigs:Array<AardvarkI2cSpiGpioConfig> \nThe pin configuration.\nElements of pinConfigs are:0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.

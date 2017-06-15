@@ -96,7 +96,16 @@ QString QsciAPIsPrepared::apiBaseName(const QString &api)
     }
 
     if (tail >= 0)
+    {
         base.truncate(tail);
+    }
+
+
+    tail = base.indexOf("\n");
+    if (tail != -1)
+    {//Property which contains a '(' in the description.
+        base.truncate(tail);
+    }
 
     return base.simplified();
 }
@@ -838,6 +847,11 @@ QStringList QsciAPIs::callTips(const QStringList &context, int commas,
                     }
                     else
                     {
+                        int newIndex = api.indexOf('\n');
+                        if((newIndex != -1) && (newIndex < tail))
+                        {//Properties which contains a '(' in his description.
+                            tail = newIndex;
+                        }
                         if (!enoughCommas(api, commas))
                             continue;
                     }

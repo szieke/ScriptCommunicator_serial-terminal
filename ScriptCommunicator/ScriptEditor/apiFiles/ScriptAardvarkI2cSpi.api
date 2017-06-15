@@ -1,0 +1,13 @@
+ScriptAardvarkI2cSpi::getInterfaceSettings(void):AardvarkI2cSpiSettings \nReturns the current interface settings.
+ScriptAardvarkI2cSpi::i2cMasterFreeBus(void):void \nFrees the main interface I2C bus (this function can be used if the no stop condition was created during the last i2cMasterReadWrite call).
+ScriptAardvarkI2cSpi::detectDevices(void):String \nReturns a string which contains informations about all detected devices.
+ScriptAardvarkI2cSpi::connectToDevice(AardvarkI2cSpiSettings aardvarkI2cSpiSettings):bool \nConnects to the Aardvark I2C/SPI device/interface.
+ScriptAardvarkI2cSpi::disconnect(void):void \nDisconnects from the interface.
+ScriptAardvarkI2cSpi::i2cMasterReadWrite(Number flags, Number slaveAddress, Number numberOfBytesToRead, Array<Number> dataToSend = Array<Number>()):bool \nAccesses the I2C bus (write/read).\nThe received data can be read with i2cMasterReadLastReceivedData.
+ScriptAardvarkI2cSpi::i2cMasterReadLastReceivedData(void):Array<Number> \nReturns last received data from the I2C interface (master mode).
+ScriptAardvarkI2cSpi::spiMasterSendReceiveData(Array<Number> dataToSend):bool \nSends and receive data with the SPI interface (master mode).\nThe received data must be read with spiMasterReadLastReceivedData.
+ScriptAardvarkI2cSpi::spiMasterReadLastReceivedData(void):Array<Number> \nReturns last received data from the SPI interface (master mode).
+ScriptAardvarkI2cSpi::setOutput(quint8 pinIndex, bool high):bool \nSets the value of an output pin.\nPossible pin indexes:0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
+ScriptAardvarkI2cSpi::changePinConfiguration(quint8 pinIndex, bool isInput, bool withPullups):bool \nChanges the configuration of a pin.\nPossible pin indexes:0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
+ScriptAardvarkI2cSpi::isConnected(void):bool \nReturns true if the interface is connected.
+inputStatesChangedSignal(Array<bool> states):void \nIs emitted if the input states of the Ardvard I2C/SPI device have been changed.\nElements of state::0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
