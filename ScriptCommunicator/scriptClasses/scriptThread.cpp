@@ -1612,13 +1612,22 @@ bool ScriptThread::sendCanMessage(quint8 type, quint32 canId, QVector<unsigned c
 /**
  * Accesses the I2C bus (write/read).
  * Note: This functions works only if the main interface is an I2C bus (master mode).
+ * To receive data in master mode the signal i2cDataReceivedSignal must be used.
  *
  * @param flags
+ *      The I2C flags:
+ *      - 0x00= no flags,
+ *      - 0x01= 10bit address
+ *      - 0x02=combined FMT
+ *      - 0x04= no stop condition (use i2cMasterFreeBus to generate the stop condition later)
  * @param slaveAddress
+ *      The slave address.
  * @param numberOfBytesToRead
+ *      The number of bytes wich shall be read.
  * @param dataToSend
+ *      The bytes which shall be send/written (if this array is empty only a read is performed).
  *  @param repetitionCount
- *      The data array is repeated until the number has been reached.
+ *      The I2C access is repeated until the number has been reached.
  *  @param pause
  *      The pause (ms) between two repetitions.
  *  @param addToMainWindowSendHistory
@@ -3101,7 +3110,13 @@ QStringList ScriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object
  * Sets the value of an output pin (Aardvark I2C/SPI device).
  *
  * @param pinIndex
- *      The index of the pin.
+ *      The index of the pin:
+ *      - 0=Pin1/SCL
+ *      - 1=Pin3/SDA
+ *      - 2=Pin5/MISO
+ *      - 3=Pin7/SCK
+ *      - 4=Pin8/MOSI
+ *      - 5=Pin9/SS0
  * @param high
  *      True for 1 and false for 0.
  * return
@@ -3127,7 +3142,14 @@ bool ScriptThread::aardvarkI2cSpiSetOutput(quint8 pinIndex, bool high)
  * Changes the configuration of a pin (Aardvark I2C/SPI device).
  *
  * @param pinIndex
- *      The index of the pin.
+ *      The index of the pin:
+ *      - 0=Pin1/SCL
+ *      - 1=Pin3/SDA
+ *      - 2=Pin5/MISO
+ *      - 3=Pin7/SCK
+ *      - 4=Pin8/MOSI
+ *      - 5=Pin9/SS0
+ *
  * @param isInput
  *      True if the pin shall be configured as input.
  * @param withPullups

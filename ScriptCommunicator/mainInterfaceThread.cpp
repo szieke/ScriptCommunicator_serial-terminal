@@ -733,7 +733,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
             m_isConnected = m_aardvarkI2cSpi->connectToDevice(m_currentGlobalSettings.aardvarkI2cSpi, deviceBitrate);
 
             QString mode;
-            quint16 baudrateSetValue;
+            quint16 baudrateSetValue = 0;
             if(m_currentGlobalSettings.aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_MASTER)
             {
                 mode = "i2c master";

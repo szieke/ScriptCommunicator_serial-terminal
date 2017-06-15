@@ -631,8 +631,8 @@ public:
 
 signals:
 
-    ///Is emitted if the input states of the Ardvard I2c/Spi device (main interface) have been changed.
-    ///Note: states contains AARDVARK_I2C_SPI_GPIO_COUNT elements.
+    ///Is emitted if the input states (true=1. false=0) of the Ardvard I2C/SPI device (main interface) have been changed.
+    ///Elements of state:0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
     ///Scripts can connect a function to this signal.
     void aardvarkI2cSpiInputStatesChangedSignal(QVector<bool> states);
 
@@ -787,8 +787,8 @@ protected:
 
 private slots:
 
-    ///Is called if the input states of the Ardvard I2c/Spi device (main interface) have been changed.
-    ///Note: states contains AARDVARK_I2C_SPI_GPIO_COUNT elements.
+    ///Is called if the input states of the Ardvard I2C/SPI device (main interface) have been changed.
+    ///Elements of state:0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
     void aardvarkI2cSpiInputStatesChangedSlot(QVector<bool> states){emit aardvarkI2cSpiInputStatesChangedSignal(states);}
 
     ///The script is suspended by the debugger.
