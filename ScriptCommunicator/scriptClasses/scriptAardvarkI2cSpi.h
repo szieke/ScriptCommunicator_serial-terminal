@@ -59,6 +59,7 @@ public:
         return MainWindow::parseApiFile("ScriptAardvarkI2cSpi.api");
     }
 
+    ///Coverts a script value to a AardvarkI2cSpiSettings struct.
     static bool scriptValueToConfig(QScriptValue& aardvarkI2cSpiSettings, AardvarkI2cSpiSettings& convertedSettings,
                                       ScriptThread* scriptThread, QString callerName)
     {
@@ -117,6 +118,7 @@ public:
 
     }
 
+    ///Converts a AardvarkI2cSpiSettings struct to a script value.
     static QScriptValue convertConfigToScriptValue(const AardvarkI2cSpiSettings* config, ScriptThread* scriptThread)
     {
         QScriptValue ret = scriptThread->getScriptEngine()->newObject();
