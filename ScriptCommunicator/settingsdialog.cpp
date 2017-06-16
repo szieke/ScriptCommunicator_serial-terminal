@@ -1527,7 +1527,6 @@ void SettingsDialog::setInterfaceSettingsCanBeChanged(bool interfaceSettingsCanB
 void SettingsDialog::initializeAardvarkIc2SpiTab(void)
 {
 
-    m_userInterface->aardvarkI2cBaudrate->setEnabled(false);
     m_userInterface->aardvarkI2cPullUp->setEnabled(false);
     m_userInterface->aardvarkI2cFreeBus->setEnabled(false);
 
@@ -1535,7 +1534,7 @@ void SettingsDialog::initializeAardvarkIc2SpiTab(void)
     m_userInterface->aardvarkSpiSSPolarity->setEnabled(false);
     m_userInterface->aardvarkSpiBitorder->setEnabled(false);
     m_userInterface->aardvarkSpiPhase->setEnabled(false);
-    m_userInterface->aardvarkSpiBaudrate->setEnabled(false);
+
 
     for(int i = 0; i < AARDVARK_I2C_SPI_GPIO_COUNT; i++)
     {
@@ -1555,6 +1554,7 @@ void SettingsDialog::initializeAardvarkIc2SpiTab(void)
              m_userInterface->aardvarkI2cBaudrate->setEnabled(true);
              m_userInterface->aardvarkI2cPullUp->setEnabled(true);
              m_userInterface->aardvarkI2cFreeBus->setEnabled(true);
+             m_userInterface->aardvarkSpiBaudrate->setEnabled(false);
          }
          else if(m_userInterface->aardvarkI2cSpiMode->currentText() == "SPI Master")
          {
@@ -1563,6 +1563,12 @@ void SettingsDialog::initializeAardvarkIc2SpiTab(void)
              m_userInterface->aardvarkSpiBitorder->setEnabled(true);
              m_userInterface->aardvarkSpiPhase->setEnabled(true);
              m_userInterface->aardvarkSpiBaudrate->setEnabled(true);
+             m_userInterface->aardvarkI2cBaudrate->setEnabled(false);
+         }
+         else
+         {
+             m_userInterface->aardvarkSpiBaudrate->setEnabled(false);
+             m_userInterface->aardvarkI2cBaudrate->setEnabled(false);
          }
 
      }
@@ -1572,6 +1578,8 @@ void SettingsDialog::initializeAardvarkIc2SpiTab(void)
          m_userInterface->aardvarkI2cSpiMode->setEnabled(false);
          m_userInterface->aardvarkI2cSpiScan->setEnabled(false);
          m_userInterface->aardvarkI2cSpi5V->setEnabled(false);
+         m_userInterface->aardvarkSpiBaudrate->setEnabled(false);
+         m_userInterface->aardvarkI2cBaudrate->setEnabled(false);
      }
 
      int startIndex = 0;
