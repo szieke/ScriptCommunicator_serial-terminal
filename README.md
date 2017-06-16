@@ -30,7 +30,7 @@ This script interface has following features:
 
 **settings dialog**
 
-![settings dialog](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2016-03-31_07h54_07.png)
+![settings dialog](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/set.png/1)
 
 **example script GUI**
 
