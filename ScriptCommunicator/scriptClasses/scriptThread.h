@@ -669,15 +669,15 @@ signals:
     ///Scripts can connect a function to this signal.
     void globalRealChangedSignal(QString name, double number);
 
-    ///This signal is emitted if data has been received with the main interface (only if the main interface is not a CAN or I2C interface,
-    ///use canMessagesReceivedSignal if the main interface is a can interface and i2cDataReceivedSignal if the main interface is
+    ///This signal is emitted if data has been received with the main interface (only if the main interface is not a CAN or I2C master interface,
+    ///use canMessagesReceivedSignal if the main interface is a can interface and i2cMasterDataReceivedSignal if the main interface is
     ///an I2C interface).
     ///Scripts can connect a function to this signal.
     void dataReceivedSignal(QVector<unsigned char> data);
 
-    ///This signal is emitted if data has been received with the main interface and the main interface is an I2C bus.
+    ///This signal is emitted if data has been received with the main interface and the main interface is an I2C master.
     ///Scripts can connect a function to this signal.
-    void i2cDataReceivedSignal(quint8 flags, quint16 address, QVector<unsigned char> data);
+    void i2cMasterDataReceivedSignal(quint8 flags, quint16 address, QVector<unsigned char> data);
 
     ///This signal is emitted in setMainWindowAndTaskBarIcon.
     ///This signal must not be used from script.
@@ -874,6 +874,9 @@ private:
 
     ///True, if the main interface is a I2C interface (and is connected).
     bool m_isConnectedWithI2c;
+
+    ///True, if the main interface is a I2C master interface (and is connected).
+    bool m_isConnectedWithI2cMaster;
 
     ///The send id, which is send to the send data during sending data.
     quint32 m_sendId;

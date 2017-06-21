@@ -205,7 +205,7 @@ scriptThread.loadScript("TestAardvarkI2cSpi_Helper.js");
 UI_Dialog.finishedSignal.connect(dialogFinishedSlot);
 UI_AardvarkI2cConnect.clickedSignal.connect(connectSlot);
 scriptThread.aardvarkI2cSpiInputStatesChangedSignal.connect(aardvarkI2cSpiInputStatesChangedSlot);
-scriptThread.i2cDataReceivedSignal.connect(i2cDataReceivedSlot);
+scriptThread.i2cMasterDataReceivedSignal.connect(i2cDataReceivedSlot);
 scriptThread.dataReceivedSignal.connect(dataReceivedSlot);
 
 scriptThread.disconnect();

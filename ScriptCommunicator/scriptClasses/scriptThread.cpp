@@ -409,6 +409,7 @@ void ScriptThread::run()
 
         m_isConnectedWithCan = m_scriptWindow->m_mainInterfaceThread->isConnectedWithCan();
         m_isConnectedWithI2c = m_scriptWindow->m_mainInterfaceThread->isConnectedWithI2c();
+        m_isConnectedWithI2cMaster = m_scriptWindow->m_mainInterfaceThread->isConnectedWithI2cMaster();
 
         //create the script engine
         m_scriptEngine = new QScriptEngine();
@@ -1430,7 +1431,7 @@ void ScriptThread::dataReceivedSlot(QByteArray data)
 {
     if(m_state == RUNNING)
     {
-        if(!m_isConnectedWithI2c)
+        if(!m_isConnectedWithI2cMaster)
         {
             if(QObject::receivers(SIGNAL(dataReceivedSignal(QVector<unsigned char>))) > 0)
             {
@@ -1454,9 +1455,9 @@ void ScriptThread::dataReceivedSlot(QByteArray data)
             }
         }
         else
-        {//Connected with an I2C interface.
+        {//Connected with an I2C master interface.
 
-            if(QObject::receivers(SIGNAL(i2cDataReceivedSignal(quint8, quint16, QVector<unsigned char>))) > 0)
+            if(QObject::receivers(SIGNAL(i2cMasterDataReceivedSignal(quint8, quint16, QVector<unsigned char>))) > 0)
             {
                 quint8 flags = (quint8)data[0];
                 quint16 address = (quint16)data[2] + ((quint16)data[1] << 8);
@@ -1468,7 +1469,7 @@ void ScriptThread::dataReceivedSlot(QByteArray data)
                     dataVector.push_back((unsigned char) val);
                 }
 
-                emit i2cDataReceivedSignal(flags, address, dataVector);
+                emit i2cMasterDataReceivedSignal(flags, address, dataVector);
             }
         }
     }
@@ -1492,6 +1493,7 @@ void ScriptThread::dataConnectionStatusSlot(bool isConnected, QString message, b
     m_isConnected = isConnected;
     m_isConnectedWithCan = m_scriptWindow->m_mainInterfaceThread->isConnectedWithCan();
     m_isConnectedWithI2c = m_scriptWindow->m_mainInterfaceThread->isConnectedWithI2c();
+    m_isConnectedWithI2cMaster = m_scriptWindow->m_mainInterfaceThread->isConnectedWithI2cMaster();
 
 }
 
@@ -1611,8 +1613,8 @@ bool ScriptThread::sendCanMessage(quint8 type, quint32 canId, QVector<unsigned c
 
 /**
  * Accesses the I2C bus (write/read).
- * Note: This functions works only if the main interface is an I2C bus (master mode).
- * To receive data in master mode the signal i2cDataReceivedSignal must be used.
+ * Note: This functions works only if the main interface is an I2C master.
+ * To receive data in master mode the signal i2cMasterDataReceivedSignal must be used.
  *
  * @param flags
  *      The I2C flags:
@@ -1640,7 +1642,7 @@ bool ScriptThread::i2cMasterReadWrite(quint8 flags, quint16 slaveAddress, quint1
 {
     bool result = false;
 
-    if(m_isConnectedWithI2c)
+    if(m_isConnectedWithI2cMaster)
     {
         QByteArray byteArray;
         byteArray.push_back(flags);
