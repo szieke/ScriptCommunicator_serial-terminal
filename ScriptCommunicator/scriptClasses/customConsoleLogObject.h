@@ -249,7 +249,7 @@ public slots:
 
      ///Executes the script function 'createString'.
     void executeScriptSlot(QByteArray* data, QString* timeStamp,
-                       bool isSend, bool isUserMessage, bool isFromCan, bool isFromI2c, bool isLog, QString* result, bool *errorOccured);
+                       bool isSend, bool isUserMessage, bool isFromCan, bool isFromI2cMaster, bool isLog, QString* result, bool *errorOccured);
 
     ///Loads a custom console/log script.
     void loadCustomScriptSlot(QString scriptPath, bool* hasSucceeded);
@@ -360,7 +360,7 @@ public:
     void unloadCustomScript(void);
 
     ///Calls the script function 'createString' in the script thread.
-    QString callScriptFunction(QByteArray *data, QString& timeStamp, bool isSend, bool isUserMessage, bool isFromCan, bool isFromI2c, bool isLog, bool *errorOccured);
+    QString callScriptFunction(QByteArray *data, QString& timeStamp, bool isSend, bool isUserMessage, bool isFromCan, bool isFromI2cMaster, bool isLog, bool *errorOccured);
 
     ///Returns true if a script has been loaded successfully.
     bool scriptHasBeenLoaded();
@@ -383,7 +383,7 @@ signals:
 
     ///Signal for executing the script function 'createString'.
     void executeScriptSignal(QByteArray* data, QString* timeStamp,
-                           bool isSend, bool isUserMessage, bool isFromCan, bool isFromI2c, bool isLog,
+                           bool isSend, bool isUserMessage, bool isFromCan, bool isFromI2cMaster, bool isLog,
                            QString* result, bool* errorOccured);
 
     ///Signal for loading a custom console/log script.

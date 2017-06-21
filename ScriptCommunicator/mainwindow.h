@@ -605,8 +605,8 @@ private:
     ///True if the current connected interface is a can interface;
     bool m_isConnectedWithCan;
 
-    ///True if the current connected interface is an I2C interface;
-    bool m_isConnectedWithI2c;
+    ///True if the current connected interface is an I2C master interface;
+    bool m_isConnectedWithI2cMaster;
 
     ///The can tab.
     CanTab* m_canTab;

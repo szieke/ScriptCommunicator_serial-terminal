@@ -183,11 +183,11 @@ void MainWindowHandleData::updateConsoleAndLog(void)
  *      True if the data is from CAN.
  * @param forceTimeStamp
  *      True if a time stamp shall be generated (independently from the time stamp settings)
- * @param isFromI2c
- *      True if the data is from I2C.
+ * @param isFromI2cMaster
+ *      True if the data is from a I2C master.
  */
 void MainWindowHandleData::appendDataToStoredData(QByteArray &data, bool isSend, bool isUserMessage,
-                                                  bool isFromCan, bool forceTimeStamp, bool isFromI2c)
+                                                  bool isFromCan, bool forceTimeStamp, bool isFromI2cMaster)
 {
     const Settings* currentSettings = m_settingsDialog->settings();
 
@@ -195,7 +195,7 @@ void MainWindowHandleData::appendDataToStoredData(QByteArray &data, bool isSend,
     {
         if((!isSend && currentSettings->writeReceivedDataInToLog) || (isSend && currentSettings->writeSendDataInToLog) || isUserMessage)
         {
-            appendUnprocessLogData(data, isSend, isUserMessage, isFromCan, isFromI2c, forceTimeStamp);
+            appendUnprocessLogData(data, isSend, isUserMessage, isFromCan, isFromI2cMaster, forceTimeStamp);
         }
     }
 
@@ -206,7 +206,7 @@ void MainWindowHandleData::appendDataToStoredData(QByteArray &data, bool isSend,
             bool errorOccured;
             QString timeStamp = QDateTime::currentDateTime().toString(currentSettings->consoleTimestampFormat).toLocal8Bit();
             m_customLogString += m_customLogObject->callScriptFunction(&data, timeStamp, isSend, isUserMessage, isFromCan,
-                                                                       isFromI2c, true, &errorOccured);
+                                                                       isFromI2cMaster, true, &errorOccured);
 
             if(errorOccured)
             {
@@ -227,14 +227,14 @@ void MainWindowHandleData::appendDataToStoredData(QByteArray &data, bool isSend,
 
     if((!isSend && currentSettings->showReceivedDataInConsole) || (isSend && currentSettings->showSendDataInConsole) || isUserMessage)
     {
-        appendUnprocessConsoleData(data, isSend, isUserMessage, isFromCan, isFromI2c, forceTimeStamp);
+        appendUnprocessConsoleData(data, isSend, isUserMessage, isFromCan, isFromI2cMaster, forceTimeStamp);
 
         if(currentSettings->consoleShowCustomConsole)
         {
             bool errorOccured;
             QString timeStamp = QDateTime::currentDateTime().toString(currentSettings->consoleTimestampFormat).toLocal8Bit();
             QString result = m_customConsoleObject->callScriptFunction(&data, timeStamp, isSend, isUserMessage, isFromCan,
-                                                                       isFromI2c, false, &errorOccured);
+                                                                       isFromI2cMaster, false, &errorOccured);
 
             if(errorOccured)
             {
@@ -676,13 +676,13 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
  *      True if the data is a timestamp.
  * @param isFromCan
  *      True if the message is from a CAN interface.
- * @param isFromI2c
+ * @param isFromI2cMaster
  *      True if the message is from a I2C interface.
  * @param isNewLine
  *      True if the data is a new line.
  */
 void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Settings* currentSettings, bool isSend, bool isUserMessage,
-                                            bool isTimeStamp, bool isFromCan, bool isFromI2c, bool isNewLine)
+                                            bool isTimeStamp, bool isFromCan, bool isFromI2cMaster, bool isNewLine)
 {
     QString* html = 0;
     QByteArray* dataArray = &data;
@@ -782,8 +782,9 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                 dataArray = &tmpArray;
 
             }
-            if(isFromI2c)
+            if(isFromI2cMaster)
             {
+
                 tmpArray = QByteArray(data);
 
                 if(currentSettings->i2cMetaInformationInConsole != I2C_METADATA_NONE)
@@ -812,7 +813,6 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                 if(isSend){tmpArray.remove(0, AardvarkI2cSpi::SEND_CONTROL_BYTES_COUNT);}
                 else{tmpArray.remove(0, AardvarkI2cSpi::RECEIVE_CONTROL_BYTES_COUNT);}
                 dataArray = &tmpArray;
-
             }
 
             if(currentSettings->showDecimalInConsole)
@@ -906,13 +906,13 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
  *      True if the data is a timestamp.
  * @param isFromCan
  *      True if the message is from a CAN interface
- * @param isFromI2c
+ * @param isFromI2cMaster
  *      True if the message is from a I2C interface
  * @param isNewLine
  *      True if the data is a new line.
  */
 void MainWindowHandleData::appendDataToLog(const QByteArray &data, bool isSend, bool isUserMessage, bool isTimeStamp,
-                                 bool isFromCan, bool isFromI2c, bool isNewLine)
+                                 bool isFromCan, bool isFromI2cMaster, bool isNewLine)
 {
 
     const Settings* currentSettings = m_settingsDialog->settings();
@@ -974,8 +974,9 @@ void MainWindowHandleData::appendDataToLog(const QByteArray &data, bool isSend, 
 
         }
 
-        if(isFromI2c && !isUserMessage && !isTimeStamp && !isNewLine)
+        if(isFromI2cMaster && !isUserMessage && !isTimeStamp && !isNewLine)
         {
+
             tmpArray = QByteArray(data);
 
             if(currentSettings->i2cMetaInformationInLog != I2C_METADATA_NONE)
@@ -1140,13 +1141,13 @@ void MainWindowHandleData::queuedDataReceivedSlot(void)
     {
         m_receivedBytes += m_queuedReceivedData.size();
 
-        if(m_mainWindow->m_isConnectedWithI2c)
+        if(m_mainWindow->m_isConnectedWithI2cMaster)
         {
             m_receivedBytes -= AardvarkI2cSpi::RECEIVE_CONTROL_BYTES_COUNT;
         }
 
         appendDataToStoredData(m_queuedReceivedData, false, false, m_mainWindow->m_isConnectedWithCan,
-                               false, m_mainWindow->m_isConnectedWithI2c);
+                               false, m_mainWindow->m_isConnectedWithI2cMaster);
         m_queuedReceivedData.clear();
     }
 
@@ -1222,11 +1223,11 @@ void MainWindowHandleData::dataHasBeenSendSlot(QByteArray data, bool success, ui
         }
         else
         {
-            if(m_mainWindow->m_isConnectedWithI2c)
+            if(m_mainWindow->m_isConnectedWithI2cMaster)
             {
                 m_sentBytes -= AardvarkI2cSpi::SEND_CONTROL_BYTES_COUNT;
             }
-            appendDataToStoredData(data, true, false, m_mainWindow->m_isConnectedWithCan, false,m_mainWindow->m_isConnectedWithI2c);
+            appendDataToStoredData(data, true, false, m_mainWindow->m_isConnectedWithCan, false,m_mainWindow->m_isConnectedWithI2cMaster);
         }
     }
 
@@ -1290,17 +1291,17 @@ void MainWindowHandleData::clear(void)
  *      True if the time stamp results from a user message.
  * @param isFromCan
  *      True if the time stamp results from a CAN message
- * @param isFromI2c
+ * @param isFromI2cMaster
  *      True if the time stamp results from a I2C message
  * @param timeStampFormat
  *      The time stamp format.
  */
 void MainWindowHandleData::appendTimestamp(QVector<StoredData>* storedDataVector, bool isSend, bool isUserMessage,
-                                 bool isFromCan, bool isFromI2c, QString timeStampFormat)
+                                 bool isFromCan, bool isFromI2cMaster, QString timeStampFormat)
 {
     StoredData storedData;
     storedData.isFromCan = isFromCan;
-    storedData.isFromI2c = isFromI2c;
+    storedData.isFromI2cMaster = isFromI2cMaster;
     storedData.data = QDateTime::currentDateTime().toString(timeStampFormat).toLocal8Bit();
     storedData.type = isUserMessage ? STORED_DATA_TYPE_USER_MESSAGE : STORED_DATA_TYPE_TIMESTAMP;
     storedData.isSend = isSend;
@@ -1317,14 +1318,14 @@ void MainWindowHandleData::appendTimestamp(QVector<StoredData>* storedDataVector
  *      True if the time stamp results from a user message.
  * @param isFromCan
  *      True if the time stamp results from a CAN message.
- * @param isFromI2c
+ * @param isFromI2cMaster
  *      True if the time stamp results from a I2C message.
  */
-void MainWindowHandleData::appendNewLine(QVector<StoredData>* storedDataVector, bool isSend, bool isFromCan, bool isFromI2c)
+void MainWindowHandleData::appendNewLine(QVector<StoredData>* storedDataVector, bool isSend, bool isFromCan, bool isFromI2cMaster)
 {
     StoredData storedData;
     storedData.isFromCan = isFromCan;
-    storedData.isFromI2c = isFromI2c;
+    storedData.isFromI2cMaster = isFromI2cMaster;
     storedData.data = QString("\n").toLocal8Bit();
     storedData.type = STORED_DATA_TYPE_NEW_LINE;
     storedData.isSend = isSend;
@@ -1342,15 +1343,15 @@ void MainWindowHandleData::appendNewLine(QVector<StoredData>* storedDataVector, 
  *      True if the data is a user message.
  * @param isFromCan
  *      True if the data is from CAN.
- * @param isFromI2c
- *      True if the data is from I2C.
+ * @param isFromI2cMaster
+ *      True if the data is from a I2C master.
  * @param forceTimeStamp
  *      True if a time stamp shall be generated (independently from the time stamp settings)
  * @param isRecursivCall
  *      True if the function is called recursively.
  */
 void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isSend, bool isUserMessage,
-                                            bool isFromCan, bool isFromI2c, bool forceTimeStamp, bool isRecursivCall)
+                                            bool isFromCan, bool isFromI2cMaster, bool forceTimeStamp, bool isRecursivCall)
 {
     static QDateTime lastConsoleTimeInBuffer = QDateTime::currentDateTime().addSecs(-1000);
     static QDateTime lastSendReceivedDataInConsole = QDateTime::currentDateTime().addYears(1);
@@ -1363,12 +1364,12 @@ void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isS
         if(createTimeStampOnNextCall)
         {
             //Enter a console time stamp.
-            appendTimestamp(&m_unprocessedConsoleData, isSend, isUserMessage, isFromCan, isFromI2c, currentSettings->consoleTimestampFormat);
+            appendTimestamp(&m_unprocessedConsoleData, isSend, isUserMessage, isFromCan, isFromI2cMaster, currentSettings->consoleTimestampFormat);
             m_bytesInUnprocessedConsoleData += m_unprocessedConsoleData.last().data.length();
             createTimeStampOnNextCall = false;
         }
         if(currentSettings->consoleCreateTimestampAt && (data.indexOf((quint8)currentSettings->consoleTimestampAt) != -1)
-                && !isFromCan && !isFromI2c && !isUserMessage)
+                && !isFromCan && !isFromI2cMaster && !isUserMessage)
         {//Data contains a time stamp at byte.
 
             /*************************create time stamps for all time stamp at bytes (currentSettings->consoleTimestampAt)**********************/
@@ -1397,14 +1398,14 @@ void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isS
                     }
 
                     //Enter a console time stamp.
-                    appendTimestamp(&m_unprocessedConsoleData, isSend, isUserMessage, isFromCan, isFromI2c, currentSettings->consoleTimestampFormat);
+                    appendTimestamp(&m_unprocessedConsoleData, isSend, isUserMessage, isFromCan, isFromI2cMaster, currentSettings->consoleTimestampFormat);
                     m_bytesInUnprocessedConsoleData += m_unprocessedConsoleData.last().data.length();
                 }
                 else
                 {
                     if(!splittedData[i].isEmpty())
                     {
-                        appendUnprocessConsoleData(splittedData[i], isSend, isUserMessage, isFromCan, isFromI2c, forceTimeStamp, true);
+                        appendUnprocessConsoleData(splittedData[i], isSend, isUserMessage, isFromCan, isFromI2cMaster, forceTimeStamp, true);
                     }
                 }
 
@@ -1415,14 +1416,14 @@ void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isS
 
         if(forceTimeStamp || (currentSettings->generateTimeStampsInConsole && (lastConsoleTimeInBuffer.msecsTo(QDateTime::currentDateTime()) > (qint64)currentSettings->timeStampIntervalConsole)))
         {
-            appendTimestamp(&m_unprocessedConsoleData, isSend, isUserMessage, isFromCan, isFromI2c, currentSettings->consoleTimestampFormat);
+            appendTimestamp(&m_unprocessedConsoleData, isSend, isUserMessage, isFromCan, isFromI2cMaster, currentSettings->consoleTimestampFormat);
             m_bytesInUnprocessedConsoleData += m_unprocessedConsoleData.last().data.length();
             lastConsoleTimeInBuffer = QDateTime::currentDateTime();
 
         }
 
         if((currentSettings->consoleNewLineAt != 0xffff) && (data.indexOf((quint8)currentSettings->consoleNewLineAt) != -1)
-                && !isFromCan && !isFromI2c && !isUserMessage)
+                && !isFromCan && !isFromI2cMaster && !isUserMessage)
         {//Data contains a new line byte.
 
             /*************************create new line entries for all new line bytes (currentSettings->consoleNewLineAt)**********************/
@@ -1432,7 +1433,7 @@ void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isS
             for(qint32 i = 0; i < splittedData.length(); i++)
             {
 
-                appendUnprocessConsoleData(splittedData[i], isSend, isUserMessage, isFromCan, isFromI2c, isUserMessage, true);
+                appendUnprocessConsoleData(splittedData[i], isSend, isUserMessage, isFromCan, isFromI2cMaster, isUserMessage, true);
 
                 if(i < (splittedData.length() - 1))
                 {//The last entry in splittedData is not reached.
@@ -1442,7 +1443,7 @@ void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isS
                     m_bytesInUnprocessedConsoleData ++;
 
                     //Append a new line.
-                    appendNewLine(&m_unprocessedConsoleData, isSend, isFromCan, isFromI2c);
+                    appendNewLine(&m_unprocessedConsoleData, isSend, isFromCan, isFromI2cMaster);
                     m_bytesInUnprocessedConsoleData += m_unprocessedConsoleData.last().data.length();
                 }
 
@@ -1456,7 +1457,7 @@ void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isS
             if((lastSendReceivedDataInConsole.msecsTo(QDateTime::currentDateTime()) > (qint64)currentSettings->consoleNewLineAfterPause))
             {
                 //Append a new line.
-                appendNewLine(&m_unprocessedConsoleData, isSend, isFromCan, isFromI2c);
+                appendNewLine(&m_unprocessedConsoleData, isSend, isFromCan, isFromI2cMaster);
                 m_bytesInUnprocessedConsoleData += m_unprocessedConsoleData.last().data.length();
             }
 
@@ -1478,12 +1479,12 @@ void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isS
     }
 
 
-    if((lastEntryTypeInStoredData != newEntryType) || isFromCan || isFromI2c)
+    if((lastEntryTypeInStoredData != newEntryType) || isFromCan || isFromI2cMaster)
     {
         StoredData newStoredDataEntry;
         newStoredDataEntry.data = data;
         newStoredDataEntry.isFromCan = isFromCan;
-        newStoredDataEntry.isFromI2c = isFromI2c;
+        newStoredDataEntry.isFromI2cMaster = isFromI2cMaster;
         newStoredDataEntry.type = newEntryType;
         newStoredDataEntry.isSend = isSend;
         m_unprocessedConsoleData.push_back(newStoredDataEntry);
@@ -1508,15 +1509,15 @@ void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isS
  *      True if the data is a user message.
  * @param isFromCan
  *      True if the data is from CAN.
- * @param isFromI2c
- *      True if the data is from I2C.
+ * @param isFromI2cMaster
+ *      True if the data is from a I2C master.
  * @param forceTimeStamp
  *      True if a time stamp shall be generated (independently from the time stamp settings)
  * @param isRecursivCall
  *      True if the function is called recursively.
  */
 void MainWindowHandleData::appendUnprocessLogData(const QByteArray &data, bool isSend, bool isUserMessage,
-                                        bool isFromCan, bool isFromI2c, bool forceTimeStamp, bool isRecursivCall)
+                                        bool isFromCan, bool isFromI2cMaster, bool forceTimeStamp, bool isRecursivCall)
 {
     static QDateTime lastLogTimeInBuffer = QDateTime::currentDateTime().addSecs(-1000);
     static QDateTime lastSendReceivedDataInLog = QDateTime::currentDateTime().addYears(1);
@@ -1529,12 +1530,12 @@ void MainWindowHandleData::appendUnprocessLogData(const QByteArray &data, bool i
         if(createTimeStampOnNextCall)
         {
             //Enter a log time stamp.
-            appendTimestamp(&m_unprocessedLogData, isSend, isUserMessage, isFromCan, isFromI2c, currentSettings->logTimestampFormat);
+            appendTimestamp(&m_unprocessedLogData, isSend, isUserMessage, isFromCan, isFromI2cMaster, currentSettings->logTimestampFormat);
             createTimeStampOnNextCall = false;
         }
 
         if(currentSettings->logCreateTimestampAt && (data.indexOf((quint8)currentSettings->logTimestampAt) != -1)
-                && !isFromCan && !isFromI2c && !isUserMessage)
+                && !isFromCan && !isFromI2cMaster && !isUserMessage)
         {//Data contains a time stamp at byte.
 
             /*************************create time stamps for all time stamp at bytes (currentSettings->logTimestampAt)**********************/
@@ -1550,7 +1551,7 @@ void MainWindowHandleData::appendUnprocessLogData(const QByteArray &data, bool i
                     {
                         //Append a time stamp byte (was removed during split)
                         appendUnprocessLogData(splittedData[i].append((quint8)currentSettings->logTimestampAt), isSend, isUserMessage,
-                                               isFromCan, isFromI2c, forceTimeStamp, true);
+                                               isFromCan, isFromI2cMaster, forceTimeStamp, true);
                     }
 
                     if((i + 2) == splittedData.length())
@@ -1564,11 +1565,11 @@ void MainWindowHandleData::appendUnprocessLogData(const QByteArray &data, bool i
                     }
 
                     //Enter a log time stamp.
-                    appendTimestamp(&m_unprocessedLogData, isSend, isUserMessage, isFromCan, isFromI2c, currentSettings->logTimestampFormat);
+                    appendTimestamp(&m_unprocessedLogData, isSend, isUserMessage, isFromCan, isFromI2cMaster, currentSettings->logTimestampFormat);
                 }
                 else
                 {
-                    appendUnprocessLogData(splittedData[i], isSend, isUserMessage, isFromCan, isFromI2c, forceTimeStamp, true);
+                    appendUnprocessLogData(splittedData[i], isSend, isUserMessage, isFromCan, isFromI2cMaster, forceTimeStamp, true);
                 }
             }//for(qint32 i = 0; i < splittedData.length(); i++)
 
@@ -1578,14 +1579,14 @@ void MainWindowHandleData::appendUnprocessLogData(const QByteArray &data, bool i
         if(forceTimeStamp || (currentSettings->generateTimeStampsInLog &&
           (lastLogTimeInBuffer.msecsTo(QDateTime::currentDateTime()) > (qint64)currentSettings->timeStampIntervalLog)))
         {
-            appendTimestamp(&m_unprocessedLogData, isSend, isUserMessage, isFromCan, isFromI2c, currentSettings->logTimestampFormat);
+            appendTimestamp(&m_unprocessedLogData, isSend, isUserMessage, isFromCan, isFromI2cMaster, currentSettings->logTimestampFormat);
             lastLogTimeInBuffer = QDateTime::currentDateTime();
 
         }
 
 
         if((currentSettings->logNewLineAt != 0xffff) && (data.indexOf((quint8)currentSettings->logNewLineAt) != -1) &&
-                !isFromCan && !isFromI2c && !isUserMessage)
+                !isFromCan && !isFromI2cMaster && !isUserMessage)
         {//Data contains a new line byte.
 
             /*************************create new line entries for all new line bytes (currentSettings->logNewLineAt)**********************/
@@ -1594,7 +1595,7 @@ void MainWindowHandleData::appendUnprocessLogData(const QByteArray &data, bool i
 
             for(qint32 i = 0; i < splittedData.length(); i++)
             {
-                appendUnprocessLogData(splittedData[i], isSend, isUserMessage, isFromCan, isFromI2c, forceTimeStamp, true);
+                appendUnprocessLogData(splittedData[i], isSend, isUserMessage, isFromCan, isFromI2cMaster, forceTimeStamp, true);
 
                 if(i < (splittedData.length() - 1))
                 {//The last entry in splittedData is not reached.
@@ -1603,7 +1604,7 @@ void MainWindowHandleData::appendUnprocessLogData(const QByteArray &data, bool i
                     m_unprocessedLogData.last().data.append((quint8)currentSettings->logNewLineAt);
 
                     //Append a new line.
-                    appendNewLine(&m_unprocessedLogData, isSend, isFromCan, isFromI2c);
+                    appendNewLine(&m_unprocessedLogData, isSend, isFromCan, isFromI2cMaster);
                 }
 
             }
@@ -1615,7 +1616,7 @@ void MainWindowHandleData::appendUnprocessLogData(const QByteArray &data, bool i
             if(lastSendReceivedDataInLog.msecsTo(QDateTime::currentDateTime()) > (qint64)currentSettings->logNewLineAfterPause)
             {
                 //Append a new line.
-                appendNewLine(&m_unprocessedLogData, isSend, isFromCan, isFromI2c);
+                appendNewLine(&m_unprocessedLogData, isSend, isFromCan, isFromI2cMaster);
 
             }
 
@@ -1636,12 +1637,12 @@ void MainWindowHandleData::appendUnprocessLogData(const QByteArray &data, bool i
     }
 
 
-    if((lastEntryTypeInStoredData != newEntryType) || isFromCan || isFromI2c)
+    if((lastEntryTypeInStoredData != newEntryType) || isFromCan || isFromI2cMaster)
     {
         StoredData newStoredDataEntry;
         newStoredDataEntry.data = data;
         newStoredDataEntry.isFromCan = isFromCan;
-        newStoredDataEntry.isFromI2c = isFromI2c;
+        newStoredDataEntry.isFromI2cMaster = isFromI2cMaster;
         newStoredDataEntry.type = newEntryType;
         newStoredDataEntry.isSend = isSend;
         m_unprocessedLogData.push_back(newStoredDataEntry);
@@ -1708,7 +1709,7 @@ void MainWindowHandleData::processDataInStoredData()
                         m_bytesInStoredConsoleData += storedData.data.size();
 
                         appendDataToConsoleStrings(tmpArray, settings, el.isSend , isFromAddMessageDialog, isTimeStamp,
-                                                   el.isFromCan, el.isFromI2c, isNewLine);
+                                                   el.isFromCan, el.isFromI2cMaster, isNewLine);
                         array.remove(0, settings->consoleNewLineAfterBytes - m_bytesSinceLastNewLineInConsole);
 
                         tmpArray = QString("\n").toLocal8Bit();
@@ -1719,7 +1720,7 @@ void MainWindowHandleData::processDataInStoredData()
                         m_bytesInStoredConsoleData += storedData.data.size();
 
                         appendDataToConsoleStrings(tmpArray, settings, el.isSend , isFromAddMessageDialog, isTimeStamp,
-                                                   el.isFromCan, el.isFromI2c, true);
+                                                   el.isFromCan, el.isFromI2cMaster, true);
 
                         m_bytesSinceLastNewLineInConsole = 0;
 
@@ -1736,7 +1737,7 @@ void MainWindowHandleData::processDataInStoredData()
                     m_bytesInStoredConsoleData += storedData.data.size();
 
                     appendDataToConsoleStrings(array, settings, el.isSend , isFromAddMessageDialog, isTimeStamp,
-                                               el.isFromCan, el.isFromI2c, isNewLine);
+                                               el.isFromCan, el.isFromI2cMaster, isNewLine);
                     m_bytesSinceLastNewLineInConsole += array.length();
                 }
 
@@ -1749,7 +1750,7 @@ void MainWindowHandleData::processDataInStoredData()
                 m_bytesInStoredConsoleData += el.data.size();
 
                 appendDataToConsoleStrings(el.data, settings, el.isSend , isFromAddMessageDialog, isTimeStamp,
-                                           el.isFromCan, el.isFromI2c, isNewLine);
+                                           el.isFromCan, el.isFromI2cMaster, isNewLine);
             }
 
         }
@@ -1797,11 +1798,11 @@ void MainWindowHandleData::processDataInStoredData()
                     do
                     {
                         appendDataToLog(array->left(settings->logNewLineAfterBytes - m_bytesSinceLastNewLineInLog),
-                                        el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, el.isFromI2c, isNewLine);
+                                        el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, el.isFromI2cMaster, isNewLine);
                         array->remove(0, settings->logNewLineAfterBytes - m_bytesSinceLastNewLineInLog);
 
                         QByteArray tmpArray = QString("\n").toLocal8Bit();
-                        appendDataToLog(tmpArray, el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, el.isFromI2c, true);
+                        appendDataToLog(tmpArray, el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, el.isFromI2cMaster, true);
 
                         m_bytesSinceLastNewLineInLog = 0;
 
@@ -1811,14 +1812,14 @@ void MainWindowHandleData::processDataInStoredData()
 
                 if(!array->isEmpty())
                 {
-                    appendDataToLog(*array, el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, el.isFromI2c, isNewLine);
+                    appendDataToLog(*array, el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, el.isFromI2cMaster, isNewLine);
                     m_bytesSinceLastNewLineInLog += array->length();
                 }
 
             }
             else
             {//New line after x bytes is not activated.
-                appendDataToLog(*array, el.isSend, isFromAddMessageDialog, isTimeStamp, el.isFromCan, el.isFromI2c, isNewLine);
+                appendDataToLog(*array, el.isSend, isFromAddMessageDialog, isTimeStamp, el.isFromCan, el.isFromI2cMaster, isNewLine);
             }
         }
     }
@@ -1882,7 +1883,7 @@ void MainWindowHandleData::reInsertDataInMixecConsoleSlot(void)
             bool isNewLine = (el.type == STORED_DATA_TYPE_NEW_LINE) ? true : false;
 
             appendDataToConsoleStrings(el.data, &settings, el.isSend , isFromAddMessageDialog, isTimeStamp,
-                                       el.isFromCan, el.isFromI2c, isNewLine);
+                                       el.isFromCan, el.isFromI2cMaster, isNewLine);
         }
 
         m_consoleDataBufferAscii.clear();
@@ -2194,7 +2195,7 @@ void MainWindowHandleData::reInsertDataInConsole(void)
         bool isNewLine = (el.type == STORED_DATA_TYPE_NEW_LINE) ? true : false;
 
         appendDataToConsoleStrings(el.data, settings, el.isSend , isFromAddMessageDialog, isTimeStamp,
-                                   el.isFromCan, el.isFromI2c, isNewLine);
+                                   el.isFromCan, el.isFromI2cMaster, isNewLine);
     }
 
     if(settings->consoleShowCustomConsole)

@@ -198,7 +198,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     QMainWindow(0),
     m_userInterface(new Ui::MainWindow), m_isConnected(false),
     m_sendWindowPositionAndSizeloaded(false), m_scriptWindowPositionAndSizeloaded(false),
-    m_isConnectedWithCan(false), m_isConnectedWithI2c(false), m_commandLineScripts(scripts),
+    m_isConnectedWithCan(false), m_isConnectedWithI2cMaster(false), m_commandLineScripts(scripts),
     m_isFirstProgramStart(false), m_mouseGrabWidget(0), m_searchConsole(0),
     m_dataRateSend(0), m_dataRateReceive(0), m_handleData(0), m_ignoreNextResizeEventTime(QDateTime::currentDateTime()), m_toolBoxSplitterSizeSecond(0),
     m_sendAreaSplitterSizeSecond(0), m_sendAreaInputsSplitterSizeSecond(0), m_toolBoxSplitterSizesSecond(), m_currentToolBoxIndex(0), m_mainConfigLockFile(),
@@ -1843,6 +1843,7 @@ bool MainWindow::loadSettings()
                         currentSettings.aardvarkI2cSpi.deviceMode = (AardvarkI2cSpiDeviceMode)node.attributes().namedItem("deviceMode").nodeValue().toUInt();
                         currentSettings.aardvarkI2cSpi.device5VIsOn = (node.attributes().namedItem("device5VIsOn").nodeValue() == "1") ? true : false;
                         currentSettings.aardvarkI2cSpi.i2cBaudrate = node.attributes().namedItem("i2cBaudrate").nodeValue().toUInt();
+                        currentSettings.aardvarkI2cSpi.i2cSlaveAddress = node.attributes().namedItem("i2cSlaveAddress").nodeValue().toUInt();
                         currentSettings.aardvarkI2cSpi.i2cPullupsOn = (node.attributes().namedItem("i2cPullupsOn").nodeValue() == "1") ? true : false;
                         currentSettings.aardvarkI2cSpi.spiPolarity = (AardvarkSpiPolarity)node.attributes().namedItem("spiPolarity").nodeValue().toUInt();
                         currentSettings.aardvarkI2cSpi.spiSSPolarity = (AardvarkSpiSSPolarity)node.attributes().namedItem("spiSSPolarity").nodeValue().toUInt();
@@ -2637,6 +2638,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("deviceMode"), QString("%1").arg(currentSettings->aardvarkI2cSpi.deviceMode)),
                  std::make_pair(QString("device5VIsOn"), QString("%1").arg(currentSettings->aardvarkI2cSpi.device5VIsOn)),
                  std::make_pair(QString("i2cBaudrate"), QString("%1").arg(currentSettings->aardvarkI2cSpi.i2cBaudrate)),
+                 std::make_pair(QString("i2cSlaveAddress"), QString("%1").arg(currentSettings->aardvarkI2cSpi.i2cSlaveAddress)),
                  std::make_pair(QString("i2cPullupsOn"), QString("%1").arg(currentSettings->aardvarkI2cSpi.i2cPullupsOn)),
                  std::make_pair(QString("spiPolarity"), QString("%1").arg(currentSettings->aardvarkI2cSpi.spiPolarity)),
                  std::make_pair(QString("spiSSPolarity"), QString("%1").arg(currentSettings->aardvarkI2cSpi.spiSSPolarity)),
@@ -3053,21 +3055,28 @@ void MainWindow::dataConnectionStatusSlot(bool isConnected, QString message, boo
 
         m_isConnected = true;
         m_isConnectedWithCan = (currentSettings->connectionType == CONNECTION_TYPE_PCAN) ? true : false;
-        m_isConnectedWithI2c = false;
+        m_isConnectedWithI2cMaster = false;
         showConnect = false;
         m_userInterface->actionConnect->setText("Disconnect");
         m_settingsDialog->getUserInterface()->connectButton->setText("disconnect");
 
         if(currentSettings->connectionType == CONNECTION_TYPE_AARDVARK)
         {
-            m_isConnectedWithI2c = (currentSettings->aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_MASTER) ? true : false;
+            if(currentSettings->aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_MASTER)
+            {
+                m_isConnectedWithI2cMaster = true;
+            }
+            else
+            {
+                m_isConnectedWithI2cMaster = false;
+            }
         }
     }
     else
     {
         m_isConnected = false;
         m_isConnectedWithCan = false;
-        m_isConnectedWithI2c = false;
+        m_isConnectedWithI2cMaster = false;
         showConnect = isWaiting ? false : true;
         m_userInterface->actionConnect->setText(isWaiting ? "Stop waiting" : "Connect");
         m_settingsDialog->getUserInterface()->connectButton->setText(isWaiting ? "stop waiting" : "connect");
@@ -3557,7 +3566,7 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
 void MainWindow::messageEnteredSlot(QString message, bool forceTimeStamp)
 {
     QByteArray array = message.toLocal8Bit();
-    m_handleData->appendDataToStoredData(array, true, true, m_isConnectedWithCan, forceTimeStamp, m_isConnectedWithI2c);
+    m_handleData->appendDataToStoredData(array, true, true, m_isConnectedWithCan, forceTimeStamp, m_isConnectedWithI2cMaster);
 }
 
 /**

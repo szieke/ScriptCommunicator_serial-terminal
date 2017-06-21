@@ -473,6 +473,11 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     m_userInterface->logNewLineAfterNumberBytes->setValidator(new QIntValidator(0, USHRT_MAX, m_userInterface->logNewLineAfterNumberBytes));
     m_userInterface->logNewLineAfterPause->setValidator(new QIntValidator(0, USHRT_MAX, m_userInterface->logNewLineAfterPause));
 
+    m_userInterface->aardvarkI2cBaudrate->setValidator(new QIntValidator(0, USHRT_MAX, m_userInterface->aardvarkI2cBaudrate));
+    m_userInterface->aardvarkI2cSlaveAddress->setValidator(new QIntValidator(0, USHRT_MAX, m_userInterface->aardvarkI2cSlaveAddress));
+    m_userInterface->aardvarkI2cSpiPort->setValidator(new QIntValidator(0, USHRT_MAX, m_userInterface->aardvarkI2cSpiPort));
+    m_userInterface->aardvarkSpiBaudrate->setValidator(new QIntValidator(0, USHRT_MAX, m_userInterface->aardvarkSpiBaudrate));
+
     //Read all serial port informations.
     for(auto list : getSerialPortsInfo())
     {
@@ -1126,6 +1131,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     m_userInterface->aardvarkI2cSpiMode->setCurrentIndex((int)settings.aardvarkI2cSpi.deviceMode);
     m_userInterface->aardvarkI2cSpi5V->setCurrentText(settings.aardvarkI2cSpi.device5VIsOn ? "On" : "Off");
     m_userInterface->aardvarkI2cBaudrate->setText(QString("%1").arg(settings.aardvarkI2cSpi.i2cBaudrate));
+    m_userInterface->aardvarkI2cSlaveAddress->setText(QString("%1").arg(settings.aardvarkI2cSpi.i2cSlaveAddress));
     m_userInterface->aardvarkI2cPullUp->setCurrentText(settings.aardvarkI2cSpi.i2cPullupsOn ? "On" : "Off");
     m_userInterface->aardvarkSpiPolarity->setCurrentIndex((int)settings.aardvarkI2cSpi.spiPolarity);
     m_userInterface->aardvarkSpiSSPolarity->setCurrentIndex((int)settings.aardvarkI2cSpi.spiSSPolarity);
@@ -1549,12 +1555,22 @@ void SettingsDialog::initializeAardvarkIc2SpiTab(void)
          m_userInterface->aardvarkI2cSpiScan->setEnabled(true);
          m_userInterface->aardvarkI2cSpi5V->setEnabled(true);
 
-         if(m_userInterface->aardvarkI2cSpiMode->currentText() == "I2C Master")
+         if((m_userInterface->aardvarkI2cSpiMode->currentText() == "I2C Master") ||
+            (m_userInterface->aardvarkI2cSpiMode->currentText() == "I2C Slave"))
          {
              m_userInterface->aardvarkI2cBaudrate->setEnabled(true);
              m_userInterface->aardvarkI2cPullUp->setEnabled(true);
              m_userInterface->aardvarkI2cFreeBus->setEnabled(true);
              m_userInterface->aardvarkSpiBaudrate->setEnabled(false);
+
+             if(m_userInterface->aardvarkI2cSpiMode->currentText() == "I2C Slave")
+             {
+                m_userInterface->aardvarkI2cSlaveAddress->setEnabled(true);
+             }
+             else
+             {
+                 m_userInterface->aardvarkI2cSlaveAddress->setEnabled(false);
+             }
          }
          else if(m_userInterface->aardvarkI2cSpiMode->currentText() == "SPI Master")
          {
@@ -1564,11 +1580,13 @@ void SettingsDialog::initializeAardvarkIc2SpiTab(void)
              m_userInterface->aardvarkSpiPhase->setEnabled(true);
              m_userInterface->aardvarkSpiBaudrate->setEnabled(true);
              m_userInterface->aardvarkI2cBaudrate->setEnabled(false);
+             m_userInterface->aardvarkI2cSlaveAddress->setEnabled(false);
          }
          else
          {
              m_userInterface->aardvarkSpiBaudrate->setEnabled(false);
              m_userInterface->aardvarkI2cBaudrate->setEnabled(false);
+             m_userInterface->aardvarkI2cSlaveAddress->setEnabled(false);
          }
 
      }
@@ -1580,6 +1598,7 @@ void SettingsDialog::initializeAardvarkIc2SpiTab(void)
          m_userInterface->aardvarkI2cSpi5V->setEnabled(false);
          m_userInterface->aardvarkSpiBaudrate->setEnabled(false);
          m_userInterface->aardvarkI2cBaudrate->setEnabled(false);
+         m_userInterface->aardvarkI2cSlaveAddress->setEnabled(false);
      }
 
      int startIndex = 0;
@@ -2424,6 +2443,7 @@ void SettingsDialog::updateSettings(bool forceUpdate)
     m_currentSettings.aardvarkI2cSpi.deviceMode = (AardvarkI2cSpiDeviceMode)m_userInterface->aardvarkI2cSpiMode->currentIndex();
     m_currentSettings.aardvarkI2cSpi.device5VIsOn = (m_userInterface->aardvarkI2cSpi5V->currentText() == "On") ? true : false;
     m_currentSettings.aardvarkI2cSpi.i2cBaudrate = m_userInterface->aardvarkI2cBaudrate->text().toUInt();
+    m_currentSettings.aardvarkI2cSpi.i2cSlaveAddress = m_userInterface->aardvarkI2cSlaveAddress->text().toUInt();
     m_currentSettings.aardvarkI2cSpi.i2cPullupsOn = (m_userInterface->aardvarkI2cPullUp->currentText() == "On") ? true : false;
     m_currentSettings.aardvarkI2cSpi.spiPolarity = (AardvarkSpiPolarity)m_userInterface->aardvarkSpiPolarity->currentIndex();
     m_currentSettings.aardvarkI2cSpi.spiSSPolarity = (AardvarkSpiSSPolarity)m_userInterface->aardvarkSpiSSPolarity->currentIndex();

@@ -59,7 +59,9 @@
 typedef enum
 {
     AARDVARK_I2C_SPI_DEVICE_MODE_I2C_MASTER = 0,
+    AARDVARK_I2C_SPI_DEVICE_MODE_I2C_SLAVE,
     AARDVARK_I2C_SPI_DEVICE_MODE_SPI_MASTER,
+    AARDVARK_I2C_SPI_DEVICE_MODE_SPI_SLAVE,
     AARDVARK_I2C_SPI_DEVICE_MODE_GPIO
 }AardvarkI2cSpiDeviceMode;
 
@@ -81,6 +83,7 @@ typedef struct
 
     quint16 i2cBaudrate;///The I2C baudrate.
     bool i2cPullupsOn;///True if the I2C pullups shall be enabled.
+    quint16 i2cSlaveAddress;///The I2C slave address.
 
     AardvarkSpiPolarity spiPolarity;///The SPI Polarity
     AardvarkSpiSSPolarity spiSSPolarity;///The SPI slave select polarity.
@@ -124,6 +127,9 @@ public:
     ///Return true if the interface is connected.
     bool isConnected(void){return (m_handle > 0) ? true : false;}
 
+    ///Returns the data from the last transactions.
+    QVector<QByteArray> readLastSlaveData(void);
+
     ///Converts AardvarkI2cFlags to a string.
     static QString flagsToString(AardvarkI2cFlags flags);
 
@@ -133,6 +139,9 @@ signals:
     ///Is emitted if the input states of the aardvark I2c/Spi device have been changed.
     ///Note: states contains AARDVARK_I2C_SPI_GPIO_COUNT elements.
     void inputStatesChangedSignal(QVector<bool> states);
+
+    ///Is emitted if data has been received (I2C/SPI slave mode).
+    void readyRead(void);
 
 public slots:
 
@@ -148,6 +157,9 @@ public slots:
 
     ///Is called if the i2c bus shall be released.
     void freeI2cBusSlot(void);
+
+    ///Checks if data has been received (I2C/SPI slave mode).
+    void receiveTimerSlot();
 
 
 private:
@@ -169,6 +181,9 @@ private:
 
     ///The current settings.
     AardvarkI2cSpiSettings m_settings;
+
+    ///Checks if data has been received (I2C/SPI slave mode).
+    QTimer m_receiveTimer;
 };
 
 #endif // AARDVARK_I2C_SPI_H

@@ -70,6 +70,9 @@ public:
     ///True if the main interface thread is connected with a CAN interface.
     bool isConnectedWithCan();
 
+    ///True if the main interface thread is connected with a I2C master interface.
+    bool isConnectedWithI2cMaster();
+
     ///True if the main interface thread is connected with a I2C interface.
     bool isConnectedWithI2c();
 
@@ -166,6 +169,9 @@ private slots:
 
     ///This slot function is called if data has been received from the serial port.
     void serialPortReceivedDataSlot(void);
+
+    ///This slot function is called if data has been received from the aardvard interface (I2C/SPI slave mode).
+    void aardvardSlaveDataReceivedSlot(void);
 
     ///This slot function is called if data has been received from the pcan interface.
     void pcanReceivedDataSlot(void);
