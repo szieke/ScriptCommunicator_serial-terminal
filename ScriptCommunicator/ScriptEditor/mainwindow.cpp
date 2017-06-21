@@ -128,12 +128,6 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
             SLOT(parseSlot(QMap<QString, QString>,QMap<int, QString>,QMap<int, QString>,bool,bool)), Qt::QueuedConnection);
     connect(m_parseThread, SIGNAL(parsingFinishedSignal(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>,QMap<int, QVector<ParsedEntry>>,bool,bool)),
             this, SLOT(parsingFinishedSlot(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>,QMap<int, QVector<ParsedEntry>>,bool,bool)), Qt::QueuedConnection);
-
-     m_checkForFileChangesTimer.start(2000);
-
-     parseTimeout(false);
-
-     qApp->installEventFilter(this);
 }
 
 MainWindow::~MainWindow()
@@ -1351,6 +1345,12 @@ void MainWindow::showEvent(QShowEvent *event)
 
     readSettings();
 
+    m_checkForFileChangesTimer.start(2000);
+
+    parseTimeout(false);
+
+    qApp->installEventFilter(this);
+
 }
 
 /**
@@ -2353,6 +2353,18 @@ void MainWindow::readSettings()
     }
     else
     {
+        if(m_scriptsToLoadAfterStart.isEmpty())
+        {
+            addTab("", false);
+        }
+        else
+        {
+            for(auto el : m_scriptsToLoadAfterStart)
+            {
+                addTab(el, true);
+            }
+        }
+
         list = ui->splitter->sizes();
         size = list[0] + list[1];
         list[0] = static_cast<int>(size * 0.2);
