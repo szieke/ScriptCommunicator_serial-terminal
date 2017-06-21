@@ -1849,11 +1849,23 @@ void SendWindow::cyclicSendErrorReceived(void)
 
         if(!m_isConnected)
         {
-            QMessageBox::critical(this, "error", "error while sending: no connection");
+            QMessageBox::critical(this->isVisible() ? this : NULL, "error", "error while sending: no connection");
         }
         else
         {
-            QMessageBox::critical(this, "error", "error while sending");
+            const Settings* settings = m_settingsDialog->settings();
+
+            if((settings->connectionType == CONNECTION_TYPE_AARDVARK) &&
+               ((settings->aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_SLAVE) ||
+                (settings->aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_SPI_SLAVE)))
+            {//I2C/SPI slave.
+
+                QMessageBox::information(this->isVisible() ? this : NULL, "Aardvark I2C/SPI", "set slave response failed");
+            }
+            else
+            {
+                QMessageBox::critical(this->isVisible() ? this : NULL, "error", "error while sending");
+            }
         }
 
         enableWindowForCyclicSend(true);
@@ -1870,6 +1882,15 @@ void SendWindow::currentCyclicSendFinished(void)
     m_cyclicSendingIsInProgress = false;
     enableWindowForCyclicSend(true);
     setProgressbarValue(100);
+
+    const Settings* settings = m_settingsDialog->settings();
+    if((settings->connectionType == CONNECTION_TYPE_AARDVARK) &&
+       ((settings->aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_SLAVE) ||
+        (settings->aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_SPI_SLAVE)))
+    {//I2C/SPI slave.
+
+        QMessageBox::information(this->isVisible() ? this : NULL, "Aardvark I2C/SPI", "set slave response succeeded");
+    }
 }
 
 /**
@@ -1931,6 +1952,7 @@ void SendWindow::dataHasBeenSendSlot(bool success, uint id)
                     m_cyclicSendingIsInProgress = false;
                 }
             }
+
         }
         else
         {
@@ -1942,16 +1964,39 @@ void SendWindow::dataHasBeenSendSlot(bool success, uint id)
     }
     else if(id == MainInterfaceThread::SEND_ID_SEND_WINDOW_SINGLE)
     {
+        const Settings* settings = m_settingsDialog->settings();
+
         if(!success)
         {
             if(!m_isConnected)
             {
-                QMessageBox::critical(this, "error", "error while sending: no connection");
+                QMessageBox::critical(this->isVisible() ? this : NULL, "error", "error while sending: no connection");
             }
             else
             {
-                QMessageBox::critical(this, "error", "error while sending");
+                if((settings->connectionType == CONNECTION_TYPE_AARDVARK) &&
+                   ((settings->aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_SLAVE) ||
+                    (settings->aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_SPI_SLAVE)))
+                {//I2C/SPI slave.
+
+                    QMessageBox::information(this->isVisible() ? this : NULL, "Aardvark I2C/SPI", "set slave response failed");
+                }
+                else
+                {
+                    QMessageBox::critical(this->isVisible() ? this : NULL, "error", "error while sending");
+                }
             }
+        }
+        else
+        {
+            if((settings->connectionType == CONNECTION_TYPE_AARDVARK) &&
+               ((settings->aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_SLAVE) ||
+                (settings->aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_SPI_SLAVE)))
+            {//I2C/SPI slave.
+
+                QMessageBox::information(this->isVisible() ? this : NULL, "Aardvark I2C/SPI", "set slave response succeeded");
+            }
+
         }
 
         m_userInterface->tableWidget->closeDebugger(true);

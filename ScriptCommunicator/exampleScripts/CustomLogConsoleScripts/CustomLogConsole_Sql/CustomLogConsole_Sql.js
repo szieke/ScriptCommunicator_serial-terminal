@@ -30,7 +30,7 @@ be unchecked and then checked again or the corresponding search button must be p
   * Byte 5-8 (MSB)=timestamp (difference between the first received CAN message (after the last connect) and the current)
   * Byte 9-16= the data.  
   *
-  * If the data is send or received with a I2C interface then the first bytes are:
+  * If the data is send or received with a I2C master interface then the first bytes are:
   * Byte 0= flags bits (1=10 bit address, 2=combined FMT, 4=no stop condition)
   * Byte 1-2 (MSB)= I2C address
   * Byte 3-n= the data.  
@@ -40,13 +40,13 @@ be unchecked and then checked again or the corresponding search button must be p
   * @param timeStamp
   *      The time stamp (the format is set in the settings dialog).
   * @param type
-  *   0=the data has been received from a normal interface (all but CAN or I2C)
-  *   1=the data has been sent with a normal interface (all but CAN or I2C)
+  *   0=the data has been received from a standard interface (all but CAN or I2C master)
+  *   1=the data has been sent with a standard interface (all but CAN or I2C master)
   *   2=the data has been received from the CAN interface
   *   3=the data has been sent with a CAN interface
   *   4=the data is a user message (from message dialog or normal script (scriptThread.addMessageToLogAndConsoles))
-  *   5=the data has been received from the I2C interface
-  *   6=the data has been sent with a I2C interface
+  *   5=the data has been received from the I2C master interface
+  *   6=the data has been sent with a I2C master interface
   * @param isLog
   *   True if this call is for the custom log (false=custom console)
   */

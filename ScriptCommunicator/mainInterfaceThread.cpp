@@ -69,11 +69,18 @@ MainInterfaceThread::~MainInterfaceThread()
  */
 void MainInterfaceThread::aardvardSlaveDataReceivedSlot(void)
 {
-    QVector<QByteArray> transActions = m_aardvarkI2cSpi->readLastSlaveData();
+    QVector<AardvardkI2cSpiSlaveData> transActions = m_aardvarkI2cSpi->readLastSlaveData();
 
     for(auto el : transActions)
     {
-        dataReceived(el);
+        if(el.isReceiveData)
+        {
+            dataReceived(el.data);
+        }
+        else
+        {
+            sendingFinishedSignal(el.data, true, SEND_ID_I2C_SPI_SLAVE);
+        }
     }
 }
 
@@ -230,6 +237,38 @@ bool MainInterfaceThread::isConnectedWithI2cMaster()
 
     if((m_aardvarkI2cSpi->isConnected()) &&
        (m_currentGlobalSettings.aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_MASTER))
+    {
+        result = true;
+    }
+
+    return result;
+}
+
+/**
+ * Returns true if the main interface thread is connected with a I2C slave interface.
+ */
+bool MainInterfaceThread::isConnectedWithI2cSlave()
+{
+    bool result = false;
+
+    if((m_aardvarkI2cSpi->isConnected()) &&
+       (m_currentGlobalSettings.aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_SLAVE))
+    {
+        result = true;
+    }
+
+    return result;
+}
+
+/**
+ * Returns true if the main interface thread is connected with a SPI slave interface.
+ */
+bool MainInterfaceThread::isConnectedWithSpiSlave()
+{
+    bool result = false;
+
+    if((m_aardvarkI2cSpi->isConnected()) &&
+       (m_currentGlobalSettings.aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_SPI_SLAVE))
     {
         result = true;
     }
@@ -508,8 +547,11 @@ void MainInterfaceThread::sendDataSlot(const QByteArray data, uint id)
 
             if(!isI2cRead)
             {
-                sendingFinishedSignal(data, true, id);
-                m_numberOfSentBytes += data.size();
+                if(!isConnectedWithI2cSlave() && !isConnectedWithSpiSlave())
+                {
+                    sendingFinishedSignal(data, true, id);
+                    m_numberOfSentBytes += data.size();
+                }
 
                 if(isConnectedWithCan())
                 {
@@ -771,7 +813,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
             }
             else if(m_currentGlobalSettings.aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_SLAVE)
             {
-                mode = "i2c slave";
+                mode = QString("i2c slave, address=%1").arg(m_currentGlobalSettings.aardvarkI2cSpi.i2cSlaveAddress);
                 baudrateSetValue = m_currentGlobalSettings.aardvarkI2cSpi.i2cBaudrate;
             }
             else if(m_currentGlobalSettings.aardvarkI2cSpi.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_SPI_MASTER)

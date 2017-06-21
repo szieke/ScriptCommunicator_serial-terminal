@@ -309,7 +309,6 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     connect(m_settingsDialog, SIGNAL(deleteLogFileSignal(QString)),this, SLOT(deleteLogFileSlot(QString)));
     connect(m_settingsDialog, SIGNAL(configHasToBeSavedSignal()),this, SLOT(configHasToBeSavedSlot()));
     connect(m_settingsDialog, SIGNAL(conectionTypeChangesSignal()),this, SLOT(conectionTypeChangesSlot()));
-    //connect(m_settingsDialog, SIGNAL(appendTimestampAtLogsChangedSignal()),this, SLOT(reLogsSlot()));
 
     connect(this, SIGNAL(connectDataConnectionSignal(Settings, bool)),m_mainInterface,
             SLOT(connectDataConnectionSlot(Settings, bool)), Qt::QueuedConnection);

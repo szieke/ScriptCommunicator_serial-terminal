@@ -272,7 +272,7 @@ public:
     ///Returns true if the main interface is a CAN interface (and is connected).
     Q_INVOKABLE bool isConnectedWithCan(void){return m_isConnectedWithCan;}
 
-    ///Returns true if the main interface is a CAN interface (and is connected).
+    ///Returns true if the main interface is a I2C interface (and is connected).
     Q_INVOKABLE bool isConnectedWithI2c(void){return m_isConnectedWithI2c;}
 
     ///Disconnects the main interface.
@@ -872,7 +872,7 @@ private:
     ///True, if the main interface is a CAN interface (and is connected).
     bool m_isConnectedWithCan;
 
-    ///True, if the main interface is a I2C master interface (and is connected).
+    ///True, if the main interface is a I2C interface (and is connected).
     bool m_isConnectedWithI2c;
 
     ///The send id, which is send to the send data during sending data.

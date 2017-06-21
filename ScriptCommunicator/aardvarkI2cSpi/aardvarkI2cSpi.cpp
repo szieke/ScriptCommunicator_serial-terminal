@@ -31,7 +31,7 @@ static const QString LIBRARAY_NAME = "aardvark.dll";
 static const QString LIBRARAY_NAME = "aardvark.so";
 #endif
 AardvarkI2cSpi::AardvarkI2cSpi(QObject *parent): QObject(parent), m_handle(0), m_inputTimer(),
-    m_receiveTimer()
+    m_receiveTimer(), m_currentSlaveData()
 {
 
     memset(&m_settings, 0, sizeof(m_settings));
@@ -280,21 +280,20 @@ void AardvarkI2cSpi::configurePins(bool onlySetOutputs)
 /**
  * Returns the data from the last transactions.
  */
-QVector<QByteArray> AardvarkI2cSpi::readLastSlaveData(void)
+QVector<AardvardkI2cSpiSlaveData> AardvarkI2cSpi::readLastSlaveData(void)
 {
-    QVector<QByteArray> result;
-    int readBytes = 0;
+    QVector<AardvardkI2cSpiSlaveData> slaveData;
     aa_u08* inBuffer = new aa_u08[10000];
 
     int dataType = aa_async_poll(m_handle, 0);
     while(dataType != AA_ASYNC_NO_DATA)
     {
+        int readBytes = 0;
+        int writtenBytes = 0;
 
         if(dataType == AA_ASYNC_I2C_WRITE)
         {
-            //Ignore this information.
-            (void)aa_i2c_slave_write_stats(m_handle);
-            dataType = aa_async_poll(m_handle, 0);
+            writtenBytes = aa_i2c_slave_write_stats(m_handle);
         }
         else if(dataType == AA_ASYNC_I2C_READ)
         {
@@ -309,6 +308,7 @@ QVector<QByteArray> AardvarkI2cSpi::readLastSlaveData(void)
         else if(dataType == AA_ASYNC_SPI)
         {
             readBytes = aa_spi_slave_read(m_handle, 10000, inBuffer);
+            writtenBytes = readBytes;
         }
         else if(dataType == AA_ASYNC_I2C_MONITOR)
         {
@@ -320,19 +320,38 @@ QVector<QByteArray> AardvarkI2cSpi::readLastSlaveData(void)
 
         if(readBytes > 0)
         {
-            QByteArray transActionData;
+            AardvardkI2cSpiSlaveData receivedData;
+            receivedData.isReceiveData = true;
             for(int i = 0; i < readBytes; i++)
             {
-               transActionData.append(inBuffer[i]);
+               receivedData.data.append(inBuffer[i]);
             }
-            result.append(transActionData);
+            slaveData.append(receivedData);
+        }
+
+        if(writtenBytes != 0)
+        {
+            AardvardkI2cSpiSlaveData sentData;
+            sentData.isReceiveData = false;
+
+            while(writtenBytes >= m_currentSlaveData.size())
+            {
+                sentData.data.append(m_currentSlaveData);
+                writtenBytes -= m_currentSlaveData.size();
+            }
+
+            if(writtenBytes != 0)
+            {
+                sentData.data.append(m_currentSlaveData.mid(0, writtenBytes));
+            }
+            slaveData.append(sentData);
         }
 
         dataType = aa_async_poll(m_handle, 0);
     }
 
     delete [] inBuffer;
-    return result;
+    return slaveData;
 }
 
 /**
@@ -341,7 +360,7 @@ QVector<QByteArray> AardvarkI2cSpi::readLastSlaveData(void)
 void AardvarkI2cSpi::receiveTimerSlot()
 {
     int result = aa_async_poll (m_handle, 0);
-    if((result == AA_ASYNC_I2C_READ) || (result == AA_ASYNC_SPI))
+    if(result != AA_ASYNC_NO_DATA)
     {
         emit readyRead();
     }
@@ -362,6 +381,10 @@ bool AardvarkI2cSpi::connectToDevice(AardvarkI2cSpiSettings& settings, int& devi
     m_handle = aa_open(settings.devicePort);
     m_settings = settings;
 
+    //Set the default response.
+    m_currentSlaveData = QByteArray();
+    m_currentSlaveData.append(0xff);
+
     if (m_handle > 0)
     {
         if((m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_MASTER) ||
@@ -381,6 +404,9 @@ bool AardvarkI2cSpi::connectToDevice(AardvarkI2cSpiSettings& settings, int& devi
                 if(m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_SLAVE)
                 {
                     succeeded = (aa_i2c_slave_enable(m_handle, m_settings.i2cSlaveAddress, 0, 0) >= 0) ? true : false;
+
+                    //Set the default response.
+                    (void)aa_i2c_slave_set_response(m_handle, m_currentSlaveData.size(), (const aa_u08 *)m_currentSlaveData.constData());
                     m_receiveTimer.start(1);
                 }
             }
@@ -393,7 +419,7 @@ bool AardvarkI2cSpi::connectToDevice(AardvarkI2cSpiSettings& settings, int& devi
                 succeeded = true;
 
                 (void)aa_spi_configure(m_handle, m_settings.spiPolarity, m_settings.spiPhase, m_settings.spiBitorder);
-                deviceBitrate = aa_i2c_bitrate(m_handle, m_settings.spiBaudrate);
+                deviceBitrate = aa_spi_bitrate(m_handle, m_settings.spiBaudrate);
 
                 (void)aa_spi_master_ss_polarity (m_handle,m_settings.spiSSPolarity);
 
@@ -404,6 +430,10 @@ bool AardvarkI2cSpi::connectToDevice(AardvarkI2cSpiSettings& settings, int& devi
                 {
                     //Enable the slave.
                     succeeded = (aa_spi_slave_enable(m_handle) >= 0) ? true : false;
+
+                    //Set the default response.
+                    (void)aa_spi_slave_set_response(m_handle, m_currentSlaveData.size(), (const aa_u08 *)m_currentSlaveData.constData());
+
                     m_receiveTimer.start(1);
                 }
             }
@@ -627,11 +657,12 @@ bool AardvarkI2cSpi::sendReceiveData(const QByteArray& data, QByteArray* receive
         }
 
     }
-    else if(m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_MASTER)
+    else if(m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_SLAVE)
     {
         if(aa_i2c_slave_set_response(m_handle, data.size(), (const aa_u08 *)data.constData()) == data.size())
         {
             succeeded = true;
+            m_currentSlaveData = data;
         }
         else
         {
@@ -659,11 +690,12 @@ bool AardvarkI2cSpi::sendReceiveData(const QByteArray& data, QByteArray* receive
         delete[] inBuffer;
 
     }
-    else if(m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_SLAVE)
+    else if(m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_SPI_SLAVE)
     {
-        if(aa_i2c_slave_set_response(m_handle, data.size(), (const aa_u08 *)data.constData()) == data.size())
+        if(aa_spi_slave_set_response(m_handle, data.size(), (const aa_u08 *)data.constData()) == data.size())
         {
             succeeded = true;
+            m_currentSlaveData = data;
         }
         else
         {

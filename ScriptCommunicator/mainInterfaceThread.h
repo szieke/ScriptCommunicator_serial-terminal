@@ -61,6 +61,9 @@ public:
     ///Send id for the send history functionality.
     static const quint32 SEND_ID_HISTOTRY = 4;
 
+    ///Send id for I2C/SPI slave send data.
+    static const quint32 SEND_ID_I2C_SPI_SLAVE = 5;
+
     ///The max. send size for an UDP socket.
     static const qint32 UDP_MAX_SEND_SIZE = 512;
 
@@ -72,6 +75,12 @@ public:
 
     ///True if the main interface thread is connected with a I2C master interface.
     bool isConnectedWithI2cMaster();
+
+    ///Returns true if the main interface thread is connected with a I2C slave interface.
+    bool isConnectedWithI2cSlave();
+
+    ///Returns true if the main interface thread is connected with a SPI slave interface.
+    bool isConnectedWithSpiSlave();
 
     ///True if the main interface thread is connected with a I2C interface.
     bool isConnectedWithI2c();

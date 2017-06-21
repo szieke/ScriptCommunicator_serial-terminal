@@ -96,6 +96,14 @@ typedef struct
 
 }AardvarkI2cSpiSettings;
 
+///The slave data.
+typedef struct
+{
+    QByteArray data;
+    bool isReceiveData;
+
+}AardvardkI2cSpiSlaveData;
+
 ///Class which represents a aardvark  I2c/Spi interface.
 class AardvarkI2cSpi : public QObject
 {
@@ -128,7 +136,7 @@ public:
     bool isConnected(void){return (m_handle > 0) ? true : false;}
 
     ///Returns the data from the last transactions.
-    QVector<QByteArray> readLastSlaveData(void);
+    QVector<AardvardkI2cSpiSlaveData> readLastSlaveData(void);
 
     ///Converts AardvarkI2cFlags to a string.
     static QString flagsToString(AardvarkI2cFlags flags);
@@ -184,6 +192,9 @@ private:
 
     ///Checks if data has been received (I2C/SPI slave mode).
     QTimer m_receiveTimer;
+
+    ///The current slave data.
+    QByteArray m_currentSlaveData;
 };
 
 #endif // AARDVARK_I2C_SPI_H
