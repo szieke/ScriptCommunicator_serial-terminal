@@ -34,7 +34,7 @@ function initializeGUI(isConnected)
 	}
 	else
 	{
-		isConnected = scriptThread.isConnected();
+		isConnected = scriptInf.isConnected();
 	}
 
      if(!isConnected)

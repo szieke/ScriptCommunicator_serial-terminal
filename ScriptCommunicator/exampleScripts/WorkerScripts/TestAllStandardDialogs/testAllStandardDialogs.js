@@ -53,7 +53,7 @@ if(resultArray[0])
 	data = scriptThread.addStringToArray(data, " color:" + parseInt(resultArray[1]) + "," + parseInt(resultArray[2]) + "," + parseInt(resultArray[3]) + "," + parseInt(resultArray[4]));
 }
 
-if(!scriptThread.sendDataArray(data))
+if(!scriptInf.sendDataArray(data))
 {
 	scriptThread.messageBox("Critical", "Error", "sending failed");
 }

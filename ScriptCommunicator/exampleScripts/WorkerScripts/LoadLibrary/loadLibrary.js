@@ -18,11 +18,10 @@ function dialogFinished(e)
 
 function sendDataArray(data) 
 {
-    //scriptThread.sendDataArray(data, 0, 0);
 	var success = true;
 	scriptThread.appendTextToConsole("sendDataArray called: " + data);
 	
-	if(!scriptThread.sendDataArray(data, 0, 0))
+	if(!scriptInf.sendDataArray(data, 0, 0))
 	{
 		success = scriptThread.appendTextToConsole("sendig failed (check connection status)");
 	}

@@ -7,18 +7,26 @@
 #include <QScriptEngine>
 #include <QProgressBar>
 #include <QFileInfo>
+#include "scriptObject.h"
 
 class ScriptWindow;
 
 
-class ScriptFile : public QObject
+class ScriptFile : public QObject, public ScriptObject
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+
 public:
     ScriptFile(QObject *parent, QString scriptFileName);
 
     ///Connects all signals.
     void intSignals(ScriptWindow* scriptWindow, bool runsInDebugger, bool useBlockingSignals=true);
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    virtual QString getPublicScriptElements(void){return MainWindow::parseApiFile("scriptFile.api");}
 
     ///Reads a text file and returns the content.
     Q_INVOKABLE QString readFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1);

@@ -138,6 +138,9 @@ public:
     ///Returns m_mainWindow.
     MainWindow* getMainWindow(){return m_mainWindow;}
 
+    ///Returns m_mainInterfaceThread.
+    MainInterfaceThread* getMainInterfaceThread(){return m_mainInterfaceThread;}
+
     ///Adds a script to the script table.
     void addScript(QString fileName);
 

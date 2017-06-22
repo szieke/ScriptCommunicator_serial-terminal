@@ -218,9 +218,9 @@ function readyReadSlot()
 		appendToConsoleBuffer("<span style=\"color:#ff0000;\">" + UI_scriptConsole.replaceNonHtmlChars(consoleString) + "</span>");
 	}
 	
-	if(scriptThread.isConnected())
+	if(scriptInf.isConnected())
 	{
-		scriptThread.sendDataArray(data);
+		scriptInf.sendDataArray(data);
 	}
 	else
 	{
@@ -467,7 +467,7 @@ function textFromGuiElementChanged(text)
 scriptThread.appendTextToConsole('script sniff_convert started');
 
 //Add the available serial ports.
-var availablePorts = scriptThread.availableSerialPorts();
+var availablePorts = scriptInf.availableSerialPorts();
 for(var i = 0; i < availablePorts.length; i++)
 {
 	UI_serialPortInfoListBox.addItem(availablePorts[i]);
@@ -478,25 +478,25 @@ var consoleTimer = scriptThread.createTimer()
 consoleTimer.timeoutSignal.connect(updateConsole);
 consoleTimer.start(200);
 
-var serialPort = scriptThread.createSerialPort();
+var serialPort = scriptInf.createSerialPort();
 serialPort.readyReadSignal.connect(readyReadSlot);
 
-var tcpClient = scriptThread.createTcpClient();
+var tcpClient = scriptInf.createTcpClient();
 tcpClient.readyReadSignal.connect(readyReadSlot);
 tcpClient.disconnectedSignal.connect(secondInterfaceDisconnectedSlot);
 tcpClient.connectedSignal.connect(secondInterfaceConnectedSlot);
 tcpClient.errorSignal.connect(tcpClientErrorSlot);
 
-var tcpServer = scriptThread.createTcpServer()
+var tcpServer = scriptInf.createTcpServer()
 var tcpServerClient  = undefined;
 tcpServer.newConnectionSignal.connect(secondInterfaceConnectedSlot);
 
-var udpSocket = scriptThread.createUdpSocket()
+var udpSocket = scriptInf.createUdpSocket()
 udpSocket.readyReadSignal.connect(readyReadSlot);
 
 var isConnectedSecondInterface = false;
 var connectionType = "INVALID";
-scriptThread.dataReceivedSignal.connect(dataReceivedSlot);
+scriptInf.dataReceivedSignal.connect(dataReceivedSlot);
 
 UI_SettingsDialog.finishedSignal.connect(dialogFinished);
 UI_disconnectButton.clickedSignal.connect(secondInterfaceDisconnectedSlot)

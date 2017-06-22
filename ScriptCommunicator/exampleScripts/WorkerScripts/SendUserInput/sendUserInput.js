@@ -22,7 +22,7 @@ function sendSequence()
 	data += UI_ComboBox.currentText() + " ";
 	data += UI_SpinBox.value().toString() +"\n";
 	
-	if(!scriptThread.sendString(data))
+	if(!scriptInf.sendString(data))
 	{
 		scriptThread.messageBox("Critical", "Error", "Sending failed. Check if ScriptCommunicator is connected.");
 	}
@@ -48,7 +48,7 @@ UI_Dialog.finishedSignal.connect(dialogFinished);
 
 UI_SendButton.clickedSignal.connect(UI_SendButton, sendSequence)
 
-scriptThread.appendTextToConsole("serial port signals: " + scriptThread.getSerialPortSignals().toString(16));
+scriptThread.appendTextToConsole("serial port signals: " + scriptInf.getSerialPortSignals().toString(16));
 scriptThread.setMainWindowAndTaskBarIcon("mainWindowIcon.ico");
 UI_Dialog.setWindowIcon("dialogIcon.png");
 

@@ -114,7 +114,8 @@ SOURCES += \
     scriptClasses/scriptUiClasses/scriptPlotwidget.cpp \
     scriptClasses/scriptConverter.cpp \
     aardvarkI2cSpi/aardvark.c \
-    aardvarkI2cSpi/aardvarkI2cSpi.cpp
+    aardvarkI2cSpi/aardvarkI2cSpi.cpp \
+    scriptClasses/scriptInf.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -230,7 +231,8 @@ HEADERS += \
     ScriptEditor/version.h \
     aardvarkI2cSpi/aardvark.h \
     aardvarkI2cSpi/aardvarkI2cSpi.h \
-    scriptClasses/scriptAardvarkI2cSpi.h
+    scriptClasses/scriptAardvarkI2cSpi.h \
+    scriptClasses/scriptInf.h
 
 FORMS += \
     mainwindow.ui \

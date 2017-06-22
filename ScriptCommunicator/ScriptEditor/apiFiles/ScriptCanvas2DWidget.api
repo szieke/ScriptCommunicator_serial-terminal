@@ -39,8 +39,6 @@ ScriptCanvas2DWidget::clip(void):void \nCreates the clipping region from the cur
 ScriptCanvas2DWidget::isPointInPath(Number x, Number y):bool \nReturns true if the given point is in the current path.
 ScriptCanvas2DWidget::clear(void):void \nClears the canvas widget.
 ScriptCanvas2DWidget::reset(void):void \nResets the canvas widget.
-ScriptCanvas2DWidget::width(void):Number \nReturns the width of the canvas widget.
-ScriptCanvas2DWidget::height(void):Number \nReturns the height of the canvas widget.
 ScriptCanvas2DWidget::saveToFile(String fileName, String imageType=""):bool \nSave the canvas widget to an image file.
 ScriptCanvas2DWidget::print(String printDialogTitle=""):void \nOpens a print dialog and prints the canvas widget.
 ScriptCanvas2DWidget::mousePressSignal.connect(Number xValue, Number yValue, Number mouseButton) \nIs emitted if the user press a mouse button inside the widget.\nNote: mouseButton has the type Qt::MouseButton.

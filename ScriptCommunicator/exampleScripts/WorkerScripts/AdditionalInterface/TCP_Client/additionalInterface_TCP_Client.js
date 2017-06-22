@@ -2,7 +2,7 @@
 This script send all data which shall be sent with the main interface to an additional TCP client.
 All data which has been received with the additional TCP client will be sent to the main interface
 (this data will be added to the standard consoles, the logs and worker scripts can received this data 
-via scriptThread.dataReceivedSignal) .
+via scriptInf.dataReceivedSignal) .
 ****************************************************************************************/
 
 
@@ -15,7 +15,7 @@ function ConnectButtonPressed()
 			UI_SocketDestinationPort.setEnabled(false);
 			UI_SocketDestinationAddress.setEnabled(false);
 		
-			tcpClient = scriptThread.createTcpClient();
+			tcpClient = scriptInf.createTcpClient();
 			tcpClient.disconnectedSignal.connect(additionalInterfaceDisconnected);
 			tcpClient.connectedSignal.connect(additionalInterfaceConnected);
 			tcpClient.errorSignal.connect(tcpClientError);
@@ -219,7 +219,7 @@ scriptThread.addToolBoxPagesToMainWindow(UI_ToolBox);
 
 UI_TabWidget.setTabText(0, g_instanceName);
 scriptThread.addTabsToMainWindow(UI_TabWidget)
-scriptThread.sendDataFromMainInterfaceSignal.connect(sendDataFromMainInterface)
+scriptInf.sendDataFromMainInterfaceSignal.connect(sendDataFromMainInterface)
 
 var tcpClient = undefined;
 

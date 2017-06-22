@@ -2,7 +2,7 @@
 This script send all data which shall be sent with the main interface to an additional UDP socket.
 All data which has been received with the additional UDP socket will be sent to the main interface
 (this data will be added to the standard consoles, the logs and worker scripts can received this data 
-via scriptThread.dataReceivedSignal) .
+via scriptInf.dataReceivedSignal) .
 ****************************************************************************************/
 
 
@@ -168,9 +168,9 @@ scriptThread.addToolBoxPagesToMainWindow(UI_ToolBox);
 
 UI_TabWidget.setTabText(0, g_instanceName);
 scriptThread.addTabsToMainWindow(UI_TabWidget)
-scriptThread.sendDataFromMainInterfaceSignal.connect(sendDataFromMainInterface)
+scriptInf.sendDataFromMainInterfaceSignal.connect(sendDataFromMainInterface)
 
-var udpSocket = scriptThread.createUdpSocket()
+var udpSocket = scriptInf.createUdpSocket()
 udpSocket.readyReadSignal.connect(dataReceivedAdditionalInterface);
 
 var isConnected = false;

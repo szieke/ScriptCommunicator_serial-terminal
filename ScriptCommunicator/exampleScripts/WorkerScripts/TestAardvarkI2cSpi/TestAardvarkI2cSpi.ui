@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>Dialog</class>
  <widget class="QDialog" name="Dialog">
@@ -100,7 +100,17 @@
                 </item>
                 <item>
                  <property name="text">
+                  <string>I2C Slave</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
                   <string>SPI Master</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>SPI Slave</string>
                  </property>
                 </item>
                 <item>

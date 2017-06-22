@@ -38,6 +38,7 @@ class MainInterfaceThread : public QThread
     Q_OBJECT
     friend class MainWindow;
     friend class ScriptThread;
+    friend class ScriptInf;
 
 public:
     MainInterfaceThread(MainWindow* mainWindow);

@@ -118,8 +118,8 @@ var receivedData = Array();
 UI_ReceiveFileDialog.finishedSignal.connect(dialogFinished);
 UI_OpenFilePushButton.clickedSignal.connect(openFilePushButtonClickedSlot)
 UI_ClearFilePushButton.clickedSignal.connect(ClearFilePushButtonClickedSlot)
-scriptThread.dataReceivedSignal.connect(dataReceivedSlot);
-scriptThread.canMessagesReceivedSignal.connect(canMessagesReceived);
+scriptInf.dataReceivedSignal.connect(dataReceivedSlot);
+scriptInf.canMessagesReceivedSignal.connect(canMessagesReceived);
 UI_InformationLabel.setText("bytes written: " + bytesWritten);
 var timer = scriptThread.createTimer();
 timer.timeoutSignal.connect(timerSlot);

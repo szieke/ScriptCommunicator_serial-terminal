@@ -244,37 +244,29 @@ void ScriptFile::showExceptionInMessageBox(QScriptValue exception, QString scrip
 
 
     QString exceptionString = exception.toString();
-    if(exceptionString.contains("[undefined] is not a function") ||
-       exceptionString.contains("[undefined] is not an object"))
+    QStringList list = exceptionString.split("'");
+    bool errorOcured = true;
+
+    if(list.length() >= 2)
     {
-        QStringList list = exceptionString.split("'");
-        bool errorOcured = true;
-
-        if(list.length() >= 2)
+        list = list[1].split(".");
+        QScriptValue object = scriptEngine->evaluate(list[0]);
+        if(!object.isError())
         {
-            list = list[1].split(".");
-            QScriptValue object = scriptEngine->evaluate(list[0]);
-            if(!object.isError())
+            ScriptThread::getAllObjectPropertiesAndFunctionsInternal(object, 0, &functionsAndProperies);
+
+            if(!functionsAndProperies.isEmpty())
             {
-                ScriptThread::getAllObjectPropertiesAndFunctionsInternal(object, 0, &functionsAndProperies);
+                functionsAndProperies = "\n\n\nFunctions and properies of " + list[0] + ":\n" + functionsAndProperies;
 
-                if(!functionsAndProperies.isEmpty())
-                {
-                    functionsAndProperies = "\n\n\nFunctions and properies of " + list[0] + ":\n" + functionsAndProperies;
-
-                    textToShow = exceptionString + "\n\nNote: All functions" +
-                                                   " and properties of " + list[0] + " are shown in the script window console.";
-                    errorOcured = false;
-                }
+                textToShow = exceptionString + "\n\nNote: All functions" +
+                                               " and properties of " + list[0] + " are shown in the script window console.";
+                errorOcured = false;
             }
         }
-
-        if(errorOcured)
-        {
-            textToShow = exceptionString;
-        }
     }
-    else
+
+    if(errorOcured)
     {
         textToShow = exceptionString;
     }

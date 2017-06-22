@@ -157,7 +157,7 @@ UI_spinBox.setRange(0,5);
 UI_spinBox.setValue(HTMLPageRefreshRate);
 UI_spinBox.valueChangedSignal.connect(spinBoxValueChanged);
 
-var tcpServer = scriptThread.createTcpServer();
+var tcpServer = scriptInf.createTcpServer();
 tcpServer.setMaxPendingConnections(maxPendingConnections);
 var tcpServerClient = undefined;
 tcpServer.newConnectionSignal.connect(connectionEstablished);

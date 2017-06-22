@@ -15,16 +15,16 @@
  */
 function sendValue(id, data)
 {
-	if(scriptThread.isConnectedWithCan())
+	if(scriptInf.isConnectedWithCan())
 	{
-		scriptThread.sendCanMessage(0, id, data);
+		scriptInf.sendCanMessage(0, id, data);
 	}
 	else
 	{
 		var sendArray = Array(0xff, id);
 		appendByteArrayAtByteArray(sendArray, data, data.length);
 		appendNumberAtByteArray(sendArray, 0xfe, 1);
-		scriptThread.sendDataArray(sendArray)
+		scriptInf.sendDataArray(sendArray)
 	}
 }
 //Timer function which send the GUI elements.

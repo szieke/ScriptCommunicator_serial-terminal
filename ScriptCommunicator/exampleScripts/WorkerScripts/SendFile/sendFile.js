@@ -17,7 +17,7 @@ function dialogFinished(e)
 
 function sendFilePushButtonClickedSlot()
 {
-	if(scriptThread.isConnected())
+	if(scriptInf.isConnected())
 	{
 		if(UI_FilePathLineEdit.text() != "")
 		{
@@ -37,9 +37,9 @@ function sendFilePushButtonClickedSlot()
 					var array = scriptFile.readBinaryFile(UI_FilePathLineEdit.text(), false, send, 20000);
 					if(array.length > 0)
 					{
-						if(scriptThread.isConnectedWithCan())
+						if(scriptInf.isConnectedWithCan())
 						{
-							if(!scriptThread.sendCanMessage(2, 0x1, array))
+							if(!scriptInf.sendCanMessage(2, 0x1, array))
 							{
 								succeeded =  false;
 								break;
@@ -47,7 +47,7 @@ function sendFilePushButtonClickedSlot()
 						}
 						else
 						{
-							if(!scriptThread.sendDataArray(array))
+							if(!scriptInf.sendDataArray(array))
 							{
 								succeeded = false;
 								break;

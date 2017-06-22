@@ -173,10 +173,10 @@ function plotWidgetMousePress(xValue, yValue, button)
 
 scriptThread.loadScript("Helper.js")
 var receivedData = Array();
-scriptThread.dataReceivedSignal.connect(dataReceivedSlot)
+scriptInf.dataReceivedSignal.connect(dataReceivedSlot)
 
 //connect the dataReceivedSlot function to the dataReceivedSignal signal
-scriptThread.canMessagesReceivedSignal.connect(canMessagesReceived)
+scriptInf.canMessagesReceivedSignal.connect(canMessagesReceived)
 
 //Create the plot widget und the corresponding graphs.
 var plotWidget = UI_PlotGroupBox.addPlotWidget();

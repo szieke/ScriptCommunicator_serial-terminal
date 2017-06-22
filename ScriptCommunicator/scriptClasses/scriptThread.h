@@ -45,6 +45,7 @@
 #include <QLibrary>
 #include "scriptConverter.h"
 #include "aardvarkI2cSpi.h"
+#include "scriptInf.h"
 
 
 class ScriptWidget;
@@ -88,7 +89,7 @@ public:
     virtual ~ScriptThread();
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
-    virtual QString getPublicScriptElements(void);
+    virtual QString getPublicScriptElements(void){return MainWindow::parseApiFile("scriptThread.api");}
 
     ///Installs obj and all child objects from obj. This objects can be accessed from the script.
     void installAllChilds(QObject* obj, QScriptEngine* scriptEngine, bool firstObj = false);
@@ -102,7 +103,7 @@ public:
     ///Appends text to the script window console.
     Q_INVOKABLE void appendTextToConsole(QString string, bool newLine=true, bool bringToForeground=false){ emit appendTextToConsoleSignal(string, newLine,bringToForeground);}
 
-    /****************Deprecated functions (replaced by the conv object)******************************************************/
+    /****************Deprecated conversion functions (replaced by the conv object)******************************************************/
     ///Converts a byte array which contains ascii characters into a ascii string (QString).
     Q_INVOKABLE QString byteArrayToString(QVector<unsigned char> data){return ScriptConverter::byteArrayToString(data);}
 
@@ -117,7 +118,7 @@ public:
     /*************************************************************************************************************************/
 
 
-    /****************Deprecated functions (replaced by the scriptFile object)******************************************************/
+    /****************Deprecated file system functions (replaced by the scriptFile object)******************************************************/
     ///Reads a text file and returns the content.
     Q_INVOKABLE QString readFile(QString path, bool isRelativePath=true, quint64 startPosition=0, qint64 numberOfBytes=-1)
     {return m_scriptFileObject->readFile(path, isRelativePath, startPosition, numberOfBytes);}
@@ -202,90 +203,38 @@ public:
 
     /*************************************************************************************************************************/
 
-    ///Forces the script thread to sleep for ms milliseconds.
-    Q_INVOKABLE void sleepFromScript(quint32 timeMs);
+
+    /****************Deprecated main interface functions (replaced by the scriptInf object)******************************************************/
+
 
     ///Creates an UDP socket.
-    Q_INVOKABLE QScriptValue createUdpSocket(void);
+    Q_INVOKABLE QScriptValue createUdpSocket(void){return m_scriptInf->createUdpSocket();}
 
     ///Creates a TCP server.
-    Q_INVOKABLE QScriptValue createTcpServer(void);
+    Q_INVOKABLE QScriptValue createTcpServer(void){return m_scriptInf->createTcpServer();}
 
     ///Creates a TCP socket.
-    Q_INVOKABLE QScriptValue createTcpClient(void);
-
-    ///Creates a timer.
-    Q_INVOKABLE QScriptValue createTimer(void);
+    Q_INVOKABLE QScriptValue createTcpClient(void){return m_scriptInf->createTcpClient();}
 
     ///Creates a serial port.
-    Q_INVOKABLE QScriptValue createSerialPort(void);
-
-    ///Creates an Aardvark I2c/SPI interface.
-    Q_INVOKABLE QScriptValue aardvarkI2cSpiCreateInterface(void);
-
-    ///Creates a pcan interface.
-    Q_INVOKABLE QScriptValue createPcanInterface(void);
-
-    ///Creates a plot window.
-    Q_INVOKABLE QScriptValue createPlotWindow();
-
-    ///Creates a XML reader.
-    Q_INVOKABLE QScriptValue createXmlReader();
-
-    ///Creates a XML writer.
-    Q_INVOKABLE QScriptValue createXmlWriter();
-
-    ///Deletes an object created by the script.
-    ///Note: This function must not used any more.
-    ///Objects are deleted automatically by the script engine garbage collector.
-    Q_INVOKABLE void deleteObject(QObject* obj);
-
-    ///Loads/includes one script (QtScript has no built in include mechanism).
-    Q_INVOKABLE bool loadScript(QString scriptPath, bool isRelativePath=true);
-
-    ///Loads a dynamic link library and calls the init function (void init(QScriptEngine* engine)).
-    ///With this function a script can extend his functionality.
-    Q_INVOKABLE bool loadLibrary(QString path, bool isRelativePath=true);
+    Q_INVOKABLE QScriptValue createSerialPort(void){return m_scriptInf->createSerialPort();}
 
     ///Sends a data array (QVector) with the main interface (in MainInterfaceThread).
-    Q_INVOKABLE bool sendDataArray(QVector<unsigned char> data, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false);
-
-    ///Sends a can message with the main interface (in MainInterfaceThread).
-    ///If more then 8 data bytes are given several can messages with the same can id will be sent.
-    Q_INVOKABLE bool sendCanMessage(quint8 type, quint32 canId, QVector<unsigned char> data, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false);
-
-    ///Accesses the I2C bus (write/read).
-    ///Note: This functions works only if the main interface is an I2C bus (master mode).
-    Q_INVOKABLE bool i2cMasterReadWrite(quint8 flags, quint16 slaveAddress, quint16 numberOfBytesToRead, QVector<unsigned char> dataToSend = QVector<unsigned char>(),
-                                     int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false);
-
-    ///Frees the main interface I2C bus (this function can be used if the no stop condition was created
-    ///during the last i2cMasterReadWrite call)
-    Q_INVOKABLE void i2cMasterFreeBus(void){emit i2cMasterFreeBusSignal();}
+    Q_INVOKABLE bool sendDataArray(QVector<unsigned char> data, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false)
+    {return m_scriptInf->sendDataArray(data, repetitionCount, pause, addToMainWindowSendHistory);}
 
     ///Sends a string (QString) with the main interface (in MainInterfaceThread).
-    Q_INVOKABLE bool sendString(QString string, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false);
+    Q_INVOKABLE bool sendString(QString string, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false)
+    {return m_scriptInf->sendString(string, repetitionCount, pause, addToMainWindowSendHistory);}
 
     ///Returns true if the main interface is connected.
-    Q_INVOKABLE bool isConnected(void){return m_isConnected;}
-
-    ///Returns true if the main interface is a CAN interface (and is connected).
-    Q_INVOKABLE bool isConnectedWithCan(void){return m_isConnectedWithCan;}
-
-    ///Returns true if the main interface is a I2C interface (and is connected).
-    Q_INVOKABLE bool isConnectedWithI2c(void){return m_isConnectedWithI2c;}
+    Q_INVOKABLE bool isConnected(void){return m_scriptInf->isConnected();}
 
     ///Disconnects the main interface.
-    Q_INVOKABLE void disconnect(void){emit connectDataConnectionSignal(*m_settingsDialog->settings(), false);}
-
-    ///Connects the main interface (PCAN).
-    ///Note: A successful call will modify the corresponding settings in the settings dialog.
-    Q_INVOKABLE bool connectPcan(quint8 channel, quint32 baudrate, quint32 connectTimeout = 2000, bool busOffAutoReset = true, bool powerSupply = false,
-                                 bool filterExtended = true, quint32 filterFrom = 0, quint32 filterTo = 0x1fffffff);
+    Q_INVOKABLE void disconnect(void){m_scriptInf->disconnect();}
 
     ///Sets the serial port (main interface) RTS and DTR pins.
-    Q_INVOKABLE void setSerialPortPins(bool setRTS, bool setDTR);
-
+    Q_INVOKABLE void setSerialPortPins(bool setRTS, bool setDTR){m_scriptInf->setSerialPortPins(setRTS, setDTR);}
 
     ///Returns the state of the serial port signals (pins).
     ///The signals are bit coded:
@@ -296,38 +245,54 @@ public:
     ///RingIndicatorSignal = 0x20,
     ///RequestToSendSignal = 0x40,
     ///ClearToSendSignal = 0x80,
-    Q_INVOKABLE quint32 getSerialPortSignals(void){uint32_t bits;emit getSerialPortSignalsSignal(&bits);return bits;}
-
-    ///Returns a string which contains informations about all detected Aardvark I2C/SPI devices.
-    Q_INVOKABLE QString aardvarkI2cSpiDetectDevices(void){return AardvarkI2cSpi::detectDevices();}
-
-    ///Connects the main interface (Aardvark I2C/SPI).
-    ///Note: A successful call will modify the corresponding settings in the settings dialog.
-    Q_INVOKABLE bool aardvarkI2cSpiConnect(QScriptValue aardvarkI2cSpiSettings, quint32 connectTimeout = 5000);
+    Q_INVOKABLE quint32 getSerialPortSignals(void){return m_scriptInf->getSerialPortSignals();}
 
     ///Connects the main interface (serial port).
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
     Q_INVOKABLE bool connectSerialPort(QString name, qint32 baudRate = 115200, quint32 connectTimeout= 1000, quint32 dataBits = 8, QString parity = "None",
-                                       QString stopBits = "1", QString flowControl = "None");
+                                       QString stopBits = "1", QString flowControl = "None")
+    {return m_scriptInf->connectSerialPort(name, baudRate, connectTimeout, dataBits, parity, stopBits, flowControl);}
 
     ///Connects the main interface (UDP or TCP socket).
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
-    Q_INVOKABLE bool connectSocket(bool isTcp, bool isServer, QString ip, quint32 destinationPort, quint32 ownPort, quint32 connectTimeout = 5000);
-
-    ///Sets the value of an output pin (Aardvark I2C/SPI device).
-    Q_INVOKABLE bool aardvarkI2cSpiSetOutput(quint8 pinIndex, bool high);
-
-    ///Changes the configuration of a pin (Aardvark I2C/SPI device).
-    Q_INVOKABLE bool aardvarkI2cSpiChangePinConfiguration(quint8 pinIndex, bool isInput, bool withPullups=false);
-
-    ///Returns the Aardvark I2C/SPI settings of the main interface.
-    Q_INVOKABLE QScriptValue aardvarkI2cSpiGetMainInterfaceSettings(void);
+    Q_INVOKABLE bool connectSocket(bool isTcp, bool isServer, QString ip, quint32 destinationPort, quint32 ownPort, quint32 connectTimeout = 5000)
+    {return m_scriptInf->connectSocket(isTcp, isServer, ip, destinationPort, ownPort, connectTimeout);}
 
     ///Returns the serial port settings of the main interface.
-    Q_INVOKABLE QScriptValue getMainInterfaceSerialPortSettings(void);
+    Q_INVOKABLE QScriptValue getMainInterfaceSerialPortSettings(void){return m_scriptInf->getMainInterfaceSerialPortSettings();}
 
     ///Returns the socket (UDP, TCP client/server) settings of the main interface.
-    Q_INVOKABLE QScriptValue getMainInterfaceSocketSettings(void);
+    Q_INVOKABLE QScriptValue getMainInterfaceSocketSettings(void){return m_scriptInf->getMainInterfaceSerialPortSettings();}
+
+    ///Returns a list with the name of all available serial ports.
+    Q_INVOKABLE QStringList availableSerialPorts(void){return m_scriptInf->availableSerialPorts();}
+
+    ///Returns all IP addresses found on the host machine.
+    Q_INVOKABLE QStringList getLocalIpAdress(void){return m_scriptInf->getLocalIpAdress();}
+
+    /*************************************************************************************************************************/
+
+    ///Forces the script thread to sleep for ms milliseconds.
+    Q_INVOKABLE void sleepFromScript(quint32 timeMs);
+
+    ///Creates a timer.
+    Q_INVOKABLE QScriptValue createTimer(void);
+
+    ///Creates a plot window.
+    Q_INVOKABLE QScriptValue createPlotWindow();
+
+    ///Creates a XML reader.
+    Q_INVOKABLE QScriptValue createXmlReader();
+
+    ///Creates a XML writer.
+    Q_INVOKABLE QScriptValue createXmlWriter();
+
+    ///Loads/includes one script (QtScript has no built in include mechanism).
+    Q_INVOKABLE bool loadScript(QString scriptPath, bool isRelativePath=true);
+
+    ///Loads a dynamic link library and calls the init function (void init(QScriptEngine* engine)).
+    ///With this function a script can extend his functionality.
+    Q_INVOKABLE bool loadLibrary(QString path, bool isRelativePath=true);
 
     ///This function stops the current script thread.
     Q_INVOKABLE void stopScript(void);
@@ -391,9 +356,6 @@ public:
 
     ///Returns true if the script shall exit.
     Q_INVOKABLE bool scriptShallExit(void){return m_shallExit;}
-
-    ///Returns all IP addresses found on the host machine.
-    Q_INVOKABLE QStringList getLocalIpAdress(void);
 
     ///Wrapper for QFileDialog::getSaveFileName and QFileDialog::getOpenFileName.
     Q_INVOKABLE QString showFileDialog(bool isSaveDialog, QString caption, QString dir, QString filter, QWidget* parent=0);
@@ -543,9 +505,6 @@ public:
     ///Returns the product version of the operating system in string form.
     Q_INVOKABLE QString productVersion(void){return QSysInfo::productVersion();}
 
-    ///Returns a list with the name of all available serial ports.
-    Q_INVOKABLE QStringList availableSerialPorts(void);
-
     ///Returns the script arguments (command-line argument -A).
     Q_INVOKABLE QStringList getScriptArguments(void);
 
@@ -576,7 +535,6 @@ public:
     ///Note: Only ScriptCommunicator classes are supported. Calling this function with a QtScript built-in class (e.g. Array) will result
     ///in an empty list.
     Q_INVOKABLE QStringList getAllObjectPropertiesAndFunctions(QScriptValue object, bool printInScriptWindowConsole=false);
-
 
     ///Returns the title of the main window.
     Q_INVOKABLE QString getMainWindowTitle(void);
@@ -610,9 +568,6 @@ public:
     ///Returns the script engine
     QScriptEngine* getScriptEngine(void){return m_scriptEngine;}
 
-    ///Waits until the main interface is connected or a timeout occurs.
-    void waitForMainInterfaceToConnect(quint32 connectTimeout);
-
     ///Converts a string into a QMessageBox::Icon.
     static QMessageBox::Icon stringToMessageBoxIcon(QString icon);
 
@@ -628,13 +583,16 @@ public:
     ///Returns the path of the script which is executed by the thread.
     QString getScriptFileName(void){return m_scriptFileName;}
 
+    ///Returns m_shallPause.
+    bool getShallPause(void){return m_shallPause;}
+
+    ///Returns true if the script has connected a function to dataReceivedSignal.
+    bool dataReceivedSignalIsConnected(void){return (QObject::receivers(SIGNAL(dataReceivedSignal(QVector<unsigned char>))) > 0) ? true : false;}
+
+    ///Returns m_sendId;
+    quint32 getSendId(void){return m_sendId;}
 
 signals:
-
-    ///Is emitted if the input states (true=1. false=0) of the Ardvard I2C/SPI device (main interface) have been changed.
-    ///Elements of state:0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
-    ///Scripts can connect a function to this signal.
-    void aardvarkI2cSpiInputStatesChangedSignal(QVector<bool> states);
 
     ///Is emitted if the clear console button in the main window is pressed.
     ///Scripts can connect a function to this signal.
@@ -643,11 +601,6 @@ signals:
     ///Is emitted if the lock scrolling button in the main window is pressed.
     ///Scripts can connect a function to this signal.
     void mainWindowLockScrollingClickedSignal(bool isChecked);
-
-    ///Is emitted if the main interface shall send data.
-    ///Scripts can use this signal to send the data with an additional interface.
-    ///Scripts can connect a function to this signal.
-    void sendDataFromMainInterfaceSignal(QVector<unsigned char> data);
 
     ///Is emitted if a string in the global string map has been changed.
     ///Scripts can connect a function to this signal.
@@ -675,22 +628,9 @@ signals:
     ///Scripts can connect a function to this signal.
     void dataReceivedSignal(QVector<unsigned char> data);
 
-    ///This signal is emitted if data has been received with the main interface and the main interface is an I2C master.
-    ///Scripts can connect a function to this signal.
-    void i2cMasterDataReceivedSignal(quint8 flags, quint16 address, QVector<unsigned char> data);
-
     ///This signal is emitted in setMainWindowAndTaskBarIcon.
     ///This signal must not be used from script.
     void setMainWindowAndTaskBarIconSignal(QString iconFile);
-
-    ///This signal is emitted if a can message (or several) has been received with the main interface.
-    ///Scripts can connect a function to this signal.
-    void canMessagesReceivedSignal(QVector<quint8> types, QVector<quint32> messageIds, QVector<quint32> timestamps,
-                                   QVector<QVector<unsigned char>>  data);
-
-    ///Is connected with MainInterfaceThread::sendData (sends data with the main interface).
-    ///This signal must not be used from script.
-    void sendDataSignal(const QByteArray data, uint id);
 
     ///Is connected with ScriptWindow::appendTextToConsoleSlot (appends text to the console in the script window).
     ///This signal must not be used from script.
@@ -706,11 +646,6 @@ signals:
     ///This signal must not be used from script.
     void createGuiElementSignal(QString elementType, QObject** createdGuiElement, ScriptWindow* scriptWindow, ScriptThread* thread, QObject* additionalArgument);
 
-    ///With this signal the script thread requests the main interface thread to connect with the man interface interface.
-    ///This signal is connected to the MainInterfaceThread::connectDataConnectionSlot slot.
-    ///This signal must not be used from script.
-    void connectDataConnectionSignal(Settings settings, bool connect);
-
     ///With this signal scripts can change the current settings.
     ///This signal must not be used from script.
     void setAllSettingsSignal(Settings& settings, bool setTabIndex);
@@ -719,10 +654,6 @@ signals:
     ///This signal is connected to the MainWindow::messageEnteredSlot slot.
     ///This signal must not be used from script.
     void addMessageToLogAndConsolesSignal(QString text, bool forceTimeStamp);
-
-    ///This event is emitted in setSerialPortPins.
-    ///This signal must not be used from script.
-    void setSerialPortPinsSignal(bool setRTS, bool setDTR);
 
     ///This event is emitted in setScriptState.
     ///This signal must not be used from script.
@@ -756,40 +687,15 @@ signals:
     ///This signal must not be used from script.
     void enableAllTabsForOneScriptThreadSignal(QObject *scriptThread, bool enable);
 
-    ///Adds data to the main window send history.
-    ///This signal must not be used from script.
-    void addDataToMainWindowSendHistorySignal(QByteArray data);
-
     ///Is connected with MainWindow::setWindowTitle.
     ///This signal must not be used from script.
     void setMainWindowTitleSignal(QString newTitle);
-
-    ///Returns the state of the serial port signals (pins).
-    ///This signal must not be used from script.
-    void getSerialPortSignalsSignal(uint32_t* bits);
-
-    ///Is emitted in setAardvarkI2cSpiOutput.
-    ///This signal must not be used from script.
-    void setAardvarkI2cSpiOutputSignal(AardvarkI2cSpiSettings settings);
-
-    ///Is emitted in changeAardvarkI2cSpiPinConfiguration.
-    ///This signal must not be used from script.
-    void changeAardvarkI2cSpiPinConfigurationSignal(AardvarkI2cSpiSettings settings);
-
-    ///Is emitted in i2cMasterFreeBus.
-    ///This signal must not be used from script.
-    void i2cMasterFreeBusSignal(void);
 
 protected:
     ///The thread main function.
     void run();
 
-
-private slots:
-
-    ///Is called if the input states of the Ardvard I2C/SPI device (main interface) have been changed.
-    ///Elements of state:0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
-    void aardvarkI2cSpiInputStatesChangedSlot(QVector<bool> states){emit aardvarkI2cSpiInputStatesChangedSignal(states);}
+public slots:
 
     ///The script is suspended by the debugger.
     void suspendedByDebuggerSlot();
@@ -815,28 +721,9 @@ private slots:
     ///This slot function is called if a script function connected to a signal causes an exception.
     void scriptSignalHandlerSlot(const QScriptValue & exception);
 
-    ///Is called, if data from the main interface (MainInterfaceThread) has been received.
-    ///It converts the received QByteArray into a QVector and emits the dataReceivedSignal.
-    void dataReceivedSlot(QByteArray data);
-
-    ///The slot is called if the main interface thread has received data.
-    ///This slot is connected to the MainInterfaceThread::dataReceivedSignal signal.
-    void canMessagesReceivedSlot(QVector<QByteArray> messages);
-
-    ///This slot is connected with MainInterfaceThread::dataConnectionStatusSignal.
-    ///The connected status (main interface) is reported with this signal.
-    void dataConnectionStatusSlot(bool isConnected, QString message, bool isWaiting);
-
-    ///This slot is connected with the MainInterfaceThread::sendingFinishedSignal signal.
-    ///The main interface thread emits this signal if the sending of data has been finished.
-    void sendingFinishedSlot(bool success, uint id);
-
     ///This slot is called periodically by the timer m_pauseTimer.
     ///This function checks if the thread has to be paused and do the necessary actions.
     void pauseTimerSlot();
-
-    ///Sends the send data from the main interface.
-    void sendDataFromMainInterfaceSlot(const QByteArray data);
 
     ///Is called if the clear console button in the main window is pressed.
     void mainWindowClearConsoleSlot(void){emit mainWindowClearConsoleClickedSignal();}
@@ -844,13 +731,11 @@ private slots:
     ///Is called if the lock scrolling button in the main window is pressed.
     void mainWindowLockScrollingSlot(bool isChecked){emit mainWindowLockScrollingClickedSignal(isChecked);}
 
+
 #ifdef Q_OS_MAC
     ///Debug timer slot (checks if the script is suspended by the debugger or is running).
     void debugTimerSlot(void);
 #endif
-
-    ///Emits the dataReceivedSignal with the saved received data (if the script is running in the script debugger).
-    void debugReceiveTimerSlot(void);
 
 private:
 
@@ -860,29 +745,11 @@ private:
     ///Sets the current thread state.
     void setThreadState(ThreadSate state);
 
-    ///Sends a byte array (QByteArray) with the main interface (in MainInterfaceThread).
-    bool sendByteArray(QByteArray byteArray, int repetitionCount, int pause, bool addToMainWindowSendHistory);
-
     ///Pointer to the script window.
     ScriptWindow* m_scriptWindow;
 
-    ///True, if the main interface is connected.
-    bool m_isConnected;
-
-    ///True, if the main interface is a CAN interface (and is connected).
-    bool m_isConnectedWithCan;
-
-    ///True, if the main interface is a I2C interface (and is connected).
-    bool m_isConnectedWithI2c;
-
-    ///True, if the main interface is a I2C master interface (and is connected).
-    bool m_isConnectedWithI2cMaster;
-
     ///The send id, which is send to the send data during sending data.
     quint32 m_sendId;
-
-    ///True, if the last sending of data has successfully finished.
-    bool m_sendingSucceeded;
 
     ///True, if the thread (the script) shall exit.
     bool m_shallExit;
@@ -904,7 +771,6 @@ private:
 
     ///The script user interface (loaded from an ui file).
     QList<ScriptWidget*> m_userInterface;
-
 
     ///The script interpreter/engine
     QScriptEngine* m_scriptEngine;
@@ -941,9 +807,6 @@ private:
     ///True if the script has GUI elements in the main window.
     bool m_hasMainWindowGuiElements;
 
-    ///The script sendDataFromMainInterface function.
-    QScriptValue sendDataFromMainInterfaceFunction;
-
 #ifdef Q_OS_MAC
     ///The debug timer (checks if the script is suspended by the debugger or is running).
     QTimer m_debugTimer;
@@ -960,6 +823,9 @@ private:
 
     ///The script converter object.
     ScriptConverter m_converterObject;
+
+    ///The ScriptInf object.
+    ScriptInf* m_scriptInf;
 
 };
 

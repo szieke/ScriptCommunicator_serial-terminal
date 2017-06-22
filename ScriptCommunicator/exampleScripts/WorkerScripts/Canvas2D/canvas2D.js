@@ -1,4 +1,4 @@
-/***************************************************************************************
+﻿/***************************************************************************************
 This worker script (worker scripts can be added in the script window) demonstrates the
 usage of the ScriptCanvas2D class.
 ****************************************************************************************/
@@ -41,3 +41,4 @@ UI_SavePushButton.clickedSignal.connect(saveToFile);
 UI_PrintPushButton.clickedSignal.connect(print);
 
 
+ctxClock.save();

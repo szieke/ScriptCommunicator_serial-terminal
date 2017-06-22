@@ -2,7 +2,7 @@
 This script send all data which shall be sent with the main interface to an additional serial port.
 All data which has been received with the additional serial port will be sent to the main interface
 (this data will be added to the standard consoles, the logs and worker scripts can received this data 
-via scriptThread.dataReceivedSignal) .
+via scriptInf.dataReceivedSignal) .
 ****************************************************************************************/
 
 //Is called if the user has pressed the connect button.
@@ -174,7 +174,7 @@ g_settingsFileName = g_settingsFileName.replace(/ /g, '_');
 scriptThread.loadScript("../Common/helper.js");
 
 //Add the available serial ports.
-var availablePorts = scriptThread.availableSerialPorts();
+var availablePorts = scriptInf.availableSerialPorts();
 for(var i = 0; i < availablePorts.length; i++)
 {
 	UI_SerialPortInfoListBox.addItem(availablePorts[i]);
@@ -194,9 +194,9 @@ scriptThread.addToolBoxPagesToMainWindow(UI_ToolBox);
 
 UI_TabWidget.setTabText(0, g_instanceName);
 scriptThread.addTabsToMainWindow(UI_TabWidget)
-scriptThread.sendDataFromMainInterfaceSignal.connect(sendDataFromMainInterface)
+scriptInf.sendDataFromMainInterfaceSignal.connect(sendDataFromMainInterface)
 
-var serialPort = scriptThread.createSerialPort();
+var serialPort = scriptInf.createSerialPort();
 serialPort.readyReadSignal.connect(dataReceivedAdditionalInterface);
 
 var isConnected = false;

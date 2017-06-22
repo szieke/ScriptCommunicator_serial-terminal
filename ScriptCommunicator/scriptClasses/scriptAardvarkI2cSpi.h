@@ -27,7 +27,7 @@
 
 #include "scriptObject.h"
 #include "scriptThread.h"
-//#include "aardvarkI2cSpi.h"
+
 
 ///This wrapper class is used to access a AardvarkI2cSpi object from a script.
 class ScriptAardvarkI2cSpi : public QObject, public ScriptObject

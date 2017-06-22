@@ -211,7 +211,7 @@ UI_Dialog.finishedSignal.connect(dialogFinishedSlot);
 UI_AardvarkI2cConnect.clickedSignal.connect(connectSlot);
 
 
-var g_interface = scriptThread.aardvarkI2cSpiCreateInterface();
+var g_interface = scriptInf.aardvarkI2cSpiCreateInterface();
 g_interface.disconnect();
 g_interface.inputStatesChangedSignal.connect(inputStatesChangedSlot);
 

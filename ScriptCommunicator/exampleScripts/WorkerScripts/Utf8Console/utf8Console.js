@@ -104,10 +104,10 @@ UI_Dialog.hide();
 //Remove the tab from the dialog and add it to the main window.
 scriptThread.addTabsToMainWindow(UI_TabWidget)
 
-scriptThread.dataReceivedSignal.connect(dataReceivedSlot);
+scriptInf.dataReceivedSignal.connect(dataReceivedSlot);
 scriptThread.mainWindowLockScrollingClickedSignal.connect(mainWindowLockScrollingClicked);
 scriptThread.mainWindowClearConsoleClickedSignal.connect(mainWindowClearConsoleClicked);
-scriptThread.sendDataFromMainInterfaceSignal.connect(dataSendSlot);
+scriptInf.sendDataFromMainInterfaceSignal.connect(dataSendSlot);
 readConsoleSetting(true);
 
 var settingsTimer = scriptThread.createTimer();
