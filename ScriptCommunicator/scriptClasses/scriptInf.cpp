@@ -92,6 +92,9 @@ void ScriptInf::intSignals(bool runsInDebugger)
     connect(this, SIGNAL(changeAardvarkI2cSpiPinConfigurationSignal(AardvarkI2cSpiSettings)),
             m_scriptThread->getScriptWindow()->getMainInterfaceThread()->m_aardvarkI2cSpi, SLOT(pinConfigChangedSlot(AardvarkI2cSpiSettings)), Qt::QueuedConnection);
 
+    connect(m_scriptThread->getScriptWindow()->getMainInterfaceThread(), SIGNAL(slaveDataSentSignal(QByteArray)),
+            this, SLOT(slaveDataSentSlot(QByteArray)), Qt::QueuedConnection);
+
     if(m_scriptThread->runsInDebugger())
     {
         connect(&m_debugReceiveTimer, SIGNAL(timeout()),this, SLOT(debugReceiveTimerSlot()));
@@ -975,5 +978,25 @@ QStringList ScriptInf::availableSerialPorts(void)
         result << info.portName();
     }
     return result;
+}
+
+/**
+ * Is called if the main interface is a I2C or SPI slave and has sent data.
+ *
+ * @param data
+ *      The sent data.
+ */
+void ScriptInf::slaveDataSentSlot(QByteArray data)
+{
+    if(QObject::receivers(SIGNAL(slaveDataSentSignal(QVector<unsigned char>))) > 0)
+    {
+        QVector<unsigned char> dataVector;
+        for(auto val : data)
+        {
+            dataVector.push_back((unsigned char) val);
+        }
+
+        emit slaveDataSentSignal(dataVector);
+    }
 }
 

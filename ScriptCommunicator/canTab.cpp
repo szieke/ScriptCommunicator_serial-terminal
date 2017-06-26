@@ -42,6 +42,9 @@ CanTab::CanTab(MainWindow *mainWindow) : QObject(mainWindow), m_mainWindow(mainW
 
 
     m_updateTimer.start(200);
+
+    m_mainWindow->m_userInterface->canReceiveTableWidget->resizeColumnsToContents();
+    m_mainWindow->m_userInterface->canTransmitTableWidget->resizeColumnsToContents();
 }
 
 /**
@@ -259,6 +262,7 @@ void CanTab::sortReceiveTable(QTableWidget* table)
 void CanTab::updateTableEntry(QTableWidget* table, const QByteArray &data, bool isReceived)
 {
     bool newItemInserted = false;
+    bool firstItemAdded = (table->rowCount() == 0) ? true : false;
 
     quint8 type = data[0];
     quint32 canId = ((quint8)data[1] << 24) + ((quint8)data[2] << 16) + ((quint8)data[3] << 8) + ((quint8)data[4] & 0xff);
@@ -279,7 +283,8 @@ void CanTab::updateTableEntry(QTableWidget* table, const QByteArray &data, bool 
     int row = findEntry(canId, table, type);
 
     if(row == -1)
-    {
+    {//New item
+
         newItemInserted= true;
         createNewReceiveEntry(table);
         row = table->rowCount()- 1;
@@ -362,6 +367,11 @@ void CanTab::updateTableEntry(QTableWidget* table, const QByteArray &data, bool 
     if(newItemInserted)
     {
         sortReceiveTable(table);
+
+        if(firstItemAdded)
+        {
+            table->resizeColumnsToContents();
+        }
     }
 
     table->blockSignals(false);

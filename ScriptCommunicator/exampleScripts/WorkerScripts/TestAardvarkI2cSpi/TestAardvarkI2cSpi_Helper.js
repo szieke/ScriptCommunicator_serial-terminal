@@ -3,6 +3,7 @@
 function initializeGUI(isConnected)
 {
 	UI_AardvarkI2cBaudrate.setEnabled(false);
+	UI_AardvarkI2cSlaveAddress.setEnabled(false);
     UI_AardvarkI2cPullUp.setEnabled(false);
     UI_AardvarkI2cFreeBus.setEnabled(false);
 
@@ -44,12 +45,19 @@ function initializeGUI(isConnected)
          UI_AardvarkI2cSpiScan.setEnabled(true);
          UI_AardvarkI2cSpi5V.setEnabled(true);
 
-         if(UI_AardvarkI2cSpiMode.currentText() == "I2C Master")
+         if((UI_AardvarkI2cSpiMode.currentText() == "I2C Master") ||
+			 (UI_AardvarkI2cSpiMode.currentText() == "I2C Slave"))
          {
              UI_AardvarkI2cBaudrate.setEnabled(true);
              UI_AardvarkI2cPullUp.setEnabled(true);
+			 
+			 if(UI_AardvarkI2cSpiMode.currentText() == "I2C Slave")
+			 {
+				 UI_AardvarkI2cSlaveAddress.setEnabled(true);
+			 }
          }
-         else if(UI_AardvarkI2cSpiMode.currentText() == "SPI Master")
+         else if((UI_AardvarkI2cSpiMode.currentText() == "SPI Master") ||
+			 (UI_AardvarkI2cSpiMode.currentText() == "SPI Slave"))
          {
              UI_AardvarkSpiPolarity.setEnabled(true);
              UI_AardvarkSpiSSPolarity.setEnabled(true);
@@ -66,12 +74,18 @@ function initializeGUI(isConnected)
          UI_AardvarkI2cSpiScan.setEnabled(false);
          UI_AardvarkI2cSpi5V.setEnabled(false);
 		 
-		 if(UI_AardvarkI2cSpiMode.currentText() == "I2C Master")
+		 if((UI_AardvarkI2cSpiMode.currentText() == "I2C Master") ||
+			 (UI_AardvarkI2cSpiMode.currentText() == "I2C Slave"))
          {			 
 			 UI_I2cExecute.setEnabled(true);
-			 UI_AardvarkI2cFreeBus.setEnabled(true);
+			 
+			 if(UI_AardvarkI2cSpiMode.currentText() == "I2C Master")
+			 {
+				  UI_AardvarkI2cFreeBus.setEnabled(true);
+			 }
          }
-         else if(UI_AardvarkI2cSpiMode.currentText() == "SPI Master")
+         else if((UI_AardvarkI2cSpiMode.currentText() == "SPI Master") ||
+			 (UI_AardvarkI2cSpiMode.currentText() == "SPI Slave"))
          {
 			 UI_SpiExecute.setEnabled(true);
          }
@@ -79,7 +93,8 @@ function initializeGUI(isConnected)
 
      var startIndex = 0;
      var endIndex = 0;
-     if(UI_AardvarkI2cSpiMode.currentText() == "I2C Master")
+      if((UI_AardvarkI2cSpiMode.currentText() == "I2C Master") ||
+			 (UI_AardvarkI2cSpiMode.currentText() == "I2C Slave"))
      {
          startIndex = 2;
          endIndex = AARDVARD_I2C_SPI_GPIO_COUNT - 1;
@@ -89,7 +104,8 @@ function initializeGUI(isConnected)
 		 UI_I2cBytesToSend.setEnabled(true);
 		 UI_I2cNumberOfBytesToRead.setEnabled(true);
      }
-     else if(UI_AardvarkI2cSpiMode.currentText() == "SPI Master")
+     else if((UI_AardvarkI2cSpiMode.currentText() == "SPI Master") ||
+			 (UI_AardvarkI2cSpiMode.currentText() == "SPI Slave"))
      {
          startIndex = 0;
          endIndex = 1;
@@ -270,7 +286,7 @@ function initializeGuiElements()
 function settingsStructToString(readSettings)
 {
 	var result = "devicePort=" + readSettings.devicePort + " deviceMode=" + readSettings.deviceMode + " device5VIsOn=" + readSettings.device5VIsOn;
-	result += " i2cBaudrate=" + readSettings.i2cBaudrate + " i2cPullupsOn=" + readSettings.i2cPullupsOn + " spiSSPolarity=" + readSettings.spiSSPolarity;
+	result += " i2cBaudrate=" + readSettings.i2cBaudrate + " i2cSlaveAddress=" + readSettings.i2cSlaveAddress + " i2cPullupsOn=" + readSettings.i2cPullupsOn + " spiSSPolarity=" + readSettings.spiSSPolarity;
 	result += " spiBitorder=" + readSettings.spiBitorder + " spiPhase=" + readSettings.spiPhase + " spiBaudrate=" + readSettings.spiBaudrate;
 	for(var i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
 	{
@@ -318,6 +334,7 @@ function loadUiSettings(fileName)
 		UI_AardvarkI2cSpi5V.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvarkI2cSpi5V"));
 		
 		UI_AardvarkI2cBaudrate.setText(getValueOfStringArray(stringArray, "UI_AardvarkI2cBaudrate"));
+		UI_AardvarkI2cSlaveAddress.setText(getValueOfStringArray(stringArray, "UI_AardvarkI2cSlaveAddress"));
 		UI_AardvarkI2cPullUp.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvarkI2cPullUp"));
 		
 		UI_AardvarkSpiPolarity.setCurrentText(getValueOfStringArray(stringArray, "UI_AardvarkSpiPolarity"));
@@ -351,6 +368,7 @@ function saveUiSettings(fileName)
 	settings += "UI_AardvarkI2cSpi5V=" + UI_AardvarkI2cSpi5V.currentText() + "\r\n";
 	
 	settings += "UI_AardvarkI2cBaudrate=" + UI_AardvarkI2cBaudrate.text() + "\r\n";
+	settings += "UI_AardvarkI2cSlaveAddress=" + UI_AardvarkI2cSlaveAddress.text() + "\r\n";
 	settings += "UI_AardvarkI2cPullUp=" + UI_AardvarkI2cPullUp.currentText() + "\r\n";
 	
 	settings += "UI_AardvarkSpiPolarity=" + UI_AardvarkSpiPolarity.currentText() + "\r\n";

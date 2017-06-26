@@ -58,22 +58,60 @@ function executeI2cSlot()
 	{
 		dataToSend = convertHexStringToByteArray(UI_I2cBytesToSend.toPlainText());
 	}
-	
-	if(g_interface.i2cMasterReadWrite(flags, slaveAddress, numberOfBytesToRead,  dataToSend))
+	if(UI_AardvarkI2cSpiMode.currentText() == "I2C Master")
 	{
-		UI_Console.append("execute I2C: flags=0x" + flags.toString(16) + " address=0x" + slaveAddress.toString(16) + " data= " + conv.byteArrayToHexString(dataToSend));
-		
-		var receivedData = g_interface.i2cMasterReadLastReceivedData();
-		if(receivedData.length != 0)
+		if(g_interface.i2cMasterReadWrite(flags, slaveAddress, numberOfBytesToRead,  dataToSend))
 		{
-			UI_Console.append("I2C data received: flags=0x" + flags.toString(16) + " address=0x" + slaveAddress.toString(16) + " data=" + conv.byteArrayToHexString(receivedData));
+			UI_Console.append("execute I2C: flags=0x" + flags.toString(16) + " address=0x" + slaveAddress.toString(16) + " data= " + conv.byteArrayToHexString(dataToSend));
+			
+			var receivedData = g_interface.i2cMasterReadLastReceivedData();
+			if(receivedData.length != 0)
+			{
+				UI_Console.append("I2C data received: flags=0x" + flags.toString(16) + " address=0x" + slaveAddress.toString(16) + " data=" + conv.byteArrayToHexString(receivedData));
+			}
+		}
+		else
+		{
+			UI_Console.append("execute I2C failed");
 		}
 	}
 	else
-	{
-		UI_Console.append("execute I2C failed");
+	{//I2C Slave.
+		
+		if(g_interface.slaveSetResponse(dataToSend))
+		{
+			UI_Console.append("execute I2C (set slave response): data= " + conv.byteArrayToHexString(dataToSend));
+		}
+		else
+		{
+			UI_Console.append("execute I2C failed (set slave response)");
+		}
 	}
 	
+}
+
+function slaveDataSentSlot(data)
+{
+	if(UI_AardvarkI2cSpiMode.currentText().indexOf("I2C") != -1)
+	{
+		UI_Console.append("I2C data sent: data=" + conv.byteArrayToHexString(data));
+	}
+	else
+	{
+		UI_Console.append("SPI data sent: data=" + conv.byteArrayToHexString(data));
+	}
+}
+
+function slaveDataReceivedSlot(data)
+{
+	if(UI_AardvarkI2cSpiMode.currentText().indexOf("I2C") != -1)
+	{
+		UI_Console.append("I2C data received: data=" + conv.byteArrayToHexString(data));
+	}
+	else
+	{
+		UI_Console.append("SPI data received: data=" + conv.byteArrayToHexString(data));
+	}
 }
 
 function executeSpiSlot()
@@ -84,20 +122,35 @@ function executeSpiSlot()
 	{
 		var dataToSend = convertHexStringToByteArray(UI_SpiBytesToSend.toPlainText());
 		
-		if(g_interface.spiMasterSendReceiveData(dataToSend))
+		if(UI_AardvarkI2cSpiMode.currentText() == "SPI Master")
 		{
-			UI_Console.append("send SPI data: " + conv.byteArrayToHexString(dataToSend));
-			
-			var receivedData = g_interface.spiMasterReadLastReceivedData();
-			if(receivedData.length != 0)
+			if(g_interface.spiMasterSendReceiveData(dataToSend))
 			{
-				UI_Console.append("SPI data received: data=" + conv.byteArrayToHexString(receivedData));
+				UI_Console.append("execute SPI data=" + conv.byteArrayToHexString(dataToSend));
+				
+				var receivedData = g_interface.spiMasterReadLastReceivedData();
+				if(receivedData.length != 0)
+				{
+					UI_Console.append("SPI data received: data=" + conv.byteArrayToHexString(receivedData));
+				}
+				
 			}
-			
+			else
+			{
+				UI_Console.append("execute SPI failed");
+			}
 		}
 		else
-		{
-			UI_Console.append("execute SPI failed");
+		{//SPI Slave.
+			
+			if(g_interface.slaveSetResponse(dataToSend))
+			{
+				UI_Console.append("execute SPI (set slave response): data= " + conv.byteArrayToHexString(dataToSend));
+			}
+			else
+			{
+				UI_Console.append("execute SPI failed (set slave response)");
+			}
 		}
 		
 	}
@@ -119,6 +172,7 @@ function connectSlot()
 		settings.device5VIsOn =  (UI_AardvarkI2cSpi5V.currentText() == "On") ? true : false
 		
 		settings.i2cBaudrate =  parseInt(UI_AardvarkI2cBaudrate.text());
+		settings.i2cSlaveAddress =  parseInt(UI_AardvarkI2cSlaveAddress.text());
 		settings.i2cPullupsOn = (UI_AardvarkI2cPullUp.currentText() == "On") ? true : false
 		
 		settings.spiPolarity =  UI_AardvarkSpiPolarity.currentIndex();
@@ -214,6 +268,8 @@ UI_AardvarkI2cConnect.clickedSignal.connect(connectSlot);
 var g_interface = scriptInf.aardvarkI2cSpiCreateInterface();
 g_interface.disconnect();
 g_interface.inputStatesChangedSignal.connect(inputStatesChangedSlot);
+g_interface.slaveDataSentSignal.connect(slaveDataSentSlot);
+g_interface.slaveDataReceivedSignal.connect(slaveDataReceivedSlot);
 
 
 initializeGuiElements();

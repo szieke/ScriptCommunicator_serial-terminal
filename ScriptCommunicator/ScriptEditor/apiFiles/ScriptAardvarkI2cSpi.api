@@ -10,4 +10,9 @@ ScriptAardvarkI2cSpi::spiMasterReadLastReceivedData(void):Array<Number> \nReturn
 ScriptAardvarkI2cSpi::setOutput(quint8 pinIndex, bool high):bool \nSets the value of an output pin.\nPossible pin indexes:0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
 ScriptAardvarkI2cSpi::changePinConfiguration(quint8 pinIndex, bool isInput, bool withPullups):bool \nChanges the configuration of a pin.\nPossible pin indexes:0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
 ScriptAardvarkI2cSpi::isConnected(void):bool \nReturns true if the interface is connected.
-inputStatesChangedSignal(Array<bool> states):void \nIs emitted if the input states of the Ardvard I2C/SPI device have been changed.\nElements of state::0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
+ScriptAardvarkI2cSpi::slaveSetResponse(Array<Number> response):bool \nSets the slave (I2C/SPI) response.\nslaveDataSentSignal can be used to receive the sent data and slaveDataReceivedSignal can be uses to read the received data.\nIf more bytes are requested in a transaction (from the master), the response will be wrapped as many times as necessary to complete the transaction.\nThe device buffer space is 64 bytes.
+ScriptAardvarkI2cSpi::inputStatesChangedSignal(Array<bool> states):void \nIs emitted if the input states of the Ardvard I2C/SPI device have been changed.\nElements of state::0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
+ScriptAardvarkI2cSpi::slaveDataSentSignal(Array<Number> data):void \nIs called if the interface is a I2C or SPI slave and has sent data.
+ScriptAardvarkI2cSpi::slaveDataReceivedSignal(Array<Number> data):void \nIs called if the interface is a I2C or SPI slave and has received data.
+
+

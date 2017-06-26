@@ -162,6 +162,9 @@ signals:
     ///Scripts can connect a function to this signal.
     void aardvarkI2cSpiInputStatesChangedSignal(QVector<bool> states);
 
+    ///Is emitted if the main interface is a I2C or SPI slave and has sent data.
+    void slaveDataSentSignal(QVector<unsigned char> data);
+
     /**********************private Signals*********************************************/
 
     ///Is connected with MainInterfaceThread::sendData (sends data with the main interface).
@@ -229,6 +232,9 @@ public slots:
 
     ///Emits the dataReceivedSignal with the saved received data (if the script is running in the script debugger).
     void debugReceiveTimerSlot(void);
+
+    ///Is called if the main interface is a I2C or SPI slave and has sent data.
+    void slaveDataSentSlot(QByteArray data);
 
 private:
 

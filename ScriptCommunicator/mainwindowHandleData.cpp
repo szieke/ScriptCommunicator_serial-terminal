@@ -1217,7 +1217,7 @@ void MainWindowHandleData::dataHasBeenSendSlot(QByteArray data, bool success, ui
             {
                 QByteArray tmpArray = tmpIdAndType + data.mid(i, PCANBasicClass::MAX_BYTES_PER_MESSAGE);
 
-                appendDataToStoredData(tmpArray, true, false, m_mainWindow->m_isConnectedWithCan, false, m_mainWindow->m_isConnectedWithCan);
+                appendDataToStoredData(tmpArray, true, false, m_mainWindow->m_isConnectedWithCan, false, m_mainWindow->m_isConnectedWithI2cMaster);
                 m_mainWindow->m_canTab->canMessageTransmitted(tmpArray);
             }
         }

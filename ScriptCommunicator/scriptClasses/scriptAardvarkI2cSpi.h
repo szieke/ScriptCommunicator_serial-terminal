@@ -46,6 +46,8 @@ public:
 
         connect(m_interface, SIGNAL(inputStatesChangedSignal(QVector<bool>)),
                 this, SLOT(inputStatesChangedSlot(QVector<bool>)), Qt::QueuedConnection);
+
+        connect(m_interface, SIGNAL(readyRead()),this, SLOT(slaveDataReceivedSlot()));
     }
 
     ~ScriptAardvarkI2cSpi()
@@ -69,6 +71,7 @@ public:
            aardvarkI2cSpiSettings.property("deviceMode").isValid() &&
            aardvarkI2cSpiSettings.property("device5VIsOn").isValid() &&
            aardvarkI2cSpiSettings.property("i2cBaudrate").isValid() &&
+           aardvarkI2cSpiSettings.property("i2cSlaveAddress").isValid() &&
            aardvarkI2cSpiSettings.property("i2cPullupsOn").isValid() &&
            aardvarkI2cSpiSettings.property("spiPolarity").isValid() &&
            aardvarkI2cSpiSettings.property("spiSSPolarity").isValid() &&
@@ -82,6 +85,7 @@ public:
             convertedSettings.deviceMode = (AardvarkI2cSpiDeviceMode)aardvarkI2cSpiSettings.property("deviceMode").toUInt16();
             convertedSettings.device5VIsOn = aardvarkI2cSpiSettings.property("device5VIsOn").toBool();
             convertedSettings.i2cBaudrate = aardvarkI2cSpiSettings.property("i2cBaudrate").toUInt16();
+            convertedSettings.i2cSlaveAddress = aardvarkI2cSpiSettings.property("i2cSlaveAddress").toUInt16();
             convertedSettings.i2cPullupsOn = aardvarkI2cSpiSettings.property("i2cPullupsOn").toBool();
             convertedSettings.spiSSPolarity = (AardvarkSpiSSPolarity)aardvarkI2cSpiSettings.property("spiSSPolarity").toUInt16();
             convertedSettings.spiBitorder = (AardvarkSpiBitorder)aardvarkI2cSpiSettings.property("spiBitorder").toUInt16();
@@ -127,7 +131,9 @@ public:
         ret.setProperty("deviceMode", config->deviceMode);
         ret.setProperty("device5VIsOn", config->device5VIsOn);
         ret.setProperty("i2cBaudrate", config->i2cBaudrate);
+        ret.setProperty("i2cSlaveAddress", config->i2cSlaveAddress);
         ret.setProperty("i2cPullupsOn", config->i2cPullupsOn);
+        ret.setProperty("spiPolarity", config->spiPolarity);
         ret.setProperty("spiSSPolarity", config->spiSSPolarity);
         ret.setProperty("spiBitorder", config->spiBitorder);
         ret.setProperty("spiPhase", config->spiPhase);
@@ -245,6 +251,26 @@ public:
 
     }
 
+    ///Sets the slave (I2C/SPI) response.
+    ///slaveDataSentSignal can be used to receive the sent data and slaveDataReceivedSignal
+    ///can be uses to read the received data.
+    Q_INVOKABLE bool slaveSetResponse(QVector<unsigned char> response)
+    {
+        bool succeeded = false;
+
+        if((m_currentSettings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_SPI_SLAVE) ||
+           (m_currentSettings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_SLAVE))
+        {
+            QByteArray dummyArray;
+            QByteArray byteArray;
+            byteArray.append(QByteArray(reinterpret_cast<const char*>(response.constData()), response.size()));
+            succeeded = m_interface->sendReceiveData(byteArray, &dummyArray);
+        }
+
+        return succeeded;
+
+    }
+
     ///Returns last received data from the SPI interface (master mode).
     Q_INVOKABLE QVector<unsigned char> spiMasterReadLastReceivedData(void)
     {
@@ -301,11 +327,42 @@ signals:
     ///Scripts can connect a function to this signal.
     void inputStatesChangedSignal(QVector<bool> states);
 
+     ///Is called if the interface is a I2C or SPI slave and has sent data.
+     slaveDataSentSignal(QVector<unsigned char> data);
+
+     ///Is called if the interface is a I2C or SPI slave and has received data.
+     slaveDataReceivedSignal(QVector<unsigned char> data);
+
 public slots:
 
     ///Is called if the input states of the Ardvard I2c/Spi device have been changed.
     ///Note: states contains AARDVARK_I2C_SPI_GPIO_COUNT elements.
     void inputStatesChangedSlot(QVector<bool> states){emit inputStatesChangedSignal(states);}
+
+    ///This slot function is called if data has been received from the aardvard interface (I2C/SPI slave mode).
+    void slaveDataReceivedSlot(void)
+    {
+        QVector<AardvardkI2cSpiSlaveData> transActions = m_interface->readLastSlaveData();
+
+        for(auto el : transActions)
+        {
+            QVector<unsigned char> dataVector;
+            for(auto val : el.data)
+            {
+                dataVector.push_back((unsigned char) val);
+            }
+
+            if(el.isReceiveData)
+            {
+                emit slaveDataReceivedSignal(dataVector);
+            }
+            else
+            {
+                emit slaveDataSentSignal(dataVector);
+            }
+        }
+    }
+
 
 private:
 

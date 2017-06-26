@@ -386,8 +386,17 @@ bool PCANBasicClass::sendData(const QByteArray &data)
          }
          else
          {
-             messageBuffer.LEN = 0;
-             status = write(m_currentHandle, &messageBuffer);
+             if(data.length() == (BYTES_FOR_CAN_TYPE + BYTES_FOR_CAN_ID))
+             {//Empty message.
+
+                messageBuffer.LEN = 0;
+                status = write(m_currentHandle, &messageBuffer);
+             }
+             else
+             {//Insufficient number of bytes.
+
+                status = PCAN_ERROR_ILLDATA;
+             }
          }
 
          if(status == PCAN_ERROR_OK)

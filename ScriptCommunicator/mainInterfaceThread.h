@@ -141,6 +141,9 @@ signals:
     ///Send the send data to all worker scripts which must send the data too.
     void sendDataWithWorkerScriptsSignal(const QByteArray data);
 
+    ///Is called if the main interface is a I2C or SPI slave and has sent data.
+    void slaveDataSentSignal(QByteArray data);
+
 
 protected:
     ///The main interface thread main function.

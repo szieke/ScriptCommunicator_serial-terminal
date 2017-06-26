@@ -79,7 +79,8 @@ void MainInterfaceThread::aardvardSlaveDataReceivedSlot(void)
         }
         else
         {
-            sendingFinishedSignal(el.data, true, SEND_ID_I2C_SPI_SLAVE);
+            emit sendingFinishedSignal(el.data, true, SEND_ID_I2C_SPI_SLAVE);
+            emit slaveDataSentSignal(el.data);
         }
     }
 }

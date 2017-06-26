@@ -620,172 +620,191 @@ p, li { white-space: pre-wrap; }
              <string>Can</string>
             </attribute>
             <layout class="QGridLayout" name="gridLayout">
-             <item row="0" column="0">
-              <widget class="QLabel" name="label">
-               <property name="text">
-                <string>Receive</string>
+             <item row="0" column="0" colspan="3">
+              <widget class="QScrollArea" name="scrollArea">
+               <property name="widgetResizable">
+                <bool>true</bool>
                </property>
-              </widget>
-             </item>
-             <item row="1" column="0">
-              <widget class="QTableWidget" name="canReceiveTableWidget">
-               <property name="selectionMode">
-                <enum>QAbstractItemView::ExtendedSelection</enum>
-               </property>
-               <property name="selectionBehavior">
-                <enum>QAbstractItemView::SelectRows</enum>
-               </property>
-               <attribute name="verticalHeaderVisible">
-                <bool>false</bool>
-               </attribute>
-               <column>
-                <property name="text">
-                 <string>id</string>
+               <widget class="QWidget" name="scrollAreaWidgetContents">
+                <property name="geometry">
+                 <rect>
+                  <x>0</x>
+                  <y>0</y>
+                  <width>809</width>
+                  <height>189</height>
+                 </rect>
                 </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>type</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>dlc</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>data</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>cycle</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>count</string>
-                </property>
-               </column>
-              </widget>
-             </item>
-             <item row="1" column="1">
-              <layout class="QVBoxLayout" name="verticalLayout_7">
-               <item>
-                <widget class="QCheckBox" name="pcanUpdateReceiveTableCheckBox">
-                 <property name="text">
-                  <string>update</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pcanDeleteReceiveEntryButton">
-                 <property name="text">
-                  <string>delete</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="verticalSpacer">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
-             </item>
-             <item row="1" column="2">
-              <widget class="QTableWidget" name="canTransmitTableWidget">
-               <property name="selectionMode">
-                <enum>QAbstractItemView::ExtendedSelection</enum>
-               </property>
-               <property name="selectionBehavior">
-                <enum>QAbstractItemView::SelectRows</enum>
-               </property>
-               <attribute name="verticalHeaderVisible">
-                <bool>false</bool>
-               </attribute>
-               <column>
-                <property name="text">
-                 <string>id</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>type</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>dlc</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>data</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>cycle</string>
-                </property>
-               </column>
-               <column>
-                <property name="text">
-                 <string>count</string>
-                </property>
-               </column>
-              </widget>
-             </item>
-             <item row="1" column="3">
-              <layout class="QVBoxLayout" name="verticalLayout_8">
-               <item>
-                <widget class="QCheckBox" name="pcanUpdateTransmitTableCheckBox">
-                 <property name="text">
-                  <string>update</string>
-                 </property>
-                 <property name="checked">
-                  <bool>true</bool>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <widget class="QPushButton" name="pcanDeleteTransmitEntryButton">
-                 <property name="text">
-                  <string>delete</string>
-                 </property>
-                </widget>
-               </item>
-               <item>
-                <spacer name="verticalSpacer_2">
-                 <property name="orientation">
-                  <enum>Qt::Vertical</enum>
-                 </property>
-                 <property name="sizeHint" stdset="0">
-                  <size>
-                   <width>20</width>
-                   <height>40</height>
-                  </size>
-                 </property>
-                </spacer>
-               </item>
-              </layout>
-             </item>
-             <item row="0" column="2">
-              <widget class="QLabel" name="label_2">
-               <property name="text">
-                <string>Transmit</string>
-               </property>
+                <layout class="QGridLayout" name="gridLayout_3">
+                 <item row="1" column="0">
+                  <widget class="QTableWidget" name="canReceiveTableWidget">
+                   <property name="selectionMode">
+                    <enum>QAbstractItemView::ExtendedSelection</enum>
+                   </property>
+                   <property name="selectionBehavior">
+                    <enum>QAbstractItemView::SelectRows</enum>
+                   </property>
+                   <attribute name="verticalHeaderVisible">
+                    <bool>false</bool>
+                   </attribute>
+                   <column>
+                    <property name="text">
+                     <string>id</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>type</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>dlc</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>data</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>cycle</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>count</string>
+                    </property>
+                   </column>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label">
+                   <property name="text">
+                    <string>Receive</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="1" column="1">
+                  <layout class="QVBoxLayout" name="verticalLayout_7">
+                   <item>
+                    <widget class="QCheckBox" name="pcanUpdateReceiveTableCheckBox">
+                     <property name="text">
+                      <string>update</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="pcanDeleteReceiveEntryButton">
+                     <property name="text">
+                      <string>delete</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="verticalSpacer">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="1" column="2">
+                  <widget class="QTableWidget" name="canTransmitTableWidget">
+                   <property name="selectionMode">
+                    <enum>QAbstractItemView::ExtendedSelection</enum>
+                   </property>
+                   <property name="selectionBehavior">
+                    <enum>QAbstractItemView::SelectRows</enum>
+                   </property>
+                   <attribute name="verticalHeaderVisible">
+                    <bool>false</bool>
+                   </attribute>
+                   <column>
+                    <property name="text">
+                     <string>id</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>type</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>dlc</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>data</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>cycle</string>
+                    </property>
+                   </column>
+                   <column>
+                    <property name="text">
+                     <string>count</string>
+                    </property>
+                   </column>
+                  </widget>
+                 </item>
+                 <item row="1" column="3">
+                  <layout class="QVBoxLayout" name="verticalLayout_8">
+                   <item>
+                    <widget class="QCheckBox" name="pcanUpdateTransmitTableCheckBox">
+                     <property name="text">
+                      <string>update</string>
+                     </property>
+                     <property name="checked">
+                      <bool>true</bool>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <widget class="QPushButton" name="pcanDeleteTransmitEntryButton">
+                     <property name="text">
+                      <string>delete</string>
+                     </property>
+                    </widget>
+                   </item>
+                   <item>
+                    <spacer name="verticalSpacer_2">
+                     <property name="orientation">
+                      <enum>Qt::Vertical</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>20</width>
+                       <height>40</height>
+                      </size>
+                     </property>
+                    </spacer>
+                   </item>
+                  </layout>
+                 </item>
+                 <item row="0" column="2">
+                  <widget class="QLabel" name="label_2">
+                   <property name="text">
+                    <string>Transmit</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
               </widget>
              </item>
             </layout>
@@ -1003,8 +1022,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>98</width>
-          <height>93</height>
+          <width>323</width>
+          <height>517</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1122,8 +1141,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>188</width>
-          <height>301</height>
+          <width>323</width>
+          <height>517</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1348,8 +1367,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>139</width>
-          <height>271</height>
+          <width>323</width>
+          <height>517</height>
          </rect>
         </property>
         <attribute name="label">
