@@ -1627,6 +1627,12 @@ bool MainWindow::loadSettings()
                                 m_sendAreaInputsSplitterSizeSecond = list[1].toInt();
                             }
                         }
+
+                        QString stateValue = node.attributes().namedItem("mainWindowState").nodeValue();
+                        if(stateValue != "")
+                        {
+                            restoreState(QByteArray().fromHex(stateValue.toLocal8Bit()));
+                        }
                     }
                 }
                 {//send window position and size
@@ -2504,6 +2510,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("sendTextEdit"), m_userInterface->SendTextEdit->toPlainText()),
                  std::make_pair(QString("scriptTextEdit"), m_userInterface->ScriptTextEdit->toPlainText()),
                  std::make_pair(QString("sendFormatComboBox"), m_userInterface->SendFormatComboBox->currentText()),
+                 std::make_pair(QString("mainWindowState"), saveState().toHex()),
                  std::make_pair(QString("toolBoxSplitterSizes"),
                  QString("%1:%2:%3:%4").arg(m_toolBoxSplitterSizesSecond[0]).arg(m_toolBoxSplitterSizesSecond[1]).arg(m_toolBoxSplitterSizesSecond[2]).arg(m_toolBoxSplitterSizesSecond[3]))
 
