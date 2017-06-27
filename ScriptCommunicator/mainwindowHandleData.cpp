@@ -1667,6 +1667,13 @@ void MainWindowHandleData::processDataInStoredData()
     {
         if(el.type == STORED_DATA_CLEAR_ALL_STANDARD_CONSOLES)
         {
+            m_userInterface->ReceiveTextEditAscii->document()->blockSignals(true);
+            m_userInterface->ReceiveTextEditHex->document()->blockSignals(true);
+            m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(true);
+            m_userInterface->ReceiveTextEditMixed->document()->blockSignals(true);
+            m_userInterface->ReceiveTextEditBinary->document()->blockSignals(true);
+            m_userInterface->ReceiveTextEditCustom->document()->blockSignals(true);
+
             m_userInterface->ReceiveTextEditAscii->clear();
             m_consoleDataBufferAscii.clear();
             m_userInterface->ReceiveTextEditHex->clear();
@@ -1682,6 +1689,13 @@ void MainWindowHandleData::processDataInStoredData()
             m_bytesInStoredConsoleData = 0;
             m_decimalConsoleByteBuffer.clear();
             m_mixedConsoleByteBuffer.clear();
+
+            m_userInterface->ReceiveTextEditAscii->document()->blockSignals(false);
+            m_userInterface->ReceiveTextEditHex->document()->blockSignals(false);
+            m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(false);
+            m_userInterface->ReceiveTextEditMixed->document()->blockSignals(false);
+            m_userInterface->ReceiveTextEditBinary->document()->blockSignals(false);
+            m_userInterface->ReceiveTextEditCustom->document()->blockSignals(false);
         }
         else
            {

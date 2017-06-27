@@ -3647,12 +3647,27 @@ void MainWindow::initActionsConnections()
  */
 void MainWindow::clearConsoleSlot(void)
 {
+    m_userInterface->ReceiveTextEditAscii->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditHex->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditMixed->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditBinary->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditCustom->document()->blockSignals(true);
+
     m_userInterface->ReceiveTextEditAscii->clear();
     m_userInterface->ReceiveTextEditHex->clear();
     m_userInterface->ReceiveTextEditDecimal->clear();
     m_userInterface->ReceiveTextEditMixed->clear();
     m_userInterface->ReceiveTextEditBinary->clear();
     m_userInterface->ReceiveTextEditCustom->clear();
+
+    m_userInterface->ReceiveTextEditAscii->document()->blockSignals(false);
+    m_userInterface->ReceiveTextEditHex->document()->blockSignals(false);
+    m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(false);
+    m_userInterface->ReceiveTextEditMixed->document()->blockSignals(false);
+    m_userInterface->ReceiveTextEditBinary->document()->blockSignals(false);
+    m_userInterface->ReceiveTextEditCustom->document()->blockSignals(false);
+
     m_canTab->clearTables();
 
     m_handleData->clear();
