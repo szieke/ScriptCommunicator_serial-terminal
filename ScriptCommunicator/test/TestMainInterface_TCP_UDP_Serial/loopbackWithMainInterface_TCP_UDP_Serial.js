@@ -7,9 +7,9 @@ function stopScript()
 
 function dataReceived(data)
 {
-	scriptThread.sendDataArray(data);
+	scriptInf.sendDataArray(data);
 }
 
 scriptThread.appendTextToConsole('loopback script has started');
-scriptThread.dataReceivedSignal.connect(dataReceived);
+scriptInf.dataReceivedSignal.connect(dataReceived);
 

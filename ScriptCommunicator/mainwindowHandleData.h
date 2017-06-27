@@ -367,6 +367,9 @@ private:
     ///The timer for the queued received data.
     QTimer m_queuedReceivedDataTimer;
 
+    ///True if no console is visible in the main window.
+    bool m_noConsoleVisible;
+
 };
 
 #endif // MAINWINDOWHANDLEDATA_H

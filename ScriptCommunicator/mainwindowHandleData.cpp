@@ -24,7 +24,7 @@ MainWindowHandleData::MainWindowHandleData(MainWindow *mainWindow, SettingsDialo
     m_bytesInUnprocessedConsoleData(0), m_bytesInStoredConsoleData(0), m_bytesSinceLastNewLineInConsole(0), m_bytesSinceLastNewLineInLog(0),
     m_customLogString(), m_customConsoleObject(0), m_customLogObject(0), m_customConsoleStrings(), m_customConsoleStoredStrings(),
     m_numberOfBytesInCustomConsoleStrings(0), m_numberOfBytesInCustomConsoleStoredStrings(0), m_historySendIsInProgress(false), m_checkDebugWindowsIsClosed(),
-    m_queuedReceivedData(), m_queuedReceivedDataTimer()
+    m_queuedReceivedData(), m_queuedReceivedDataTimer(), m_noConsoleVisible(false)
 {
     m_customConsoleObject = new CustomConsoleLogObject(m_mainWindow);
     m_customLogObject = new CustomConsoleLogObject(m_mainWindow);
@@ -227,7 +227,10 @@ void MainWindowHandleData::appendDataToStoredData(QByteArray &data, bool isSend,
 
     if((!isSend && currentSettings->showReceivedDataInConsole) || (isSend && currentSettings->showSendDataInConsole) || isUserMessage)
     {
-        appendUnprocessConsoleData(data, isSend, isUserMessage, isFromCan, isFromI2cMaster, forceTimeStamp);
+        if(!m_noConsoleVisible)
+        {
+            appendUnprocessConsoleData(data, isSend, isUserMessage, isFromCan, isFromI2cMaster, forceTimeStamp);
+        }
 
         if(currentSettings->consoleShowCustomConsole)
         {

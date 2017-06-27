@@ -1,4 +1,4 @@
-/*************************************************************************
+﻿/*************************************************************************
 This worker script (worker scripts can be added in the script window) demonstrates the usage of the 
 PCAN interface.
 ***************************************************************************/
@@ -20,7 +20,6 @@ function dialogFinished(e)
 var sendData = 0;
 function sendMessages()
 {
-	//for(var i = 0; i < 10; i++)
 	for(var i = 0xff; i < (0xff + 2); i++)
 	{
 		scriptInf.sendCanMessage(2, i, Array(0,0,0,0,(sendData >> 24) & 0xff,(sendData >> 16) & 0xff,(sendData >> 8) & 0xff,sendData & 0xff));
@@ -79,7 +78,6 @@ function pcan2MessagesReceived(type, id, timeStamp, data)
 						"  data: " + scriptThread.byteArrayToHexString(data[index]));
 		}
 			
-		//scriptThread.appendTextToConsole(scriptThread.byteArrayToHexString(data[index]));
 		pcan2.sendCanMessage(type[index], id[index], data[index]);
 		
 	}
@@ -107,7 +105,6 @@ scriptInf.canMessagesReceivedSignal.connect(canMessagesReceived);
 
 var SendTimer = scriptThread.createTimer();
 SendTimer.timeoutSignal.connect(sendMessages);
-//SendTimer.start(20);
 SendTimer.start(500);
 
 var pcan2 = scriptInf.createPcanInterface();
@@ -128,7 +125,6 @@ var statusTimer = scriptThread.createTimer();
 statusTimer.timeoutSignal.connect(statusTimerSlot);
 statusTimer.start(500);
 
-//PCAN_CHANNEL_IDENTIFYING=0x15
 var value;
 if(pcan2.setCanParameter(0x15, 1))
 {

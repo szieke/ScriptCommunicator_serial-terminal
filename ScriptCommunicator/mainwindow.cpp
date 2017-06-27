@@ -2145,6 +2145,18 @@ void MainWindow::inititializeTab(void)
         showCanTab = currentSettings->showCanTab;
     }
 
+
+    if((currentSettings->showDecimalInConsole == false) &&(currentSettings->showHexInConsole == false) &&
+       (currentSettings->showAsciiInConsole == false) && (currentSettings->showMixedConsole == false) &&
+       (currentSettings->showBinaryConsole == false))
+    {
+        m_handleData->m_noConsoleVisible = true;
+    }
+    else
+    {
+        m_handleData->m_noConsoleVisible = false;
+    }
+
     if(tabsChanged)
     {
         m_settingsDialog->setEnabled(false);

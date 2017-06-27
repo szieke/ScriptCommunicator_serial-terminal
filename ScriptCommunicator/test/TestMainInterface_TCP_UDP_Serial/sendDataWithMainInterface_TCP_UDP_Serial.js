@@ -21,7 +21,7 @@ function dataReceived(data)
 			{
 				g_counter++;
 				UI_Counter1.setText("counter: " + g_counter);
-				scriptThread.sendString(g_counter + "___" + g_compareString)
+				scriptInf.sendString(g_counter + "___" + g_compareString)
 			}
 			else
 			{
@@ -38,7 +38,7 @@ function start()
 	UI_StartButton.setEnabled(false);
 	UI_StopButton.setEnabled(true);
 	g_stopSending = false;
-	scriptThread.sendString(g_counter + "___" + g_compareString)
+	scriptInf.sendString(g_counter + "___" + g_compareString)
 	UI_Counter1.setText("counter: " + g_counter);
 }
 
