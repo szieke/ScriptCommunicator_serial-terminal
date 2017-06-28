@@ -113,7 +113,7 @@ public:
     Q_INVOKABLE bool connectSocket(bool isTcp, bool isServer, QString ip, quint32 destinationPort, quint32 ownPort, quint32 connectTimeout = 5000);
 
     ///Sets the value of an output pin (Aardvark I2C/SPI device).
-    Q_INVOKABLE bool aardvarkI2cSpiSetOutput(quint8 pinIndex, bool high);
+    Q_INVOKABLE bool aardvarkI2cSpiSetOutput(quint8 pinIndex, bool high, bool updateSettingsDialog=false);
 
     ///Changes the configuration of a pin (Aardvark I2C/SPI device).
     Q_INVOKABLE bool aardvarkI2cSpiChangePinConfiguration(quint8 pinIndex, bool isInput, bool withPullups=false);

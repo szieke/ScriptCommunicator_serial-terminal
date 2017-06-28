@@ -639,10 +639,12 @@ bool ScriptInf::connectSocket(bool isTcp, bool isServer, QString ip, quint32 des
  *      - 5=Pin9/SS0
  * @param high
  *      True for 1 and false for 0.
+ * @param updateSettingsDialog
+ *      True if the new output value should be displayed in the the settings dialog.
  * return
  *      True on success.
  */
-bool ScriptInf::aardvarkI2cSpiSetOutput(quint8 pinIndex, bool high)
+bool ScriptInf::aardvarkI2cSpiSetOutput(quint8 pinIndex, bool high, bool updateSettingsDialog)
 {
     bool result = false;
     Settings settings = *m_settingsDialog->settings();
@@ -652,7 +654,11 @@ bool ScriptInf::aardvarkI2cSpiSetOutput(quint8 pinIndex, bool high)
         result = true;
         settings.aardvarkI2cSpi.pinConfigs[pinIndex].outValue = high;
         emit setAardvarkI2cSpiOutputSignal(settings.aardvarkI2cSpi);
-        emit setAllSettingsSignal(settings, false);
+
+        if(updateSettingsDialog)
+        {
+            emit setAllSettingsSignal(settings, false);
+        }
     }
 
     return result;

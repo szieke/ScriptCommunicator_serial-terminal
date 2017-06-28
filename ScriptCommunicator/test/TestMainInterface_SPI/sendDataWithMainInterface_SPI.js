@@ -2,6 +2,9 @@
 
 function stopScript() 
 {
+	scriptInf.aardvarkI2cSpiChangePinConfiguration(0, true);
+	scriptInf.aardvarkI2cSpiChangePinConfiguration(1, true);
+	
     scriptThread.appendTextToConsole("script has been stopped");
 }
 function UI_DialogFinished(e)
@@ -18,7 +21,6 @@ function dataReceived(data)
 		if(scriptThread.byteArrayToString(g_receivedData) == (g_compareString + g_counter))
 		{
 			g_counter++;
-			scriptInf.aardvarkI2cSpiSetOutput(1, true);
 		}
 		else
 		{
@@ -35,16 +37,19 @@ function aardvarkI2cSpiInputStatesChangedSlot(states)
 	{	
 		sendData();
 	}
+	else
+	{
+		scriptInf.aardvarkI2cSpiSetOutput(1, true);
+	}
 }
 
 function sendData()
 {
 	if(!g_stopSending)
 	{
-		scriptInf.aardvarkI2cSpiSetOutput(1, false);
-		g_responseReceived = false;
-		UI_Counter1.setText("counter: " + g_counter);
 		scriptInf.sendString(g_compareString + g_counter);
+		UI_Counter1.setText("counter: " + g_counter);	
+		scriptInf.aardvarkI2cSpiSetOutput(1, false);
 	}
 }
 
