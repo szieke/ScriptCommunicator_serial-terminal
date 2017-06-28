@@ -53,6 +53,9 @@ void ScriptInf::intSignals(bool runsInDebugger)
     connect(this, SIGNAL(sendDataSignal(const QByteArray, uint)),
             m_scriptThread->getScriptWindow()->getMainInterfaceThread(), SLOT(sendDataSlot(const QByteArray, uint)), Qt::BlockingQueuedConnection);
 
+    connect(this, SIGNAL(ardvarkI2cSpiReadAllInputsSignal(QVector<bool>&)),
+            m_scriptThread->getScriptWindow()->getMainInterfaceThread()->m_aardvarkI2cSpi, SLOT(readAllInputs(QVector<bool>&)), Qt::BlockingQueuedConnection);
+
     connect(this, SIGNAL(i2cMasterFreeBusSignal()),
             m_scriptThread->getScriptWindow()->getMainInterfaceThread()->m_aardvarkI2cSpi, SLOT(freeI2cBusSlot()), Qt::QueuedConnection);
 
@@ -693,6 +696,24 @@ bool ScriptInf::aardvarkI2cSpiChangePinConfiguration(quint8 pinIndex, bool isInp
 }
 
 
+/**
+ * Reads all inputs of the Aardvark I2C/SPI device.
+ *
+ * @return
+ *      The read values (true=1, false= 0). The indexes of the result array are:
+ *      - 0=Pin1/SCL
+ *      - 1=Pin3/SDA
+ *      - 2=Pin5/MISO
+ *      - 3=Pin7/SCK
+ *      - 4=Pin8/MOSI
+ *      - 5=Pin9/SS0
+ */
+QVector<bool> ScriptInf::aardvarkI2cSpiReadAllInputs(void)
+{
+    QVector<bool> readValues;
+    emit ardvarkI2cSpiReadAllInputsSignal(readValues);
+    return readValues;
+}
 /**
  * Returns the Aardvark I2C/SPI settings of the main interface.
  * @return

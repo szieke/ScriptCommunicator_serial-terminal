@@ -48,6 +48,9 @@ public:
                 this, SLOT(inputStatesChangedSlot(QVector<bool>)), Qt::QueuedConnection);
 
         connect(m_interface, SIGNAL(readyRead()),this, SLOT(slaveDataReceivedSlot()));
+
+        connect(this, SIGNAL(readAllInputsSignal(QVector<bool>&)),
+                m_interface, SLOT(readAllInputs(QVector<bool>&)), Qt::BlockingQueuedConnection);
     }
 
     ~ScriptAardvarkI2cSpi()
@@ -317,6 +320,15 @@ public:
         return result;
     }
 
+    ///Reads all inputs.
+    ///The indexes of the result array are:0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
+    Q_INVOKABLE QVector<bool> readAllInputs(void)
+    {
+        QVector<bool> readValues;
+        emit readAllInputsSignal(readValues);
+        return readValues;
+    }
+
     ///Returns true if the interface is connected.
     Q_INVOKABLE bool isConnected(void){return m_interface->isConnected();}
 
@@ -332,6 +344,10 @@ signals:
 
      ///Is called if the interface is a I2C or SPI slave and has received data.
      slaveDataReceivedSignal(QVector<unsigned char> data);
+
+     ///Is emitted in readAllInputs.
+     ///This signal must not be used from script.
+     void readAllInputsSignal(QVector<bool>& inputStates);
 
 public slots:
 

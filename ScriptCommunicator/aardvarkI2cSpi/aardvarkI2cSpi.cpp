@@ -30,8 +30,8 @@ static const QString LIBRARAY_NAME = "aardvark.dll";
 #else
 static const QString LIBRARAY_NAME = "aardvark.so";
 #endif
-AardvarkI2cSpi::AardvarkI2cSpi(QObject *parent): QObject(parent), m_handle(0), m_inputTimer(),
-    m_receiveTimer(), m_currentSlaveData()
+AardvarkI2cSpi::AardvarkI2cSpi(QObject *parent): QObject(parent), m_handle(0),
+    m_receiveInputTimer(), m_currentSlaveData()
 {
 
     memset(&m_settings, 0, sizeof(m_settings));
@@ -41,8 +41,7 @@ AardvarkI2cSpi::AardvarkI2cSpi(QObject *parent): QObject(parent), m_handle(0), m
         m_inputStates.append(false);
     }
 
-    connect(&m_inputTimer, SIGNAL(timeout()),this, SLOT(inputTimerSlot()), Qt::QueuedConnection);
-    connect(&m_receiveTimer, SIGNAL(timeout()),this, SLOT(receiveTimerSlot()));
+    connect(&m_receiveInputTimer, SIGNAL(timeout()),this, SLOT(receiveInputTimerSlot()));
 }
 AardvarkI2cSpi::~AardvarkI2cSpi()
 {
@@ -89,10 +88,10 @@ void AardvarkI2cSpi::readAllInputs(QVector<bool>& inputStates)
 }
 
 /**
- * Slot function of m_inputTimer.
- * Reads all inputs of the aardvark I2c/Spi device.
+ * Checks the all inputs of the aardvark I2c/Spi device and generates
+ * inputStatesChangedSignal if the inputs have been changed.
  */
-void AardvarkI2cSpi::inputTimerSlot(void)
+void AardvarkI2cSpi::checkInputs(void)
 {
     QVector<bool> inputStates;
 
@@ -355,14 +354,20 @@ QVector<AardvardkI2cSpiSlaveData> AardvarkI2cSpi::readLastSlaveData(void)
 }
 
 /**
- * Checks if data has been received (I2C/SPI slave mode).
+ * Checks if data has been received (I2C/SPI slave mode) and the states of the inputs.
  */
-void AardvarkI2cSpi::receiveTimerSlot()
+void AardvarkI2cSpi::receiveInputTimerSlot()
 {
-    int result = aa_async_poll (m_handle, 0);
-    if(result != AA_ASYNC_NO_DATA)
+    checkInputs();
+
+    if((m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_SLAVE) ||
+       (m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_SPI_SLAVE))
     {
-        emit readyRead();
+        int result = aa_async_poll (m_handle, 0);
+        if(result != AA_ASYNC_NO_DATA)
+        {
+            emit readyRead();
+        }
     }
 }
 
@@ -407,7 +412,6 @@ bool AardvarkI2cSpi::connectToDevice(AardvarkI2cSpiSettings& settings, int& devi
 
                     //Set the default response.
                     (void)aa_i2c_slave_set_response(m_handle, m_currentSlaveData.size(), (const aa_u08 *)m_currentSlaveData.constData());
-                    m_receiveTimer.start(1);
                 }
             }
         }
@@ -433,8 +437,6 @@ bool AardvarkI2cSpi::connectToDevice(AardvarkI2cSpiSettings& settings, int& devi
 
                     //Set the default response.
                     (void)aa_spi_slave_set_response(m_handle, m_currentSlaveData.size(), (const aa_u08 *)m_currentSlaveData.constData());
-
-                    m_receiveTimer.start(1);
                 }
             }
 
@@ -472,7 +474,7 @@ bool AardvarkI2cSpi::connectToDevice(AardvarkI2cSpiSettings& settings, int& devi
         readAllInputs(m_inputStates);
         emit inputStatesChangedSignal(m_inputStates);
 
-        m_inputTimer.start(250);
+        m_receiveInputTimer.start(1);
     }
     else
     {
@@ -487,8 +489,7 @@ bool AardvarkI2cSpi::connectToDevice(AardvarkI2cSpiSettings& settings, int& devi
  */
 void AardvarkI2cSpi::disconnect(void)
 {
-    m_inputTimer.stop();
-    m_receiveTimer.stop();
+    m_receiveInputTimer.stop();
 
     if (m_handle > 0)
     {

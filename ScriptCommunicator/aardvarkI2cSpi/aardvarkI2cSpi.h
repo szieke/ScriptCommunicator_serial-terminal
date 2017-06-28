@@ -141,6 +141,10 @@ public:
     ///Converts AardvarkI2cFlags to a string.
     static QString flagsToString(AardvarkI2cFlags flags);
 
+    ///Checks the all inputs of the aardvark I2c/Spi device and generates
+    ///inputStatesChangedSignal if the inputs have been changed.
+    void checkInputs(void);
+
 
 signals:
 
@@ -153,10 +157,6 @@ signals:
 
 public slots:
 
-    ///Slot function of m_inputTimer.
-    ///Reads all inputs of the aardvark I2c/Spi device.
-    void inputTimerSlot(void);
-
     ///Is called if the pin configuration has been changed (in the GUI).
     void pinConfigChangedSlot(AardvarkI2cSpiSettings settings);
 
@@ -166,14 +166,14 @@ public slots:
     ///Is called if the i2c bus shall be released.
     void freeI2cBusSlot(void);
 
-    ///Checks if data has been received (I2C/SPI slave mode).
-    void receiveTimerSlot();
-
-
-private:
+    ///Checks if data has been received (I2C/SPI slave mode) and the states of the inputs.
+    void receiveInputTimerSlot();
 
     ///Reads all inputs of the aardvark I2c/Spi device.
     void readAllInputs(QVector<bool>& inputStates);
+
+private:
+
 
     ///Configures pins of the aardvark I2c/Spi device.
     void configurePins(bool onlySetOutputs);
@@ -181,17 +181,14 @@ private:
     ///Handle to aardvark I2c/Spi device.
     Aardvark m_handle;
 
-    ///Timer for polling the inputs of the aardvark I2c/Spi device.
-    QTimer m_inputTimer;
-
     ///The states of all inputs (aardvark I2c/Spi device).
     QVector<bool> m_inputStates;
 
     ///The current settings.
     AardvarkI2cSpiSettings m_settings;
 
-    ///Checks if data has been received (I2C/SPI slave mode).
-    QTimer m_receiveTimer;
+    ///Checks if data has been received (I2C/SPI slave mode) and the states of the inputs.
+    QTimer m_receiveInputTimer;
 
     ///The current slave data.
     QByteArray m_currentSlaveData;

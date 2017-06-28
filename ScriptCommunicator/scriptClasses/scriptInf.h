@@ -121,6 +121,9 @@ public:
     ///Returns the Aardvark I2C/SPI settings of the main interface.
     Q_INVOKABLE QScriptValue aardvarkI2cSpiGetMainInterfaceSettings(void);
 
+    ///Reads all inputs of the Aardvark I2C/SPI device.
+    Q_INVOKABLE QVector<bool> aardvarkI2cSpiReadAllInputs(void);
+
     ///Returns the serial port settings of the main interface.
     Q_INVOKABLE QScriptValue getMainInterfaceSerialPortSettings(void);
 
@@ -203,6 +206,10 @@ signals:
     ///Is emitted in changeAardvarkI2cSpiPinConfiguration.
     ///This signal must not be used from script.
     void changeAardvarkI2cSpiPinConfigurationSignal(AardvarkI2cSpiSettings settings);
+
+    ///Is emitted in aardvarkI2cSpiReadAllInputs.
+    ///This signal must not be used from script.
+    void ardvarkI2cSpiReadAllInputsSignal(QVector<bool>& inputStates);
 
 
 public slots:
