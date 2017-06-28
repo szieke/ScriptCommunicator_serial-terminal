@@ -473,10 +473,10 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     m_userInterface->logNewLineAfterNumberBytes->setValidator(new QIntValidator(0, USHRT_MAX, m_userInterface->logNewLineAfterNumberBytes));
     m_userInterface->logNewLineAfterPause->setValidator(new QIntValidator(0, USHRT_MAX, m_userInterface->logNewLineAfterPause));
 
-    m_userInterface->aardvarkI2cBaudrate->setValidator(new QIntValidator(0, USHRT_MAX, m_userInterface->aardvarkI2cBaudrate));
+    m_userInterface->aardvarkI2cBaudrate->setValidator(new QIntValidator(0, 800, m_userInterface->aardvarkI2cBaudrate));
     m_userInterface->aardvarkI2cSlaveAddress->setValidator(new QIntValidator(0, USHRT_MAX, m_userInterface->aardvarkI2cSlaveAddress));
     m_userInterface->aardvarkI2cSpiPort->setValidator(new QIntValidator(0, USHRT_MAX, m_userInterface->aardvarkI2cSpiPort));
-    m_userInterface->aardvarkSpiBaudrate->setValidator(new QIntValidator(0, USHRT_MAX, m_userInterface->aardvarkSpiBaudrate));
+    m_userInterface->aardvarkSpiBaudrate->setValidator(new QIntValidator(0, 8000, m_userInterface->aardvarkSpiBaudrate));
 
     //Read all serial port informations.
     for(auto list : getSerialPortsInfo())
@@ -1572,7 +1572,8 @@ void SettingsDialog::initializeAardvarkIc2SpiTab(void)
                  m_userInterface->aardvarkI2cSlaveAddress->setEnabled(false);
              }
          }
-         else if(m_userInterface->aardvarkI2cSpiMode->currentText() == "SPI Master")
+         else if((m_userInterface->aardvarkI2cSpiMode->currentText() == "SPI Master") ||
+                 (m_userInterface->aardvarkI2cSpiMode->currentText() == "SPI Slave"))
          {
              m_userInterface->aardvarkSpiPolarity->setEnabled(true);
              m_userInterface->aardvarkSpiSSPolarity->setEnabled(true);
