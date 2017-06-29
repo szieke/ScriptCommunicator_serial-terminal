@@ -1604,12 +1604,14 @@ void SettingsDialog::initializeAardvarkIc2SpiTab(void)
 
      int startIndex = 0;
      int endIndex = 0;
-     if(m_userInterface->aardvarkI2cSpiMode->currentText() == "I2C Master")
+     if((m_userInterface->aardvarkI2cSpiMode->currentText() == "I2C Master") ||
+        (m_userInterface->aardvarkI2cSpiMode->currentText() == "I2C Slave"))
      {
          startIndex = 2;
          endIndex = AARDVARK_I2C_SPI_GPIO_COUNT - 1;
      }
-     else if(m_userInterface->aardvarkI2cSpiMode->currentText() == "SPI Master")
+     else if((m_userInterface->aardvarkI2cSpiMode->currentText() == "SPI Master") ||
+             (m_userInterface->aardvarkI2cSpiMode->currentText() == "SPI Slave"))
      {
          startIndex = 0;
          endIndex = 1;

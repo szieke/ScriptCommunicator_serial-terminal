@@ -304,7 +304,7 @@ public:
 
     ///Changes the configuration of a pin.
     ///Possible pin indexes:0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
-    Q_INVOKABLE bool changePinConfiguration(quint8 pinIndex, bool isInput, bool withPullups)
+    Q_INVOKABLE bool changePinConfiguration(quint8 pinIndex, bool isInput, bool withPullups=false)
     {
         bool result = false;
 

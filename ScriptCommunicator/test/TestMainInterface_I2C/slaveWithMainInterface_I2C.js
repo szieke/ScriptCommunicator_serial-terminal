@@ -46,7 +46,7 @@ var g_receivedData = Array();
 
 
 scriptThread.appendTextToConsole('I2C slave script has started');
-scriptInf.slaveDataSentSignal.connect(slaveDataReceivedSlot);
+scriptInf.dataReceivedSignal.connect(slaveDataReceivedSlot);
 
 
 //Set the slave response.
