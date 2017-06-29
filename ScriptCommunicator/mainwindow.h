@@ -119,10 +119,15 @@ public:
     }
 
 
+    ///The user has pressed a key.
+    void keyPressEvent(QKeyEvent *event);
+
+
 public slots:
 
     ///Is called if the document's content changes.
    void contentsChangeSlot(int from, int charsRemoved, int charsAdded);
+
 
 private:
     ///Pointer to the main window.

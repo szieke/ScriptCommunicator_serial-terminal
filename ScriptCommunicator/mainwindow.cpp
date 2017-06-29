@@ -105,6 +105,75 @@ void DragDropLineEdit::dropEvent(QDropEvent *event)
 }
 
 
+void SendConsole::keyPressEvent(QKeyEvent *event)
+{
+    bool ignoreEvent = false;
+
+    QString textToSend = event->text();
+
+    if(Qt::ControlModifier == event->modifiers())
+    {
+        if(event->key() == Qt::Key_V)
+        {
+            ignoreEvent = true;
+        }
+        else if(event->key() == Qt::Key_C)
+        {
+            ignoreEvent = true;
+        }
+        else if(event->key() == Qt::Key_X)
+        {
+            ignoreEvent = true;
+        }
+        else if(event->key() == Qt::Key_A)
+        {
+            ignoreEvent = true;
+        }
+    }
+
+    if(textToSend.isEmpty())
+    {
+        QByteArray byteArray;
+        byteArray.append(0x1b);
+        byteArray.append(0x5b);
+
+        if(event->key() == Qt::Key_Left)
+        {
+            byteArray.append(0x44);
+            textToSend = byteArray;
+        }
+        else if(event->key() == Qt::Key_Up)
+        {
+            byteArray.append(0x41);
+            textToSend = byteArray;
+        }
+        else if(event->key() == Qt::Key_Right)
+        {
+            byteArray.append(0x43);
+            textToSend = byteArray;
+        }
+        else if(event->key() == Qt::Key_Down)
+        {
+            byteArray.append(0x42);
+            textToSend = byteArray;
+        }
+        else
+        {
+            ignoreEvent = true;
+        }
+    }
+
+    if(m_mainWindow->m_userInterface->interactiveConsoleCheckBox->isChecked() && !ignoreEvent)
+    {
+        const Settings* settings = m_mainWindow->m_settingsDialog->settings();
+        m_mainWindow->m_sendWindow->sendDataWithTheMainInterface(textToSend.toLocal8Bit().replace("\r", settings->consoleSendOnEnter.toLocal8Bit()), this);
+    }
+    else
+    {
+        QTextEdit::keyPressEvent( event );
+    }
+}
+
 /**
  * Is called if the document's content changes.
  *
