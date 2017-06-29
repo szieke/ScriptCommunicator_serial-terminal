@@ -79,6 +79,7 @@ void MainInterfaceThread::aardvardSlaveDataReceivedSlot(void)
         }
         else
         {
+            m_numberOfSentBytes += el.data.size();
             emit sendingFinishedSignal(el.data, true, SEND_ID_I2C_SPI_SLAVE);
             emit slaveDataSentSignal(el.data);
         }
@@ -318,16 +319,10 @@ void MainInterfaceThread::dataReceived(QByteArray& data)
     emit dataReceivedSignal(data);
     m_numberOfReceivedBytes += data.size();
 
-    if(isConnectedWithCan())
-    {
-        ///Remove the bytes for the metadata.
-        m_numberOfSentBytes -= PCANBasicClass::BYTES_METADATA_RECEIVE;
-    }
-
     if(isConnectedWithI2cMaster())
     {
         ///Remove the bytes for the metadata.
-        m_numberOfSentBytes -= AardvarkI2cSpi::RECEIVE_CONTROL_BYTES_COUNT;
+        m_numberOfReceivedBytes -= AardvarkI2cSpi::RECEIVE_CONTROL_BYTES_COUNT;
     }
 
 }
@@ -550,7 +545,7 @@ void MainInterfaceThread::sendDataSlot(const QByteArray data, uint id)
             {
                 if(!isConnectedWithI2cSlave() && !isConnectedWithSpiSlave())
                 {
-                    sendingFinishedSignal(data, true, id);
+                    emit sendingFinishedSignal(data, true, id);
                     m_numberOfSentBytes += data.size();
                 }
 

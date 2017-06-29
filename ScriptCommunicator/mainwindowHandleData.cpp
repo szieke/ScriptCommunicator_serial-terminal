@@ -1364,6 +1364,13 @@ void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isS
 
     if(!isRecursivCall)
     {
+        bool timeStampIsAllowed = false;
+        if((!isFromCan || !currentSettings->showCanMetaInformationInConsole) && (!isFromI2cMaster || (currentSettings->i2cMetaInformationInConsole == I2C_METADATA_NONE))
+                && !isUserMessage)
+        {
+            timeStampIsAllowed = true;
+        }
+
         if(createTimeStampOnNextCall)
         {
             //Enter a console time stamp.
@@ -1372,7 +1379,7 @@ void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isS
             createTimeStampOnNextCall = false;
         }
         if(currentSettings->consoleCreateTimestampAt && (data.indexOf((quint8)currentSettings->consoleTimestampAt) != -1)
-                && !isFromCan && !isFromI2cMaster && !isUserMessage)
+           && timeStampIsAllowed)
         {//Data contains a time stamp at byte.
 
             /*************************create time stamps for all time stamp at bytes (currentSettings->consoleTimestampAt)**********************/
@@ -1381,6 +1388,23 @@ void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isS
 
             for(qint32 i = 0; i < splittedData.length(); i++)
             {
+                if(isFromI2cMaster && (currentSettings->i2cMetaInformationInConsole == I2C_METADATA_NONE) && (i != 0))
+                {
+                    //Add I2C dummy metadata to every element (al but the first).
+                    QByteArray dummyBytes;
+                    if(isSend){dummyBytes.fill(0, AardvarkI2cSpi::SEND_CONTROL_BYTES_COUNT);}
+                    else{dummyBytes.fill(0, AardvarkI2cSpi::RECEIVE_CONTROL_BYTES_COUNT);}
+                    splittedData[i].push_front(dummyBytes);
+                }
+                else if(isFromCan && (!currentSettings->showCanMetaInformationInConsole) && (i != 0))
+                {
+                    //Add CAN dummy metadata to every element (al but the first).
+                    QByteArray dummyBytes;
+                    if(isSend){dummyBytes.fill(0, PCANBasicClass::BYTES_METADATA_SEND);}
+                    else{dummyBytes.fill(0, PCANBasicClass::BYTES_METADATA_RECEIVE);}
+                    splittedData[i].push_front(dummyBytes);
+                }
+
                 if(i < (splittedData.length() - 1))
                 {//The last entry in splittedData is not reached.
 
@@ -1426,7 +1450,7 @@ void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isS
         }
 
         if((currentSettings->consoleNewLineAt != 0xffff) && (data.indexOf((quint8)currentSettings->consoleNewLineAt) != -1)
-                && !isFromCan && !isFromI2cMaster && !isUserMessage)
+                && timeStampIsAllowed)
         {//Data contains a new line byte.
 
             /*************************create new line entries for all new line bytes (currentSettings->consoleNewLineAt)**********************/
@@ -1435,6 +1459,22 @@ void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isS
 
             for(qint32 i = 0; i < splittedData.length(); i++)
             {
+                if(isFromI2cMaster && (currentSettings->i2cMetaInformationInConsole == I2C_METADATA_NONE) && (i != 0))
+                {
+                    //Add I2C dummy metadata to every element (al but the first).
+                    QByteArray dummyBytes;
+                    if(isSend){dummyBytes.fill(0, AardvarkI2cSpi::SEND_CONTROL_BYTES_COUNT);}
+                    else{dummyBytes.fill(0, AardvarkI2cSpi::RECEIVE_CONTROL_BYTES_COUNT);}
+                    splittedData[i].push_front(dummyBytes);
+                }
+                else if(isFromCan && (!currentSettings->showCanMetaInformationInConsole) && (i != 0))
+                {
+                    //Add CAN dummy metadata to every element (al but the first).
+                    QByteArray dummyBytes;
+                    if(isSend){dummyBytes.fill(0, PCANBasicClass::BYTES_METADATA_SEND);}
+                    else{dummyBytes.fill(0, PCANBasicClass::BYTES_METADATA_RECEIVE);}
+                    splittedData[i].push_front(dummyBytes);
+                }
 
                 appendUnprocessConsoleData(splittedData[i], isSend, isUserMessage, isFromCan, isFromI2cMaster, isUserMessage, true);
 
@@ -1530,6 +1570,13 @@ void MainWindowHandleData::appendUnprocessLogData(const QByteArray &data, bool i
 
     if(!isRecursivCall)
     {
+        bool timeStampIsAllowed = false;
+        if((!isFromCan || !currentSettings->writeCanMetaInformationInToLog) && (!isFromI2cMaster || (currentSettings->i2cMetaInformationInLog == I2C_METADATA_NONE))
+                && !isUserMessage)
+        {
+            timeStampIsAllowed = true;
+        }
+
         if(createTimeStampOnNextCall)
         {
             //Enter a log time stamp.
@@ -1538,7 +1585,7 @@ void MainWindowHandleData::appendUnprocessLogData(const QByteArray &data, bool i
         }
 
         if(currentSettings->logCreateTimestampAt && (data.indexOf((quint8)currentSettings->logTimestampAt) != -1)
-                && !isFromCan && !isFromI2cMaster && !isUserMessage)
+                && timeStampIsAllowed)
         {//Data contains a time stamp at byte.
 
             /*************************create time stamps for all time stamp at bytes (currentSettings->logTimestampAt)**********************/
@@ -1547,6 +1594,23 @@ void MainWindowHandleData::appendUnprocessLogData(const QByteArray &data, bool i
 
             for(qint32 i = 0; i < splittedData.length(); i++)
             {
+                if(isFromI2cMaster && (currentSettings->i2cMetaInformationInLog == I2C_METADATA_NONE) && (i != 0))
+                {
+                    //Add I2C dummy metadata to every element (al but the first).
+                    QByteArray dummyBytes;
+                    if(isSend){dummyBytes.fill(0, AardvarkI2cSpi::SEND_CONTROL_BYTES_COUNT);}
+                    else{dummyBytes.fill(0, AardvarkI2cSpi::RECEIVE_CONTROL_BYTES_COUNT);}
+                    splittedData[i].push_front(dummyBytes);
+                }
+                else if(isFromCan && (!currentSettings->writeCanMetaInformationInToLog) && (i != 0))
+                {
+                    //Add CAN dummy metadata to every element (al but the first).
+                    QByteArray dummyBytes;
+                    if(isSend){dummyBytes.fill(0, PCANBasicClass::BYTES_METADATA_SEND);}
+                    else{dummyBytes.fill(0, PCANBasicClass::BYTES_METADATA_RECEIVE);}
+                    splittedData[i].push_front(dummyBytes);
+                }
+
                 if(i < (splittedData.length() - 1))
                 {//The last entry in splittedData is not reached.
 
@@ -1588,8 +1652,8 @@ void MainWindowHandleData::appendUnprocessLogData(const QByteArray &data, bool i
         }
 
 
-        if((currentSettings->logNewLineAt != 0xffff) && (data.indexOf((quint8)currentSettings->logNewLineAt) != -1) &&
-                !isFromCan && !isFromI2cMaster && !isUserMessage)
+        if((currentSettings->logNewLineAt != 0xffff) && (data.indexOf((quint8)currentSettings->logNewLineAt) != -1)
+                && timeStampIsAllowed)
         {//Data contains a new line byte.
 
             /*************************create new line entries for all new line bytes (currentSettings->logNewLineAt)**********************/
@@ -1598,6 +1662,23 @@ void MainWindowHandleData::appendUnprocessLogData(const QByteArray &data, bool i
 
             for(qint32 i = 0; i < splittedData.length(); i++)
             {
+                if(isFromI2cMaster && (currentSettings->i2cMetaInformationInLog == I2C_METADATA_NONE) && (i != 0))
+                {
+                    //Add I2C dummy metadata to every element (al but the first).
+                    QByteArray dummyBytes;
+                    if(isSend){dummyBytes.fill(0, AardvarkI2cSpi::SEND_CONTROL_BYTES_COUNT);}
+                    else{dummyBytes.fill(0, AardvarkI2cSpi::RECEIVE_CONTROL_BYTES_COUNT);}
+                    splittedData[i].push_front(dummyBytes);
+                }
+                else if(isFromCan && (!currentSettings->writeCanMetaInformationInToLog) && (i != 0))
+                {
+                    //Add CAN dummy metadata to every element (al but the first).
+                    QByteArray dummyBytes;
+                    if(isSend){dummyBytes.fill(0, PCANBasicClass::BYTES_METADATA_SEND);}
+                    else{dummyBytes.fill(0, PCANBasicClass::BYTES_METADATA_RECEIVE);}
+                    splittedData[i].push_front(dummyBytes);
+                }
+
                 appendUnprocessLogData(splittedData[i], isSend, isUserMessage, isFromCan, isFromI2cMaster, forceTimeStamp, true);
 
                 if(i < (splittedData.length() - 1))

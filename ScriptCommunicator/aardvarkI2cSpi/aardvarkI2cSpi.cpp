@@ -358,7 +358,6 @@ QVector<AardvardkI2cSpiSlaveData> AardvarkI2cSpi::readLastSlaveData(void)
  */
 void AardvarkI2cSpi::receiveInputTimerSlot()
 {
-    checkInputs();
 
     if((m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_SLAVE) ||
        (m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_SPI_SLAVE))
@@ -369,6 +368,8 @@ void AardvarkI2cSpi::receiveInputTimerSlot()
             emit readyRead();
         }
     }
+
+    checkInputs();
 }
 
 /**
