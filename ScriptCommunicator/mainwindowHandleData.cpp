@@ -1387,7 +1387,7 @@ void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isS
                     if(!splittedData[i].isEmpty())
                     {
                         //Append a time stamp byte (was removed during split)
-                        appendUnprocessConsoleData(splittedData[i].append((quint8)currentSettings->consoleTimestampAt), isSend, isUserMessage, isFromCan,forceTimeStamp, true);
+                        appendUnprocessConsoleData(splittedData[i].append((quint8)currentSettings->consoleTimestampAt), isSend, isUserMessage, isFromCan, isFromI2cMaster, forceTimeStamp, true);
                     }
 
                     if((i + 2) == splittedData.length())
