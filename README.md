@@ -5,7 +5,7 @@ All sent and received data can be shown in a console and can be logged in an htm
 In addition to the simple sending and receiving of data ScriptCommunicator has a QtScript (similar to JavaScript) interface.
 This script interface has following features:
 * Scripts can send and receive data with the main interface.
-* In addition to the main interface scripts can create and use own interfaces (serial port (RS232, USB to serial), UDP, TCP client, TCP server, CAN and SPI/I2C master).
+* In addition to the main interface scripts can create and use own interfaces (serial port (RS232, USB to serial), UDP, TCP client/server, CAN, SPI and I2C).
 * Scripts can use their own GUI (GUI files which have been created with QtDesigner (is included) or QtCreator).
 * Multiple plot windows can be created by scripts (QCustomPlot from Emanuel Eichhammer is used).
 
@@ -14,8 +14,8 @@ This script interface has following features:
 * seriel port (RS232, USB to serial)
 * TCP client/server
 * UDP
-* SPI master (Aardvark I2C/SPI)
-* I2C master (Aardvark I2C/SPI)
+* SPI (Aardvark I2C/SPI)
+* I2C (Aardvark I2C/SPI)
 * CAN (PCAN-USB, only on windows)
 * ascii, hexadecimal, decimal, binary, custom and mixed console (adjustable colors)
 * html, text and custom log
@@ -30,7 +30,7 @@ This script interface has following features:
 
 **settings dialog**
 
-![settings dialog](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/set.png/1)
+![settings dialog](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2017-06-30_12h55_35.png/1)
 
 **example script GUI**
 
@@ -39,8 +39,8 @@ This script interface has following features:
 # Homepage
 [https://sourceforge.net/projects/scriptcommunicator/](https://sourceforge.net/projects/scriptcommunicator/)
 
-# Downloads (release 05.01)
-- [Windows](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicatorSetup_05_01_windows.zip/download)
-- [Linux 64 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_64Bit/ScriptCommunicator_05_01_linux_64_bit.zip/download)
-- [Mac OS X](http://sourceforge.net/projects/scriptcommunicator/files/Mac%20OS%20X/ScriptCommunicator_05_01_mac.zip/download)
-- [Source](http://sourceforge.net/projects/scriptcommunicator/files/Source/ScriptCommunicator_05_01_source.zip/download)
+# Downloads (release 05.02)
+- [Windows](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicatorSetup_05_02_windows.zip/download)
+- [Linux 64 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_64Bit/ScriptCommunicator_05_02_linux_64_bit.zip/download)
+- [Mac OS X](http://sourceforge.net/projects/scriptcommunicator/files/Mac%20OS%20X/ScriptCommunicator_05_02_mac.zip/download)
+- [Source](http://sourceforge.net/projects/scriptcommunicator/files/Source/ScriptCommunicator_05_02_source.zip/download)
