@@ -582,6 +582,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                     //Replace tags so our span does not get mangled up.
                     if (tmpString[i] == '<')asciiString += "&lt;";
                     else if (tmpString[i] == '>')asciiString += "&gt;";
+                    else if (tmpString[i] == ' ')asciiString += "&nbsp;";
                     else if (tmpString[i] < 33 || tmpString[i] > 126) asciiString += 255;
                     else asciiString += tmpString[i];
                 }
