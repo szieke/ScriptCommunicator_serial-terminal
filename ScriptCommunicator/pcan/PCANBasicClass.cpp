@@ -535,6 +535,8 @@ void PCANBasicClass::receiveTimerSlot()
     {
         if(!m_dataReadyForRead)
         {
+            m_receiveTimer.stop();
+
             m_currentStatus = read(m_currentHandle, &m_lastReadMessage, &m_timeStampLastReceivedMessage);
 
             if(!(m_currentStatus & PCAN_ERROR_QRCVEMPTY))
@@ -551,6 +553,8 @@ void PCANBasicClass::receiveTimerSlot()
                 }
 
             }
+
+            m_receiveTimer.start(1);
         }
     }
 }

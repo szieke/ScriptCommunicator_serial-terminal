@@ -291,11 +291,11 @@ QVector<AardvardkI2cSpiSlaveData> AardvarkI2cSpi::readLastSlaveData(void)
         int readBytes = 0;
         int writtenBytes = 0;
 
-        if(dataType == AA_ASYNC_I2C_WRITE)
+        if((dataType & AA_ASYNC_I2C_WRITE) != 0)
         {
             writtenBytes = aa_i2c_slave_write_stats(m_handle);
         }
-        else if(dataType == AA_ASYNC_I2C_READ)
+        else if((dataType & AA_ASYNC_I2C_READ) != 0)
         {
             u08 address;
             readBytes = aa_i2c_slave_read(m_handle, &address, 10000, inBuffer);
@@ -305,12 +305,12 @@ QVector<AardvardkI2cSpiSlaveData> AardvarkI2cSpi::readLastSlaveData(void)
                 readBytes = 0;
             }
         }
-        else if(dataType == AA_ASYNC_SPI)
+        else if((dataType & AA_ASYNC_SPI) != 0)
         {
             readBytes = aa_spi_slave_read(m_handle, 10000, inBuffer);
             writtenBytes = readBytes;
         }
-        else if(dataType == AA_ASYNC_I2C_MONITOR)
+        else if((dataType & AA_ASYNC_I2C_MONITOR) != 0)
         {
             u16 monitoreData[100];
             //Ignore this information.
@@ -369,13 +369,6 @@ void AardvarkI2cSpi::receiveInputTimerSlot()
         if(result != AA_ASYNC_NO_DATA)
         {
             emit readyRead();
-
-            if(m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_SLAVE)
-            {
-                //The Aardvark library crashed if the device is configured as I2C slave and no sleep is executed.
-                //Bug in the Aardvark library?
-                QThread::usleep(1);
-            }
         }
     }
 
