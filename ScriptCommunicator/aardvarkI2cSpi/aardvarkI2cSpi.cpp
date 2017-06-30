@@ -369,7 +369,13 @@ void AardvarkI2cSpi::receiveInputTimerSlot()
         if(result != AA_ASYNC_NO_DATA)
         {
             emit readyRead();
-            QThread::usleep(10);
+
+            if(m_settings.deviceMode == AARDVARK_I2C_SPI_DEVICE_MODE_I2C_SLAVE)
+            {
+                //The Aardvark library crashed if the device is configured as I2C slave and no sleep is executed.
+                //Bug in the Aardvark library?
+                QThread::usleep(1);
+            }
         }
     }
 
