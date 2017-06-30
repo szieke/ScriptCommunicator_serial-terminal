@@ -37,3 +37,4 @@ ScriptCommunicator/ScriptEditor/test/test.js
 ScriptCommunicator/exampleScripts/WorkerScripts/TestAardvardI2cSpi/aardvardI2cSpi_settings.txt
 ScriptCommunicator/exampleScripts/WorkerScripts/TestAardvarkI2cSpi/aardvarkI2cSpi_mainInf_settings.txt
 ScriptCommunicator/exampleScripts/WorkerScripts/TestAardvarkI2cSpi/aardvarkI2cSpi_sepInf_settings.txt
+ScriptCommunicator/exampleScripts/WorkerScripts/TestXml/testWrite.xml
