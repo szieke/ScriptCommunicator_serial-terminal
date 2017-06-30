@@ -1,0 +1,19 @@
+<SequenceFile>
+  <ItemList width0="72" width1="100" width2="117">
+    <SequenceItem name="sequence 1">
+      Test text1
+      <sequence format="hex" value="00 01 02 03 04 05 06 07 08" script="./exampleScripts/SequenceScripts/sequenceSendScript.js" height="57"/>
+      Test text2
+      <![CDATA[CDATA1]]>
+      <![CDATA[CDATA2]]>
+      <!--comment 1-->
+      <!--comment 2-->
+    </SequenceItem>
+    <SequenceItem name="sequence 2">
+      <sequence format="ascii" value="line 1&#10;line 2" script="./exampleScripts/SequenceScripts/sequenceSendScriptWithDialog.js" height="47"/>
+    </SequenceItem>
+    <SequenceItem name="sequence 3">
+      <sequence format="hex" value="64 64 64 64 64 88 88" script="" height="30"/>
+    </SequenceItem>
+  </ItemList>
+</SequenceFile>
