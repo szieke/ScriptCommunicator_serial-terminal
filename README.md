@@ -13,7 +13,7 @@ This script interface has following features:
 **Features**
 
 * seriel port (RS232, USB to serial)
-* TCP client/server
+* TCP client/server (network proxy support for TCP clients)
 * UDP
 * SPI (Aardvark I2C/SPI)
 * I2C (Aardvark I2C/SPI)
