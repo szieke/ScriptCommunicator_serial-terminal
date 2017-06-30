@@ -340,10 +340,10 @@ signals:
     void inputStatesChangedSignal(QVector<bool> states);
 
      ///Is called if the interface is a I2C or SPI slave and has sent data.
-     slaveDataSentSignal(QVector<unsigned char> data);
+    void slaveDataSentSignal(QVector<unsigned char> data);
 
      ///Is called if the interface is a I2C or SPI slave and has received data.
-     slaveDataReceivedSignal(QVector<unsigned char> data);
+    void slaveDataReceivedSignal(QVector<unsigned char> data);
 
      ///Is emitted in readAllInputs.
      ///This signal must not be used from script.
