@@ -40,3 +40,6 @@ ScriptCommunicator/exampleScripts/WorkerScripts/TestAardvarkI2cSpi/aardvarkI2cSp
 ScriptCommunicator/exampleScripts/WorkerScripts/TestXml/testWrite.xml
 ScriptCommunicator/exampleScripts/WorkerScripts/PlotWindow/exampleSceFileConfig.xml
 ScriptCommunicator/exampleScripts/WorkerScripts/TestSql/test.db3
+ScriptCommunicator/exampleScripts/WorkerScripts/AdditionalInterface/Serial/uiSettings_Serial_1.txt
+ScriptCommunicator/exampleScripts/WorkerScripts/AdditionalInterface/TCP_Client/uiSettings_TCP_1.txt
+ScriptCommunicator/exampleScripts/WorkerScripts/AdditionalInterface/UDP/uiSettings_UDP_1.txt
