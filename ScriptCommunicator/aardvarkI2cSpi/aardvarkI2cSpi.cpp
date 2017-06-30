@@ -23,6 +23,7 @@
 ****************************************************************************/
 
 #include "aardvarkI2cSpi.h"
+#include <QThread>
 
 
 #if defined(WIN32) || defined(_WIN32)
@@ -368,6 +369,7 @@ void AardvarkI2cSpi::receiveInputTimerSlot()
         if(result != AA_ASYNC_NO_DATA)
         {
             emit readyRead();
+            QThread::usleep(10);
         }
     }
 
