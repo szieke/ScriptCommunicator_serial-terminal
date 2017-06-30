@@ -9,6 +9,7 @@ This script interface has following features:
 * Scripts can use their own GUI (GUI files which have been created with QtDesigner (is included) or QtCreator). 
 * Multiple plot windows can be created by scripts (QCustomPlot  from Emanuel Eichhammer is used)
 
+
 **Features**
 
 * seriel port (RS232, USB to serial)
