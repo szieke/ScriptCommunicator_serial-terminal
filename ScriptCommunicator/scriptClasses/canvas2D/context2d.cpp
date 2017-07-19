@@ -537,6 +537,37 @@ void Context2D::fillRect(qreal x, qreal y, qreal w, qreal h)
     scheduleChange();
 }
 
+/**
+ * Sets the current font.
+ * Possible value for weigth:
+ *  - QFont::Thin	0
+ * - QFont::ExtraLight	12
+ * - QFont::Light	25
+ * - QFont::Normal	50
+ * - QFont::Medium	57
+ * - QFont::DemiBold	63
+ * - QFont::Bold	75
+ * - QFont::ExtraBold	81
+ * - QFont::Black	87
+ */
+void Context2D::setFont(QString family, int pixelSize, int weight, bool italic)
+{
+    m_state.font = QFont(family, m_state.font.pointSize(), weight, italic);
+    m_state.font.setPixelSize(pixelSize);
+    m_state.flags |= DirtyFont;
+}
+
+///Draws the given text beginning at the given position.
+void Context2D::fillText(qreal x, qreal y, qreal w, qreal h, QString text)
+{
+    beginPainting();
+    m_painter.save();
+    m_painter.setMatrix(m_state.matrix, false);
+    m_painter.setFont(m_state.font);
+    m_painter.drawText(QRectF(x, y, w, h), m_state.textAlign, text);
+    m_painter.restore();
+    scheduleChange();
+}
 
 ///Stroke the specified rectangle's path using the strokeStyle, lineWidth,
 ///lineJoin, and (if appropriate) miterLimit attributes.
@@ -786,6 +817,8 @@ void Context2D::reset()
     m_state.shadowBlur = 0;
     m_state.shadowColor = qRgba(0, 0, 0, 0);
     m_state.flags = AllIsFullOfDirt;
+    m_state.font = QFont();
+    m_state.textAlign = Qt::AlignLeft;
     clear();
 }
 

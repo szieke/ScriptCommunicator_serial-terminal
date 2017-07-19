@@ -171,6 +171,18 @@ class Context2D : public QObject, protected QScriptable, public ScriptObject
     ///Holds the height of the canvas widget.
     Q_PROPERTY(int height READ height)
 
+    ///Holds the current text alignment
+    ///The default value is Qt::AlignLeft. Possible values:
+    /// - Qt::AlignLeft	0x0001	Aligns with the left edge.
+    /// - Qt::AlignRight	0x0002	Aligns with the right edge.
+    /// - Qt::AlignHCenter	0x0004	Centers horizontally in the available space.
+    /// - Qt::AlignJustify	0x0008	Justifies the text in the available space.
+    /// - Qt::AlignTop	0x0020	Aligns with the top.
+    /// - Qt::AlignBottom	0x0040	Aligns with the bottom.
+    /// - Qt::AlignVCenter	0x0080	Centers vertically in the available space.
+    /// Qt::AlignBaseline	0x0100	Aligns with the baseline.
+    Q_PROPERTY(int textAlign READ textAlign WRITE setTextAlign)
+
 public:
     Context2D(QObject *parent = 0);
 
@@ -252,6 +264,12 @@ public:
     ///Sets the current shadow color.
     void setShadowColor(const QString &str);
 
+    ///Sets the current text alignement.
+    void setTextAlign(int textAlign){m_state.textAlign = textAlign;}
+
+    ///Returns the current text alignement.
+    int textAlign(void){return m_state.textAlign;}
+
 
 public slots:
 
@@ -324,6 +342,12 @@ public slots:
 
     ///Paint the specified rectangular area using the fillStyle.
     void fillRect(qreal x, qreal y, qreal w, qreal h);
+
+    ///Sets the current font.
+    void setFont(QString family, int pixelSize = -1, int weight = -1, bool italic = false);
+
+    ///Draws the given text beginning at the given position.
+    void fillText(qreal x, qreal y, qreal w, qreal h, QString text);
 
     ///Stroke the specified rectangle's path using the strokeStyle, lineWidth,
     ///lineJoin, and (if appropriate) miterLimit attributes.

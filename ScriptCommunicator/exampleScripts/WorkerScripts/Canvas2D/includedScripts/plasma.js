@@ -1,4 +1,4 @@
-/***************************************************************************************
+﻿/***************************************************************************************
 This worker script (worker scripts can be added in the script window) demonstrates the usage of the 
 ScriptCanvas2D class.
 ****************************************************************************************/
@@ -11,9 +11,16 @@ function dist(a, b, c, d)
 function renderPlasma()
 {
     ctxPlasma.save();
+	
+	ctxPlasma.setFont("Arial",  15);
+	ctxPlasma.textAlign = 0x0004 //Qt::AlignHCenter
+	ctxPlasma.fillStyle = "rgb(255,255,255)";
+	ctxPlasma.fillRect(0,0,128, 100);
+	ctxPlasma.fillText(0, 0, 128, 50, "Plasma");
+	
     var time = counter * 5;
 
-    for( y = 0; y < 128; y+=PIXEL_SIZE) 
+    for( y = 20; y < 128; y+=PIXEL_SIZE) 
 	{
 		for( x = 0 ; x < 128; x+=PIXEL_SIZE) 
 		{
@@ -33,7 +40,6 @@ function renderPlasma()
 		    ctxPlasma.fillRect(x,y,PIXEL_SIZE,PIXEL_SIZE);
 		}
     }
-
 
     ctxPlasma.restore();
     counter++;
