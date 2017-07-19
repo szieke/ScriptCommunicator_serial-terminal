@@ -1,4 +1,4 @@
-/*************************************************************************
+﻿/*************************************************************************
 This worker script (worker scripts can be added in the script window) demonstrates the usage of the script plot window class.
 ***************************************************************************/
 //The plot window is closed.
@@ -55,7 +55,10 @@ plotWindow.setAxisLabels("x axis plot 1", "y axis plot 1");
 plotWindow.showLegend(true);
 plotWindow.setInitialAxisRanges(50, 0, 30);
 var plotWindowGraph1Index = plotWindow.addGraph("blue", "solid", "graph 1");
-var plotWindowGraph2Index = plotWindow.addGraph("red", "dot", "graph 2");
+plotWindow.setScatterStyle(plotWindowGraph1Index, "Cross", 5);
+plotWindow.setLineStyle(plotWindowGraph1Index, "None");
+
+var plotWindowGraph2Index = plotWindow.addGraph("red", "solid", "graph 2");
 plotWindow.showHelperElements(true, true, true, true, true, true, true, 80, true);
 plotWindow.show();
 plotWindow.clearButtonPressedSignal.connect(clearButtonPressed)
@@ -72,6 +75,9 @@ plotWindow2.setAxisLabels("x axis plot 2", "y axis plot 2");
 plotWindow2.showLegend(true);
 plotWindow2.setInitialAxisRanges(50, 0, 30);
 var plotWindow2Graph1Index = plotWindow2.addGraph("green", "solid", "graph 1");
+plotWindow2.setScatterStyle(plotWindow2Graph1Index, "Circle", 5);
+plotWindow2.setLineStyle(plotWindow2Graph1Index, "None");
+
 var plotWindow2Graph2Index = plotWindow2.addGraph("black", "dot", "graph 2");
 plotWindow2.showHelperElements(true, true, true, true, true, true, true, 80, true);
 plotWindow2.show();

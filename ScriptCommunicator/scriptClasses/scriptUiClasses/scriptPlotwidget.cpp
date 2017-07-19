@@ -122,6 +122,12 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
     connect(this, SIGNAL(addDataToGraphSignal(int, double, double)),
             this, SLOT(addDataToGraphSlot(int, double, double)), Qt::QueuedConnection);
 
+    connect(this, SIGNAL(setScatterStyleSignal(int,QString,double)),
+            this, SLOT(setScatterStyleSlot(int,QString,double)), Qt::QueuedConnection);
+
+    connect(this, SIGNAL(setLineStyleSignal(int,QString)),
+            this, SLOT(setLineStyleSlot(int,QString)), Qt::QueuedConnection);
+
     connect(this, SIGNAL(setAxisLabelsSignal(QString,QString)),
             this, SLOT(setAxisLabelsSlot(QString,QString)), Qt::QueuedConnection);
 
@@ -587,8 +593,173 @@ bool ScriptPlotWidget::addDataToGraphSlot(int graphIndex, double x, double y)
     return hasSucceeded;
 }
 
+/**
+ * Sets the visual appearance of single data points in the plot.
+ *
+ * @param graphIndex
+ *      The graph index.
+ * @param style
+ *      The style of the single data points. Possible values:
+ *      - None: No scatter symbols are drawn.
+ *      - Dot: A single pixel.
+ *      - Cross: A cross.
+ *      - Plus: A plus.
+ *      - Circle: A circle.
+ *      - Disc: A circle which is filled with the pen's color.
+ *      - Square: A square.
+ *      - Diamond: A diamond.
+ *      - Star: A star with eight arms, i.e. a combination of cross and plus.
+ *      - Triangle :An equilateral triangle, standing on baseline.
+ *      - TriangleInverted: An equilateral triangle, standing on corner.
+ *      - CrossSquare: A square with a cross inside.
+ *      - PlusSquare: A square with a plus inside.
+ *      - CrossCircle: A circle with a cross inside.
+ *      - PlusCircle: A circle with a plus inside.
+ *      - Peace: A circle, with one vertical and two downward diagonal lines.
+ * @param size
+ *      The size of the single data points.
+ */
+void ScriptPlotWidget::setScatterStyleSlot(int graphIndex, QString style, double size)
+{
+    QCPScatterStyle::ScatterShape scatterStyle = QCPScatterStyle::ssNone;
 
+    if (graphIndex >= 0 && graphIndex < m_plotWidget->graphCount())
+    {
+        if(style == "None")
+        {
+            scatterStyle = QCPScatterStyle::ssNone;
+        }
+        else if(style == "Dot")
+        {
+            scatterStyle = QCPScatterStyle::ssDot;
+        }
+        else if(style == "Cross")
+        {
+            scatterStyle = QCPScatterStyle::ssCross;
+        }
+        else if(style == "Plus")
+        {
+            scatterStyle = QCPScatterStyle::ssPlus;
+        }
+        else if(style == "Circle")
+        {
+            scatterStyle = QCPScatterStyle::ssCircle;
+        }
+        else if(style == "Disc")
+        {
+            scatterStyle = QCPScatterStyle::ssDisc;
+        }
+        else if(style == "Square")
+        {
+            scatterStyle = QCPScatterStyle::ssSquare;
+        }
+        else if(style == "Diamond")
+        {
+            scatterStyle = QCPScatterStyle::ssDiamond;
+        }
+        else if(style == "Star")
+        {
+            scatterStyle = QCPScatterStyle::ssStar;
+        }
+        else if(style == "Triangle")
+        {
+            scatterStyle = QCPScatterStyle::ssTriangle;
+        }
+        else if(style == "TriangleInverted")
+        {
+            scatterStyle = QCPScatterStyle::ssTriangleInverted;
+        }
+        else if(style == "CrossSquare")
+        {
+            scatterStyle = QCPScatterStyle::ssCrossSquare;
+        }
+        else if(style == "PlusSquare")
+        {
+            scatterStyle = QCPScatterStyle::ssPlusSquare;
+        }
+        else if(style == "CrossCircle")
+        {
+            scatterStyle = QCPScatterStyle::ssCrossCircle;
+        }
+        else if(style == "PlusCircle")
+        {
+            scatterStyle = QCPScatterStyle::ssPlusCircle;
+        }
+        else if(style == "Peace")
+        {
+            scatterStyle = QCPScatterStyle::ssPeace;
+        }
+        else
+        {
+            emit appendTextToConsole(Q_FUNC_INFO + QString("invalid style in setScattertyle:%1").arg(style));
+        }
 
+        m_plotWidget->graph(graphIndex)->setScatterStyle(QCPScatterStyle(scatterStyle, size));
+
+    }
+    else
+    {//invalid index
+        emit appendTextToConsole(Q_FUNC_INFO + QString("graph index is out of bounds:%1").arg(graphIndex));
+    }
+}
+
+/**
+ * This slot function sets the line style of a graph.
+ *
+ * @param graphIndex
+ *      The graph index.
+ * @param style
+ *      The line style. Possible values:
+ *      - None: Data points are not connected with any lines (e.g. data only represented
+ *              with symbols according to the scatter style (is set with setScatterStyle)).
+ *      - Line: Data points are connected by a straight line.
+ *      - StepLeft: Line is drawn as steps where the step height is the value of the left data point.
+ *      - StepRight: Line is drawn as steps where the step height is the value of the right data point.
+ *      - StepCenter: Line is drawn as steps where the step is in between two data points.
+ *      - Impulse: Each data point is represented by a line parallel to the value axis, which reaches from the data point to the zero-value-line.
+ */
+void ScriptPlotWidget::setLineStyleSlot(int graphIndex, QString style)
+{
+    QCPGraph::LineStyle lineStyle = QCPGraph::lsNone;
+
+    if (graphIndex >= 0 && graphIndex < m_plotWidget->graphCount())
+    {
+        if(style == "None")
+        {
+            lineStyle = QCPGraph::lsNone;
+        }
+        else if(style == "Line")
+        {
+            lineStyle = QCPGraph::lsLine;
+        }
+        else if(style == "StepLeft")
+        {
+            lineStyle = QCPGraph::lsStepLeft;
+        }
+        else if(style == "StepRight")
+        {
+            lineStyle = QCPGraph::lsStepRight;
+        }
+        else if(style == "StepCenter")
+        {
+            lineStyle = QCPGraph::lsStepCenter;
+        }
+        else if(style == "Impulse")
+        {
+            lineStyle = QCPGraph::lsImpulse;
+        }
+        else
+        {
+            emit appendTextToConsole(Q_FUNC_INFO + QString("invalid style in setLineStyle:%1").arg(style));
+        }
+
+        m_plotWidget->graph(graphIndex)->setLineStyle(lineStyle);
+    }
+    else
+    {//invalid index
+        emit appendTextToConsole(Q_FUNC_INFO + QString("graph index is out of bounds:%1").arg(graphIndex));
+    }
+}
 
 /**
  * This function adds a graph to the diagram.

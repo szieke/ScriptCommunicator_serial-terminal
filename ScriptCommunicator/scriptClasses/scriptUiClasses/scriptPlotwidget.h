@@ -52,12 +52,47 @@ public:
         return graphIndex;
     }
 
-    ///The slot function sets the initial ranges of the diagram.
+    ///The function sets the initial ranges of the diagram.
     Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue){emit setInitialAxisRangesSignal(xRange, yMinValue, ymaxValue);}
 
-    ///This slot function adds one point to a graph.
+    ///This function sets the line style of a graph.
     Q_INVOKABLE void addDataToGraph(int graphIndex, double x, double y){emit addDataToGraphSignal(graphIndex, x, y);}
 
+    /**
+     * Sets the visual appearance of single data points in the plot.
+     *
+     * Possible values for style:
+     *      - None: No scatter symbols are drawn.
+     *      - Dot: A single pixel.
+     *      - Cross: A cross.
+     *      - Plus: A plus.
+     *      - Circle: A circle.
+     *      - Disc: A circle which is filled with the pen's color.
+     *      - Square: A square.
+     *      - Diamond: A diamond.
+     *      - Star: A star with eight arms, i.e. a combination of cross and plus.
+     *      - Triangle :An equilateral triangle, standing on baseline.
+     *      - TriangleInverted: An equilateral triangle, standing on corner.
+     *      - CrossSquare: A square with a cross inside.
+     *      - PlusSquare: A square with a plus inside.
+     *      - CrossCircle: A circle with a cross inside.
+     *      - PlusCircle: A circle with a plus inside.
+     *      - Peace: A circle, with one vertical and two downward diagonal lines.
+     */
+    Q_INVOKABLE void setScatterStyle(int graphIndex, QString style, double size){emit setScatterStyleSignal(graphIndex, style, size);}
+
+    /**
+     * This function adds one point to a graph.
+     * Possible values for style:
+     *      - None: Data points are not connected with any lines (e.g. data only represented
+     *              with symbols according to the scatter style (is set with setScatterStyle)).
+     *      - Line: Data points are connected by a straight line.
+     *      - StepLeft: Line is drawn as steps where the step height is the value of the left data point.
+     *      - StepRight: Line is drawn as steps where the step height is the value of the right data point.
+     *      - StepCenter: Line is drawn as steps where the step is in between two data points.
+     *      - Impulse: Each data point is represented by a line parallel to the value axis, which reaches from the data point to the zero-value-line.
+     */
+    Q_INVOKABLE void setLineStyle(int graphIndex, QString style){emit setLineStyleSignal(graphIndex, style);}
 
     ///Sets the axis label.
     Q_INVOKABLE void setAxisLabels(QString xAxisLabel, QString yAxisLabel){emit setAxisLabelsSignal(xAxisLabel, yAxisLabel);}
@@ -120,6 +155,13 @@ signals:
     ///This signal is private and must not be used inside a script.
     void addDataToGraphSignal(int graphIndex, double x, double y);
 
+    ///Is connected with PlotWindow::setScatterStyleSlot (sets the visual appearance of single data points in the plot).
+    ///This signal is private and must not be used inside a script.
+    void setScatterStyleSignal(int graphIndex, QString style, double size);
+
+    ///Is connected with PlotWindow::setLineStyleSlot(sets the line style of a graph).
+    ///This signal is private and must not be used inside a script.
+    void setLineStyleSignal(int graphIndex, QString style);
 
     ///Is connected with PlotWindow::showFromScript (Sets the axis labels).
     ///This signal is private and must not be used inside a script.
@@ -160,6 +202,12 @@ public slots:
 
     ///This slot function adds one point to a graph.
     bool addDataToGraphSlot(int graphIndex, double x, double y);
+
+    ///Sets the visual appearance of single data points in the plot.
+    void setScatterStyleSlot(int graphIndex, QString style, double size);
+
+    ///This slot function sets the line style of a graph.
+    void setLineStyleSlot(int graphIndex, QString style);
 
     ///Sets the axis labels.
     void setAxisLabelsSlot(QString xAxisLabel, QString yAxisLabel);
