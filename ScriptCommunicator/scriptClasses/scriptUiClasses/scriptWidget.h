@@ -58,6 +58,12 @@ public:
         {
             Qt::ConnectionType directConnectionType = scriptThread->runsInDebugger() ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
+            if(!scriptThread->registerMetaTypeCalledinScriptWidget())
+            {
+                qRegisterMetaType<QPalette::ColorRole>("QPalette::ColorRole");
+                scriptThread->setRegisterMetaTypeCalledinScriptWidget(true);
+            }
+
             //connect the necessary signals with the wrapper slots (in this slots the
             //events of the wrapper class are generated, the script can connect to this
             //wrapper events)
@@ -76,11 +82,14 @@ public:
             connect(this, SIGNAL(windowPositionAndSizeSignal(QString*,QWidget*)),
                     scriptWindow, SLOT(windowPositionAndSizeSlot(QString*,QWidget*)), directConnectionType);
 
-            connect(this, SIGNAL(setScriptGuiElementColorSignal(QString,QWidget*,QString)),
-                    scriptWindow, SLOT(setScriptGuiElementColorSlot(QString,QWidget*, QString)), Qt::QueuedConnection);
+            connect(this, SIGNAL(setScriptGuiElementColorSignal(QColor,QWidget*,QPalette::ColorRole)),
+                    scriptWindow, SLOT(setScriptGuiElementColorSlot(QColor,QWidget*, QPalette::ColorRole)), Qt::QueuedConnection);
 
-            connect(this, SIGNAL(setScriptGuiElementColorRgbSignal(quint8,quint8,quint8,QWidget*,QString)),
-                    scriptWindow, SLOT(setScriptGuiElementColorRgbSlot(quint8,quint8,quint8,QWidget*,QString)), Qt::QueuedConnection);
+            connect(this, SIGNAL(setScriptGuiElementAutoFillBackgroundSignal(QWidget*,bool)),
+                    scriptWindow, SLOT(setScriptGuiElementAutoFillBackgroundSlot(QWidget*,bool)), Qt::QueuedConnection);
+
+            connect(this, SIGNAL(setScriptGuiElementBackgroundColorSignal(QColor,QWidget*)),
+                    scriptWindow, SLOT(setScriptGuiElementBackgroundColorSlot(QColor,QWidget*)), Qt::QueuedConnection);
 
             connect(this, SIGNAL(setToolTipSignal(QString,int,QWidget*)),
                     scriptWindow, SLOT(setToolTipSlot(QString,int,QWidget*)), Qt::QueuedConnection);
@@ -142,24 +151,27 @@ public:
 
     ///Sets the background color of a script gui element.
     ///Possible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-    Q_INVOKABLE void setBackgroundColor(QString color){emit setScriptGuiElementColorSignal(color, m_widget, "Base"); emit setScriptGuiElementColorSignal(color, m_widget, "Background");}
+    Q_INVOKABLE void setBackgroundColor(QString color){emit setScriptGuiElementBackgroundColorSignal(QColor(ScriptSlots::stringToGlobalColor(color)), m_widget);}
 
     ///Sets the window text color of a script gui element.
     ///Possible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-    Q_INVOKABLE void setWindowTextColor(QString color){emit setScriptGuiElementColorSignal(color, m_widget,"WindowText");}
+    Q_INVOKABLE void setWindowTextColor(QString color){emit setScriptGuiElementColorSignal(QColor(ScriptSlots::stringToGlobalColor(color)), m_widget,ScriptSlots::stringToPaletteColorRole("WindowText"));}
 
     ///Sets the text color of a script gui element.
     ///Possible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-    Q_INVOKABLE void setTextColor(QString color){emit setScriptGuiElementColorSignal(color, m_widget,"Text");}
+    Q_INVOKABLE void setTextColor(QString color){emit setScriptGuiElementColorSignal(QColor(ScriptSlots::stringToGlobalColor(color)), m_widget, ScriptSlots::stringToPaletteColorRole("Text"));}
 
     ///Sets a palette color of a script gui element.
     ///Possible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.
     ///Possible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-    Q_INVOKABLE void setPaletteColor(QString palette, QString color){emit setScriptGuiElementColorSignal(color, m_widget, palette);}
+    Q_INVOKABLE void setPaletteColor(QString palette, QString color){emit setScriptGuiElementColorSignal(QColor(ScriptSlots::stringToGlobalColor(color)), m_widget, ScriptSlots::stringToPaletteColorRole(palette));}
 
     ///Sets a palette color of a script gui element.
     ///Possible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.
-    Q_INVOKABLE void setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette){emit setScriptGuiElementColorRgbSignal(red, green, blue, m_widget, palette);}
+    Q_INVOKABLE void setPaletteColorRgb(quint8 red, quint8 green, quint8 blue, QString palette){emit setScriptGuiElementColorSignal(QColor(red, green, blue), m_widget, ScriptSlots::stringToPaletteColorRole(palette));}
+
+    Q_INVOKABLE void setAutoFillBackground(bool enabled){emit setScriptGuiElementAutoFillBackgroundSignal(m_widget, enabled);}
+
 
     ///Sets the tool tip of the script gui element.
     ///If the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
@@ -307,15 +319,20 @@ Q_SIGNALS:
     ///This signal is private and must not be used inside a script.
     void setWindowTitleSignal(QString);
 
-    ///This signal is emitted if the color role color of a script gui element
+    ///This signal is emitted if the background color of a script gui element
     ///shall be changed.
     ///This signal is private and must not be used inside a script.
-    void setScriptGuiElementColorSignal(QString color, QWidget* element, QString colorRole);
+    setScriptGuiElementBackgroundColorSignal(QColor color, QWidget* element);
 
     ///This signal is emitted if the color role color of a script gui element
     ///shall be changed.
     ///This signal is private and must not be used inside a script.
-    void setScriptGuiElementColorRgbSignal(quint8 red, quint8 green,quint8 blue, QWidget* element, QString colorRole);
+    void setScriptGuiElementColorSignal(QColor color, QWidget* element, QPalette::ColorRole colorRole);
+
+    ///This signal is emitted if the auto fill background property of a script gui element
+    ///shall be changed.
+    ///This signal is private and must not be used inside a script.
+    void setScriptGuiElementAutoFillBackgroundSignal(QWidget* element, bool enabled);
 
     ///This signal is emitted in setWindowIcon.
     ///This signal is private and must not be used inside a script.

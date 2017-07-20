@@ -170,6 +170,22 @@ void ScriptSlots::insertWidgetInToTableSlot(ScriptThread* scriptThread, QTableWi
 }
 
 /**
+ * With this slot function a script thread can change the background color
+ * of a script gui element.
+ * Note: Gui elements are created in the main thread.
+ * @param color
+ *      The new background color.
+ * @param element
+ *      The script gui element.
+ */
+void ScriptSlots::setScriptGuiElementBackgroundColorSlot(QColor color, QWidget* element)
+{
+    QPalette palette(element->palette());
+    palette.setColor(element->backgroundRole(), color);
+    element->setPalette(palette);
+}
+
+/**
  * With this slot function a script thread can change the color
  * of a script gui element.
  * Note: Gui elements are created in the main thread.
@@ -180,34 +196,26 @@ void ScriptSlots::insertWidgetInToTableSlot(ScriptThread* scriptThread, QTableWi
  * @param colorRole
  *      The new color role.
  */
-void ScriptSlots::setScriptGuiElementColorSlot(QString color, QWidget* element, QString colorRole)
+void ScriptSlots::setScriptGuiElementColorSlot(QColor color, QWidget* element, QPalette::ColorRole colorRole)
 
 {
     QPalette palette(element->palette());
-    palette.setColor(stringToPaletteColorRole(colorRole), stringToGlobalColor(color));
+    palette.setColor(colorRole, color);
     element->setPalette(palette);
 }
 
+
 /**
- * With this slot function a script thread can change the color
- * of a script gui element.
- * Note: Gui elements are created in the main thread.
- * @param red
- *      Red
- * @param green
- *      Green
- * @param blue
- *      Blue
+ * Sets the auto fill background property of the gui element.
+ *
  * @param element
  *      The script gui element.
- * @param colorRole
- *      The new color role.
+ * @param enabled
+ *      True enabled, false disabled.
  */
-void ScriptSlots::setScriptGuiElementColorRgbSlot(quint8 red, quint8 green,quint8 blue, QWidget* element, QString colorRole)
+void ScriptSlots::setScriptGuiElementAutoFillBackgroundSlot(QWidget* element, bool enabled)
 {
-    QPalette palette(element->palette());
-    palette.setColor(stringToPaletteColorRole(colorRole), QColor(red, green, blue));
-    element->setPalette(palette);
+    element->setAutoFillBackground(enabled);
 }
 
 /**
@@ -232,9 +240,17 @@ Qt::GlobalColor ScriptSlots::stringToGlobalColor(QString color)
     {
         convertedColor = Qt::white;
     }
+    else if(color == "darkGray")
+    {
+        convertedColor = Qt::darkGray;
+    }
     else if(color == "gray")
     {
         convertedColor = Qt::gray;
+    }
+    else if(color == "lightGray")
+    {
+        convertedColor = Qt::lightGray;
     }
     else if(color == "red")
     {
@@ -259,6 +275,30 @@ Qt::GlobalColor ScriptSlots::stringToGlobalColor(QString color)
     else if(color == "yellow")
     {
         convertedColor = Qt::yellow;
+    }
+    else if(color == "darkRed")
+    {
+        convertedColor = Qt::darkRed;
+    }
+    else if(color == "darkGreen")
+    {
+        convertedColor = Qt::darkGreen;
+    }
+    else if(color == "darkBlue")
+    {
+        convertedColor = Qt::darkBlue;
+    }
+    else if(color == "darkCyan")
+    {
+        convertedColor = Qt::darkCyan;
+    }
+    else if(color == "darkMagenta")
+    {
+        convertedColor = Qt::darkMagenta;
+    }
+    else if(color == "darkYellow")
+    {
+        convertedColor = Qt::darkYellow;
     }
     else
     {
@@ -296,6 +336,10 @@ QPalette::ColorRole ScriptSlots::stringToPaletteColorRole(QString colorRole)
     else if(colorRole == "WindowText")
     {
         convertedColor = QPalette::WindowText;
+    }
+    else if(colorRole == "Button")
+    {
+        convertedColor = QPalette::Button;
     }
     else if(colorRole == "Window")
     {

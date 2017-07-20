@@ -1,11 +1,11 @@
 ScriptDateEdit::setEnabled(bool isEnabled):void \nEnables or disables the widget.
 ScriptDateEdit::hide(void):void \nHides the widget.
 ScriptDateEdit::show(void):void \nShows the widget.
-ScriptDateEdit::setBackgroundColor(String color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptDateEdit::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptDateEdit::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptDateEdit::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptDateEdit::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptDateEdit::setBackgroundColor(String color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, darkGray, lightGray, darkRed, red, green, blue, cyan, magenta, darkGreen, darkBlue, darkCyan, darkMagenta, darkYellow and yellow.\nNote:\nFore some GUI elements (like the RadioButton) setAutoFillBackground must be called if the background color shall be changed and\nfor some other GUI elements (like the CheckBox) the background color cannot be changed.
+ScriptDateEdit::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, darkGray, lightGray, darkRed, red, green, blue, cyan, magenta, darkGreen, darkBlue, darkCyan, darkMagenta, darkYellow and yellow.
+ScriptDateEdit::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, darkGray, lightGray, darkRed, red, green, blue, cyan, magenta, darkGreen, darkBlue, darkCyan, darkMagenta, darkYellow and yellow.
+ScriptDateEdit::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Button, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, darkGray, lige, cyan, magenta and yellow.
+ScriptDateEdit::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Button, Foreground, Background, WindowText, Window, Text and ButtonText.
 ScriptDateEdit::setToolTip(String text, Number duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptDateEdit::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptDateEdit::setFocus(void):void \nGives the keyboard input focus to this widget.
@@ -21,4 +21,5 @@ ScriptDateEdit::setDate(String dateString):void \nSets the date.
 ScriptDateEdit::getDate(void):String \nReturns the date.
 ScriptDateEdit::setDisplayFormat(String format):void \nSets the display format.
 ScriptDateEdit::getDisplayFormat(void):String \nReturns the display format.
+ScriptDateEdit::setAutoFillBackground(bool enabled):void \nThis property holds whether the widget background is filled automatically.\nIf enabled, this property will cause Qt to fill the background of the widget before invoking the paint event.\nNote:\nSome GUI elements (like the RadioButton) need this property set to true if the background color shall be changed with setBackgroundColor.
 ScriptDateEdit::dateChangedSignal.connect(String date) \nThis signal is emitted if the value of the date edit has been changed.

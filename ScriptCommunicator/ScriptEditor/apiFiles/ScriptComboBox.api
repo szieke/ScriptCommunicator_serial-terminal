@@ -1,11 +1,11 @@
 ScriptComboBox::setEnabled(bool isEnabled):void \nEnables or disables the widget.
 ScriptComboBox::hide(void):void \nHides the widget.
 ScriptComboBox::show(void):void \nShows the widget.
-ScriptComboBox::setBackgroundColor(String color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptComboBox::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptComboBox::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptComboBox::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptComboBox::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptComboBox::setBackgroundColor(String color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, darkGray, lightGray, darkRed, red, green, blue, cyan, magenta, darkGreen, darkBlue, darkCyan, darkMagenta, darkYellow and yellow.\nNote:\nFore some GUI elements (like the RadioButton) setAutoFillBackground must be called if the background color shall be changed and\nfor some other GUI elements (like the CheckBox) the background color cannot be changed.
+ScriptComboBox::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, darkGray, lightGray, darkRed, red, green, blue, cyan, magenta, darkGreen, darkBlue, darkCyan, darkMagenta, darkYellow and yellow.
+ScriptComboBox::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, darkGray, lightGray, darkRed, red, green, blue, cyan, magenta, darkGreen, darkBlue, darkCyan, darkMagenta, darkYellow and yellow.
+ScriptComboBox::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Button, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, darkGray, lige, cyan, magenta and yellow.
+ScriptComboBox::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Button, Foreground, Background, WindowText, Window, Text and ButtonText.
 ScriptComboBox::setToolTip(String text, Number duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptComboBox::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptComboBox::setFocus(void):void \nGives the keyboard input focus to this widget.
@@ -30,5 +30,6 @@ ScriptComboBox::setCurrentText(String text):void \nSets the text of the current 
 ScriptComboBox::setCurrentIndex(Number index):void \nSets the index of the current selected item.
 ScriptComboBox::count(void):Number \nReturns the number of items in the combo box.  
 ScriptComboBox::clear(void):void \nClears the combo box and removes all items.
+ScriptComboBox::setAutoFillBackground(bool enabled):void \nThis property holds whether the widget background is filled automatically.\nIf enabled, this property will cause Qt to fill the background of the widget before invoking the paint event.\nNote:\nSome GUI elements (like the RadioButton) need this property set to true if the background color shall be changed with setBackgroundColor.
 ScriptComboBox::currentTextChangedSignal.connect(String newText) \nThis signal is emitted if the text of the current selected item has been changed\n(new index or the text has been modified).
 ScriptComboBox::currentIndexChangedSignal.connect(Number currentSelectedIndex) \nThis signal is emitted if the current selected index has been changed.

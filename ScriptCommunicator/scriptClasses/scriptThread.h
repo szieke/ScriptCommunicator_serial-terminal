@@ -592,6 +592,12 @@ public:
     ///Returns m_sendId;
     quint32 getSendId(void){return m_sendId;}
 
+    ///Returns m_registerMetaTypeCalledinScriptWidget.
+    bool registerMetaTypeCalledinScriptWidget(void){return m_registerMetaTypeCalledinScriptWidget;}
+
+    ///Sets m_registerMetaTypeCalledinScriptWidget.
+    void setRegisterMetaTypeCalledinScriptWidget(bool called){m_registerMetaTypeCalledinScriptWidget = called;}
+
 signals:
 
     ///Is emitted if the clear console button in the main window is pressed.
@@ -826,6 +832,9 @@ private:
 
     ///The ScriptInf object.
     ScriptInf* m_scriptInf;
+
+    ///True if qRegisterMetaType was already called in ScriptWidget constructor.
+    bool m_registerMetaTypeCalledinScriptWidget;
 
 };
 

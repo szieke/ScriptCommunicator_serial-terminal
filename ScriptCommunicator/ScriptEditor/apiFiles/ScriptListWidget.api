@@ -1,11 +1,11 @@
 ScriptListWidget::setEnabled(bool isEnabled):void \nEnables or disables the widget.
 ScriptListWidget::hide(void):void \nHides the widget.
 ScriptListWidget::show(void):void \nShows the widget.
-ScriptListWidget::setBackgroundColor(String color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptListWidget::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptListWidget::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptListWidget::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
-ScriptListWidget::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Foreground, Background, WindowText, Window, Text and ButtonText.
+ScriptListWidget::setBackgroundColor(String color):void \nSets the background color of a script gui element. Possible colors are:\nblack, white, darkGray, lightGray, darkRed, red, green, blue, cyan, magenta, darkGreen, darkBlue, darkCyan, darkMagenta, darkYellow and yellow.\nNote:\nFore some GUI elements (like the RadioButton) setAutoFillBackground must be called if the background color shall be changed and\nfor some other GUI elements (like the CheckBox) the background color cannot be changed.
+ScriptListWidget::setWindowTextColor(String color):void \nSets the window text color of a script gui element. Possible colors are:\nblack, white, darkGray, lightGray, darkRed, red, green, blue, cyan, magenta, darkGreen, darkBlue, darkCyan, darkMagenta, darkYellow and yellow.
+ScriptListWidget::setTextColor(String color):void \nSets the text color of a script gui element. Possible colors are:\nblack, white, darkGray, lightGray, darkRed, red, green, blue, cyan, magenta, darkGreen, darkBlue, darkCyan, darkMagenta, darkYellow and yellow.
+ScriptListWidget::setPaletteColor(String palette, String color):void \nSets a palette color of a script gui element.\nPossible palette values are: Base, Button, Foreground, Background, WindowText, Window, Text and ButtonText.\nPossible colors are: black, white, darkGray, lige, cyan, magenta and yellow.
+ScriptListWidget::setPaletteColorRgb(Number red, Number green, Number blue, String palette):void \nSets a palette color of a script gui element. Possible palette values are:\nBase, Button, Foreground, Background, WindowText, Window, Text and ButtonText.
 ScriptListWidget::setToolTip(String text, Number duration):void \nSets the tool tip of the script gui element.\nIf the duration is -1 (default) the duration is calculated depending on the length of the tool tip.
 ScriptListWidget::isVisible(void):bool \nReturn true, if the widget is visible.
 ScriptListWidget::setFocus(void):void \nGives the keyboard input focus to this widget.
@@ -29,6 +29,7 @@ ScriptListWidget::getItemText(Number row):String \nReturns the item text.
 ScriptListWidget::setItemText(Number row, String text):void \nSets the item text.
 ScriptListWidget::setItemIcon(Number row, String iconFileName):void \nSets the item icon.
 ScriptListWidget::sortItems(bool ascendingOrder=true):void \nSorts the items in the widget in the specified order(true=AscendingOrder,\nfalse=DescendingOrder).
+ScriptListWidget::setAutoFillBackground(bool enabled):void \nThis property holds whether the widget background is filled automatically.\nIf enabled, this property will cause Qt to fill the background of the widget before invoking the paint event.\nNote:\nSome GUI elements (like the RadioButton) need this property set to true if the background color shall be changed with setBackgroundColor.
 ScriptListWidget::currentRowChangedSignal.connect(Number currentRow) \nThis signal is emitted if the current row selection has been changed.
 ScriptListWidget::itemClickedSignal.connect(Number row) \nThis signal is emitted if a row has been clicked.
 ScriptListWidget::itemDoubleClickedSignal.connect(Number row) \nThis signal is emitted if a row has been Number clicked.

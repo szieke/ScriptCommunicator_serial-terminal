@@ -11,7 +11,9 @@ function UI_testGetTextLineEditTextChangedSignal(text)
 function radioButton1Clicked(isChecked)
 {
 	UI_testTextEdit.append("UI_radioButton1Clicked");
-	UI_radioButton1.setWindowTextColor("red");
+	UI_radioButton1.setAutoFillBackground(true);//must be called (outherwise setBackgroundColor
+	//would have no effekt with radio buttons)
+	UI_radioButton1.setBackgroundColor("red");
 }
 
 //the text of the combo box has been changed

@@ -159,15 +159,18 @@ public slots:
    ///This slot function moves the curser to the end of the console.
    void moveTextPositionToEndSlot(QTextEdit* textEdit);
 
-   ///With this slot function a script thread can change the color
+   ///With this slot function a script thread can change the background color
    ///of a script gui element.
    ///Note: Gui elements are created in the main thread.
-   void setScriptGuiElementColorSlot(QString color, QWidget* element, QString colorRole);
+   void setScriptGuiElementBackgroundColorSlot(QColor color, QWidget* element);
 
    ///With this slot function a script thread can change the color
    ///of a script gui element.
    ///Note: Gui elements are created in the main thread.
-   void setScriptGuiElementColorRgbSlot(quint8 red, quint8 green,quint8 blue, QWidget* element, QString colorRole);
+   void setScriptGuiElementColorSlot(QColor color, QWidget* element, QPalette::ColorRole colorRole);
+
+   ///Sets the auto fill background property of the gui element.
+   void setScriptGuiElementAutoFillBackgroundSlot(QWidget* element, bool enabled);
 
    ///Converts a string to Qt::GlobalColor.
    static Qt::GlobalColor stringToGlobalColor(QString color);
