@@ -84,7 +84,7 @@ plotWindow2.show();
 plotWindow2.closedSignal.connect(plotWindowClosedSlot)
 plotWindow2.clearButtonPressedSignal.connect(clearButtonPressed)
 plotWindow2.setMaxDataPointsPerGraph(1000000);
-plotWindow2.setUpdateInterval(1000);
+plotWindow2.setUpdateInterval(100);
 plotWindow2.plotMousePressSignal.connect(plotWindow2MousePress)
 
 

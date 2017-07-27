@@ -215,7 +215,7 @@ void ScriptPlotWidget::clearGraphsSlot(void)
 {
     for (qint32 i = 0; i < m_plotWidget->graphCount(); i++)
     {
-        m_plotWidget->graph(i)->clearData();
+        m_plotWidget->graph(i)->data()->clear();
         m_xAxisMaxValues[i] = 0;
     }
 }
@@ -358,11 +358,11 @@ void ScriptPlotWidget::saveButtonPressed()
                     content += QString("%1,").arg(m_plotWidget->graph(i)->pen().color().name());
                     content += QString("%1,").arg(m_plotWidget->graph(i)->pen().style());
 
-                    const QCPDataMap* map = m_plotWidget->graph(i)->data();
-                    QMap<double, QCPData>::const_iterator iter;
+                    QSharedPointer<QCPGraphDataContainer>  map = m_plotWidget->graph(i)->data();
+                    QCPDataContainer<QCPGraphData>::const_iterator iter;
                     for (iter = map->begin(); iter != map->end(); ++iter)
                     {
-                        content += QString("%1:%2,").arg(iter.key()).arg(iter.value().value);
+                        content += QString("%1:%2,").arg(iter->key).arg(iter->value);
                     }
                     //Remove the last ,
                     content.remove(content.length() - 1, 1);
@@ -926,10 +926,10 @@ void ScriptPlotWidget::plotTimeoutSlot()
         //Limit the number of data points in all graphs.
         for (int graphIndex = 0; graphIndex < m_plotWidget->graphCount(); graphIndex++)
         {
-            const QCPDataMap* data = m_plotWidget->graph(graphIndex)->data();
+            QSharedPointer<QCPGraphDataContainer>  data = m_plotWidget->graph(graphIndex)->data();
             if(data->size() > m_maxDataPointsPerGraph)
             {
-                QCPDataMap::const_iterator it = data->begin();
+                QCPGraphDataContainer::const_iterator it = data->begin();
                 int numberOfElements = data->size() - m_maxDataPointsPerGraph;
 
                 while(numberOfElements > 0)
@@ -937,7 +937,7 @@ void ScriptPlotWidget::plotTimeoutSlot()
                     it++;
                     numberOfElements--;
                 }
-                m_plotWidget->graph(graphIndex)->removeDataBefore(it.key());
+                m_plotWidget->graph(graphIndex)->data()->removeBefore(it->key);
             }
         }
     }
