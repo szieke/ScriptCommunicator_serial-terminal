@@ -40,52 +40,20 @@ public:
     explicit ScriptPlotWindow(PlotWindow* plotWindow, ScriptThread *scriptThread, ScriptWindow *scriptWindow) : ScriptWidget(plotWindow, scriptThread, scriptWindow),
         m_plotWindow(plotWindow)
     {
-        //connect the necessary signals with the wrapper slots (in this slots the
-        //events of the wrapper class are generated, the script can connect to this
-        //wrapper events)
 
         //ScriptPlotWindow needs no parent.
          setParent(0);
 
-        Qt::ConnectionType directConnectionType = scriptThread->runsInDebugger()  ? Qt::DirectConnection : Qt::BlockingQueuedConnection ;
-
-        connect(this, SIGNAL(addGraphSignal(QString, QString, QString, int*)),
-                m_plotWindow->getWidget(), SLOT(addGraphSlot(QString, QString, QString, int*)), directConnectionType);
-
-        connect(this, SIGNAL(setInitialAxisRangesSignal(double, double, double)),
-                m_plotWindow->getWidget(), SLOT(setInitialAxisRangesSlot(double, double, double)), Qt::QueuedConnection);
-
-        connect(this, SIGNAL(addDataToGraphSignal(int, double, double)),
-                m_plotWindow->getWidget(), SLOT(addDataToGraphSlot(int, double, double)), Qt::QueuedConnection);
-
-        connect(this, SIGNAL(setScatterStyleSignal(int,QString,double)),
-                m_plotWindow->getWidget(), SLOT(setScatterStyleSlot(int,QString,double)), Qt::QueuedConnection);
-
-        connect(this, SIGNAL(setLineStyleSignal(int,QString)),
-                m_plotWindow->getWidget(), SLOT(setLineStyleSlot(int,QString)), Qt::QueuedConnection);
-
-        connect(this, SIGNAL(setAxisLabelsSignal(QString,QString)),
-                m_plotWindow->getWidget(), SLOT(setAxisLabelsSlot(QString,QString)), Qt::QueuedConnection);
-
-        connect(this, SIGNAL(showLegendSignal(bool)),
-                m_plotWindow->getWidget(), SLOT(showLegendSlot(bool)), Qt::QueuedConnection);
 
         connect(m_plotWindow, SIGNAL(closedSignal()), this, SIGNAL(closedSignal()), Qt::QueuedConnection);
 
         connect(m_plotWindow->getWidget(), SIGNAL(clearButtonPressedSignal()),
-                this, SLOT(clearButtonPressedSlot()), Qt::QueuedConnection);
+                this, SIGNAL(clearButtonPressedSignal()), Qt::QueuedConnection);
 
         connect(m_plotWindow->getWidget(), SIGNAL(plotMousePressSignal(double,double,quint32)),
-                this, SLOT(plotMousePressSlot(double,double,quint32)), Qt::QueuedConnection);
+                this, SIGNAL(plotMousePressSignal(double,double,quint32)), Qt::QueuedConnection);
 
-        connect(this, SIGNAL(clearGraphsSignal()),
-                m_plotWindow->getWidget(), SLOT(clearGraphsSlot()), directConnectionType);
 
-        connect(this, SIGNAL(removeAllGraphsSignal()),
-                m_plotWindow->getWidget(), SLOT(removeAllGraphsSlot()), directConnectionType);
-
-        connect(this, SIGNAL(showHelperElementsSignal(bool,bool,bool,bool,bool,bool,bool,quint32,bool)),
-                m_plotWindow->getWidget(), SLOT(showHelperElementsSlot(bool,bool,bool,bool,bool,bool,bool,quint32,bool)), directConnectionType);
 
     }
 
@@ -104,15 +72,15 @@ public:
     Q_INVOKABLE int addGraph(QString color, QString penStyle, QString name)
     {
         int graphIndex = 0;
-        emit addGraphSignal(color, penStyle, name, &graphIndex);
+        emit m_plotWindow->getWidget()->addGraphSignal(color, penStyle, name, &graphIndex);
         return graphIndex;
     }
 
     ///The slot function sets the initial ranges of the diagram.
-    Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue){emit setInitialAxisRangesSignal(xRange, yMinValue, ymaxValue);}
+    Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue){emit m_plotWindow->getWidget()->setInitialAxisRangesSignal(xRange, yMinValue, ymaxValue);}
 
     ///This slot function adds one point to a graph.
-    Q_INVOKABLE void addDataToGraph(int graphIndex, double x, double y){emit addDataToGraphSignal(graphIndex, x, y);}
+    Q_INVOKABLE void addDataToGraph(int graphIndex, double x, double y){emit m_plotWindow->getWidget()->addDataToGraphSignal(graphIndex, x, y);}
 
     /**
      * Sets the visual appearance of single data points in the plot.
@@ -135,7 +103,7 @@ public:
      *      - PlusCircle: A circle with a plus inside.
      *      - Peace: A circle, with one vertical and two downward diagonal lines.
      */
-    Q_INVOKABLE void setScatterStyle(int graphIndex, QString style, double size){emit setScatterStyleSignal(graphIndex, style, size);}
+    Q_INVOKABLE void setScatterStyle(int graphIndex, QString style, double size){emit m_plotWindow->getWidget()->setScatterStyleSignal(graphIndex, style, size);}
 
     /**
      * This function adds one point to a graph.
@@ -148,24 +116,24 @@ public:
      *      - StepCenter: Line is drawn as steps where the step is in between two data points.
      *      - Impulse: Each data point is represented by a line parallel to the value axis, which reaches from the data point to the zero-value-line.
      */
-    Q_INVOKABLE void setLineStyle(int graphIndex, QString style){emit setLineStyleSignal(graphIndex, style);}
+    Q_INVOKABLE void setLineStyle(int graphIndex, QString style){emit m_plotWindow->getWidget()->setLineStyleSignal(graphIndex, style);}
 
     ///Sets the axis label.
-    Q_INVOKABLE void setAxisLabels(QString xAxisLabel, QString yAxisLabel){emit setAxisLabelsSignal(xAxisLabel, yAxisLabel);}
+    Q_INVOKABLE void setAxisLabels(QString xAxisLabel, QString yAxisLabel){emit m_plotWindow->getWidget()->setAxisLabelsSignal(xAxisLabel, yAxisLabel);}
 
     ///This function shows or hides the diagram legend.
-    Q_INVOKABLE void showLegend(bool show){emit showLegendSignal(show);}
+    Q_INVOKABLE void showLegend(bool show){emit m_plotWindow->getWidget()->showLegendSignal(show);}
 
     ///This function clears the data of all graphs.
-    Q_INVOKABLE void clearGraphs(void){emit clearGraphsSignal();}
+    Q_INVOKABLE void clearGraphs(void){emit m_plotWindow->getWidget()->clearGraphsSignal();}
 
     ///This function removes all graphs.
-    Q_INVOKABLE void removeAllGraphs(void){emit removeAllGraphsSignal();}
+    Q_INVOKABLE void removeAllGraphs(void){emit m_plotWindow->getWidget()->removeAllGraphsSignal();}
 
     ///Sets the visibility of several plot widget elements.
     Q_INVOKABLE void showHelperElements(bool showXRange, bool showYRange, bool showUpdate, bool showSave, bool showLoad, bool showClear, bool showGraphVisibility,
                                         quint32 graphVisibilityMaxSize=80, bool showLegend=true)
-    {emit showHelperElementsSignal(showXRange, showYRange, showUpdate, showSave, showLoad, showClear, showGraphVisibility, graphVisibilityMaxSize, showLegend);}
+    {emit m_plotWindow->getWidget()->showHelperElementsSignal(showXRange, showYRange, showUpdate, showSave, showLoad, showClear, showGraphVisibility, graphVisibilityMaxSize, showLegend);}
 
     ///Sets tThe max. number of data points per graph (the default is 10.000.000).
     Q_INVOKABLE void setMaxDataPointsPerGraph(qint32 maxDataPointsPerGraph){m_plotWindow->getWidget()->setMaxDataPointsPerGraph(maxDataPointsPerGraph);}
@@ -189,50 +157,6 @@ Q_SIGNALS:
     ///Scripts can connect a function to this signal.
     void closedSignal(void);
 
-    ///Is emitted in clearGraphs.
-    ///This signal is private and must not be used inside a script.
-    void clearGraphsSignal(void);
-
-    ///Is emitted in clearGraphs.
-    ///This signal is private and must not be used inside a script.
-    void removeAllGraphsSignal(void);
-
-    ///Is connected with PlotWindow::addGraph (adds a graph).
-    ///This signal is private and must not be used inside a script.
-    void addGraphSignal(QString color, QString penStyle, QString name, int* graphIndex);
-
-    ///Is connected with PlotWindow::setInitialAxisRanges (sets the ranges of the diagram).
-    ///This signal is private and must not be used inside a script.
-    void setInitialAxisRangesSignal(double xRange, double yMinValue, double ymaxValue);
-
-    ///Is connected with PlotWindow::addDataToGraph (adds one point to a given specific graph).
-    ///This signal is private and must not be used inside a script.
-    void addDataToGraphSignal(int graphIndex, double x, double y);
-
-    ///Is connected with PlotWindow::setScatterStyleSlot (sets the visual appearance of single data points in the plot).
-    ///This signal is private and must not be used inside a script.
-    void setScatterStyleSignal(int graphIndex, QString style, double size);
-
-    ///Is connected with PlotWindow::setLineStyleSlot(sets the line style of a graph).
-    ///This signal is private and must not be used inside a script.
-    void setLineStyleSignal(int graphIndex, QString style);
-
-    ///Is connected with PlotWindow::showFromScript (shows the plot window).
-    ///This signal is private and must not be used inside a script.
-    void showFromScriptSignal();
-
-    ///Is connected with PlotWindow::showFromScript (Sets the axis labels).
-    ///This signal is private and must not be used inside a script.
-    void setAxisLabelsSignal(QString xAxisLabel, QString yAxisLabel);
-
-    ///Is connected with PlotWindow::showLegendSlot (shows or hides the plot legend).
-    ///This signal is private and must not be used inside a script.
-    void showLegendSignal(bool show);
-
-    ///Is emitted in showHelperElements.
-    ///This signal is private and must not be used inside a script.
-    void showHelperElementsSignal(bool showXRange, bool showYRange, bool showUpdate, bool showSave, bool showLoad, bool showClear, bool showGraphVisibility,
-                                  quint32 graphVisibilityMaxSize, bool showLegend);
 
 public slots:
     ///Brings this window to foreground.
@@ -246,17 +170,6 @@ public slots:
             m_plotWindow->activateWindow(); // for Windows
         }
     }
-
-private Q_SLOTS:
-
-    ///This function clears the plot widget.
-    ///It is called if the clear button is pressed.
-    void clearButtonPressedSlot(){ emit clearButtonPressedSignal();}
-
-    ///Is called if the user press a mouse button inside the plot.
-    ///Note: mouseButton has the type Qt::MouseButton.
-    void plotMousePressSlot(double xValue, double yValue, quint32 mouseButton){emit plotMousePressSignal(xValue, yValue, mouseButton);}
-
 
 private:
     ///The wrapped plot window.
