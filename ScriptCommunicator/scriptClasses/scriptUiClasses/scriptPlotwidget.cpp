@@ -122,6 +122,12 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
     connect(this, SIGNAL(addDataToGraphSignal(int, double, double)),
             this, SLOT(addDataToGraphSlot(int, double, double)), Qt::QueuedConnection);
 
+    connect(this, SIGNAL(removeDataFromGraphSignal(int,double)),
+            this, SLOT(removeDataFromGraphSlot(int,double)), Qt::QueuedConnection);
+
+    connect(this, SIGNAL(removeDataRangeFromGraphSignal(int,double,double)),
+            this, SLOT(removeDataRangeFromGraphSlot(int,double,double)), Qt::QueuedConnection);
+
     connect(this, SIGNAL(setScatterStyleSignal(int,QString,double)),
             this, SLOT(setScatterStyleSlot(int,QString,double)), Qt::QueuedConnection);
 
@@ -547,6 +553,30 @@ void ScriptPlotWidget::setAxisLabelsSlot(QString xAxisLabel, QString yAxisLabel)
 
 
 /**
+ * Removes all data points with (sort-)keys between xFrom and xTo. If
+ * xFrom is greater or equal to xTo, the function does nothing.
+ *
+ * @param graphIndex
+ *      The graph index.
+ * @param xFrom
+ *      The start position.
+ * @param xTo
+ *      The end position.
+ */
+void ScriptPlotWidget::removeDataRangeFromGraphSlot(int graphIndex, double xFrom, double xTo)
+{
+    if (graphIndex >= 0 && graphIndex < m_plotWidget->graphCount())
+    {
+        m_plotWidget->graph(graphIndex)->data()->remove(xFrom, xTo);
+
+    }
+    else
+    {//invalid index
+        emit appendTextToConsole(Q_FUNC_INFO + QString("graph index is out of bounds:%1").arg(graphIndex));
+    }
+}
+
+/**
  * This slot function adds one point to a graph.
  * @param graphIndex
  *      The graph index.
@@ -942,3 +972,4 @@ void ScriptPlotWidget::plotTimeoutSlot()
         }
     }
 }
+

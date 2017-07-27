@@ -32,9 +32,15 @@ function timeout()
 //Is called if the user clicks the button.
 function clearButtonPressed()
 {
-	x = 0;
-	plotWindow.clearGraphs();
+	//Clear all data with removeDataRangeFromGraph.
+	plotWindow.removeDataRangeFromGraph(plotWindowGraph1Index, 0, x);
+	plotWindow.removeDataRangeFromGraph(plotWindowGraph2Index, 0, x + 10);
+
+	//Clear all data with clearGraphs.
 	plotWindow2.clearGraphs();
+	
+	x = 0;
+	y = 0;
 }
 function plotWindowMousePress(xValue, yValue, button)
 {

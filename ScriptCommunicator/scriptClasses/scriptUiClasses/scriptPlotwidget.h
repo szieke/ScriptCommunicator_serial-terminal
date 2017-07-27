@@ -58,6 +58,13 @@ public:
     ///This function sets the line style of a graph.
     Q_INVOKABLE void addDataToGraph(int graphIndex, double x, double y){emit addDataToGraphSignal(graphIndex, x, y);}
 
+
+    /**
+     * Removes all data points with (sort-)keys between xFrom and xTo. If
+     * xFrom is greater or equal to xTo, the function does nothing.
+     */
+    Q_INVOKABLE void removeDataRangeFromGraph(int graphIndex, double xFrom, double xTo){emit removeDataRangeFromGraphSignal(graphIndex, xFrom, xTo);}
+
     /**
      * Sets the visual appearance of single data points in the plot.
      *
@@ -143,17 +150,21 @@ signals:
     ///This signal is private and must not be used inside a script.
     void removeAllGraphsSignal(void);
 
-    ///Is connected with PlotWindow::addGraph (adds a graph).
+    ///Is connected with PlotWindow::addGraphSlot (adds a graph).
     ///This signal is private and must not be used inside a script.
     void addGraphSignal(QString color, QString penStyle, QString name, int* graphIndex);
 
-    ///Is connected with PlotWindow::setInitialAxisRanges (sets the ranges of the diagram).
+    ///Is connected with PlotWindow::setInitialAxisRangesSlot (sets the ranges of the diagram).
     ///This signal is private and must not be used inside a script.
     void setInitialAxisRangesSignal(double xRange, double yMinValue, double ymaxValue);
 
-    ///Is connected with PlotWindow::addDataToGraph (adds one point to a given specific graph).
+    ///Is connected with PlotWindow::addDataToGraphSlot (adds one point to a given specific graph).
     ///This signal is private and must not be used inside a script.
     void addDataToGraphSignal(int graphIndex, double x, double y);
+
+    ///Is connected with PlotWindow::removeDataRangeFromGraphSlot (removes all data points with (sort-)keys between xFrom and xTo).
+    ///This signal is private and must not be used inside a script.
+    void removeDataRangeFromGraphSignal(int graphIndex, double xFrom, double xTo);
 
     ///Is connected with PlotWindow::setScatterStyleSlot (sets the visual appearance of single data points in the plot).
     ///This signal is private and must not be used inside a script.
@@ -163,7 +174,7 @@ signals:
     ///This signal is private and must not be used inside a script.
     void setLineStyleSignal(int graphIndex, QString style);
 
-    ///Is connected with PlotWindow::showFromScript (Sets the axis labels).
+    ///Is connected with PlotWindow::showFromScriptSlot (Sets the axis labels).
     ///This signal is private and must not be used inside a script.
     void setAxisLabelsSignal(QString xAxisLabel, QString yAxisLabel);
 
@@ -202,6 +213,9 @@ public slots:
 
     ///This slot function adds one point to a graph.
     bool addDataToGraphSlot(int graphIndex, double x, double y);
+
+    ///Removes all data points with (sort-)keys between xFrom and xTo.
+    void removeDataRangeFromGraphSlot(int graphIndex, double xFrom, double xTo);
 
     ///Sets the visual appearance of single data points in the plot.
     void setScatterStyleSlot(int graphIndex, QString style, double size);
