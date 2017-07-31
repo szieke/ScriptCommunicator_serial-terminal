@@ -786,6 +786,13 @@ void ScriptWindow::loadConfigSlot()
                                                        m_mainWindow->getAndCreateProgramUserFolder(), tr("script config files (*.scripts);;Files (*)"));
     if(!tmpFileName.isEmpty())
     {
+        stopAllScripts();
+        while(!allScriptsHaveBeenStopped())
+        {
+            QThread::msleep(10);
+            QCoreApplication::processEvents();
+        }
+
         m_currentScriptConfigFileName = tmpFileName;
         emit configHasToBeSavedSignal();
         setTitle(m_currentScriptConfigFileName);
@@ -829,7 +836,12 @@ void ScriptWindow::checkTableChanged()
  */
 void ScriptWindow::unloadConfigSlot()
 {
-    checkTableChanged();
+    stopAllScripts();
+    while(!allScriptsHaveBeenStopped())
+    {
+        QThread::msleep(10);
+        QCoreApplication::processEvents();
+    }
 
     m_userInterface->tableWidget->setRowCount(0);
     m_currentScriptConfigFileString = "";
