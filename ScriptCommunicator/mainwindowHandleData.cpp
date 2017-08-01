@@ -699,7 +699,8 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
     if(isNewLine)
     {
         QString tmpString = QString::fromLocal8Bit(data);
-        tmpString.replace("\n", "<br>");
+        //Note: "\n" is not replaces with "<br>" because in MainWindow::appendConsoleStringToConsole for every "\n"
+        //a new block is created (much better performance).
 
         if(currentSettings->showDecimalInConsole)m_consoleDataBufferDec.append(tmpString);
         if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(tmpString);

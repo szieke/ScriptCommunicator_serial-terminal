@@ -3723,7 +3723,16 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
         int val = textEdit->verticalScrollBar()->value();
 
         textEdit->moveCursor(QTextCursor::End);
-        textEdit->insertHtml(*consoleString);
+        QTextCursor cursor = textEdit->textCursor();
+        QStringList string_list = consoleString->split("\n");
+        for (int i = 0; i < string_list.size(); i++)
+        {
+            cursor.insertHtml(string_list.at(i));
+            if ((i + 1) < string_list.size())
+            {
+                cursor.insertBlock();
+            }
+        }
         textEdit->moveCursor(QTextCursor::End);
         consoleString->clear();
 

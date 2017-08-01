@@ -859,7 +859,10 @@ void ScriptSlots::processStoredOperationsSlot(QTextEdit* textEdit, bool isLocked
 {
     int pos = 0;
 
+    QTextCursor cursor = textEdit->textCursor();
     textEdit->setUpdatesEnabled(false);
+    textEdit->blockSignals(true);
+    textEdit->document()->blockSignals(true);
 
     if(isLocked)
     {
@@ -912,6 +915,8 @@ void ScriptSlots::processStoredOperationsSlot(QTextEdit* textEdit, bool isLocked
         textEdit->horizontalScrollBar()->setSliderPosition(0);
     }
 
+    textEdit->blockSignals(false);
+    textEdit->document()->blockSignals(false);
     textEdit->setUpdatesEnabled(true);
 }
 
