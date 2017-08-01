@@ -3717,6 +3717,7 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
     {
         textEdit->blockSignals(true);
         textEdit->document()->blockSignals(true);
+        textEdit->setUpdatesEnabled(false);
 
         //Store the scroll bar position.
         int val = textEdit->verticalScrollBar()->value();
@@ -3739,6 +3740,7 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
 
         textEdit->blockSignals(false);
         textEdit->document()->blockSignals(false);
+        textEdit->setUpdatesEnabled(true);
     }
 }
 
