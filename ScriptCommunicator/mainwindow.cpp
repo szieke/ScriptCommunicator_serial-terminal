@@ -1375,12 +1375,15 @@ bool MainWindow::loadSettings()
         currentSettings.serialPort.setDTR = true;
         currentSettings.serialPort.setRTS = false;
         bool showSendWindow = false;
+        bool showSendWindowMaximized = false;
         bool showSettingWindow = false;
 
         QDomDocument doc("settings");
         bool isConnected = false;
         bool scriptWindowIsVisible = false;
+        bool showScriptWindowMaximized = false;
         bool createSceWindowIsVisible = false;
+        bool showSceWindowMaximized = false;
 
         QList<int> splitterSizes = m_userInterface->ToolboxSplitter->sizes();
         m_toolBoxSplitterSizeSecond = splitterSizes[1];
@@ -1624,64 +1627,6 @@ bool MainWindow::loadSettings()
                         currentSettings.pcanInterface.filterTo = node.attributes().namedItem("filterTo").nodeValue();
                     }
                 }
-                {//send window
-
-                    QDomNodeList nodeList = docElem.elementsByTagName("sendWindow");
-                    if(!nodeList.isEmpty())
-                    {
-                        QDomNode node = nodeList.at(0);
-
-                        if(m_isFirstProgramStart)
-                        {
-                            m_sendWindow->setCurrentSequenceFileName (getAndCreateProgramUserFolder() + "/initalSequences.seq");
-                        }
-                        else
-                        {
-                            QString fileName = node.attributes().namedItem("sequenceFileName").nodeValue();
-                            fileName = convertToAbsolutePath(m_mainConfigFile, fileName);
-                            m_sendWindow->setCurrentSequenceFileName(fileName);
-                        }
-
-                        m_sendWindow->setCurrentSendString(node.attributes().namedItem("sendString").nodeValue());
-                        m_sendWindow->setCurrentCyclicScript(node.attributes().namedItem("cyclicScript").nodeValue());
-                        m_sendWindow->setCurrentSendStringFormat(node.attributes().namedItem("sendStringFormat").nodeValue());
-                        m_sendWindow->setCurrentSendRepetition(node.attributes().namedItem("sendStringRepetition").nodeValue());
-                        m_sendWindow->setCurrentSendPause(node.attributes().namedItem("sendStringPause").nodeValue());
-                        isConnected = (node.attributes().namedItem("isConnected").nodeValue() == "1") ? true : false;
-                        m_userInterface->interactiveConsoleCheckBox->setChecked((node.attributes().namedItem("interactiveConsoleCheckBox").nodeValue() == "1") ? true : false);
-                        currentSettings.targetEndianess = (Endianess)node.attributes().namedItem("targetEndianess").nodeValue().toUInt();
-                        m_sendWindow->setAddToHistoryCheckBox((node.attributes().namedItem("addToHistoryCheckBox").nodeValue() == "1") ? true : false);
-
-                        //Read the 2 splitter sizes.
-                        for(quint32 i = 0; i < 2; i++)
-                        {
-                            QString splitterSizes = (i == 0) ? node.attributes().namedItem("windowSplitter").nodeValue() :
-                                                               node.attributes().namedItem("cyclicAreaSplitter").nodeValue();;
-                            if(splitterSizes.size() > 0)
-                            {
-                                QStringList list = splitterSizes.split(":");
-                                if(list.size()== 2)
-                                {
-                                    QList<int> readSizes;
-                                    readSizes.append(list[0].toInt());
-                                    readSizes.append(list[1].toInt());
-                                    if(i == 0)
-                                    {
-                                        m_sendWindow->getWindowSplitter()->setSizes(readSizes);
-                                    }
-                                    else
-                                    {
-                                        m_sendWindow->getCyclicAreaSplitter()->setSizes(readSizes);
-                                    }
-                                }
-
-                            }
-                        }
-
-
-
-                    }
-                }
                 {//main window position and size
 
                     QDomNodeList nodeList = docElem.elementsByTagName("mainWindowPositionAndSize");
@@ -1790,6 +1735,64 @@ bool MainWindow::loadSettings()
                         }
                     }
                 }
+                {//send window
+
+                    QDomNodeList nodeList = docElem.elementsByTagName("sendWindow");
+                    if(!nodeList.isEmpty())
+                    {
+                        QDomNode node = nodeList.at(0);
+
+                        if(m_isFirstProgramStart)
+                        {
+                            m_sendWindow->setCurrentSequenceFileName (getAndCreateProgramUserFolder() + "/initalSequences.seq");
+                        }
+                        else
+                        {
+                            QString fileName = node.attributes().namedItem("sequenceFileName").nodeValue();
+                            fileName = convertToAbsolutePath(m_mainConfigFile, fileName);
+                            m_sendWindow->setCurrentSequenceFileName(fileName);
+                        }
+
+                        m_sendWindow->setCurrentSendString(node.attributes().namedItem("sendString").nodeValue());
+                        m_sendWindow->setCurrentCyclicScript(node.attributes().namedItem("cyclicScript").nodeValue());
+                        m_sendWindow->setCurrentSendStringFormat(node.attributes().namedItem("sendStringFormat").nodeValue());
+                        m_sendWindow->setCurrentSendRepetition(node.attributes().namedItem("sendStringRepetition").nodeValue());
+                        m_sendWindow->setCurrentSendPause(node.attributes().namedItem("sendStringPause").nodeValue());
+                        isConnected = (node.attributes().namedItem("isConnected").nodeValue() == "1") ? true : false;
+                        m_userInterface->interactiveConsoleCheckBox->setChecked((node.attributes().namedItem("interactiveConsoleCheckBox").nodeValue() == "1") ? true : false);
+                        currentSettings.targetEndianess = (Endianess)node.attributes().namedItem("targetEndianess").nodeValue().toUInt();
+                        m_sendWindow->setAddToHistoryCheckBox((node.attributes().namedItem("addToHistoryCheckBox").nodeValue() == "1") ? true : false);
+
+                        //Read the 2 splitter sizes.
+                        for(quint32 i = 0; i < 2; i++)
+                        {
+                            QString splitterSizes = (i == 0) ? node.attributes().namedItem("windowSplitter").nodeValue() :
+                                                               node.attributes().namedItem("cyclicAreaSplitter").nodeValue();;
+                            if(splitterSizes.size() > 0)
+                            {
+                                QStringList list = splitterSizes.split(":");
+                                if(list.size()== 2)
+                                {
+                                    QList<int> readSizes;
+                                    readSizes.append(list[0].toInt());
+                                    readSizes.append(list[1].toInt());
+                                    if(i == 0)
+                                    {
+                                        m_sendWindow->getWindowSplitter()->setSizes(readSizes);
+                                    }
+                                    else
+                                    {
+                                        m_sendWindow->getCyclicAreaSplitter()->setSizes(readSizes);
+                                    }
+                                }
+
+                            }
+                        }
+
+
+
+                    }
+                }
                 {//send window position and size
 
                     QDomNodeList nodeList = docElem.elementsByTagName("sendWindowPositionAndSize");
@@ -1805,10 +1808,8 @@ bool MainWindow::loadSettings()
                         setWindowPositionAndSize(m_sendWindow, rect);
                         m_sendWindowPositionAndSizeloaded = true;
 
-                        if(node.attributes().namedItem("visible").nodeValue() == "1")
-                        {
-                            showSendWindow = true;
-                        }
+                        showSendWindow = (node.attributes().namedItem("visible").nodeValue() == "1") ? true : false;
+                        showSendWindowMaximized = (node.attributes().namedItem("isMaximized").nodeValue() == "1") ? true : false;
                     }
                 }
                 {//settings dialog position and size
@@ -1826,33 +1827,8 @@ bool MainWindow::loadSettings()
 
                         setWindowPositionAndSize(m_settingsDialog, rect);
 
-                        if(node.attributes().namedItem("visible").nodeValue() == "1")
-                        {
-                            showSettingWindow = true;
-                        }
+                        showSettingWindow = (node.attributes().namedItem("visible").nodeValue() == "1") ? true : false;
 
-                    }
-                }
-                {//script window position and size
-
-                    QDomNodeList nodeList = docElem.elementsByTagName("scriptWindowPositionAndSize");
-                    if(!nodeList.isEmpty())
-                    {
-                        QDomNode node = nodeList.at(0);
-                        QRect rect;
-                        rect.setLeft(node.attributes().namedItem("left").nodeValue().toInt());
-                        rect.setTop(node.attributes().namedItem("top").nodeValue().toInt());
-                        rect.setWidth(node.attributes().namedItem("width").nodeValue().toInt());
-                        rect.setHeight(node.attributes().namedItem("height").nodeValue().toInt());
-
-                        setWindowPositionAndSize(m_scriptWindow, rect);
-                        m_scriptWindowPositionAndSizeloaded = true;
-
-
-                        if(node.attributes().namedItem("visible").nodeValue() == "1")
-                        {
-                            scriptWindowIsVisible = true;
-                        }
                     }
                 }
                 {//script window
@@ -1886,6 +1862,25 @@ bool MainWindow::loadSettings()
                             m_scriptWindow->setSplitterSizes(sizes);
                         }
 
+                    }
+                }
+                {//script window position and size
+
+                    QDomNodeList nodeList = docElem.elementsByTagName("scriptWindowPositionAndSize");
+                    if(!nodeList.isEmpty())
+                    {
+                        QDomNode node = nodeList.at(0);
+                        QRect rect;
+                        rect.setLeft(node.attributes().namedItem("left").nodeValue().toInt());
+                        rect.setTop(node.attributes().namedItem("top").nodeValue().toInt());
+                        rect.setWidth(node.attributes().namedItem("width").nodeValue().toInt());
+                        rect.setHeight(node.attributes().namedItem("height").nodeValue().toInt());
+
+                        setWindowPositionAndSize(m_scriptWindow, rect);
+                        m_scriptWindowPositionAndSizeloaded = true;
+
+                        scriptWindowIsVisible = (node.attributes().namedItem("visible").nodeValue() == "1") ? true : false;
+                        showScriptWindowMaximized = (node.attributes().namedItem("isMaximized").nodeValue() == "1") ? true : false;
                     }
                 }
                 {//search console
@@ -1952,10 +1947,8 @@ bool MainWindow::loadSettings()
                         setWindowPositionAndSize(m_scriptWindow->getCreateSceFileDialog(), rect);
                         m_scriptWindow->getCreateSceFileDialog()->setConfigFileName(node.attributes().namedItem("configFileName").nodeValue());
 
-                        if(node.attributes().namedItem("visible").nodeValue() == "1")
-                        {
-                            createSceWindowIsVisible = true;
-                        }
+                        createSceWindowIsVisible = (node.attributes().namedItem("visible").nodeValue() == "1") ? true : false;
+                        showSceWindowMaximized = (node.attributes().namedItem("isMaximized").nodeValue() == "1") ? true : false;
 
 
 
@@ -2048,19 +2041,34 @@ bool MainWindow::loadSettings()
         {
             m_scriptWindow->show();
         }
+        if(showScriptWindowMaximized)
+        {
+            m_scriptWindow->showMaximized();
+        }
 
         if(showSendWindow)
         {
             m_sendWindow->show();
         }
+        if(showSendWindowMaximized)
+        {
+            m_sendWindow->showMaximized();
+        }
+
         if(showSettingWindow)
         {
             m_settingsDialog->show();
         }
+
         if(createSceWindowIsVisible)
         {
             m_scriptWindow->getCreateSceFileDialog()->show();
         }
+        if(showSceWindowMaximized)
+        {
+            m_scriptWindow->getCreateSceFileDialog()->showMaximized();
+        }
+
         if(isConnected)
         {
             toggleConnectionSlot(isConnected);
@@ -2636,28 +2644,6 @@ void MainWindow::saveSettings()
 
                 writeXmlElement(xmlWriter, "pcanSetting", settingsMap);
             }
-            {//send window
-                QList<int> windowSplitterSizes = m_sendWindow->getWindowSplitter()->sizes();
-                QList<int> cyclicAreSizes = m_sendWindow->getCyclicAreaSplitter()->sizes();
-
-                std::map<QString, QString> settingsMap =
-                {std::make_pair(QString("sequenceFileName"), convertToRelativePath(m_mainConfigFile, m_sendWindow->getCurrentSequenceFileName())),
-                 std::make_pair(QString("sendString"), m_sendWindow->getCurrentSendString()),
-                 std::make_pair(QString("cyclicScript"), m_sendWindow->getCurrentCyclicScript()),
-                 std::make_pair(QString("sendStringFormat"), m_sendWindow->getCurrentSendStringFormat()),
-                 std::make_pair(QString("sendStringRepetition"), m_sendWindow->getCurrentSendRepetition()),
-                 std::make_pair(QString("sendStringPause"), m_sendWindow->getCurrentSendPause()),
-                 std::make_pair(QString("isConnected"),QString("%1").arg(m_isConnected)),
-                 std::make_pair(QString("interactiveConsoleCheckBox"),QString("%1").arg(m_userInterface->interactiveConsoleCheckBox->isChecked())),
-                 std::make_pair(QString("windowSplitter"), QString("%1:%2").arg(windowSplitterSizes[0]).arg(windowSplitterSizes[1])),
-                 std::make_pair(QString("cyclicAreaSplitter"), QString("%1:%2").arg(cyclicAreSizes[0]).arg(cyclicAreSizes[1])),
-                 std::make_pair(QString("targetEndianess"), QString("%1").arg(currentSettings->targetEndianess)),
-                 std::make_pair(QString("addToHistoryCheckBox"),QString("%1").arg(m_sendWindow->getAddToHistoryCheckBox())),
-
-                };
-
-                writeXmlElement(xmlWriter, "sendWindow", settingsMap);
-            }
             {//main window position and size
 
                 QRect rect = windowPositionAndSize(this);
@@ -2687,6 +2673,29 @@ void MainWindow::saveSettings()
                 };
                 writeXmlElement(xmlWriter, "mainWindowPositionAndSize", settingsMap);
             }
+            {//send window
+                QList<int> windowSplitterSizes = m_sendWindow->getWindowSplitter()->sizes();
+                QList<int> cyclicAreSizes = m_sendWindow->getCyclicAreaSplitter()->sizes();
+
+                std::map<QString, QString> settingsMap =
+                {std::make_pair(QString("sequenceFileName"), convertToRelativePath(m_mainConfigFile, m_sendWindow->getCurrentSequenceFileName())),
+                 std::make_pair(QString("sendString"), m_sendWindow->getCurrentSendString()),
+                 std::make_pair(QString("cyclicScript"), m_sendWindow->getCurrentCyclicScript()),
+                 std::make_pair(QString("sendStringFormat"), m_sendWindow->getCurrentSendStringFormat()),
+                 std::make_pair(QString("sendStringRepetition"), m_sendWindow->getCurrentSendRepetition()),
+                 std::make_pair(QString("sendStringPause"), m_sendWindow->getCurrentSendPause()),
+                 std::make_pair(QString("isConnected"),QString("%1").arg(m_isConnected)),
+                 std::make_pair(QString("interactiveConsoleCheckBox"),QString("%1").arg(m_userInterface->interactiveConsoleCheckBox->isChecked())),
+                 std::make_pair(QString("windowSplitter"), QString("%1:%2").arg(windowSplitterSizes[0]).arg(windowSplitterSizes[1])),
+                 std::make_pair(QString("cyclicAreaSplitter"), QString("%1:%2").arg(cyclicAreSizes[0]).arg(cyclicAreSizes[1])),
+                 std::make_pair(QString("targetEndianess"), QString("%1").arg(currentSettings->targetEndianess)),
+                 std::make_pair(QString("addToHistoryCheckBox"),QString("%1").arg(m_sendWindow->getAddToHistoryCheckBox())),
+                 std::make_pair(QString("isMaximized"), QString("%1").arg(m_sendWindow->isMaximized())),
+
+                };
+
+                writeXmlElement(xmlWriter, "sendWindow", settingsMap);
+            }
             {//send window position and size
 
                 QRect rect = windowPositionAndSize(m_sendWindow);
@@ -2714,18 +2723,6 @@ void MainWindow::saveSettings()
                 };
                 writeXmlElement(xmlWriter, "settingsDialogPositionAndSize", settingsMap);
             }
-            {//script window position and size
-
-                QRect rect = windowPositionAndSize(m_scriptWindow);
-                std::map<QString, QString> settingsMap =
-                {std::make_pair(QString("left"), QString("%1").arg(rect.left())),
-                 std::make_pair(QString("top"), QString("%1").arg(rect.top())),
-                 std::make_pair(QString("width"), QString("%1").arg(rect.width())),
-                 std::make_pair(QString("height"), QString("%1").arg(rect.height())),
-                 std::make_pair(QString("visible"), QString("%1").arg(m_scriptWindow->isVisible()))
-                };
-                writeXmlElement(xmlWriter, "scriptWindowPositionAndSize", settingsMap);
-            }
             {//script window
                 QList<int> sizes = m_scriptWindow->getSplitterSizes();
                 std::map<QString, QString> settingsMap =
@@ -2738,6 +2735,19 @@ void MainWindow::saveSettings()
 
 
                 writeXmlElement(xmlWriter, "scriptWindow", settingsMap);
+            }
+            {//script window position and size
+
+                QRect rect = windowPositionAndSize(m_scriptWindow);
+                std::map<QString, QString> settingsMap =
+                {std::make_pair(QString("left"), QString("%1").arg(rect.left())),
+                 std::make_pair(QString("top"), QString("%1").arg(rect.top())),
+                 std::make_pair(QString("width"), QString("%1").arg(rect.width())),
+                 std::make_pair(QString("height"), QString("%1").arg(rect.height())),
+                 std::make_pair(QString("isMaximized"), QString("%1").arg(m_scriptWindow->isMaximized())),
+                 std::make_pair(QString("visible"), QString("%1").arg(m_scriptWindow->isVisible()))
+                };
+                writeXmlElement(xmlWriter, "scriptWindowPositionAndSize", settingsMap);
             }
             {//search console
 
@@ -2793,6 +2803,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("splitterSizes"), QString("%1:%2").arg(splitterSizes[0]).arg(splitterSizes[1])),
                  std::make_pair(QString("configFileName"), m_scriptWindow->getCreateSceFileDialog()->getConfigFileName()),
                  std::make_pair(QString("visible"), QString("%1").arg(m_scriptWindow->getCreateSceFileDialog()->isVisible())),
+                 std::make_pair(QString("isMaximized"), QString("%1").arg(m_scriptWindow->getCreateSceFileDialog()->isMaximized())),
                 };
                 writeXmlElement(xmlWriter, "createSceWindow", settingsMap);
             }

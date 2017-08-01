@@ -85,8 +85,17 @@ protected:
     ///The user has pressed a key.
     void keyPressEvent(QKeyEvent *event);
 
+    ///This function is called on double click events.
+    void mouseDoubleClickEvent(QMouseEvent *e)
+    {
+        QPlainTextEdit::mouseDoubleClickEvent(e);
+        emit doubleClickSignal();
+    }
+
+
 signals:
     void focusOutSignal(void);
+    void doubleClickSignal(void);
 
 private:
     ///Pointer to the main window.
