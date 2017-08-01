@@ -3723,16 +3723,36 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
         int val = textEdit->verticalScrollBar()->value();
 
         textEdit->moveCursor(QTextCursor::End);
-        QTextCursor cursor = textEdit->textCursor();
-        QStringList string_list = consoleString->split("\n");
-        for (int i = 0; i < string_list.size(); i++)
-        {
-            cursor.insertHtml(string_list.at(i));
-            if ((i + 1) < string_list.size())
+
+        if(consoleString->indexOf('\n') != -1)
+        {//consoleString contsins a '\n'.
+
+            QTextCursor cursor = textEdit->textCursor();
+            QStringList list = consoleString->split("\n");
+            for (int i = 0; i < list.size(); i++)
             {
-                cursor.insertBlock();
+                cursor.insertHtml(list.at(i));
+                if ((i + 1) < list.size())
+                {
+                    cursor.insertBlock();
+                }
             }
         }
+        else if(consoleString->indexOf("<br>") == -1)
+        {//If el.data does not contain a <br> the append is used (much faster then insertHtml).
+
+            textEdit->append(*consoleString);
+
+            //Remove the new line from the append call.
+            textEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+            textEdit->moveCursor(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
+            textEdit->textCursor().deletePreviousChar();
+        }
+        else
+        {
+            textEdit->insertHtml(*consoleString);
+        }
+
         textEdit->moveCursor(QTextCursor::End);
         consoleString->clear();
 
