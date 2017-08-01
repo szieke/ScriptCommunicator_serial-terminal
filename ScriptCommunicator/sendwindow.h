@@ -53,7 +53,7 @@ class SendWindowTextEdit : public QPlainTextEdit
     Q_OBJECT
 
 public:
-    SendWindowTextEdit(QWidget * parent = 0) : QPlainTextEdit(parent), m_mainWindow(0), m_isMainWindowSendArea(false)
+    SendWindowTextEdit(QWidget * parent = 0) : QPlainTextEdit(parent), m_mainWindow(0), m_sendWindow(0)
     {
     }
 
@@ -64,16 +64,16 @@ public:
         emit focusOutSignal();
     }
 
-    ///Sets m_isMainWindowSendArea.
-    void setIsMainWindowSendArea(bool isMainWindowSendArea)
-    {
-        m_isMainWindowSendArea = isMainWindowSendArea;
-    }
-
     ///Sets m_sendWindow.
     void setMainWindowPointer(MainWindow* mainWindow)
     {
         m_mainWindow = mainWindow;
+    }
+
+    ///Sets m_sendWindow.
+    void setSendWindowPointer(SendWindow* sendWindow)
+    {
+        m_sendWindow = sendWindow;
     }
 protected:
     ///Drag enter event.
@@ -89,41 +89,13 @@ signals:
     void focusOutSignal(void);
 
 private:
-    ///Pointer to the send window.
+    ///Pointer to the main window.
     MainWindow* m_mainWindow;
 
-    ///True if this object is the main window send area.
-    bool m_isMainWindowSendArea;
+    ///Pointer to the send window.
+    SendWindow* m_sendWindow;
 
 };
-
-class CyclicScriptTextEdit : public QPlainTextEdit
-{
-    Q_OBJECT
-
-public:
-    CyclicScriptTextEdit(QWidget * parent = 0) : QPlainTextEdit(parent)
-    {
-    }
-
-    ///This function is called on double click events.
-    void mouseDoubleClickEvent(QMouseEvent *e)
-    {
-        QPlainTextEdit::mouseDoubleClickEvent(e);
-        emit doubleClickSignal();
-    }
-protected:
-    ///Drag enter event.
-    void dragEnterEvent(QDragEnterEvent *event);
-
-    ///Drop event.
-    void dropEvent(QDropEvent *event);
-signals:
-    void doubleClickSignal(void);
-
-};
-
-
 
 ///Wrapper class for a QPlainTextEdit in the sequence table.
 class SequenceTablePlainTextEdit : public QPlainTextEdit
@@ -169,6 +141,9 @@ protected:
 
     ///This function is called if the text looses the focus
     void focusOutEvent(QFocusEvent *e);
+
+    ///The user has pressed a key.
+    void keyPressEvent(QKeyEvent *event);
 
 
 private:
@@ -218,6 +193,20 @@ protected:
             m_tableView->sendSequence(m_row, false, this);
         }
 
+    }
+
+    ///The user has pressed a key.
+    void keyPressEvent(QKeyEvent *event)
+    {
+        if((event->modifiers() == Qt::AltModifier) && (event->text() == "\r"))
+        {//alt+enter pressed
+
+            m_tableView->sendSequence(m_row, false, this);
+        }
+        else
+        {
+            QComboBox::keyPressEvent(event);
+        }
     }
 
 private:
@@ -391,6 +380,9 @@ public slots:
     ///Slot function for the save file button.
     void saveFileSlot(void);
 
+    ///Slot function for the send button.
+    void sendButtonPressedSlot();
+
 private slots:
 
     ///Is called if the user double clicks the cyclic script text edit.
@@ -404,9 +396,6 @@ private slots:
 
     ///Resizes all sequence table columns.
     void resizeTableColumnsSlot(void);
-
-    ///Slot function for the send button.
-    void sendButtonPressedSlot();
 
     ///Slot function for the delete button.
     void deleteButtonClickedSlot(void);

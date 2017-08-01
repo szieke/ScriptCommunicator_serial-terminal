@@ -525,6 +525,9 @@ private slots:
 
 private:
 
+    ///Event filter function.
+    bool eventFilter(QObject *target, QEvent *event);
+
     ///Creates a log file name.
     QString createLogFileName(QString logFileName);
 

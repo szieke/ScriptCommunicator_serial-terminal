@@ -225,6 +225,9 @@ public slots:
     ///Slot function for the edit all worker scripts menu.
     void editAllWorkerScriptsSlot();
 
+    ///Script table drop event function.
+    void tableDropEventSlot(int row, int column, QStringList files);
+
 private slots:
 
     ///This slot function creates a new script.
@@ -244,9 +247,6 @@ private slots:
 
     ///Slot function for the add script menu.
     void addScriptSlot();
-
-    ///Script table drop event function.
-    void tableDropEventSlot(int row, int column, QStringList files);
 
     ///Slot function for the remove script menu.
     void removeScriptSlot();

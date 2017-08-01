@@ -38,7 +38,7 @@
         <item>
          <widget class="SequenceTableView" name="tableWidget">
           <property name="toolTip">
-           <string>to send a sequence press the corresponding row with right mouse button</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;to send a sequence click the corresponding row with right mouse button or press 'alt+enter'&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="editTriggers">
            <set>QAbstractItemView::AnyKeyPressed|QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed</set>
@@ -265,7 +265,7 @@
                </size>
               </property>
               <property name="toolTip">
-               <string>the send data</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;the cyclic send data (to send the data press the send button or 'alt+enter')&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
              </widget>
             </item>
@@ -281,7 +281,7 @@
              </widget>
             </item>
             <item>
-             <widget class="CyclicScriptTextEdit" name="CyclicSendScript">
+             <widget class="SendWindowTextEdit" name="CyclicSendScript">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
                 <horstretch>0</horstretch>
@@ -301,7 +301,7 @@
                </size>
               </property>
               <property name="toolTip">
-               <string>path to the (optional) sequence send script</string>
+               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;path to the (optional) sequence send script (to send the data press the send button or 'alt+enter')&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
               </property>
              </widget>
             </item>
@@ -577,12 +577,7 @@
   <customwidget>
    <class>SendWindowTextEdit</class>
    <extends>QPlainTextEdit</extends>
-   <header>sendwindow.h</header>
-  </customwidget>
-  <customwidget>
-   <class>CyclicScriptTextEdit</class>
-   <extends>QPlainTextEdit</extends>
-   <header>sendwindow.h</header>
+   <header location="global">sendwindow.h</header>
   </customwidget>
   <customwidget>
    <class>SequenceTableView</class>

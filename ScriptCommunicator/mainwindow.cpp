@@ -311,8 +311,8 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     m_sendWindow = new SendWindow(m_settingsDialog, this);
     m_handleData = new MainWindowHandleData(this, m_settingsDialog, m_userInterface);
 
-    m_userInterface->SendTextEdit->setIsMainWindowSendArea(true);
     m_userInterface->SendTextEdit->setMainWindowPointer(this);
+    m_userInterface->ScriptTextEdit->setMainWindowPointer(this);
 
     m_mainInterface = new MainInterfaceThread(this);
     m_mainInterface->moveToThread(m_mainInterface);
@@ -594,6 +594,9 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
             inititializeTab();
             conectionTypeChangesSlot();
         }
+
+        m_userInterface->workerScriptListWidget->installEventFilter(this);
+        m_userInterface->sequenceListWidget->installEventFilter(this);
 
 
 
@@ -971,6 +974,84 @@ void MainWindow::workerScriptListItemDoubleClickedSlot(QListWidgetItem *item)
 }
 
 /**
+ * Event filter function.
+ *
+ * @param target
+ *      The event target object.
+ * @param event
+ *      The event.
+ * @return
+ *      True if the event was handled.
+ */
+bool MainWindow::eventFilter(QObject *target, QEvent *event)
+{
+    bool handled = false;
+    if (event->type() == QEvent::KeyPress)
+    {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        if(keyEvent->text() == "\r")
+        {//Enter pressed.
+
+            if(target == m_userInterface->workerScriptListWidget)
+            {
+                handled = true;
+
+                QListWidgetItem *item = m_userInterface->workerScriptListWidget->currentItem();
+                if(item)
+                {
+                    workerScriptListItemDoubleClickedSlot(item);
+                }
+            }
+            else if (target == m_userInterface->sequenceListWidget)
+            {
+                handled = true;
+
+                QListWidgetItem *item = m_userInterface->sequenceListWidget->currentItem();
+                if(item)
+                {
+                    sequenceListItemDoubleClickedSlot(item);
+                }
+            }
+        }
+    }//if (event->type() == QEvent::KeyPress)
+    else if (event->type() == QEvent::DragEnter)
+    {
+        if(target == m_userInterface->workerScriptListWidget)
+        {
+            handled = true;
+
+            QDragEnterEvent *dragEvent = static_cast<QDragEnterEvent *>(event);
+            if(dragEvent->mimeData()->hasUrls())
+            {
+                dragEvent->acceptProposedAction();
+            }
+        }
+    }
+    else if (event->type() == QEvent::Drop)
+    {
+        if(target == m_userInterface->workerScriptListWidget)
+        {
+            handled = true;
+
+            QDropEvent *dropEvent = static_cast<QDropEvent *>(event);
+            if(dropEvent->mimeData()->hasUrls())
+            {
+#ifdef Q_OS_LINUX
+                QString files = dropEvent->mimeData()->text().remove("file://");
+#else
+                QString files = dropEvent->mimeData()->text().remove("file:///");
+#endif
+                m_scriptWindow->tableDropEventSlot(-1, -1, files.split("\n"));
+
+                dropEvent->acceptProposedAction();
+            }
+        }
+    }
+
+    return handled;
+}
+
+/**
  * Create all buttons in the sequence page.
  */
 void MainWindow::setUpSequencesPageSlot(void)
@@ -987,7 +1068,7 @@ void MainWindow::setUpSequencesPageSlot(void)
             quint32 row = m_userInterface->sequenceListWidget->count() - 1;
             QListWidgetItem *item = m_userInterface->sequenceListWidget->item(row);
             item->setData(1, row);
-            item->setToolTip("sequences can be added/modified in the send window,\nto send a sequence double click on it");
+            item->setToolTip(m_userInterface->sequenceListWidget->toolTip());
         }
 
     }
@@ -996,7 +1077,7 @@ void MainWindow::setUpSequencesPageSlot(void)
         m_userInterface->sequenceListWidget->addItem(" no sequences");
         QListWidgetItem *item = m_userInterface->sequenceListWidget->item(0);
         item->setData(1, 0xffffffff);
-        item->setToolTip("sequences can be added/modified in the send window,\nto send a sequence double click on it");
+        item->setToolTip(m_userInterface->sequenceListWidget->toolTip());
     }
 }
 
@@ -1030,7 +1111,7 @@ void MainWindow::setUpScriptPageSlot(void)
             m_userInterface->workerScriptListWidget->addItem(" " + scriptNamesAndState[i]);
             quint32 row = m_userInterface->workerScriptListWidget->count() - 1;
             QListWidgetItem *item = m_userInterface->workerScriptListWidget->item(row);
-            item->setToolTip("scripts can be added/modified in the script window");
+            item->setToolTip(m_userInterface->workerScriptListWidget->toolTip());
             item->setData(1, row);
 
             QFont font = item->font();
@@ -1073,7 +1154,7 @@ void MainWindow::setUpScriptPageSlot(void)
         m_userInterface->workerScriptListWidget->addItem(" no scripts");
         QListWidgetItem *item = m_userInterface->workerScriptListWidget->item(0);
         item->setData(1, 0xffffffff);
-        item->setToolTip("scripts can be added/modified in the script window");
+        item->setToolTip(m_userInterface->workerScriptListWidget->toolTip());
         workerScriptsCurrentRowChangedSlot(0);
         m_userInterface->workerScriptListWidget->clearSelection();
     }

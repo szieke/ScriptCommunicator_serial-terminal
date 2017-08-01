@@ -228,6 +228,26 @@ void SequenceTablePlainTextEdit::dropEvent(QDropEvent *event)
 }
 
 /**
+ * The user has pressed a key.
+ *
+ * @param event
+ *      The key event.
+ */
+void SequenceTablePlainTextEdit::keyPressEvent(QKeyEvent *event)
+{
+    if((event->modifiers() == Qt::AltModifier) && (event->text() == "\r"))
+    {//alt+enter pressed
+
+        m_tableView->sendSequence(m_row, false, this);
+    }
+    else
+    {
+        QPlainTextEdit::keyPressEvent(event);
+    }
+}
+
+
+/**
  * This function is called if the text looses the focus
  * @param e
  *      The event.
@@ -257,6 +277,24 @@ void SequenceTableView::mouseReleaseEvent(QMouseEvent* event)
     }
 }
 
+/**
+ * The user has pressed a key.
+ *
+ * @param event
+ *      The key event.
+ */
+void SequenceTableView::keyPressEvent(QKeyEvent *event)
+{
+    if((event->modifiers() == Qt::AltModifier) && (event->text() == "\r"))
+    {//alt+enter pressed
+
+        sendSequence(m_sendWindow->m_userInterface->tableWidget->selectedItems().at(SendWindow::COLUMN_NAME)->row(), false, this);
+    }
+    else
+    {
+        QTableWidget::keyPressEvent(event);
+    }
+}
 
 /**
  * Closes the debugger.

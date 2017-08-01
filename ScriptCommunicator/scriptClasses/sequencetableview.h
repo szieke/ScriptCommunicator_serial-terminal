@@ -333,10 +333,14 @@ public:
     ///Closes the debugger.
     void closeDebugger(bool isSingle);
 
+protected:
 
     ///This slot function is called if the user release a mouse button at the table view.
     ///If the mouse button is the right button then the corresponding sequence from the row is send.
     void mouseReleaseEvent(QMouseEvent* event);
+
+    ///The user has pressed a key.
+    void keyPressEvent(QKeyEvent *event);
 
 signals:
     void executeScriptSingle(QString* sendScript, QByteArray* sendData, SequenceScriptEngineWrapper** scriptEngineWrapper);

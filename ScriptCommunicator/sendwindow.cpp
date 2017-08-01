@@ -92,52 +92,22 @@ void SendWindowTextEdit::dropEvent(QDropEvent *event)
  */
 void SendWindowTextEdit::keyPressEvent(QKeyEvent *event)
 {
-    if(m_isMainWindowSendArea && event->modifiers() == Qt::AltModifier)
-    {
-        if(event->text() == "\r")
-        {//alt+enter pressed
+    if((event->modifiers() == Qt::AltModifier) && (event->text() == "\r"))
+    {//alt+enter pressed
+
+        if(m_mainWindow)
+        {
             m_mainWindow->sendButtonPressedSlot();
         }
+        else if(m_sendWindow)
+        {
+            m_sendWindow->sendButtonPressedSlot();
+        }
+
     }
     else
     {
         QPlainTextEdit::keyPressEvent(event);
-    }
-}
-
-/**
- * Drag enter event.
- * @param event
- *      The drag enter event.
- */
-void CyclicScriptTextEdit::dragEnterEvent(QDragEnterEvent *event)
-{
-    if(event->mimeData()->hasUrls())
-    {
-        event->acceptProposedAction();
-    }
-}
-
-/**
- * Drop event.
- * @param event
- *      The drop event.
- */
-void CyclicScriptTextEdit::dropEvent(QDropEvent *event)
-{
-    if(event->mimeData()->hasUrls())
-    {
-#ifdef Q_OS_LINUX
-        QString files = event->mimeData()->text().remove("file://");
-#else
-        QString files = event->mimeData()->text().remove("file:///");
-#endif
-        QStringList list = files.split("\n");
-        if(!list.isEmpty())
-        {
-            setPlainText(list[0]);
-        }
-        event->acceptProposedAction();
     }
 }
 
@@ -212,6 +182,9 @@ SendWindow::SendWindow(SettingsDialog *settingsDialog, MainWindow *mainWindow) :
 
     QShortcut* shortcut = new QShortcut(QKeySequence("Ctrl+Shift+X"), this);
     QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(close()));
+
+    m_userInterface->CyclicSendInput->setSendWindowPointer(this);
+    m_userInterface->CyclicSendScript->setSendWindowPointer(this);
 
 }
 /**

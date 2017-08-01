@@ -630,8 +630,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>809</width>
-                  <height>189</height>
+                  <width>332</width>
+                  <height>108</height>
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_3">
@@ -985,7 +985,7 @@ p, li { white-space: pre-wrap; }
                 <enum>Qt::ScrollBarAsNeeded</enum>
                </property>
               </widget>
-              <widget class="CyclicScriptTextEdit" name="ScriptTextEdit">
+              <widget class="SendWindowTextEdit" name="ScriptTextEdit">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
                  <horstretch>0</horstretch>
@@ -993,7 +993,7 @@ p, li { white-space: pre-wrap; }
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>opional sequence script</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;opional sequence script (to send the data press the send button or 'alt+enter')&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="horizontalScrollBarPolicy">
                 <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -1022,8 +1022,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>323</width>
-          <height>517</height>
+          <width>93</width>
+          <height>93</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1044,8 +1044,7 @@ p, li { white-space: pre-wrap; }
               </sizepolicy>
              </property>
              <property name="toolTip">
-              <string>sequences can be added/modified in the send window,
-to send a sequence double click on it</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;sequences can be added/modified in the send window, to send a sequence double click a row or select a row and press 'enter'&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
              <property name="textElideMode">
               <enum>Qt::ElideRight</enum>
@@ -1067,7 +1066,7 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>323</width>
+          <width>414</width>
           <height>517</height>
          </rect>
         </property>
@@ -1079,7 +1078,20 @@ to send a sequence double click on it</string>
         </attribute>
         <layout class="QVBoxLayout" name="verticalLayout_16">
          <item>
-          <widget class="QListWidget" name="workerScriptListWidget"/>
+          <widget class="QListWidget" name="workerScriptListWidget">
+           <property name="acceptDrops">
+            <bool>true</bool>
+           </property>
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;scripts can be added/modified in the script window, to start/stop a script:&lt;/p&gt;&lt;p&gt;- double click a row&lt;/p&gt;&lt;p&gt;- select a row and press enter&lt;/p&gt;&lt;p&gt;- select a row and press a button from below&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
+           <property name="dragEnabled">
+            <bool>true</bool>
+           </property>
+           <property name="dragDropMode">
+            <enum>QAbstractItemView::DragDrop</enum>
+           </property>
+          </widget>
          </item>
          <item>
           <layout class="QHBoxLayout" name="horizontalLayout_4">
@@ -1141,8 +1153,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>323</width>
-          <height>517</height>
+          <width>188</width>
+          <height>301</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1367,8 +1379,8 @@ to send a sequence double click on it</string>
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>323</width>
-          <height>517</height>
+          <width>139</width>
+          <height>271</height>
          </rect>
         </property>
         <attribute name="label">
@@ -2032,12 +2044,7 @@ option is enabled then the enabled log files will be closed and recreated with t
   <customwidget>
    <class>SendWindowTextEdit</class>
    <extends>QPlainTextEdit</extends>
-   <header>sendwindow.h</header>
-  </customwidget>
-  <customwidget>
-   <class>CyclicScriptTextEdit</class>
-   <extends>QPlainTextEdit</extends>
-   <header>sendwindow.h</header>
+   <header location="global">sendwindow.h</header>
   </customwidget>
  </customwidgets>
  <resources>
