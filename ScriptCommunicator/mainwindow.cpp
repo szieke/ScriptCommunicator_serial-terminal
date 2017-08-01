@@ -1783,6 +1783,11 @@ bool MainWindow::loadSettings()
                         {
                             restoreState(QByteArray().fromHex(stateValue.toLocal8Bit()));
                         }
+
+                        if(node.attributes().namedItem("isMaximized").nodeValue().toUInt())
+                        {
+                            showMaximized();
+                        }
                     }
                 }
                 {//send window position and size
@@ -2660,6 +2665,7 @@ void MainWindow::saveSettings()
                 QList<int> sendAreaSplitterSizes = m_userInterface->SendAreaSplitter->sizes();
                 QList<int> sendAreaInputsSplitterSizes = m_userInterface->SendAreaInputsSplitter->sizes();
 
+
                 std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("left"), QString("%1").arg(rect.left())),
                  std::make_pair(QString("top"), QString("%1").arg(rect.top())),
@@ -2673,6 +2679,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("scriptTextEdit"), m_userInterface->ScriptTextEdit->toPlainText()),
                  std::make_pair(QString("sendFormatComboBox"), m_userInterface->SendFormatComboBox->currentText()),
                  std::make_pair(QString("mainWindowState"), saveState().toHex()),
+                 std::make_pair(QString("isMaximized"), QString("%1").arg(isMaximized())),
                  std::make_pair(QString("toolBoxSplitterSizes"),
                  QString("%1:%2:%3:%4").arg(m_toolBoxSplitterSizesSecond[0]).arg(m_toolBoxSplitterSizesSecond[1]).arg(m_toolBoxSplitterSizesSecond[2]).arg(m_toolBoxSplitterSizesSecond[3]))
 
