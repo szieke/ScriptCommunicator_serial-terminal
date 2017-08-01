@@ -217,7 +217,6 @@ QList<ScriptXmlElement*> ScriptXmlReader::elementsByTagName(QString name)
     for(qint32 i = 0; i < nodeList.length(); i++)
     {
         ScriptXmlElement* newNode = new ScriptXmlElement(nodeList.at(i));
-        engine()->newQObject(newNode, QScriptEngine::ScriptOwnership);
         result.append(newNode);
     }
 
