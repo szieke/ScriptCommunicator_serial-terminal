@@ -105,8 +105,7 @@ QList<ScriptXmlElement*> ScriptXmlElement::childElements()
     {
         if(nodeList.at(i).isElement())
         {
-            ScriptXmlElement* newNode = new ScriptXmlElement(nodeList.at(i));
-            engine()->newQObject(newNode, QScriptEngine::ScriptOwnership);
+            ScriptXmlElement* newNode = new ScriptXmlElement(nodeList.at(i), engine());
             result.append(newNode);
         }
     }
@@ -127,8 +126,7 @@ QList<ScriptXmlAttribute*> ScriptXmlElement::attributes()
     for(qint32 i = 0; i < attributes.length(); i++)
     {
         QDomNode node = attributes.item(i);
-        ScriptXmlAttribute* newAttr = new ScriptXmlAttribute(node.nodeName(), node.nodeValue());
-        engine()->newQObject(newAttr, QScriptEngine::ScriptOwnership);
+        ScriptXmlAttribute* newAttr = new ScriptXmlAttribute(node.nodeName(), node.nodeValue(), engine());
         result.append(newAttr);
     }
 
@@ -216,7 +214,7 @@ QList<ScriptXmlElement*> ScriptXmlReader::elementsByTagName(QString name)
 
     for(qint32 i = 0; i < nodeList.length(); i++)
     {
-        ScriptXmlElement* newNode = new ScriptXmlElement(nodeList.at(i));
+        ScriptXmlElement* newNode = new ScriptXmlElement(nodeList.at(i), engine());
         result.append(newNode);
     }
 
