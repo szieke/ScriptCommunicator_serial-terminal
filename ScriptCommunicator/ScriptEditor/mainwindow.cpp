@@ -355,6 +355,8 @@ bool MainWindow::checkIfElementsInOutlineTree(QString name)
 void MainWindow::mouseMoveTimerSlot()
 {
 
+    m_mouseEventTimer.stop();
+
     if(ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex()) && ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex())->layout())
     {
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex())->layout()->itemAt(0)->widget());
@@ -453,8 +455,6 @@ void MainWindow::mouseMoveTimerSlot()
         }
 
     }
-
-    m_mouseEventTimer.stop();
 }
 
 /**

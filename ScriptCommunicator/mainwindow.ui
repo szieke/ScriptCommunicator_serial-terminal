@@ -169,6 +169,9 @@
                <property name="undoRedoEnabled">
                 <bool>false</bool>
                </property>
+               <property name="lineWrapMode">
+                <enum>QTextEdit::WidgetWidth</enum>
+               </property>
                <property name="readOnly">
                 <bool>false</bool>
                </property>
@@ -1022,7 +1025,7 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>93</width>
+          <width>98</width>
           <height>93</height>
          </rect>
         </property>

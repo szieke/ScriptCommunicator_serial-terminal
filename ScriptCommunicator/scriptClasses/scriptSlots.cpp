@@ -884,20 +884,7 @@ void ScriptSlots::processStoredOperationsSlot(QTextEdit* textEdit, bool isLocked
         }
         else if(el.operation == SCRIPT_TEXT_EDIT_OPERATION_INSERT_HTML)
         {
-            if(el.data.indexOf("<br>") == -1)
-            {//If el.data does not contain a new line the append is used (much faster then insertHtml).
-
-                textEdit->append(el.data);
-
-                //Remove the new line from the append call.
-                textEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
-                textEdit->moveCursor(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
-                textEdit->textCursor().deletePreviousChar();
-            }
-            else
-            {
-                textEdit->insertHtml(el.data);
-            }
+            textEdit->insertHtml(el.data);
         }
         else if(el.operation == SCRIPT_TEXT_EDIT_OPERATION_APPEND)
         {

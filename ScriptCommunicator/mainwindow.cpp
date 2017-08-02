@@ -3725,7 +3725,7 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
         textEdit->moveCursor(QTextCursor::End);
 
         if(consoleString->indexOf('\n') != -1)
-        {//consoleString contsins a '\n'.
+        {//consoleString contains a '\n'.
 
             QTextCursor cursor = textEdit->textCursor();
             QStringList list = consoleString->split("\n");
@@ -3737,16 +3737,6 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
                     cursor.insertBlock();
                 }
             }
-        }
-        else if(consoleString->indexOf("<br>") == -1)
-        {//If el.data does not contain a <br> the append is used (much faster then insertHtml).
-
-            textEdit->append(*consoleString);
-
-            //Remove the new line from the append call.
-            textEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
-            textEdit->moveCursor(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
-            textEdit->textCursor().deletePreviousChar();
         }
         else
         {

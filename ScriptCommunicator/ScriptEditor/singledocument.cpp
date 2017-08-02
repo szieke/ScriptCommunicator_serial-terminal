@@ -45,6 +45,7 @@ void SingleDocument::keyPressEventChild(QKeyEvent *event)
 
     if((event->modifiers() & Qt::ControlModifier) != 0)
     {
+        removeUndlineFromWordWhichCanBeClicked();
         m_mainWindow->m_ctrlIsPressed = true;
         m_mainWindow->m_mouseEventTimer.start(100);
     }
@@ -80,8 +81,12 @@ void SingleDocument::addFunction(ParsedEntry& function)
 
 void SingleDocument::mouseMoveEventChild(QMouseEvent *event)
 {
+    if(!m_mainWindow->m_ctrlIsPressed)
+    {
+        removeUndlineFromWordWhichCanBeClicked();
+    }
     m_mainWindow->m_lastMouseMoveEvent = *event;
-    m_mainWindow->m_mouseEventTimer.start(200);
+    m_mainWindow->m_mouseEventTimer.start(100);
 }
 
 /**
