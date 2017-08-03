@@ -446,7 +446,7 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     updateSettings();
 
-    m_userInterface->ConsoleBufferLineEdit->setValidator(new QIntValidator(0, INT_MAX, m_userInterface->ConsoleBufferLineEdit));
+    m_userInterface->ConsoleBufferLineEdit->setValidator(new QIntValidator(MAIN_VALUE_MAX_CHARS_IN_EDIT_BOX, MAX_VALUE_MAX_CHARS_IN_EDIT_BOX, m_userInterface->ConsoleBufferLineEdit));
     QString str = QString("%1").arg(DEFAULT_VALUE_MAX_CHARS_IN_EDIT_BOX);
     m_userInterface->ConsoleBufferLineEdit->setText(str);
 

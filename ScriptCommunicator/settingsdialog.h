@@ -399,6 +399,12 @@ public:
     ///Default value for the max. characters in console text edit.
     static const int DEFAULT_VALUE_MAX_CHARS_IN_EDIT_BOX = 100000;
 
+    ///Max. value for the max. characters in console text edit.
+    static const int MAX_VALUE_MAX_CHARS_IN_EDIT_BOX = 100000000;
+
+    ///Min. value for the max. characters in console text edit.
+    static const int MAIN_VALUE_MAX_CHARS_IN_EDIT_BOX = 1000;
+
     ///Default value for the time stamp interval.
     static const int DEFAULT_VALUE_TIME_STAMP_INTERVAL = 100;
 
@@ -406,7 +412,7 @@ public:
     static const int DEFAULT_CONSOLE_UPDATE_INTERVAL = 200;
 
     ///Min. value for the console update interval.
-    static const int MIN_CONSOLE_UPDATE_INTERVAL = 1;
+    static const int MIN_CONSOLE_UPDATE_INTERVAL = 10;
 
     ///Max. value for the console update interval.
     static const int MAX_CONSOLE_UPDATE_INTERVAL = 10000;
