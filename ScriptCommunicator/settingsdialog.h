@@ -400,7 +400,7 @@ public:
     static const int DEFAULT_VALUE_MAX_CHARS_IN_EDIT_BOX = 100000;
 
     ///Max. value for the max. characters in console text edit.
-    static const int MAX_VALUE_MAX_CHARS_IN_EDIT_BOX = 100000000;
+    static const int MAX_VALUE_MAX_CHARS_IN_EDIT_BOX = 10000000;
 
     ///Min. value for the max. characters in console text edit.
     static const int MAIN_VALUE_MAX_CHARS_IN_EDIT_BOX = 1000;
