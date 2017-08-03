@@ -322,7 +322,7 @@ Q_SIGNALS:
     ///This signal is emitted if the background color of a script gui element
     ///shall be changed.
     ///This signal is private and must not be used inside a script.
-    setScriptGuiElementBackgroundColorSignal(QColor color, QWidget* element);
+    void setScriptGuiElementBackgroundColorSignal(QColor color, QWidget* element);
 
     ///This signal is emitted if the color role color of a script gui element
     ///shall be changed.
