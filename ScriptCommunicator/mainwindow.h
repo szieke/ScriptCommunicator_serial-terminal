@@ -219,7 +219,7 @@ public:
     SettingsDialog* getSettingsDialog(void){return m_settingsDialog;}
 
     ///Returns the console from the curretn tab.
-    QTextEdit* getConsoleFromCurrentTab(void);
+    QTextEdit* getConsoleFromCurrentTab(QWidget *widget);
 
     ///This function exits ScriptCommunicator.
     void exitScriptCommunicator(void);

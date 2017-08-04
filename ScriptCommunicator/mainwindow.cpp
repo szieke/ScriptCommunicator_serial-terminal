@@ -4575,23 +4575,38 @@ void MainWindow::exitScriptCommunicator(void)
  * Returns the console from the curretn tab.
  * Return NULL if the current tab has no console.
  */
-QTextEdit* MainWindow::getConsoleFromCurrentTab(void)
+QTextEdit* MainWindow::getConsoleFromCurrentTab(QWidget* widget)
 {
     QTextEdit* textEdit = 0;
-
-    if(m_userInterface->tabWidget->currentWidget() != 0)
+    QObjectList list = widget->children();
+    for(qint32 i = 0; i < list.size(); i++)
     {
-        QObjectList list = m_userInterface->tabWidget->currentWidget()->children();
-        for(qint32 i = 0; i < list.size(); i++)
+        textEdit = dynamic_cast<QTextEdit*>(list[i]);
+        if(textEdit == 0)
         {
-            if(strcmp(list[i]->metaObject()->className(), "QTextEdit") == 0)
-            {//The current tab has a console.
-                textEdit = static_cast<QTextEdit*>(list[i]);
-                break;
+            QObjectList subChilds = list[i]->children();
+            if(subChilds.length() > 0)
+            {
+                for(qint32 j = 0; j < subChilds.size(); j++)
+                {
+                    QWidget* subChild = dynamic_cast<QWidget*>(subChilds[j]);
+                    if(subChild)
+                    {
+                        textEdit = getConsoleFromCurrentTab(subChild);
+                        if(textEdit)
+                        {
+                            break;
+                        }
+                    }
+                }
             }
         }
-    }
 
+        if(textEdit)
+        {
+            break;
+        }
+    }
     return textEdit;
 }
 
@@ -4612,14 +4627,19 @@ void MainWindow::tabIndexChangedSlot(int index)
  */
 void MainWindow::saveConsoleSlot()
 {
-    QTextEdit* textEdit = getConsoleFromCurrentTab();
+    QTextEdit* textEdit = 0;
+    QWidget* widget = m_userInterface->tabWidget->currentWidget();
+    if(widget)
+    {
+        textEdit = getConsoleFromCurrentTab(widget);
+    }
 
     if(textEdit == 0)
     {
         QWidget* widget = QApplication::focusWidget();
-        if(widget && (strcmp(widget->metaObject()->className(), "QTextEdit") == 0))
-        {//The current focused widget is a text edit.
-            textEdit = static_cast<QTextEdit*>(widget);
+        if(widget)
+        {
+            textEdit = dynamic_cast<QTextEdit*>(widget);
         }
     }
 
@@ -4689,7 +4709,7 @@ void MainWindow::saveConsoleSlot()
     }//if(textEdit)
     else
     {
-        QMessageBox::information(this, "print console", "the current tab has no console which has the focus");
+        QMessageBox::information(this, "save console", "the current tab has no console which has the focus");
     }
 }
 
@@ -4901,14 +4921,19 @@ void MainWindow::watchVideoSlot()
  */
 void MainWindow::printConsoleSlot()
 {
-    QTextEdit* textEdit = getConsoleFromCurrentTab();
+    QTextEdit* textEdit = 0;
+    QWidget* widget = m_userInterface->tabWidget->currentWidget();
+    if(widget)
+    {
+       textEdit = getConsoleFromCurrentTab(widget);
+    }
 
     if(textEdit == 0)
     {
         QWidget* widget = QApplication::focusWidget();
-        if(widget && (strcmp(widget->metaObject()->className(), "QTextEdit") == 0))
-        {//The current focused widget is a text edit.
-            textEdit = static_cast<QTextEdit*>(widget);
+        if(widget)
+        {
+            textEdit = dynamic_cast<QTextEdit*>(widget);
         }
     }
 

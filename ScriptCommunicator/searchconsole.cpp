@@ -94,14 +94,19 @@ void SearchConsole::currentSearchTextChangedSlot(QString text)
  */
 void SearchConsole::activateDeactiveSearchButton()
 {
-    QTextEdit* textEdit = m_mainWindow->getConsoleFromCurrentTab();
+    QTextEdit* textEdit = 0;
+    QWidget* widget = m_mainWindow->m_userInterface->tabWidget->currentWidget();
+    if(widget)
+    {
+        textEdit = m_mainWindow->getConsoleFromCurrentTab(widget);
+    }
 
     if(textEdit == 0)
     {
         QWidget* widget = QApplication::focusWidget();
-        if(widget && (strcmp(widget->metaObject()->className(), "QTextEdit") == 0))
-        {//The current focused widget is a text edit.
-            textEdit = static_cast<QTextEdit*>(widget);
+        if(widget)
+        {
+            textEdit = dynamic_cast<QTextEdit*>(widget);
         }
     }
 
@@ -130,14 +135,19 @@ void SearchConsole::activateDeactiveSearchButton()
  */
 void SearchConsole::findButtonClickedSlot(void)
 {
-    QTextEdit* textEdit = m_mainWindow->getConsoleFromCurrentTab();
+    QTextEdit* textEdit = 0;
+    QWidget* widget = m_mainWindow->m_userInterface->tabWidget->currentWidget();
+    if(widget)
+    {
+        textEdit = m_mainWindow->getConsoleFromCurrentTab(widget);
+    }
 
     if(textEdit == 0)
     {
         QWidget* widget = QApplication::focusWidget();
-        if(widget && (strcmp(widget->metaObject()->className(), "QTextEdit") == 0))
-        {//The current focused widget is a text edit.
-            textEdit = static_cast<QTextEdit*>(widget);
+        if(widget)
+        {
+            textEdit = dynamic_cast<QTextEdit*>(widget);
         }
     }
 
