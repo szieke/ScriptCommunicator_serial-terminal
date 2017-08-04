@@ -393,10 +393,12 @@ void MainWindowHandleData::calculateConsoleData()
     if(m_consoleData.mixedData.onlyOneType)
     {
         m_userInterface->ReceiveTextEditMixed->setLineWrapMode(QTextEdit::WidgetWidth);
+        m_userInterface->ReceiveTextEditMixed->setWordWrapMode (QTextOption::WrapAnywhere);
     }
     else
     {
         m_userInterface->ReceiveTextEditMixed->setLineWrapMode(QTextEdit::NoWrap);
+        m_userInterface->ReceiveTextEditMixed->setWordWrapMode (QTextOption::NoWrap);
     }
 
     int lineEditWidth = m_userInterface->ReceiveTextEditMixed->width() - m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->width() - 10;
