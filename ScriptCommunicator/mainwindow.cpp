@@ -344,7 +344,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
     connect(m_addMessageDialog, SIGNAL(messageEnteredSignal(QString, bool)),this, SLOT(messageEnteredSlot(QString, bool)));
 
-    connect(&m_resizeTimer, SIGNAL(timeout()),m_handleData, SLOT(reInsertDataInMixecConsoleSlot()));
+    connect(&m_resizeTimer, SIGNAL(timeout()),m_handleData, SLOT(reInsertDataInAllConsoleSlot()));
 
     connect(m_sendWindow, SIGNAL(sendDataWithTheMainInterfaceSignal(QByteArray,uint)), m_mainInterface, SLOT(sendDataSlot(QByteArray, uint)), Qt::QueuedConnection);
     connect(m_handleData, SIGNAL(sendDataWithTheMainInterfaceSignal(QByteArray,uint)), m_mainInterface, SLOT(sendDataSlot(QByteArray, uint)), Qt::QueuedConnection);
@@ -556,7 +556,8 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
             m_mainConfigFile = getAndCreateProgramUserFolder() + "/" + INIT_MAIN_CONFIG_FILE;
         }
 
-        m_userInterface->ReceiveTextEditAscii->setWordWrapMode (QTextOption::WrapAnywhere);
+        m_userInterface->ReceiveTextEditAscii->setWordWrapMode (QTextOption::NoWrap);
+        m_userInterface->ReceiveTextEditAscii->setLineWrapMode (QTextEdit::NoWrap);
 
         QFileInfo fi(m_mainConfigFile + ".lock");
         bool lockFileExists = fi.exists();
@@ -1344,7 +1345,7 @@ void MainWindow::show(void)
     m_userInterface->sendHistoryPushButton->setMinimumSize(tmpSize);
     m_userInterface->clearHistoryPushButton->setMinimumSize(tmpSize);
 
-    m_handleData->reInsertDataInMixecConsoleSlot();
+    m_handleData->reInsertDataInAllConsoleSlot();
 }
 
 /**
@@ -2407,7 +2408,7 @@ void MainWindow::inititializeTab(void)
         }
 
 
-        m_handleData->reInsertDataInConsole();
+        m_handleData->reInsertDataInAllConsoleSlot();
 
         m_userInterface->tabWidget->blockSignals(false);
 
@@ -3856,6 +3857,7 @@ void MainWindow::clearConsoleSlot(void)
     m_userInterface->ReceiveTextEditCustom->document()->blockSignals(true);
 
     m_userInterface->ReceiveTextEditAscii->clear();
+    m_handleData->m_consoleData.m_charactersInAsciiWithoutNewLine = 0;
     m_userInterface->ReceiveTextEditHex->clear();
     m_userInterface->ReceiveTextEditDecimal->clear();
     m_userInterface->ReceiveTextEditMixed->clear();
@@ -4419,6 +4421,7 @@ void MainWindow::toolBoxSplitterMoved(int pos, int index)
     m_toolBoxSplitterSizeSecond = splitterSizes[1];
 
     m_toolBoxSplitterSizesSecond[m_currentToolBoxIndex] = m_toolBoxSplitterSizeSecond;
+    m_resizeTimer.start(500);
 }
 
 /**
@@ -4472,12 +4475,7 @@ void MainWindow::resizeEvent(QResizeEvent* event)
     {
         QMainWindow::resizeEvent(event);
 
-        m_resizeTimer.stop();
-
-        if(m_userInterface->ReceiveTextEditMixed->document()->characterCount() > 1)
-        {
-            m_resizeTimer.start(500);
-        }
+        m_resizeTimer.start(500);
     }
 
     if(isVisible())

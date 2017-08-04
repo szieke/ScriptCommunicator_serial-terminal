@@ -104,6 +104,9 @@ typedef struct
     ///The HTML data for sent data.
     QString htmlSend;
 
+    int m_charactersInAsciiWithoutNewLine;
+    int maxBytePerLineAscii;
+
 }ConsoleData;
 
 
@@ -139,8 +142,8 @@ public:
     ///Clears all stored data.
     void clear(void);
 
-    ///Reinserts the data into the consoles.
-    void reInsertDataInConsole(void);
+    ///Reinserts the data into the standard consoles.
+    void reInsertDataInStandardConsole(void);
 
     ///Returns the number of bytes for a decimal type.
     qint32 bytesPerDecimalInConsole(DecimalType decimalType);
@@ -202,7 +205,7 @@ public slots:
     void dataHasBeenSendSlot(QByteArray data, bool success, uint id);
 
     ///Reinserts the data into the mixed consoles.
-    void reInsertDataInMixecConsoleSlot(void);
+    void reInsertDataInAllConsoleSlot(void);
 
 private:
 

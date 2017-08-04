@@ -509,6 +509,15 @@ void MainWindowHandleData::calculateConsoleData()
     m_consoleData.htmlMessageAndTimestamp = QString("<span style=\"color:#" + currentSettings->consoleMessageAndTimestampColor + ";\">");
     m_consoleData.htmlReceived = QString("<span style=\"color:#" + currentSettings->consoleReceiveColor + ";\">");
     m_consoleData.htmlSend = QString("<span style=\"color:#" + currentSettings->consoleSendColor + ";\">");
+
+
+
+    lineEditWidth  = m_userInterface->ReceiveTextEditAscii->width() - m_userInterface->ReceiveTextEditAscii->verticalScrollBar()->width() - 10;
+    textEditFont = QFont(currentSettings->stringConsoleFont,  currentSettings->stringConsoleFontSize.toInt());
+    fm = QFontMetrics(textEditFont);
+    int pixelsWide = fm.width("0");
+
+    m_consoleData.maxBytePerLineAscii = (int)(((double)lineEditWidth / (double)pixelsWide));
 }
 
 /**
@@ -909,17 +918,39 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                 //Replace the binary 0 (for the ascii console).
                 dataArray->replace(0, 255);
 
+                int convertedBytes = 0;
+                int readBytes = 0;
                 QString tmpString;
-                for(auto el : QString::fromLocal8Bit(*dataArray))
+
+                do
                 {
-                    if (el == '<')tmpString += "&lt;";
-                    else if (el == '>')tmpString += "&gt;";
-                    else if (el == ' ')tmpString += "&nbsp;";
-                    else if (el == '\n')tmpString += "";
-                    else if (el == '\r')tmpString += "";
-                    else if (el < 33 || el > 126) tmpString += 255;
-                    else tmpString += el;
-                }
+                    QByteArray tmp = dataArray->mid(readBytes, m_consoleData.maxBytePerLineAscii - m_consoleData.m_charactersInAsciiWithoutNewLine);
+                    readBytes += tmp.length();
+                    convertedBytes = 0;
+
+                    for(auto el : QString::fromLocal8Bit(tmp))
+                    {
+                        convertedBytes++;
+                        if (el == '<')tmpString += "&lt;";
+                        else if (el == '>')tmpString += "&gt;";
+                        else if (el == ' ')tmpString += "&nbsp;";
+                        else if (el == '\n'){tmpString += "";convertedBytes--;}
+                        else if (el == '\r'){tmpString += "";convertedBytes--;}
+                        else if (el < 33 || el > 126) tmpString += 255;
+                        else tmpString += el;
+                    }
+
+                    if((convertedBytes + m_consoleData.m_charactersInAsciiWithoutNewLine) >= m_consoleData.maxBytePerLineAscii)
+                    {
+                        tmpString += "</span>\n" + *htmlStartString;
+                        m_consoleData.m_charactersInAsciiWithoutNewLine = 0;
+                    }
+                    else
+                    {
+                        m_consoleData.m_charactersInAsciiWithoutNewLine += convertedBytes;
+                    }
+
+                }while(readBytes < dataArray->length());
 
                 m_consoleDataBufferAscii.append(*htmlStartString + additionalInformation + tmpString + QString("</span>"));
             }
@@ -1792,6 +1823,7 @@ void MainWindowHandleData::processDataInStoredData()
 
             m_userInterface->ReceiveTextEditAscii->clear();
             m_consoleDataBufferAscii.clear();
+            m_consoleData.m_charactersInAsciiWithoutNewLine = 0;
             m_userInterface->ReceiveTextEditHex->clear();
             m_consoleDataBufferHex.clear();
             m_userInterface->ReceiveTextEditDecimal->clear();
@@ -1972,26 +2004,30 @@ void MainWindowHandleData::processDataInStoredData()
 /**
  * Reinserts the data into the mixed consoles.
  */
-void MainWindowHandleData::reInsertDataInMixecConsoleSlot(void)
+void MainWindowHandleData::reInsertDataInAllConsoleSlot(void)
 {
     Settings settings = *m_settingsDialog->settings();
 
+    m_mainWindow->m_resizeTimer.stop();
+
+    QMessageBox box(QMessageBox::Information, "ScriptCommunicator", "Recalculating console data",
+                    QMessageBox::NoButton, m_mainWindow);
+    box.setStandardButtons(QMessageBox::NoButton);
+
+    if(m_bytesInStoredConsoleData > 20000)
+    {
+        QApplication::setActiveWindow(&box);
+        box.setModal(false);
+        box.show();
+
+        QApplication::processEvents();
+    }
+
+
+    reInsertDataInStandardConsole();
+
     if(settings.showMixedConsole)
     {
-        QMessageBox box(QMessageBox::Information, "ScriptCommunicator", "Recalculating console data",
-                        QMessageBox::NoButton, m_mainWindow);
-        box.setStandardButtons(QMessageBox::NoButton);
-
-        if(m_bytesInStoredConsoleData > 2500)
-        {
-            QApplication::setActiveWindow(&box);
-            box.setModal(false);
-            box.show();
-
-            QApplication::processEvents();
-        }
-
-        m_mainWindow->m_resizeTimer.stop();
 
         int pos = 0;
         pos = m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->value();
@@ -2023,9 +2059,10 @@ void MainWindowHandleData::reInsertDataInMixecConsoleSlot(void)
 
         m_mainWindow->appendConsoleStringToConsole(&m_consoleDataBufferMixed, m_userInterface->ReceiveTextEditMixed);
         m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->setValue(pos);
-
-        box.close();
     }
+
+
+    box.close();
 }
 
 /**
@@ -2268,7 +2305,7 @@ qint32 MainWindowHandleData::bytesPerDecimalInConsole(DecimalType decimalType)
 /**
  * Reinserts the data into the consoles.
  */
-void MainWindowHandleData::reInsertDataInConsole(void)
+void MainWindowHandleData::reInsertDataInStandardConsole(void)
 {
 
     int val1 = 0;
@@ -2277,9 +2314,7 @@ void MainWindowHandleData::reInsertDataInConsole(void)
     int val4 = 0;
     int val5 = 0;
     int val6 = 0;
-    QMessageBox box(QMessageBox::Information, "ScriptCommunicator", "Recalculating console data",
-                    QMessageBox::NoButton, m_mainWindow);
-    box.setStandardButtons(QMessageBox::NoButton);
+
     const Settings* settings = m_settingsDialog->settings();
 
 
@@ -2290,15 +2325,6 @@ void MainWindowHandleData::reInsertDataInConsole(void)
     m_userInterface->ReceiveTextEditBinary->document()->blockSignals(true);
     m_userInterface->ReceiveTextEditCustom->document()->blockSignals(true);
 
-
-    if(settings->showMixedConsole && (m_bytesInStoredConsoleData > 2500))
-    {
-        QApplication::setActiveWindow(&box);
-        box.setModal(false);
-        box.show();
-
-        QApplication::processEvents();
-    }
 
     if(settings->showAsciiInConsole){val1 = m_userInterface->ReceiveTextEditAscii->verticalScrollBar()->value();}
     if(settings->showHexInConsole){val2 = m_userInterface->ReceiveTextEditHex->verticalScrollBar()->value();}
@@ -2315,6 +2341,7 @@ void MainWindowHandleData::reInsertDataInConsole(void)
     m_userInterface->ReceiveTextEditCustom->clear();
     m_decimalConsoleByteBuffer.clear();
     m_mixedConsoleByteBuffer.clear();
+    m_consoleData.m_charactersInAsciiWithoutNewLine = 0;
 
     calculateConsoleData();
 
@@ -2350,6 +2377,4 @@ void MainWindowHandleData::reInsertDataInConsole(void)
     m_userInterface->ReceiveTextEditHex->document()->blockSignals(false);
     m_userInterface->ReceiveTextEditBinary->document()->blockSignals(false);
     m_userInterface->ReceiveTextEditCustom->document()->blockSignals(false);
-
-    box.close();
 }
