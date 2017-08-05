@@ -3857,7 +3857,7 @@ void MainWindow::clearConsoleSlot(void)
     m_userInterface->ReceiveTextEditCustom->document()->blockSignals(true);
 
     m_userInterface->ReceiveTextEditAscii->clear();
-    m_handleData->m_consoleData.m_charactersInAsciiWithoutNewLine = 0;
+    m_handleData->m_consoleData.pixelsInAsciiWithoutNewLine = 0;
     m_userInterface->ReceiveTextEditHex->clear();
     m_userInterface->ReceiveTextEditDecimal->clear();
     m_userInterface->ReceiveTextEditMixed->clear();
