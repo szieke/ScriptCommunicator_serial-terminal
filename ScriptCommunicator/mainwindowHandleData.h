@@ -148,9 +148,6 @@ public:
     ///Clears all stored data.
     void clear(void);
 
-    ///Reinserts the data into the standard consoles.
-    void reInsertDataInStandardConsole(void);
-
     ///Returns the number of bytes for a decimal type.
     qint32 bytesPerDecimalInConsole(DecimalType decimalType);
 

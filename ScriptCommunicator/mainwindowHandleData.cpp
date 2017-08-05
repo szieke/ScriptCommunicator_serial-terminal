@@ -2109,7 +2109,6 @@ void MainWindowHandleData::processDataInStoredData()
  */
 void MainWindowHandleData::reInsertDataInAllConsoleSlot(void)
 {
-    Settings settings = *m_settingsDialog->settings();
 
     m_mainWindow->m_resizeTimer.stop();
 
@@ -2132,43 +2131,81 @@ void MainWindowHandleData::reInsertDataInAllConsoleSlot(void)
     }
 
 
-    reInsertDataInStandardConsole();
 
-    if(settings.showMixedConsole)
+    int val1 = 0;
+    int val2 = 0;
+    int val3 = 0;
+    int val4 = 0;
+    int val5 = 0;
+    int val6 = 0;
+
+    const Settings* settings = m_settingsDialog->settings();
+
+
+    m_userInterface->ReceiveTextEditMixed->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditAscii->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditHex->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditBinary->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditCustom->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditMixed->document()->blockSignals(true);
+
+
+    if(settings->showAsciiInConsole){val1 = m_userInterface->ReceiveTextEditAscii->verticalScrollBar()->value();}
+    if(settings->showHexInConsole){val2 = m_userInterface->ReceiveTextEditHex->verticalScrollBar()->value();}
+    if(settings->showDecimalInConsole){val3 = m_userInterface->ReceiveTextEditDecimal->verticalScrollBar()->value();}
+    if(settings->showMixedConsole){val4 = m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->value();}
+    if(settings->showBinaryConsole){val5 = m_userInterface->ReceiveTextEditBinary->verticalScrollBar()->value();}
+    if(settings->consoleShowCustomConsole){val6 = m_userInterface->ReceiveTextEditCustom->verticalScrollBar()->value();}
+
+    m_userInterface->ReceiveTextEditMixed->clear();
+    m_userInterface->ReceiveTextEditAscii->clear();
+    m_userInterface->ReceiveTextEditDecimal->clear();
+    m_userInterface->ReceiveTextEditHex->clear();
+    m_userInterface->ReceiveTextEditBinary->clear();
+    m_userInterface->ReceiveTextEditCustom->clear();
+    m_decimalConsoleByteBuffer.clear();
+    m_mixedConsoleByteBuffer.clear();
+    m_consoleData.pixelsInAsciiWithoutNewLine = 0;
+    m_consoleData.pixelsInHexWithoutNewLine  = 0;
+    m_consoleData.pixelsInDecWithoutNewLine = 0;
+    m_consoleData.pixelsInBinWithoutNewLine = 0;
+
+    calculateConsoleData();
+
+    for(auto el : m_storedConsoleData)
     {
+        bool isFromAddMessageDialog = (el.type == STORED_DATA_TYPE_USER_MESSAGE) ? true : false;
+        bool isTimeStamp = (el.type == STORED_DATA_TYPE_TIMESTAMP) ? true : false;
+        bool isNewLine = (el.type == STORED_DATA_TYPE_NEW_LINE) ? true : false;
 
-        int pos = 0;
-        pos = m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->value();
-
-        m_userInterface->ReceiveTextEditMixed->clear();
-        m_mixedConsoleByteBuffer.clear();
-        calculateConsoleData();
-
-        //Only the mixed console data shall be generated.
-        settings.showAsciiInConsole = false;
-        if(m_consoleData.mixedData.bytesPerDecimal == 1) settings.showDecimalInConsole = false;
-        settings.showHexInConsole = false;
-        settings.showBinaryConsole = false;
-
-        for(auto el : m_storedConsoleData)
-        {
-            bool isFromAddMessageDialog = (el.type == STORED_DATA_TYPE_USER_MESSAGE) ? true : false;
-            bool isTimeStamp = (el.type == STORED_DATA_TYPE_TIMESTAMP) ? true : false;
-            bool isNewLine = (el.type == STORED_DATA_TYPE_NEW_LINE) ? true : false;
-
-            appendDataToConsoleStrings(el.data, &settings, el.isSend , isFromAddMessageDialog, isTimeStamp,
-                                       el.isFromCan, el.isFromI2cMaster, isNewLine);
-        }
-
-        m_consoleDataBufferAscii.clear();
-        m_consoleDataBufferHex.clear();
-        m_consoleDataBufferDec.clear();
-        m_consoleDataBufferBinary.clear();
-
-        m_mainWindow->appendConsoleStringToConsole(&m_consoleDataBufferMixed, m_userInterface->ReceiveTextEditMixed);
-        m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->setValue(pos);
+        appendDataToConsoleStrings(el.data, settings, el.isSend , isFromAddMessageDialog, isTimeStamp,
+                                   el.isFromCan, el.isFromI2cMaster, isNewLine);
     }
 
+
+    if(settings->consoleShowCustomConsole)
+    {
+        m_customConsoleStrings = m_customConsoleStoredStrings;
+        m_customConsoleStoredStrings.clear();
+        m_numberOfBytesInCustomConsoleStoredStrings = 0;
+    }
+
+    updateConsoleAndLog();
+
+    if(settings->showAsciiInConsole){m_userInterface->ReceiveTextEditAscii->verticalScrollBar()->setValue(val1);}
+    if(settings->showHexInConsole){m_userInterface->ReceiveTextEditHex->verticalScrollBar()->setValue(val2);}
+    if(settings->showDecimalInConsole){m_userInterface->ReceiveTextEditDecimal->verticalScrollBar()->setValue(val3);}
+    if(settings->showMixedConsole){m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->setValue(val4);}
+    if(settings->showBinaryConsole){m_userInterface->ReceiveTextEditBinary->verticalScrollBar()->setValue(val5);}
+    if(settings->consoleShowCustomConsole){m_userInterface->ReceiveTextEditCustom->verticalScrollBar()->setValue(val6);}
+
+    m_userInterface->ReceiveTextEditMixed->document()->blockSignals(false);
+    m_userInterface->ReceiveTextEditAscii->document()->blockSignals(false);
+    m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(false);
+    m_userInterface->ReceiveTextEditHex->document()->blockSignals(false);
+    m_userInterface->ReceiveTextEditBinary->document()->blockSignals(false);
+    m_userInterface->ReceiveTextEditCustom->document()->blockSignals(false);
 
     box.close();
 }
@@ -2409,83 +2446,4 @@ qint32 MainWindowHandleData::bytesPerDecimalInConsole(DecimalType decimalType)
 
     return ret;
 
-}
-/**
- * Reinserts the data into the consoles.
- */
-void MainWindowHandleData::reInsertDataInStandardConsole(void)
-{
-
-    int val1 = 0;
-    int val2 = 0;
-    int val3 = 0;
-    int val4 = 0;
-    int val5 = 0;
-    int val6 = 0;
-
-    const Settings* settings = m_settingsDialog->settings();
-
-
-    m_userInterface->ReceiveTextEditMixed->document()->blockSignals(true);
-    m_userInterface->ReceiveTextEditAscii->document()->blockSignals(true);
-    m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(true);
-    m_userInterface->ReceiveTextEditHex->document()->blockSignals(true);
-    m_userInterface->ReceiveTextEditBinary->document()->blockSignals(true);
-    m_userInterface->ReceiveTextEditCustom->document()->blockSignals(true);
-
-
-    if(settings->showAsciiInConsole){val1 = m_userInterface->ReceiveTextEditAscii->verticalScrollBar()->value();}
-    if(settings->showHexInConsole){val2 = m_userInterface->ReceiveTextEditHex->verticalScrollBar()->value();}
-    if(settings->showDecimalInConsole){val3 = m_userInterface->ReceiveTextEditDecimal->verticalScrollBar()->value();}
-    if(settings->showMixedConsole){val4 = m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->value();}
-    if(settings->showBinaryConsole){val5 = m_userInterface->ReceiveTextEditBinary->verticalScrollBar()->value();}
-    if(settings->consoleShowCustomConsole){val6 = m_userInterface->ReceiveTextEditCustom->verticalScrollBar()->value();}
-
-    m_userInterface->ReceiveTextEditMixed->clear();
-    m_userInterface->ReceiveTextEditAscii->clear();
-    m_userInterface->ReceiveTextEditDecimal->clear();
-    m_userInterface->ReceiveTextEditHex->clear();
-    m_userInterface->ReceiveTextEditBinary->clear();
-    m_userInterface->ReceiveTextEditCustom->clear();
-    m_decimalConsoleByteBuffer.clear();
-    m_mixedConsoleByteBuffer.clear();
-    m_consoleData.pixelsInAsciiWithoutNewLine = 0;
-    m_consoleData.pixelsInHexWithoutNewLine  = 0;
-    m_consoleData.pixelsInDecWithoutNewLine = 0;
-    m_consoleData.pixelsInBinWithoutNewLine = 0;
-
-    calculateConsoleData();
-
-    for(auto el : m_storedConsoleData)
-    {
-        bool isFromAddMessageDialog = (el.type == STORED_DATA_TYPE_USER_MESSAGE) ? true : false;
-        bool isTimeStamp = (el.type == STORED_DATA_TYPE_TIMESTAMP) ? true : false;
-        bool isNewLine = (el.type == STORED_DATA_TYPE_NEW_LINE) ? true : false;
-
-        appendDataToConsoleStrings(el.data, settings, el.isSend , isFromAddMessageDialog, isTimeStamp,
-                                   el.isFromCan, el.isFromI2cMaster, isNewLine);
-    }
-
-    if(settings->consoleShowCustomConsole)
-    {
-        m_customConsoleStrings = m_customConsoleStoredStrings;
-        m_customConsoleStoredStrings.clear();
-        m_numberOfBytesInCustomConsoleStoredStrings = 0;
-    }
-
-    updateConsoleAndLog();
-
-    if(settings->showAsciiInConsole){m_userInterface->ReceiveTextEditAscii->verticalScrollBar()->setValue(val1);}
-    if(settings->showHexInConsole){m_userInterface->ReceiveTextEditHex->verticalScrollBar()->setValue(val2);}
-    if(settings->showDecimalInConsole){m_userInterface->ReceiveTextEditDecimal->verticalScrollBar()->setValue(val3);}
-    if(settings->showMixedConsole){m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->setValue(val4);}
-    if(settings->showBinaryConsole){m_userInterface->ReceiveTextEditBinary->verticalScrollBar()->setValue(val5);}
-    if(settings->consoleShowCustomConsole){m_userInterface->ReceiveTextEditCustom->verticalScrollBar()->setValue(val6);}
-
-    m_userInterface->ReceiveTextEditMixed->document()->blockSignals(false);
-    m_userInterface->ReceiveTextEditAscii->document()->blockSignals(false);
-    m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(false);
-    m_userInterface->ReceiveTextEditHex->document()->blockSignals(false);
-    m_userInterface->ReceiveTextEditBinary->document()->blockSignals(false);
-    m_userInterface->ReceiveTextEditCustom->document()->blockSignals(false);
 }
