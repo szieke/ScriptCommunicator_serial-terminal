@@ -556,9 +556,6 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
             m_mainConfigFile = getAndCreateProgramUserFolder() + "/" + INIT_MAIN_CONFIG_FILE;
         }
 
-        m_userInterface->ReceiveTextEditAscii->setWordWrapMode (QTextOption::NoWrap);
-        m_userInterface->ReceiveTextEditAscii->setLineWrapMode (QTextEdit::NoWrap);
-
         QFileInfo fi(m_mainConfigFile + ".lock");
         bool lockFileExists = fi.exists();
 
@@ -3858,6 +3855,9 @@ void MainWindow::clearConsoleSlot(void)
 
     m_userInterface->ReceiveTextEditAscii->clear();
     m_handleData->m_consoleData.pixelsInAsciiWithoutNewLine = 0;
+    m_handleData->m_consoleData.pixelsInHexWithoutNewLine = 0;
+    m_handleData->m_consoleData.pixelsInDecWithoutNewLine = 0;
+    m_handleData->m_consoleData.pixelsInBinWithoutNewLine = 0;
     m_userInterface->ReceiveTextEditHex->clear();
     m_userInterface->ReceiveTextEditDecimal->clear();
     m_userInterface->ReceiveTextEditMixed->clear();

@@ -170,7 +170,7 @@
                 <bool>false</bool>
                </property>
                <property name="lineWrapMode">
-                <enum>QTextEdit::WidgetWidth</enum>
+                <enum>QTextEdit::NoWrap</enum>
                </property>
                <property name="readOnly">
                 <bool>false</bool>
@@ -274,6 +274,9 @@ p, li { white-space: pre-wrap; }
                </property>
                <property name="undoRedoEnabled">
                 <bool>false</bool>
+               </property>
+               <property name="lineWrapMode">
+                <enum>QTextEdit::NoWrap</enum>
                </property>
                <property name="readOnly">
                 <bool>false</bool>
@@ -379,7 +382,7 @@ p, li { white-space: pre-wrap; }
                 <bool>false</bool>
                </property>
                <property name="lineWrapMode">
-                <enum>QTextEdit::WidgetWidth</enum>
+                <enum>QTextEdit::NoWrap</enum>
                </property>
                <property name="readOnly">
                 <bool>false</bool>
@@ -485,7 +488,7 @@ p, li { white-space: pre-wrap; }
                 <bool>false</bool>
                </property>
                <property name="lineWrapMode">
-                <enum>QTextEdit::WidgetWidth</enum>
+                <enum>QTextEdit::NoWrap</enum>
                </property>
                <property name="readOnly">
                 <bool>false</bool>
@@ -624,7 +627,13 @@ p, li { white-space: pre-wrap; }
             </attribute>
             <layout class="QGridLayout" name="gridLayout">
              <item row="0" column="0" colspan="3">
-              <widget class="QScrollArea" name="scrollArea">
+              <widget class="QScrollArea" name="canScrollArea">
+               <property name="verticalScrollBarPolicy">
+                <enum>Qt::ScrollBarAlwaysOn</enum>
+               </property>
+               <property name="horizontalScrollBarPolicy">
+                <enum>Qt::ScrollBarAsNeeded</enum>
+               </property>
                <property name="widgetResizable">
                 <bool>true</bool>
                </property>
@@ -633,8 +642,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>332</width>
-                  <height>108</height>
+                  <width>701</width>
+                  <height>200</height>
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_3">
@@ -1025,8 +1034,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>98</width>
-          <height>93</height>
+          <width>414</width>
+          <height>517</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1156,8 +1165,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>188</width>
-          <height>301</height>
+          <width>414</width>
+          <height>517</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1382,8 +1391,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>139</width>
-          <height>271</height>
+          <width>414</width>
+          <height>517</height>
          </rect>
         </property>
         <attribute name="label">

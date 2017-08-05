@@ -105,8 +105,11 @@ typedef struct
     QString htmlSend;
 
     int pixelsInAsciiWithoutNewLine;
-    int maxPixelsPerLineAscii;
-    int pixelWidthAscii[256];
+    int pixelsInHexWithoutNewLine;
+    int pixelsInDecWithoutNewLine;
+    int pixelsInBinWithoutNewLine;
+    int maxPixelsPerLine;
+    int pixelWidth[256];
 
 }ConsoleData;
 
@@ -139,6 +142,8 @@ public:
     ///Appends data the log file.
     void appendDataToLog(const QByteArray& data, bool isSend, bool isUserMessage, bool isTimeStamp, bool isFromCan,
                          bool isFromI2cMaster, bool isNewLine);
+
+    QString createConsoleLine(QByteArray* dataArray, int *pixelsInConsoleWithoutNewLine, QString *htmlStartString, int charsPerOperation);
 
     ///Clears all stored data.
     void clear(void);
