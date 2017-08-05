@@ -783,43 +783,49 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
 
     if(isNewLine)
     {
-        QString tmpString = QString::fromLocal8Bit(data);
-        //Note: "\n" is not replaces with "<br>" because in MainWindow::appendConsoleStringToConsole for every "\n"
-        //a new block is created (much better performance).
+        QString tmpString = "<br>";
 
         if(currentSettings->showDecimalInConsole)m_consoleDataBufferDec.append(tmpString);
         if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(tmpString);
         if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(tmpString);
         if(currentSettings->showAsciiInConsole)m_consoleDataBufferAscii.append(tmpString);
+
+        m_consoleData.pixelsInAsciiWithoutNewLine = 0;
+        m_consoleData.pixelsInHexWithoutNewLine  = 0;
+        m_consoleData.pixelsInDecWithoutNewLine = 0;
+        m_consoleData.pixelsInBinWithoutNewLine = 0;
     }
     else
     {
         if(isUserMessage || isTimeStamp)
         {
-            bool startsWithNewLine = false;
 
-            QString tmpString = QString::fromLocal8Bit(data);
-
-            if(tmpString.startsWith("\n"))
+            if(currentSettings->showDecimalInConsole)
             {
-                startsWithNewLine = true;
-                tmpString.remove(0, 1);//Remove the first '\n'.
+                QString tmpString = createConsoleLine(&data, &m_consoleData.pixelsInDecWithoutNewLine, &m_consoleData.htmlMessageAndTimestamp , 1, true);
+                m_consoleDataBufferDec.append(m_consoleData.htmlMessageAndTimestamp + tmpString + QString("</span>"));
             }
-            tmpString.replace("<", "&lt;");
-            tmpString.replace(">", "&gt;");
-            tmpString.replace("\n", "<br>");
-            tmpString.replace(" ", "&nbsp;");
-
-            //Note: The "\n" at the beginning of tmpString is not replaces with "<br>" because in MainWindow::appendConsoleStringToConsole for every "\n"
-            //a new block is created (much better performance).
-            QString htmlStartString = startsWithNewLine ? "\n" : "";
-            htmlStartString += m_consoleData.htmlMessageAndTimestamp + tmpString + QString("</span>");
-
-            if(currentSettings->showDecimalInConsole)m_consoleDataBufferDec.append(htmlStartString);
-            if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(htmlStartString);
-            if(currentSettings->showMixedConsole)m_consoleDataBufferMixed.append(htmlStartString);
-            if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(htmlStartString);
-            if(currentSettings->showAsciiInConsole)m_consoleDataBufferAscii.append(htmlStartString);
+            if(currentSettings->showHexInConsole)
+            {
+                QString tmpString = createConsoleLine(&data, &m_consoleData.pixelsInHexWithoutNewLine, &m_consoleData.htmlMessageAndTimestamp , 1, true);
+                m_consoleDataBufferHex.append(m_consoleData.htmlMessageAndTimestamp + tmpString + QString("</span>"));
+            }
+            if(currentSettings->showMixedConsole)
+            {
+                int tmpPixel = 0;
+                QString tmpString = createConsoleLine(&data, &tmpPixel, &m_consoleData.htmlMessageAndTimestamp , 1, true);
+                m_consoleDataBufferMixed.append(m_consoleData.htmlMessageAndTimestamp + tmpString + QString("</span>"));
+            }
+            if(currentSettings->showBinaryConsole)
+            {
+                QString tmpString = createConsoleLine(&data, &m_consoleData.pixelsInBinWithoutNewLine, &m_consoleData.htmlMessageAndTimestamp , 1, true);
+                m_consoleDataBufferBinary.append(m_consoleData.htmlMessageAndTimestamp + tmpString + QString("</span>"));
+            }
+            if(currentSettings->showAsciiInConsole)
+            {
+                QString tmpString = createConsoleLine(&data, &m_consoleData.pixelsInAsciiWithoutNewLine, &m_consoleData.htmlMessageAndTimestamp , 1, true);
+                m_consoleDataBufferAscii.append(m_consoleData.htmlMessageAndTimestamp + tmpString + QString("</span>"));
+            }
         }
         else
         {
@@ -1022,9 +1028,11 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
     }
 }
 
-QString MainWindowHandleData::createConsoleLine(QByteArray* dataArray, int* pixelsInConsoleWithoutNewLine, QString* htmlStartString ,int charsPerOperation)
+QString MainWindowHandleData::createConsoleLine(QByteArray* dataArray, int* pixelsInConsoleWithoutNewLine, QString* htmlStartString ,int charsPerOperation,
+                                                bool generateNewLine)
 {
     QString tmpString;
+    bool lastNewOperationWasWrap = false;
     char* data = dataArray->data();
 
     for(int i = 0; i < dataArray->length(); i += charsPerOperation)
@@ -1041,6 +1049,11 @@ QString MainWindowHandleData::createConsoleLine(QByteArray* dataArray, int* pixe
         {
             tmpString += "</span>\n" + *htmlStartString;
             *pixelsInConsoleWithoutNewLine = pixelForOperation;
+            lastNewOperationWasWrap = true;
+        }
+        else
+        {
+            lastNewOperationWasWrap = false;
         }
 
         for(int j = 0; j < charsPerOperation; j++)
@@ -1048,7 +1061,18 @@ QString MainWindowHandleData::createConsoleLine(QByteArray* dataArray, int* pixe
             if (data[i + j] == '<')tmpString += "&lt;";
             else if (data[i + j] == '>')tmpString += "&gt;";
             else if (data[i + j] == ' ')tmpString += "&nbsp;";
-            else if (data[i + j] == '\n')tmpString += "";
+            else if (data[i + j] == '\n')
+            {
+                if(generateNewLine && !lastNewOperationWasWrap)
+                {
+                    tmpString += "</span>\n" + *htmlStartString;
+                    *pixelsInConsoleWithoutNewLine = 0;
+                }
+                else
+                {
+                    tmpString += "";
+                }
+            }
             else if (data[i + j] == '\r')tmpString += "";
             else if (data[i + j] < 33 || data[i + j] > 126) tmpString += 255;
             else tmpString += data[i + j];

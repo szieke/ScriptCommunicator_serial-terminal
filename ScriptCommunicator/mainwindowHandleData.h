@@ -143,7 +143,7 @@ public:
     void appendDataToLog(const QByteArray& data, bool isSend, bool isUserMessage, bool isTimeStamp, bool isFromCan,
                          bool isFromI2cMaster, bool isNewLine);
 
-    QString createConsoleLine(QByteArray* dataArray, int *pixelsInConsoleWithoutNewLine, QString *htmlStartString, int charsPerOperation);
+    QString createConsoleLine(QByteArray* dataArray, int *pixelsInConsoleWithoutNewLine, QString *htmlStartString, int charsPerOperation, bool generateNewLine=false);
 
     ///Clears all stored data.
     void clear(void);
