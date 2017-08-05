@@ -642,8 +642,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>701</width>
-                  <height>200</height>
+                  <width>332</width>
+                  <height>108</height>
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_3">
@@ -910,7 +910,7 @@ p, li { white-space: pre-wrap; }
                 <bool>false</bool>
                </property>
                <property name="lineWrapMode">
-                <enum>QTextEdit::NoWrap</enum>
+                <enum>QTextEdit::WidgetWidth</enum>
                </property>
                <property name="readOnly">
                 <bool>false</bool>
@@ -1034,8 +1034,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>414</width>
-          <height>517</height>
+          <width>98</width>
+          <height>93</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1165,8 +1165,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>414</width>
-          <height>517</height>
+          <width>188</width>
+          <height>301</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1391,8 +1391,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>414</width>
-          <height>517</height>
+          <width>139</width>
+          <height>271</height>
          </rect>
         </property>
         <attribute name="label">

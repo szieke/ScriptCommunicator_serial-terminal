@@ -3707,7 +3707,7 @@ void MainWindow::showNumberOfReceivedAndSentBytes(void)
  * @param textEdit
  *      The text edit.
  */
-void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit* textEdit)
+void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit* textEdit, bool searchForNewLine)
 {
     const Settings* settings = m_settingsDialog->settings();
 
@@ -3722,7 +3722,7 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
 
         textEdit->moveCursor(QTextCursor::End);
 
-        if(consoleString->indexOf('\n') != -1)
+        if(searchForNewLine && (consoleString->indexOf('\n') != -1))
         {//consoleString contains a '\n'.
 
             QTextCursor cursor = textEdit->textCursor();

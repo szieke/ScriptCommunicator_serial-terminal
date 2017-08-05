@@ -538,7 +538,7 @@ private:
     void restoreSizeSplitterSecondElement(QSplitter* splitter, qint32 oldSize);
 
     ///Appends a console string to a console.
-    void appendConsoleStringToConsole(QString* consoleString, QTextEdit* textEdit);
+    void appendConsoleStringToConsole(QString* consoleString, QTextEdit* textEdit, bool searchForNewLine=true);
 
     ///This function is called if the main window is closed.
     void closeEvent(QCloseEvent * event);

@@ -145,7 +145,7 @@ void MainWindowHandleData::updateConsoleAndLog(void)
             bool consoleWasEmpty = (m_userInterface->ReceiveTextEditCustom->document()->characterCount() <= 1) ? true : false;
             consoleString = m_consoleData.htmlReceived + consoleString + QString("</span>");
 
-            m_mainWindow->appendConsoleStringToConsole(&consoleString, m_userInterface->ReceiveTextEditCustom);
+            m_mainWindow->appendConsoleStringToConsole(&consoleString, m_userInterface->ReceiveTextEditCustom, false);
             m_customConsoleStrings.clear();
             m_numberOfBytesInCustomConsoleStrings = 0;
 
