@@ -511,13 +511,39 @@ void MainWindowHandleData::calculateConsoleData()
     m_consoleData.htmlSend = QString("<span style=\"color:#" + currentSettings->consoleSendColor + ";\">");
 
 
-
-    lineEditWidth  = m_userInterface->ReceiveTextEditAscii->width() - m_userInterface->ReceiveTextEditAscii->verticalScrollBar()->width() - 10;
     textEditFont = QFont(currentSettings->stringConsoleFont,  currentSettings->stringConsoleFontSize.toInt());
     fm = QFontMetrics(textEditFont);
-    int pixelsWide = fm.width("0");
+    int biggestWidth = 0;
 
-    m_consoleData.maxBytePerLineAscii = (int)(((double)lineEditWidth / (double)pixelsWide));
+    for(int i = 0; i < 256; i++)
+    {
+        if(((char)i == '\r') || ((char)i == '\n'))
+        {
+            m_consoleData.pixelWidthAscii[i] = 0;
+        }
+        else if (((char)i == ' ') || ((char)i == '<') || ((char)i == '>'))
+        {
+            m_consoleData.pixelWidthAscii[i] = fm.width(i);
+        }
+        else if(i < 33 || i > 126)
+        {
+            m_consoleData.pixelWidthAscii[i] = fm.width(255);
+        }
+        else
+        {
+           m_consoleData.pixelWidthAscii[i] = fm.width(i);
+        }
+
+        if(m_consoleData.pixelWidthAscii[i] > biggestWidth)
+        {
+            biggestWidth = m_consoleData.pixelWidthAscii[i];
+        }
+
+    }
+
+    m_consoleData.maxPixelsPerLineAscii  = m_userInterface->ReceiveTextEditAscii->width() - m_userInterface->ReceiveTextEditAscii->verticalScrollBar()->width() - biggestWidth;
+
+
 }
 
 /**
@@ -917,40 +943,27 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
 
                 //Replace the binary 0 (for the ascii console).
                 dataArray->replace(0, 255);
-
-                int convertedBytes = 0;
-                int readBytes = 0;
                 QString tmpString;
 
-                do
+                for(auto el : *dataArray)
                 {
-                    QByteArray tmp = dataArray->mid(readBytes, m_consoleData.maxBytePerLineAscii - m_consoleData.m_charactersInAsciiWithoutNewLine);
-                    readBytes += tmp.length();
-                    convertedBytes = 0;
+                    m_consoleData.pixelsInAsciiWithoutNewLine += m_consoleData.pixelWidthAscii[(int)el];
 
-                    for(auto el : QString::fromLocal8Bit(tmp))
-                    {
-                        convertedBytes++;
-                        if (el == '<')tmpString += "&lt;";
-                        else if (el == '>')tmpString += "&gt;";
-                        else if (el == ' ')tmpString += "&nbsp;";
-                        else if (el == '\n'){tmpString += "";convertedBytes--;}
-                        else if (el == '\r'){tmpString += "";convertedBytes--;}
-                        else if (el < 33 || el > 126) tmpString += 255;
-                        else tmpString += el;
-                    }
-
-                    if((convertedBytes + m_consoleData.m_charactersInAsciiWithoutNewLine) >= m_consoleData.maxBytePerLineAscii)
+                    if(m_consoleData.pixelsInAsciiWithoutNewLine >= m_consoleData.maxPixelsPerLineAscii)
                     {
                         tmpString += "</span>\n" + *htmlStartString;
-                        m_consoleData.m_charactersInAsciiWithoutNewLine = 0;
-                    }
-                    else
-                    {
-                        m_consoleData.m_charactersInAsciiWithoutNewLine += convertedBytes;
+                        m_consoleData.pixelsInAsciiWithoutNewLine = m_consoleData.pixelWidthAscii[(int)el];
                     }
 
-                }while(readBytes < dataArray->length());
+                    if (el == '<')tmpString += "&lt;";
+                    else if (el == '>')tmpString += "&gt;";
+                    else if (el == ' ')tmpString += "&nbsp;";
+                    else if (el == '\n')tmpString += "";
+                    else if (el == '\r')tmpString += "";
+                    else if (el < 33 || el > 126) tmpString += 255;
+                    else tmpString += el;
+
+                }
 
                 m_consoleDataBufferAscii.append(*htmlStartString + additionalInformation + tmpString + QString("</span>"));
             }
@@ -1823,7 +1836,7 @@ void MainWindowHandleData::processDataInStoredData()
 
             m_userInterface->ReceiveTextEditAscii->clear();
             m_consoleDataBufferAscii.clear();
-            m_consoleData.m_charactersInAsciiWithoutNewLine = 0;
+            m_consoleData.pixelsInAsciiWithoutNewLine = 0;
             m_userInterface->ReceiveTextEditHex->clear();
             m_consoleDataBufferHex.clear();
             m_userInterface->ReceiveTextEditDecimal->clear();
@@ -2341,7 +2354,7 @@ void MainWindowHandleData::reInsertDataInStandardConsole(void)
     m_userInterface->ReceiveTextEditCustom->clear();
     m_decimalConsoleByteBuffer.clear();
     m_mixedConsoleByteBuffer.clear();
-    m_consoleData.m_charactersInAsciiWithoutNewLine = 0;
+    m_consoleData.pixelsInAsciiWithoutNewLine = 0;
 
     calculateConsoleData();
 

@@ -2421,9 +2421,6 @@ for TCP clients.</string>
                <property name="editable">
                 <bool>false</bool>
                </property>
-               <property name="fontFilters">
-                <set>QFontComboBox::MonospacedFonts</set>
-               </property>
                <property name="currentFont">
                 <font>
                  <family>Courier New</family>

@@ -104,8 +104,9 @@ typedef struct
     ///The HTML data for sent data.
     QString htmlSend;
 
-    int m_charactersInAsciiWithoutNewLine;
-    int maxBytePerLineAscii;
+    int pixelsInAsciiWithoutNewLine;
+    int maxPixelsPerLineAscii;
+    int pixelWidthAscii[256];
 
 }ConsoleData;
 
