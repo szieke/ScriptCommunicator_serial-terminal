@@ -520,7 +520,7 @@ void MainWindowHandleData::calculateConsoleData()
     else if(m_userInterface->ReceiveTextEditMixed->isVisible()){console = m_userInterface->ReceiveTextEditMixed;}
     else if(m_userInterface->ReceiveTextEditCustom->isVisible()){console = m_userInterface->ReceiveTextEditCustom;}
 
-    if(console ||  m_userInterface->canScrollArea->isVisible())
+    if(console)
     {
         textEditFont = QFont(currentSettings->stringConsoleFont,  currentSettings->stringConsoleFontSize.toInt());
         fm = QFontMetrics(textEditFont);
@@ -552,18 +552,15 @@ void MainWindowHandleData::calculateConsoleData()
 
         }
 
-        if(console)
-        {
-            m_consoleData.maxPixelsPerLine  = console->width() - console->verticalScrollBar()->width();
-        }
-        else
-        {
-            m_consoleData.maxPixelsPerLine  = m_userInterface->canScrollArea->width() - m_userInterface->canScrollArea->verticalScrollBar()->width();
-
-        }
+        m_consoleData.maxPixelsPerLine  = console->width() - console->verticalScrollBar()->width();
 
         m_consoleData.maxPixelsPerLine -= biggestWidth;
+        m_consoleData.maxPixelsPerLineRecalculated = true;
 
+    }
+    else
+    {
+        m_consoleData.maxPixelsPerLineRecalculated = false;
     }
 }
 
@@ -2162,10 +2159,13 @@ void MainWindowHandleData::reInsertDataInAllConsoleSlot(void)
 
     m_mainWindow->m_resizeTimer.stop();
 
-    if(!m_mainWindow->isVisible())
+    calculateConsoleData();
+
+    if(!m_mainWindow->isVisible() || !m_consoleData.maxPixelsPerLineRecalculated)
     {
         return;
     }
+
 
     QMessageBox box(QMessageBox::Information, "ScriptCommunicator", "Recalculating console data",
                     QMessageBox::NoButton, m_mainWindow);
@@ -2220,8 +2220,6 @@ void MainWindowHandleData::reInsertDataInAllConsoleSlot(void)
     m_consoleData.pixelsInHexWithoutNewLine  = 0;
     m_consoleData.pixelsInDecWithoutNewLine = 0;
     m_consoleData.pixelsInBinWithoutNewLine = 0;
-
-    calculateConsoleData();
 
     for(auto el : m_storedConsoleData)
     {

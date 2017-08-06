@@ -326,6 +326,9 @@ public slots:
     ///This slot is connected to the MainInterfaceThread::setConnectionButtonsSignal signal.
     void setConnectionButtonsSlot(bool enable);
 
+    ///Is called if the index of the current tab has changed.
+    void currentTabChangedSlot(int index);
+
     ///This slot function shows a message box.
     void showMessageBoxSlot(QMessageBox::Icon icon, QString title, QString text, QMessageBox::StandardButtons buttons,
                             QWidget* parent = 0);

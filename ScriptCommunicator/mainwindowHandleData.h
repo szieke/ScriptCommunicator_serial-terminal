@@ -110,6 +110,7 @@ typedef struct
     int pixelsInBinWithoutNewLine;
     int maxPixelsPerLine;
     int pixelWidth[256];
+    bool maxPixelsPerLineRecalculated;
 
 }ConsoleData;
 

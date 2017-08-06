@@ -346,6 +346,8 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
     connect(&m_resizeTimer, SIGNAL(timeout()),m_handleData, SLOT(reInsertDataInAllConsoleSlot()));
 
+    connect(m_userInterface->tabWidget, SIGNAL(currentChanged(int)),this, SLOT(currentTabChangedSlot(int)));
+
     connect(m_sendWindow, SIGNAL(sendDataWithTheMainInterfaceSignal(QByteArray,uint)), m_mainInterface, SLOT(sendDataSlot(QByteArray, uint)), Qt::QueuedConnection);
     connect(m_handleData, SIGNAL(sendDataWithTheMainInterfaceSignal(QByteArray,uint)), m_mainInterface, SLOT(sendDataSlot(QByteArray, uint)), Qt::QueuedConnection);
 
@@ -3176,6 +3178,21 @@ void MainWindow::setConnectionButtonsSlot(bool enable)
     m_userInterface->actionConnect->setEnabled(enable);
     m_settingsDialog->getUserInterface()->connectButton->setEnabled(enable);
     m_settingsDialog->setInterfaceSettingsCanBeChanged(enable);
+}
+
+/**
+ * Is called if the index of the current tab has changed.
+ * @param index
+ *      The new index.
+ */
+void MainWindow::currentTabChangedSlot(int index)
+{
+    (void)index;
+    if(!m_handleData->m_consoleData.maxPixelsPerLineRecalculated)
+    {
+        m_handleData->reInsertDataInAllConsoleSlot();
+    }
+
 }
 
 /**
