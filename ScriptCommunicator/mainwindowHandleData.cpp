@@ -145,7 +145,9 @@ void MainWindowHandleData::updateConsoleAndLog(void)
             bool consoleWasEmpty = (m_userInterface->ReceiveTextEditCustom->document()->characterCount() <= 1) ? true : false;
             consoleString = m_consoleData.htmlReceived + consoleString + QString("</span>");
 
-            m_mainWindow->appendConsoleStringToConsole(&consoleString, m_userInterface->ReceiveTextEditCustom, false);
+            QStringList list;
+            list.append(consoleString);
+            m_mainWindow->appendConsoleStringToConsole(&list, m_userInterface->ReceiveTextEditCustom);
             m_customConsoleStrings.clear();
             m_numberOfBytesInCustomConsoleStrings = 0;
 
@@ -783,17 +785,22 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
 
     if(isNewLine)
     {
-        QString tmpString = "<br>";
-
-        if(currentSettings->showDecimalInConsole)m_consoleDataBufferDec.append(tmpString);
-        if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(tmpString);
-        if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(tmpString);
-        if(currentSettings->showAsciiInConsole)m_consoleDataBufferAscii.append(tmpString);
-
-        m_consoleData.pixelsInAsciiWithoutNewLine = 0;
-        m_consoleData.pixelsInHexWithoutNewLine  = 0;
-        m_consoleData.pixelsInDecWithoutNewLine = 0;
-        m_consoleData.pixelsInBinWithoutNewLine = 0;
+        if(currentSettings->showDecimalInConsole)
+        {
+            createConsoleLine(&data, &m_consoleDataBufferDec, &m_consoleData.pixelsInDecWithoutNewLine, NULL, 1, true);
+        }
+        if(currentSettings->showHexInConsole)
+        {
+            createConsoleLine(&data, &m_consoleDataBufferHex, &m_consoleData.pixelsInHexWithoutNewLine, NULL, 1, true);
+        }
+        if(currentSettings->showBinaryConsole)
+        {
+            createConsoleLine(&data, &m_consoleDataBufferBinary, &m_consoleData.pixelsInBinWithoutNewLine, NULL, 1, true);
+        }
+        if(currentSettings->showAsciiInConsole)
+        {
+            createConsoleLine(&data, &m_consoleDataBufferAscii, &m_consoleData.pixelsInAsciiWithoutNewLine, NULL, 1, true);
+        }
     }
     else
     {
@@ -802,34 +809,29 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
 
             if(currentSettings->showDecimalInConsole)
             {
-                QString tmpString = createConsoleLine(&data, &m_consoleData.pixelsInDecWithoutNewLine, &m_consoleData.htmlMessageAndTimestamp , 1, true);
-                m_consoleDataBufferDec.append(m_consoleData.htmlMessageAndTimestamp + tmpString + QString("</span>"));
+                createConsoleLine(&data, &m_consoleDataBufferDec, &m_consoleData.pixelsInDecWithoutNewLine, &m_consoleData.htmlMessageAndTimestamp , 1, true);
             }
             if(currentSettings->showHexInConsole)
             {
-                QString tmpString = createConsoleLine(&data, &m_consoleData.pixelsInHexWithoutNewLine, &m_consoleData.htmlMessageAndTimestamp , 1, true);
-                m_consoleDataBufferHex.append(m_consoleData.htmlMessageAndTimestamp + tmpString + QString("</span>"));
+                createConsoleLine(&data, &m_consoleDataBufferHex, &m_consoleData.pixelsInHexWithoutNewLine, &m_consoleData.htmlMessageAndTimestamp , 1, true);
             }
             if(currentSettings->showMixedConsole)
             {
                 int tmpPixel = 0;
-                QString tmpString = createConsoleLine(&data, &tmpPixel, &m_consoleData.htmlMessageAndTimestamp , 1, true);
-                m_consoleDataBufferMixed.append(m_consoleData.htmlMessageAndTimestamp + tmpString + QString("</span>"));
+                createConsoleLine(&data, &m_consoleDataBufferMixed, &tmpPixel, &m_consoleData.htmlMessageAndTimestamp , 1, true);
             }
             if(currentSettings->showBinaryConsole)
             {
-                QString tmpString = createConsoleLine(&data, &m_consoleData.pixelsInBinWithoutNewLine, &m_consoleData.htmlMessageAndTimestamp , 1, true);
-                m_consoleDataBufferBinary.append(m_consoleData.htmlMessageAndTimestamp + tmpString + QString("</span>"));
+                createConsoleLine(&data, &m_consoleDataBufferBinary, &m_consoleData.pixelsInBinWithoutNewLine, &m_consoleData.htmlMessageAndTimestamp , 1, true);
             }
             if(currentSettings->showAsciiInConsole)
             {
-                QString tmpString = createConsoleLine(&data, &m_consoleData.pixelsInAsciiWithoutNewLine, &m_consoleData.htmlMessageAndTimestamp , 1, true);
-                m_consoleDataBufferAscii.append(m_consoleData.htmlMessageAndTimestamp + tmpString + QString("</span>"));
+                createConsoleLine(&data, &m_consoleDataBufferAscii, &m_consoleData.pixelsInAsciiWithoutNewLine, &m_consoleData.htmlMessageAndTimestamp , 1, true);
             }
         }
         else
         {
-            QString* htmlStartString =  (isSend) ? &m_consoleData.htmlSend : &m_consoleData.htmlReceived;
+            QString* htmlStartString =  (isSend) ? &m_consoleData.htmlSend : NULL;
 
             if(isFromCan)
             {
@@ -923,19 +925,17 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                     usedArray = dataArray;
                 }
 
-                QString tmpString;
                 if(!additionalInformation.isEmpty())
                 {
                     tmpArray = additionalInformation.toLocal8Bit();
-                    tmpString = "<br>";
+                    m_consoleDataBufferDec += "<br>";
                     m_consoleData.pixelsInDecWithoutNewLine = 0;
-                    tmpString += createConsoleLine(&tmpArray, &m_consoleData.pixelsInDecWithoutNewLine, htmlStartString, 1);
+                    createConsoleLine(&tmpArray, &m_consoleDataBufferDec, &m_consoleData.pixelsInDecWithoutNewLine, htmlStartString, 1);
                 }
 
                 tmpArray =(MainWindow::byteArrayToNumberString(*usedArray, false, false, false, true, true, currentSettings->consoleDecimalsType, currentSettings->targetEndianess)
                                               + " ").toLocal8Bit();
-                tmpString += createConsoleLine(&tmpArray, &m_consoleData.pixelsInDecWithoutNewLine , htmlStartString, 4);
-                m_consoleDataBufferDec.append(*htmlStartString + tmpString + QString("</span>"));
+                createConsoleLine(&tmpArray, &m_consoleDataBufferDec, &m_consoleData.pixelsInDecWithoutNewLine , htmlStartString, 4);
 
                 qint32 tmp = usedArray->length() % m_consoleData.mixedData.bytesPerDecimal;
                 if(tmp != 0)
@@ -949,34 +949,30 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
             }
             if(currentSettings->showHexInConsole)
             {
-                QString tmpString;
                 if(!additionalInformation.isEmpty())
                 {
                     tmpArray = additionalInformation.toLocal8Bit();
-                    tmpString = "<br>";
+                    m_consoleDataBufferHex += "<br>";
                     m_consoleData.pixelsInHexWithoutNewLine = 0;
-                    tmpString += createConsoleLine(&tmpArray, &m_consoleData.pixelsInHexWithoutNewLine, htmlStartString, 1);
+                    createConsoleLine(&tmpArray, &m_consoleDataBufferHex, &m_consoleData.pixelsInHexWithoutNewLine, htmlStartString, 1);
                 }
 
                 tmpArray =(MainWindow::byteArrayToNumberString(*dataArray, false, true, false) + " ").toLocal8Bit();
-                tmpString += createConsoleLine(&tmpArray, &m_consoleData.pixelsInHexWithoutNewLine , htmlStartString, 3);
-                m_consoleDataBufferHex.append(*htmlStartString + tmpString + QString("</span>"));
+                createConsoleLine(&tmpArray, &m_consoleDataBufferHex, &m_consoleData.pixelsInHexWithoutNewLine , htmlStartString, 3);
             }
 
             if(currentSettings->showBinaryConsole)
             {
-                QString tmpString;
                 if(!additionalInformation.isEmpty())
                 {
                     tmpArray = additionalInformation.toLocal8Bit();
-                    tmpString = "<br>";
+                    m_consoleDataBufferBinary += "<br>";
                     m_consoleData.pixelsInBinWithoutNewLine = 0;
-                    tmpString += createConsoleLine(&tmpArray, &m_consoleData.pixelsInBinWithoutNewLine, htmlStartString, 1);
+                    createConsoleLine(&tmpArray, &m_consoleDataBufferBinary, &m_consoleData.pixelsInBinWithoutNewLine, htmlStartString, 1);
                 }
 
                 tmpArray =(MainWindow::byteArrayToNumberString(*dataArray, true, false, false) + " ").toLocal8Bit();
-                tmpString += createConsoleLine(&tmpArray, &m_consoleData.pixelsInBinWithoutNewLine , htmlStartString, 9);
-                m_consoleDataBufferBinary.append(*htmlStartString + tmpString + QString("</span>"));
+                createConsoleLine(&tmpArray, &m_consoleDataBufferBinary, &m_consoleData.pixelsInBinWithoutNewLine , htmlStartString, 9);
             }
 
             if(currentSettings->showMixedConsole)
@@ -1000,7 +996,8 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                         m_mixedConsoleByteBuffer.clear();
                     }
 
-                    m_consoleDataBufferMixed.append(*htmlStartString + additionalInformation + createMixedConsoleString(tmpData, isFromCan && currentSettings->showCanMetaInformationInConsole) + QString("</span>\n"));
+                    m_consoleDataBufferMixed.last().append(*htmlStartString + additionalInformation + createMixedConsoleString(tmpData, isFromCan && currentSettings->showCanMetaInformationInConsole) + QString("</span>"));
+                    m_consoleDataBufferMixed.append("");
                 }
             }
 
@@ -1010,17 +1007,15 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                 //Replace the binary 0 (for the ascii console).
                 dataArray->replace(0, 255);
 
-                QString tmpString;
                 if(!additionalInformation.isEmpty())
                 {
                     tmpArray = additionalInformation.toLocal8Bit();
-                    tmpString = "<br>";
+                    m_consoleDataBufferAscii += "<br>";
                     m_consoleData.pixelsInAsciiWithoutNewLine = 0;
-                    tmpString += createConsoleLine(&tmpArray, &m_consoleData.pixelsInAsciiWithoutNewLine, htmlStartString, 1);
+                    createConsoleLine(&tmpArray, &m_consoleDataBufferAscii, &m_consoleData.pixelsInAsciiWithoutNewLine, htmlStartString, 1);
                 }
 
-                tmpString += createConsoleLine(dataArray, &m_consoleData.pixelsInAsciiWithoutNewLine, htmlStartString, 1);
-                m_consoleDataBufferAscii.append(*htmlStartString + tmpString + QString("</span>"));
+                createConsoleLine(dataArray, &m_consoleDataBufferAscii, &m_consoleData.pixelsInAsciiWithoutNewLine, htmlStartString, 1);
             }
         }
 
@@ -1028,10 +1023,28 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
     }
 }
 
-QString MainWindowHandleData::createConsoleLine(QByteArray* dataArray, int* pixelsInConsoleWithoutNewLine, QString* htmlStartString ,int charsPerOperation,
+void MainWindowHandleData::createConsoleLine(QByteArray* dataArray, QStringList* result, int* pixelsInConsoleWithoutNewLine, QString* htmlStartString ,int charsPerOperation,
                                                 bool generateNewLine)
 {
-    QString tmpString;
+    if(htmlStartString)
+    {
+        if(result->isEmpty())
+        {
+            result->append(*htmlStartString);
+        }
+        else
+        {
+            result->last().append(*htmlStartString);
+        }
+    }
+    else
+    {
+        if(result->isEmpty())
+        {
+            result->append("");
+        }
+    }
+
     bool lastNewOperationWasWrap = false;
     char* data = dataArray->data();
 
@@ -1047,7 +1060,14 @@ QString MainWindowHandleData::createConsoleLine(QByteArray* dataArray, int* pixe
 
         if(*pixelsInConsoleWithoutNewLine >= m_consoleData.maxPixelsPerLine)
         {
-            tmpString += "</span>\n" + *htmlStartString;
+            if(htmlStartString)
+            {
+                result->append("</span>" + *htmlStartString);
+            }
+            else
+            {
+                result->append("");
+            }
             *pixelsInConsoleWithoutNewLine = pixelForOperation;
             lastNewOperationWasWrap = true;
         }
@@ -1058,30 +1078,36 @@ QString MainWindowHandleData::createConsoleLine(QByteArray* dataArray, int* pixe
 
         for(int j = 0; j < charsPerOperation; j++)
         {
-            if (data[i + j] == '<')tmpString += "&lt;";
-            else if (data[i + j] == '>')tmpString += "&gt;";
-            else if (data[i + j] == ' ')tmpString += "&nbsp;";
+            if (data[i + j] == '<')result->last().append("&lt;");
+            else if (data[i + j] == '>')result->last().append("&gt;");
+            else if (data[i + j] == ' ')result->last().append("&nbsp;");
             else if (data[i + j] == '\n')
             {
                 if(generateNewLine && !lastNewOperationWasWrap)
                 {
-                    tmpString += "</span>\n" + *htmlStartString;
+                    if(htmlStartString)
+                    {
+                        result->append("</span>" + *htmlStartString);
+                    }
+                    else
+                    {
+                        result->append("");
+                    }
                     *pixelsInConsoleWithoutNewLine = 0;
                 }
-                else
-                {
-                    tmpString += "";
-                }
             }
-            else if (data[i + j] == '\r')tmpString += "";
-            else if (data[i + j] < 33 || data[i + j] > 126) tmpString += 255;
-            else tmpString += data[i + j];
+            else if (data[i + j] == '\r'){/*Do nothing.*/}
+            else if (data[i + j] < 33 || data[i + j] > 126) result->last().append(255);
+            else result->last().append(data[i + j]);
         }
 
 
     }
 
-    return tmpString;
+    if(htmlStartString)
+    {
+        result->last().append("</span>");
+    }
 }
 
 /**

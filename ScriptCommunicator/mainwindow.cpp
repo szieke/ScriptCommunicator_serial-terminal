@@ -3707,11 +3707,11 @@ void MainWindow::showNumberOfReceivedAndSentBytes(void)
  * @param textEdit
  *      The text edit.
  */
-void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit* textEdit, bool searchForNewLine)
+void MainWindow::appendConsoleStringToConsole(QStringList* list, QTextEdit* textEdit)
 {
     const Settings* settings = m_settingsDialog->settings();
 
-    if(consoleString->size() > 0)
+    if(list->size() > 0)
     {
         textEdit->blockSignals(true);
         textEdit->document()->blockSignals(true);
@@ -3722,27 +3722,19 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
 
         textEdit->moveCursor(QTextCursor::End);
 
-        if(searchForNewLine && (consoleString->indexOf('\n') != -1))
-        {//consoleString contains a '\n'.
-
-            QTextCursor cursor = textEdit->textCursor();
-            QStringList list = consoleString->split("\n");
-            for (int i = 0; i < list.size(); i++)
+        QTextCursor cursor = textEdit->textCursor();
+        for (int i = 0; i < list->size(); i++)
+        {
+            cursor.insertHtml(list->at(i));
+            if ((i + 1) < list->size())
             {
-                cursor.insertHtml(list.at(i));
-                if ((i + 1) < list.size())
-                {
-                    cursor.insertBlock();
-                }
+                cursor.insertBlock();
             }
         }
-        else
-        {
-            textEdit->insertHtml(*consoleString);
-        }
+
 
         textEdit->moveCursor(QTextCursor::End);
-        consoleString->clear();
+        list->clear();
 
         limtCharsInTextEdit(textEdit, settings->maxCharsInConsole);
         if(settings->lockScrollingInConsole)

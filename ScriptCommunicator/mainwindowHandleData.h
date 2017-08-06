@@ -143,7 +143,8 @@ public:
     void appendDataToLog(const QByteArray& data, bool isSend, bool isUserMessage, bool isTimeStamp, bool isFromCan,
                          bool isFromI2cMaster, bool isNewLine);
 
-    QString createConsoleLine(QByteArray* dataArray, int *pixelsInConsoleWithoutNewLine, QString *htmlStartString, int charsPerOperation, bool generateNewLine=false);
+    void createConsoleLine(QByteArray* dataArray, QStringList *result, int *pixelsInConsoleWithoutNewLine, QString *htmlStartString, int charsPerOperation,
+                           bool generateNewLine=false);
 
     ///Clears all stored data.
     void clear(void);
@@ -248,19 +249,19 @@ private:
     QTimer *m_updateConsoleAndLogTimer ;
 
     ///The data buffer for the ascii console.
-    QString m_consoleDataBufferAscii;
+    QStringList m_consoleDataBufferAscii;
 
     ///The data buffer for the hex console.
-    QString m_consoleDataBufferHex;
+    QStringList m_consoleDataBufferHex;
 
     ///The data buffer for the decimal console.
-    QString m_consoleDataBufferDec;
+    QStringList m_consoleDataBufferDec;
 
     ///The data buffer for the mixed console.
-    QString m_consoleDataBufferMixed;
+    QStringList m_consoleDataBufferMixed;
 
     ///The data buffer for the binary console.
-    QString m_consoleDataBufferBinary;
+    QStringList m_consoleDataBufferBinary;
 
     ///Time stamp for the last console entry.
     QTime lastTimeInConsole;
