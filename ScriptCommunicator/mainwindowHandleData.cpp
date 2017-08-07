@@ -145,9 +145,7 @@ void MainWindowHandleData::updateConsoleAndLog(void)
             bool consoleWasEmpty = (m_userInterface->ReceiveTextEditCustom->document()->characterCount() <= 1) ? true : false;
             consoleString = m_consoleData.htmlReceived + consoleString + QString("</span>");
 
-            QStringList list;
-            list.append(consoleString);
-            m_mainWindow->appendConsoleStringToConsole(&list, m_userInterface->ReceiveTextEditCustom);
+            m_mainWindow->appendConsoleStringToConsole(&consoleString, m_userInterface->ReceiveTextEditCustom);
             m_customConsoleStrings.clear();
             m_numberOfBytesInCustomConsoleStrings = 0;
 
@@ -511,57 +509,6 @@ void MainWindowHandleData::calculateConsoleData()
     m_consoleData.htmlMessageAndTimestamp = QString("<span style=\"color:#" + currentSettings->consoleMessageAndTimestampColor + ";\">");
     m_consoleData.htmlReceived = QString("<span style=\"color:#" + currentSettings->consoleReceiveColor + ";\">");
     m_consoleData.htmlSend = QString("<span style=\"color:#" + currentSettings->consoleSendColor + ";\">");
-
-    SendConsole* console = 0;
-    if(m_userInterface->ReceiveTextEditAscii->isVisible()){console = m_userInterface->ReceiveTextEditAscii;}
-    else if(m_userInterface->ReceiveTextEditHex->isVisible()){console = m_userInterface->ReceiveTextEditHex;}
-    else if(m_userInterface->ReceiveTextEditDecimal->isVisible()){console = m_userInterface->ReceiveTextEditDecimal;}
-    else if(m_userInterface->ReceiveTextEditBinary->isVisible()){console = m_userInterface->ReceiveTextEditBinary;}
-    else if(m_userInterface->ReceiveTextEditMixed->isVisible()){console = m_userInterface->ReceiveTextEditMixed;}
-    else if(m_userInterface->ReceiveTextEditCustom->isVisible()){console = m_userInterface->ReceiveTextEditCustom;}
-
-    if(console)
-    {
-        textEditFont = QFont(currentSettings->stringConsoleFont,  currentSettings->stringConsoleFontSize.toInt());
-        fm = QFontMetrics(textEditFont);
-        int biggestWidth = 0;
-
-        for(int i = 0; i < 256; i++)
-        {
-            if(((char)i == '\r') || ((char)i == '\n'))
-            {
-                m_consoleData.pixelWidth[i] = 0;
-            }
-            else if (((char)i == ' ') || ((char)i == '<') || ((char)i == '>'))
-            {
-                m_consoleData.pixelWidth[i] = fm.width(i);
-            }
-            else if(i < 33 || i > 126)
-            {
-                m_consoleData.pixelWidth[i] = fm.width(255);
-            }
-            else
-            {
-               m_consoleData.pixelWidth[i] = fm.width(i);
-            }
-
-            if(m_consoleData.pixelWidth[i] > biggestWidth)
-            {
-                biggestWidth = m_consoleData.pixelWidth[i];
-            }
-
-        }
-
-        m_consoleData.maxPixelsPerLine  = console->width() - console->verticalScrollBar()->width();
-
-        m_consoleData.maxPixelsPerLine -= biggestWidth;
-        m_consoleData.maxPixelsPerLineRecalculated = true;
-
-    }
-    else
-    {
-        m_consoleData.maxPixelsPerLineRecalculated = false;
-    }
 }
 
 /**
@@ -782,53 +729,47 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
 
     if(isNewLine)
     {
-        if(currentSettings->showDecimalInConsole)
-        {
-            createConsoleLine(&data, &m_consoleDataBufferDec, &m_consoleData.pixelsInDecWithoutNewLine, NULL, 1, true);
-        }
-        if(currentSettings->showHexInConsole)
-        {
-            createConsoleLine(&data, &m_consoleDataBufferHex, &m_consoleData.pixelsInHexWithoutNewLine, NULL, 1, true);
-        }
-        if(currentSettings->showBinaryConsole)
-        {
-            createConsoleLine(&data, &m_consoleDataBufferBinary, &m_consoleData.pixelsInBinWithoutNewLine, NULL, 1, true);
-        }
-        if(currentSettings->showAsciiInConsole)
-        {
-            createConsoleLine(&data, &m_consoleDataBufferAscii, &m_consoleData.pixelsInAsciiWithoutNewLine, NULL, 1, true);
-        }
+        QString tmpString = QString::fromLocal8Bit(data);
+        //Note: "\n" is not replaces with "<br>" because in MainWindow::appendConsoleStringToConsole for every "\n"
+        //a new block is created (much better performance).
+
+        if(currentSettings->showDecimalInConsole)m_consoleDataBufferDec.append(tmpString);
+        if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(tmpString);
+        if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(tmpString);
+        if(currentSettings->showAsciiInConsole)m_consoleDataBufferAscii.append(tmpString);
     }
     else
     {
         if(isUserMessage || isTimeStamp)
         {
+            bool startsWithNewLine = false;
 
-            if(currentSettings->showDecimalInConsole)
+            QString tmpString = QString::fromLocal8Bit(data);
+
+            if(tmpString.startsWith("\n"))
             {
-                createConsoleLine(&data, &m_consoleDataBufferDec, &m_consoleData.pixelsInDecWithoutNewLine, &m_consoleData.htmlMessageAndTimestamp , 1, true);
+                startsWithNewLine = true;
+                tmpString.remove(0, 1);//Remove the first '\n'.
             }
-            if(currentSettings->showHexInConsole)
-            {
-                createConsoleLine(&data, &m_consoleDataBufferHex, &m_consoleData.pixelsInHexWithoutNewLine, &m_consoleData.htmlMessageAndTimestamp , 1, true);
-            }
-            if(currentSettings->showMixedConsole)
-            {
-                int tmpPixel = 0;
-                createConsoleLine(&data, &m_consoleDataBufferMixed, &tmpPixel, &m_consoleData.htmlMessageAndTimestamp , 1, true);
-            }
-            if(currentSettings->showBinaryConsole)
-            {
-                createConsoleLine(&data, &m_consoleDataBufferBinary, &m_consoleData.pixelsInBinWithoutNewLine, &m_consoleData.htmlMessageAndTimestamp , 1, true);
-            }
-            if(currentSettings->showAsciiInConsole)
-            {
-                createConsoleLine(&data, &m_consoleDataBufferAscii, &m_consoleData.pixelsInAsciiWithoutNewLine, &m_consoleData.htmlMessageAndTimestamp , 1, true);
-            }
+            tmpString.replace("<", "&lt;");
+            tmpString.replace(">", "&gt;");
+            tmpString.replace("\n", "<br>");
+            tmpString.replace(" ", "&nbsp;");
+
+            //Note: The "\n" at the beginning of tmpString is not replaces with "<br>" because in MainWindow::appendConsoleStringToConsole for every "\n"
+            //a new block is created (much better performance).
+            QString htmlStartString = startsWithNewLine ? "\n" : "";
+            htmlStartString += m_consoleData.htmlMessageAndTimestamp + tmpString + QString("</span>");
+
+            if(currentSettings->showDecimalInConsole)m_consoleDataBufferDec.append(htmlStartString);
+            if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(htmlStartString);
+            if(currentSettings->showMixedConsole)m_consoleDataBufferMixed.append(htmlStartString);
+            if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(htmlStartString);
+            if(currentSettings->showAsciiInConsole)m_consoleDataBufferAscii.append(htmlStartString);
         }
         else
         {
-            QString* htmlStartString =  (isSend) ? &m_consoleData.htmlSend : NULL;
+            QString* htmlStartString =  (isSend) ? &m_consoleData.htmlSend : &m_consoleData.htmlReceived;
 
             if(isFromCan)
             {
@@ -868,7 +809,7 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                         typeString = QString("%1").arg(type) + " (valid range is 0-3)";
                     }
 
-                    additionalInformation = "id: " +  messageIdString + " type: " + typeString + "   ";
+                    additionalInformation = "<br>id: " +  messageIdString + " type: " + typeString + "&nbsp;&nbsp;&nbsp;";
                 }
 
                 if(isSend){tmpArray.remove(0, PCANBasicClass::BYTES_METADATA_SEND);}
@@ -878,6 +819,7 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
             }
             if(isFromI2cMaster)
             {
+
                 tmpArray = QByteArray(data);
 
                 if(currentSettings->i2cMetaInformationInConsole != I2C_METADATA_NONE)
@@ -888,7 +830,7 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                        (currentSettings->i2cMetaInformationInConsole == I2C_METADATA_ADDRESS))
                     {
                         quint16 slaveAddress = (quint16)tmpArray[2] + ((quint16)tmpArray[1] << 8);
-                        additionalInformation = "addr: 0x" +  QString::number(slaveAddress, 16);
+                        additionalInformation = "<br>addr: 0x" +  QString::number(slaveAddress, 16);
                         if(currentSettings->i2cMetaInformationInConsole == I2C_METADATA_ADDRESS_AND_FLAGS)
                         {
                             additionalInformation +=  " flags: " + AardvarkI2cSpi::flagsToString(flags);
@@ -897,10 +839,10 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                     else
                     {//I2C_METADATA_FLAGS
 
-                        additionalInformation =  "flags: " + AardvarkI2cSpi::flagsToString(flags);
+                        additionalInformation =  "<br>flags: " + AardvarkI2cSpi::flagsToString(flags);
                     }
 
-                    additionalInformation +=  "   ";
+                    additionalInformation +=  "&nbsp;&nbsp;&nbsp;";
                 }
 
                 if(isSend){tmpArray.remove(0, AardvarkI2cSpi::SEND_CONTROL_BYTES_COUNT);}
@@ -921,19 +863,8 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                 {
                     usedArray = dataArray;
                 }
-
-                if(!additionalInformation.isEmpty())
-                {
-                    tmpArray = additionalInformation.toLocal8Bit();
-                    m_consoleDataBufferDec += "<br>";
-                    m_consoleData.pixelsInDecWithoutNewLine = 0;
-                    createConsoleLine(&tmpArray, &m_consoleDataBufferDec, &m_consoleData.pixelsInDecWithoutNewLine, htmlStartString, 1);
-                }
-
-                tmpArray =(MainWindow::byteArrayToNumberString(*usedArray, false, false, false, true, true, currentSettings->consoleDecimalsType, currentSettings->targetEndianess)
-                                              + " ").toLocal8Bit();
-                createConsoleLine(&tmpArray, &m_consoleDataBufferDec, &m_consoleData.pixelsInDecWithoutNewLine , htmlStartString, 4);
-
+                m_consoleDataBufferDec.append(*htmlStartString + additionalInformation + MainWindow::byteArrayToNumberString(*usedArray, false, false, false, true, true, currentSettings->consoleDecimalsType, currentSettings->targetEndianess)
+                                              + " " + QString("</span>"));
                 qint32 tmp = usedArray->length() % m_consoleData.mixedData.bytesPerDecimal;
                 if(tmp != 0)
                 {
@@ -944,33 +875,8 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                     m_decimalConsoleByteBuffer.clear();
                 }
             }
-            if(currentSettings->showHexInConsole)
-            {
-                if(!additionalInformation.isEmpty())
-                {
-                    tmpArray = additionalInformation.toLocal8Bit();
-                    m_consoleDataBufferHex += "<br>";
-                    m_consoleData.pixelsInHexWithoutNewLine = 0;
-                    createConsoleLine(&tmpArray, &m_consoleDataBufferHex, &m_consoleData.pixelsInHexWithoutNewLine, htmlStartString, 1);
-                }
-
-                tmpArray =(MainWindow::byteArrayToNumberString(*dataArray, false, true, false) + " ").toLocal8Bit();
-                createConsoleLine(&tmpArray, &m_consoleDataBufferHex, &m_consoleData.pixelsInHexWithoutNewLine , htmlStartString, 3);
-            }
-
-            if(currentSettings->showBinaryConsole)
-            {
-                if(!additionalInformation.isEmpty())
-                {
-                    tmpArray = additionalInformation.toLocal8Bit();
-                    m_consoleDataBufferBinary += "<br>";
-                    m_consoleData.pixelsInBinWithoutNewLine = 0;
-                    createConsoleLine(&tmpArray, &m_consoleDataBufferBinary, &m_consoleData.pixelsInBinWithoutNewLine, htmlStartString, 1);
-                }
-
-                tmpArray =(MainWindow::byteArrayToNumberString(*dataArray, true, false, false) + " ").toLocal8Bit();
-                createConsoleLine(&tmpArray, &m_consoleDataBufferBinary, &m_consoleData.pixelsInBinWithoutNewLine , htmlStartString, 9);
-            }
+            if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(*htmlStartString + additionalInformation + MainWindow::byteArrayToNumberString(*dataArray, false, true, false) + " " + QString("</span>"));
+            if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(*htmlStartString + additionalInformation + MainWindow::byteArrayToNumberString(*dataArray, true, false, false) + " " + QString("</span>"));
 
             if(currentSettings->showMixedConsole)
             {
@@ -993,8 +899,7 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                         m_mixedConsoleByteBuffer.clear();
                     }
 
-                    m_consoleDataBufferMixed.last().append(*htmlStartString + additionalInformation + createMixedConsoleString(tmpData, isFromCan && currentSettings->showCanMetaInformationInConsole) + QString("</span>"));
-                    m_consoleDataBufferMixed.append("");
+                    m_consoleDataBufferMixed.append(*htmlStartString + additionalInformation + createMixedConsoleString(tmpData, isFromCan && currentSettings->showCanMetaInformationInConsole) + QString("</span>\n"));
                 }
             }
 
@@ -1004,106 +909,23 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                 //Replace the binary 0 (for the ascii console).
                 dataArray->replace(0, 255);
 
-                if(!additionalInformation.isEmpty())
+                QString tmpString;
+                for(auto el : QString::fromLocal8Bit(*dataArray))
                 {
-                    tmpArray = additionalInformation.toLocal8Bit();
-                    m_consoleDataBufferAscii += "<br>";
-                    m_consoleData.pixelsInAsciiWithoutNewLine = 0;
-                    createConsoleLine(&tmpArray, &m_consoleDataBufferAscii, &m_consoleData.pixelsInAsciiWithoutNewLine, htmlStartString, 1);
+                    if (el == '<')tmpString += "&lt;";
+                    else if (el == '>')tmpString += "&gt;";
+                    else if (el == ' ')tmpString += "&nbsp;";
+                    else if (el == '\n')tmpString += "";
+                    else if (el == '\r')tmpString += "";
+                    else if (el < 33 || el > 126) tmpString += 255;
+                    else tmpString += el;
                 }
 
-                createConsoleLine(dataArray, &m_consoleDataBufferAscii, &m_consoleData.pixelsInAsciiWithoutNewLine, htmlStartString, 1);
+                m_consoleDataBufferAscii.append(*htmlStartString + additionalInformation + tmpString + QString("</span>"));
             }
         }
 
         //Note: data/dataArray is modified during the creation of dataStringAscii (see above), therefore data/dataArray must not be used.
-    }
-}
-
-void MainWindowHandleData::createConsoleLine(QByteArray* dataArray, QStringList* result, int* pixelsInConsoleWithoutNewLine, QString* htmlStartString ,int charsPerOperation,
-                                                bool generateNewLine)
-{
-    if(htmlStartString)
-    {
-        if(result->isEmpty())
-        {
-            result->append(*htmlStartString);
-        }
-        else
-        {
-            result->last().append(*htmlStartString);
-        }
-    }
-    else
-    {
-        if(result->isEmpty())
-        {
-            result->append("");
-        }
-    }
-
-    bool lastNewOperationWasWrap = false;
-    char* data = dataArray->data();
-
-    for(int i = 0; i < dataArray->length(); i += charsPerOperation)
-    {
-        int pixelForOperation = 0;
-
-        for(int j = 0; j < charsPerOperation; j++)
-        {
-            pixelForOperation += m_consoleData.pixelWidth[(int)data[i + j]];
-        }
-        (*pixelsInConsoleWithoutNewLine) += pixelForOperation;
-
-        if(*pixelsInConsoleWithoutNewLine >= m_consoleData.maxPixelsPerLine)
-        {
-            if(htmlStartString)
-            {
-                result->append("</span>" + *htmlStartString);
-            }
-            else
-            {
-                result->append("");
-            }
-            *pixelsInConsoleWithoutNewLine = pixelForOperation;
-            lastNewOperationWasWrap = true;
-        }
-        else
-        {
-            lastNewOperationWasWrap = false;
-        }
-
-        for(int j = 0; j < charsPerOperation; j++)
-        {
-            if (data[i + j] == '<')result->last().append("&lt;");
-            else if (data[i + j] == '>')result->last().append("&gt;");
-            else if (data[i + j] == ' ')result->last().append("&nbsp;");
-            else if (data[i + j] == '\n')
-            {
-                if(generateNewLine && !lastNewOperationWasWrap)
-                {
-                    if(htmlStartString)
-                    {
-                        result->append("</span>" + *htmlStartString);
-                    }
-                    else
-                    {
-                        result->append("");
-                    }
-                    *pixelsInConsoleWithoutNewLine = 0;
-                }
-            }
-            else if (data[i + j] == '\r'){/*Do nothing.*/}
-            else if (data[i + j] < 33 || data[i + j] > 126) result->last().append(255);
-            else result->last().append(data[i + j]);
-        }
-
-
-    }
-
-    if(htmlStartString)
-    {
-        result->last().append("</span>");
     }
 }
 
@@ -1970,18 +1792,14 @@ void MainWindowHandleData::processDataInStoredData()
 
             m_userInterface->ReceiveTextEditAscii->clear();
             m_consoleDataBufferAscii.clear();
-            m_consoleData.pixelsInAsciiWithoutNewLine = 0;
             m_userInterface->ReceiveTextEditHex->clear();
             m_consoleDataBufferHex.clear();
-            m_consoleData.pixelsInHexWithoutNewLine = 0;
             m_userInterface->ReceiveTextEditDecimal->clear();
             m_consoleDataBufferDec.clear();
-            m_consoleData.pixelsInDecWithoutNewLine = 0;
             m_userInterface->ReceiveTextEditMixed->clear();
             m_consoleDataBufferMixed.clear();
             m_userInterface->ReceiveTextEditBinary->clear();
             m_consoleDataBufferBinary.clear();
-            m_consoleData.pixelsInBinWithoutNewLine = 0;
 
             m_storedConsoleData.clear();
             m_bytesInStoredConsoleData = 0;
@@ -2154,108 +1972,61 @@ void MainWindowHandleData::processDataInStoredData()
 /**
  * Reinserts the data into the mixed consoles.
  */
-void MainWindowHandleData::reInsertDataInAllConsoleSlot(void)
+void MainWindowHandleData::reInsertDataInMixecConsoleSlot(void)
 {
+    Settings settings = *m_settingsDialog->settings();
 
     m_mainWindow->m_resizeTimer.stop();
 
-    calculateConsoleData();
-
-    if(!m_mainWindow->isVisible() || !m_consoleData.maxPixelsPerLineRecalculated)
+    if(settings.showMixedConsole)
     {
-        return;
+        QMessageBox box(QMessageBox::Information, "ScriptCommunicator", "Reformatting console data",
+                        QMessageBox::NoButton, m_mainWindow);
+        box.setStandardButtons(QMessageBox::NoButton);
+
+        if(m_bytesInStoredConsoleData > 5000)
+        {
+            QApplication::setActiveWindow(&box);
+            box.setModal(false);
+            box.show();
+
+            QApplication::processEvents();
+        }
+
+
+        int pos = 0;
+        pos = m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->value();
+
+        m_userInterface->ReceiveTextEditMixed->clear();
+        m_mixedConsoleByteBuffer.clear();
+        calculateConsoleData();
+
+        //Only the mixed console data shall be generated.
+        settings.showAsciiInConsole = false;
+        if(m_consoleData.mixedData.bytesPerDecimal == 1) settings.showDecimalInConsole = false;
+        settings.showHexInConsole = false;
+        settings.showBinaryConsole = false;
+
+        for(auto el : m_storedConsoleData)
+        {
+            bool isFromAddMessageDialog = (el.type == STORED_DATA_TYPE_USER_MESSAGE) ? true : false;
+            bool isTimeStamp = (el.type == STORED_DATA_TYPE_TIMESTAMP) ? true : false;
+            bool isNewLine = (el.type == STORED_DATA_TYPE_NEW_LINE) ? true : false;
+
+            appendDataToConsoleStrings(el.data, &settings, el.isSend , isFromAddMessageDialog, isTimeStamp,
+                                       el.isFromCan, el.isFromI2cMaster, isNewLine);
+        }
+
+        m_consoleDataBufferAscii.clear();
+        m_consoleDataBufferHex.clear();
+        m_consoleDataBufferDec.clear();
+        m_consoleDataBufferBinary.clear();
+
+        m_mainWindow->appendConsoleStringToConsole(&m_consoleDataBufferMixed, m_userInterface->ReceiveTextEditMixed);
+        m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->setValue(pos);
+
+        box.close();
     }
-
-
-    QMessageBox box(QMessageBox::Information, "ScriptCommunicator", "Recalculating console data",
-                    QMessageBox::NoButton, m_mainWindow);
-    box.setStandardButtons(QMessageBox::NoButton);
-
-    if(m_bytesInStoredConsoleData > 20000)
-    {
-        QApplication::setActiveWindow(&box);
-        box.setModal(false);
-        box.show();
-
-        QApplication::processEvents();
-    }
-
-
-
-    int val1 = 0;
-    int val2 = 0;
-    int val3 = 0;
-    int val4 = 0;
-    int val5 = 0;
-    int val6 = 0;
-
-    const Settings* settings = m_settingsDialog->settings();
-
-
-    m_userInterface->ReceiveTextEditMixed->document()->blockSignals(true);
-    m_userInterface->ReceiveTextEditAscii->document()->blockSignals(true);
-    m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(true);
-    m_userInterface->ReceiveTextEditHex->document()->blockSignals(true);
-    m_userInterface->ReceiveTextEditBinary->document()->blockSignals(true);
-    m_userInterface->ReceiveTextEditCustom->document()->blockSignals(true);
-    m_userInterface->ReceiveTextEditMixed->document()->blockSignals(true);
-
-
-    if(settings->showAsciiInConsole){val1 = m_userInterface->ReceiveTextEditAscii->verticalScrollBar()->value();}
-    if(settings->showHexInConsole){val2 = m_userInterface->ReceiveTextEditHex->verticalScrollBar()->value();}
-    if(settings->showDecimalInConsole){val3 = m_userInterface->ReceiveTextEditDecimal->verticalScrollBar()->value();}
-    if(settings->showMixedConsole){val4 = m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->value();}
-    if(settings->showBinaryConsole){val5 = m_userInterface->ReceiveTextEditBinary->verticalScrollBar()->value();}
-    if(settings->consoleShowCustomConsole){val6 = m_userInterface->ReceiveTextEditCustom->verticalScrollBar()->value();}
-
-    m_userInterface->ReceiveTextEditMixed->clear();
-    m_userInterface->ReceiveTextEditAscii->clear();
-    m_userInterface->ReceiveTextEditDecimal->clear();
-    m_userInterface->ReceiveTextEditHex->clear();
-    m_userInterface->ReceiveTextEditBinary->clear();
-    m_userInterface->ReceiveTextEditCustom->clear();
-    m_decimalConsoleByteBuffer.clear();
-    m_mixedConsoleByteBuffer.clear();
-    m_consoleData.pixelsInAsciiWithoutNewLine = 0;
-    m_consoleData.pixelsInHexWithoutNewLine  = 0;
-    m_consoleData.pixelsInDecWithoutNewLine = 0;
-    m_consoleData.pixelsInBinWithoutNewLine = 0;
-
-    for(auto el : m_storedConsoleData)
-    {
-        bool isFromAddMessageDialog = (el.type == STORED_DATA_TYPE_USER_MESSAGE) ? true : false;
-        bool isTimeStamp = (el.type == STORED_DATA_TYPE_TIMESTAMP) ? true : false;
-        bool isNewLine = (el.type == STORED_DATA_TYPE_NEW_LINE) ? true : false;
-
-        appendDataToConsoleStrings(el.data, settings, el.isSend , isFromAddMessageDialog, isTimeStamp,
-                                   el.isFromCan, el.isFromI2cMaster, isNewLine);
-    }
-
-
-    if(settings->consoleShowCustomConsole)
-    {
-        m_customConsoleStrings = m_customConsoleStoredStrings;
-        m_customConsoleStoredStrings.clear();
-        m_numberOfBytesInCustomConsoleStoredStrings = 0;
-    }
-
-    updateConsoleAndLog();
-
-    if(settings->showAsciiInConsole){m_userInterface->ReceiveTextEditAscii->verticalScrollBar()->setValue(val1);}
-    if(settings->showHexInConsole){m_userInterface->ReceiveTextEditHex->verticalScrollBar()->setValue(val2);}
-    if(settings->showDecimalInConsole){m_userInterface->ReceiveTextEditDecimal->verticalScrollBar()->setValue(val3);}
-    if(settings->showMixedConsole){m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->setValue(val4);}
-    if(settings->showBinaryConsole){m_userInterface->ReceiveTextEditBinary->verticalScrollBar()->setValue(val5);}
-    if(settings->consoleShowCustomConsole){m_userInterface->ReceiveTextEditCustom->verticalScrollBar()->setValue(val6);}
-
-    m_userInterface->ReceiveTextEditMixed->document()->blockSignals(false);
-    m_userInterface->ReceiveTextEditAscii->document()->blockSignals(false);
-    m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(false);
-    m_userInterface->ReceiveTextEditHex->document()->blockSignals(false);
-    m_userInterface->ReceiveTextEditBinary->document()->blockSignals(false);
-    m_userInterface->ReceiveTextEditCustom->document()->blockSignals(false);
-
-    box.close();
 }
 
 /**
@@ -2494,4 +2265,92 @@ qint32 MainWindowHandleData::bytesPerDecimalInConsole(DecimalType decimalType)
 
     return ret;
 
+}
+/**
+ * Reinserts the data into the consoles.
+ */
+void MainWindowHandleData::reInsertDataInConsole(void)
+{
+
+    int val1 = 0;
+    int val2 = 0;
+    int val3 = 0;
+    int val4 = 0;
+    int val5 = 0;
+    int val6 = 0;
+    QMessageBox box(QMessageBox::Information, "ScriptCommunicator", "Recalculating console data",
+                    QMessageBox::NoButton, m_mainWindow);
+    box.setStandardButtons(QMessageBox::NoButton);
+    const Settings* settings = m_settingsDialog->settings();
+
+
+    m_userInterface->ReceiveTextEditMixed->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditAscii->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditHex->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditBinary->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditCustom->document()->blockSignals(true);
+
+
+    if(settings->showMixedConsole && (m_bytesInStoredConsoleData > 2500))
+    {
+        QApplication::setActiveWindow(&box);
+        box.setModal(false);
+        box.show();
+
+        QApplication::processEvents();
+    }
+
+    if(settings->showAsciiInConsole){val1 = m_userInterface->ReceiveTextEditAscii->verticalScrollBar()->value();}
+    if(settings->showHexInConsole){val2 = m_userInterface->ReceiveTextEditHex->verticalScrollBar()->value();}
+    if(settings->showDecimalInConsole){val3 = m_userInterface->ReceiveTextEditDecimal->verticalScrollBar()->value();}
+    if(settings->showMixedConsole){val4 = m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->value();}
+    if(settings->showBinaryConsole){val5 = m_userInterface->ReceiveTextEditBinary->verticalScrollBar()->value();}
+    if(settings->consoleShowCustomConsole){val6 = m_userInterface->ReceiveTextEditCustom->verticalScrollBar()->value();}
+
+    m_userInterface->ReceiveTextEditMixed->clear();
+    m_userInterface->ReceiveTextEditAscii->clear();
+    m_userInterface->ReceiveTextEditDecimal->clear();
+    m_userInterface->ReceiveTextEditHex->clear();
+    m_userInterface->ReceiveTextEditBinary->clear();
+    m_userInterface->ReceiveTextEditCustom->clear();
+    m_decimalConsoleByteBuffer.clear();
+    m_mixedConsoleByteBuffer.clear();
+
+    calculateConsoleData();
+
+    for(auto el : m_storedConsoleData)
+    {
+        bool isFromAddMessageDialog = (el.type == STORED_DATA_TYPE_USER_MESSAGE) ? true : false;
+        bool isTimeStamp = (el.type == STORED_DATA_TYPE_TIMESTAMP) ? true : false;
+        bool isNewLine = (el.type == STORED_DATA_TYPE_NEW_LINE) ? true : false;
+
+        appendDataToConsoleStrings(el.data, settings, el.isSend , isFromAddMessageDialog, isTimeStamp,
+                                   el.isFromCan, el.isFromI2cMaster, isNewLine);
+    }
+
+    if(settings->consoleShowCustomConsole)
+    {
+        m_customConsoleStrings = m_customConsoleStoredStrings;
+        m_customConsoleStoredStrings.clear();
+        m_numberOfBytesInCustomConsoleStoredStrings = 0;
+    }
+
+    updateConsoleAndLog();
+
+    if(settings->showAsciiInConsole){m_userInterface->ReceiveTextEditAscii->verticalScrollBar()->setValue(val1);}
+    if(settings->showHexInConsole){m_userInterface->ReceiveTextEditHex->verticalScrollBar()->setValue(val2);}
+    if(settings->showDecimalInConsole){m_userInterface->ReceiveTextEditDecimal->verticalScrollBar()->setValue(val3);}
+    if(settings->showMixedConsole){m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->setValue(val4);}
+    if(settings->showBinaryConsole){m_userInterface->ReceiveTextEditBinary->verticalScrollBar()->setValue(val5);}
+    if(settings->consoleShowCustomConsole){m_userInterface->ReceiveTextEditCustom->verticalScrollBar()->setValue(val6);}
+
+    m_userInterface->ReceiveTextEditMixed->document()->blockSignals(false);
+    m_userInterface->ReceiveTextEditAscii->document()->blockSignals(false);
+    m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(false);
+    m_userInterface->ReceiveTextEditHex->document()->blockSignals(false);
+    m_userInterface->ReceiveTextEditBinary->document()->blockSignals(false);
+    m_userInterface->ReceiveTextEditCustom->document()->blockSignals(false);
+
+    box.close();
 }

@@ -170,7 +170,7 @@
                 <bool>false</bool>
                </property>
                <property name="lineWrapMode">
-                <enum>QTextEdit::NoWrap</enum>
+                <enum>QTextEdit::WidgetWidth</enum>
                </property>
                <property name="readOnly">
                 <bool>false</bool>
@@ -274,9 +274,6 @@ p, li { white-space: pre-wrap; }
                </property>
                <property name="undoRedoEnabled">
                 <bool>false</bool>
-               </property>
-               <property name="lineWrapMode">
-                <enum>QTextEdit::NoWrap</enum>
                </property>
                <property name="readOnly">
                 <bool>false</bool>
@@ -382,7 +379,7 @@ p, li { white-space: pre-wrap; }
                 <bool>false</bool>
                </property>
                <property name="lineWrapMode">
-                <enum>QTextEdit::NoWrap</enum>
+                <enum>QTextEdit::WidgetWidth</enum>
                </property>
                <property name="readOnly">
                 <bool>false</bool>
@@ -488,7 +485,7 @@ p, li { white-space: pre-wrap; }
                 <bool>false</bool>
                </property>
                <property name="lineWrapMode">
-                <enum>QTextEdit::NoWrap</enum>
+                <enum>QTextEdit::WidgetWidth</enum>
                </property>
                <property name="readOnly">
                 <bool>false</bool>
@@ -627,13 +624,7 @@ p, li { white-space: pre-wrap; }
             </attribute>
             <layout class="QGridLayout" name="gridLayout">
              <item row="0" column="0" colspan="3">
-              <widget class="QScrollArea" name="canScrollArea">
-               <property name="verticalScrollBarPolicy">
-                <enum>Qt::ScrollBarAlwaysOn</enum>
-               </property>
-               <property name="horizontalScrollBarPolicy">
-                <enum>Qt::ScrollBarAsNeeded</enum>
-               </property>
+              <widget class="QScrollArea" name="scrollArea">
                <property name="widgetResizable">
                 <bool>true</bool>
                </property>
@@ -910,7 +901,7 @@ p, li { white-space: pre-wrap; }
                 <bool>false</bool>
                </property>
                <property name="lineWrapMode">
-                <enum>QTextEdit::WidgetWidth</enum>
+                <enum>QTextEdit::NoWrap</enum>
                </property>
                <property name="readOnly">
                 <bool>false</bool>

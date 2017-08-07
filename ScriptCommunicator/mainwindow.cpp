@@ -175,6 +175,18 @@ void SendConsole::keyPressEvent(QKeyEvent *event)
 }
 
 /**
+ * Is called if the window is resized.
+ * @param event
+ *      The resize event.
+ */
+void SendConsole::resizeEvent(QResizeEvent* event)
+{
+    m_newSize = event->size();
+    m_oldSize = event->oldSize();
+    m_resizeTimer.start(250);
+}
+
+/**
  * Is called if the document's content changes.
  *
  * @param from
@@ -204,6 +216,42 @@ void SendConsole::contentsChangeSlot(int from, int charsRemoved, int charsAdded)
             const Settings* settings = m_mainWindow->m_settingsDialog->settings();
             m_mainWindow->m_sendWindow->sendDataWithTheMainInterface(added.toLocal8Bit().replace("\n", settings->consoleSendOnEnter.toLocal8Bit()), this);
         }
+    }
+}
+
+void SendConsole::resizeSlot(void)
+{
+    m_resizeTimer.stop();
+    QResizeEvent event(size(), QSize());
+    bool showMessageBox = (document()->characterCount() > 1000000) ? true : false;
+
+    if(m_isMixedConsole)
+    {
+        showMessageBox = false;
+
+        if(document()->characterCount() > 1)
+        {
+            m_mainWindow->m_handleData->reInsertDataInMixecConsoleSlot();
+        }
+    }
+
+    QMessageBox box(QMessageBox::Information, "ScriptCommunicator", "Reformatting console data",
+                    QMessageBox::NoButton, m_mainWindow);
+
+    if(showMessageBox)
+    {
+        box.setStandardButtons(QMessageBox::NoButton);
+        QApplication::setActiveWindow(&box);
+        box.setModal(false);
+        box.show();
+        QApplication::processEvents();
+    }
+
+    QTextEdit::resizeEvent(&event);
+
+    if(showMessageBox)
+    {
+        box.close();
     }
 }
 
@@ -304,6 +352,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     m_userInterface->ReceiveTextEditDecimal->setMainWindow(this);
     m_userInterface->ReceiveTextEditHex->setMainWindow(this);
     m_userInterface->ReceiveTextEditMixed->setMainWindow(this);
+    m_userInterface->ReceiveTextEditMixed->setIsMixedConsole(true);
     m_userInterface->ReceiveTextEditCustom->setMainWindow(this);
 
 
@@ -344,9 +393,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
     connect(m_addMessageDialog, SIGNAL(messageEnteredSignal(QString, bool)),this, SLOT(messageEnteredSlot(QString, bool)));
 
-    connect(&m_resizeTimer, SIGNAL(timeout()),m_handleData, SLOT(reInsertDataInAllConsoleSlot()));
-
-    connect(m_userInterface->tabWidget, SIGNAL(currentChanged(int)),this, SLOT(currentTabChangedSlot(int)));
+    connect(&m_resizeTimer, SIGNAL(timeout()),m_handleData, SLOT(reInsertDataInMixecConsoleSlot()));
 
     connect(m_sendWindow, SIGNAL(sendDataWithTheMainInterfaceSignal(QByteArray,uint)), m_mainInterface, SLOT(sendDataSlot(QByteArray, uint)), Qt::QueuedConnection);
     connect(m_handleData, SIGNAL(sendDataWithTheMainInterfaceSignal(QByteArray,uint)), m_mainInterface, SLOT(sendDataSlot(QByteArray, uint)), Qt::QueuedConnection);
@@ -557,6 +604,8 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
         {
             m_mainConfigFile = getAndCreateProgramUserFolder() + "/" + INIT_MAIN_CONFIG_FILE;
         }
+
+        m_userInterface->ReceiveTextEditAscii->setWordWrapMode (QTextOption::WrapAnywhere);
 
         QFileInfo fi(m_mainConfigFile + ".lock");
         bool lockFileExists = fi.exists();
@@ -1344,7 +1393,7 @@ void MainWindow::show(void)
     m_userInterface->sendHistoryPushButton->setMinimumSize(tmpSize);
     m_userInterface->clearHistoryPushButton->setMinimumSize(tmpSize);
 
-    m_handleData->reInsertDataInAllConsoleSlot();
+    m_handleData->reInsertDataInMixecConsoleSlot();
 }
 
 /**
@@ -2407,7 +2456,7 @@ void MainWindow::inititializeTab(void)
         }
 
 
-        m_handleData->reInsertDataInAllConsoleSlot();
+        m_handleData->reInsertDataInConsole();
 
         m_userInterface->tabWidget->blockSignals(false);
 
@@ -3181,21 +3230,6 @@ void MainWindow::setConnectionButtonsSlot(bool enable)
 }
 
 /**
- * Is called if the index of the current tab has changed.
- * @param index
- *      The new index.
- */
-void MainWindow::currentTabChangedSlot(int index)
-{
-    (void)index;
-    if(!m_handleData->m_consoleData.maxPixelsPerLineRecalculated)
-    {
-        m_handleData->reInsertDataInAllConsoleSlot();
-    }
-
-}
-
-/**
  * Shows additional Information about the connection in the mainwindow.
  * @param text
  *      The text to show.
@@ -3724,11 +3758,11 @@ void MainWindow::showNumberOfReceivedAndSentBytes(void)
  * @param textEdit
  *      The text edit.
  */
-void MainWindow::appendConsoleStringToConsole(QStringList* list, QTextEdit* textEdit)
+void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit* textEdit)
 {
     const Settings* settings = m_settingsDialog->settings();
 
-    if(list->size() > 0)
+    if(consoleString->size() > 0)
     {
         textEdit->blockSignals(true);
         textEdit->document()->blockSignals(true);
@@ -3739,19 +3773,27 @@ void MainWindow::appendConsoleStringToConsole(QStringList* list, QTextEdit* text
 
         textEdit->moveCursor(QTextCursor::End);
 
-        QTextCursor cursor = textEdit->textCursor();
-        for (int i = 0; i < list->size(); i++)
-        {
-            cursor.insertHtml(list->at(i));
-            if ((i + 1) < list->size())
+        if(consoleString->indexOf('\n') != -1)
+        {//consoleString contains a '\n'.
+
+            QTextCursor cursor = textEdit->textCursor();
+            QStringList list = consoleString->split("\n");
+            for (int i = 0; i < list.size(); i++)
             {
-                cursor.insertBlock();
+                cursor.insertHtml(list.at(i));
+                if ((i + 1) < list.size())
+                {
+                    cursor.insertBlock();
+                }
             }
         }
-
+        else
+        {
+            textEdit->insertHtml(*consoleString);
+        }
 
         textEdit->moveCursor(QTextCursor::End);
-        list->clear();
+        consoleString->clear();
 
         limtCharsInTextEdit(textEdit, settings->maxCharsInConsole);
         if(settings->lockScrollingInConsole)
@@ -3863,10 +3905,6 @@ void MainWindow::clearConsoleSlot(void)
     m_userInterface->ReceiveTextEditCustom->document()->blockSignals(true);
 
     m_userInterface->ReceiveTextEditAscii->clear();
-    m_handleData->m_consoleData.pixelsInAsciiWithoutNewLine = 0;
-    m_handleData->m_consoleData.pixelsInHexWithoutNewLine = 0;
-    m_handleData->m_consoleData.pixelsInDecWithoutNewLine = 0;
-    m_handleData->m_consoleData.pixelsInBinWithoutNewLine = 0;
     m_userInterface->ReceiveTextEditHex->clear();
     m_userInterface->ReceiveTextEditDecimal->clear();
     m_userInterface->ReceiveTextEditMixed->clear();
@@ -4430,7 +4468,6 @@ void MainWindow::toolBoxSplitterMoved(int pos, int index)
     m_toolBoxSplitterSizeSecond = splitterSizes[1];
 
     m_toolBoxSplitterSizesSecond[m_currentToolBoxIndex] = m_toolBoxSplitterSizeSecond;
-    m_resizeTimer.start(500);
 }
 
 /**
@@ -4483,8 +4520,6 @@ void MainWindow::resizeEvent(QResizeEvent* event)
     if(m_ignoreNextResizeEventTime.msecsTo(QDateTime::currentDateTime()) > 1000)
     {
         QMainWindow::resizeEvent(event);
-
-        m_resizeTimer.start(500);
     }
 
     if(isVisible())

@@ -104,14 +104,6 @@ typedef struct
     ///The HTML data for sent data.
     QString htmlSend;
 
-    int pixelsInAsciiWithoutNewLine;
-    int pixelsInHexWithoutNewLine;
-    int pixelsInDecWithoutNewLine;
-    int pixelsInBinWithoutNewLine;
-    int maxPixelsPerLine;
-    int pixelWidth[256];
-    bool maxPixelsPerLineRecalculated;
-
 }ConsoleData;
 
 
@@ -144,11 +136,11 @@ public:
     void appendDataToLog(const QByteArray& data, bool isSend, bool isUserMessage, bool isTimeStamp, bool isFromCan,
                          bool isFromI2cMaster, bool isNewLine);
 
-    void createConsoleLine(QByteArray* dataArray, QStringList *result, int *pixelsInConsoleWithoutNewLine, QString *htmlStartString, int charsPerOperation,
-                           bool generateNewLine=false);
-
     ///Clears all stored data.
     void clear(void);
+
+    ///Reinserts the data into the consoles.
+    void reInsertDataInConsole(void);
 
     ///Returns the number of bytes for a decimal type.
     qint32 bytesPerDecimalInConsole(DecimalType decimalType);
@@ -210,7 +202,7 @@ public slots:
     void dataHasBeenSendSlot(QByteArray data, bool success, uint id);
 
     ///Reinserts the data into the mixed consoles.
-    void reInsertDataInAllConsoleSlot(void);
+    void reInsertDataInMixecConsoleSlot(void);
 
 private:
 
@@ -250,19 +242,19 @@ private:
     QTimer *m_updateConsoleAndLogTimer ;
 
     ///The data buffer for the ascii console.
-    QStringList m_consoleDataBufferAscii;
+    QString m_consoleDataBufferAscii;
 
     ///The data buffer for the hex console.
-    QStringList m_consoleDataBufferHex;
+    QString m_consoleDataBufferHex;
 
     ///The data buffer for the decimal console.
-    QStringList m_consoleDataBufferDec;
+    QString m_consoleDataBufferDec;
 
     ///The data buffer for the mixed console.
-    QStringList m_consoleDataBufferMixed;
+    QString m_consoleDataBufferMixed;
 
     ///The data buffer for the binary console.
-    QStringList m_consoleDataBufferBinary;
+    QString m_consoleDataBufferBinary;
 
     ///Time stamp for the last console entry.
     QTime lastTimeInConsole;

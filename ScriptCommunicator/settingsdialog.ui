@@ -2421,11 +2421,6 @@ for TCP clients.</string>
                <property name="editable">
                 <bool>false</bool>
                </property>
-               <property name="currentFont">
-                <font>
-                 <family>Courier New</family>
-                </font>
-               </property>
               </widget>
              </item>
              <item row="4" column="3" colspan="2">

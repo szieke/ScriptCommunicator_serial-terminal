@@ -99,9 +99,11 @@ class SendConsole : public QTextEdit
      Q_OBJECT
 
 public:
-    explicit SendConsole(QWidget *parent = 0) : QTextEdit(parent), m_mainWindow(0)
+    explicit SendConsole(QWidget *parent = 0) : QTextEdit(parent), m_mainWindow(0), m_resizeTimer(), m_newSize(), m_oldSize(),
+        m_isMixedConsole(false)
     {
         connect(this->document(), SIGNAL(contentsChange(int,int,int)), this, SLOT(contentsChangeSlot(int,int,int)), Qt::QueuedConnection);
+        connect(&m_resizeTimer, SIGNAL(timeout()),this, SLOT(resizeSlot()));
     }
 
     virtual ~SendConsole()
@@ -109,18 +111,24 @@ public:
 
     }
 
-    ///The user scrolled within console.
-    void wheelEvent(QWheelEvent *event);
-
     ///Sets m_mainWindow.
     void setMainWindow(MainWindow* mainWindow)
     {
         m_mainWindow = mainWindow;
     }
 
+    void setIsMixedConsole(bool isMixedConsole){m_isMixedConsole = isMixedConsole;}
+
+protected:
+
+    ///The user scrolled within console.
+    void wheelEvent(QWheelEvent *event);
 
     ///The user has pressed a key.
     void keyPressEvent(QKeyEvent *event);
+
+    ///Is called if the window is resized.
+    void resizeEvent(QResizeEvent* event);
 
 
 public slots:
@@ -128,10 +136,19 @@ public slots:
     ///Is called if the document's content changes.
    void contentsChangeSlot(int from, int charsRemoved, int charsAdded);
 
+   void resizeSlot(void);
+
 
 private:
     ///Pointer to the main window.
     MainWindow* m_mainWindow;
+
+    ///This timer is started in resizeEvent;
+    QTimer m_resizeTimer;
+
+    QSize m_newSize;
+    QSize m_oldSize;
+    bool m_isMixedConsole;
 
 };
 
@@ -325,9 +342,6 @@ public slots:
     ///The main interface thread can activate/deactivate the connect button with this slot.
     ///This slot is connected to the MainInterfaceThread::setConnectionButtonsSignal signal.
     void setConnectionButtonsSlot(bool enable);
-
-    ///Is called if the index of the current tab has changed.
-    void currentTabChangedSlot(int index);
 
     ///This slot function shows a message box.
     void showMessageBoxSlot(QMessageBox::Icon icon, QString title, QString text, QMessageBox::StandardButtons buttons,
@@ -541,7 +555,7 @@ private:
     void restoreSizeSplitterSecondElement(QSplitter* splitter, qint32 oldSize);
 
     ///Appends a console string to a console.
-    void appendConsoleStringToConsole(QStringList *list, QTextEdit* textEdit);
+    void appendConsoleStringToConsole(QString* consoleString, QTextEdit* textEdit);
 
     ///This function is called if the main window is closed.
     void closeEvent(QCloseEvent * event);
