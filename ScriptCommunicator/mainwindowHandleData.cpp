@@ -2,7 +2,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "settingsdialog.h"
-#include "customConsoleLogObject.h"
 #include <QScrollBar>
 #include "canTab.h"
 #include "mainInterfaceThread.h"
@@ -19,22 +18,14 @@
  */
 MainWindowHandleData::MainWindowHandleData(MainWindow *mainWindow, SettingsDialog *settingsDialog, Ui::MainWindow *userInterface) :
     QObject(mainWindow), m_mainWindow(mainWindow), m_settingsDialog(settingsDialog), m_userInterface(userInterface), m_receivedBytes(0),
-    m_sentBytes(0),m_htmlLogFile(), m_HtmlLogFileStream(&m_htmlLogFile),
-    m_textLogFile(), m_customLogFile(), m_textLogFileStream(&m_textLogFile), m_customLogFileStream(&m_customLogFile),
+    m_sentBytes(0),m_htmlLogFile(), m_HtmlLogFileStream(&m_htmlLogFile), m_textLogFile(), m_textLogFileStream(&m_textLogFile),
     m_bytesInUnprocessedConsoleData(0), m_bytesInStoredConsoleData(0), m_bytesSinceLastNewLineInConsole(0), m_bytesSinceLastNewLineInLog(0),
-    m_customLogString(), m_customConsoleObject(0), m_customLogObject(0), m_customConsoleStrings(), m_customConsoleStoredStrings(),
-    m_numberOfBytesInCustomConsoleStrings(0), m_numberOfBytesInCustomConsoleStoredStrings(0), m_historySendIsInProgress(false), m_checkDebugWindowsIsClosed(),
-    m_queuedReceivedData(), m_queuedReceivedDataTimer(), m_noConsoleVisible(false)
+    m_historySendIsInProgress(false), m_noConsoleVisible(false)
 {
-    m_customConsoleObject = new CustomConsoleLogObject(m_mainWindow);
-    m_customLogObject = new CustomConsoleLogObject(m_mainWindow);
 
     m_updateConsoleAndLogTimer = new QTimer(this);
     m_updateConsoleAndLogTimer->setSingleShot(true);
     connect(m_updateConsoleAndLogTimer, SIGNAL(timeout()), this, SLOT(updateConsoleAndLog()));
-
-    m_queuedReceivedDataTimer.setSingleShot(true);
-    connect(&m_queuedReceivedDataTimer, SIGNAL(timeout()), this, SLOT(queuedDataReceivedSlot()));
 
 }
 
@@ -44,8 +35,6 @@ MainWindowHandleData::MainWindowHandleData(MainWindow *mainWindow, SettingsDialo
 MainWindowHandleData::~MainWindowHandleData()
 {
     delete m_updateConsoleAndLogTimer;
-    delete m_customConsoleObject;
-    delete m_customLogObject;
 }
 
 
@@ -61,21 +50,6 @@ void MainWindowHandleData::updateConsoleAndLog(void)
 
     //Create the log entries and the console strings.
     processDataInStoredData();
-
-    if(settings->logGenerateCustomLog)
-    {
-        if(!m_customLogFile.isOpen() && (settings->customLogfileName != ""))
-        {
-            m_mainWindow->customLogActivatedSlot(true);
-        }
-
-        if(m_customLogFile.isOpen())
-        {
-            m_customLogFileStream << m_customLogString.toLocal8Bit();
-            m_customLogFileStream.flush();
-            m_customLogString.clear();
-        }
-    }
 
 
     //Limit the data in m_storedConsoleData to settings->maxCharsInConsole.
@@ -112,58 +86,6 @@ void MainWindowHandleData::updateConsoleAndLog(void)
     if(settings->showBinaryConsole){m_mainWindow->appendConsoleStringToConsole(&m_consoleDataBufferBinary, m_userInterface->ReceiveTextEditBinary);}
     else{ m_consoleDataBufferBinary.clear();}
 
-    if(settings->consoleShowCustomConsole)
-    {
-        QString consoleString;
-        for(auto el : m_customConsoleStrings)
-        {
-            m_customConsoleStoredStrings.append(el);
-            m_numberOfBytesInCustomConsoleStoredStrings += el.length();
-            consoleString += el;
-
-        }
-
-        //Limit the number of bytes in m_customConsoleStoredStrings.
-        while(m_numberOfBytesInCustomConsoleStoredStrings > (settings->maxCharsInConsole * 2))
-        {
-            int diff = m_numberOfBytesInCustomConsoleStoredStrings - (settings->maxCharsInConsole * 2);
-            if(diff >= m_customConsoleStoredStrings.at(0).length())
-            {
-                m_numberOfBytesInCustomConsoleStoredStrings -= m_customConsoleStoredStrings.first().length();
-                m_customConsoleStoredStrings.removeFirst();
-            }
-            else
-            {
-                m_customConsoleStoredStrings.first().remove(0, m_numberOfBytesInCustomConsoleStoredStrings - settings->maxCharsInConsole);
-                m_numberOfBytesInCustomConsoleStoredStrings -= m_numberOfBytesInCustomConsoleStoredStrings - settings->maxCharsInConsole;
-            }
-        }
-
-
-        if(!consoleString.isEmpty())
-        {
-            bool consoleWasEmpty = (m_userInterface->ReceiveTextEditCustom->document()->characterCount() <= 1) ? true : false;
-            consoleString = m_consoleData.htmlReceived + consoleString + QString("</span>");
-
-            m_mainWindow->appendConsoleStringToConsole(&consoleString, m_userInterface->ReceiveTextEditCustom);
-            m_customConsoleStrings.clear();
-            m_numberOfBytesInCustomConsoleStrings = 0;
-
-            if(consoleWasEmpty)
-            {
-                //Force the custom console to render the content.
-                QRect rect = MainWindow::windowPositionAndSize(m_mainWindow);
-                rect.setWidth(rect.width() + 1);
-                m_mainWindow->m_ignoreNextResizeEventTime = QDateTime::currentDateTime();
-                MainWindow::setWindowPositionAndSize(m_mainWindow, rect);
-
-                rect.setWidth(rect.width() - 1);
-                MainWindow::setWindowPositionAndSize(m_mainWindow, rect);
-            }
-
-        }
-    }
-
     /***************************************************************************************************/
 
     m_mainWindow->showNumberOfReceivedAndSentBytes();
@@ -199,91 +121,11 @@ void MainWindowHandleData::appendDataToStoredData(QByteArray &data, bool isSend,
         }
     }
 
-    if(currentSettings->logGenerateCustomLog)
-    {
-        if((!isSend && currentSettings->writeReceivedDataInToLog) || (isSend && currentSettings->writeSendDataInToLog) || isUserMessage)
-        {
-            bool errorOccured;
-            QString timeStamp = QDateTime::currentDateTime().toString(currentSettings->consoleTimestampFormat).toLocal8Bit();
-            m_customLogString += m_customLogObject->callScriptFunction(&data, timeStamp, isSend, isUserMessage, isFromCan,
-                                                                       isFromI2cMaster, true, &errorOccured);
-
-            if(errorOccured)
-            {
-                Settings settings = *m_settingsDialog->settings();
-                settings.logGenerateCustomLog = false;
-                settings.logDebugCustomLog = false;
-                m_settingsDialog->setAllSettingsSlot(settings, false);
-
-                if(m_customLogObject->scriptIsBlocked())
-                {
-                    QMessageBox::critical(m_mainWindow, "error in custom log script", settings.consoleScript + " is blocked or overloaded and has been disabled.");
-                }
-            }
-
-
-        }
-    }
-
     if((!isSend && currentSettings->showReceivedDataInConsole) || (isSend && currentSettings->showSendDataInConsole) || isUserMessage)
     {
         if(!m_noConsoleVisible)
         {
             appendUnprocessConsoleData(data, isSend, isUserMessage, isFromCan, isFromI2cMaster, forceTimeStamp);
-        }
-
-        if(currentSettings->consoleShowCustomConsole)
-        {
-            bool errorOccured;
-            QString timeStamp = QDateTime::currentDateTime().toString(currentSettings->consoleTimestampFormat).toLocal8Bit();
-            QString result = m_customConsoleObject->callScriptFunction(&data, timeStamp, isSend, isUserMessage, isFromCan,
-                                                                       isFromI2cMaster, false, &errorOccured);
-
-            if(errorOccured)
-            {
-                Settings settings = *m_settingsDialog->settings();
-                settings.consoleShowCustomConsole = false;
-                settings.consoleDebugCustomConsole= false;
-                m_settingsDialog->setAllSettingsSlot(settings, false);
-                m_mainWindow->inititializeTab();
-
-                if(m_customConsoleObject->scriptIsBlocked())
-                {
-                    QMessageBox::critical(m_mainWindow, "error in custom console script", settings.consoleScript + " is blocked or overloaded and has been disabled.");
-                }
-
-            }
-            else
-            {
-                m_customConsoleStrings.append(result);
-                m_numberOfBytesInCustomConsoleStrings += result.length();
-            }
-
-
-            if ((m_numberOfBytesInCustomConsoleStrings > (currentSettings->maxCharsInConsole * 2)))
-            {
-                while(m_numberOfBytesInCustomConsoleStrings > (currentSettings->maxCharsInConsole * 2))
-                {//Limit the number of bytes in m_customConsoleStrings.
-
-                    int diff = m_numberOfBytesInCustomConsoleStrings - (currentSettings->maxCharsInConsole * 2);
-                    if(diff >= m_customConsoleStrings.at(0).length())
-                    {
-                        m_numberOfBytesInCustomConsoleStrings -= m_customConsoleStrings.first().length();
-                        m_customConsoleStrings.removeFirst();
-                    }
-                    else
-                    {
-                        m_customConsoleStrings.first().remove(0, m_numberOfBytesInCustomConsoleStrings - currentSettings->maxCharsInConsole);
-                        m_numberOfBytesInCustomConsoleStrings -= m_numberOfBytesInCustomConsoleStrings - currentSettings->maxCharsInConsole;
-                    }
-                }
-
-                if(m_bytesInStoredConsoleData != 0)
-                {
-                    //Restart the console/log timer.
-                    m_updateConsoleAndLogTimer->start(1);
-                }
-            }
         }
 
         if(m_bytesInUnprocessedConsoleData > currentSettings->maxCharsInConsole)
@@ -306,7 +148,8 @@ void MainWindowHandleData::appendDataToStoredData(QByteArray &data, bool isSend,
             }
 
             if(m_bytesInStoredConsoleData != 0)
-            {
+            {//updateConsoleAndLog has been called already.
+
                 //Restart the console/log timer.
                 m_updateConsoleAndLogTimer->start(1);
             }
@@ -1167,28 +1010,6 @@ void MainWindowHandleData::appendDataToLog(const QByteArray &data, bool isSend, 
 }
 
 /**
- * Appends the queued received data to the stored data.
- */
-void MainWindowHandleData::queuedDataReceivedSlot(void)
-{
-    m_queuedReceivedDataTimer.stop();
-    if(!m_queuedReceivedData.isEmpty())
-    {
-        m_receivedBytes += m_queuedReceivedData.size();
-
-        if(m_mainWindow->m_isConnectedWithI2cMaster)
-        {
-            m_receivedBytes -= AardvarkI2cSpi::RECEIVE_CONTROL_BYTES_COUNT;
-        }
-
-        appendDataToStoredData(m_queuedReceivedData, false, false, m_mainWindow->m_isConnectedWithCan,
-                               false, m_mainWindow->m_isConnectedWithI2cMaster);
-        m_queuedReceivedData.clear();
-    }
-
-}
-
-/**
  * The slot is called if the main interface thread has received can messages.
  * This slot is connected to the MainInterfaceThread::canMessageReceivedSignal signal.
  * @param data
@@ -1196,11 +1017,15 @@ void MainWindowHandleData::queuedDataReceivedSlot(void)
  */
 void MainWindowHandleData::dataReceivedSlot(QByteArray data)
 {
-    m_queuedReceivedData.append(data);
-    if(!m_queuedReceivedDataTimer.isActive())
+    m_receivedBytes += data.size();
+
+    if(m_mainWindow->m_isConnectedWithI2cMaster)
     {
-        m_queuedReceivedDataTimer.start(1);
+        m_receivedBytes -= AardvarkI2cSpi::RECEIVE_CONTROL_BYTES_COUNT;
     }
+
+    appendDataToStoredData(data, false, false, m_mainWindow->m_isConnectedWithCan,
+                           false, m_mainWindow->m_isConnectedWithI2cMaster);
 }
 
 /**
@@ -1216,7 +1041,7 @@ void MainWindowHandleData::canMessagesReceivedSlot(QVector<QByteArray> messages)
         m_receivedBytes += el.size();
         m_receivedBytes -= PCANBasicClass::BYTES_METADATA_RECEIVE;
 
-        appendDataToStoredData(el, false, false, m_mainWindow->m_isConnectedWithCan, false, m_mainWindow->m_isConnectedWithCan);
+        appendDataToStoredData(el, false, false, m_mainWindow->m_isConnectedWithCan, false, m_mainWindow->m_isConnectedWithI2cMaster);
         m_mainWindow->m_canTab->canMessageReceived(el);
     }
 }
@@ -1236,11 +1061,6 @@ void MainWindowHandleData::dataHasBeenSendSlot(QByteArray data, bool success, ui
     (void) id;
     if(success)
     {
-        if(!m_queuedReceivedData.isEmpty())
-        {
-            queuedDataReceivedSlot();
-        }
-
         m_sentBytes += data.size();
 
         if(m_mainWindow->m_isConnectedWithCan)
@@ -1300,10 +1120,6 @@ void MainWindowHandleData::clear(void)
     m_consoleDataBufferHex.clear();
     m_consoleDataBufferDec.clear();
     m_consoleDataBufferMixed.clear();;
-    m_customConsoleStoredStrings.clear();
-    m_numberOfBytesInCustomConsoleStoredStrings = 0;
-    m_customConsoleStrings.clear();
-    m_numberOfBytesInCustomConsoleStrings = 0;
     m_consoleDataBufferBinary.clear();
     m_unprocessedConsoleData.clear();
     m_bytesInUnprocessedConsoleData = 0;
@@ -1788,7 +1604,6 @@ void MainWindowHandleData::processDataInStoredData()
             m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(true);
             m_userInterface->ReceiveTextEditMixed->document()->blockSignals(true);
             m_userInterface->ReceiveTextEditBinary->document()->blockSignals(true);
-            m_userInterface->ReceiveTextEditCustom->document()->blockSignals(true);
 
             m_userInterface->ReceiveTextEditAscii->clear();
             m_consoleDataBufferAscii.clear();
@@ -1811,7 +1626,6 @@ void MainWindowHandleData::processDataInStoredData()
             m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(false);
             m_userInterface->ReceiveTextEditMixed->document()->blockSignals(false);
             m_userInterface->ReceiveTextEditBinary->document()->blockSignals(false);
-            m_userInterface->ReceiveTextEditCustom->document()->blockSignals(false);
         }
         else
            {
@@ -2095,33 +1909,7 @@ void MainWindowHandleData::sendHistoryTimerSlot()
     }
 }
 
-/**
- * Slotfunction for m_checkDebugWindowsIsClosed.
- */
-void MainWindowHandleData::checkDebugWindowsIsClosedSlot()
-{
 
-    Settings settings = *m_settingsDialog->settings();
-
-    if(m_customConsoleObject->getRunsInDebuggerAndDebugWindowIsClosed() && settings.consoleShowCustomConsole)
-    {
-        settings.consoleDebugCustomConsole = false;
-        settings.consoleShowCustomConsole = false;
-        m_settingsDialog->setAllSettingsSlot(settings, false);
-        m_mainWindow->customConsoleSettingsChangedSlot();
-        m_mainWindow->inititializeTab();
-    }
-
-    if(m_customLogObject->getRunsInDebuggerAndDebugWindowIsClosed() && settings.logDebugCustomLog)
-    {
-        settings.logDebugCustomLog  = false;
-        settings.logGenerateCustomLog = false;
-        m_settingsDialog->setAllSettingsSlot(settings, false);
-        m_mainWindow->customLogSettingsChangedSlot();
-        m_customLogFile.close();
-    }
-
-}
 
 /**
  * Enables/disables the send history GUI elements.
@@ -2297,7 +2085,7 @@ void MainWindowHandleData::reInsertDataInConsole(void)
     int val3 = 0;
     int val4 = 0;
     int val5 = 0;
-    int val6 = 0;
+
     QMessageBox box(QMessageBox::Information, "ScriptCommunicator", "Recalculating console data",
                     QMessageBox::NoButton, m_mainWindow);
     box.setStandardButtons(QMessageBox::NoButton);
@@ -2309,8 +2097,6 @@ void MainWindowHandleData::reInsertDataInConsole(void)
     m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(true);
     m_userInterface->ReceiveTextEditHex->document()->blockSignals(true);
     m_userInterface->ReceiveTextEditBinary->document()->blockSignals(true);
-    m_userInterface->ReceiveTextEditCustom->document()->blockSignals(true);
-
 
     if(settings->showMixedConsole && (m_bytesInStoredConsoleData > 2500))
     {
@@ -2326,14 +2112,12 @@ void MainWindowHandleData::reInsertDataInConsole(void)
     if(settings->showDecimalInConsole){val3 = m_userInterface->ReceiveTextEditDecimal->verticalScrollBar()->value();}
     if(settings->showMixedConsole){val4 = m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->value();}
     if(settings->showBinaryConsole){val5 = m_userInterface->ReceiveTextEditBinary->verticalScrollBar()->value();}
-    if(settings->consoleShowCustomConsole){val6 = m_userInterface->ReceiveTextEditCustom->verticalScrollBar()->value();}
 
     m_userInterface->ReceiveTextEditMixed->clear();
     m_userInterface->ReceiveTextEditAscii->clear();
     m_userInterface->ReceiveTextEditDecimal->clear();
     m_userInterface->ReceiveTextEditHex->clear();
     m_userInterface->ReceiveTextEditBinary->clear();
-    m_userInterface->ReceiveTextEditCustom->clear();
     m_decimalConsoleByteBuffer.clear();
     m_mixedConsoleByteBuffer.clear();
 
@@ -2351,12 +2135,6 @@ void MainWindowHandleData::reInsertDataInConsole(void)
                                    el.isFromCan, el.isFromI2cMaster, isNewLine);
     }
 
-    if(settings->consoleShowCustomConsole)
-    {
-        m_customConsoleStrings = m_customConsoleStoredStrings;
-        m_customConsoleStoredStrings.clear();
-        m_numberOfBytesInCustomConsoleStoredStrings = 0;
-    }
 
     updateConsoleAndLog();
 
@@ -2365,14 +2143,12 @@ void MainWindowHandleData::reInsertDataInConsole(void)
     if(settings->showDecimalInConsole){m_userInterface->ReceiveTextEditDecimal->verticalScrollBar()->setValue(val3);}
     if(settings->showMixedConsole){m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->setValue(val4);}
     if(settings->showBinaryConsole){m_userInterface->ReceiveTextEditBinary->verticalScrollBar()->setValue(val5);}
-    if(settings->consoleShowCustomConsole){m_userInterface->ReceiveTextEditCustom->verticalScrollBar()->setValue(val6);}
 
     m_userInterface->ReceiveTextEditMixed->document()->blockSignals(false);
     m_userInterface->ReceiveTextEditAscii->document()->blockSignals(false);
     m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(false);
     m_userInterface->ReceiveTextEditHex->document()->blockSignals(false);
     m_userInterface->ReceiveTextEditBinary->document()->blockSignals(false);
-    m_userInterface->ReceiveTextEditCustom->document()->blockSignals(false);
 
     box.close();
 }

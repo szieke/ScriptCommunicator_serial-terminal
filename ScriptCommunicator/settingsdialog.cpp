@@ -117,12 +117,6 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->logHtmlLogPushButton, SIGNAL(clicked()),
             this, SLOT(searchHtmlLogButtonPressedSlot()));
 
-    connect(m_userInterface->ClearCustomLogPushButton, SIGNAL(clicked()),
-            this, SLOT(deleteCustomLogButtonPressedSlot()));
-
-    connect(m_userInterface->logCustomLogPushButton, SIGNAL(clicked()),
-            this, SLOT(searchCustomLogButtonPressedSlot()));
-
     connect(m_userInterface->HtmlLogCheckBox, SIGNAL(clicked(bool)),
             this, SLOT(htmLogActivatedSlot(bool)));
 
@@ -344,30 +338,6 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->LogTimestampFormat, SIGNAL(textChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
 
-    connect(m_userInterface->consoleShowCustomCheckBox, SIGNAL(clicked(bool)),
-            this, SLOT(customConsoleActivatedSlot(bool)));
-
-    connect(m_userInterface->consoleDebugCustomCheckBox, SIGNAL(clicked(bool)),
-            this, SLOT(customConsoleActivatedSlot(bool)));
-
-    connect(m_userInterface->logUseCustomLogCheckBox, SIGNAL(clicked(bool)),
-            this, SLOT(customLogActivatedSlot(bool)));
-
-    connect(m_userInterface->logDebugCustomLogCheckBox, SIGNAL(clicked(bool)),
-            this, SLOT(customLogActivatedSlot(bool)));
-
-    connect(m_userInterface->logScriptLineEdit, SIGNAL(textChanged(QString)),
-            this, SLOT(textFromGuiElementChangedSlot(QString)));
-
-    connect(m_userInterface->consoleScriptLineEdit, SIGNAL(textChanged(QString)),
-            this, SLOT(textFromGuiElementChangedSlot(QString)));
-
-    connect(m_userInterface->consoleSearchScriptPushButton, SIGNAL(clicked()),
-            this, SLOT(searchConsoleScriptSlot()));
-
-    connect(m_userInterface->logSearchScriptPushButton, SIGNAL(clicked()),
-            this, SLOT(searchLogScriptSlot()));
-
     connect(m_userInterface->noProxyRadioButton, SIGNAL(clicked()),
             this, SLOT(socketProxyRadioButtonClickedSlot()));
     connect(m_userInterface->useSystemProxyRadioButton, SIGNAL(clicked()),
@@ -401,10 +371,6 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->updateProxyPassword, SIGNAL(textChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
 
-    connect(m_userInterface->consoleEditScriptPushButton, SIGNAL(clicked()),
-            this, SLOT(editCustomConsoleScriptSlot()));
-    connect(m_userInterface->logEditScriptPushButton, SIGNAL(clicked()),
-            this, SLOT(editCustomLogScriptSlot()));
 
     connect(m_userInterface->aardvarkI2cSpiPort, SIGNAL(textChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
@@ -578,35 +544,6 @@ SettingsDialog::~SettingsDialog()
     delete m_userInterface;
 }
 
-/**
- * Is called when the user presses the search console script button.
- */
-void SettingsDialog::searchConsoleScriptSlot()
-{
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open custom console script"),
-                                                    "",tr("Files (*)"));
-    if(!fileName.isEmpty())
-    {
-        m_userInterface->consoleScriptLineEdit->setText(fileName);
-        updateSettings();
-        emit customConsoleSettingsChangedSignal();
-    }
-}
-
-/**
- * Is called when the user presses the search log script button.
- */
-void SettingsDialog::searchLogScriptSlot()
-{
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open custom log script"),
-                                                    "",tr("Files (*)"));
-    if(!fileName.isEmpty())
-    {
-        m_userInterface->logScriptLineEdit->setText(fileName);
-        updateSettings();
-        emit customLogSettingsChangedSignal();
-    }
-}
 
 /**
  * Shows (socket tab) all local ip addresses found on this PC.
@@ -890,10 +827,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     m_userInterface->consoleNewLineAfterNumberBytes->setText(QString("%1").arg(settings.consoleNewLineAfterBytes));
     m_userInterface->consoleNewLineAfterPause->setText(QString("%1").arg(settings.consoleNewLineAfterPause));
     m_userInterface->ConsoleTimestampFormat->setText(QString(settings.consoleTimestampFormat).replace("\n", "\\n"));
-    m_userInterface->consoleScriptLineEdit->setText(settings.consoleScript);
 
-    m_userInterface->consoleShowCustomCheckBox->setChecked(settings.consoleShowCustomConsole);
-    m_userInterface->consoleDebugCustomCheckBox->setChecked(settings.consoleDebugCustomConsole);
 
     m_userInterface->consoleTimestampAtByteCheckBox->setChecked(settings.consoleCreateTimestampAt);
     setDecimalComboBox(settings.consoleDecimalsType, m_userInterface->consoleDecimalsType);
@@ -987,10 +921,6 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     m_userInterface->logNewLineAfterNumberBytes->setText(QString("%1").arg(settings.logNewLineAfterBytes));
     m_userInterface->logNewLineAfterPause->setText(QString("%1").arg(settings.logNewLineAfterPause));
     m_userInterface->LogTimestampFormat->setText(QString(settings.logTimestampFormat).replace("\n", "\\n"));
-    m_userInterface->logScriptLineEdit->setText(settings.logScript);
-    m_userInterface->logUseCustomLogCheckBox->setChecked(settings.logGenerateCustomLog);
-    m_userInterface->logDebugCustomLogCheckBox->setChecked(settings.logDebugCustomLog);
-    m_userInterface->logCustomLineEdit->setText(settings.customLogfileName);
     m_userInterface->logTimestampAtByteCheckBox->setChecked(settings.logCreateTimestampAt);
     setDecimalComboBox(settings.logDecimalsType, m_userInterface->logDecimalsType);
     m_userInterface->logI2cMetadata->setCurrentIndex((int)settings.i2cMetaInformationInLog);
@@ -1180,78 +1110,6 @@ void SettingsDialog::textLogActivatedSlot(bool activated)
     emit textLogActivatedSignal(activated);
 }
 
-/**
- * Slot function for the activate custom console check box.
- * @param activated
- *      True for activate.
- */
-void SettingsDialog::customConsoleActivatedSlot(bool activated)
-{
-    if(static_cast<QCheckBox*>(sender()) == m_userInterface->consoleDebugCustomCheckBox)
-    {
-        m_userInterface->consoleShowCustomCheckBox->blockSignals(true);
-        m_userInterface->consoleShowCustomCheckBox->setChecked(m_userInterface->consoleDebugCustomCheckBox->isChecked());
-        m_userInterface->consoleShowCustomCheckBox->blockSignals(false);
-    }
-
-    if(m_userInterface->consoleDebugCustomCheckBox->isChecked())
-    {
-        m_userInterface->consoleShowCustomCheckBox->setEnabled(false);
-        m_userInterface->consoleDebugCustomCheckBox->setEnabled(false);
-        m_userInterface->consoleSearchScriptPushButton->setEnabled(false);
-        m_userInterface->consoleEditScriptPushButton->setEnabled(false);
-    }
-    else
-    {
-        m_userInterface->consoleShowCustomCheckBox->setEnabled(true);
-        m_userInterface->consoleDebugCustomCheckBox->setEnabled(true);
-        m_userInterface->consoleSearchScriptPushButton->setEnabled(true);
-        m_userInterface->consoleEditScriptPushButton->setEnabled(true);
-    }
-
-    updateSettings();
-    (void)activated;
-    emit customConsoleSettingsChangedSignal();
-    emit configHasToBeSavedSignal();
-}
-
-/**
- * Slot function for the activate custom log check box.
- * @param activated
- *      True for activate.
- */
-void SettingsDialog::customLogActivatedSlot(bool activated)
-{
-    if(static_cast<QCheckBox*>(sender()) == m_userInterface->logDebugCustomLogCheckBox)
-    {
-        m_userInterface->logUseCustomLogCheckBox->blockSignals(true);
-        m_userInterface->logUseCustomLogCheckBox->setChecked(m_userInterface->logDebugCustomLogCheckBox->isChecked());
-        m_userInterface->logUseCustomLogCheckBox->blockSignals(false);
-    }
-
-    if(m_userInterface->logDebugCustomLogCheckBox->isChecked())
-    {
-        m_userInterface->logDebugCustomLogCheckBox->setEnabled(false);
-        m_userInterface->logUseCustomLogCheckBox->setEnabled(false);
-
-        m_userInterface->logCustomLogPushButton->setEnabled(false);
-        m_userInterface->logSearchScriptPushButton->setEnabled(false);
-        m_userInterface->logEditScriptPushButton->setEnabled(false);
-    }
-    else
-    {
-        m_userInterface->logDebugCustomLogCheckBox->setEnabled(true);
-        m_userInterface->logUseCustomLogCheckBox->setEnabled(true);
-
-        m_userInterface->logCustomLogPushButton->setEnabled(true);
-        m_userInterface->logSearchScriptPushButton->setEnabled(true);
-        m_userInterface->logEditScriptPushButton->setEnabled(true);
-    }
-
-    updateSettings();
-    emit customLogActivatedSignal(activated);
-    emit customLogSettingsChangedSignal();
-}
 
 /**
  * Returns the current settings.
@@ -1364,32 +1222,6 @@ void SettingsDialog::searchHtmlLogButtonPressedSlot(void)
     }
 }
 
-/**
- * Slot function for the delete custom log button.
- */
-void SettingsDialog::deleteCustomLogButtonPressedSlot(void)
-{
-    emit deleteLogFileSignal("custom");
-}
-
-/**
- * Slot function for the search custom log button.
- */
-void SettingsDialog::searchCustomLogButtonPressedSlot(void)
-{
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save custom log file"),
-                                                    "",tr("Files (*)"));
-    if(!fileName.isEmpty())
-    {
-        m_currentSettings.customLogfileName = fileName;
-        m_userInterface->logCustomLineEdit->setText(fileName);
-
-        if(m_currentSettings.logGenerateCustomLog)
-        {
-            emit customLogActivatedSignal(true);
-        }
-    }
-}
 
 /**
  * This slot function is called if the selected baudrate has been changed.
@@ -2213,9 +2045,6 @@ void SettingsDialog::updateSettings(bool forceUpdate)
     m_currentSettings.consoleSendOnEnter = m_userInterface->consoleSendOnEnter->itemData(m_userInterface->consoleSendOnEnter->currentIndex()).toString();
     m_currentSettings.consoleTimestampFormat = m_userInterface->ConsoleTimestampFormat->text();
     m_currentSettings.consoleTimestampFormat.replace("\\n", "\n");
-    m_currentSettings.consoleScript = m_userInterface->consoleScriptLineEdit->text();
-    m_currentSettings.consoleShowCustomConsole = m_userInterface->consoleShowCustomCheckBox->isChecked();
-    m_currentSettings.consoleDebugCustomConsole = m_userInterface->consoleDebugCustomCheckBox->isChecked();
     m_currentSettings.consoleCreateTimestampAt= m_userInterface->consoleTimestampAtByteCheckBox->isChecked();
     updatesDecimalsTypes(&m_currentSettings.consoleDecimalsType, m_userInterface->consoleDecimalsType);
 
@@ -2265,11 +2094,8 @@ void SettingsDialog::updateSettings(bool forceUpdate)
     m_currentSettings.logNewLineAfterPause = m_userInterface->logNewLineAfterPause->text().toUInt();
     m_currentSettings.logTimestampFormat = m_userInterface->LogTimestampFormat->text();
     m_currentSettings.logTimestampFormat.replace("\\n", "\n");
-    m_currentSettings.logScript = m_userInterface->logScriptLineEdit->text();
-    m_currentSettings.logGenerateCustomLog= m_userInterface->logUseCustomLogCheckBox->isChecked();
     m_currentSettings.logCreateTimestampAt= m_userInterface->logTimestampAtByteCheckBox->isChecked();
     updatesDecimalsTypes(&m_currentSettings.logDecimalsType, m_userInterface->logDecimalsType);
-    m_currentSettings.logDebugCustomLog = m_userInterface->logDebugCustomLogCheckBox->isChecked();
     m_currentSettings.i2cMetaInformationInLog = (I2cMetadata)m_userInterface->logI2cMetadata->currentIndex();
 
     //Log time satmp at byte.
@@ -2369,56 +2195,6 @@ void SettingsDialog::updateSettings(bool forceUpdate)
 
     m_currentSettings.settingsDialogTabIndex = m_userInterface->tabWidget->currentIndex();
 
-    if(m_userInterface->logDebugCustomLogCheckBox->isChecked())
-    {
-        m_userInterface->logDebugCustomLogCheckBox->setEnabled(false);
-        m_userInterface->logUseCustomLogCheckBox->setEnabled(false);
-
-        m_userInterface->logCustomLogPushButton->setEnabled(false);
-        m_userInterface->logSearchScriptPushButton->setEnabled(false);
-        m_userInterface->logEditScriptPushButton->setEnabled(false);
-    }
-    else
-    {
-        m_userInterface->logDebugCustomLogCheckBox->setEnabled(true);
-        m_userInterface->logUseCustomLogCheckBox->setEnabled(true);
-
-        m_userInterface->logCustomLogPushButton->setEnabled(true);
-        m_userInterface->logSearchScriptPushButton->setEnabled(true);
-
-        if(!m_currentSettings.logScript.isEmpty())
-        {
-            m_userInterface->logEditScriptPushButton->setEnabled(true);
-        }
-        else
-        {
-            m_userInterface->logEditScriptPushButton->setEnabled(false);
-        }
-    }
-
-    if(m_userInterface->consoleDebugCustomCheckBox->isChecked())
-    {
-        m_userInterface->consoleShowCustomCheckBox->setEnabled(false);
-        m_userInterface->consoleDebugCustomCheckBox->setEnabled(false);
-        m_userInterface->consoleSearchScriptPushButton->setEnabled(false);
-        m_userInterface->consoleEditScriptPushButton->setEnabled(false);
-    }
-    else
-    {
-        m_userInterface->consoleShowCustomCheckBox->setEnabled(true);
-        m_userInterface->consoleDebugCustomCheckBox->setEnabled(true);
-        m_userInterface->consoleSearchScriptPushButton->setEnabled(true);
-
-
-        if(!m_currentSettings.consoleScript.isEmpty())
-        {
-            m_userInterface->consoleEditScriptPushButton->setEnabled(true);
-        }
-        else
-        {
-            m_userInterface->consoleEditScriptPushButton->setEnabled(false);
-        }
-    }
 
     //update settings
     m_currentSettings.updateSettings.proxyIpAddress = m_userInterface->updateProxyAddress->text();
@@ -2463,21 +2239,6 @@ void SettingsDialog::updateSettings(bool forceUpdate)
 
 }
 
-/**
- * Slot function for the edit custom console script button.
- */
-void SettingsDialog::editCustomConsoleScriptSlot(void)
-{
-    MainWindow::openScriptEditor(QStringList() << m_currentSettings.consoleScript, &m_currentSettings, this);
-}
-
-/**
- * Slot function for the edit custom log script button.
- */
-void SettingsDialog::editCustomLogScriptSlot(void)
-{
-    MainWindow::openScriptEditor(QStringList() << m_currentSettings.logScript, &m_currentSettings, this);
-}
 
 /**
  * The state of the 'append time stamp at logs' check box has been changed.

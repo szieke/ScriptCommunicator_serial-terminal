@@ -48,7 +48,6 @@
 #include "canTab.h"
 #include <QPrintDialog>
 #include "searchconsole.h"
-#include "customConsoleLogObject.h"
 #include "scriptTcpClient.h"
 #include "version.h"
 
@@ -317,7 +316,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     m_sendWindowPositionAndSizeloaded(false), m_scriptWindowPositionAndSizeloaded(false),
     m_isConnectedWithCan(false), m_isConnectedWithI2cMaster(false), m_commandLineScripts(scripts),
     m_isFirstProgramStart(false), m_mouseGrabWidget(0), m_searchConsole(0),
-    m_dataRateSend(0), m_dataRateReceive(0), m_handleData(0), m_ignoreNextResizeEventTime(QDateTime::currentDateTime()), m_toolBoxSplitterSizeSecond(0),
+    m_dataRateSend(0), m_dataRateReceive(0), m_handleData(0), m_toolBoxSplitterSizeSecond(0),
     m_sendAreaSplitterSizeSecond(0), m_sendAreaInputsSplitterSizeSecond(0), m_toolBoxSplitterSizesSecond(), m_currentToolBoxIndex(0), m_mainConfigLockFile(),
     m_configLockFileTimer(), m_extraPluginPaths(extraPluginPaths), m_scriptArguments(scriptArguments), updatesManager(0), m_scriptTabs(), m_scriptTabsTitles(),
     m_scriptToolBoxPage()
@@ -353,7 +352,6 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     m_userInterface->ReceiveTextEditHex->setMainWindow(this);
     m_userInterface->ReceiveTextEditMixed->setMainWindow(this);
     m_userInterface->ReceiveTextEditMixed->setIsMixedConsole(true);
-    m_userInterface->ReceiveTextEditCustom->setMainWindow(this);
 
 
     m_settingsDialog = new SettingsDialog(m_userInterface->actionLockScrolling);
@@ -443,13 +441,6 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
     connect(m_settingsDialog, SIGNAL(textLogActivatedSignal(bool)),
             this, SLOT(textLogActivatedSlot(bool)));
-    connect(m_settingsDialog, SIGNAL(customLogActivatedSignal(bool)),
-            this, SLOT(customLogActivatedSlot(bool)));
-
-    connect(m_settingsDialog, SIGNAL(customConsoleSettingsChangedSignal()),
-            this, SLOT(customConsoleSettingsChangedSlot()));
-    connect(m_settingsDialog, SIGNAL(customLogSettingsChangedSignal()),
-            this, SLOT(customLogSettingsChangedSlot()));
 
     connect(m_userInterface->tabWidget, SIGNAL(currentChanged(int)),
             this, SLOT(tabIndexChangedSlot(int)));
@@ -501,7 +492,6 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
     connect(&m_handleData->m_historyConsoleTimer, SIGNAL(timeout()),m_handleData, SLOT(historyConsoleTimerSlot()), Qt::QueuedConnection);
     connect(&m_handleData->m_sendHistoryTimer, SIGNAL(timeout()),m_handleData, SLOT(sendHistoryTimerSlot()), Qt::QueuedConnection);
-    connect(&m_handleData->m_checkDebugWindowsIsClosed, SIGNAL(timeout()),m_handleData, SLOT(checkDebugWindowsIsClosedSlot()), Qt::QueuedConnection);
 
     if(m_commandLineScripts.isEmpty())
     {
@@ -1495,20 +1485,9 @@ bool MainWindow::loadSettings()
                         currentSettings.consoleSendOnEnter = node.attributes().namedItem("consoleSendOnEnter").nodeValue();
                         currentSettings.consoleTimestampFormat = node.attributes().namedItem("consoleTimestampFormat").nodeValue();
                         currentSettings.consoleTimestampFormat = currentSettings.consoleTimestampFormat.isEmpty() ? " \\nyyyy-MM-dd hh:mm:ss.zzz\\n" : currentSettings.consoleTimestampFormat;
-                        currentSettings.consoleShowCustomConsole = node.attributes().namedItem("consoleShowCustomConsole").nodeValue().toUInt();
-                        currentSettings.consoleScript = node.attributes().namedItem("consoleScript").nodeValue();
                         currentSettings.consoleCreateTimestampAt = node.attributes().namedItem("consoleCreateTimestampAt").nodeValue().toUInt();
                         currentSettings.consoleDecimalsType = (DecimalType)node.attributes().namedItem("consoleDecimalsType").nodeValue().toUInt();
 
-                        if(m_isFirstProgramStart || currentSettings.consoleScript.isEmpty())
-                        {
-                            currentSettings.consoleScript = getScriptCommunicatorFilesFolder() +
-                                    "/exampleScripts/CustomLogConsoleScripts/CustomConsole_Table/CustomConsole_Table.js";
-                        }
-                        else
-                        {
-                           currentSettings.consoleScript = convertToAbsolutePath(m_mainConfigFile, currentSettings.consoleScript);
-                        }
 
                         if(node.attributes().namedItem("consoleTimestampAt").nodeValue() != "")
                         {
@@ -1561,7 +1540,6 @@ bool MainWindow::loadSettings()
                         currentSettings.htmlLogfileName = node.attributes().namedItem("htmlLogFileName").nodeValue();
                         currentSettings.textLogFile = node.attributes().namedItem("textLogFile").nodeValue().toUInt();
                         currentSettings.textLogfileName = node.attributes().namedItem("textLogFileName").nodeValue();
-                        currentSettings.customLogfileName = node.attributes().namedItem("customLogFileName").nodeValue();
                         currentSettings.writeSendDataInToLog = node.attributes().namedItem("writeSendDataInToLog").nodeValue().toUInt();
                         currentSettings.writeReceivedDataInToLog = node.attributes().namedItem("writeReceivedDataInToLog").nodeValue().toUInt();
                         currentSettings.generateTimeStampsInLog = node.attributes().namedItem("generateTimeStampsInLog").nodeValue().toUInt();
@@ -1577,8 +1555,6 @@ bool MainWindow::loadSettings()
                         currentSettings.logNewLineAfterPause = node.attributes().namedItem("logNewLineAfterPause").nodeValue().toUInt();
                         currentSettings.logTimestampFormat = node.attributes().namedItem("logTimestampFormat").nodeValue();
                         currentSettings.logTimestampFormat = currentSettings.consoleTimestampFormat.isEmpty() ? " \\nyyyy-MM-dd hh:mm:ss.zzz\\n" : currentSettings.logTimestampFormat;
-                        currentSettings.logGenerateCustomLog = node.attributes().namedItem("logGenerateCustomLog").nodeValue().toUInt();
-                        currentSettings.logScript = node.attributes().namedItem("logScript").nodeValue();
                         currentSettings.logCreateTimestampAt = node.attributes().namedItem("logCreateTimestampAt").nodeValue().toUInt();
                         currentSettings.logDecimalsType = (DecimalType)node.attributes().namedItem("logDecimalsType").nodeValue().toUInt();
                         currentSettings.i2cMetaInformationInLog = (I2cMetadata)node.attributes().namedItem("i2cMetaInformationInLog").nodeValue().toUInt();
@@ -1593,15 +1569,6 @@ bool MainWindow::loadSettings()
                             currentSettings.logTimestampAt = 10;
                         }
 
-                        if(m_isFirstProgramStart || currentSettings.logScript.isEmpty())
-                        {
-                            currentSettings.logScript = getScriptCommunicatorFilesFolder() +
-                                    "/exampleScripts/CustomLogConsoleScripts/CustomConsole_Table/CustomConsole_Table.js";
-                        }
-                        else
-                        {
-                            currentSettings.logScript = convertToAbsolutePath(m_mainConfigFile, currentSettings.logScript);
-                        }
 
                         if(node.attributes().namedItem("writeAsciiInToLog").nodeValue() != "")
                         {
@@ -1614,11 +1581,9 @@ bool MainWindow::loadSettings()
 
                         m_handleData->m_htmlLogFile.setFileName(currentSettings.htmlLogfileName);
                         m_handleData->m_textLogFile.setFileName(currentSettings.textLogfileName);
-                        m_handleData->m_customLogFile.setFileName(currentSettings.customLogfileName);
 
                         currentSettings.htmlLogfileName = convertToAbsolutePath(m_mainConfigFile, currentSettings.htmlLogfileName);
                         currentSettings.textLogfileName = convertToAbsolutePath(m_mainConfigFile, currentSettings.textLogfileName);
-                        currentSettings.customLogfileName = convertToAbsolutePath(m_mainConfigFile, currentSettings.customLogfileName);
                     }
                 }
                 {//serial port
@@ -1688,7 +1653,6 @@ bool MainWindow::loadSettings()
                         rect.setTop(node.attributes().namedItem("top").nodeValue().toInt());
                         rect.setWidth(node.attributes().namedItem("width").nodeValue().toInt());
                         rect.setHeight(node.attributes().namedItem("height").nodeValue().toInt());
-                        m_ignoreNextResizeEventTime = QDateTime::currentDateTime();
                         setWindowPositionAndSize(this, rect);
 
 
@@ -2077,9 +2041,6 @@ bool MainWindow::loadSettings()
                 m_scriptWindow->loadTableData();
                 m_sendWindow->loadTableData();
                 m_scriptWindow->getCreateSceFileDialog()->loadConfigFile();
-
-                customLogSettingsChangedSlot();
-                customConsoleSettingsChangedSlot();
             }
         }
 
@@ -2125,7 +2086,6 @@ bool MainWindow::loadSettings()
 
         textLogActivatedSlot(currentSettings.textLogFile);
         htmLogActivatedSlot(currentSettings.htmlLogFile);
-        customLogActivatedSlot(currentSettings.logGenerateCustomLog);
         m_userInterface->actionReopenAllLogs->setVisible(currentSettings.appendTimestampAtLogFileName);
 
     }
@@ -2231,7 +2191,6 @@ void MainWindow::inititializeTab(void)
     static bool showDecimalInConsole = false;
     static bool showMixedConsole = false;
     static bool showBinaryConsole = false;
-    static bool showCustomConsole = false;
     static bool showCanTab = false;
     static QString receiveColor = "";
     static QString sendColor = "";
@@ -2353,11 +2312,6 @@ void MainWindow::inititializeTab(void)
         tabsChanged = true;
         showBinaryConsole = currentSettings->showBinaryConsole;
     }
-    if(showCustomConsole != currentSettings->consoleShowCustomConsole)
-    {
-        tabsChanged = true;
-        showCustomConsole = currentSettings->consoleShowCustomConsole;
-    }
     if(showCanTab != currentSettings->showCanTab)
     {
         tabsChanged = true;
@@ -2435,14 +2389,6 @@ void MainWindow::inititializeTab(void)
             setWidgetBackgroundColorFromString(currentSettings->consoleBackgroundColor, m_userInterface->ReceiveTextEditBinary);
             setWidgetTextColorFromString(currentSettings->consoleReceiveColor, m_userInterface->ReceiveTextEditBinary);
             setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditBinary);
-        }
-
-        if(currentSettings->consoleShowCustomConsole)
-        {
-            m_userInterface->tabWidget->addTab( m_userInterface->tabCustom, "Custom");
-            setWidgetBackgroundColorFromString(currentSettings->consoleBackgroundColor, m_userInterface->ReceiveTextEditCustom);
-            setWidgetTextColorFromString(currentSettings->consoleReceiveColor, m_userInterface->ReceiveTextEditCustom);
-            setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditCustom);
         }
 
         if(currentSettings->showCanTab)
@@ -2614,8 +2560,6 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("logNewLineAt"), QString("%1").arg(currentSettings->logNewLineAt)),
                  std::make_pair(QString("consoleSendOnEnter"), currentSettings->consoleSendOnEnter),
                  std::make_pair(QString("consoleTimestampFormat"), currentSettings->consoleTimestampFormat),
-                 std::make_pair(QString("consoleShowCustomConsole"), QString("%1").arg(currentSettings->consoleShowCustomConsole)),
-                 std::make_pair(QString("consoleScript"), convertToRelativePath(m_mainConfigFile, currentSettings->consoleScript)),
                  std::make_pair(QString("consoleCreateTimestampAt"), QString("%1").arg(currentSettings->consoleCreateTimestampAt)),
                  std::make_pair(QString("consoleTimestampAt"), QString("%1").arg(currentSettings->consoleTimestampAt)),
                  std::make_pair(QString("consoleDecimalsType"), QString("%1").arg(currentSettings->consoleDecimalsType)),
@@ -2629,7 +2573,6 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("htmlLogFileName"), convertToRelativePath(m_mainConfigFile, currentSettings->htmlLogfileName)),
                  std::make_pair(QString("textLogFile"), QString("%1").arg(currentSettings->textLogFile)),
                  std::make_pair(QString("textLogFileName"), convertToRelativePath(m_mainConfigFile, currentSettings->textLogfileName)),
-                 std::make_pair(QString("customLogFileName"), convertToRelativePath(m_mainConfigFile, currentSettings->customLogfileName)),
                  std::make_pair(QString("writeSendDataInToLog"), QString("%1").arg(currentSettings->writeSendDataInToLog)),
                  std::make_pair(QString("writeReceivedDataInToLog"), QString("%1").arg(currentSettings->writeReceivedDataInToLog)),
                  std::make_pair(QString("generateTimeStampsInLog"), QString("%1").arg(currentSettings->generateTimeStampsInLog)),
@@ -2645,8 +2588,6 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("logNewLineAfterBytes"), QString("%1").arg(currentSettings->logNewLineAfterBytes)),
                  std::make_pair(QString("logNewLineAfterPause"), QString("%1").arg(currentSettings->logNewLineAfterPause)),
                  std::make_pair(QString("logTimestampFormat"), currentSettings->logTimestampFormat),
-                 std::make_pair(QString("logGenerateCustomLog"), QString("%1").arg(currentSettings->logGenerateCustomLog)),
-                 std::make_pair(QString("logScript"), convertToRelativePath(m_mainConfigFile, currentSettings->logScript)),
                  std::make_pair(QString("logCreateTimestampAt"), QString("%1").arg(currentSettings->logCreateTimestampAt)),
                  std::make_pair(QString("logTimestampAt"), QString("%1").arg(currentSettings->logTimestampAt)),
                  std::make_pair(QString("logDecimalsType"), QString("%1").arg(currentSettings->logDecimalsType)),
@@ -3107,121 +3048,6 @@ void MainWindow::textLogActivatedSlot(bool activated)
     }
 }
 
-/**
- * Is called if the custom console settings have been changed.
- */
-void MainWindow::customConsoleSettingsChangedSlot()
-{
-    Settings settings = *m_settingsDialog->settings();
-
-    m_handleData->m_checkDebugWindowsIsClosed.stop();
-    m_handleData->m_customConsoleObject->unloadCustomScript();
-
-    if(settings.consoleShowCustomConsole)
-    {
-
-        if(!m_handleData->m_customConsoleObject->loadCustomScript(settings.consoleScript, settings.consoleDebugCustomConsole))
-        {
-            settings.consoleShowCustomConsole = false;
-            settings.consoleDebugCustomConsole= false;
-            m_settingsDialog->setAllSettingsSlot(settings, false);
-        }
-
-
-    }
-
-    if(settings.logDebugCustomLog || settings.consoleDebugCustomConsole)
-    {
-        m_handleData->m_checkDebugWindowsIsClosed.start(200);
-    }
-
-}
-
-/**
- * Is called if the custom log settings have been changed.
- */
-void MainWindow::customLogSettingsChangedSlot()
-{
-    Settings settings = *m_settingsDialog->settings();
-
-
-    m_handleData->m_checkDebugWindowsIsClosed.stop();
-    m_handleData->m_customLogObject->unloadCustomScript();
-
-    if(settings.logGenerateCustomLog && !settings.customLogfileName.isEmpty())
-    {
-
-        if(!m_handleData->m_customLogObject->loadCustomScript(settings.logScript, settings.logDebugCustomLog))
-        {
-            settings.logGenerateCustomLog = false;
-            settings.logDebugCustomLog = false;
-            m_settingsDialog->setAllSettingsSlot(settings, false);
-        }
-
-        //Must be here, because in this call the corresponding check boxes are disabled if the script runs in the debugger.
-        m_settingsDialog->setAllSettingsSlot(settings, false);
-    }
-
-    if(settings.logDebugCustomLog || settings.consoleDebugCustomConsole)
-    {
-        m_handleData->m_checkDebugWindowsIsClosed.start(200);
-    }
-}
-
-/**
- * This slot function is called if the custom log file has to be activated.
- * It is connected to the SettingsDialog::textLogActivatedSignal signal.
- * @param activated
- *      True for activate.
- */
-void MainWindow::customLogActivatedSlot(bool activated)
-{
-    Settings currentSettings = *m_settingsDialog->settings();
-
-    if(activated)
-    {
-        if(currentSettings.customLogfileName.isEmpty())
-        {
-            QString fileName = QFileDialog::getSaveFileName(m_settingsDialog, tr("Save custom log file"),
-                                                            "",tr("Files (*)"));
-            if(!fileName.isEmpty())
-            {
-                currentSettings.customLogfileName = fileName;
-            }
-            else
-            {
-                currentSettings.logGenerateCustomLog = false;
-            }
-            m_settingsDialog->setAllSettingsSlot(currentSettings, false);
-        }
-
-        if(!currentSettings.customLogfileName.isEmpty())
-        {
-
-            QString fileName = currentSettings.customLogfileName;
-            if(currentSettings.appendTimestampAtLogFileName)
-            {
-                fileName = createLogFileName(fileName);
-            }
-
-
-            m_handleData->m_customLogFile.close();
-            m_handleData->m_customLogFile.setFileName(fileName);
-
-            if(!m_handleData->m_customLogFile.open(QIODevice::WriteOnly | QIODevice::Text | QIODevice::Append))
-            {
-                QMessageBox::critical(this, "could not open file", fileName);
-                currentSettings.logGenerateCustomLog = false;
-                m_settingsDialog->setAllSettingsSlot(currentSettings, false);
-            }
-        }
-    }
-    else
-    {
-        m_handleData->m_customLogFile.close();
-    }
-
-}
 
 /**
  * The main interface thread can activate/deactivate the connect button with this slot.
@@ -3909,21 +3735,18 @@ void MainWindow::clearConsoleSlot(void)
     m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(true);
     m_userInterface->ReceiveTextEditMixed->document()->blockSignals(true);
     m_userInterface->ReceiveTextEditBinary->document()->blockSignals(true);
-    m_userInterface->ReceiveTextEditCustom->document()->blockSignals(true);
 
     m_userInterface->ReceiveTextEditAscii->clear();
     m_userInterface->ReceiveTextEditHex->clear();
     m_userInterface->ReceiveTextEditDecimal->clear();
     m_userInterface->ReceiveTextEditMixed->clear();
     m_userInterface->ReceiveTextEditBinary->clear();
-    m_userInterface->ReceiveTextEditCustom->clear();
 
     m_userInterface->ReceiveTextEditAscii->document()->blockSignals(false);
     m_userInterface->ReceiveTextEditHex->document()->blockSignals(false);
     m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(false);
     m_userInterface->ReceiveTextEditMixed->document()->blockSignals(false);
     m_userInterface->ReceiveTextEditBinary->document()->blockSignals(false);
-    m_userInterface->ReceiveTextEditCustom->document()->blockSignals(false);
 
     m_canTab->clearTables();
 
@@ -4283,14 +4106,6 @@ void MainWindow::deleteLogFileSlot(QString logType)
             textLogActivatedSlot(currentSettings->textLogFile);
         }
     }
-    if(logType == "custom")
-    {
-        if(!currentSettings->customLogfileName.isEmpty())
-        {
-            m_handleData->m_customLogFile.remove();
-            customLogActivatedSlot(currentSettings->logGenerateCustomLog);
-        }
-    }
 }
 
 /**
@@ -4312,11 +4127,6 @@ void MainWindow::reopenLogsSlot(void)
         textLogActivatedSlot(currentSettings->textLogFile);
     }
 
-    if(currentSettings->logGenerateCustomLog)
-    {
-        m_handleData->m_customLogFile.close();
-        customLogActivatedSlot(currentSettings->logGenerateCustomLog);
-    }
 }
 
 /**
@@ -4524,10 +4334,7 @@ void MainWindow::restoreSizeSplitterSecondElement(QSplitter* splitter, qint32 ol
  */
 void MainWindow::resizeEvent(QResizeEvent* event)
 {
-    if(m_ignoreNextResizeEventTime.msecsTo(QDateTime::currentDateTime()) > 1000)
-    {
-        QMainWindow::resizeEvent(event);
-    }
+    QMainWindow::resizeEvent(event);
 
     if(isVisible())
     {
@@ -5151,8 +4958,6 @@ bool MainWindow::createConfig(bool isCallFromButton)
             m_sendWindow->setCurrentSendString("");
 
             Settings currentSettings = *m_settingsDialog->settings();
-            currentSettings.consoleScript = "";
-            currentSettings.logScript = "";
             m_settingsDialog->setAllSettingsSlot(currentSettings, true);
 
 

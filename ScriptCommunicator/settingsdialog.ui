@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>940</width>
-    <height>613</height>
+    <width>819</width>
+    <height>508</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -62,8 +62,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>896</width>
-            <height>429</height>
+            <width>775</width>
+            <height>324</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0">
@@ -411,8 +411,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>896</width>
-            <height>429</height>
+            <width>758</width>
+            <height>337</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0,1">
@@ -884,8 +884,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>896</width>
-            <height>429</height>
+            <width>758</width>
+            <height>378</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_18">
@@ -1868,8 +1868,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>896</width>
-            <height>429</height>
+            <width>775</width>
+            <height>324</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_12" stretch="2,1">
@@ -2144,13 +2144,35 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>896</width>
-            <height>429</height>
+            <width>775</width>
+            <height>324</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
            <item row="0" column="0">
-            <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" columnstretch="0,0,0,0,0,0,0,0,1,0">
+            <layout class="QGridLayout" name="gridLayout_7" rowstretch="0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0" columnstretch="0,0,0,0,0,0,0,0,0">
+             <item row="8" column="1">
+              <widget class="QLineEdit" name="ConsoleBufferLineEdit">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>max. characters in console</string>
+               </property>
+               <property name="inputMask">
+                <string/>
+               </property>
+              </widget>
+             </item>
              <item row="4" column="2">
               <widget class="QComboBox" name="consoleDecimalsType">
                <property name="toolTip">
@@ -2188,6 +2210,96 @@ for TCP clients.</string>
                </item>
               </widget>
              </item>
+             <item row="12" column="2" colspan="3">
+              <widget class="QCheckBox" name="PrintTimeStampCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>create time stamp after ms</string>
+               </property>
+               <property name="text">
+                <string>create time stamp after ms</string>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2">
+              <widget class="QCheckBox" name="consoleShowMixedCheckBox">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;show mixed console (ascii, dec and hex together in one console if they are selected)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="statusTip">
+                <string/>
+               </property>
+               <property name="text">
+                <string>mixed</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QCheckBox" name="consoleShowBinaryCheckBox">
+               <property name="toolTip">
+                <string>show binary console</string>
+               </property>
+               <property name="text">
+                <string>binary</string>
+               </property>
+              </widget>
+             </item>
+             <item row="9" column="0">
+              <widget class="QLabel" name="label_5">
+               <property name="toolTip">
+                <string>the update interval of the consoles</string>
+               </property>
+               <property name="text">
+                <string>update interval</string>
+               </property>
+              </widget>
+             </item>
+             <item row="13" column="0">
+              <widget class="QLabel" name="label_2">
+               <property name="toolTip">
+                <string>new line after x ms send/receive pause (0=off)</string>
+               </property>
+               <property name="text">
+                <string>new line after ms pause</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="5">
+              <widget class="QComboBox" name="consoleFontSizeComboBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>0</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>console font size</string>
+               </property>
+               <property name="currentText">
+                <string/>
+               </property>
+              </widget>
+             </item>
              <item row="4" column="1">
               <widget class="QCheckBox" name="consoleShowDecimalCheckBox">
                <property name="sizePolicy">
@@ -2201,19 +2313,6 @@ for TCP clients.</string>
                </property>
                <property name="text">
                 <string>decimal</string>
-               </property>
-              </widget>
-             </item>
-             <item row="5" column="0">
-              <widget class="QCheckBox" name="showCanTabCheckBox">
-               <property name="toolTip">
-                <string>show the can tab</string>
-               </property>
-               <property name="statusTip">
-                <string/>
-               </property>
-               <property name="text">
-                <string>can tab</string>
                </property>
               </widget>
              </item>
@@ -2239,163 +2338,29 @@ for TCP clients.</string>
                </property>
               </widget>
              </item>
-             <item row="6" column="1" colspan="8">
-              <widget class="DragDropLineEdit" name="consoleScriptLineEdit">
-               <property name="toolTip">
-                <string>script which generates the text for the custom console (see chapter custom console/log scripts for more details)</string>
-               </property>
-               <property name="readOnly">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="1">
-              <widget class="QCheckBox" name="consoleShowHexCheckBox">
+             <item row="13" column="1">
+              <widget class="QLineEdit" name="consoleNewLineAfterPause">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
-               <property name="toolTip">
-                <string>show hexadecimal console</string>
-               </property>
-               <property name="text">
-                <string>hex</string>
-               </property>
-              </widget>
-             </item>
-             <item row="17" column="5">
-              <spacer name="verticalSpacer">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
+               <property name="maximumSize">
                 <size>
-                 <width>20</width>
-                 <height>40</height>
+                 <width>16777215</width>
+                 <height>16777215</height>
                 </size>
                </property>
-              </spacer>
-             </item>
-             <item row="9" column="2">
-              <spacer name="verticalSpacer_6">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>20</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-             <item row="7" column="9">
-              <widget class="QPushButton" name="consoleEditScriptPushButton">
                <property name="toolTip">
-                <string>edit custom console script</string>
+                <string>new line after x ms send/receive pause (0=off)</string>
                </property>
                <property name="text">
-                <string>edit</string>
+                <string>0</string>
                </property>
               </widget>
              </item>
-             <item row="0" column="0">
-              <widget class="QCheckBox" name="ShowSendInConsoleCheckBox">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>show sent data in console</string>
-               </property>
-               <property name="text">
-                <string>send</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="7" column="0">
-              <widget class="QCheckBox" name="consoleDebugCustomCheckBox">
-               <property name="toolTip">
-                <string>debug the custom console script</string>
-               </property>
-               <property name="text">
-                <string>debug custom</string>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="0">
-              <widget class="QCheckBox" name="consoleShowCustomCheckBox">
-               <property name="toolTip">
-                <string>show a custom console (see chapter custom console/log scripts for more details)</string>
-               </property>
-               <property name="text">
-                <string>custom</string>
-               </property>
-              </widget>
-             </item>
-             <item row="4" column="0">
-              <widget class="QCheckBox" name="consoleShowBinaryCheckBox">
-               <property name="toolTip">
-                <string>show binary console</string>
-               </property>
-               <property name="text">
-                <string>binary</string>
-               </property>
-              </widget>
-             </item>
-             <item row="6" column="9">
-              <widget class="QPushButton" name="consoleSearchScriptPushButton">
-               <property name="toolTip">
-                <string>add custom console script</string>
-               </property>
-               <property name="text">
-                <string>search</string>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="0">
-              <widget class="QCheckBox" name="consoleShowAsciiCheckBox">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>show ascii console</string>
-               </property>
-               <property name="text">
-                <string>ascii</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="3" column="2">
-              <widget class="QCheckBox" name="consoleShowMixedCheckBox">
-               <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;show mixed console (ascii, dec and hex together in one console if they are selected)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="statusTip">
-                <string/>
-               </property>
-               <property name="text">
-                <string>mixed</string>
-               </property>
-              </widget>
-             </item>
-             <item row="10" column="2" colspan="3">
+             <item row="8" column="2" colspan="3">
               <widget class="QFontComboBox" name="consoleFontComboBox">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -2420,6 +2385,308 @@ for TCP clients.</string>
                </property>
                <property name="editable">
                 <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="14" column="2" colspan="3">
+              <widget class="QLineEdit" name="ConsoleTimestampFormat">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="minimumSize">
+                <size>
+                 <width>150</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;time stamp format ('optinal new lines (\n)' date and time format (chapter Time format and Date format in the manual) 'optional new lines (\n)'&lt;/p&gt;&lt;p&gt;Example:&lt;/p&gt;&lt;p&gt;\nyyyy-MM-dd hh:mm:ss.zzz\n&lt;/p&gt;&lt;p&gt;Example without date and with spaces in front of the time stamp:&lt;/p&gt;&lt;p&gt;\n       hh:mm:ss\n&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="text">
+                <string>\nyyyy-MM-dd hh:mm:ss.zzz\n</string>
+               </property>
+              </widget>
+             </item>
+             <item row="12" column="5">
+              <widget class="QLineEdit" name="PrintTimeStampLineEdit">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>create time stamp after ms</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="2">
+              <spacer name="verticalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="11" column="4">
+              <spacer name="verticalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Fixed</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="5" column="0">
+              <widget class="QCheckBox" name="showCanTabCheckBox">
+               <property name="toolTip">
+                <string>show the can tab</string>
+               </property>
+               <property name="statusTip">
+                <string/>
+               </property>
+               <property name="text">
+                <string>can tab</string>
+               </property>
+              </widget>
+             </item>
+             <item row="8" column="0">
+              <widget class="QLabel" name="ConsoleBufferLabel">
+               <property name="toolTip">
+                <string>max. characters in console</string>
+               </property>
+               <property name="text">
+                <string>max. characters</string>
+               </property>
+              </widget>
+             </item>
+             <item row="12" column="6">
+              <widget class="QLabel" name="label_18">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;this is sent/used for the enter key (console, message dialog, main window send area and ascii sequence in the send window)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="text">
+                <string>send on enter key</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QCheckBox" name="consoleShowAsciiCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>show ascii console</string>
+               </property>
+               <property name="text">
+                <string>ascii</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="15" column="5">
+              <spacer name="verticalSpacer">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="13" column="2" colspan="3">
+              <widget class="QCheckBox" name="consoleTimestampAtByteCheckBox">
+               <property name="toolTip">
+                <string>create time stamp at byte</string>
+               </property>
+               <property name="text">
+                <string>create time stamp at byte</string>
+               </property>
+              </widget>
+             </item>
+             <item row="9" column="1">
+              <widget class="QLineEdit" name="ConsoleUpdateIntervallLineEdit">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>the update intervall of the consoles</string>
+               </property>
+              </widget>
+             </item>
+             <item row="12" column="7">
+              <widget class="QComboBox" name="consoleSendOnEnter">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;this is sent/used for the enter key (console, message dialog, main window send area and ascii sequence in the send window)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QCheckBox" name="consoleShowHexCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>show hexadecimal console</string>
+               </property>
+               <property name="text">
+                <string>hex</string>
+               </property>
+              </widget>
+             </item>
+             <item row="12" column="1">
+              <widget class="QLineEdit" name="consoleNewLineAfterNumberBytes">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>new line after x number of sent/received bytes (0=off)</string>
+               </property>
+               <property name="text">
+                <string>0</string>
+               </property>
+              </widget>
+             </item>
+             <item row="14" column="0">
+              <widget class="QLabel" name="label_16">
+               <property name="toolTip">
+                <string>new line at byte</string>
+               </property>
+               <property name="text">
+                <string>new line at byte</string>
+               </property>
+              </widget>
+             </item>
+             <item row="12" column="0">
+              <widget class="QLabel" name="label">
+               <property name="toolTip">
+                <string>new line after x number of sent/received bytes (0=off)</string>
+               </property>
+               <property name="text">
+                <string>new line after x bytes</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="3" colspan="2">
+              <widget class="QCheckBox" name="consoleShowCanMetaCheckBox">
+               <property name="toolTip">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;show CAN meta information (id and type) in consoles&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+               <property name="text">
+                <string>can meta</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="14" column="1">
+              <widget class="QComboBox" name="consoleNewLineAt">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>new line at byte</string>
+               </property>
+              </widget>
+             </item>
+             <item row="13" column="5">
+              <widget class="QComboBox" name="consoleTimestampAtByteComboBox">
+               <property name="maximumSize">
+                <size>
+                 <width>16777215</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="toolTip">
+                <string>create time stamp at byte</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QCheckBox" name="ShowSendInConsoleCheckBox">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="toolTip">
+                <string>show sent data in console</string>
+               </property>
+               <property name="text">
+                <string>send</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
                </property>
               </widget>
              </item>
@@ -2450,322 +2717,18 @@ for TCP clients.</string>
                </item>
               </widget>
              </item>
-             <item row="3" column="3" colspan="2">
-              <widget class="QCheckBox" name="consoleShowCanMetaCheckBox">
-               <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;show CAN meta information (id and type) in consoles&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="text">
-                <string>can meta</string>
-               </property>
-               <property name="checked">
-                <bool>true</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="13" column="4">
-              <spacer name="verticalSpacer_2">
+             <item row="12" column="8">
+              <spacer name="horizontalSpacer_23">
                <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-               <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
+                <enum>Qt::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>20</width>
+                 <width>40</width>
                  <height>20</height>
                 </size>
                </property>
               </spacer>
-             </item>
-             <item row="15" column="5">
-              <widget class="QComboBox" name="consoleTimestampAtByteComboBox">
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>create time stamp at byte</string>
-               </property>
-              </widget>
-             </item>
-             <item row="10" column="1">
-              <widget class="QLineEdit" name="ConsoleBufferLineEdit">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>max. characters in console</string>
-               </property>
-               <property name="inputMask">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="14" column="6">
-              <widget class="QLabel" name="label_18">
-               <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;this is sent/used for the enter key (console, message dialog, main window send area and ascii sequence in the send window)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="text">
-                <string>send on enter key</string>
-               </property>
-              </widget>
-             </item>
-             <item row="15" column="2" colspan="3">
-              <widget class="QCheckBox" name="consoleTimestampAtByteCheckBox">
-               <property name="toolTip">
-                <string>create time stamp at byte</string>
-               </property>
-               <property name="text">
-                <string>create time stamp at byte</string>
-               </property>
-              </widget>
-             </item>
-             <item row="10" column="5">
-              <widget class="QComboBox" name="consoleFontSizeComboBox">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>0</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>console font size</string>
-               </property>
-               <property name="currentText">
-                <string/>
-               </property>
-              </widget>
-             </item>
-             <item row="14" column="0">
-              <widget class="QLabel" name="label">
-               <property name="toolTip">
-                <string>new line after x number of sent/received bytes (0=off)</string>
-               </property>
-               <property name="text">
-                <string>new line after x bytes</string>
-               </property>
-              </widget>
-             </item>
-             <item row="15" column="0">
-              <widget class="QLabel" name="label_2">
-               <property name="toolTip">
-                <string>new line after x ms send/receive pause (0=off)</string>
-               </property>
-               <property name="text">
-                <string>new line after ms pause</string>
-               </property>
-              </widget>
-             </item>
-             <item row="10" column="0">
-              <widget class="QLabel" name="ConsoleBufferLabel">
-               <property name="toolTip">
-                <string>max. characters in console</string>
-               </property>
-               <property name="text">
-                <string>max. characters</string>
-               </property>
-              </widget>
-             </item>
-             <item row="11" column="0">
-              <widget class="QLabel" name="label_5">
-               <property name="toolTip">
-                <string>the update interval of the consoles</string>
-               </property>
-               <property name="text">
-                <string>update interval</string>
-               </property>
-              </widget>
-             </item>
-             <item row="14" column="1">
-              <widget class="QLineEdit" name="consoleNewLineAfterNumberBytes">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>new line after x number of sent/received bytes (0=off)</string>
-               </property>
-               <property name="text">
-                <string>0</string>
-               </property>
-              </widget>
-             </item>
-             <item row="15" column="1">
-              <widget class="QLineEdit" name="consoleNewLineAfterPause">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>new line after x ms send/receive pause (0=off)</string>
-               </property>
-               <property name="text">
-                <string>0</string>
-               </property>
-              </widget>
-             </item>
-             <item row="11" column="1">
-              <widget class="QLineEdit" name="ConsoleUpdateIntervallLineEdit">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>the update intervall of the consoles</string>
-               </property>
-              </widget>
-             </item>
-             <item row="16" column="1">
-              <widget class="QComboBox" name="consoleNewLineAt">
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>new line at byte</string>
-               </property>
-              </widget>
-             </item>
-             <item row="16" column="0">
-              <widget class="QLabel" name="label_16">
-               <property name="toolTip">
-                <string>new line at byte</string>
-               </property>
-               <property name="text">
-                <string>new line at byte</string>
-               </property>
-              </widget>
-             </item>
-             <item row="16" column="2" colspan="3">
-              <widget class="QLineEdit" name="ConsoleTimestampFormat">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>150</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;time stamp format ('optinal new lines (\n)' date and time format (chapter Time format and Date format in the manual) 'optional new lines (\n)'&lt;/p&gt;&lt;p&gt;Example:&lt;/p&gt;&lt;p&gt;\nyyyy-MM-dd hh:mm:ss.zzz\n&lt;/p&gt;&lt;p&gt;Example without date and with spaces in front of the time stamp:&lt;/p&gt;&lt;p&gt;\n       hh:mm:ss\n&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="text">
-                <string>\nyyyy-MM-dd hh:mm:ss.zzz\n</string>
-               </property>
-              </widget>
-             </item>
-             <item row="14" column="2" colspan="3">
-              <widget class="QCheckBox" name="PrintTimeStampCheckBox">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>create time stamp after ms</string>
-               </property>
-               <property name="text">
-                <string>create time stamp after ms</string>
-               </property>
-               <property name="checked">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item row="14" column="5">
-              <widget class="QLineEdit" name="PrintTimeStampLineEdit">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>create time stamp after ms</string>
-               </property>
-              </widget>
-             </item>
-             <item row="14" column="7">
-              <widget class="QComboBox" name="consoleSendOnEnter">
-               <property name="maximumSize">
-                <size>
-                 <width>16777215</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;this is sent/used for the enter key (console, message dialog, main window send area and ascii sequence in the send window)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-              </widget>
              </item>
             </layout>
            </item>
@@ -2790,8 +2753,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>896</width>
-            <height>429</height>
+            <width>775</width>
+            <height>324</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3026,8 +2989,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>896</width>
-            <height>429</height>
+            <width>775</width>
+            <height>324</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -3153,137 +3116,6 @@ for TCP clients.</string>
                 </property>
                 <property name="text">
                  <string>Clear</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QGroupBox" name="groupBox_8">
-             <property name="title">
-              <string>custom log</string>
-             </property>
-             <layout class="QGridLayout" name="gridLayout">
-              <item row="0" column="4">
-               <widget class="QPushButton" name="ClearCustomLogPushButton">
-                <property name="maximumSize">
-                 <size>
-                  <width>16777215</width>
-                  <height>16777215</height>
-                 </size>
-                </property>
-                <property name="toolTip">
-                 <string>clear the custom log</string>
-                </property>
-                <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
-                </property>
-                <property name="text">
-                 <string>Clear</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="DragDropLineEdit" name="logCustomLineEdit">
-                <property name="toolTip">
-                 <string>the name/path of custom log file</string>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="2">
-               <widget class="DragDropLineEdit" name="logScriptLineEdit">
-                <property name="toolTip">
-                 <string>script which generates the text for the custom log (see chapter custom console/log scripts for more details)</string>
-                </property>
-                <property name="readOnly">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="3">
-               <widget class="QPushButton" name="logCustomLogPushButton">
-                <property name="toolTip">
-                 <string>search the file to store the log</string>
-                </property>
-                <property name="text">
-                 <string>search</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="0">
-               <widget class="QCheckBox" name="logUseCustomLogCheckBox">
-                <property name="toolTip">
-                 <string>use a custom log</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="4">
-               <widget class="QPushButton" name="logEditScriptPushButton">
-                <property name="toolTip">
-                 <string>edit the custom log script</string>
-                </property>
-                <property name="text">
-                 <string>edit</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QLabel" name="label_38">
-                <property name="toolTip">
-                 <string>enable the custom log (see chapter custom console/log scripts for more details)</string>
-                </property>
-                <property name="text">
-                 <string>enabled</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QLabel" name="label_37">
-                <property name="toolTip">
-                 <string>script which generates the text for the custom log (see chapter custom console/log scripts for more details)</string>
-                </property>
-                <property name="text">
-                 <string>script</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="3">
-               <widget class="QPushButton" name="logSearchScriptPushButton">
-                <property name="toolTip">
-                 <string>search the custom log script</string>
-                </property>
-                <property name="text">
-                 <string>search</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QCheckBox" name="logDebugCustomLogCheckBox">
-                <property name="toolTip">
-                 <string>debug custom log script</string>
-                </property>
-                <property name="text">
-                 <string/>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
-               <widget class="QLabel" name="label_27">
-                <property name="toolTip">
-                 <string>debug custom log script</string>
-                </property>
-                <property name="text">
-                 <string>debug</string>
                 </property>
                </widget>
               </item>
@@ -3771,8 +3603,8 @@ Note: The reopen buton in the main window is only visible if this option is sele
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>896</width>
-            <height>429</height>
+            <width>775</width>
+            <height>324</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">

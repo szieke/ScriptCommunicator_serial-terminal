@@ -14,7 +14,6 @@
 
 
 class MainWindow;
-class CustomConsoleLogObject;
 
 namespace Ui {
 class MainWindow;
@@ -178,10 +177,6 @@ public slots:
     ///The send history timer slot.
     void sendHistoryTimerSlot();
 
-    ///Slotfunction for m_checkDebugWindowsIsClosed.
-    void checkDebugWindowsIsClosedSlot();
-
-
     ///The function append the received/send data to the consoles and the logs.
     ///This function is called periodically (log update interval).
     void updateConsoleAndLog(void);
@@ -189,9 +184,6 @@ public slots:
     ///The slot is called if the main interface thread has received data.
     ///This slot is connected to the MainInterfaceThread::dataReceivedSignal signal.
     void dataReceivedSlot(QByteArray data);
-
-    ///Appends the queued received data to the stored data.
-    void queuedDataReceivedSlot(void);
 
     ///The slot is called if the main interface thread has received data.
     ///This slot is connected to the MainInterfaceThread::dataReceivedSignal signal.
@@ -274,14 +266,8 @@ private:
     ///The text log file.
     QFile m_textLogFile;
 
-    ///The custom log file.
-    QFile m_customLogFile;
-
     ///The text log file stream.
     QTextStream m_textLogFileStream;
-
-    ///The text log file stream.
-    QTextStream m_customLogFileStream;
 
     ///The unprocessed console data.
     QVector<StoredData> m_unprocessedConsoleData;
@@ -303,27 +289,6 @@ private:
 
     ///The number of sent/received bytes after the last new line log
     quint32 m_bytesSinceLastNewLineInLog;
-
-    ///The custom log string.
-    QString m_customLogString;
-
-    ///The custom console object.
-    CustomConsoleLogObject* m_customConsoleObject;
-
-    ///The custom log object.
-    CustomConsoleLogObject* m_customLogObject;
-
-    ///The custom console strings.
-    QStringList m_customConsoleStrings;
-
-    ///The custom console stored strings.
-    QStringList m_customConsoleStoredStrings;
-
-    ///The number of bytes in m_customConsoleStrings.
-    quint32 m_numberOfBytesInCustomConsoleStrings;
-
-    ///The number of bytes in m_customConsoleStoredStrings
-    quint32 m_numberOfBytesInCustomConsoleStoredStrings;
 
     ///The precalculated console data.
     ConsoleData m_consoleData;
@@ -357,15 +322,6 @@ private:
 
     ///True if the history is currently sent.
     bool m_historySendIsInProgress;
-
-    ///Checks if the custom console/log script debug window has been closed.
-    QTimer m_checkDebugWindowsIsClosed;
-
-    ///The queued received data.
-    QByteArray m_queuedReceivedData;
-
-    ///The timer for the queued received data.
-    QTimer m_queuedReceivedDataTimer;
 
     ///True if no console is visible in the main window.
     bool m_noConsoleVisible;

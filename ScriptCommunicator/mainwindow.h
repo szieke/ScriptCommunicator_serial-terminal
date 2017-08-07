@@ -72,7 +72,6 @@ class AddMessageDialog;
 class CanTab;
 class MainWindow;
 class SearchConsole;
-class CustomConsoleLogObject;
 
 class DragDropLineEdit : public QLineEdit
 {
@@ -530,16 +529,6 @@ private slots:
     ///It is connected to the SettingsDialog::textLogActivatedSignal signal.
     void textLogActivatedSlot(bool activated);
 
-    ///This slot function is called if the custom log file has to be activated.
-    ///It is connected to the SettingsDialog::textLogActivatedSignal signal.
-    void customLogActivatedSlot(bool activated);
-
-    ///Is called if the custom console settings have been changed.
-    void customConsoleSettingsChangedSlot();
-
-    ///Is called if the custom log settings have been changed.
-    void customLogSettingsChangedSlot();
-
 private:
 
     ///Event filter function.
@@ -663,9 +652,6 @@ private:
     ///Object which the functions for handling the sent and recieved data.
     MainWindowHandleData* m_handleData;
 
-    ///The time from which the next resize events shall be ignored.
-    QDateTime m_ignoreNextResizeEventTime;
-
     ///The old value for the send format combobox.
     QString m_oldSendFormat;
 
@@ -687,7 +673,7 @@ private:
     ///The lock file for the main config file.
     QFile m_mainConfigLockFile;
 
-    ///The timer for the config lock filr.
+    ///The timer for the config lock file.
     QTimer m_configLockFileTimer;
 
     ///Contains the exra plugin paths (command-line argument -P).
@@ -707,7 +693,6 @@ private:
 
     ///Map which contains all script tool box page (the second argument is a pointer to the script thread).
     QMap<QWidget*, QObject*> m_scriptToolBoxPage;
-
 };
 
 

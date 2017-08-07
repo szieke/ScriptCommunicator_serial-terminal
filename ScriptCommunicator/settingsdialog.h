@@ -271,6 +271,7 @@ struct Settings
 
     ///New line after ... ms send/receive pause (0=off).
     quint32 consoleNewLineAfterPause;
+
     ///New line at.
     quint16 consoleNewLineAt;
 
@@ -285,15 +286,6 @@ struct Settings
 
     ///The console time stamp format.
     QString consoleTimestampFormat;
-
-    ///The console script.
-    QString consoleScript;
-
-    ///True if the custom console shall be shown.
-    bool consoleShowCustomConsole;
-
-    ///True if the custom console script shall run in the script debugger.
-    bool consoleDebugCustomConsole;
 
     ///The type of the decimals in the decimal console.
     DecimalType consoleDecimalsType;
@@ -367,18 +359,6 @@ struct Settings
 
     ///The log time stamp format.
     QString logTimestampFormat;
-
-    ///The log script.
-    QString logScript;
-
-    ///True if the custom log shall be generated.
-    bool logGenerateCustomLog;
-
-    ///True if the custom log script shall run in the script debugger.
-    bool logDebugCustomLog;
-
-    ///The name of the custom log file.
-    QString customLogfileName;
 
     ///The type of the decimals in the log.
     DecimalType logDecimalsType;
@@ -488,11 +468,6 @@ public slots:
     void aardvarkI2cSpiInputStatesChangedSlot(QVector<bool> states);
 private slots:
 
-    ///Is called if the user presses the search console script button.
-    void searchConsoleScriptSlot();
-
-    ///Is called if the user presses the search log script button.
-    void searchLogScriptSlot();
 
     ///Is called if a filter radio button is pressed.
     void setFilterRadioButtonPressedSlot(void);
@@ -546,23 +521,11 @@ private slots:
     ///Slot function for the search html log button.
     void searchHtmlLogButtonPressedSlot(void);
 
-    ///Slot function for the delete custom log button.
-    void deleteCustomLogButtonPressedSlot(void);
-
-    ///Slot function for the search custom log button.
-    void searchCustomLogButtonPressedSlot(void);
-
     ///Slot function for the activate html log check box.
     void htmLogActivatedSlot(bool activated);
 
     ///Slot function for the activate text log check box.
     void textLogActivatedSlot(bool activated);
-
-     ///Slot function for the activate custom console check box.
-    void customConsoleActivatedSlot(bool activated);
-
-    ///Slot function for the activate custom log check box.
-    void customLogActivatedSlot(bool activated);
 
     ///This slot function is called if a text from a gui element has been changed.
     ///It updates the gui elements and the settings struct (m_currentSettings).
@@ -593,12 +556,6 @@ private slots:
 
     ///This slot function is called if the connection type has been changed.
     void conectionTypeChangesSlot(QString text);
-
-    ///Slot function for the edit custom console script button.
-    void editCustomConsoleScriptSlot(void);
-
-    ///Slot function for the edit custom log script button.
-    void editCustomLogScriptSlot(void);
 
     ///The state of the 'append time stamp at logs' check box has been changed.
     void appendTimestampAtLogsChangedSlot(int newState);
@@ -636,15 +593,6 @@ Q_SIGNALS:
 
     ///This signal is emitted if the text log has to be activated.
     void textLogActivatedSignal(bool);
-
-    ///This signal is emitted if the custom log has to be activated.
-    void customLogActivatedSignal(bool);
-
-    ///This signal is emitted if the custom console settings have been changed.
-    void customConsoleSettingsChangedSignal(void);
-
-    ///This signal is emitted if the custom log settings have been changed.
-    void customLogSettingsChangedSignal(void);
 
 private:
     ///Fills the gui elements which correspond to the serial port.

@@ -53,7 +53,6 @@ SOURCES += \
     pcan/PCANBasicClass.cpp \
     canTab.cpp \
     scriptClasses/scriptSlots.cpp \
-    scriptClasses/customConsoleLogObject.cpp \
     searchconsole.cpp \
     scriptClasses/sequencetableview.cpp \
     scriptClasses/scriptsqldatabase.cpp \
@@ -165,7 +164,6 @@ HEADERS += \
     scriptClasses/scriptUiClasses/scriptDateTimeEdit.h \
     scriptClasses/scriptUiClasses/scriptDateEdit.h \
     scriptClasses/scriptUiClasses/scriptTimeEdit.h \
-    scriptClasses/customConsoleLogObject.h \
     searchconsole.h \
     scriptClasses/scriptUiClasses/scriptPlotwidget.h \
     scriptClasses/sequencetableview.h \
