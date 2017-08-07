@@ -1881,6 +1881,26 @@ void MainWindowHandleData::processDataInStoredData()
 
                 appendDataToConsoleStrings(el.data, settings, el.isSend , isFromAddMessageDialog, isTimeStamp,
                                            el.isFromCan, el.isFromI2cMaster, isNewLine);
+
+                if((m_mainWindow->m_dataRateReceive + m_mainWindow->m_dataRateSend) > 10000)
+                {//The send/received data rate is bigger then 10000.
+
+                    m_bytesSinceLastNewLineInConsole += el.data.length();
+
+                    if(m_bytesSinceLastNewLineInConsole > 1000000)
+                    {
+                        //After 1000000 added bytes without a new line (and with a data rate bigger then 10000) a new line is added to
+                        //improve the performance of the consoles.
+                        QByteArray tmp = QString("\n").toLocal8Bit();
+                        appendDataToConsoleStrings(tmp, settings, el.isSend , isFromAddMessageDialog, isTimeStamp,
+                                                   el.isFromCan, el.isFromI2cMaster,  true);
+                        m_bytesSinceLastNewLineInConsole = 0;
+                    }
+                }
+                else
+                {
+                    m_bytesSinceLastNewLineInConsole = 0;
+                }
             }
 
         }
@@ -2316,6 +2336,8 @@ void MainWindowHandleData::reInsertDataInConsole(void)
     m_userInterface->ReceiveTextEditCustom->clear();
     m_decimalConsoleByteBuffer.clear();
     m_mixedConsoleByteBuffer.clear();
+
+    m_bytesSinceLastNewLineInConsole = 0;
 
     calculateConsoleData();
 

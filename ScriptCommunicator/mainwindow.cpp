@@ -2245,8 +2245,15 @@ void MainWindow::inititializeTab(void)
     static QString stringConsoleFontSize = "";
     static DecimalType  consoleDecimalsType = DECIMAL_TYPE_UINT8;
     static Endianess  targetEndianess = LITTLE_ENDIAN_TARGET;
+    static bool consoleNewLineAfterBytes = false;
 
     bool tabsChanged = false;
+
+    if(consoleNewLineAfterBytes != currentSettings->consoleNewLineAfterBytes)
+    {
+        tabsChanged = true;
+        consoleNewLineAfterBytes = currentSettings->consoleNewLineAfterBytes;
+    }
 
     if(targetEndianess != currentSettings->targetEndianess)
     {
