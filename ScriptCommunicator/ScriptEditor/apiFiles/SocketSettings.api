@@ -1,0 +1,10 @@
+SocketSettings::devicePort:Number \nThe device port.
+SocketSettings::destinationPort:Number \nThe detination port.
+SocketSettings::destinationIpAddress:String \nThe destination IP address.
+SocketSettings::ownPort:Number \nThe own port.
+SocketSettings::socketType:String \nThe socket type ('TCP client', 'TCP server' or 'UDP socket').
+SocketSettings::proxySettings:Number \nThe proxy settings:\n0 = no proxy\n1 = use system proxy settings\n2 = use custom proxy settings
+SocketSettings::proxyIpAddress:String \nThe proxy IP address.
+SocketSettings::proxyPort:Number \nThe proxy port.
+SocketSettings::proxyUserName:String \nThe proxy user name.
+SocketSettings::proxyPassword:String \nThe proxy password.

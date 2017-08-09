@@ -1,0 +1,21 @@
+ConsoleSettings::devicePort:Number \nThe device port.
+ConsoleSettings::showReceivedData:bool \nTrue if the received data (main interface) shall be shown in the console.
+ConsoleSettings::showSendData:bool \nTrue if the send data (main interface) shall be shown in the console.
+ConsoleSettings::maxChars:Number \nMax. numbers of chars in the consoles.
+ConsoleSettings::lockScrolling:bool \nIf true then the consoles do not scroll to the end after adding new data.
+ConsoleSettings::font:String \nThe consoles font.
+ConsoleSettings::fontSize:String \nThe consoles font size.
+ConsoleSettings::updateInterval:Number \nThe consoles update interval.
+ConsoleSettings::receiveColor:String \nThe color (hex) of receive data.
+ConsoleSettings::sendColor:String \nThe color (hex) of send data.
+ConsoleSettings::backgroundColor:String \nThe background color (hex) of the consoles.
+ConsoleSettings::timestampColor:String \nThe color (hex) of timestamps.
+ConsoleSettings::newLineAfterBytes:Number \nNew line after ... number of sent/received bytes (0=off).
+ConsoleSettings::newLineAfterPause:Number \nNew line after ... ms send/receive pause (0=off).
+ConsoleSettings::createNewLineAtByte:bool \nTrue if a new line shall be created at a specific byte. (newLineAtByte).
+ConsoleSettings::newLineAtByte:Number \nThese bytes will be replaced by a new line.
+ConsoleSettings::ceateTimestampAtByte:bool \nTrue if a timestamp shall be created at a specific byte (timestampAtByte)
+ConsoleSettings::timestampAtByte:Number \nNew timestamp at byte.
+ConsoleSettings::generateCyclicTimeStamps:bool \nTrue if cyclic timestamps shall be created in the. consoles (timeStampInterval).
+ConsoleSettings::timeStampInterval:Number \nThe console timestamp interval.
+ConsoleSettings::timestampFormat:String \nThe timestamp format.

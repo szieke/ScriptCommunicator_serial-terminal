@@ -24,8 +24,8 @@ scriptInf::aardvarkI2cSpiSetOutput(Number pinIndex, bool high, bool updateSettin
 scriptInf::aardvarkI2cSpiChangePinConfiguration(Number pinIndex, bool isInput, bool withPullups=false):bool \nChanges the configuration of a pin (Aardvark I2C/SPI device).\nPossible pin indexes:0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0
 scriptInf::aardvarkI2cSpiGetMainInterfaceSettings(void):AardvarkI2cSpiSettings \nReturns the Aardvark I2C/SPI settings of the main interface.\nPossible pin indexes:0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
 scriptInf::aardvarkI2cSpiReadAllInputs(void):Array<bool> \nReads all inputs of the Aardvark I2C/SPI device.\nThe indexes of the result array are:0=Pin1/SCL, 1=Pin3/SDA, 2=Pin5/MISO, 3=Pin7/SCK, 4=Pin8/MOSI, 5=Pin9/SS0.
-scriptInf::getMainInterfaceSerialPortSettings(void):serialPortSettings \nReturns the serial port settings of the main interface.
-scriptInf::getMainInterfaceSocketSettings(void):socketSettings \nReturns the socket (UDP, TCP client/server) settings of the main interface.
+scriptInf::getMainInterfaceSerialPortSettings(void):SerialPortSettings \nReturns the serial port settings of the main interface.
+scriptInf::getMainInterfaceSocketSettings(void):SocketSettings \nReturns the socket (UDP, TCP client/server) settings of the main interface.
 scriptInf::getLocalIpAdress(void):Array<String> \nReturns all IP addresses found on the host machine.
 scriptInf::availableSerialPorts(void):Array<String> \nReturns a list with the name of all available serial ports.
 scriptInf::dataReceivedSignal.connect(Array<Number> data)\nThis signal is emitted if data has been received with the main interface\n(only if the main interface is not a CAN or I2C master interface, use canMessagesReceivedSignal if the main interface is a CAN interface and\ni2cMasterDataReceivedSignal if the main interface is an I2C master interface).

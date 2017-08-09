@@ -19,5 +19,5 @@ conv::addUint64ToArray(Array<Number> array, Number value, bool littleEndian):Arr
 conv::addInt16ToArray(Array<Number> array, Number value, bool littleEndian):Array<Number> \nAdds an int16 to a byte array.
 conv::addInt32ToArray(Array<Number> array, Number value, bool littleEndian):Array<Number> \nAdds an int32 to a byte array.
 conv::addInt64ToArray(Array<Number> array, Number value, bool littleEndian):Array<Number> \nAdds an int64 to a byte array.
-conv::addFloat32ToArray(Array<Number> array, float value, bool littleEndian):Array<Number> \nAdds a float32 to a byte array.
-conv::addFloat64ToArray(Array<Number> array, double value, bool littleEndian):Array<Number> \nAdds a float64 to a byte array.
+conv::addFloat32ToArray(Array<Number> array, Number value, bool littleEndian):Array<Number> \nAdds a float32 to a byte array.
+conv::addFloat64ToArray(Array<Number> array, Number value, bool littleEndian):Array<Number> \nAdds a float64 to a byte array.

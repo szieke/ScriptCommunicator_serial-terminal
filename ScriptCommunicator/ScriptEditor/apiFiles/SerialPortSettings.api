@@ -1,0 +1,9 @@
+SerialPortSettings::devicePort:Number \nThe device port.
+SerialPortSettings::name:String \nThe name of the serial port.
+SerialPortSettings::baudRate:Number \nThe baudrate.
+SerialPortSettings::dataBits:Number \nThe number of data bits.
+SerialPortSettings::parity:String \nThe parity.
+SerialPortSettings::stopBits:String \nThe stop bits.
+SerialPortSettings::flowControl:String \nThe flow control.
+SerialPortSettings::rts:bool \nTrue if the RTS pin is on.
+SerialPortSettings::dtr:bool \nTrue if the DTR pin is on.

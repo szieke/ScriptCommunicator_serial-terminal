@@ -79,8 +79,8 @@ scriptThread::addTabsToMainWindow(ScriptTabWidget* tabWidget):bool \nAdds script
 scriptThread::addToolBoxPagesToMainWindow(ScriptToolBox* scriptToolBox):bool \nAdds script toolbox pages to the main window (all pages are removed from toolBox).\nNote: This function fails in command-line mode.
 scriptThread::sendReceivedDataToMainInterface(Array<Number> data):void \nSends received data (received with an script internal interface) to the main interface.\nThis data will be shown as received data in the consoles, the log and will be received by worker scripts via the dataReceivedSignal.
 scriptThread::checkScriptCommunicatorVersion(String minVersion):bool \nChecks if the version of ScriptCommunicator is equal/greater then the version in minVersion.\nThe format of minVersion is: 'major'.'minor' (e.g. 04.11).
-scriptThread::getMainInterfaceSerialPortSettings(void):serialPortSettings \nReturns the serial port settings of the main interface.\nNote: This function is deprecated. Use the scriptInf.getMainInterfaceSerialPortSettings instead.
-scriptThread::getMainInterfaceSocketSettings(void):socketSettings \nReturns the socket (UDP, TCP client/server) settings of the main interface.\nNote: This function is deprecated. Use the scriptInf.getMainInterfaceSocketSettings instead.
+scriptThread::getMainInterfaceSerialPortSettings(void):SerialPortSettings \nReturns the serial port settings of the main interface.\nNote: This function is deprecated. Use the scriptInf.getMainInterfaceSerialPortSettings instead.
+scriptThread::getMainInterfaceSocketSettings(void):SocketSettings \nReturns the socket (UDP, TCP client/server) settings of the main interface.\nNote: This function is deprecated. Use the scriptInf.getMainInterfaceSocketSettings instead.
 scriptThread::getMainWindowTitle(void):String \nReturns the title of the main window.
 scriptThread::setMainWindowTitle(String newTitle):void \nSets the title of the main window.
 scriptThread::getTimestamp(void):String \nReturns the current time stamp in a specific format (see QDateTime.toString for more details).\nIf the format string is empty then the format from the settings dialog (console options tab) is used.
