@@ -22,7 +22,7 @@ ScriptTextEdit::verticalScrollBarSetValue(Number value):void \nSets the vertical
 ScriptTextEdit::toPlainText(void):String \nReturns the content of the text edit as plain text.
 ScriptTextEdit::toHtml(void):String \nReturns the content of the text edit as html.
 ScriptTextEdit::setMaxChars(Number maxChars):void \nSets the max. number of chars in the text edit.
-ScriptTextEdit::replaceNonHtmlChars(String text):String \nReplaces the characters '\n',' ', '<' and '>' to their html representation.
+ScriptTextEdit::replaceNonHtmlChars(String text, bool replaceNewLine=true):String \nReplaces the characters '\n',' ', '<' and '>' to their html representation.
 ScriptTextEdit::moveTextPositionToEnd(void):void \nMoves the curser to the end of the text edit.
 ScriptTextEdit::setFontPointSize(qreal fontSize):void \nSets font size.
 ScriptTextEdit::setFontFamily(String fontFamily):void \nSets font family.
