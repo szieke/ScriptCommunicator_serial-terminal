@@ -98,8 +98,7 @@ class SendConsole : public QTextEdit
      Q_OBJECT
 
 public:
-    explicit SendConsole(QWidget *parent = 0) : QTextEdit(parent), m_mainWindow(0), m_resizeTimer(), m_newSize(), m_oldSize(),
-        m_isMixedConsole(false)
+    explicit SendConsole(QWidget *parent = 0) : QTextEdit(parent), m_mainWindow(0), m_resizeTimer(), m_isMixedConsole(false)
     {
         connect(this->document(), SIGNAL(contentsChange(int,int,int)), this, SLOT(contentsChangeSlot(int,int,int)), Qt::QueuedConnection);
         connect(&m_resizeTimer, SIGNAL(timeout()),this, SLOT(resizeSlot()));
@@ -116,6 +115,7 @@ public:
         m_mainWindow = mainWindow;
     }
 
+    ///Sets m_isMixedConsole.
     void setIsMixedConsole(bool isMixedConsole){m_isMixedConsole = isMixedConsole;}
 
 protected:
@@ -135,6 +135,7 @@ public slots:
     ///Is called if the document's content changes.
    void contentsChangeSlot(int from, int charsRemoved, int charsAdded);
 
+   ///Is called if m_resizeTimer elapsed. Here the text edit is resized.
    void resizeSlot(void);
 
 
@@ -145,8 +146,7 @@ private:
     ///This timer is started in resizeEvent;
     QTimer m_resizeTimer;
 
-    QSize m_newSize;
-    QSize m_oldSize;
+    ///True if the current isntance is the mixed console.
     bool m_isMixedConsole;
 
 };
@@ -183,7 +183,6 @@ public:
     ///Converts a byte array into his string representation (Byte 1 is converted into char '1'...).
     static QString byteArrayToNumberString(const QByteArray &data, bool isBinary,  bool isHex, bool withFormatBrackets, bool withLeadingZero = true,
                                            bool withSpaces = true, DecimalType decimalType = DECIMAL_TYPE_UINT8, Endianess endianess = LITTLE_ENDIAN_TARGET);
-
 
     ///Starts/executes the script editor.
     static bool startScriptEditor(QString scriptEditor, QStringList arguments, QWidget *parent, bool isInternalEditor);

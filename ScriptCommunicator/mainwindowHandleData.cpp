@@ -1386,7 +1386,6 @@ void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isS
     }
 
     m_bytesInUnprocessedConsoleData += data.length();
-
 }
 
 

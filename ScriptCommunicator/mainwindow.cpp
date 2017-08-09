@@ -103,7 +103,11 @@ void DragDropLineEdit::dropEvent(QDropEvent *event)
     }
 }
 
-
+/**
+ * The user has pressed a key.
+ * @param event
+ *      The key event.
+ */
 void SendConsole::keyPressEvent(QKeyEvent *event)
 {
     bool ignoreEvent = false;
@@ -180,8 +184,7 @@ void SendConsole::keyPressEvent(QKeyEvent *event)
  */
 void SendConsole::resizeEvent(QResizeEvent* event)
 {
-    m_newSize = event->size();
-    m_oldSize = event->oldSize();
+    (void) event;
     m_resizeTimer.start(250);
 }
 
@@ -218,6 +221,9 @@ void SendConsole::contentsChangeSlot(int from, int charsRemoved, int charsAdded)
     }
 }
 
+/**
+ * Is called if m_resizeTimer elapsed. Here the text edit is resized.
+ */
 void SendConsole::resizeSlot(void)
 {
     m_resizeTimer.stop();
@@ -856,9 +862,7 @@ void MainWindow::sendHistoryButtonSlot()
         {
             QMessageBox::critical(this, "error", "sending failed: no connection");
         }
-
     }
-
 }
 
 /**
@@ -1009,7 +1013,6 @@ void MainWindow::workerScriptListItemDoubleClickedSlot(QListWidgetItem *item)
             m_scriptWindow->startScriptThread(row);
         }
     }
-
 }
 
 /**
@@ -1142,7 +1145,6 @@ void MainWindow::setUpScriptPageSlot(void)
 
     m_userInterface->workerScriptListWidget->clear();
 
-
     if(!scriptNamesAndState.isEmpty())
     {
         for(qint32 i = 0; (i + 1) < scriptNamesAndState.size(); i +=2)
@@ -1199,7 +1201,9 @@ void MainWindow::setUpScriptPageSlot(void)
     }
 }
 
-///Is called if the user presses the pause script button.
+/**
+ * Is called if the user presses the pause script button.
+ */
 void MainWindow::pauseScriptButtonPressedSlot(void)
 {
     QList<QListWidgetItem*> items = m_userInterface->workerScriptListWidget->selectedItems();
@@ -1213,6 +1217,7 @@ void MainWindow::pauseScriptButtonPressedSlot(void)
         {
             if(font.bold() && !font.italic())
             {//Script is running
+
                 m_scriptWindow->pauseScriptThread(index);
             }
             else if(!font.bold() && !font.italic())
@@ -1221,7 +1226,6 @@ void MainWindow::pauseScriptButtonPressedSlot(void)
                 m_scriptWindow->startScriptThread(index, true);
             }
         }
-
     }
 }
 
@@ -1315,7 +1319,6 @@ void MainWindow::disableMouseEventsSlot()
         m_mouseGrabWidget = new QWidget(this);
     }
     m_mouseGrabWidget->grabMouse();
-
 }
 
 /**
@@ -1345,7 +1348,6 @@ void MainWindow::writeXmlElement(QXmlStreamWriter& xmlWriter, QString elementNam
         xmlWriter.writeAttribute(iter.first, iter.second);
     }
     xmlWriter.writeEndElement();
-
 }
 
 
@@ -1801,9 +1803,6 @@ bool MainWindow::loadSettings()
 
                             }
                         }
-
-
-
                     }
                 }
                 {//send window position and size
@@ -1963,8 +1962,6 @@ bool MainWindow::loadSettings()
                         createSceWindowIsVisible = (node.attributes().namedItem("visible").nodeValue() == "1") ? true : false;
                         showSceWindowMaximized = (node.attributes().namedItem("isMaximized").nodeValue() == "1") ? true : false;
 
-
-
                         QString splitterSizes = node.attributes().namedItem("splitterSizes").nodeValue();
                         if(splitterSizes.size() > 0)
                         {
@@ -1986,7 +1983,6 @@ bool MainWindow::loadSettings()
                     if(!nodeList.isEmpty())
                     {
                         QDomNode node = nodeList.at(0);
-
                         currentSettings.updateSettings.proxySettings = node.attributes().namedItem("proxySettings").nodeValue().toUInt();
                         currentSettings.updateSettings.proxyIpAddress = node.attributes().namedItem("proxyIpAddress").nodeValue();
                         currentSettings.updateSettings.proxyPort = node.attributes().namedItem("proxyPort").nodeValue().toUInt();
@@ -2087,7 +2083,6 @@ bool MainWindow::loadSettings()
         textLogActivatedSlot(currentSettings.textLogFile);
         htmLogActivatedSlot(currentSettings.htmlLogFile);
         m_userInterface->actionReopenAllLogs->setVisible(currentSettings.appendTimestampAtLogFileName);
-
     }
 
     return result;
@@ -2112,8 +2107,8 @@ void MainWindow::conectionTypeChangesSlot()
         m_userInterface->rtsCheckBox->setVisible(true);
         m_userInterface->dtrCheckBox->setVisible(true);
     }
-    update();
 
+    update();
 }
 
 /**
@@ -2136,7 +2131,6 @@ void MainWindow::setWidgetBackgroundColorFromString(QString colorString, QWidget
     QPalette palette = widget->palette();
     palette.setColor(QPalette::Base, color);
     widget->setPalette(palette);
-
 }
 
 /**
@@ -2178,8 +2172,8 @@ void MainWindow::setWidgetTextColorFromString(QString colorString, QWidget* widg
     QPalette palette = widget->palette();
     palette.setColor(QPalette::Text, color);
     widget->setPalette(palette);
-
 }
+
 /**
  * Initializes the tab in the main window.
  */
@@ -2424,7 +2418,6 @@ void MainWindow::inititializeTab(void)
 
         m_settingsDialog->setEnabled(true);
     }
-
 }
 
 /**
@@ -2845,8 +2838,6 @@ void MainWindow::saveSettings()
 
         }
     }
-
-
 }
 
 
@@ -3098,7 +3089,6 @@ void MainWindow::serialPortPinsChangedSlot(void)
     settings.serialPort.setRTS = m_userInterface->rtsCheckBox->isChecked();
     m_settingsDialog->setAllSettingsSlot(settings, false);
     saveSettings();
-
 }
 
 /**
@@ -3257,6 +3247,7 @@ QString MainWindow::byteArrayToNumberString(const QByteArray &data, bool isBinar
     const char* dataArray = data.constData();
     QString dataString;
     int bytesPerNumber = 1;
+    int numberOfDecimalChars = 0;
 
     if(isHex)
     {
@@ -3288,14 +3279,17 @@ QString MainWindow::byteArrayToNumberString(const QByteArray &data, bool isBinar
         if((decimalType == DECIMAL_TYPE_UINT16) || (decimalType == DECIMAL_TYPE_INT16))
         {
             bytesPerNumber = 2;
+            numberOfDecimalChars = (decimalType == DECIMAL_TYPE_UINT16) ? 5 : 6;
         }
         else if((decimalType == DECIMAL_TYPE_UINT32) || (decimalType == DECIMAL_TYPE_INT32))
         {
             bytesPerNumber = 4;
+            numberOfDecimalChars = (decimalType == DECIMAL_TYPE_UINT32) ? 10 : 11;
         }
         else
         {
             bytesPerNumber = 1;
+            numberOfDecimalChars = (decimalType == DECIMAL_TYPE_UINT8) ? 3 : 4;
         }
     }
 
@@ -3318,10 +3312,9 @@ QString MainWindow::byteArrayToNumberString(const QByteArray &data, bool isBinar
         if(isHex)
         {
             tmp = QString::number(static_cast<uint>(static_cast<quint8>(dataArray[i])),prec);
-
             if(withLeadingZero && (tmp.size() == 1))
             {
-                tmp = "0" + tmp;
+                tmp.insert(0, "0");
             }
         }
         else if(!isHex && !isBinary)
@@ -3340,74 +3333,39 @@ QString MainWindow::byteArrayToNumberString(const QByteArray &data, bool isBinar
                 }
             }
 
-            char buffer[32];
-            if(decimalType == DECIMAL_TYPE_UINT8)
+
+            int decIndex = 0;
+
+            if((decimalType == DECIMAL_TYPE_UINT8) || (decimalType == DECIMAL_TYPE_UINT16) ||
+               (decimalType == DECIMAL_TYPE_UINT32))
             {
-                if(withLeadingZero)
-                {
-                    sprintf(buffer, "%03u", (quint8)number);
-                }
-                else
-                {
-                    sprintf(buffer, "%u", (quint8)number);
-                }
+                tmp = QString::number(number, prec);
             }
             else if(decimalType == DECIMAL_TYPE_INT8)
             {
-                if(withLeadingZero)
-                {
-                    sprintf(buffer, "%04d", (qint8)number);
-                }
-                else
-                {
-                    sprintf(buffer, "%d", (qint8)number);
-                }
-            }
-            else if(decimalType == DECIMAL_TYPE_UINT16)
-            {
-                if(withLeadingZero)
-                {
-                    sprintf(buffer, "%05u", (quint16)number);
-                }
-                else
-                {
-                    sprintf(buffer, "%u", (quint16)number);
-                }
+                tmp = QString::number((qint8)number, prec);
+                if(tmp[0] == '-'){decIndex = 1;}
             }
             else if(decimalType == DECIMAL_TYPE_INT16)
             {
-                if(withLeadingZero)
-                {
-                    sprintf(buffer, "%06d", (qint16)number);
-                }
-                else
-                {
-                    sprintf(buffer, "%d", (qint16)number);
-                }
-            }
-            else if(decimalType == DECIMAL_TYPE_UINT32)
-            {
-                if(withLeadingZero)
-                {
-                    sprintf(buffer, "%010u", (quint32)number);
-                }
-                else
-                {
-                    sprintf(buffer, "%u", (quint32)number);
-                }
+                tmp = QString::number((qint16)number, prec);
+                if(tmp[0] == '-'){decIndex = 1;}
             }
             else
             {//DECIMAL_TYPE_INT32
-                if(withLeadingZero)
+
+                tmp = QString::number((qint32)number, prec);
+                if(tmp[0] == '-'){decIndex = 1;}
+            }
+
+            if(withLeadingZero)
+            {
+                int count = numberOfDecimalChars - tmp.size();
+                for(int k = 0; k < count; k++)
                 {
-                    sprintf(buffer, "%011d", (qint32)number);
-                }
-                else
-                {
-                    sprintf(buffer, "%d", (qint32)number);
+                    tmp.insert(decIndex, "0");
                 }
             }
-            tmp = buffer;
         }
         else if(isBinary)
         {
@@ -3415,12 +3373,11 @@ QString MainWindow::byteArrayToNumberString(const QByteArray &data, bool isBinar
 
             if(withLeadingZero)
             {
-                QString leadingZeros;
-                for(int i = 0; i < (8 - tmp.size()); i++)
+                int count = 8 - tmp.size();
+                for(int k = 0; k < count; k++)
                 {
-                    leadingZeros += "0";
+                    tmp.insert(0, "0");
                 }
-                tmp = leadingZeros + tmp;
             }
         }
         dataString.append(tmp);
@@ -3667,7 +3624,6 @@ void MainWindow::messageEnteredSlot(QString message, bool forceTimeStamp)
  */
 void MainWindow::dataRateUpdateSlot(quint32 dataRateSend, quint32 dataRateReceive)
 {
-
     m_dataRateSend = dataRateSend;
     m_dataRateReceive = dataRateReceive;
     showNumberOfReceivedAndSentBytes();
@@ -3721,8 +3677,6 @@ void MainWindow::initActionsConnections()
     connect(m_userInterface->actionEditScript, SIGNAL(triggered()),this, SLOT(editScriptSlot()));
     connect(m_userInterface->actionDebugSequenceScript, SIGNAL(triggered()),this, SLOT(debugSequenceScript()));
     connect(m_userInterface->actionReopenAllLogs, SIGNAL(triggered()),this, SLOT(reopenLogsSlot()));
-
-
 }
 
 /**
@@ -3901,8 +3855,8 @@ void MainWindow::addTabsToMainWindowSlot(QTabWidget* tabWidget)
     }
 
     m_userInterface->tabWidget->setCurrentIndex(m_userInterface->tabWidget->count() - 1);
-
 }
+
 /**
  * Adds script toolbox pages to the main window.
  * @param toolBox
@@ -3921,7 +3875,6 @@ void  MainWindow::addToolBoxPagesToMainWindowSlot(QToolBox* toolBox)
 
         m_toolBoxSplitterSizesSecond.append(m_toolBoxSplitterSizeSecond);
         m_userInterface->toolBox->addItem(page, text);
-
     }
 
     if(!isHidden())
@@ -4126,7 +4079,6 @@ void MainWindow::reopenLogsSlot(void)
         m_handleData->m_textLogFile.close();
         textLogActivatedSlot(currentSettings->textLogFile);
     }
-
 }
 
 /**
@@ -4164,6 +4116,7 @@ QString MainWindow::convertToAbsolutePath(QString rootFile, QString fileName)
     }
     return result;
 }
+
 /**
  * Reads the main config fie list.
  *
@@ -4194,6 +4147,7 @@ QStringList MainWindow::readMainConfigFileList(bool removeDefaultMarker)
                 result.push_back(line);
             }
         }
+
         inputFile.close();
     }
 
@@ -4404,6 +4358,7 @@ void MainWindow::setCurrentConfigToDefaultSlot(void)
     list.push_front("<DEFAULT_CONFIG_FILE>:" + m_mainConfigFile);
     saveMainConfigFileList(list);
 }
+
 /**
  * Menu delete previous config list slot function.
  */
@@ -4790,7 +4745,6 @@ void MainWindow::printConsoleSlot()
             textEdit = dynamic_cast<QTextEdit*>(widget);
         }
     }
-
 
     if(textEdit)
     {
