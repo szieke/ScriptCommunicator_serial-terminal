@@ -107,7 +107,7 @@ class PCANBasicClass : public QObject
         TPCANStatus setValue(TPCANParameter parameter, void* buffer, DWORD bufferLength);
 
         ///The max. number of allowed send errors for a single CAN message (after this number the sending of data fails).
-        const quint32 MAX_SEND_ERROR = 100;
+        const quint32 MAX_SEND_ERROR = 10;
 
         ///The max. number of bytes in a single CAN message.
         static const qint32 MAX_BYTES_PER_MESSAGE = 8;
