@@ -27,11 +27,11 @@ This script interface has following features:
 
 **main window**
 
-![main window](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2016-04-26_07h31_37.png)
+![main window](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2017-08-07_16h01_36.png/1)
 
 **settings dialog**
 
-![settings dialog](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2017-06-30_12h55_35.png/1)
+![settings dialog](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2017-08-07_15h40_12.png/1)
 
 **example script GUI**
 
@@ -40,8 +40,8 @@ This script interface has following features:
 # Homepage
 [https://sourceforge.net/projects/scriptcommunicator/](https://sourceforge.net/projects/scriptcommunicator/)
 
-# Downloads (release 05.03)
-- [Windows](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicatorSetup_05_03_windows.zip/download)
-- [Linux 64 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_64Bit/ScriptCommunicator_05_03_linux_64_bit.zip/download)
-- [Mac OS X](http://sourceforge.net/projects/scriptcommunicator/files/Mac%20OS%20X/ScriptCommunicator_05_03_mac.zip/download)
-- [Source](http://sourceforge.net/projects/scriptcommunicator/files/Source/ScriptCommunicator_05_03_source.zip/download)
+# Downloads (release 05.04)
+- [Windows](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicatorSetup_05_04_windows.zip/download)
+- [Linux 64 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_64Bit/ScriptCommunicator_05_04_linux_64_bit.zip/download)
+- [Mac OS X](http://sourceforge.net/projects/scriptcommunicator/files/Mac%20OS%20X/ScriptCommunicator_05_04_mac.zip/download)
+- [Source](http://sourceforge.net/projects/scriptcommunicator/files/Source/ScriptCommunicator_05_04_source.zip/download)
