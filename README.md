@@ -1,6 +1,6 @@
 # ScriptCommunicator
 ScriptCommunicator is a scriptable cross-platform data terminal which supports serial port (RS232, USB to serial), UDP, TCP client/server, SPI, I2C and CAN.
-All sent and received data can be shown in a console and can be logged in an html, a text and a custom log.
+All sent and received data can be shown in a console and can be logged in an html and a text log.
 
 In addition to the simple sending and receiving of data ScriptCommunicator has a QtScript (similar to JavaScript) interface.
 This script interface has following features:
@@ -18,8 +18,8 @@ This script interface has following features:
 * SPI (Aardvark I2C/SPI)
 * I2C (Aardvark I2C/SPI)
 * CAN (PCAN-USB, only on windows)
-* ascii, hexadecimal, decimal, binary, custom and mixed console (adjustable colors)
-* html, text and custom log
+* ascii, hexadecimal, decimal, binary and mixed console
+* html and text log
 * script interface (QtScript)->run automated test jobs, automatic device configuration scripts...
 * use ui files (user interface created with QtDesigner (is included) or QtCreator) from script->building test GUIs, control GUIs...
 * plotting data via script and export the generated graphs to file (png, jpg, bmp, pdf and csv)->e.g. to visualize a PID controller or a heater
