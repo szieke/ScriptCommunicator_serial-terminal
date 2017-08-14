@@ -262,7 +262,7 @@ public:
     Q_INVOKABLE QScriptValue getMainInterfaceSerialPortSettings(void){return m_scriptInf->getMainInterfaceSerialPortSettings();}
 
     ///Returns the socket (UDP, TCP client/server) settings of the main interface.
-    Q_INVOKABLE QScriptValue getMainInterfaceSocketSettings(void){return m_scriptInf->getMainInterfaceSerialPortSettings();}
+    Q_INVOKABLE QScriptValue getMainInterfaceSocketSettings(void){return m_scriptInf->getMainInterfaceSocketSettings();}
 
     ///Returns a list with the name of all available serial ports.
     Q_INVOKABLE QStringList availableSerialPorts(void){return m_scriptInf->availableSerialPorts();}
