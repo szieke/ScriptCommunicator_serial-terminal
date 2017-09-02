@@ -248,10 +248,14 @@ void ScriptPlotWidget::removeAllGraphsSlot(void)
 ///Is called if the user press a mouse button inside the plot.
 void ScriptPlotWidget::plotMousePressSlot(QMouseEvent *event)
 {
-
     (void)event;
-    double xValue = m_plotWidget->xAxis->pixelToCoord(event->x());
-    double yValue = m_plotWidget->yAxis->pixelToCoord(event->y());
+
+    // event has sometimes wrong x and y position values (may be related to the above issue)
+    // get global mouse position and translate them to widget position
+    QPoint rpos = m_plotWidget->mapFromGlobal(QCursor::pos());
+
+    double xValue = m_plotWidget->xAxis->pixelToCoord(rpos.x());
+    double yValue = m_plotWidget->yAxis->pixelToCoord(rpos.y());
 
     //event->button() did not work on some PC's.
     Qt::MouseButtons button = QApplication::mouseButtons();
