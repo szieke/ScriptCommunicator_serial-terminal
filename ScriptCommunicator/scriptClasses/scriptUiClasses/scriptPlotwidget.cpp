@@ -543,6 +543,43 @@ void ScriptPlotWidget::setInitialAxisRangesSlot(double xRange, double yMinValue,
 }
 
 /**
+ * The function sets the current ranges of the diagram.
+ * @param xMinValue
+ *      The min. values of the x axis.
+ * @param xMaxValue
+ *      The max. value of the x axis.
+ * @param yMinValue
+ *      The min. values of the y axis.
+ * @param yMaxValue
+ *      The max. value of the y axis.
+ */
+void ScriptPlotWidget::setCurrentAxisRanges(double xMinValue, double xMaxValue, double yMinValue, double yMaxValue)
+{
+    m_plotWidget->yAxis->setRange(yMinValue, yMaxValue);
+    m_plotWidget->xAxis->setRange(xMinValue, xMaxValue);
+    m_plotWidget->replot();
+}
+
+/**
+ * The function gets the current axis ranges of the diagram.
+ * @return
+ *      Current view ranges.
+ */
+QScriptValue ScriptPlotWidget::getCurrentAxisRanges(void)
+{
+    const QCPRange xrange = m_plotWidget->xAxis->range();
+    const QCPRange yrange = m_plotWidget->yAxis->range();
+
+    QRectF rect(QPointF(xrange.lower, yrange.upper), QPointF(xrange.upper, yrange.lower));
+    QScriptValue ret = m_scriptThread->getScriptEngine()->newObject();
+    ret.setProperty("left", xrange.lower);
+    ret.setProperty("right", xrange.upper);
+    ret.setProperty("bottom", yrange.lower);
+    ret.setProperty("top", yrange.upper);
+    return ret;
+}
+
+/**
  * Sets the axis labels.
  * @param xAxisLabel
  *      The label for the x axis.

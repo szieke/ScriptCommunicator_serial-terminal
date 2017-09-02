@@ -55,6 +55,12 @@ public:
     ///The function sets the initial ranges of the diagram.
     Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue){emit setInitialAxisRangesSignal(xRange, yMinValue, ymaxValue);}
 
+    ///The function sets the current ranges of the diagram.
+    Q_INVOKABLE void setCurrentAxisRanges(double xMinValue, double xMaxValue, double yMinValue, double yMaxValue);
+
+    ///The function gets the current ranges of the diagram.
+    Q_INVOKABLE QScriptValue getCurrentAxisRanges(void);
+
     ///This function sets the line style of a graph.
     Q_INVOKABLE void addDataToGraph(int graphIndex, double x, double y){emit addDataToGraphSignal(graphIndex, x, y);}
 
@@ -122,10 +128,17 @@ public:
     ///Sets tThe max. number of data points per graph (the default is 10.000.000.).
     Q_INVOKABLE void setMaxDataPointsPerGraph(qint32 maxDataPointsPerGraph){m_maxDataPointsPerGraph = maxDataPointsPerGraph;}
 
+    ///Sets the automatic update enabled state.
+    Q_INVOKABLE void setAutoUpdate(bool enabled){m_updatePlotCheckBox->setChecked(enabled);}
+
+    ///Gets the automatic update enabled state.
+    Q_INVOKABLE bool autoUpdate(void){return m_updatePlotCheckBox->isChecked();}
 
     ///Sets the update-interval.
     Q_INVOKABLE void setUpdateInterval(quint32 updateInterval){emit setUpdateIntervalSignal(updateInterval);}
 
+    ///Update the current plot view.
+    Q_INVOKABLE void updatePlot(void){m_plotWidget->replot();}
 
     ///The default value for the plot update timer (m_plotTimer).
     static const quint32 DEFAULT_PLOT_UPDATE_TIME_MS = 100;

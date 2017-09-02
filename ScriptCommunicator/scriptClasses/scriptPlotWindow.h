@@ -79,6 +79,12 @@ public:
     ///The slot function sets the initial ranges of the diagram.
     Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue){emit m_plotWindow->getWidget()->setInitialAxisRangesSignal(xRange, yMinValue, ymaxValue);}
 
+    ///The function sets the current ranges of the diagram.
+    Q_INVOKABLE void setCurrentAxisRanges(double xMinValue, double xMaxValue, double yMinValue, double yMaxValue){m_plotWindow->getWidget()->setCurrentAxisRanges(xMinValue, xMaxValue, yMinValue, yMaxValue);}
+
+    ///The function gets the current ranges of the diagram.
+    Q_INVOKABLE QScriptValue getCurrentAxisRanges(void){return m_plotWindow->getWidget()->getCurrentAxisRanges();}
+
     ///This slot function adds one point to a graph.
     Q_INVOKABLE void addDataToGraph(int graphIndex, double x, double y){emit m_plotWindow->getWidget()->addDataToGraphSignal(graphIndex, x, y);}
 
@@ -145,9 +151,17 @@ public:
     ///Sets tThe max. number of data points per graph (the default is 10.000.000).
     Q_INVOKABLE void setMaxDataPointsPerGraph(qint32 maxDataPointsPerGraph){m_plotWindow->getWidget()->setMaxDataPointsPerGraph(maxDataPointsPerGraph);}
 
+    ///Sets the automatic update enabled state.
+    Q_INVOKABLE void setAutoUpdate(bool enabled){ m_plotWindow->getWidget()->setAutoUpdate(enabled);}
+
+    ///Gets the automatic update enabled state.
+    Q_INVOKABLE bool autoUpdate(void){return m_plotWindow->getWidget()->autoUpdate();}
+
     ///Sets the update-interval.
     Q_INVOKABLE void setUpdateInterval(quint32 updateInterval){m_plotWindow->getWidget()->setUpdateInterval(updateInterval);}
 
+    ///Update the current plot view.
+    Q_INVOKABLE void updatePlot(void){m_plotWindow->getWidget()->updatePlot();}
 
 Q_SIGNALS:
 
