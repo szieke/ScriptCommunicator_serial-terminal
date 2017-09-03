@@ -31,6 +31,8 @@ ScriptPlotWindow::getObjectName(void):String \nReturns the name of this object (
 ScriptPlotWindow::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
 ScriptPlotWindow::addGraph(String color, String penStyle, String name):Number \nThis function adds a graph to the diagram.
 ScriptPlotWindow::setInitialAxisRanges(Number xRange, Number yMinValue, Number ymaxValue):void \nThis function sets the initial ranges of the diagram.
+ScriptPlotWindow::setCurrentAxisRanges(Number xMinValue, Number xMaxValue, Number yMinValue, Number yMaxValue):void \nThe function sets the current ranges of the diagram.\nAutomatic update should be disabled.
+ScriptPlotWindow::getCurrentAxisRanges(void):Object \nReturns an object wich holds the current view ranges of the diagram.\nUseful if the user moves or zoom the view.
 ScriptPlotWindow::addDataToGraph(Number graphIndex, Number x, Number y):void \nThis function adds one point to a graph.
 ScriptPlotWindow::setAxisLabels(String xAxisLabel, String yAxisLabel):void \nSets the axis label.
 ScriptPlotWindow::showLegend(bool show):void \nThis function shows or hides the diagram legend.
@@ -38,7 +40,10 @@ ScriptPlotWindow::clearGraphs(void):void \nThis function clears the data of all 
 ScriptPlotWindow::removeAllGraphs(void):void \nThis function removes all graphs.
 ScriptPlotWindow::showHelperElements(bool showXRange, bool showYRange, bool showUpdate, bool showSave, bool showLoad, bool showClear, bool showGraphVisibility, Number graphVisibilityMaxSize=80, bool showLegend=true):void \nSets the visibility of several plot widget elements.
 ScriptPlotWindow::setMaxDataPointsPerGraph(Number maxDataPointsPerGraph):void \nSets tThe max. number of data points per graph (the default is 10.000.000).
+ScriptPlotWindow::setAutoUpdate(bool enabled):void \nSets the automatic update enabled state.
+ScriptPlotWindow::autoUpdate(void):bool \nReturns the automatic update enabled state.
 ScriptPlotWindow::setUpdateInterval(Number updateInterval):void \nSets the update-interval.
+ScriptPlotWindow::updatePlot(void):void \nRepaints the plot widget.
 ScriptPlotWindow::setWindowIcon(String iconFile, bool isRelativePath=true):void \nSets the window icon of a dialog or a main window.\nSupported formats: .ico, .gif, .png, .jpeg, .tiff, .bmp, .icns.
 ScriptPlotWindow::setScatterStyle(Number graphIndex, String style, Number size):void \nSets the visual appearance of single data points in the plot.\nPossible values for style:\nNone: No scatter symbols are drawn.\nDot: A single pixel.\nCross: A cross.\nPlus: A plus.\nCircle: A circle.\nDisc: A circle which is filled with the pen's color.\nSquare: A square.\nDiamond: A diamond.\nStar: A star with eight arms, i.e. a combination of cross and plus.\nTriangle: An equilateral triangle, standing on baseline.\nTriangleInverted: An equilateral triangle, standing on corner.\nCrossSquare: A square with a cross inside.\nPlusSquare: A square with a plus inside.\nCrossCircle: A circle with a cross inside.\nPlusCircle: A circle with a plus inside.\nPeace: A circle, with one vertical and two downward diagonal lines.
 ScriptPlotWindow::setLineStyle(Number graphIndex, String style):void \nSets the line style of a graph.\nPossible values for style:\nData points are not connected with any lines (e.g. data only represented with symbols according to the scatter style (is set with setScatterStyle)).\n Line: Data points are connected by a straight line.\n StepLeft: Line is drawn as steps where the step height is the value of the left data point.\n StepRight: Line is drawn as steps where the step height is the value of the right data point.\n StepCenter: Line is drawn as steps where the step is in between two data points.\n Impulse: Each data point is represented by a line parallel to the value axis, which reaches from the data point to the zero-value-line.

@@ -572,10 +572,10 @@ QScriptValue ScriptPlotWidget::getCurrentAxisRanges(void)
 
     QRectF rect(QPointF(xrange.lower, yrange.upper), QPointF(xrange.upper, yrange.lower));
     QScriptValue ret = m_scriptThread->getScriptEngine()->newObject();
-    ret.setProperty("left", xrange.lower);
-    ret.setProperty("right", xrange.upper);
-    ret.setProperty("bottom", yrange.lower);
-    ret.setProperty("top", yrange.upper);
+    ret.setProperty("xMinValue", xrange.lower);
+    ret.setProperty("xMaxValue", xrange.upper);
+    ret.setProperty("yMinValue", yrange.lower);
+    ret.setProperty("yMaxValue", yrange.upper);
     return ret;
 }
 
