@@ -134,6 +134,9 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
     connect(this, SIGNAL(setLineStyleSignal(int,QString)),
             this, SLOT(setLineStyleSlot(int,QString)), Qt::QueuedConnection);
 
+    connect(this, SIGNAL(setLineWidthSignal(int,int)),
+            this, SLOT(setLineWidthSlot(int,int)), Qt::QueuedConnection);
+
     connect(this, SIGNAL(setAxisLabelsSignal(QString,QString)),
             this, SLOT(setAxisLabelsSlot(QString,QString)), Qt::QueuedConnection);
 
@@ -833,6 +836,28 @@ void ScriptPlotWidget::setLineStyleSlot(int graphIndex, QString style)
 }
 
 /**
+ * This slot function sets the line style of a graph.
+ *
+ * @param graphIndex
+ *      The graph index.
+ * @param width
+ *      The line width.
+ */
+void ScriptPlotWidget::setLineWidthSlot(int graphIndex, int width)
+{
+    if (graphIndex >= 0 && graphIndex < m_plotWidget->graphCount())
+    {
+        QPen pen = m_plotWidget->graph(graphIndex)->pen();
+        pen.setWidth(width);
+        m_plotWidget->graph(graphIndex)->setPen(pen);
+    }
+    else
+    {//invalid index
+        emit appendTextToConsole(Q_FUNC_INFO + QString("graph index is out of bounds:%1").arg(graphIndex));
+    }
+}
+
+/**
  * This function adds a graph to the diagram.
  * @param color
  *      The color of the graph. Allowed values are:
@@ -852,25 +877,9 @@ void ScriptPlotWidget::addGraphSlot(QString color, QString penStyle, QString nam
 
     QPen pen;
 
-    if(color == "blue")
+    if (QColor::isValidColor(color))
     {
-        pen.setColor(Qt::blue);
-    }
-    else if(color == "red")
-    {
-        pen.setColor(Qt::red);
-    }
-    else if(color == "yellow")
-    {
-        pen.setColor(Qt::yellow);
-    }
-    else if(color == "green")
-    {
-        pen.setColor(Qt::green);
-    }
-    else if(color == "black")
-    {
-        pen.setColor(Qt::black);
+         pen.setColor(QColor(color));
     }
     else
     {

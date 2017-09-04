@@ -131,6 +131,9 @@ public:
      */
     Q_INVOKABLE void setLineStyle(int graphIndex, QString style){emit m_plotWindow->getWidget()->setLineStyleSignal(graphIndex, style);}
 
+    ///This function sets the line width of a graph.
+    Q_INVOKABLE void setLineWidth(int graphIndex, int width){emit m_plotWindow->getWidget()->setLineWidthSignal(graphIndex, width);}
+
     ///Sets the axis label.
     Q_INVOKABLE void setAxisLabels(QString xAxisLabel, QString yAxisLabel){emit m_plotWindow->getWidget()->setAxisLabelsSignal(xAxisLabel, yAxisLabel);}
 

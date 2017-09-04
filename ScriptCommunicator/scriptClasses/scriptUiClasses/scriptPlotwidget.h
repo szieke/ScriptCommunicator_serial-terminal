@@ -107,6 +107,9 @@ public:
      */
     Q_INVOKABLE void setLineStyle(int graphIndex, QString style){emit setLineStyleSignal(graphIndex, style);}
 
+    ///This function sets the line width of a graph.
+    Q_INVOKABLE void setLineWidth(int graphIndex, int width){emit setLineWidthSignal(graphIndex, width);}
+
     ///Sets the axis label.
     Q_INVOKABLE void setAxisLabels(QString xAxisLabel, QString yAxisLabel){emit setAxisLabelsSignal(xAxisLabel, yAxisLabel);}
 
@@ -187,6 +190,10 @@ signals:
     ///This signal is private and must not be used inside a script.
     void setLineStyleSignal(int graphIndex, QString style);
 
+    ///Is connected with PlotWindow::setLineWidthSlot(sets the line width of a graph).
+    ///This signal is private and must not be used inside a script.
+    void setLineWidthSignal(int graphIndex, int width);
+
     ///Is connected with PlotWindow::showFromScriptSlot (Sets the axis labels).
     ///This signal is private and must not be used inside a script.
     void setAxisLabelsSignal(QString xAxisLabel, QString yAxisLabel);
@@ -235,6 +242,9 @@ public slots:
 
     ///This slot function sets the line style of a graph.
     void setLineStyleSlot(int graphIndex, QString style);
+
+    ///This slot function sets the line width of a graph.
+    void setLineWidthSlot(int graphIndex, int width);
 
     ///Sets the axis labels.
     void setAxisLabelsSlot(QString xAxisLabel, QString yAxisLabel);

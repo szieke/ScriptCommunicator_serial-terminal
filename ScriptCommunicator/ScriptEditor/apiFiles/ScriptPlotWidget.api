@@ -22,6 +22,7 @@ ScriptPlotWidget::setInitialAxisRanges(Number xRange, Number yMinValue, Number y
 ScriptPlotWidget::setCurrentAxisRanges(Number xMinValue, Number xMaxValue, Number yMinValue, Number yMaxValue):void \nThe function sets the current ranges of the diagram.\nAutomatic update should be disabled.
 ScriptPlotWidget::getCurrentAxisRanges(void):Object \nReturns an object wich holds the current view ranges of the diagram.\nUseful if the user moves or zoom the view.
 ScriptPlotWidget::addDataToGraph(Number graphIndex, Number x, Number y):void \nThis function adds one point to a graph.
+ScriptPlotWidget::setLineWidth(Number graphIndex, Number width):void \nThis function sets the line width in pixel of a graph.
 ScriptPlotWidget::setAxisLabels(String xAxisLabel, String yAxisLabel):void \nSets the axis label.
 ScriptPlotWidget::showLegend(bool show):void \nThis function shows or hides the diagram legend.
 ScriptPlotWidget::clearGraphs(void):void \nThis function clears the data of all graphs.
