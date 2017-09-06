@@ -16,6 +16,14 @@ typedef struct
     double y;
 }PlotPoint;
 
+///Contains a saved operation.
+typedef struct
+{
+ double value1;
+ double value2;
+ bool isAdded;//True if the saved opertaion is an add data point and false if the save operation is a delete range.
+}SavedPlotOperation;
+
 
 ///Script plot widget.
 class ScriptPlotWidget : public QObject, public ScriptObject
@@ -142,6 +150,10 @@ signals:
     ///Is emitted if the user clicks the clear button.
     ///Scripts can connect to this signal.
     void clearButtonPressedSignal(void);
+
+    ///Is emitted if the user changes the x-range textedit.
+    ///Scripts can connect to this signal.
+    void xRangeChangedSignal(double newValue);
 
     ///Is emitted in clearGraphs.
     ///This signal is private and must not be used inside a script.
@@ -286,10 +298,9 @@ private:
     ///In this vector all max. xAxis values are saved (one per graph).
     std::vector<double> m_xAxisMaxValues;
 
-    ///In this vector all points which are added with addDataToGraphSlot during the update check box
-    ///is not checked (plot window freeze) are saved (one vector per graph). After the update check box is checked again, all
-    ///value are added with addDataToGraphSlot.
-    std::vector<std::vector<PlotPoint>*> m_savePointDuringPlotFreeze;
+    ///In this vector all operations are saved while the update check box is not checked (plot window freeze, one vector per graph). After the update check box is checked again, all
+    ///saved operations are performed.
+    std::vector<std::vector<SavedPlotOperation>*> m_savedOperationsDuringPlotFreeze;
 
     ///The plot area.
     QCustomPlot* m_plotWidget;

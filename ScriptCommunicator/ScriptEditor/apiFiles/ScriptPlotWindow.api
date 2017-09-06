@@ -46,3 +46,4 @@ ScriptPlotWindow::removeDataRangeFromGraph(Number graphIndex, Number xFrom, Numb
 ScriptPlotWindow::plotMousePressSignal.connect(Number xValue, Number yValue, Number mouseButton) \nIs emitted if the user press a mouse button inside the plot.\nNote: mouseButton has the type Qt::MouseButton.
 ScriptPlotWindow::clearButtonPressedSignal.connect(void) \nIs emitted if the user clicks the clear button.
 ScriptPlotWindow::closedSignal.connect(void) \nThis signal is emitted if the plot window has been closed.
+ScriptPlotWindow::xRangeChangedSignal.connect(Number newValue) \nIs emitted if the user changes the value in the x-range textedit.

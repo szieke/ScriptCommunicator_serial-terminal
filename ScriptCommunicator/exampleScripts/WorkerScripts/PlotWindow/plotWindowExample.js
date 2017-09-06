@@ -42,10 +42,14 @@ function clearButtonPressed()
 	x = 0;
 	y = 0;
 }
+
+//Is called if the user clicks on the plot in window 1.
 function plotWindowMousePress(xValue, yValue, button)
 {
 	scriptThread.appendTextToConsole('plotWindowMousePress: ' + xValue + ", " + yValue + ", " + button);
 }
+
+//Is called if the user clicks on the plot in window 2.
 function plotWindow2MousePress(xValue, yValue, button)
 {
 	scriptThread.appendTextToConsole('plotWindow2MousePress: ' + xValue + ", " + yValue + ", " + button);

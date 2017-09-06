@@ -176,9 +176,9 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
 ScriptPlotWidget::~ScriptPlotWidget()
 {
     ///delete all vector vectors in the freeze vector
-    for(uint i = 0; i < m_savePointDuringPlotFreeze.size(); i++)
+    for(uint i = 0; i < m_savedOperationsDuringPlotFreeze.size(); i++)
     {
-        delete m_savePointDuringPlotFreeze[i];
+        delete m_savedOperationsDuringPlotFreeze[i];
     }
 
     m_plotWidget->deleteLater();
@@ -294,6 +294,12 @@ void ScriptPlotWidget::doubleLineEditChangedSlot(QString text)
             }
         }
 
+    }
+
+    if(sender() == m_xRangeLineEdit)
+    {
+        bool isOk;
+        emit xRangeChangedSignal(m_xRangeLineEdit->text().toDouble(&isOk));
     }
 }
 
@@ -500,13 +506,20 @@ void ScriptPlotWidget::updateCheckBoxSlot(int state)
     if(state != 0)
     {
         //add all saved points (during the plot window freeze)
-        for(uint i = 0; i < m_savePointDuringPlotFreeze.size(); i++)
+        for(uint i = 0; i < m_savedOperationsDuringPlotFreeze.size(); i++)
         {
-            for(uint j = 0; j < m_savePointDuringPlotFreeze[i]->size(); j++)
+            for(uint j = 0; j < m_savedOperationsDuringPlotFreeze[i]->size(); j++)
             {
-                addDataToGraphSlot(i, m_savePointDuringPlotFreeze[i]->at(j).x, m_savePointDuringPlotFreeze[i]->at(j).y);
+                if(m_savedOperationsDuringPlotFreeze[i]->at(j).isAdded)
+                {
+                    addDataToGraphSlot(i, m_savedOperationsDuringPlotFreeze[i]->at(j).value1, m_savedOperationsDuringPlotFreeze[i]->at(j).value2);
+                }
+                else
+                {
+                    removeDataRangeFromGraphSlot(i, m_savedOperationsDuringPlotFreeze[i]->at(j).value1, m_savedOperationsDuringPlotFreeze[i]->at(j).value2);
+                }
             }
-            m_savePointDuringPlotFreeze[i]->clear();
+            m_savedOperationsDuringPlotFreeze[i]->clear();
         }
 
         m_savePushButton->setEnabled(false);
@@ -565,15 +578,35 @@ void ScriptPlotWidget::setAxisLabelsSlot(QString xAxisLabel, QString yAxisLabel)
  */
 void ScriptPlotWidget::removeDataRangeFromGraphSlot(int graphIndex, double xFrom, double xTo)
 {
-    if (graphIndex >= 0 && graphIndex < m_plotWidget->graphCount())
+    if(m_updatePlotCheckBox->isChecked())
     {
-        m_plotWidget->graph(graphIndex)->data()->remove(xFrom, xTo);
+        if (graphIndex >= 0 && graphIndex < m_plotWidget->graphCount())
+        {
+            m_plotWidget->graph(graphIndex)->data()->remove(xFrom, xTo);
 
+            if(xTo >= m_xAxisMaxValues[graphIndex])
+            {
+                bool foundRange;
+                QCPRange range = m_plotWidget->graph(graphIndex)->data()->keyRange(foundRange);
+                m_xAxisMaxValues[graphIndex] = range.upper;
+            }
+
+        }
+        else
+        {//invalid index
+            emit appendTextToConsole(Q_FUNC_INFO + QString("graph index is out of bounds:%1").arg(graphIndex));
+        }
     }
     else
-    {//invalid index
-        emit appendTextToConsole(Q_FUNC_INFO + QString("graph index is out of bounds:%1").arg(graphIndex));
-    }
+   {//the plot window is freezed
+
+       //save the point in the freeze array
+       SavedPlotOperation savedOperation;
+       savedOperation.value1 = xFrom;
+       savedOperation.value2 = xTo;
+       savedOperation.isAdded = false;
+       m_savedOperationsDuringPlotFreeze[graphIndex]->push_back(savedOperation);
+   }
 }
 
 /**
@@ -615,10 +648,11 @@ bool ScriptPlotWidget::addDataToGraphSlot(int graphIndex, double x, double y)
     {//the plot window is freezed
 
         //save the point in the freeze array
-        PlotPoint point;
-        point.x = x;
-        point.y = y;
-        m_savePointDuringPlotFreeze[graphIndex]->push_back(point);
+        SavedPlotOperation savedOperation;
+        savedOperation.value1 = x;
+        savedOperation.value2 = y;
+        savedOperation.isAdded = true;
+        m_savedOperationsDuringPlotFreeze[graphIndex]->push_back(savedOperation);
     }
 
     return hasSucceeded;
@@ -876,8 +910,8 @@ void ScriptPlotWidget::addGraphSlot(QString color, QString penStyle, QString nam
 
     m_xAxisMaxValues.push_back(0);
 
-    std::vector<PlotPoint>* vec = new std::vector<PlotPoint>();
-    m_savePointDuringPlotFreeze.push_back(vec);
+    std::vector<SavedPlotOperation>* vec = new std::vector<SavedPlotOperation>();
+    m_savedOperationsDuringPlotFreeze.push_back(vec);
 
     //Create and add the visibility check box.
     QCheckBox* box = new QCheckBox(m_plotWidget);

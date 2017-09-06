@@ -50,6 +50,9 @@ public:
         connect(m_plotWindow->getWidget(), SIGNAL(clearButtonPressedSignal()),
                 this, SIGNAL(clearButtonPressedSignal()), Qt::QueuedConnection);
 
+        connect(m_plotWindow->getWidget(), SIGNAL(xRangeChangedSignal(double)),
+                this, SIGNAL(xRangeChangedSignal(double)), Qt::QueuedConnection);
+
         connect(m_plotWindow->getWidget(), SIGNAL(plotMousePressSignal(double,double,quint32)),
                 this, SIGNAL(plotMousePressSignal(double,double,quint32)), Qt::QueuedConnection);
 
@@ -160,6 +163,10 @@ Q_SIGNALS:
     ///Is emitted if the user clicks the clear button.
     ///Scripts can connect to this signal.
     void clearButtonPressedSignal(void);
+
+    ///Is emitted if the user changes the x-range textedit.
+    ///Scripts can connect to this signal.
+    void xRangeChangedSignal(double newValue);
 
     ///This signal is emitted if the plot window has been closed.
     ///Scripts can connect a function to this signal.

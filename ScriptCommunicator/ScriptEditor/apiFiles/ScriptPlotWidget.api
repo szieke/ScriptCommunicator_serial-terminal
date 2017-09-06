@@ -32,3 +32,4 @@ ScriptPlotWidget::setLineStyle(Number graphIndex, String style):void \nSets the 
 ScriptPlotWidget::removeDataRangeFromGraph(Number graphIndex, Number xFrom, Number xTo):void \nRemoves all data poNumbers with (sort-)keys between xFrom and xTo.\nIf xFrom is greater or equal to xTo, the function does nothing.
 ScriptPlotWidget::plotMousePressSignal.connect(Number xValue, Number yValue, Number mouseButton) \nIs emitted if the user press a mouse button inside the plot.\nNote: mouseButton has the type Qt::MouseButton.
 ScriptPlotWidget::clearButtonPressedSignal.connect(void) \nIs emitted if the user clicks the clear button.
+ScriptPlotWidget::xRangeChangedSignal.connect(Number newValue) \nIs emitted if the user changes the value in the x-range textedit.
