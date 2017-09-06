@@ -668,6 +668,62 @@ bool ScriptPlotWidget::addDataToGraphSlot(int graphIndex, double x, double y)
 }
 
 /**
+ * This function gets several data points from a graph of the diagram.
+ * @param graphIndex
+ *     The index off the target graph.
+ * @param x
+ *      The target x value range.
+ * @param count
+ *      Number of points to grab. If negative travels backwards.
+ * @return
+ *      Array of found x and y pairs.
+ */
+QScriptValue ScriptPlotWidget::getDataFromGraph(int graphIndex, double x, int count)
+{
+    QScriptValue ret = m_scriptThread->getScriptEngine()->newArray();
+
+    if (graphIndex >= 0 && graphIndex < m_plotWidget->graphCount())
+    {
+        QCPGraphDataContainer::const_iterator beg = m_plotWidget->graph(graphIndex)->data()->constBegin();
+        QCPGraphDataContainer::const_iterator end = m_plotWidget->graph(graphIndex)->data()->constEnd();
+        QCPGraphDataContainer::const_iterator it = m_plotWidget->graph(graphIndex)->data()->findBegin(x, false);
+
+        int idx = 0;
+
+        // get all items until count items has been shifted out or no more items left
+        while ((it != end) && (count != 0))
+        {
+            QScriptValue value = m_scriptThread->getScriptEngine()->newObject();
+            value.setProperty("x", it->key);
+            value.setProperty("y", it->value);
+            ret.setProperty(idx, value);
+
+            // if reverse traveling is selected abort after first item has been processed
+            if (it == beg)
+                break;
+
+            idx++;
+
+            if (count  > 0)
+            {
+                count--;
+                it++;
+            }
+            else
+            {
+                count++;
+                it--;
+            }
+        }
+    }
+    else
+    {//invalid index
+        emit appendTextToConsole(Q_FUNC_INFO + QString("graph index is out of bounds:%1").arg(graphIndex));
+    }
+    return ret;
+}
+
+/**
  * Sets the visual appearance of single data points in the plot.
  *
  * @param graphIndex

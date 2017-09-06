@@ -61,9 +61,11 @@ public:
     ///The function gets the current ranges of the diagram.
     Q_INVOKABLE QScriptValue getCurrentAxisRanges(void);
 
-    ///This function sets the line style of a graph.
+    ///This function adds one point to a graph.
     Q_INVOKABLE void addDataToGraph(int graphIndex, double x, double y){emit addDataToGraphSignal(graphIndex, x, y);}
 
+    ///This function gets several data points from a graph of the diagram.
+    Q_INVOKABLE QScriptValue getDataFromGraph(int graphIndex, double x, int count = 1);
 
     /**
      * Removes all data points with (sort-)keys between xFrom and xTo. If
@@ -95,7 +97,7 @@ public:
     Q_INVOKABLE void setScatterStyle(int graphIndex, QString style, double size){emit setScatterStyleSignal(graphIndex, style, size);}
 
     /**
-     * This function adds one point to a graph.
+     * This function sets the line style of a graph.
      * Possible values for style:
      *      - None: Data points are not connected with any lines (e.g. data only represented
      *              with symbols according to the scatter style (is set with setScatterStyle)).
