@@ -122,9 +122,6 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
     connect(this, SIGNAL(addDataToGraphSignal(int, double, double)),
             this, SLOT(addDataToGraphSlot(int, double, double)), Qt::QueuedConnection);
 
-    connect(this, SIGNAL(removeDataFromGraphSignal(int,double)),
-            this, SLOT(removeDataFromGraphSlot(int,double)), Qt::QueuedConnection);
-
     connect(this, SIGNAL(removeDataRangeFromGraphSignal(int,double,double)),
             this, SLOT(removeDataRangeFromGraphSlot(int,double,double)), Qt::QueuedConnection);
 
