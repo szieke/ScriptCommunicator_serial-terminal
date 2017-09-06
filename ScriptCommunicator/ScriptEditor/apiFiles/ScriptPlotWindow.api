@@ -30,7 +30,7 @@ ScriptPlotWindow::getClassName(void):String \nReturns the class name of this obj
 ScriptPlotWindow::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
 ScriptPlotWindow::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
 ScriptPlotWindow::addGraph(String color, String penStyle, String name):Number \nThis function adds a graph to the diagram.
-ScriptPlotWindow::setInitialAxisRanges(Number xRange, Number yMinValue, Number ymaxValue):void \nThis function sets the initial ranges of the diagram.
+ScriptPlotWindow::setInitialAxisRanges(Number xRange, Number yMinValue, Number ymaxValue, bool addSpaceAfterBiggestValues=true):void \nThis function sets the initial ranges of the diagram.
 ScriptPlotWindow::addDataToGraph(Number graphIndex, Number x, Number y):void \nThis function adds one point to a graph.
 ScriptPlotWindow::setAxisLabels(String xAxisLabel, String yAxisLabel):void \nSets the axis label.
 ScriptPlotWindow::showLegend(bool show):void \nThis function shows or hides the diagram legend.

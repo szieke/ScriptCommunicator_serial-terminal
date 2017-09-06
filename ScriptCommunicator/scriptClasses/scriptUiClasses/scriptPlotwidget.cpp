@@ -10,7 +10,7 @@
  *      The layout of the group box in which the plot widget resides.
  */
 ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scriptWindow, QHBoxLayout *hLayout) :
-    QObject(0), m_scriptThread(scriptThread), m_maxDataPointsPerGraph(10000000)
+    QObject(0), m_scriptThread(scriptThread), m_maxDataPointsPerGraph(10000000), m_addSpaceAfterBiggestValues(false)
 {
 
     Qt::ConnectionType directConnectionType = m_scriptThread->runsInDebugger() ? Qt::DirectConnection : Qt::BlockingQueuedConnection ;
@@ -116,8 +116,8 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
     connect(this, SIGNAL(addGraphSignal(QString, QString, QString, int*)),
             this, SLOT(addGraphSlot(QString, QString, QString, int*)), directConnectionType);
 
-    connect(this, SIGNAL(setInitialAxisRangesSignal(double, double, double)),
-            this, SLOT(setInitialAxisRangesSlot(double, double, double)), Qt::QueuedConnection);
+    connect(this, SIGNAL(setInitialAxisRangesSignal(double, double, double, bool)),
+            this, SLOT(setInitialAxisRangesSlot(double, double, double, bool)), Qt::QueuedConnection);
 
     connect(this, SIGNAL(addDataToGraphSignal(int, double, double)),
             this, SLOT(addDataToGraphSlot(int, double, double)), Qt::QueuedConnection);
@@ -230,7 +230,7 @@ void ScriptPlotWidget::removeAllGraphsSlot(void)
 {
     m_plotWidget->clearGraphs();
     m_xAxisMaxValues.clear();
-    m_plotWidget->xAxis->setRange(m_xRangeLineEdit->text().toDouble(),  m_xRangeLineEdit->text().toDouble() / 10);
+    m_plotWidget->xAxis->setRange(m_xRangeLineEdit->text().toDouble() * -1,  0);
     m_plotWidget->yAxis->setRange(m_yMinRangeLineEdit->text().toDouble(), m_yMaxRangeLineEdit->text().toDouble());
     m_plotWidget->replot();
 
@@ -525,14 +525,17 @@ void ScriptPlotWidget::updateCheckBoxSlot(int state)
  *      The min. values of the y axis.
  * @param yMaxValue
  *      The max. value of the y axis.
+ * @param addSpaceAfterBiggestValues
+ *      True if a space shall be added after the biggest value of a graph.
  */
-void ScriptPlotWidget::setInitialAxisRangesSlot(double xRange, double yMinValue, double yMaxValue)
+void ScriptPlotWidget::setInitialAxisRangesSlot(double xRange, double yMinValue, double yMaxValue, bool addSpaceAfterBiggestValues)
 {
+    m_addSpaceAfterBiggestValues = addSpaceAfterBiggestValues;
     m_xRangeLineEdit->setText(QString("%1").arg(xRange));
     m_yMinRangeLineEdit->setText(QString("%1").arg(yMinValue));
     m_yMaxRangeLineEdit->setText(QString("%1").arg(yMaxValue));
     m_plotWidget->yAxis->setRange(yMinValue, yMaxValue);
-    m_plotWidget->xAxis->setRange(0, xRange);
+    m_plotWidget->xAxis->setRange(xRange * -1, 0);
 }
 
 /**
@@ -597,7 +600,8 @@ bool ScriptPlotWidget::addDataToGraphSlot(int graphIndex, double x, double y)
             if(x > m_xAxisMaxValues[graphIndex])
             {
                 m_xAxisMaxValues[graphIndex] = x;
-                m_plotWidget->xAxis->setRange(x - m_xRangeLineEdit->text().toDouble(), x+ m_xRangeLineEdit->text().toDouble() / 10);
+                m_plotWidget->xAxis->setRange(x - m_xRangeLineEdit->text().toDouble(),
+                                              m_addSpaceAfterBiggestValues ? x + (m_xRangeLineEdit->text().toDouble() / 10) : x);
             }
         }
         else
@@ -938,7 +942,8 @@ void ScriptPlotWidget::plotTimeoutSlot()
     {
         for(auto x : m_xAxisMaxValues)
         {
-            m_plotWidget->xAxis->setRange(x - m_xRangeLineEdit->text().toDouble(), x+ m_xRangeLineEdit->text().toDouble() / 10);
+            m_plotWidget->xAxis->setRange(x - m_xRangeLineEdit->text().toDouble(),
+                                          m_addSpaceAfterBiggestValues ? x + (m_xRangeLineEdit->text().toDouble() / 10) : x);
         }
         m_plotWidget->yAxis->setRange(m_yMinRangeLineEdit->text().toDouble(), m_yMaxRangeLineEdit->text().toDouble());
         m_plotWidget->replot();

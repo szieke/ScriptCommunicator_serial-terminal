@@ -77,7 +77,8 @@ public:
     }
 
     ///The slot function sets the initial ranges of the diagram.
-    Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue){emit m_plotWindow->getWidget()->setInitialAxisRangesSignal(xRange, yMinValue, ymaxValue);}
+    Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue, bool addSpaceAfterBiggestValues = true)
+    {emit m_plotWindow->getWidget()->setInitialAxisRangesSignal(xRange, yMinValue, ymaxValue, addSpaceAfterBiggestValues);}
 
     ///This slot function adds one point to a graph.
     Q_INVOKABLE void addDataToGraph(int graphIndex, double x, double y){emit m_plotWindow->getWidget()->addDataToGraphSignal(graphIndex, x, y);}

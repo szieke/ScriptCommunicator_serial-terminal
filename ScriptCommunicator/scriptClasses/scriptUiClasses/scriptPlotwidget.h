@@ -53,7 +53,8 @@ public:
     }
 
     ///The function sets the initial ranges of the diagram.
-    Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue){emit setInitialAxisRangesSignal(xRange, yMinValue, ymaxValue);}
+    Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue, bool addSpaceAfterBiggestValues = true)
+    {emit setInitialAxisRangesSignal(xRange, yMinValue, ymaxValue, addSpaceAfterBiggestValues);}
 
     ///This function sets the line style of a graph.
     Q_INVOKABLE void addDataToGraph(int graphIndex, double x, double y){emit addDataToGraphSignal(graphIndex, x, y);}
@@ -156,7 +157,7 @@ signals:
 
     ///Is connected with PlotWindow::setInitialAxisRangesSlot (sets the ranges of the diagram).
     ///This signal is private and must not be used inside a script.
-    void setInitialAxisRangesSignal(double xRange, double yMinValue, double ymaxValue);
+    void setInitialAxisRangesSignal(double xRange, double yMinValue, double ymaxValue, bool addSpaceAfterBiggestValues);
 
     ///Is connected with PlotWindow::addDataToGraphSlot (adds one point to a given specific graph).
     ///This signal is private and must not be used inside a script.
@@ -209,7 +210,7 @@ public slots:
     void addGraphSlot(QString color, QString penStyle, QString name, int* graphIndex);
 
     ///The slot function sets the initial ranges of the diagram.
-    void setInitialAxisRangesSlot(double xRange, double yMinValue, double ymaxValue);
+    void setInitialAxisRangesSlot(double xRange, double yMinValue, double ymaxValue, bool addSpaceAfterBiggestValues);
 
     ///This slot function adds one point to a graph.
     bool addDataToGraphSlot(int graphIndex, double x, double y);
@@ -337,6 +338,9 @@ private:
 
     ///The max. number of data points per graph.
     qint32 m_maxDataPointsPerGraph;
+
+    ///True if a space shall be added after the biggest value of a graph.
+    bool m_addSpaceAfterBiggestValues;
 };
 
 
