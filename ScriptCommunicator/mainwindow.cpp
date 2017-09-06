@@ -4381,39 +4381,51 @@ void MainWindow::exitScriptCommunicator(void)
 }
 
 /**
- * Returns the console from the curretn tab.
+ * Returns the console (QTextWidget) from the current tab.
  * Return NULL if the current tab has no console.
  */
 QTextEdit* MainWindow::getConsoleFromCurrentTab(QWidget* widget)
 {
     QTextEdit* textEdit = 0;
-    QObjectList list = widget->children();
-    for(qint32 i = 0; i < list.size(); i++)
+
+    //Check if the focused widget is a QTextEdit.
+    QWidget* focusedWidget = QApplication::focusWidget();
+    if(focusedWidget)
     {
-        textEdit = dynamic_cast<QTextEdit*>(list[i]);
-        if(textEdit == 0)
+        textEdit = dynamic_cast<QTextEdit*>(focusedWidget);
+    }
+
+    if(textEdit == 0)
+    {
+        //Check if a child from widget is a QTextEdit
+        QObjectList list = widget->children();
+        for(qint32 i = 0; i < list.size(); i++)
         {
-            QObjectList subChilds = list[i]->children();
-            if(subChilds.length() > 0)
+            textEdit = dynamic_cast<QTextEdit*>(list[i]);
+            if(textEdit == 0)
             {
-                for(qint32 j = 0; j < subChilds.size(); j++)
+                QObjectList subChilds = list[i]->children();
+                if(subChilds.length() > 0)
                 {
-                    QWidget* subChild = dynamic_cast<QWidget*>(subChilds[j]);
-                    if(subChild)
+                    for(qint32 j = 0; j < subChilds.size(); j++)
                     {
-                        textEdit = getConsoleFromCurrentTab(subChild);
-                        if(textEdit)
+                        QWidget* subChild = dynamic_cast<QWidget*>(subChilds[j]);
+                        if(subChild)
                         {
-                            break;
+                            textEdit = getConsoleFromCurrentTab(subChild);
+                            if(textEdit)
+                            {
+                                break;
+                            }
                         }
                     }
                 }
             }
-        }
 
-        if(textEdit)
-        {
-            break;
+            if(textEdit)
+            {
+                break;
+            }
         }
     }
     return textEdit;
@@ -4441,15 +4453,6 @@ void MainWindow::saveConsoleSlot()
     if(widget)
     {
         textEdit = getConsoleFromCurrentTab(widget);
-    }
-
-    if(textEdit == 0)
-    {
-        QWidget* widget = QApplication::focusWidget();
-        if(widget)
-        {
-            textEdit = dynamic_cast<QTextEdit*>(widget);
-        }
     }
 
     if(textEdit)
@@ -4735,15 +4738,6 @@ void MainWindow::printConsoleSlot()
     if(widget)
     {
        textEdit = getConsoleFromCurrentTab(widget);
-    }
-
-    if(textEdit == 0)
-    {
-        QWidget* widget = QApplication::focusWidget();
-        if(widget)
-        {
-            textEdit = dynamic_cast<QTextEdit*>(widget);
-        }
     }
 
     if(textEdit)

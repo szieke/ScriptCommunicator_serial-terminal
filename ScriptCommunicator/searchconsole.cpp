@@ -101,15 +101,6 @@ void SearchConsole::activateDeactiveSearchButton()
         textEdit = m_mainWindow->getConsoleFromCurrentTab(widget);
     }
 
-    if(textEdit == 0)
-    {
-        QWidget* widget = QApplication::focusWidget();
-        if(widget)
-        {
-            textEdit = dynamic_cast<QTextEdit*>(widget);
-        }
-    }
-
     if(textEdit)
     {//The current tab has a console.
 
@@ -140,15 +131,6 @@ void SearchConsole::findButtonClickedSlot(void)
     if(widget)
     {
         textEdit = m_mainWindow->getConsoleFromCurrentTab(widget);
-    }
-
-    if(textEdit == 0)
-    {
-        QWidget* widget = QApplication::focusWidget();
-        if(widget)
-        {
-            textEdit = dynamic_cast<QTextEdit*>(widget);
-        }
     }
 
     if(textEdit && !m_mainWindow->m_userInterface->findWhatComboBox->currentText().isEmpty())
