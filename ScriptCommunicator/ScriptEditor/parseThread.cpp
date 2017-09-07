@@ -851,6 +851,11 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
 
         if (!m_creatorObjects.contains(creatorName))
         {
+            creatorName = split[0];
+        }
+
+        if (!m_creatorObjects.contains(creatorName))
+        {
             creatorName = "";
 
             for(int i = 0; i < (split.size() - 1); i++)
@@ -870,22 +875,26 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
         if (m_creatorObjects.contains(creatorName))
         {
             split[0] = m_creatorObjects[creatorName];
-            split[1] = split[split.size() - 1];
-            bool isArrayIndex = false;
-            if(entry.isObjectArrayIndex)
-            {
-                isArrayIndex = true;
-            }
 
-            if(split[0].startsWith("Array<"))
+            if(split.size() <= 2)
             {
-                split[0].replace("Array<", "");
-                split[0].replace(">", "");
-
-                if(!isArrayIndex)
+                split[1] = split[split.size() - 1];
+                bool isArrayIndex = false;
+                if(entry.isObjectArrayIndex)
                 {
-                    arrayType = split[0];
-                    split[0] = "Array";
+                    isArrayIndex = true;
+                }
+
+                if(split[0].startsWith("Array<"))
+                {
+                    split[0].replace("Array<", "");
+                    split[0].replace(">", "");
+
+                    if(!isArrayIndex)
+                    {
+                        arrayType = split[0];
+                        split[0] = "Array";
+                    }
                 }
             }
         }
@@ -913,30 +922,42 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
                         resultType = arrayType;
                     }
 
-                    addObjectToAutoCompletionList(entry.completeName, resultType, false,
-                            isArray, true);
-
-                    entry.valueType = "";
-
-                    if(isArray)
+                    if(split.size() <= 2)
                     {
-                        entry.valueType = "Array<";
+
+                        addObjectToAutoCompletionList(entry.completeName, resultType, false,
+                                isArray, true);
+
+                        entry.valueType = "";
+
+                        if(isArray)
+                        {
+                            entry.valueType = "Array<";
+                        }
+                        entry.valueType += resultType;
+
+                        if(isArray)
+                        {
+                            entry.valueType += ">";
+                        }
+
+                        if(entry.valueType == "Array<Dummy>")
+                        {
+                            entry.valueType = "Array";
+                        }
+
+                        m_creatorObjects[entry.completeName] = entry.valueType;
                     }
-                    entry.valueType += resultType;
-
-                    if(isArray)
+                    else
                     {
-                        entry.valueType += ">";
-                    }
-
-                    if(entry.valueType == "Array<Dummy>")
-                    {
-                        entry.valueType = "Array";
+                        entry.valueType = resultType;
+                        for(int splitIndex = 2; splitIndex < split.size(); splitIndex++)
+                        {
+                            entry.valueType += "." + split[splitIndex];
+                        }
                     }
 
                     entryChanged = true;
-
-                    m_creatorObjects[entry.completeName] = entry.valueType;
 
                 }
             }
