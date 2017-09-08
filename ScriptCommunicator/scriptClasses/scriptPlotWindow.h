@@ -50,6 +50,9 @@ public:
         connect(m_plotWindow->getWidget(), SIGNAL(clearButtonPressedSignal()),
                 this, SIGNAL(clearButtonPressedSignal()), Qt::QueuedConnection);
 
+        connect(m_plotWindow->getWidget(), SIGNAL(xRangeChangedSignal(double)),
+                this, SIGNAL(xRangeChangedSignal(double)), Qt::QueuedConnection);
+
         connect(m_plotWindow->getWidget(), SIGNAL(plotMousePressSignal(double,double,quint32)),
                 this, SIGNAL(plotMousePressSignal(double,double,quint32)), Qt::QueuedConnection);
 
@@ -77,7 +80,8 @@ public:
     }
 
     ///The slot function sets the initial ranges of the diagram.
-    Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue){emit m_plotWindow->getWidget()->setInitialAxisRangesSignal(xRange, yMinValue, ymaxValue);}
+    Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue, bool addSpaceAfterBiggestValues = true)
+    {emit m_plotWindow->getWidget()->setInitialAxisRangesSignal(xRange, yMinValue, ymaxValue, addSpaceAfterBiggestValues);}
 
     ///The function sets the current ranges of the diagram.
     Q_INVOKABLE void setCurrentAxisRanges(double xMinValue, double xMaxValue, double yMinValue, double yMaxValue){m_plotWindow->getWidget()->setCurrentAxisRanges(xMinValue, xMaxValue, yMinValue, yMaxValue);}
@@ -178,6 +182,10 @@ Q_SIGNALS:
     ///Is emitted if the user clicks the clear button.
     ///Scripts can connect to this signal.
     void clearButtonPressedSignal(void);
+
+    ///Is emitted if the user changes the x-range textedit.
+    ///Scripts can connect to this signal.
+    void xRangeChangedSignal(double newValue);
 
     ///This signal is emitted if the plot window has been closed.
     ///Scripts can connect a function to this signal.

@@ -18,7 +18,7 @@ ScriptPlotWidget::getClassName(void):String \nReturns the class name of this obj
 ScriptPlotWidget::getObjectName(void):String \nReturns the name of this object (UI_'object name in the ui file').\nNote: This function returns only a not empty string for GUI elements from ui files\nor if the function setObjectName has been called for the current object.
 ScriptPlotWidget::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
 ScriptPlotWidget::addGraph(String color, String penStyle, String name):Number \nThis function adds a graph to the diagram.
-ScriptPlotWidget::setInitialAxisRanges(Number xRange, Number yMinValue, Number ymaxValue):void \nThis function sets the initial ranges of the diagram.
+ScriptPlotWidget::setInitialAxisRanges(Number xRange, Number yMinValue, Number ymaxValue, bool addSpaceAfterBiggestValues=true):void \nThis function sets the initial ranges of the diagram.
 ScriptPlotWidget::setCurrentAxisRanges(Number xMinValue, Number xMaxValue, Number yMinValue, Number yMaxValue):void \nThe function sets the current ranges of the diagram.\nAutomatic update should be disabled.
 ScriptPlotWidget::getCurrentAxisRanges(void):Object \nReturns an object wich holds the current view ranges of the diagram.\nUseful if the user moves or zoom the view.
 ScriptPlotWidget::addDataToGraph(Number graphIndex, Number x, Number y):void \nThis function adds one point to a graph.
@@ -39,3 +39,4 @@ ScriptPlotWidget::setLineStyle(Number graphIndex, String style):void \nSets the 
 ScriptPlotWidget::removeDataRangeFromGraph(Number graphIndex, Number xFrom, Number xTo):void \nRemoves all data poNumbers with (sort-)keys between xFrom and xTo.\nIf xFrom is greater or equal to xTo, the function does nothing.
 ScriptPlotWidget::plotMousePressSignal.connect(Number xValue, Number yValue, Number mouseButton) \nIs emitted if the user press a mouse button inside the plot.\nNote: mouseButton has the type Qt::MouseButton.
 ScriptPlotWidget::clearButtonPressedSignal.connect(void) \nIs emitted if the user clicks the clear button.
+ScriptPlotWidget::xRangeChangedSignal.connect(Number newValue) \nIs emitted if the user changes the value in the x-range textedit.

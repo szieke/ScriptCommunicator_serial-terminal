@@ -16,6 +16,14 @@ typedef struct
     double y;
 }PlotPoint;
 
+///Contains a saved operation.
+typedef struct
+{
+ double value1;
+ double value2;
+ bool isAdded;//True if the saved opertaion is an add data point and false if the save operation is a delete range.
+}SavedPlotOperation;
+
 
 ///Script plot widget.
 class ScriptPlotWidget : public QObject, public ScriptObject
@@ -53,7 +61,8 @@ public:
     }
 
     ///The function sets the initial ranges of the diagram.
-    Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue){emit setInitialAxisRangesSignal(xRange, yMinValue, ymaxValue);}
+    Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue, bool addSpaceAfterBiggestValues = true)
+    {emit setInitialAxisRangesSignal(xRange, yMinValue, ymaxValue, addSpaceAfterBiggestValues);}
 
     ///The function sets the current ranges of the diagram.
     Q_INVOKABLE void setCurrentAxisRanges(double xMinValue, double xMaxValue, double yMinValue, double yMaxValue);
@@ -160,6 +169,10 @@ signals:
     ///Scripts can connect to this signal.
     void clearButtonPressedSignal(void);
 
+    ///Is emitted if the user changes the x-range textedit.
+    ///Scripts can connect to this signal.
+    void xRangeChangedSignal(double newValue);
+
     ///Is emitted in clearGraphs.
     ///This signal is private and must not be used inside a script.
     void clearGraphsSignal(void);
@@ -174,7 +187,7 @@ signals:
 
     ///Is connected with PlotWindow::setInitialAxisRangesSlot (sets the ranges of the diagram).
     ///This signal is private and must not be used inside a script.
-    void setInitialAxisRangesSignal(double xRange, double yMinValue, double ymaxValue);
+    void setInitialAxisRangesSignal(double xRange, double yMinValue, double ymaxValue, bool addSpaceAfterBiggestValues);
 
     ///Is connected with PlotWindow::addDataToGraphSlot (adds one point to a given specific graph).
     ///This signal is private and must not be used inside a script.
@@ -231,7 +244,7 @@ public slots:
     void addGraphSlot(QString color, QString penStyle, QString name, int* graphIndex);
 
     ///The slot function sets the initial ranges of the diagram.
-    void setInitialAxisRangesSlot(double xRange, double yMinValue, double ymaxValue);
+    void setInitialAxisRangesSlot(double xRange, double yMinValue, double ymaxValue, bool addSpaceAfterBiggestValues);
 
     ///This slot function adds one point to a graph.
     bool addDataToGraphSlot(int graphIndex, double x, double y);
@@ -310,10 +323,9 @@ private:
     ///In this vector all max. xAxis values are saved (one per graph).
     std::vector<double> m_xAxisMaxValues;
 
-    ///In this vector all points which are added with addDataToGraphSlot during the update check box
-    ///is not checked (plot window freeze) are saved (one vector per graph). After the update check box is checked again, all
-    ///value are added with addDataToGraphSlot.
-    std::vector<std::vector<PlotPoint>*> m_savePointDuringPlotFreeze;
+    ///In this vector all operations are saved while the update check box is not checked (plot window freeze, one vector per graph). After the update check box is checked again, all
+    ///saved operations are performed.
+    std::vector<std::vector<SavedPlotOperation>*> m_savedOperationsDuringPlotFreeze;
 
     ///The plot area.
     QCustomPlot* m_plotWidget;
@@ -362,6 +374,9 @@ private:
 
     ///The max. number of data points per graph.
     qint32 m_maxDataPointsPerGraph;
+
+    ///True if a space shall be added after the biggest value of a graph.
+    bool m_addSpaceAfterBiggestValues;
 };
 
 

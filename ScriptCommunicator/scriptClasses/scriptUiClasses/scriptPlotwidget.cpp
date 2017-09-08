@@ -10,7 +10,7 @@
  *      The layout of the group box in which the plot widget resides.
  */
 ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scriptWindow, QHBoxLayout *hLayout) :
-    QObject(0), m_scriptThread(scriptThread), m_maxDataPointsPerGraph(10000000)
+    QObject(0), m_scriptThread(scriptThread), m_maxDataPointsPerGraph(10000000), m_addSpaceAfterBiggestValues(false)
 {
 
     Qt::ConnectionType directConnectionType = m_scriptThread->runsInDebugger() ? Qt::DirectConnection : Qt::BlockingQueuedConnection ;
@@ -116,14 +116,11 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
     connect(this, SIGNAL(addGraphSignal(QString, QString, QString, int*)),
             this, SLOT(addGraphSlot(QString, QString, QString, int*)), directConnectionType);
 
-    connect(this, SIGNAL(setInitialAxisRangesSignal(double, double, double)),
-            this, SLOT(setInitialAxisRangesSlot(double, double, double)), Qt::QueuedConnection);
+    connect(this, SIGNAL(setInitialAxisRangesSignal(double, double, double, bool)),
+            this, SLOT(setInitialAxisRangesSlot(double, double, double, bool)), Qt::QueuedConnection);
 
     connect(this, SIGNAL(addDataToGraphSignal(int, double, double)),
             this, SLOT(addDataToGraphSlot(int, double, double)), Qt::QueuedConnection);
-
-    connect(this, SIGNAL(removeDataFromGraphSignal(int,double)),
-            this, SLOT(removeDataFromGraphSlot(int,double)), Qt::QueuedConnection);
 
     connect(this, SIGNAL(removeDataRangeFromGraphSignal(int,double,double)),
             this, SLOT(removeDataRangeFromGraphSlot(int,double,double)), Qt::QueuedConnection);
@@ -182,9 +179,9 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
 ScriptPlotWidget::~ScriptPlotWidget()
 {
     ///delete all vector vectors in the freeze vector
-    for(uint i = 0; i < m_savePointDuringPlotFreeze.size(); i++)
+    for(uint i = 0; i < m_savedOperationsDuringPlotFreeze.size(); i++)
     {
-        delete m_savePointDuringPlotFreeze[i];
+        delete m_savedOperationsDuringPlotFreeze[i];
     }
 
     m_plotWidget->deleteLater();
@@ -236,7 +233,7 @@ void ScriptPlotWidget::removeAllGraphsSlot(void)
 {
     m_plotWidget->clearGraphs();
     m_xAxisMaxValues.clear();
-    m_plotWidget->xAxis->setRange(m_xRangeLineEdit->text().toDouble(),  m_xRangeLineEdit->text().toDouble() / 10);
+    m_plotWidget->xAxis->setRange(m_xRangeLineEdit->text().toDouble() * -1,  0);
     m_plotWidget->yAxis->setRange(m_yMinRangeLineEdit->text().toDouble(), m_yMaxRangeLineEdit->text().toDouble());
     m_plotWidget->replot();
 
@@ -304,6 +301,12 @@ void ScriptPlotWidget::doubleLineEditChangedSlot(QString text)
             }
         }
 
+    }
+
+    if(sender() == m_xRangeLineEdit)
+    {
+        bool isOk;
+        emit xRangeChangedSignal(m_xRangeLineEdit->text().toDouble(&isOk));
     }
 }
 
@@ -510,13 +513,20 @@ void ScriptPlotWidget::updateCheckBoxSlot(int state)
     if(state != 0)
     {
         //add all saved points (during the plot window freeze)
-        for(uint i = 0; i < m_savePointDuringPlotFreeze.size(); i++)
+        for(uint i = 0; i < m_savedOperationsDuringPlotFreeze.size(); i++)
         {
-            for(uint j = 0; j < m_savePointDuringPlotFreeze[i]->size(); j++)
+            for(uint j = 0; j < m_savedOperationsDuringPlotFreeze[i]->size(); j++)
             {
-                addDataToGraphSlot(i, m_savePointDuringPlotFreeze[i]->at(j).x, m_savePointDuringPlotFreeze[i]->at(j).y);
+                if(m_savedOperationsDuringPlotFreeze[i]->at(j).isAdded)
+                {
+                    addDataToGraphSlot(i, m_savedOperationsDuringPlotFreeze[i]->at(j).value1, m_savedOperationsDuringPlotFreeze[i]->at(j).value2);
+                }
+                else
+                {
+                    removeDataRangeFromGraphSlot(i, m_savedOperationsDuringPlotFreeze[i]->at(j).value1, m_savedOperationsDuringPlotFreeze[i]->at(j).value2);
+                }
             }
-            m_savePointDuringPlotFreeze[i]->clear();
+            m_savedOperationsDuringPlotFreeze[i]->clear();
         }
 
         m_savePushButton->setEnabled(false);
@@ -535,14 +545,17 @@ void ScriptPlotWidget::updateCheckBoxSlot(int state)
  *      The min. values of the y axis.
  * @param yMaxValue
  *      The max. value of the y axis.
+ * @param addSpaceAfterBiggestValues
+ *      True if a space shall be added after the biggest value of a graph.
  */
-void ScriptPlotWidget::setInitialAxisRangesSlot(double xRange, double yMinValue, double yMaxValue)
+void ScriptPlotWidget::setInitialAxisRangesSlot(double xRange, double yMinValue, double yMaxValue, bool addSpaceAfterBiggestValues)
 {
+    m_addSpaceAfterBiggestValues = addSpaceAfterBiggestValues;
     m_xRangeLineEdit->setText(QString("%1").arg(xRange));
     m_yMinRangeLineEdit->setText(QString("%1").arg(yMinValue));
     m_yMaxRangeLineEdit->setText(QString("%1").arg(yMaxValue));
     m_plotWidget->yAxis->setRange(yMinValue, yMaxValue);
-    m_plotWidget->xAxis->setRange(0, xRange);
+    m_plotWidget->xAxis->setRange(xRange * -1, 0);
 }
 
 /**
@@ -609,15 +622,35 @@ void ScriptPlotWidget::setAxisLabelsSlot(QString xAxisLabel, QString yAxisLabel)
  */
 void ScriptPlotWidget::removeDataRangeFromGraphSlot(int graphIndex, double xFrom, double xTo)
 {
-    if (graphIndex >= 0 && graphIndex < m_plotWidget->graphCount())
+    if(m_updatePlotCheckBox->isChecked())
     {
-        m_plotWidget->graph(graphIndex)->data()->remove(xFrom, xTo);
+        if (graphIndex >= 0 && graphIndex < m_plotWidget->graphCount())
+        {
+            m_plotWidget->graph(graphIndex)->data()->remove(xFrom, xTo);
 
+            if(xTo >= m_xAxisMaxValues[graphIndex])
+            {
+                bool foundRange;
+                QCPRange range = m_plotWidget->graph(graphIndex)->data()->keyRange(foundRange);
+                m_xAxisMaxValues[graphIndex] = range.upper;
+            }
+
+        }
+        else
+        {//invalid index
+            emit appendTextToConsole(Q_FUNC_INFO + QString("graph index is out of bounds:%1").arg(graphIndex));
+        }
     }
     else
-    {//invalid index
-        emit appendTextToConsole(Q_FUNC_INFO + QString("graph index is out of bounds:%1").arg(graphIndex));
-    }
+   {//the plot window is freezed
+
+       //save the point in the freeze array
+       SavedPlotOperation savedOperation;
+       savedOperation.value1 = xFrom;
+       savedOperation.value2 = xTo;
+       savedOperation.isAdded = false;
+       m_savedOperationsDuringPlotFreeze[graphIndex]->push_back(savedOperation);
+   }
 }
 
 /**
@@ -644,7 +677,8 @@ bool ScriptPlotWidget::addDataToGraphSlot(int graphIndex, double x, double y)
             if(x > m_xAxisMaxValues[graphIndex])
             {
                 m_xAxisMaxValues[graphIndex] = x;
-                m_plotWidget->xAxis->setRange(x - m_xRangeLineEdit->text().toDouble(), x+ m_xRangeLineEdit->text().toDouble() / 10);
+                m_plotWidget->xAxis->setRange(x - m_xRangeLineEdit->text().toDouble(),
+                                              m_addSpaceAfterBiggestValues ? x + (m_xRangeLineEdit->text().toDouble() / 10) : x);
             }
         }
         else
@@ -658,10 +692,11 @@ bool ScriptPlotWidget::addDataToGraphSlot(int graphIndex, double x, double y)
     {//the plot window is freezed
 
         //save the point in the freeze array
-        PlotPoint point;
-        point.x = x;
-        point.y = y;
-        m_savePointDuringPlotFreeze[graphIndex]->push_back(point);
+        SavedPlotOperation savedOperation;
+        savedOperation.value1 = x;
+        savedOperation.value2 = y;
+        savedOperation.isAdded = true;
+        m_savedOperationsDuringPlotFreeze[graphIndex]->push_back(savedOperation);
     }
 
     return hasSucceeded;
@@ -981,8 +1016,8 @@ void ScriptPlotWidget::addGraphSlot(QString color, QString penStyle, QString nam
 
     m_xAxisMaxValues.push_back(0);
 
-    std::vector<PlotPoint>* vec = new std::vector<PlotPoint>();
-    m_savePointDuringPlotFreeze.push_back(vec);
+    std::vector<SavedPlotOperation>* vec = new std::vector<SavedPlotOperation>();
+    m_savedOperationsDuringPlotFreeze.push_back(vec);
 
     //Create and add the visibility check box.
     QCheckBox* box = new QCheckBox(m_plotWidget);
@@ -1047,7 +1082,8 @@ void ScriptPlotWidget::plotTimeoutSlot()
     {
         for(auto x : m_xAxisMaxValues)
         {
-            m_plotWidget->xAxis->setRange(x - m_xRangeLineEdit->text().toDouble(), x+ m_xRangeLineEdit->text().toDouble() / 10);
+            m_plotWidget->xAxis->setRange(x - m_xRangeLineEdit->text().toDouble(),
+                                          m_addSpaceAfterBiggestValues ? x + (m_xRangeLineEdit->text().toDouble() / 10) : x);
         }
         m_plotWidget->yAxis->setRange(m_yMinRangeLineEdit->text().toDouble(), m_yMaxRangeLineEdit->text().toDouble());
         m_plotWidget->replot();

@@ -13,7 +13,7 @@ UI_TableWidget.insertWidget(1, 1, "LineEdit");
 var lineEdit1 = UI_TableWidget.getWidget(1, 1)
 
 var comboBox = UI_comboLk42;
-var comboString = comboBox.currentText();
+var comboString = comboBox.currentText().split(" ")[0];
 
 var stringResult = conv.byteArrayToString(Array(1,2,3));
 var splitResult = stringResult.split("\n");

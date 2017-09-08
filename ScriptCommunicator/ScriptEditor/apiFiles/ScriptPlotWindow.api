@@ -31,7 +31,7 @@ ScriptPlotWindow::getObjectName(void):String \nReturns the name of this object (
 ScriptPlotWindow::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
 ScriptPlotWindow::addGraph(String color, String penStyle, String name):Number \nThis function adds a graph to the diagram.
 ScriptPlotWindow::getDataFromGraph(int graphIndex, double x, int count):Array \nThis function returns an array of up to count points after the specified x value. If count is negative it collects the values before the specified x value.
-ScriptPlotWindow::setInitialAxisRanges(Number xRange, Number yMinValue, Number ymaxValue):void \nThis function sets the initial ranges of the diagram.
+ScriptPlotWindow::setInitialAxisRanges(Number xRange, Number yMinValue, Number ymaxValue, bool addSpaceAfterBiggestValues=true):void \nThis function sets the initial ranges of the diagram.
 ScriptPlotWindow::setCurrentAxisRanges(Number xMinValue, Number xMaxValue, Number yMinValue, Number yMaxValue):void \nThe function sets the current ranges of the diagram.\nAutomatic update should be disabled.
 ScriptPlotWindow::getCurrentAxisRanges(void):Object \nReturns an object wich holds the current view ranges of the diagram.\nUseful if the user moves or zoom the view.
 ScriptPlotWindow::addDataToGraph(Number graphIndex, Number x, Number y):void \nThis function adds one point to a graph.
@@ -53,3 +53,4 @@ ScriptPlotWindow::removeDataRangeFromGraph(Number graphIndex, Number xFrom, Numb
 ScriptPlotWindow::plotMousePressSignal.connect(Number xValue, Number yValue, Number mouseButton) \nIs emitted if the user press a mouse button inside the plot.\nNote: mouseButton has the type Qt::MouseButton.
 ScriptPlotWindow::clearButtonPressedSignal.connect(void) \nIs emitted if the user clicks the clear button.
 ScriptPlotWindow::closedSignal.connect(void) \nThis signal is emitted if the plot window has been closed.
+ScriptPlotWindow::xRangeChangedSignal.connect(Number newValue) \nIs emitted if the user changes the value in the x-range textedit.
