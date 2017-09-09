@@ -131,6 +131,9 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
     connect(this, SIGNAL(setLineStyleSignal(int,QString)),
             this, SLOT(setLineStyleSlot(int,QString)), Qt::QueuedConnection);
 
+    connect(this, SIGNAL(setLineWidthSignal(int,int)),
+            this, SLOT(setLineWidthSlot(int,int)), Qt::QueuedConnection);
+
     connect(this, SIGNAL(setAxisLabelsSignal(QString,QString)),
             this, SLOT(setAxisLabelsSlot(QString,QString)), Qt::QueuedConnection);
 
@@ -245,10 +248,14 @@ void ScriptPlotWidget::removeAllGraphsSlot(void)
 ///Is called if the user press a mouse button inside the plot.
 void ScriptPlotWidget::plotMousePressSlot(QMouseEvent *event)
 {
-
     (void)event;
-    double xValue = m_plotWidget->xAxis->pixelToCoord(event->x());
-    double yValue = m_plotWidget->yAxis->pixelToCoord(event->y());
+
+    // event has sometimes wrong x and y position values (may be related to the above issue)
+    // get global mouse position and translate them to widget position
+    QPoint rpos = m_plotWidget->mapFromGlobal(QCursor::pos());
+
+    double xValue = m_plotWidget->xAxis->pixelToCoord(rpos.x());
+    double yValue = m_plotWidget->yAxis->pixelToCoord(rpos.y());
 
     //event->button() did not work on some PC's.
     Qt::MouseButtons button = QApplication::mouseButtons();
@@ -552,6 +559,43 @@ void ScriptPlotWidget::setInitialAxisRangesSlot(double xRange, double yMinValue,
 }
 
 /**
+ * The function sets the current ranges of the diagram.
+ * @param xMinValue
+ *      The min. values of the x axis.
+ * @param xMaxValue
+ *      The max. value of the x axis.
+ * @param yMinValue
+ *      The min. values of the y axis.
+ * @param yMaxValue
+ *      The max. value of the y axis.
+ */
+void ScriptPlotWidget::setCurrentAxisRanges(double xMinValue, double xMaxValue, double yMinValue, double yMaxValue)
+{
+    m_plotWidget->yAxis->setRange(yMinValue, yMaxValue);
+    m_plotWidget->xAxis->setRange(xMinValue, xMaxValue);
+    m_plotWidget->replot();
+}
+
+/**
+ * The function gets the current axis ranges of the diagram.
+ * @return
+ *      Current view ranges.
+ */
+QScriptValue ScriptPlotWidget::getCurrentAxisRanges(void)
+{
+    const QCPRange xrange = m_plotWidget->xAxis->range();
+    const QCPRange yrange = m_plotWidget->yAxis->range();
+
+    QRectF rect(QPointF(xrange.lower, yrange.upper), QPointF(xrange.upper, yrange.lower));
+    QScriptValue ret = m_scriptThread->getScriptEngine()->newObject();
+    ret.setProperty("xMinValue", xrange.lower);
+    ret.setProperty("xMaxValue", xrange.upper);
+    ret.setProperty("yMinValue", yrange.lower);
+    ret.setProperty("yMaxValue", yrange.upper);
+    return ret;
+}
+
+/**
  * Sets the axis labels.
  * @param xAxisLabel
  *      The label for the x axis.
@@ -656,6 +700,62 @@ bool ScriptPlotWidget::addDataToGraphSlot(int graphIndex, double x, double y)
     }
 
     return hasSucceeded;
+}
+
+/**
+ * This function gets several data points from a graph of the diagram.
+ * @param graphIndex
+ *     The index off the target graph.
+ * @param x
+ *      The target x value range.
+ * @param count
+ *      Number of points to grab. If negative travels backwards.
+ * @return
+ *      Array of found x and y pairs.
+ */
+QScriptValue ScriptPlotWidget::getDataFromGraph(int graphIndex, double x, int count)
+{
+    QScriptValue ret = m_scriptThread->getScriptEngine()->newArray();
+
+    if (graphIndex >= 0 && graphIndex < m_plotWidget->graphCount())
+    {
+        QCPGraphDataContainer::const_iterator beg = m_plotWidget->graph(graphIndex)->data()->constBegin();
+        QCPGraphDataContainer::const_iterator end = m_plotWidget->graph(graphIndex)->data()->constEnd();
+        QCPGraphDataContainer::const_iterator it = m_plotWidget->graph(graphIndex)->data()->findBegin(x, false);
+
+        int idx = 0;
+
+        // get all items until count items has been shifted out or no more items left
+        while ((it != end) && (count != 0))
+        {
+            QScriptValue value = m_scriptThread->getScriptEngine()->newObject();
+            value.setProperty("x", it->key);
+            value.setProperty("y", it->value);
+            ret.setProperty(idx, value);
+
+            // if reverse traveling is selected abort after first item has been processed
+            if (it == beg)
+                break;
+
+            idx++;
+
+            if (count  > 0)
+            {
+                count--;
+                it++;
+            }
+            else
+            {
+                count++;
+                it--;
+            }
+        }
+    }
+    else
+    {//invalid index
+        emit appendTextToConsole(Q_FUNC_INFO + QString("graph index is out of bounds:%1").arg(graphIndex));
+    }
+    return ret;
 }
 
 /**
@@ -827,6 +927,28 @@ void ScriptPlotWidget::setLineStyleSlot(int graphIndex, QString style)
 }
 
 /**
+ * This slot function sets the line style of a graph.
+ *
+ * @param graphIndex
+ *      The graph index.
+ * @param width
+ *      The line width.
+ */
+void ScriptPlotWidget::setLineWidthSlot(int graphIndex, int width)
+{
+    if (graphIndex >= 0 && graphIndex < m_plotWidget->graphCount())
+    {
+        QPen pen = m_plotWidget->graph(graphIndex)->pen();
+        pen.setWidth(width);
+        m_plotWidget->graph(graphIndex)->setPen(pen);
+    }
+    else
+    {//invalid index
+        emit appendTextToConsole(Q_FUNC_INFO + QString("graph index is out of bounds:%1").arg(graphIndex));
+    }
+}
+
+/**
  * This function adds a graph to the diagram.
  * @param color
  *      The color of the graph. Allowed values are:
@@ -846,25 +968,9 @@ void ScriptPlotWidget::addGraphSlot(QString color, QString penStyle, QString nam
 
     QPen pen;
 
-    if(color == "blue")
+    if (QColor::isValidColor(color))
     {
-        pen.setColor(Qt::blue);
-    }
-    else if(color == "red")
-    {
-        pen.setColor(Qt::red);
-    }
-    else if(color == "yellow")
-    {
-        pen.setColor(Qt::yellow);
-    }
-    else if(color == "green")
-    {
-        pen.setColor(Qt::green);
-    }
-    else if(color == "black")
-    {
-        pen.setColor(Qt::black);
+         pen.setColor(QColor(color));
     }
     else
     {

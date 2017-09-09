@@ -64,9 +64,17 @@ public:
     Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue, bool addSpaceAfterBiggestValues = true)
     {emit setInitialAxisRangesSignal(xRange, yMinValue, ymaxValue, addSpaceAfterBiggestValues);}
 
-    ///This function sets the line style of a graph.
+    ///The function sets the current ranges of the diagram.
+    Q_INVOKABLE void setCurrentAxisRanges(double xMinValue, double xMaxValue, double yMinValue, double yMaxValue);
+
+    ///The function gets the current ranges of the diagram.
+    Q_INVOKABLE QScriptValue getCurrentAxisRanges(void);
+
+    ///This function adds one point to a graph.
     Q_INVOKABLE void addDataToGraph(int graphIndex, double x, double y){emit addDataToGraphSignal(graphIndex, x, y);}
 
+    ///This function gets several data points from a graph of the diagram.
+    Q_INVOKABLE QScriptValue getDataFromGraph(int graphIndex, double x, int count = 1);
 
     /**
      * Removes all data points with (sort-)keys between xFrom and xTo. If
@@ -98,7 +106,7 @@ public:
     Q_INVOKABLE void setScatterStyle(int graphIndex, QString style, double size){emit setScatterStyleSignal(graphIndex, style, size);}
 
     /**
-     * This function adds one point to a graph.
+     * This function sets the line style of a graph.
      * Possible values for style:
      *      - None: Data points are not connected with any lines (e.g. data only represented
      *              with symbols according to the scatter style (is set with setScatterStyle)).
@@ -109,6 +117,9 @@ public:
      *      - Impulse: Each data point is represented by a line parallel to the value axis, which reaches from the data point to the zero-value-line.
      */
     Q_INVOKABLE void setLineStyle(int graphIndex, QString style){emit setLineStyleSignal(graphIndex, style);}
+
+    ///This function sets the line width of a graph.
+    Q_INVOKABLE void setLineWidth(int graphIndex, int width){emit setLineWidthSignal(graphIndex, width);}
 
     ///Sets the axis label.
     Q_INVOKABLE void setAxisLabels(QString xAxisLabel, QString yAxisLabel){emit setAxisLabelsSignal(xAxisLabel, yAxisLabel);}
@@ -131,10 +142,17 @@ public:
     ///Sets tThe max. number of data points per graph (the default is 10.000.000.).
     Q_INVOKABLE void setMaxDataPointsPerGraph(qint32 maxDataPointsPerGraph){m_maxDataPointsPerGraph = maxDataPointsPerGraph;}
 
+    ///Sets the automatic update enabled state.
+    Q_INVOKABLE void setAutoUpdate(bool enabled){m_updatePlotCheckBox->setChecked(enabled);}
+
+    ///Gets the automatic update enabled state.
+    Q_INVOKABLE bool autoUpdate(void){return m_updatePlotCheckBox->isChecked();}
 
     ///Sets the update-interval.
     Q_INVOKABLE void setUpdateInterval(quint32 updateInterval){emit setUpdateIntervalSignal(updateInterval);}
 
+    ///Update the current plot view.
+    Q_INVOKABLE void updatePlot(void){m_plotWidget->replot();}
 
     ///The default value for the plot update timer (m_plotTimer).
     static const quint32 DEFAULT_PLOT_UPDATE_TIME_MS = 100;
@@ -187,6 +205,10 @@ signals:
     ///This signal is private and must not be used inside a script.
     void setLineStyleSignal(int graphIndex, QString style);
 
+    ///Is connected with PlotWindow::setLineWidthSlot(sets the line width of a graph).
+    ///This signal is private and must not be used inside a script.
+    void setLineWidthSignal(int graphIndex, int width);
+
     ///Is connected with PlotWindow::showFromScriptSlot (Sets the axis labels).
     ///This signal is private and must not be used inside a script.
     void setAxisLabelsSignal(QString xAxisLabel, QString yAxisLabel);
@@ -235,6 +257,9 @@ public slots:
 
     ///This slot function sets the line style of a graph.
     void setLineStyleSlot(int graphIndex, QString style);
+
+    ///This slot function sets the line width of a graph.
+    void setLineWidthSlot(int graphIndex, int width);
 
     ///Sets the axis labels.
     void setAxisLabelsSlot(QString xAxisLabel, QString yAxisLabel);
