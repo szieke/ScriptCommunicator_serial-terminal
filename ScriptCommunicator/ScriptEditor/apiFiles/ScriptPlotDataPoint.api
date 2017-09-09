@@ -1,0 +1,2 @@
+ScriptPlotDataPoint::x:Number \nThe x value.
+ScriptPlotDataPoint::y:Number \nThe y value.

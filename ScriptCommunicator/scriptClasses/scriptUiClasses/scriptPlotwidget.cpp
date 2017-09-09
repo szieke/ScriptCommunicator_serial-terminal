@@ -703,17 +703,17 @@ bool ScriptPlotWidget::addDataToGraphSlot(int graphIndex, double x, double y)
 }
 
 /**
- * This function gets several data points from a graph of the diagram.
+ * This function returns several data points from a graph.
  * @param graphIndex
  *     The index off the target graph.
- * @param x
- *      The target x value range.
+ * @param xStart
+ *      The x coordinate of the first data point.
  * @param count
- *      Number of points to grab. If negative travels backwards.
+ *      Number of points to grab. If negative then this function grabs backwards.
  * @return
  *      Array of found x and y pairs.
  */
-QScriptValue ScriptPlotWidget::getDataFromGraph(int graphIndex, double x, int count)
+QScriptValue ScriptPlotWidget::getDataFromGraph(int graphIndex, double xStart, int count)
 {
     QScriptValue ret = m_scriptThread->getScriptEngine()->newArray();
 
@@ -721,7 +721,7 @@ QScriptValue ScriptPlotWidget::getDataFromGraph(int graphIndex, double x, int co
     {
         QCPGraphDataContainer::const_iterator beg = m_plotWidget->graph(graphIndex)->data()->constBegin();
         QCPGraphDataContainer::const_iterator end = m_plotWidget->graph(graphIndex)->data()->constEnd();
-        QCPGraphDataContainer::const_iterator it = m_plotWidget->graph(graphIndex)->data()->findBegin(x, false);
+        QCPGraphDataContainer::const_iterator it = m_plotWidget->graph(graphIndex)->data()->findBegin(xStart, false);
 
         int idx = 0;
 

@@ -1,4 +1,4 @@
-/*************************************************************************
+﻿/*************************************************************************
 This worker script (worker scripts can be added in the script window) 
 demonstrates the usage of the plotwidget.
 ***************************************************************************/
@@ -20,7 +20,7 @@ function mainWindowFinished(e)
 function runClicked()
 {
 	timer.start(100);
-	plotWidget.setAutoUpdate(true);
+	plotWidget.setAutoUpdateEnabled(true);
 	UI_pushButtonRun.setEnabled(false);
 	UI_pushButtonStop.setEnabled(true);
 	
@@ -31,7 +31,7 @@ function runClicked()
 function stopClicked()
 {
 	timer.stop();
-	plotWidget.setAutoUpdate(false);
+	plotWidget.setAutoUpdateEnabled(false);
 	UI_pushButtonRun.setEnabled(true);
 	UI_pushButtonStop.setEnabled(false);
 	

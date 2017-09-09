@@ -92,8 +92,8 @@ public:
     ///This function adds one point to a graph.
     Q_INVOKABLE void addDataToGraph(int graphIndex, double x, double y){emit m_plotWindow->getWidget()->addDataToGraphSignal(graphIndex, x, y);}
 
-    ///This function gets several data points from a graph of the diagram.
-    Q_INVOKABLE QScriptValue getDataFromGraph(int graphIndex, double x, int count = 1){return m_plotWindow->getWidget()->getDataFromGraph(graphIndex, x, count);}
+    ///This function returns several data points from a graph.
+    Q_INVOKABLE QScriptValue getDataFromGraph(int graphIndex, double xStart, int count = 1){return m_plotWindow->getWidget()->getDataFromGraph(graphIndex, xStart, count);}
 
     /**
      * Removes all data points with (sort-)keys between xFrom and xTo. If
@@ -161,10 +161,10 @@ public:
     Q_INVOKABLE void setMaxDataPointsPerGraph(qint32 maxDataPointsPerGraph){m_plotWindow->getWidget()->setMaxDataPointsPerGraph(maxDataPointsPerGraph);}
 
     ///Sets the automatic update enabled state.
-    Q_INVOKABLE void setAutoUpdate(bool enabled){ m_plotWindow->getWidget()->setAutoUpdate(enabled);}
+    Q_INVOKABLE void setAutoUpdateEnabled(bool enabled){ m_plotWindow->getWidget()->setAutoUpdateEnabled(enabled);}
 
     ///Gets the automatic update enabled state.
-    Q_INVOKABLE bool autoUpdate(void){return m_plotWindow->getWidget()->autoUpdate();}
+    Q_INVOKABLE bool isAutoUpdateEnabled(void){return m_plotWindow->getWidget()->isAutoUpdateEnabled();}
 
     ///Sets the update-interval.
     Q_INVOKABLE void setUpdateInterval(quint32 updateInterval){m_plotWindow->getWidget()->setUpdateInterval(updateInterval);}

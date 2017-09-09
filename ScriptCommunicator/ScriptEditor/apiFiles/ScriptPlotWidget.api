@@ -19,10 +19,10 @@ ScriptPlotWidget::getObjectName(void):String \nReturns the name of this object (
 ScriptPlotWidget::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
 ScriptPlotWidget::addGraph(String color, String penStyle, String name):Number \nThis function adds a graph to the diagram.
 ScriptPlotWidget::setInitialAxisRanges(Number xRange, Number yMinValue, Number ymaxValue, bool addSpaceAfterBiggestValues=true):void \nThis function sets the initial ranges of the diagram.
-ScriptPlotWidget::setCurrentAxisRanges(Number xMinValue, Number xMaxValue, Number yMinValue, Number yMaxValue):void \nThe function sets the current ranges of the diagram.\nAutomatic update should be disabled.
+ScriptPlotWidget::setCurrentAxisRanges(Number xMinValue, Number xMaxValue, Number yMinValue, Number yMaxValue):void \nThe function sets the current ranges of the diagram.\nAutomatic update should be disabled  (see setAutoUpdateEnabled).
 ScriptPlotWidget::getCurrentAxisRanges(void):Object \nReturns an object wich holds the current view ranges of the diagram.\nUseful if the user moves or zoom the view.
 ScriptPlotWidget::addDataToGraph(Number graphIndex, Number x, Number y):void \nThis function adds one point to a graph.
-ScriptPlotWidget::getDataFromGraph(int graphIndex, double x, int count):Array \nThis function returns an array of up to count points after the specified x value. If count is negative it collects the values before the specified x value.
+ScriptPlotWidget::getDataFromGraph(Number graphIndex, Number xStart, Number count):Array<ScriptPlotDataPoint> \nThis function returns several data points from a graph.\nIf count is negative then this function grabs the values before the specified x coordinate value.
 ScriptPlotWidget::setLineWidth(Number graphIndex, Number width):void \nThis function sets the line width in pixel of a graph.
 ScriptPlotWidget::setAxisLabels(String xAxisLabel, String yAxisLabel):void \nSets the axis label.
 ScriptPlotWidget::showLegend(bool show):void \nThis function shows or hides the diagram legend.
@@ -30,8 +30,8 @@ ScriptPlotWidget::clearGraphs(void):void \nThis function clears the data of all 
 ScriptPlotWidget::removeAllGraphs(void):void \nThis function removes all graphs.
 ScriptPlotWidget::showHelperElements(bool showXRange, bool showYRange, bool showUpdate, bool showSave, bool showLoad, bool showClear, bool showGraphVisibility, Number graphVisibilityMaxSize=80, bool showLegend=true):void \nSets the visibility of several plot widget elements.
 ScriptPlotWidget::setMaxDataPointsPerGraph(Number maxDataPointsPerGraph):void \nSets tThe max. number of data points per graph (the default is 10.000.000).
-ScriptPlotWidget::setAutoUpdate(bool enabled):void \nSets the automatic update enabled state.
-ScriptPlotWidget::autoUpdate(void):bool \nReturns the automatic update enabled state.
+ScriptPlotWidget::setAutoUpdateEnabled(bool enabled):void \nSets the automatic update enabled state.
+ScriptPlotWidget::isAutoUpdateEnabled(void):bool \nReturns the automatic update enabled state.
 ScriptPlotWidget::setUpdateInterval(Number updateInterval):void \nSets the update-interval.
 ScriptPlotWidget::updatePlot(void):void \nRepaints the plot widget.
 ScriptPlotWidget::setScatterStyle(Number graphIndex, String style, Number size):void \nSets the visual appearance of single data points in the plot.\nPossible values for style:\nNone: No scatter symbols are drawn.\nDot: A single pixel.\nCross: A cross.\nPlus: A plus.\nCircle: A circle.\nDisc: A circle which is filled with the pen's color.\nSquare: A square.\nDiamond: A diamond.\nStar: A star with eight arms, i.e. a combination of cross and plus.\nTriangle: An equilateral triangle, standing on baseline.\nTriangleInverted: An equilateral triangle, standing on corner.\nCrossSquare: A square with a cross inside.\nPlusSquare: A square with a plus inside.\nCrossCircle: A circle with a cross inside.\nPlusCircle: A circle with a plus inside.\nPeace: A circle, with one vertical and two downward diagonal lines.
