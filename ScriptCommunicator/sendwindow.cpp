@@ -1512,14 +1512,17 @@ QByteArray SendWindow::textToByteArray(QString formatString, QString text, Decim
     if(formatString != "ascii")
     {
         uint format = 10;
+        qint32 bytesPerNumber = 1;
 
         if(formatString == "hex")
         {
             format = 16;
+            bytesPerNumber = 2;
         }
         else if(formatString == "bin")
         {
             format = 2;
+            bytesPerNumber = 8;
         }
 
         for(auto var : strList)
@@ -1528,33 +1531,16 @@ QByteArray SendWindow::textToByteArray(QString formatString, QString text, Decim
 
             if((formatString == "hex") || (formatString == "bin"))
             {
-                quint32 value = var.toUInt(&isOk,format);
-                if(value > 255 || !isOk)
+                while(!var.isEmpty())
                 {
-                    QString valueSum = "";
-                    for(auto number : var)
-                    {
+                    QString tmpStr = var.left(bytesPerNumber);
+                    var.remove(0, bytesPerNumber);
 
-                        if((valueSum + number).toUInt(&isOk,format) > 255)
-                        {
-                            dataArray.append(valueSum.toUInt(&isOk,format));
-                            valueSum = number;
-                        }
-                        else
-                        {
-                            valueSum += number;
-                        }
-                    }
-                    dataArray.append(valueSum.toUInt(&isOk,format));
-                }
-                else
-                {
-                    dataArray.append((qint8)value);
+                    dataArray.append(tmpStr.toUInt(&isOk,format));
                 }
             }
             else
             {
-                qint32 bytesPerNumber = 1;
                 quint32 value = 0;
 
                 if(decimalType == DECIMAL_TYPE_UINT16)
