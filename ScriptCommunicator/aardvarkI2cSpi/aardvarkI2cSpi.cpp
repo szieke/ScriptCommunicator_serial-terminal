@@ -575,8 +575,8 @@ bool AardvarkI2cSpi::sendReceiveData(const QByteArray& data, QByteArray* receive
         if(data.size() >= SEND_CONTROL_BYTES_COUNT)
         {
             AardvarkI2cFlags flags = (AardvarkI2cFlags)data[0];
-            quint16 slaveAddress = (quint16)data[2] + ((quint16)data[1] << 8);
-            quint16 bytesToRead = (quint16)data[4] + ((quint16)data[3] << 8);
+            quint16 slaveAddress = (quint8)data[2] + ((quint16)((quint8)data[1]) << 8);
+            quint16 bytesToRead = (quint8)data[4] + ((quint16)((quint8)data[3]) << 8);
 
             //Remove the metadata.
             QByteArray sendData = data.mid(SEND_CONTROL_BYTES_COUNT);
