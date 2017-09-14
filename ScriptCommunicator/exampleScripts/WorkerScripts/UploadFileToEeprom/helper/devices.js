@@ -2,6 +2,10 @@
 This file contains all device/eeprom specific functions.
 ***************************************************************************/
 
+/*
+ * Returns athe page size of the selected EEPROM..
+ * @return The page size.
+ */
 function getPageSize()
 {
 	var pageSize = 0;
@@ -17,8 +21,17 @@ function getPageSize()
 	return pageSize;
 }
 
-
-function i2cMasterReadWrite(flags, slaveAddress, eepromAdress, bytesToRead,  dataToSend)
+/*
+ * Calls g_interface.i2cMasterReadWrite with the device/EEPROM specific 
+ * data (memory address bytes and I2C address)
+ * @param flags The flags for g_interface.i2cMasterReadWrite.
+ * @param i2cAddress The I2C address of the EEPROM (only the upper 7 Bits).
+ * @param memoryAddress The memory address.
+ * @param numberOfBytesToRead The number of bytes which shall be read.
+ * @param dataToSend The bytes which shall be written.
+ * @return True on success.
+ */
+function i2cMasterReadWrite(flags, i2cAddress, memoryAddress, numberOfBytesToRead,  dataToSend)
 {
 	var sendArray = Array();
 	var waitTimeAfterWrite = 5;
@@ -26,9 +39,9 @@ function i2cMasterReadWrite(flags, slaveAddress, eepromAdress, bytesToRead,  dat
 
 	if(UI_EepromType.currentText() == "STM M24M01")
 	{
-		sendArray[0] = (eepromAdress >> 8) & 0xff;
-		sendArray[1] = eepromAdress & 0xff;
-		slaveAddress += (eepromAdress >> 16) & 0x1;
+		sendArray[0] = (memoryAddress >> 8) & 0xff;
+		sendArray[1] = memoryAddress & 0xff;
+		i2cAddress += (memoryAddress >> 16) & 0x1;
 		waitTimeAfterWrite = 5;
 		hasSucceded = true;
 	}
@@ -45,7 +58,7 @@ function i2cMasterReadWrite(flags, slaveAddress, eepromAdress, bytesToRead,  dat
 			sendArray = sendArray.concat(dataToSend);
 		}
 		
-		hasSucceded = g_interface.i2cMasterReadWrite(flags, slaveAddress, bytesToRead,  sendArray);
+		hasSucceded = g_interface.i2cMasterReadWrite(flags, i2cAddress, numberOfBytesToRead,  sendArray);
 		
 		if(dataToSend.length > 0)
 		{

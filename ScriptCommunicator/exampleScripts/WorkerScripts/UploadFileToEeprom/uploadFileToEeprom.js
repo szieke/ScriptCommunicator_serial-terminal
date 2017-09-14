@@ -3,8 +3,7 @@ This script uploads a file to an I2C eeprom (connected to a AardvarkI2cSpi inter
 - STM M24M01
 ***************************************************************************/
 
-
-const AARDVARD_I2C_SPI_GPIO_COUNT = 6;
+//The name of the settings file.
 const SETTINGS_FILE_NAME = scriptThread.getUserDocumentsFolder() + "/ScriptCommunicator/uploadEepromSettings.txt"
 
 //Is called if this script shall be exited.
@@ -15,25 +14,35 @@ function stopScript()
 	scriptThread.appendTextToConsole("script has been stopped");
 }
 
-function read(slaveAddress, eepromAdress, bytesToRead, straceData, pageSize)
+
+/*
+ * Reads data from the EEPROM.
+ * @param i2cAddress The I2C address of the EEPROM (only the upper 7 Bits).
+ * @param memoryAddress The memory address.
+ * @param numberOfBytesToRead The number of bytes which shall be read.
+ * @param logData True of the read data  shall be shown in the log window.
+ * @param pageSize The page size of the EEPROM.
+ * @return The read bytes (byte array).
+ */
+function read(i2cAddress, memoryAddress, numberOfBytesToRead, logData, pageSize)
 {
-	var readBytesArray = Array();
-	var readBytes = 0;
+	var readBytes = Array();
+	var numberOfReadBytes = 0;
 	
-	while(readBytes < bytesToRead)
+	while(numberOfReadBytes < numberOfBytesToRead)
 	{
-		var tmpEepromAdress = eepromAdress + readBytes;
-		var bytesInPageLeft = pageSize - (tmpEepromAdress % pageSize);
+		var tmpMemoryAddress = memoryAddress + numberOfReadBytes;
+		var bytesInPageLeft = pageSize - (tmpMemoryAddress % pageSize);
 		
-		if((readBytes + bytesInPageLeft) > bytesToRead)
+		if((numberOfReadBytes + bytesInPageLeft) > numberOfBytesToRead)
 		{
-			bytesInPageLeft = bytesToRead - readBytes;
+			bytesInPageLeft = numberOfBytesToRead - numberOfReadBytes;
 		}
 		
-		var tmpReadBytes  = readPage(slaveAddress, tmpEepromAdress, bytesInPageLeft, straceData);
+		var tmpReadBytes  = readPage(i2cAddress, tmpMemoryAddress, bytesInPageLeft, logData);
 		
-		readBytesArray = readBytesArray.concat(tmpReadBytes);
-		readBytes += tmpReadBytes.length;
+		readBytes = readBytes.concat(tmpReadBytes);
+		numberOfReadBytes += tmpReadBytes.length;
 		incrementProgress();
 		
 		if(tmpReadBytes.length != bytesInPageLeft)
@@ -42,33 +51,50 @@ function read(slaveAddress, eepromAdress, bytesToRead, straceData, pageSize)
 		}
 	}
 	
-	return readBytesArray;
+	return readBytes;
 }
 
-function readPage(slaveAddress, eepromAdress, bytesToRead, straceData)
+/*
+ * Reads bytes from an EEPROM page.
+ * @param i2cAddress The I2C address of the EEPROM (only the upper 7 Bits).
+ * @param memoryAddress The memory address.
+ * @param numberOfBytesToRead The number of bytes which shall be read.
+ * @param logData True of the read data  shall be shown in the log window.
+ * @return The read bytes (byte array).
+ */
+function readPage(i2cAddress, memoryAddress, numberOfBytesToRead, logData)
 {
 	var readBytes = Array();
 	
-	if(i2cMasterReadWrite(0, slaveAddress,  eepromAdress, bytesToRead,  Array()))
+	if(i2cMasterReadWrite(0, i2cAddress,  memoryAddress, numberOfBytesToRead,  Array()))
 	{
 		readBytes = g_interface.i2cMasterReadLastReceivedData();
 		if(readBytes.length != 0)
 		{
-			if(straceData)
+			if(logData)
 			{
-				UI_Log.append("I2C data received: address=0x" + slaveAddress.toString(16) + " data=" + conv.byteArrayToHexString(readBytes));
+				UI_Log.append("I2C data received: address=0x" + i2cAddress.toString(16) + " data=" + conv.byteArrayToHexString(readBytes));
 			}
 		}
 	}
 	else
 	{
-		UI_Log.append("execute I2C failed (read page): address=0x" + slaveAddress.toString(16));
+		UI_Log.append("execute I2C failed (read page): address=0x" + i2cAddress.toString(16));
 	}
 	
 	return readBytes;
 }
 
-function write(slaveAddress, eepromAdress, dataToSend, straceData, pageSize)
+/*
+ * Writes data to the EEPROM.
+ * @param i2cAddress The I2C address of the EEPROM (only the upper 7 Bits).
+ * @param memoryAddress The memory address.
+ * @param dataToSend The bytes which shall be written.
+ * @param logData True of the read data  shall be shown in the log window.
+ * @param pageSize The page size of the EEPROM.
+ * @return True on success.
+ */
+function write(i2cAddress, memoryAddress, dataToSend, logData, pageSize)
 {
 	var writtenBytes = 0;
 	var bytesToWrite = dataToSend.length;
@@ -76,11 +102,11 @@ function write(slaveAddress, eepromAdress, dataToSend, straceData, pageSize)
 	
 	while(writtenBytes < bytesToWrite)
 	{
-		var tmpEepromAdress = eepromAdress + writtenBytes;
-		var bytesInPageLeft = pageSize - (tmpEepromAdress % pageSize);
+		var tmpMemoryAddress = memoryAddress + writtenBytes;
+		var bytesInPageLeft = pageSize - (tmpMemoryAddress % pageSize);
 		var tmpData = dataToSend.slice(writtenBytes,  writtenBytes + bytesInPageLeft);
 		
-		if(writePage(slaveAddress, tmpEepromAdress, tmpData, straceData))
+		if(writePage(i2cAddress, tmpMemoryAddress, tmpData, logData))
 		{
 			writtenBytes += tmpData.length;
 			incrementProgress();
@@ -95,39 +121,49 @@ function write(slaveAddress, eepromAdress, dataToSend, straceData, pageSize)
 	
 	return hasSucceeded;
 }
-function writePage(slaveAddress, eepromAdress, dataToSend, straceData)
+
+/*
+ * Writes data to a page of the EEPROM.
+ * @param i2cAddress The I2C address of the EEPROM (only the upper 7 Bits).
+ * @param memoryAddress The memory address.
+ * @param dataToSend The bytes which shall be written.
+ * @param logData True of the read data  shall be shown in the log window.
+ * @param pageSize The page size of the EEPROM.
+ * @return True on success.
+ */
+function writePage(i2cAddress, memoryAddress, dataToSend, logData)
 {
 	var hasSucceeded = true;
 	
-	if(i2cMasterReadWrite(0, slaveAddress,  eepromAdress, 0,  dataToSend))
+	if(i2cMasterReadWrite(0, i2cAddress,  memoryAddress, 0,  dataToSend))
 	{
 		hasSucceeded = true;
-		if(straceData)
+		if(logData)
 		{
-			UI_Log.append("execute I2C: address=0x" + slaveAddress.toString(16) + " data= " + conv.byteArrayToHexString(dataToSend));
+			UI_Log.append("execute I2C: address=0x" + i2cAddress.toString(16) + " data= " + conv.byteArrayToHexString(dataToSend));
 		}
 	}
 	else
 	{
 		hasSucceeded = false;
-		UI_Log.append("execute I2C failed (write page): address=0x" + slaveAddress.toString(16));
+		UI_Log.append("execute I2C failed (write page): address=0x" + i2cAddress.toString(16));
 	}
 	
 	return hasSucceeded;
 }
 
+//Connects to an Aardvark interface.
 function connect()
 {
 	var hasSucceeded = true;
 	
-	/************************Create the AardvarkI2cSpiSettings structure**********************/
+	/************************fill the AardvarkI2cSpiSettings structure**********************/
 	var settings = g_interface.getInterfaceSettings();
 	settings.devicePort =  parseInt(UI_AardvarkPort.text());
 	settings.deviceMode =  0;//I2C master
 	settings.device5VIsOn =  true;
 	
-	settings.i2cBaudrate =  400;
-	settings.i2cSlaveAddress =  0;
+	settings.i2cBaudrate =  400;//400 kBit.
 	settings.i2cPullupsOn = true;
 	
 	for(var i = 0; i < 	settings.pinConfigs.length; i++)
@@ -148,23 +184,29 @@ function connect()
 }
 
 //Is called if the dialog is closed.
-function UI_DialogFinished(e)
+function UI_DialogFinished()
 {
 	scriptThread.stopScript()
 }
 
+/*
+ * Sets the value of the progress bar.
+ * @param progress The new value
+ */
 function setProgress(progress)
 {
 	currentProgressValue = progress;
 	UI_Progress.setValue(progress);
 }
 
+//Increments the value of the progress bar.
 function incrementProgress()
 {
 	currentProgressValue++;
 	UI_Progress.setValue(currentProgressValue);
 }
 
+//Fills the file list with the files from the selected folder.
 function fillFileList()
 {
 	var files = scriptFile.readDirectory(UI_Folder.text(), false, false, true, false);
@@ -175,16 +217,21 @@ function fillFileList()
 	}
 }
 
+//Is called if the user clicks the select button.
 function folderSlot()
 {
 	var folder = scriptThread.showDirectoryDialog("select folder", UI_Folder.text(), UI_Dialog.getWidgetPointer());
-	
 	if(folder.length > 0)
 	{
 		UI_Folder.setText(folder);
 		fillFileList();
 	}
 }
+
+/*
+ * Sets the GUI state.
+ * @param enable True for enable.
+ */
 function setGuiState(enable)
 {
 	UI_SelectFolder.setEnabled(enable);
@@ -197,10 +244,10 @@ function setGuiState(enable)
 	UI_AardvarkPort.setEnabled(enable);
 }
 
-
+//Is called if the user clicks the upload button.
 function uploadSlot()
 {
-	var straceData = false;
+	var logData = false;
 	
 	var eepromAddress = parseInt(UI_EepromAddress.text()) 
 	var i2cAddress = parseInt(UI_I2CAddress.text()) 
@@ -222,12 +269,12 @@ function uploadSlot()
 				
 				UI_Log.append("starting upload");
 				
-				if(write(i2cAddress, eepromAddress, writtenData, straceData, pageSize))
+				if(write(i2cAddress, eepromAddress, writtenData, logData, pageSize))
 				{
 				
 					UI_Progress.setValue(pagesToWrite);
 
-					var readData = read(i2cAddress, eepromAddress, writtenData.length, straceData, pageSize);
+					var readData = read(i2cAddress, eepromAddress, writtenData.length, logData, pageSize);
 					g_interface.disconnect();
 					var dataIsOk = true;
 
@@ -237,7 +284,7 @@ function uploadSlot()
 						{
 							UI_Log.append("read data is unequal to the written data, index:" + i);
 							
-							if(straceData)
+							if(logData)
 							{
 								UI_Log.append("writtenData:" + conv.byteArrayToHexString(writtenData));
 								UI_Log.append("readData:" + conv.byteArrayToHexString(readData));
@@ -274,7 +321,10 @@ function uploadSlot()
 
 }
 
-//Save the GUI settings.
+/*
+ * Saves the GUI settings.
+ * @param fileName The file name.
+ */
 function saveUiSettings(fileName)
 {
 	settings = "UI_Folder=" + UI_Folder.text() + "\r\n";
@@ -286,6 +336,12 @@ function saveUiSettings(fileName)
 	scriptFile.writeFile(fileName, false, settings, true);
 }
 
+/*
+ * Returns a value of a sting array.
+ * @param stringArray The string array.
+ * @param key The key.
+ * @return The value.
+ */
 function getValueOfStringArray(stringArray, key)
 {
 	for (var i=0; i < stringArray.length; i++)
@@ -298,7 +354,10 @@ function getValueOfStringArray(stringArray, key)
 	}
 }
 
-//Load the GUI settings.
+/*
+ * Loads the GUI settings.
+ * @param fileName The file name.
+ */
 function loadUiSettings(fileName)
 {
 	if(scriptFile.checkFileExists(fileName, false))
@@ -315,19 +374,30 @@ function loadUiSettings(fileName)
 	
 }
 
+//Is called if the user clicks the detects button.
 function detectAardvarkI2cSpiDevicesSlot()
 {
 	UI_Log.append("scanning for aardvark devices")
 	UI_Log.append(g_interface.detectDevices());
 }
 
+/*
+ * Is called if the file in the file list has been changed.
+ * @param newFile The new file name.
+ */
 function currentFileChangedSlot(newFile)
 {
+	//Set the tool tip to the new file name.
 	UI_File.setToolTip(newFile, -1);
 }
 
+/*
+ * Is called if the selected folder has been changed.
+ * @param newFolder The new folder name.
+ */
 function currentFolderChangedSlot(newFolder)
 {
+	//Set the tool tip to the new folder name.
 	UI_Folder.setToolTip(newFolder, -1);
 }
 
