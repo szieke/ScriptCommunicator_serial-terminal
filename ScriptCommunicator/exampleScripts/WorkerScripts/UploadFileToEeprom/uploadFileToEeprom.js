@@ -1,5 +1,6 @@
 ﻿/*************************************************************************
-This script uploads a file to an I2C eeprom (connected to a AardvarkI2cSpi interface).
+This script uploads a file to an I2C eeprom (connected to a AardvarkI2cSpi interface). Supported EEPROMs:
+- STM M24M01
 ***************************************************************************/
 
 
@@ -120,7 +121,7 @@ function connect()
 	var hasSucceeded = true;
 	
 	/************************Create the AardvarkI2cSpiSettings structure**********************/
-	settings = Array();
+	var settings = g_interface.getInterfaceSettings();
 	settings.devicePort =  parseInt(UI_AardvarkPort.text());
 	settings.deviceMode =  0;//I2C master
 	settings.device5VIsOn =  true;
@@ -129,16 +130,8 @@ function connect()
 	settings.i2cSlaveAddress =  0;
 	settings.i2cPullupsOn = true;
 	
-	settings.spiPolarity = 0;
-	settings.spiSSPolarity =  0;
-	settings.spiBitorder =  0;
-	settings.spiPhase =  0;
-	settings.spiBaudrate =  1000;
-
-	settings.pinConfigs =  Array();
-	for(var i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+	for(var i = 0; i < 	settings.pinConfigs.length; i++)
 	{
-		settings.pinConfigs[i] = Array();	
 		settings.pinConfigs[i].isInput = true ;
 		settings.pinConfigs[i].withPullups = false;
 		settings.pinConfigs[i].outValue = false;

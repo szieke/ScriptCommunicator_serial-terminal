@@ -124,8 +124,8 @@ function connectSlot()
 	
 	if(!scriptInf.isConnected())
 	{
-		/************************Create the AardvarkI2cSpiSettings structure**********************/
-		settings = Array();
+		/************************fill the AardvarkI2cSpiSettings structure**********************/
+		var settings = scriptInf.aardvarkI2cSpiGetMainInterfaceSettings();
 		settings.devicePort =  parseInt(UI_AardvarkI2cSpiPort.text());
 		settings.deviceMode =  UI_AardvarkI2cSpiMode.currentIndex();
 		settings.device5VIsOn =  (UI_AardvarkI2cSpi5V.currentText() == "On") ? true : false
@@ -140,10 +140,8 @@ function connectSlot()
 		settings.spiPhase =  UI_AardvarkSpiPhase.currentIndex();
 		settings.spiBaudrate =  parseInt(UI_AardvarkSpiBaudrate.text());
 
-		settings.pinConfigs =  Array();
-		for(var i = 0; i < AARDVARD_I2C_SPI_GPIO_COUNT; i++)
+		for(var i = 0; i < settings.pinConfigs.length; i++)
 		{
-			settings.pinConfigs[i] = Array();	
 			settings.pinConfigs[i].isInput = (g_aardvardI2cGpioGuiElements[i].mode.currentText().indexOf("in") != -1) ? true : false;
 			settings.pinConfigs[i].withPullups = (g_aardvardI2cGpioGuiElements[i].mode.currentText().indexOf("in pullup") != -1) ? true : false;
 			settings.pinConfigs[i].outValue = (g_aardvardI2cGpioGuiElements[i].outValue.currentText() == 1) ? true : false;
