@@ -1080,11 +1080,14 @@ void ScriptPlotWidget::plotTimeoutSlot()
 
     if(m_updatePlotCheckBox->isChecked())
     {
-        for(auto x : m_xAxisMaxValues)
+        if (m_xAxisMaxValues.size())
         {
-            m_plotWidget->xAxis->setRange(x - m_xRangeLineEdit->text().toDouble(),
-                                          m_addSpaceAfterBiggestValues ? x + (m_xRangeLineEdit->text().toDouble() / 10) : x);
+            auto max_x = *std::max_element(m_xAxisMaxValues.begin(), m_xAxisMaxValues.end());
+
+            m_plotWidget->xAxis->setRange(max_x - m_xRangeLineEdit->text().toDouble(),
+                                          m_addSpaceAfterBiggestValues ? max_x + (m_xRangeLineEdit->text().toDouble() / 10) : max_x);
         }
+
         m_plotWidget->yAxis->setRange(m_yMinRangeLineEdit->text().toDouble(), m_yMaxRangeLineEdit->text().toDouble());
         m_plotWidget->replot();
     }

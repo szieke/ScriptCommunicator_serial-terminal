@@ -38,7 +38,7 @@ function stopClicked()
 	UI_MainWindow.showMessage("Data acquisition is stopped.", 2000);
 }
 
-// Helper function to retrive data point form graphValues
+//Helper function to retrive data point form graphValues.
 function getProcessYValueFromGrap(graphIdx, xValue)
 {
 	var dataPoints = plotWidget.getDataFromGraph(graphIdx, xValue, 1);
@@ -86,6 +86,17 @@ function plotWindowMousePress(xValue, yValue, button)
 		UI_tableWidgetMarkers.setCellForegroundColor(color, row, 2);
 	}
 	
+	// show marker
+	var marker = (column == 0) ? plotWidgetGraphMark1Index : plotWidgetGraphMark2Index;
+	
+	plotWidget.removeDataRangeFromGraph(marker, -1e100, 1e100);
+	plotWidget.addDataToGraph(marker, xValue, -1e100);
+	plotWidget.addDataToGraph(marker, xValue, 1e100);
+	
+	// force update if disabled to view marker
+	if (plotWidget.isAutoUpdateEnabled() == false)
+		plotWidget.updatePlot();
+	
 	scriptThread.appendTextToConsole('plotWidgetMousePress: ' + xValue + ", " + yValue + ", " + button);
 }
 
@@ -109,19 +120,19 @@ function timeout()
 
 scriptThread.appendTextToConsole('script plot widget with markers started');
 
-// register ui signals
+//Register ui signals.
 UI_MainWindow.finishedSignal.connect(mainWindowFinished);
 UI_pushButtonRun.clickedSignal.connect(runClicked);
 UI_pushButtonStop.clickedSignal.connect(stopClicked);
 
-// setup ui
+//Setup ui.
 UI_tableWidgetMarkers.rowsCanBeMovedByUser(false);
 
 for (var row=0; row<UI_tableWidgetMarkers.rowCount(); row++)
 	for (var column=0; column<UI_tableWidgetMarkers.columnCount(); column++)
 		UI_tableWidgetMarkers.setCellEditable(row, column, false);
 
-//Create a plot widget and setup them. some example graphs.
+//Create a plot widget and setup them.
 var plotWidget = UI_groupBoxPlotContainer.addPlotWidget();
 plotWidget.setAxisLabels("x", "y");
 plotWidget.showLegend(true);
@@ -129,16 +140,18 @@ plotWidget.setInitialAxisRanges(1000, -250, 250);
 plotWidget.showHelperElements(true, true, true, true, false, false, true, 100, true);
 plotWidget.plotMousePressSignal.connect(plotWindowMousePress);
 
-// add some example graphs
+//Add some example graphs.
 var plotWidgetGraph1Index = plotWidget.addGraph("red", "solid", "sin");
 var plotWidgetGraph2Index = plotWidget.addGraph("orange", "solid", "cos");
 var plotWidgetGraph3Index = plotWidget.addGraph("dodgerblue", "solid", "saw");
+var plotWidgetGraphMark1Index = plotWidget.addGraph("crimson", "dash", "marker 1");
+var plotWidgetGraphMark2Index = plotWidget.addGraph("limegreen", "dash", "marker 2");
 plotWidget.setLineWidth(plotWidgetGraph1Index, 2);
 // see https://www.w3.org/TR/SVG/types.html#ColorKeywords for full subset of color key words
 
 var plotXCounter = 0;
 
-//create periodically timer which calls the function timeout
+//Create periodically timer which calls the function timeout.
 var timer = scriptThread.createTimer()
 timer.timeoutSignal.connect(timeout);
 
