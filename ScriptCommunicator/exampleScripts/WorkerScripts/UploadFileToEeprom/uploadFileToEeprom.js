@@ -99,12 +99,22 @@ function write(i2cAddress, memoryAddress, dataToSend, logData, pageSize)
 	var writtenBytes = 0;
 	var bytesToWrite = dataToSend.length;
 	var hasSucceeded = false;
+	var counter = 1;
 	
 	while(writtenBytes < bytesToWrite)
 	{
 		var tmpMemoryAddress = memoryAddress + writtenBytes;
 		var bytesInPageLeft = pageSize - (tmpMemoryAddress % pageSize);
 		var tmpData = dataToSend.slice(writtenBytes,  writtenBytes + bytesInPageLeft);
+		
+		if(UI_AddFillBytes.isChecked() )
+		{
+			//Add fill bytes.
+			while(tmpData.length < pageSize)
+			{
+				tmpData.push(parseInt(UI_FillBytes.text()));
+			}
+		}
 		
 		if(writePage(i2cAddress, tmpMemoryAddress, tmpData, logData))
 		{
@@ -277,6 +287,8 @@ function uploadSlot()
 					var readData = read(i2cAddress, eepromAddress, writtenData.length, logData, pageSize);
 					g_interface.disconnect();
 					var dataIsOk = true;
+					
+					scriptFile.writeBinaryFile(UI_File.currentText() + ".tmp", false, readData, true);
 
 					for(var i = 0; i < writtenData.length; i++)
 					{
@@ -301,15 +313,12 @@ function uploadSlot()
 						UI_Log.append(writtenData.length + " bytes successfully written");
 					}
 					
-				}//if(writtenData.length > 0)
-				else
-				{
-					UI_Log.append("could not read: " + UI_File.currentText());
-				}
+				}//if(write(i2cAddress, eepromAddress, writtenData, logData, pageSize))
+
 			}//if(writtenData.length > 0)
 			else
 			{
-				UI_Log.append("reading " + fileName + " failed");
+				UI_Log.append("could not read: " + UI_File.currentText());
 			}
 			g_interface.disconnect();
 			
@@ -332,6 +341,8 @@ function saveUiSettings(fileName)
 	settings += "UI_EepromType=" + UI_EepromType.currentText() + "\r\n";
 	settings += "UI_EepromAddress=" + UI_EepromAddress.text() + "\r\n";
 	settings += "UI_AardvarkPort=" + UI_AardvarkPort.text() + "\r\n";
+	settings += "UI_FillBytes=" + UI_FillBytes.text() + "\r\n";
+	settings += "UI_AddFillBytes=" + (UI_AddFillBytes.isChecked() ? 1 : 0 )+ "\r\n";
 
 	scriptFile.writeFile(fileName, false, settings, true);
 }
@@ -370,6 +381,8 @@ function loadUiSettings(fileName)
 		UI_EepromAddress.setText(getValueOfStringArray(stringArray, "UI_EepromAddress"));
 		UI_EepromType.setCurrentText(getValueOfStringArray(stringArray, "UI_EepromType"));
 		UI_AardvarkPort.setText(getValueOfStringArray(stringArray, "UI_AardvarkPort"));
+		UI_FillBytes.setText(getValueOfStringArray(stringArray, "UI_FillBytes"));
+		UI_AddFillBytes.setChecked((getValueOfStringArray(stringArray, "UI_AddFillBytes") == 1) ? true : false)
 	}
 	
 }
@@ -420,6 +433,7 @@ var currentProgressValue = 0;
 UI_I2CAddress.addIntValidator(0, 127);
 UI_EepromAddress.addIntValidator(0, 0xffffff);
 UI_AardvarkPort.addIntValidator(0, 127);
+UI_FillBytes.addIntValidator(0, 255);
 fillFileList();
 scriptThread.addTabsToMainWindow(UI_TabWidget);
 detectAardvarkI2cSpiDevicesSlot();
