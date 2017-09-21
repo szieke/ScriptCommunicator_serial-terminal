@@ -283,12 +283,9 @@ function uploadSlot()
 				{
 				
 					UI_Progress.setValue(pagesToWrite);
-
 					var readData = read(i2cAddress, eepromAddress, writtenData.length, logData, pageSize);
 					g_interface.disconnect();
 					var dataIsOk = true;
-					
-					scriptFile.writeBinaryFile(UI_File.currentText() + ".tmp", false, readData, true);
 
 					for(var i = 0; i < writtenData.length; i++)
 					{
