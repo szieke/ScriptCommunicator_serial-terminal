@@ -220,10 +220,22 @@ function incrementProgress()
 function fillFileList()
 {
 	var files = scriptFile.readDirectory(UI_Folder.text(), false, false, true, false);
-	UI_File.clear();
+	
+	var filesString = "";
 	for(var i = 0; i < files.length; i++)
 	{
-		UI_File.addItem(files[i]);
+		filesString += files[i];
+	}
+	
+	if(g_savedFoundFiles != filesString)
+	{//The content of the selected folder has been changed.
+		
+		UI_File.clear();
+		g_savedFoundFiles = filesString;
+		for(var i = 0; i < files.length; i++)
+		{
+			UI_File.addItem(files[i]);
+		}
 	}
 }
 
@@ -427,6 +439,8 @@ scriptThread.loadScript("./helper/devices.js");
 var g_interface = scriptInf.aardvarkI2cSpiCreateInterface();
 var currentProgressValue = 0;
 
+var g_savedFoundFiles = "";
+
 UI_I2CAddress.addIntValidator(0, 127);
 UI_EepromAddress.addIntValidator(0, 0xffffff);
 UI_AardvarkPort.addIntValidator(0, 127);
@@ -437,5 +451,9 @@ detectAardvarkI2cSpiDevicesSlot();
 
 currentFileChangedSlot(UI_File.currentText());
 currentFolderChangedSlot(UI_Folder.text());
+
+var g_folderChangeTimer = scriptThread.createTimer();
+g_folderChangeTimer.timeoutSignal.connect(fillFileList);
+g_folderChangeTimer.start(500);
 
 
