@@ -52,21 +52,32 @@ void MainWindowHandleData::updateConsoleAndLog(void)
     processDataInStoredData();
 
 
-    //Limit the data in m_storedConsoleData to settings->maxCharsInConsole.
-    while(m_bytesInStoredConsoleData > settings->maxCharsInConsole)
+    if(m_bytesInStoredConsoleData > (settings->maxCharsInConsole + (settings->maxCharsInConsole / 5)))
     {
-        int diff = m_bytesInStoredConsoleData - settings->maxCharsInConsole;
-        if(diff >= m_storedConsoleData.at(0).data.length())
+        int elementToRemove = 0;
+
+        //Limit the data in m_storedConsoleData to settings->maxCharsInConsole.
+        while(m_bytesInStoredConsoleData > settings->maxCharsInConsole)
         {
-            m_bytesInStoredConsoleData -= m_storedConsoleData.at(0).data.length();
-            m_storedConsoleData.removeAt(0);
+            int diff = m_bytesInStoredConsoleData - settings->maxCharsInConsole;
+            if(diff >= m_storedConsoleData.at(elementToRemove).data.length())
+            {
+                m_bytesInStoredConsoleData -= m_storedConsoleData.at(elementToRemove).data.length();
+                elementToRemove++;
+            }
+            else
+            {
+                m_storedConsoleData[elementToRemove].data.remove(0, diff);
+                m_bytesInStoredConsoleData -= diff;
+            }
         }
-        else
+
+        if(elementToRemove != 0)
         {
-            m_storedConsoleData[0].data.remove(0, diff);
-            m_bytesInStoredConsoleData -= diff;
+            m_storedConsoleData.remove(0, elementToRemove);
         }
     }
+
 
     m_mainWindow->setUpdatesEnabled(false);
 
