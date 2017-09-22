@@ -196,6 +196,9 @@ public slots:
     ///Reinserts the data into the mixed consoles.
     void reInsertDataInMixecConsoleSlot(void);
 
+    ///Appends the queued received data to the stored data.
+    void queuedDataReceivedSlot(void);
+
 private:
 
     ///Enables/disables the send history GUI elements.
@@ -325,6 +328,12 @@ private:
 
     ///True if no console is visible in the main window.
     bool m_noConsoleVisible;
+
+    ///The queued received data.
+    QByteArray m_queuedReceivedData;
+
+    ///The timer for the queued received data.
+    QTimer m_queuedReceivedDataTimer;
 
 };
 
