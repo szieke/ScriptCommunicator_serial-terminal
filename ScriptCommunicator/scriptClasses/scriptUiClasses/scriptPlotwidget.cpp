@@ -250,7 +250,7 @@ void ScriptPlotWidget::plotMousePressSlot(QMouseEvent *event)
 {
     (void)event;
 
-    // event has sometimes wrong x and y position values (may be related to the issue below)
+    // event has sometimes wrong x and y position values (maybe related to the issue below)
     // get global mouse position and translate them to widget position
     QPoint rpos = m_plotWidget->mapFromGlobal(QCursor::pos());
 
