@@ -209,7 +209,7 @@ void CreateSceFile::addFolderSlot()
 
     if(!folder.isEmpty())
     {
-        ScriptFile helper(0, "");
+        ScriptFile helper(0, "", false);
         QStringList files = helper.readDirectory(folder, false, true, true, false);
         for(auto el : files)
         {
@@ -611,7 +611,7 @@ void CreateSceFile::generateCompressedFileSlot()
 {
     bool success = false;
     QString sceFileName = ui->fileLineEdit->text() + "/" + QFileInfo(ui->fileLineEdit->text()).fileName() + ".sce";
-    ScriptFile fileHelper(this, sceFileName);
+    ScriptFile fileHelper(this, sceFileName, false);
     QStringList copiedFiles;
 
     if(!isExecutableScriptInFilesTable())

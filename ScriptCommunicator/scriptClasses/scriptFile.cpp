@@ -9,7 +9,8 @@
 #include <quazipdir.h>
 #include <quazipfile.h>
 
-ScriptFile::ScriptFile(QObject *parent, QString scriptFileName) : QObject(parent), m_scriptFileName(scriptFileName)
+ScriptFile::ScriptFile(QObject *parent, QString scriptFileName, bool isWorkerScript) : QObject(parent), m_scriptFileName(scriptFileName),
+    m_isWorkerScript(isWorkerScript)
 {
 }
 
@@ -264,7 +265,18 @@ void ScriptFile::showExceptionInMessageBox(QScriptValue exception, QString scrip
                 errorOcured = false;
             }
         }
+        else if(m_isWorkerScript && list[0].endsWith(": cust"))
+        {
+            errorOcured = false;
+            textToShow = exceptionString + "\n\nNote: The cust object is only available in sequence scripts (send window).";
+        }
+        else if(!m_isWorkerScript && list[0].endsWith(": scriptThread"))
+        {
+            errorOcured = false;
+            textToShow = exceptionString + "\n\nNote: The scriptThread object is only available in worker scripts (script window).";
+        }
     }
+
 
     if(errorOcured)
     {

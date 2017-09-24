@@ -163,7 +163,7 @@ int main(int argc, char *argv[])
                     if(ScriptFile::extractZipFile(currentArg, g_currentScezFolder))
                     {
                         QString currentSceFile;
-                        QStringList dirContent = ScriptFile(0, "").readDirectory(g_currentScezFolder, false, false, true, false);
+                        QStringList dirContent = ScriptFile(0, "", false).readDirectory(g_currentScezFolder, false, false, true, false);
 
                         for(auto el : dirContent)
                         {

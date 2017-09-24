@@ -389,7 +389,7 @@ void ScriptThread::run()
         m_standardDialogs = new ScriptStandardDialogs(this);
         m_standardDialogs->intSignals(m_scriptWindow, m_scriptRunsInDebugger);
 
-        m_scriptFileObject = new ScriptFile(this, m_scriptFileName);
+        m_scriptFileObject = new ScriptFile(this, m_scriptFileName, true);
         m_scriptFileObject->intSignals(m_scriptWindow, m_scriptRunsInDebugger);
         m_scriptEngine->globalObject().setProperty("scriptFile", m_scriptEngine->newQObject(m_scriptFileObject));
 
