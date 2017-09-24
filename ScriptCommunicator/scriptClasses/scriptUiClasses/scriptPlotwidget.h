@@ -276,8 +276,7 @@ public slots:
 
 private slots:
 
-    ///This function adjusts the borders of diagram and replots all graphs.
-    ///It is called periodically by m_plotTimer.
+    ///This function is called periodically by m_plotTimer (adjusts the borders of diagram and replots all graphs).
     void plotTimeoutSlot(void);
 
     ///This function enables or disables the save button (the diagram can only be
@@ -313,6 +312,9 @@ private slots:
     void plotMousePressSlot(QMouseEvent *event);
 
 private:
+
+    ///This function adjusts the borders of diagram and replots all graphs.
+    void adjustBordersAndReplot(void);
 
     ///Pointer to the script thread.
     ScriptThread* m_scriptThread;

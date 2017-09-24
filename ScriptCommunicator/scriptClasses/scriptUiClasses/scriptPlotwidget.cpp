@@ -510,6 +510,9 @@ void ScriptPlotWidget::showLegendCheckBoxSlot(int state)
  */
 void ScriptPlotWidget::updateCheckBoxSlot(int state)
 {
+    //Adjust the borders of diagram and replot all graphs.
+    adjustBordersAndReplot();
+
     if(state != 0)
     {
         //add all saved points (during the plot window freeze)
@@ -1073,20 +1076,28 @@ void ScriptPlotWidget::showHelperElementsSlot(bool showXRange, bool showYRange, 
 
 /**
  * This function adjusts the borders of diagram and replots all graphs.
- * It is called periodically by m_plotTimer.
+ */
+void ScriptPlotWidget::adjustBordersAndReplot(void)
+{
+    for(auto x : m_xAxisMaxValues)
+    {
+        m_plotWidget->xAxis->setRange(x - m_xRangeLineEdit->text().toDouble(),
+                                      m_addSpaceAfterBiggestValues ? x + (m_xRangeLineEdit->text().toDouble() / 10) : x);
+    }
+    m_plotWidget->yAxis->setRange(m_yMinRangeLineEdit->text().toDouble(), m_yMaxRangeLineEdit->text().toDouble());
+    m_plotWidget->replot();
+}
+
+/**
+ * This function is called periodically by m_plotTimer (adjusts the borders of diagram and replots all graphs).
  */
 void ScriptPlotWidget::plotTimeoutSlot()
 {
 
     if(m_updatePlotCheckBox->isChecked())
     {
-        for(auto x : m_xAxisMaxValues)
-        {
-            m_plotWidget->xAxis->setRange(x - m_xRangeLineEdit->text().toDouble(),
-                                          m_addSpaceAfterBiggestValues ? x + (m_xRangeLineEdit->text().toDouble() / 10) : x);
-        }
-        m_plotWidget->yAxis->setRange(m_yMinRangeLineEdit->text().toDouble(), m_yMaxRangeLineEdit->text().toDouble());
-        m_plotWidget->replot();
+        //Adjust the borders of diagram and replot all graphs.
+        adjustBordersAndReplot();
     }
 
     static quint32 checkMaxNumberOfValuesCounter = 0;
