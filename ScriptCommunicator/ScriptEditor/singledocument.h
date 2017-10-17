@@ -58,6 +58,12 @@ public:
     ///Returns m_fileMustBeParsed.
     bool getFileMustBeParsed(void){return m_fileMustBeParsed;}
 
+    ///Go to line.
+    void goToLine(int line)
+    {
+        SendScintilla(SCI_GOTOLINE, line);
+    }
+
     ///Clears the vector which contains all function.
     void clearAllFunctions(void){m_functions.clear();}
 

@@ -81,6 +81,14 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
 
     g_mainWindow = this;
 
+    m_goToLineDialog.setInputMode(QInputDialog::IntInput);
+    m_goToLineDialog.setLabelText("go to line:");
+    m_goToLineDialog.setIntRange(1, 1000000000);
+    m_goToLineDialog.setIntValue(1);
+    m_goToLineDialog.setIntStep(1);
+
+    connect(&m_goToLineDialog, SIGNAL(finished(int)), this, SLOT(executeGoToLineSlot(int)));
+
     connect(ui->documentsTabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabIndexChangedSlot(int)));
     connect(ui->documentsTabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(documentsTabCloseRequestedSlot(int)));
     connect(ui->infoTabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(infoTabCloseRequestedSlot(int)));
@@ -995,6 +1003,27 @@ void MainWindow::setStateLoadAllIncludedScriptsButton(void)
         }
     }
     ui->actionOpenAllIncludedScripts->setEnabled(containsIncludedScripts);
+}
+
+/**
+ * Execute the go to line.
+ */
+void MainWindow::executeGoToLineSlot(int code)
+{
+    if(code == 1)
+    {//OK pressed.
+
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
+        textEditor->goToLine( m_goToLineDialog.intValue() - 1);
+    }
+}
+
+/**
+ * Go to line action slot.
+ */
+void MainWindow::goToLineSlot()
+{
+    m_goToLineDialog.show();
 }
 
 /**
@@ -2304,6 +2333,7 @@ void MainWindow::initActions()
     connect(ui->actionSetFont, SIGNAL(triggered()), this, SLOT(setFont()));
     connect(ui->actionEditUi , SIGNAL(triggered()), this, SLOT(editUiButtonSlot()));
     connect(ui->actionReload , SIGNAL(triggered()), this, SLOT(reloadSlot()));
+    connect(ui->actionGoToLine , SIGNAL(triggered()), this, SLOT(goToLineSlot()));
 
     ui->actionEditUi->setEnabled(false);
 

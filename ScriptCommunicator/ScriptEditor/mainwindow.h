@@ -33,6 +33,7 @@
 #include "singledocument.h"
 #include <QTreeWidgetItem>
 #include "parseThread.h"
+#include <QInputDialog>
 
 
 namespace Ui {
@@ -186,6 +187,12 @@ private slots:
 
     ///Reload action slot.
     void reloadSlot();
+
+    ///Execute the go to line.
+    void executeGoToLineSlot(int code);
+
+    ///Go to line action slot.
+    void goToLineSlot();
 
     ///Cut action slot.
     void cutSlot();
@@ -356,6 +363,8 @@ private:
 
     ///Scripts wich shalll be loaded after start (from command-line).
     QStringList m_scriptsToLoadAfterStart;
+
+    QInputDialog m_goToLineDialog;
 
 };
 
