@@ -202,7 +202,7 @@ void SearchConsole::findButtonClickedSlot(void)
 
         if(stringFound)
         {
-            m_mainWindow->m_userInterface->resultLabel->setText("result: string found");
+            m_mainWindow->m_userInterface->resultLabel->setText(QString("result: string found in line %1").arg(textEdit->textCursor().blockNumber() + 1));
             textEdit->setFocus();
         }
         else
