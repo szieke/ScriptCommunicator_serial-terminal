@@ -110,6 +110,7 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     connect(&m_checkForFileChangesTimer, SIGNAL(timeout()), this, SLOT(checkForFileChanges()));
     connect(&m_mouseEventTimer, SIGNAL(timeout()), this, SLOT(mouseMoveTimerSlot()));
     connect(&m_indicatorClickTimer, SIGNAL(timeout()), this, SLOT(indicatorClickTimerSlot()));
+    connect(&m_showEventTimer, SIGNAL(timeout()), this, SLOT(showEventTimerSlot()));
 
 
     m_findDialog->ui->findWhatComboBox->setAutoCompletion(false);
@@ -1352,16 +1353,12 @@ void MainWindow::dropEvent(QDropEvent *event)
 }
 
 
-
-
 /**
- * Show event.
- * @param event
- *      The show event.
+ * Is called by m_showEventTimer.
  */
-void MainWindow::showEvent(QShowEvent *event)
+void MainWindow::showEventTimerSlot()
 {
-    event->accept();
+    m_showEventTimer.stop();
 
     QList<int> elSizes = ui->splitter->sizes();
     if(elSizes[1] > 50)
@@ -1380,6 +1377,17 @@ void MainWindow::showEvent(QShowEvent *event)
 
     qApp->installEventFilter(this);
 
+}
+
+/**
+ * Show event.
+ * @param event
+ *      The show event.
+ */
+void MainWindow::showEvent(QShowEvent *event)
+{
+    event->accept();
+    m_showEventTimer.start(100);
 }
 
 /**
