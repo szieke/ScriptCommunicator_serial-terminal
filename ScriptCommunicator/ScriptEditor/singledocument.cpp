@@ -138,13 +138,13 @@ void SingleDocument::updateLastModified(void)
 }
 
 /**
- * Sets the font size of the line number margin.
+ * Sets the font of the line number margin.
  * @param pointSize
  *      The font size.
  */
-void SingleDocument::setLineNumberMarginFontSize(int pointSize)
+void SingleDocument::setLineNumberMarginFont(QFont font)
 {
-    setMarginsFont(QFont("Courier New", pointSize));
+    setMarginsFont(font);
     setMarginWidth(0, QString("00%1").arg(lines()));
 }
 
@@ -158,7 +158,7 @@ void SingleDocument::setDocumentName(QString name, QFont font)
     m_documentName = name;
     initLexer(name);
     lexer()->setFont(font, -1);
-    setLineNumberMarginFontSize(font.pointSize());
+    setLineNumberMarginFont(font);
 }
 
 /**

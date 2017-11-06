@@ -43,8 +43,8 @@ public:
     ///Sets the document name/path.
     void setDocumentName(QString name, QFont font);
 
-    ///Sets the font size of the line number margin.
-    void setLineNumberMarginFontSize(int pointSize);
+    ///Sets the font of the line number margin.
+    void setLineNumberMarginFont(QFont font);
 
     ///Returns the document name/path.
     QString getDocumentName(void){return m_documentName;}

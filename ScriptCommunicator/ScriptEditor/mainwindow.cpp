@@ -1960,7 +1960,7 @@ void MainWindow::setFont()
         {
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
             textEditor->lexer()->setFont(m_currentFont, -1);
-            textEditor->setLineNumberMarginFontSize(m_currentFont.pointSize());
+            textEditor->setLineNumberMarginFont(m_currentFont);
         }
     }
 }
@@ -2010,7 +2010,7 @@ void MainWindow::zoomOutSlot()
     {
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
         textEditor->lexer()->setFont(m_currentFont, -1);
-        textEditor->setLineNumberMarginFontSize(m_currentFont.pointSize());
+        textEditor->setLineNumberMarginFont(m_currentFont);
 
     }
 }
@@ -2025,7 +2025,7 @@ void MainWindow::zoomInSlot()
     {
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
         textEditor->lexer()->setFont(m_currentFont, -1);
-        textEditor->setLineNumberMarginFontSize(m_currentFont.pointSize());
+        textEditor->setLineNumberMarginFont(m_currentFont);
     }
 }
 
