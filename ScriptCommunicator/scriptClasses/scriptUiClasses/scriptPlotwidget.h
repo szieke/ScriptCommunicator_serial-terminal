@@ -71,7 +71,7 @@ public:
     Q_INVOKABLE QScriptValue getCurrentAxisRanges(void);
 
     ///This function adds one point to a graph.
-    Q_INVOKABLE void addDataToGraph(int graphIndex, double x, double y){emit addDataToGraphSignal(graphIndex, x, y);}
+    Q_INVOKABLE void addDataToGraph(int graphIndex, double x, double y, bool force = false){emit addDataToGraphSignal(graphIndex, x, y, force);}
 
     ///This function returns several data points from a graph.
     Q_INVOKABLE QScriptValue getDataFromGraph(int graphIndex, double xStart, int count = 1);
@@ -80,7 +80,7 @@ public:
      * Removes all data points with (sort-)keys between xFrom and xTo. If
      * xFrom is greater or equal to xTo, the function does nothing.
      */
-    Q_INVOKABLE void removeDataRangeFromGraph(int graphIndex, double xFrom, double xTo){emit removeDataRangeFromGraphSignal(graphIndex, xFrom, xTo);}
+    Q_INVOKABLE void removeDataRangeFromGraph(int graphIndex, double xFrom, double xTo, bool force = false){emit removeDataRangeFromGraphSignal(graphIndex, xFrom, xTo, force);}
 
     /**
      * Sets the visual appearance of single data points in the plot.
@@ -191,11 +191,11 @@ signals:
 
     ///Is connected with PlotWindow::addDataToGraphSlot (adds one point to a given specific graph).
     ///This signal is private and must not be used inside a script.
-    void addDataToGraphSignal(int graphIndex, double x, double y);
+    void addDataToGraphSignal(int graphIndex, double x, double y, bool force);
 
     ///Is connected with PlotWindow::removeDataRangeFromGraphSlot (removes all data points with (sort-)keys between xFrom and xTo).
     ///This signal is private and must not be used inside a script.
-    void removeDataRangeFromGraphSignal(int graphIndex, double xFrom, double xTo);
+    void removeDataRangeFromGraphSignal(int graphIndex, double xFrom, double xTo, bool force);
 
     ///Is connected with PlotWindow::setScatterStyleSlot (sets the visual appearance of single data points in the plot).
     ///This signal is private and must not be used inside a script.
@@ -251,10 +251,10 @@ public slots:
     void setInitialAxisRangesSlot(double xRange, double yMinValue, double ymaxValue, bool addSpaceAfterBiggestValues);
 
     ///This slot function adds one point to a graph.
-    bool addDataToGraphSlot(int graphIndex, double x, double y);
+    bool addDataToGraphSlot(int graphIndex, double x, double y, bool force=false);
 
     ///Removes all data points with (sort-)keys between xFrom and xTo.
-    void removeDataRangeFromGraphSlot(int graphIndex, double xFrom, double xTo);
+    void removeDataRangeFromGraphSlot(int graphIndex, double xFrom, double xTo, bool force=false);
 
     ///Sets the visual appearance of single data points in the plot.
     void setScatterStyleSlot(int graphIndex, QString style, double size);

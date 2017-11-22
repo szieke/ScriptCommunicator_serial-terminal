@@ -89,9 +89,9 @@ function plotWindowMousePress(xValue, yValue, button)
 	// show marker
 	var marker = (column == 0) ? plotWidgetGraphMark1Index : plotWidgetGraphMark2Index;
 	
-	plotWidget.removeDataRangeFromGraph(marker, -1e100, 1e100);
-	plotWidget.addDataToGraph(marker, xValue, -1e100);
-	plotWidget.addDataToGraph(marker, xValue, 1e100);
+	plotWidget.removeDataRangeFromGraph(marker, -1e100, 1e100, true);
+	plotWidget.addDataToGraph(marker, xValue, -1e100, true);
+	plotWidget.addDataToGraph(marker, xValue, 1e100, true);
 	
 	// force update if disabled to view marker
 	if (plotWidget.isAutoUpdateEnabled() == false)

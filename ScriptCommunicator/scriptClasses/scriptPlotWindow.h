@@ -90,7 +90,7 @@ public:
     Q_INVOKABLE QScriptValue getCurrentAxisRanges(void){return m_plotWindow->getWidget()->getCurrentAxisRanges();}
 
     ///This function adds one point to a graph.
-    Q_INVOKABLE void addDataToGraph(int graphIndex, double x, double y){emit m_plotWindow->getWidget()->addDataToGraphSignal(graphIndex, x, y);}
+    Q_INVOKABLE void addDataToGraph(int graphIndex, double x, double y, bool force = false){emit m_plotWindow->getWidget()->addDataToGraphSignal(graphIndex, x, y, force);}
 
     ///This function returns several data points from a graph.
     Q_INVOKABLE QScriptValue getDataFromGraph(int graphIndex, double xStart, int count = 1){return m_plotWindow->getWidget()->getDataFromGraph(graphIndex, xStart, count);}
@@ -99,7 +99,7 @@ public:
      * Removes all data points with (sort-)keys between xFrom and xTo. If
      * xFrom is greater or equal to xTo, the function does nothing.
      */
-    Q_INVOKABLE void removeDataRangeFromGraph(int graphIndex, double xFrom, double xTo){emit m_plotWindow->getWidget()->removeDataRangeFromGraphSignal(graphIndex, xFrom, xTo);}
+    Q_INVOKABLE void removeDataRangeFromGraph(int graphIndex, double xFrom, double xTo, bool force = false){emit m_plotWindow->getWidget()->removeDataRangeFromGraphSignal(graphIndex, xFrom, xTo, force);}
 
     /**
      * Sets the visual appearance of single data points in the plot.

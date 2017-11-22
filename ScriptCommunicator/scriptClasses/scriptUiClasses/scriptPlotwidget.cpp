@@ -122,11 +122,11 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
     connect(this, SIGNAL(setInitialAxisRangesSignal(double, double, double, bool)),
             this, SLOT(setInitialAxisRangesSlot(double, double, double, bool)), Qt::QueuedConnection);
 
-    connect(this, SIGNAL(addDataToGraphSignal(int, double, double)),
-            this, SLOT(addDataToGraphSlot(int, double, double)), Qt::QueuedConnection);
+    connect(this, SIGNAL(addDataToGraphSignal(int, double, double, bool)),
+            this, SLOT(addDataToGraphSlot(int, double, double, bool)), Qt::QueuedConnection);
 
-    connect(this, SIGNAL(removeDataRangeFromGraphSignal(int,double,double)),
-            this, SLOT(removeDataRangeFromGraphSlot(int,double,double)), Qt::QueuedConnection);
+    connect(this, SIGNAL(removeDataRangeFromGraphSignal(int,double,double,bool)),
+            this, SLOT(removeDataRangeFromGraphSlot(int,double,double,bool)), Qt::QueuedConnection);
 
     connect(this, SIGNAL(setScatterStyleSignal(int,QString,double)),
             this, SLOT(setScatterStyleSlot(int,QString,double)), Qt::QueuedConnection);
@@ -625,10 +625,12 @@ void ScriptPlotWidget::setAxisLabelsSlot(QString xAxisLabel, QString yAxisLabel)
  *      The start position.
  * @param xTo
  *      The end position.
+ * @param force
+ *      If true then the data is removed even if auto update is disabled (setAutoUpdateEnabled).
  */
-void ScriptPlotWidget::removeDataRangeFromGraphSlot(int graphIndex, double xFrom, double xTo)
+void ScriptPlotWidget::removeDataRangeFromGraphSlot(int graphIndex, double xFrom, double xTo, bool force)
 {
-    if(m_updatePlotCheckBox->isChecked())
+    if(m_updatePlotCheckBox->isChecked() || force)
     {
         if (graphIndex >= 0 && graphIndex < m_plotWidget->graphCount())
         {
@@ -667,14 +669,16 @@ void ScriptPlotWidget::removeDataRangeFromGraphSlot(int graphIndex, double xFrom
  *      The x value of the point.
  * @param y
  *      The y value of the point
+ * @param force
+ *      If true then the data is added even ifauto update is disabled (setAutoUpdateEnabled).
  * @return
  *      True for success.
  */
-bool ScriptPlotWidget::addDataToGraphSlot(int graphIndex, double x, double y)
+bool ScriptPlotWidget::addDataToGraphSlot(int graphIndex, double x, double y, bool force)
 {
     bool hasSucceeded = true;
 
-    if(m_updatePlotCheckBox->isChecked())
+    if(m_updatePlotCheckBox->isChecked() || force)
     {
         if (graphIndex >= 0 && graphIndex < m_plotWidget->graphCount())
         {
@@ -683,8 +687,6 @@ bool ScriptPlotWidget::addDataToGraphSlot(int graphIndex, double x, double y)
             if(x > m_xAxisMaxValues[graphIndex])
             {
                 m_xAxisMaxValues[graphIndex] = x;
-                m_plotWidget->xAxis->setRange(x - m_xRangeLineEdit->text().toDouble(),
-                                              m_addSpaceAfterBiggestValues ? x + (m_xRangeLineEdit->text().toDouble() / 10) : x);
             }
         }
         else
