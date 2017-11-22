@@ -152,7 +152,7 @@ public:
     Q_INVOKABLE void setUpdateInterval(quint32 updateInterval){emit setUpdateIntervalSignal(updateInterval);}
 
     ///Update the current plot view.
-    Q_INVOKABLE void updatePlot(void){m_plotWidget->replot();}
+    Q_INVOKABLE void updatePlot(void){emit updatePlotSignal();}
 
     ///The default value for the plot update timer (m_plotTimer).
     static const quint32 DEFAULT_PLOT_UPDATE_TIME_MS = 100;
@@ -230,6 +230,10 @@ signals:
     ///Is emitted in setUpdateInterval.
     ///This signal is private and must not be used inside a script.
     void setUpdateIntervalSignal(quint32 updateInterval);
+
+    ///Is emiited in updatePlot();
+    ///This signal is private and must not be used inside a script.
+    void updatePlotSignal();
 
 public slots:
 

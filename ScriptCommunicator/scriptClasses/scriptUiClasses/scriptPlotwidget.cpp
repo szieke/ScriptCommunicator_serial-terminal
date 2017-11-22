@@ -113,6 +113,9 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
     connect(m_clearPushButton, SIGNAL(clicked()), this, SLOT(clearButtonPressedSlot()));
 
 
+    connect(this, SIGNAL(updatePlotSignal()), m_plotWidget, SLOT(replot()), Qt::QueuedConnection);
+
+
     connect(this, SIGNAL(addGraphSignal(QString, QString, QString, int*)),
             this, SLOT(addGraphSlot(QString, QString, QString, int*)), directConnectionType);
 

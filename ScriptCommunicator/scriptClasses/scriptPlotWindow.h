@@ -170,7 +170,7 @@ public:
     Q_INVOKABLE void setUpdateInterval(quint32 updateInterval){m_plotWindow->getWidget()->setUpdateInterval(updateInterval);}
 
     ///Update the current plot view.
-    Q_INVOKABLE void updatePlot(void){m_plotWindow->getWidget()->updatePlot();}
+    Q_INVOKABLE void updatePlot(void){emit m_plotWindow->getWidget()->updatePlotSignal();}
 
 Q_SIGNALS:
 
