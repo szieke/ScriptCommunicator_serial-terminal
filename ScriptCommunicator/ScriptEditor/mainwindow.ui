@@ -166,6 +166,7 @@
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
     <addaction name="actionFind"/>
+    <addaction name="actionGoToLine"/>
    </widget>
    <widget class="QMenu" name="menuView">
     <property name="title">
@@ -468,6 +469,17 @@
    </property>
    <property name="text">
     <string>Close document</string>
+   </property>
+  </action>
+  <action name="actionGoToLine">
+   <property name="text">
+    <string>Go to line</string>
+   </property>
+   <property name="toolTip">
+    <string>go to line</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+G</string>
    </property>
   </action>
  </widget>

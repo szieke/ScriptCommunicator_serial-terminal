@@ -99,12 +99,22 @@ function write(i2cAddress, memoryAddress, dataToSend, logData, pageSize)
 	var writtenBytes = 0;
 	var bytesToWrite = dataToSend.length;
 	var hasSucceeded = false;
+	var counter = 1;
 	
 	while(writtenBytes < bytesToWrite)
 	{
 		var tmpMemoryAddress = memoryAddress + writtenBytes;
 		var bytesInPageLeft = pageSize - (tmpMemoryAddress % pageSize);
 		var tmpData = dataToSend.slice(writtenBytes,  writtenBytes + bytesInPageLeft);
+		
+		if(UI_AddFillBytes.isChecked() )
+		{
+			//Add fill bytes.
+			while(tmpData.length < pageSize)
+			{
+				tmpData.push(parseInt(UI_FillBytes.text()));
+			}
+		}
 		
 		if(writePage(i2cAddress, tmpMemoryAddress, tmpData, logData))
 		{
@@ -210,10 +220,22 @@ function incrementProgress()
 function fillFileList()
 {
 	var files = scriptFile.readDirectory(UI_Folder.text(), false, false, true, false);
-	UI_File.clear();
+	
+	var filesString = "";
 	for(var i = 0; i < files.length; i++)
 	{
-		UI_File.addItem(files[i]);
+		filesString += files[i];
+	}
+	
+	if(g_savedFoundFiles != filesString)
+	{//The content of the selected folder has been changed.
+		
+		UI_File.clear();
+		g_savedFoundFiles = filesString;
+		for(var i = 0; i < files.length; i++)
+		{
+			UI_File.addItem(files[i]);
+		}
 	}
 }
 
@@ -273,7 +295,6 @@ function uploadSlot()
 				{
 				
 					UI_Progress.setValue(pagesToWrite);
-
 					var readData = read(i2cAddress, eepromAddress, writtenData.length, logData, pageSize);
 					g_interface.disconnect();
 					var dataIsOk = true;
@@ -301,15 +322,12 @@ function uploadSlot()
 						UI_Log.append(writtenData.length + " bytes successfully written");
 					}
 					
-				}//if(writtenData.length > 0)
-				else
-				{
-					UI_Log.append("could not read: " + UI_File.currentText());
-				}
+				}//if(write(i2cAddress, eepromAddress, writtenData, logData, pageSize))
+
 			}//if(writtenData.length > 0)
 			else
 			{
-				UI_Log.append("reading " + fileName + " failed");
+				UI_Log.append("could not read: " + UI_File.currentText());
 			}
 			g_interface.disconnect();
 			
@@ -332,6 +350,8 @@ function saveUiSettings(fileName)
 	settings += "UI_EepromType=" + UI_EepromType.currentText() + "\r\n";
 	settings += "UI_EepromAddress=" + UI_EepromAddress.text() + "\r\n";
 	settings += "UI_AardvarkPort=" + UI_AardvarkPort.text() + "\r\n";
+	settings += "UI_FillBytes=" + UI_FillBytes.text() + "\r\n";
+	settings += "UI_AddFillBytes=" + (UI_AddFillBytes.isChecked() ? 1 : 0 )+ "\r\n";
 
 	scriptFile.writeFile(fileName, false, settings, true);
 }
@@ -370,6 +390,8 @@ function loadUiSettings(fileName)
 		UI_EepromAddress.setText(getValueOfStringArray(stringArray, "UI_EepromAddress"));
 		UI_EepromType.setCurrentText(getValueOfStringArray(stringArray, "UI_EepromType"));
 		UI_AardvarkPort.setText(getValueOfStringArray(stringArray, "UI_AardvarkPort"));
+		UI_FillBytes.setText(getValueOfStringArray(stringArray, "UI_FillBytes"));
+		UI_AddFillBytes.setChecked((getValueOfStringArray(stringArray, "UI_AddFillBytes") == 1) ? true : false)
 	}
 	
 }
@@ -417,14 +439,21 @@ scriptThread.loadScript("./helper/devices.js");
 var g_interface = scriptInf.aardvarkI2cSpiCreateInterface();
 var currentProgressValue = 0;
 
+var g_savedFoundFiles = "";
+
 UI_I2CAddress.addIntValidator(0, 127);
 UI_EepromAddress.addIntValidator(0, 0xffffff);
 UI_AardvarkPort.addIntValidator(0, 127);
+UI_FillBytes.addIntValidator(0, 255);
 fillFileList();
 scriptThread.addTabsToMainWindow(UI_TabWidget);
 detectAardvarkI2cSpiDevicesSlot();
 
 currentFileChangedSlot(UI_File.currentText());
 currentFolderChangedSlot(UI_Folder.text());
+
+var g_folderChangeTimer = scriptThread.createTimer();
+g_folderChangeTimer.timeoutSignal.connect(fillFileList);
+g_folderChangeTimer.start(500);
 
 

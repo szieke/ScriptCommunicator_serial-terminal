@@ -202,7 +202,24 @@ void SearchConsole::findButtonClickedSlot(void)
 
         if(stringFound)
         {
-            m_mainWindow->m_userInterface->resultLabel->setText("result: string found");
+            int cursorLine = 0;
+            QTextCursor cursor = textEdit->textCursor();
+            QTextBlock block = textEdit->document()->begin();
+            QTextLine line ;
+
+            //Get the number of lines from the blocks in front of the block in which the string was found.
+            while (block.isValid() && (block.blockNumber() < cursor.blockNumber()))
+            {
+                line = block.layout()->lineForTextPosition(block.length() - 1);
+                cursorLine += line.lineNumber() + 1;
+                block = block.next();
+            }
+
+            //Get the line number of the found string in his block.
+            line = block.layout()->lineForTextPosition(cursor.position() - block.position());
+            cursorLine += line.lineNumber() + 1;
+
+            m_mainWindow->m_userInterface->resultLabel->setText(QString("result: string found in line %1").arg(cursorLine));
             textEdit->setFocus();
         }
         else

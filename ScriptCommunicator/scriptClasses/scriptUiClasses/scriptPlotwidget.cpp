@@ -250,7 +250,7 @@ void ScriptPlotWidget::plotMousePressSlot(QMouseEvent *event)
 {
     (void)event;
 
-    // event has sometimes wrong x and y position values (may be related to the above issue)
+    // event has sometimes wrong x and y position values (maybe related to the issue below)
     // get global mouse position and translate them to widget position
     QPoint rpos = m_plotWidget->mapFromGlobal(QCursor::pos());
 
@@ -510,6 +510,9 @@ void ScriptPlotWidget::showLegendCheckBoxSlot(int state)
  */
 void ScriptPlotWidget::updateCheckBoxSlot(int state)
 {
+    //Adjust the borders of diagram and replot all graphs.
+    adjustBordersAndReplot();
+
     if(state != 0)
     {
         //add all saved points (during the plot window freeze)
@@ -1075,21 +1078,30 @@ void ScriptPlotWidget::showHelperElementsSlot(bool showXRange, bool showYRange, 
  * This function adjusts the borders of diagram and replots all graphs.
  * It is called periodically by m_plotTimer.
  */
+void ScriptPlotWidget::adjustBordersAndReplot(void)
+{   
+    if (m_xAxisMaxValues.size())
+    {
+        auto max_x = *std::max_element(m_xAxisMaxValues.begin(), m_xAxisMaxValues.end());
+
+        m_plotWidget->xAxis->setRange(max_x - m_xRangeLineEdit->text().toDouble(),
+                                      m_addSpaceAfterBiggestValues ? max_x + (m_xRangeLineEdit->text().toDouble() / 10) : max_x);
+    }
+
+    m_plotWidget->yAxis->setRange(m_yMinRangeLineEdit->text().toDouble(), m_yMaxRangeLineEdit->text().toDouble());
+    m_plotWidget->replot();
+}
+
+/**
+ * This function is called periodically by m_plotTimer (adjusts the borders of diagram and replots all graphs).
+ */
 void ScriptPlotWidget::plotTimeoutSlot()
 {
 
     if(m_updatePlotCheckBox->isChecked())
     {
-        if (m_xAxisMaxValues.size())
-        {
-            auto max_x = *std::max_element(m_xAxisMaxValues.begin(), m_xAxisMaxValues.end());
-
-            m_plotWidget->xAxis->setRange(max_x - m_xRangeLineEdit->text().toDouble(),
-                                          m_addSpaceAfterBiggestValues ? max_x + (m_xRangeLineEdit->text().toDouble() / 10) : max_x);
-        }
-
-        m_plotWidget->yAxis->setRange(m_yMinRangeLineEdit->text().toDouble(), m_yMaxRangeLineEdit->text().toDouble());
-        m_plotWidget->replot();
+        //Adjust the borders of diagram and replot all graphs.
+        adjustBordersAndReplot();
     }
 
     static quint32 checkMaxNumberOfValuesCounter = 0;

@@ -249,7 +249,7 @@ protected:
         m_standardDialogs = new ScriptStandardDialogs(this);
         m_standardDialogs->intSignals(m_mainWindow->getScriptWindow(), m_runsInDebugger);
 
-        m_scriptFileObject = new ScriptFile(this, "");
+        m_scriptFileObject = new ScriptFile(this, "", false);
         m_scriptFileObject->intSignals(m_mainWindow->getScriptWindow(), m_runsInDebugger);
 
         Qt::ConnectionType directConnectionType = m_runsInDebugger ? Qt::DirectConnection : Qt::BlockingQueuedConnection;

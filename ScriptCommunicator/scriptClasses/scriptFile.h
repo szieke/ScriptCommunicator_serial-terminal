@@ -20,7 +20,7 @@ class ScriptFile : public QObject, public ScriptObject
     Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 
 public:
-    ScriptFile(QObject *parent, QString scriptFileName);
+    ScriptFile(QObject *parent, QString scriptFileName, bool isWorkerScript);
 
     ///Connects all signals.
     void intSignals(ScriptWindow* scriptWindow, bool runsInDebugger, bool useBlockingSignals=true);
@@ -133,6 +133,9 @@ private:
 
     ///The max. number of  bytes which are read at once from one file.
     static const quint32 MAX_READ_FROM_FILE = 100000000;
+
+    ///True if this objects belongs to a worker script.
+    bool m_isWorkerScript;
 };
 
 #endif // SCRIPTFILE_H

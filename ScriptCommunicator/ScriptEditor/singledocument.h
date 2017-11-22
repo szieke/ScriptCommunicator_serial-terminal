@@ -43,8 +43,8 @@ public:
     ///Sets the document name/path.
     void setDocumentName(QString name, QFont font);
 
-    ///Sets the font size of the line number margin.
-    void setLineNumberMarginFontSize(int pointSize);
+    ///Sets the font of the line number margin.
+    void setLineNumberMarginFont(QFont font);
 
     ///Returns the document name/path.
     QString getDocumentName(void){return m_documentName;}
@@ -57,6 +57,12 @@ public:
 
     ///Returns m_fileMustBeParsed.
     bool getFileMustBeParsed(void){return m_fileMustBeParsed;}
+
+    ///Go to line.
+    void goToLine(int line)
+    {
+        SendScintilla(SCI_GOTOLINE, line);
+    }
 
     ///Clears the vector which contains all function.
     void clearAllFunctions(void){m_functions.clear();}

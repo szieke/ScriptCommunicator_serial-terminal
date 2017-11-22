@@ -81,6 +81,14 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
 
     g_mainWindow = this;
 
+    m_goToLineDialog.setInputMode(QInputDialog::IntInput);
+    m_goToLineDialog.setLabelText("go to line:");
+    m_goToLineDialog.setIntRange(1, 1000000000);
+    m_goToLineDialog.setIntValue(1);
+    m_goToLineDialog.setIntStep(1);
+
+    connect(&m_goToLineDialog, SIGNAL(finished(int)), this, SLOT(executeGoToLineSlot(int)));
+
     connect(ui->documentsTabWidget, SIGNAL(currentChanged(int)), this, SLOT(tabIndexChangedSlot(int)));
     connect(ui->documentsTabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(documentsTabCloseRequestedSlot(int)));
     connect(ui->infoTabWidget, SIGNAL(tabCloseRequested(int)), this, SLOT(infoTabCloseRequestedSlot(int)));
@@ -102,6 +110,7 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     connect(&m_checkForFileChangesTimer, SIGNAL(timeout()), this, SLOT(checkForFileChanges()));
     connect(&m_mouseEventTimer, SIGNAL(timeout()), this, SLOT(mouseMoveTimerSlot()));
     connect(&m_indicatorClickTimer, SIGNAL(timeout()), this, SLOT(indicatorClickTimerSlot()));
+    connect(&m_showEventTimer, SIGNAL(timeout()), this, SLOT(showEventTimerSlot()));
 
 
     m_findDialog->ui->findWhatComboBox->setAutoCompletion(false);
@@ -998,6 +1007,27 @@ void MainWindow::setStateLoadAllIncludedScriptsButton(void)
 }
 
 /**
+ * Execute the go to line.
+ */
+void MainWindow::executeGoToLineSlot(int code)
+{
+    if(code == 1)
+    {//OK pressed.
+
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
+        textEditor->goToLine( m_goToLineDialog.intValue() - 1);
+    }
+}
+
+/**
+ * Go to line action slot.
+ */
+void MainWindow::goToLineSlot()
+{
+    m_goToLineDialog.show();
+}
+
+/**
  * Reload action slot.
  */
 void MainWindow::reloadSlot()
@@ -1323,16 +1353,12 @@ void MainWindow::dropEvent(QDropEvent *event)
 }
 
 
-
-
 /**
- * Show event.
- * @param event
- *      The show event.
+ * Is called by m_showEventTimer.
  */
-void MainWindow::showEvent(QShowEvent *event)
+void MainWindow::showEventTimerSlot()
 {
-    event->accept();
+    m_showEventTimer.stop();
 
     QList<int> elSizes = ui->splitter->sizes();
     if(elSizes[1] > 50)
@@ -1351,6 +1377,17 @@ void MainWindow::showEvent(QShowEvent *event)
 
     qApp->installEventFilter(this);
 
+}
+
+/**
+ * Show event.
+ * @param event
+ *      The show event.
+ */
+void MainWindow::showEvent(QShowEvent *event)
+{
+    event->accept();
+    m_showEventTimer.start(100);
 }
 
 /**
@@ -1923,7 +1960,7 @@ void MainWindow::setFont()
         {
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
             textEditor->lexer()->setFont(m_currentFont, -1);
-            textEditor->setLineNumberMarginFontSize(m_currentFont.pointSize());
+            textEditor->setLineNumberMarginFont(m_currentFont);
         }
     }
 }
@@ -1973,7 +2010,7 @@ void MainWindow::zoomOutSlot()
     {
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
         textEditor->lexer()->setFont(m_currentFont, -1);
-        textEditor->setLineNumberMarginFontSize(m_currentFont.pointSize());
+        textEditor->setLineNumberMarginFont(m_currentFont);
 
     }
 }
@@ -1988,7 +2025,7 @@ void MainWindow::zoomInSlot()
     {
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
         textEditor->lexer()->setFont(m_currentFont, -1);
-        textEditor->setLineNumberMarginFontSize(m_currentFont.pointSize());
+        textEditor->setLineNumberMarginFont(m_currentFont);
     }
 }
 
@@ -2304,6 +2341,7 @@ void MainWindow::initActions()
     connect(ui->actionSetFont, SIGNAL(triggered()), this, SLOT(setFont()));
     connect(ui->actionEditUi , SIGNAL(triggered()), this, SLOT(editUiButtonSlot()));
     connect(ui->actionReload , SIGNAL(triggered()), this, SLOT(reloadSlot()));
+    connect(ui->actionGoToLine , SIGNAL(triggered()), this, SLOT(goToLineSlot()));
 
     ui->actionEditUi->setEnabled(false);
 
