@@ -594,7 +594,7 @@ void ScriptSlots::showGetDoubleDialogSlot(QString title, QString label, double i
 }
 
 /**
- * This slot function shows a file dialog (QFileDialog::getSaveFileName or QFileDialog::getOpenFileName).
+ * This slot function shows a file dialog for selecting one file (QFileDialog::getSaveFileName or QFileDialog::getOpenFileName).
  * @param isSaveDialog
  *      True for QFileDialog::getSaveFileName and false for QFileDialog::getOpenFileName dialog.
  * @param caption
@@ -610,7 +610,25 @@ void ScriptSlots::showGetDoubleDialogSlot(QString title, QString label, double i
  */
 void ScriptSlots::showFileDialogSlot(bool isSaveDialog, QString caption, QString dir, QString filter, QString *resultFileName, QWidget* parent)
 {
-    *resultFileName = isSaveDialog ? QFileDialog::getSaveFileName(parent, caption,dir,filter) : QFileDialog::getOpenFileName(this, caption,dir,filter);
+    *resultFileName = isSaveDialog ? QFileDialog::getSaveFileName(parent, caption,dir,filter) : QFileDialog::getOpenFileName(parent, caption,dir,filter);
+}
+
+/**
+ * This slot function shows a file dialog for selecting one or more existing files (QFileDialog::getOpenFileNames).
+ * @param caption
+ *      The caption of the dialog.
+ * @param dir
+ *      The initial directory of the dialog.
+ * @param filter
+ *      The dialog filter.
+ * @param resultFileNames
+ *      The paths of the selected files.
+ * @param parent
+ *      The parent of the file dialog.
+ */
+void ScriptSlots::showOpenFileNamesDialogSlot(QString caption, QString dir, QString filter, QStringList *resultFileNames, QWidget* parent)
+{
+    *resultFileNames = QFileDialog::getOpenFileNames(parent, caption,dir,filter);
 }
 
 /**

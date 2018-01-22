@@ -41,6 +41,9 @@ void ScriptStandardDialogs::intSignals(ScriptWindow *scriptWindow, bool runsInDe
     connect(this, SIGNAL(showGetDoubleDialogSignal(QString,QString,double,double,double,int,double*,bool*,QWidget*)),
             scriptWindow, SLOT(showGetDoubleDialogSlot(QString,QString,double,double,double,int,double*,bool*,QWidget*)), directConnectionType);
 
+    connect(this, SIGNAL(showOpenFileNamesDialogSignal(QString,QString,QString,QStringList*,QWidget*)),
+            scriptWindow, SLOT(showOpenFileNamesDialogSlot(QString,QString,QString,QStringList*,QWidget*)), directConnectionType);
+
     connect(this, SIGNAL(showFileDialogSignal(bool,QString,QString,QString,QString*, QWidget*)),
             scriptWindow, SLOT(showFileDialogSlot(bool,QString,QString,QString,QString*, QWidget*)), directConnectionType);
 
@@ -66,8 +69,7 @@ void ScriptStandardDialogs::intSignals(ScriptWindow *scriptWindow, bool runsInDe
 }
 
 /**
- * Wrapper for QFileDialog::getSaveFileName and QFileDialog::getOpenFileName
- * (shows a QFileDialog::getSaveFileName or a QFileDialog::getOpenFileName dialog).
+ * Wrapper for QFileDialog::getSaveFileName and QFileDialog::getOpenFileName.
  * @param isSaveDialog
  *      True for a QFileDialog::getSaveFileName and false for a QFileDialog::getOpenFileName dialog.
  * @param caption
@@ -88,6 +90,30 @@ QString ScriptStandardDialogs::showFileDialog(bool isSaveDialog, QString caption
     emit enableMouseEventsSignal();
     emit showFileDialogSignal(isSaveDialog, caption, dir, filter, &resultFileName, parent);
     return resultFileName;
+}
+
+/**
+* Wrapper for QFileDialog::getOpenFileNames.
+* @param isSaveDialog
+*      True for a QFileDialog::getSaveFileName and false for a QFileDialog::getOpenFileName dialog.
+* @param caption
+*      The caption of the dialog.
+* @param dir
+*      The initial dir for showing the dialog.
+* @param filter
+*      Filter for the file dialog.
+* @param parent
+*      The parent of the dialog.
+* @return
+*      The paths of the selected files
+*/
+QStringList ScriptStandardDialogs::showOpenFileNamesDialog(QString caption, QString dir, QString filter, QWidget* parent)
+{
+    QStringList resultFileNames;
+    emit disableMouseEventsSignal();
+    emit enableMouseEventsSignal();
+    emit showOpenFileNamesDialogSignal(caption, dir, filter, &resultFileNames, parent);
+    return resultFileNames;
 }
 
 /**

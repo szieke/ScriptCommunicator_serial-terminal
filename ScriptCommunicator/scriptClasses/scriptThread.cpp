@@ -906,8 +906,7 @@ void ScriptThread::sleepFromScript(quint32 timeMs )
 }
 
 /**
- * Wrapper for QFileDialog::getSaveFileName and QFileDialog::getOpenFileName
- * (shows a QFileDialog::getSaveFileName or a QFileDialog::getOpenFileName dialog).
+ * Wrapper for QFileDialog::getSaveFileName and QFileDialog::getOpenFileName.
  * @param isSaveDialog
  *      True for a QFileDialog::getSaveFileName and false for a QFileDialog::getOpenFileName dialog.
  * @param caption
@@ -924,6 +923,24 @@ void ScriptThread::sleepFromScript(quint32 timeMs )
 QString ScriptThread::showFileDialog(bool isSaveDialog, QString caption, QString dir, QString filter, QWidget* parent)
 {
     return m_standardDialogs->showFileDialog(isSaveDialog, caption, dir, filter, (parent == 0) ? m_userInterface[0]->getWidgetPointer() : parent);
+}
+
+/**
+* Wrapper for QFileDialog::getOpenFileNames
+* @param caption
+*      The caption of the dialog.
+* @param dir
+*      The initial dir for showing the dialog.
+* @param filter
+*      Filter for the file dialog.
+* @param parent
+*      The parent of the dialog.
+* @return
+*      The paths of the selected files
+*/
+QStringList ScriptThread::showOpenFileNamesDialog(QString caption, QString dir, QString filter, QWidget* parent)
+{
+    return m_standardDialogs->showOpenFileNamesDialog(caption, dir, filter, (parent == 0) ? m_userInterface[0]->getWidgetPointer() : parent);
 }
 
 

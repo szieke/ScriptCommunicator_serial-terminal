@@ -19,6 +19,9 @@ public:
     ///Wrapper for QFileDialog::getSaveFileName and QFileDialog::getOpenFileName.
     QString showFileDialog(bool isSaveDialog, QString caption, QString dir, QString filter, QWidget* parent);
 
+    ///Wrapper for QFileDialog::getOpenFileNames.
+    QStringList showOpenFileNamesDialog(QString caption, QString dir, QString filter, QWidget* parent);
+
     ///Wrapper for QFileDialog::getExistingDirectory.
     QString showDirectoryDialog(QString caption, QString dir, QWidget* parent);
 
@@ -58,6 +61,10 @@ signals:
     ///Is connected with MainWindow::showFileDialogSlot (shows a file dialog).
     ///This function must not be used from script.
     void showFileDialogSignal(bool isSaveDialog, QString caption, QString dir, QString filter, QString *resultFileName, QWidget* parent);
+
+    ///Is connected with MainWindow::showOpenFileNamesSlot (shows a file dialog).
+    ///This function must not be used from script.
+    void showOpenFileNamesDialogSignal(QString caption, QString dir, QString filter, QStringList *resultFileNames, QWidget* parent);
 
     ///Is connected with MainWindow::showDirectoryDialogSlot (shows a file dialog).
     ///This function must not be used from script.

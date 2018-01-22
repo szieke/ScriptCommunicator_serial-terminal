@@ -360,6 +360,9 @@ public:
     ///Wrapper for QFileDialog::getSaveFileName and QFileDialog::getOpenFileName.
     Q_INVOKABLE QString showFileDialog(bool isSaveDialog, QString caption, QString dir, QString filter, QWidget* parent=0);
 
+    ///Wrapper for QFileDialog::getOpenFileNames
+    Q_INVOKABLE QStringList showOpenFileNamesDialog(QString caption, QString dir, QString filter, QWidget* parent=0);
+
     ///Wrapper for QFileDialog::getExistingDirectory.
     Q_INVOKABLE QString showDirectoryDialog(QString caption, QString dir, QWidget* parent=0);
 

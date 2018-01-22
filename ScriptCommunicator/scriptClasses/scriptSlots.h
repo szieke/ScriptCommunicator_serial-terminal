@@ -212,8 +212,11 @@ public slots:
    void showGetDoubleDialogSlot(QString title, QString label, double initialValue, double min, double max,
                                 int decimals, double* result, bool* okPressed, QWidget* parent);
 
-   ///This slot function shows a file dialog (QFileDialog::getSaveFileName or QFileDialog::getOpenFileName).
+   ///This slot function shows a file dialog for selecting one file (QFileDialog::getSaveFileName or QFileDialog::getOpenFileName).
    void showFileDialogSlot(bool isSaveDialog, QString caption, QString dir, QString filter, QString *resultFileName, QWidget *parent);
+
+   ///This slot function shows a file dialog for selecting one or more existing files (QFileDialog::getOpenFileNames).
+   void showOpenFileNamesDialogSlot(QString caption, QString dir, QString filter, QStringList *resultFileNames, QWidget* parent);
 
    ///This slot function shows a QFileDialog::getExistingDirectory.
    void showDirectoryDialogSlot(QString caption, QString dir, QString *directoryName, QWidget *parent);
