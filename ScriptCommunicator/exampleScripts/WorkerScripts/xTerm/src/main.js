@@ -1,4 +1,4 @@
-
+﻿
 Terminal.applyAddon(fullscreen);
 
 var shellprompt = '$ ';
@@ -12,32 +12,29 @@ var body = document.body,
 body.addEventListener("resize", fit);				   
 
 term.setOption('fontFamily', "courier new, courier, monospace");
-term.setOption('fontSize', 12);
-
-term.setOption('cursorBlink', true);
-//echo an/aus
-//term.setOption('fontWeight', 550)
-term.setOption('scrollback', 10000);
-
-var theme = {};
-//theme.foreground = '#000000';
-//theme.background = '#f0f0f0';
-theme.foreground = '#ffffff';
-theme.background = '#000000';
-theme.cursor = theme.foreground;
-theme.cursorAccent = theme.background;
-theme.selection = 'rgba(255, 255, 255, 0.3)';
-theme.ansi = ['#2e3436', '#cc0000', '#4e9a06', '#c4a000', '#3465a4', '#75507b', '#06989a', '#d3d7cf',
-'#555753', '#ef2929', '#8ae234', '#fce94f', '#729fcf', '#ad7fa8', '#34e2e2', '#eeeeec']		
-term.setOption('theme', theme);
 
 
-
-runFakeTerminal();	
+runTerminal();	
 term.toggleFullScreen(true);
 fit()
 
 
+function setOptions(fontSize, cursorBlink, maxLines, foregroundColor, backgroundColor)
+{
+	term.setOption('fontSize', fontSize);
+	term.setOption('cursorBlink', cursorBlink);
+	term.setOption('scrollback', maxLines);
+	
+	var theme = {};
+	theme.foreground = foregroundColor;
+	theme.background = backgroundColor;
+	theme.cursor = theme.foreground;
+	theme.cursorAccent = theme.background;
+	theme.selection = 'rgba(255, 255, 255, 0.3)';
+	theme.ansi = ['#2e3436', '#cc0000', '#4e9a06', '#c4a000', '#3465a4', '#75507b', '#06989a', '#d3d7cf',
+	'#555753', '#ef2929', '#8ae234', '#fce94f', '#729fcf', '#ad7fa8', '#34e2e2', '#eeeeec']		
+	term.setOption('theme', theme);
+}
 
 
 function proposeGeometry() {
@@ -80,7 +77,7 @@ function fit() {
 
 }
 
-function runFakeTerminal() 
+function runTerminal() 
 {
 
   term.on('key', function (key, ev) {
@@ -90,38 +87,23 @@ function runFakeTerminal()
 
 	if (ev.keyCode == 13)
 	{
-		var data = webView.callWorkerScript(Array('sendArray', "\r\n"))
+		webView.callWorkerScript(Array('sendData', "\r\n"))
 	}
 	else
 	{
-		var data = webView.callWorkerScript(Array('sendArray', key))
+		webView.callWorkerScript(Array('sendData', key))
 	}
   });
 
   term.on('paste', function (data, ev) {
-    //xtermDataObject.sendData(data);
-	term.write(data)
+	webView.callWorkerScript(Array('sendData', data))
   });
   
-  
-
-}
-
-function testAdd(){term.write("1234\r\n");}
-
-function addData(data)
-{
-	term.write(data);
+ 
 }
 
 
 var timer = setInterval(readData, 100);
-
-function unload()
-{
-clearTimeout(timer);
-}
-
 function readData()
 {
 

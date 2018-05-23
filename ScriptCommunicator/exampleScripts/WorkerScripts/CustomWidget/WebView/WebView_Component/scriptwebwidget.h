@@ -89,12 +89,14 @@ public slots:
 
         emit callWorkerScriptWithResultSignal(params, &result, &hasReturned);
 
-        while(!hasReturned && (start.msecsTo(QDateTime::currentDateTime()) < timeOut))
-        {
+        while(!hasReturned && (start.msecsTo(QDateTime::currentDateTime()) < timeOut) &&
+              (QObject::receivers(SIGNAL(callWorkerScriptWithResultSignal(QVariant, QVariant*, bool*))) > 0))
+        {//callWorkerScriptWithResult has not returned, timeout has not elapsed and
+         //the signal is connected.
+
             QThread::yieldCurrentThread();
             QCoreApplication::processEvents();
         }
-
         return result;
     }
 
@@ -121,7 +123,7 @@ private:
 
     void attachToWebView(QWebView* webView)
     {
-        QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
+        //QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
         QWebPage *page = webView->page();
         m_frame = page->mainFrame();
         javaScriptWindowObjectCleared();
