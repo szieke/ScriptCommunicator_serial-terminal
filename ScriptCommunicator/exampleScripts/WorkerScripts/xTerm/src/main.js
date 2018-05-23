@@ -12,6 +12,7 @@ var body = document.body,
 body.addEventListener("resize", fit);				   
 
 term.setOption('fontFamily', "courier new, courier, monospace");
+term.setOption('cursorStyle', "bar");
 
 
 runTerminal();	
