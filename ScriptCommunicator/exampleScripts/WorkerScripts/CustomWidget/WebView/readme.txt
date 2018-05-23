@@ -112,11 +112,11 @@ void titleChangedSignal(QString text);
 ///This signal is emitted when the url of the view changes.
 void urlChangedSignal(QString text);
 
-///This signal is emitted when the webView calls the webView.callWorkerScriptWithResult(QVariant) routine.
+///This signal is emitted when the script inside the web page calls the webView.callWorkerScriptWithResult(QVariant params, quint32 timeOut=5000) routine.
 ///To return a value ResultClass::setResult(QVariant value) must be used.
 ///Note: The connected slot function blocks the WebView. Therefore no time consuming or blocking operations should be performed.
 void callWorkerScriptWithResultSignal(QVariant params, ResultClass* resultObject);
 
-///This signal is emitted when the webView calls the webView.callWorkerScript(QVariant) routine.
+///This signal is emitted when the script inside the web page calls the webView.callWorkerScript(QVariant params) routine.
 ///Note: The connected slot function does not block the WebView. Therefore time consuming or blocking operations can be performed.
 void callWorkerScriptSignal(QVariant params);

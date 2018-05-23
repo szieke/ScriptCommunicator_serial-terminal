@@ -81,13 +81,15 @@ public slots:
 
     }
 
-    QVariant callWorkerScriptWithResult(QVariant params)
+    QVariant callWorkerScriptWithResult(QVariant params, quint32 timeOut=5000)
     {
         QVariant result;
         bool hasReturned = false;
+        QDateTime start = QDateTime::currentDateTime();
+
         emit callWorkerScriptWithResultSignal(params, &result, &hasReturned);
 
-        while(!hasReturned)
+        while(!hasReturned && (start.msecsTo(QDateTime::currentDateTime()) < timeOut))
         {
             QThread::yieldCurrentThread();
             QCoreApplication::processEvents();
