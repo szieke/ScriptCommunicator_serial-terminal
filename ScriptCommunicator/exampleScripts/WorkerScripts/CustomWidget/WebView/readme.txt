@@ -4,7 +4,7 @@ To execute the web view examples following must be done:
 	- Windows and Linux: copy the libraries into the ScriptCommunicator folder 
 	- Mac OS X: copy the libraries into ScriptCommunicator.app/Contents/Frameworks
 
-API:
+WorkerScript API:
 
 ///Loads the specified url and displays it.
 void load(QString url)
@@ -88,8 +88,6 @@ QVariant evaluateJavaScript(QString script)
 ///Opens a print dialog.
 void print(QString printDialogTitle = "Print")
 
-
-
 ///This signal is emitted when a load of the page is finished. ok will
 ///indicate whether the load was successful or any error occurred.
 void loadFinishedSignal(bool ok);
@@ -120,3 +118,11 @@ void callWorkerScriptWithResultSignal(QVariant params, ResultClass* resultObject
 ///This signal is emitted when the script inside the web page calls the webView.callWorkerScript(QVariant params) routine.
 ///Note: The connected slot function does not block the WebView. Therefore time consuming or blocking operations can be performed.
 void callWorkerScriptSignal(QVariant params);
+
+Note:
+The script inside the web page can call WorkerScript functions. To do this the script can call: 
+- QVariant webView.callWorkerScriptWithResult(QVariant params, quint32 timeOut=5000)
+- void webView.callWorkerScript(QVariant params)
+The function webView.callWorkerScriptWithResult emits callWorkerScriptWithResultSignal and webView.callWorkerScript emits callWorkerScriptSignal.
+For an example see webView_example2.js.
+Important: webView.callWorkerScriptWithResult blocks until the connected WorkerScript function returns or the the time out (quint32 timeOut=5000) has elapsed.
