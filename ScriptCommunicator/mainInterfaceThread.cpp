@@ -316,13 +316,16 @@ void MainInterfaceThread::tcpServerOnNewConnectionSlot(void)
  */
 void MainInterfaceThread::dataReceived(QByteArray& data)
 {
-    emit dataReceivedSignal(data);
-    m_numberOfReceivedBytes += data.size();
-
-    if(isConnectedWithI2cMaster())
+    if(!data.isEmpty())
     {
-        ///Remove the bytes for the metadata.
-        m_numberOfReceivedBytes -= AardvarkI2cSpi::RECEIVE_CONTROL_BYTES_COUNT;
+        emit dataReceivedSignal(data);
+        m_numberOfReceivedBytes += data.size();
+
+        if(isConnectedWithI2cMaster())
+        {
+            ///Remove the bytes for the metadata.
+            m_numberOfReceivedBytes -= AardvarkI2cSpi::RECEIVE_CONTROL_BYTES_COUNT;
+        }
     }
 
 }
