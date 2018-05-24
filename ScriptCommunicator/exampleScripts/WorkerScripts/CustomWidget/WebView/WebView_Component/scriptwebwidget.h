@@ -83,11 +83,15 @@ public slots:
 
     QVariant callWorkerScriptWithResult(QVariant params, quint32 timeOut=5000)
     {
-        QVariant result;
-        bool hasReturned = false;
+        //result and hasReturned have to be static (it can happen that a timeout occurs and this function returns
+        //while the connected stub is running and trys to write to the variables from callWorkerScriptWithResultSignal).
+        static QVariant result;
+        static bool hasReturned = false;
+
         QDateTime start = QDateTime::currentDateTime();
 
         emit callWorkerScriptWithResultSignal(params, &result, &hasReturned);
+
 
         while(!hasReturned && (start.msecsTo(QDateTime::currentDateTime()) < timeOut) &&
               (QObject::receivers(SIGNAL(callWorkerScriptWithResultSignal(QVariant, QVariant*, bool*))) > 0))
@@ -97,6 +101,12 @@ public slots:
             QThread::yieldCurrentThread();
             QCoreApplication::processEvents();
         }
+
+        if(start.msecsTo(QDateTime::currentDateTime()) >= timeOut)
+        {
+        }
+
+
         return result;
     }
 
@@ -146,6 +156,7 @@ public:
 
 };
 
+extern QMap<QWebView*, ScriptWebWidgetSlots*> m_pointerMap;
 class ScriptWebWidget : public QObject
 {
     Q_OBJECT
@@ -166,9 +177,7 @@ public:
         qRegisterMetaType<ResultClass*>("ResultClass*");
 
         //Create the wrapper object and move it to the main thread.
-        ScriptWebWidgetSlots* slotObject = new ScriptWebWidgetSlots();
-        slotObject->moveToThread(QApplication::instance()->thread());
-        slotObject->setParent(m_webView);
+        ScriptWebWidgetSlots* slotObject = m_pointerMap[m_webView];
 
         Qt::ConnectionType directConnectionType = scriptRunsInDebugger ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
@@ -303,6 +312,7 @@ public:
     {
         QVariant result;
         bool hasReturned = false;
+
         emit evaluateJavaScriptSignal(m_webView, script, &result, &hasReturned);
 
         while(!hasReturned)
@@ -426,6 +436,7 @@ public slots:
 
 private:
     QWebView* m_webView;
+
 };
 
 

@@ -108,9 +108,12 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="PrintPushButton">
+          <widget class="QPushButton" name="SavePushButton">
+           <property name="statusTip">
+            <string>save terminal content to file</string>
+           </property>
            <property name="text">
-            <string>print</string>
+            <string>save</string>
            </property>
           </widget>
          </item>

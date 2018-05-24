@@ -1,23 +1,22 @@
 ﻿
 Terminal.applyAddon(fullscreen);
 
-var shellprompt = '$ ';
-var counter = 0;
 var term = new Terminal({cursorBlink: false, scrollback : 10000});
 term.open(document.getElementById('terminal-container'));
 
-var body = document.body,
-    html = document.documentElement;
+var body = document.body;
+var html = document.documentElement;
 
 body.addEventListener("resize", fit);				   
-
 term.setOption('fontFamily', "courier new, courier, monospace");
 term.setOption('cursorStyle', "bar");
 
-
-runTerminal();	
 term.toggleFullScreen(true);
 fit()
+
+term.on('key', function (key, ev) {webView.callWorkerScript(Array('sendData', key))});
+term.on('paste', function (data, ev) {webView.callWorkerScript(Array('sendData', data))});
+
 
 
 function setOptions(fontSize, cursorBlink, maxLines, foregroundColor, backgroundColor)
@@ -74,37 +73,18 @@ function fit() {
             term.resize(geometry.cols, geometry.rows);
         }
     }
-	
-
 }
 
-function runTerminal() 
+function getContent()
 {
-
-  term.on('key', function (key, ev) {
-    var printable = (
-      !ev.altKey && !ev.altGraphKey && !ev.ctrlKey && !ev.metaKey
-    );
-
-	if (ev.keyCode == 13)
-	{
-		webView.callWorkerScript(Array('sendData', "\r\n"))
-	}
-	else
-	{
-		webView.callWorkerScript(Array('sendData', key))
-	}
-  });
-
-  term.on('paste', function (data, ev) {
-	webView.callWorkerScript(Array('sendData', data))
-  });
-  
- 
+	var result = "";
+	term.selectAll();
+	result = term.getSelection();
+	term.clearSelection();
+	return result;
 }
 
-
-var timer = setInterval(readData, 100);
+setTimeout(function(){ readData() }, 100);
 function readData()
 {
 
@@ -114,6 +94,7 @@ function readData()
 	{
 		term.write(data)
 	}
+	setTimeout(function(){ readData() }, 100);
 }
 
 

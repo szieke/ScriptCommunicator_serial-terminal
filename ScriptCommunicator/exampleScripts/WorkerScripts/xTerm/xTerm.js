@@ -16,9 +16,17 @@ function dialogFinished(e)
 	scriptThread.stopScript()
 }
 
-function printPage()
+var g_fileName=""
+function savePage()
 {
-		UI_WebView.print("print page");
+		g_fileName = scriptThread.showFileDialog(true, "save terminal content", "", "");
+		if(g_fileName != "")
+		{//One file selected.
+			if(scriptFile.writeFile(g_fileName, false, UI_WebView.evaluateJavaScript("getContent()"), true))
+			{
+				scriptThread.messageBox("Critical", "error", "could not write " + g_fileName);
+			}
+		}
 }
 
 function callWorkerScriptWithResult(value, resultObject)
@@ -28,7 +36,6 @@ function callWorkerScriptWithResult(value, resultObject)
 		resultObject.setResult(receivedData);
 		receivedData = ""
 	}
-	
 }
 
 function callWorkerScript(value)
@@ -49,7 +56,7 @@ function dataReceivedSlot(data)
 scriptThread.appendTextToConsole('script has started');
 UI_Dialog.finishedSignal.connect(dialogFinished);
 
-UI_PrintPushButton.clickedSignal.connect(printPage)
+UI_SavePushButton.clickedSignal.connect(savePage)
 
 var receivedData = "";
 
@@ -81,8 +88,5 @@ UI_WebView.load("file:///" + scriptThread.getScriptFolder() + "/src/index.html")
 * - the foreground color to ##000000
 */
 scriptThread.addMessageToLogAndConsoles(UI_WebView.evaluateJavaScript("setOptions(12, true, 10000, '#ffffff', '#000000')"));
-
-
-
 
 

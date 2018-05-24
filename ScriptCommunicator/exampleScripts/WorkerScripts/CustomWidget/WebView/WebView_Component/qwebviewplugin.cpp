@@ -42,6 +42,8 @@
 
 static const char *toolTipC = "A widget for displaying a web page, from the Qt WebKit Widgets module.";
 
+QMap<QWebView*, ScriptWebWidgetSlots*> m_pointerMap;
+
 QT_BEGIN_NAMESPACE
 
 CustomWebViewPlugin::CustomWebViewPlugin(QObject *parent) :
@@ -87,7 +89,12 @@ bool CustomWebViewPlugin::isContainer() const
 
 QWidget *CustomWebViewPlugin::createWidget(QWidget *parent)
 {
-    return new QWebView(parent);
+    QWebView* el = new QWebView(parent);
+    ScriptWebWidgetSlots* slotObject = new ScriptWebWidgetSlots();
+    slotObject->setParent(el);
+
+    m_pointerMap[el] = slotObject;
+    return el;
 }
 
 bool CustomWebViewPlugin::isInitialized() const
