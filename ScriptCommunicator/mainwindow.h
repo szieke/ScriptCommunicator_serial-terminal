@@ -435,6 +435,9 @@ private slots:
     ///A user message has been entered (in the add message dialog or in a script).
     void messageEnteredSlot(QString message, bool forceTimeStamp);
 
+    ///A slider of a vertical scrolbar has been moved.
+    void verticalSliderMovedSlot(int pos);
+
     ///Slot function for the connect button.
     void toggleConnectionSlot(bool connectionStatus);
 

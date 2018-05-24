@@ -395,6 +395,8 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
     qRegisterMetaType< QVector<QByteArray>>("QVector<QByteArray>");
 
+    connect(m_userInterface->ReceiveTextEditAscii->verticalScrollBar(), SIGNAL(sliderMoved(int)),this, SLOT(verticalSliderMovedSlot(int)));
+
     connect(m_addMessageDialog, SIGNAL(messageEnteredSignal(QString, bool)),this, SLOT(messageEnteredSlot(QString, bool)));
 
     connect(&m_resizeTimer, SIGNAL(timeout()),m_handleData, SLOT(reInsertDataInMixecConsoleSlot()));
@@ -3600,6 +3602,15 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
         textEdit->document()->blockSignals(false);
         textEdit->setUpdatesEnabled(true);
     }
+}
+
+void MainWindow::verticalSliderMovedSlot(int pos)
+{
+    QScrollBar* scrolBar = static_cast<QScrollBar*>(QObject::sender());
+
+    m_userInterface->actionLockScrolling->setChecked((pos != scrolBar->maximum()) ? true : false);
+    m_settingsDialog->updateSettings();
+
 }
 
 /**
