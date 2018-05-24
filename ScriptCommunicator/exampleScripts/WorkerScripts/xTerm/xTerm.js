@@ -1,4 +1,9 @@
-﻿
+﻿/*************************************************************************
+This script executes a terminal which can interpret xTterm  control sequences.
+Note: https://github.com/xtermjs is used.
+***************************************************************************/
+
+
 //Is called if this script shall be exited.
 function stopScript() 
 {

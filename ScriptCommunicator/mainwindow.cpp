@@ -396,6 +396,10 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     qRegisterMetaType< QVector<QByteArray>>("QVector<QByteArray>");
 
     connect(m_userInterface->ReceiveTextEditAscii->verticalScrollBar(), SIGNAL(sliderMoved(int)),this, SLOT(verticalSliderMovedSlot(int)));
+    connect(m_userInterface->ReceiveTextEditBinary->verticalScrollBar(), SIGNAL(sliderMoved(int)),this, SLOT(verticalSliderMovedSlot(int)));
+    connect(m_userInterface->ReceiveTextEditDecimal->verticalScrollBar(), SIGNAL(sliderMoved(int)),this, SLOT(verticalSliderMovedSlot(int)));
+    connect(m_userInterface->ReceiveTextEditHex->verticalScrollBar(), SIGNAL(sliderMoved(int)),this, SLOT(verticalSliderMovedSlot(int)));
+    connect(m_userInterface->ReceiveTextEditMixed->verticalScrollBar(), SIGNAL(sliderMoved(int)),this, SLOT(verticalSliderMovedSlot(int)));
 
     connect(m_addMessageDialog, SIGNAL(messageEnteredSignal(QString, bool)),this, SLOT(messageEnteredSlot(QString, bool)));
 
@@ -3604,6 +3608,11 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
     }
 }
 
+/**
+ * A slider of a vertical scrolbar has been moved
+ * @param pos
+ *      The new slider position.
+ */
 void MainWindow::verticalSliderMovedSlot(int pos)
 {
     QScrollBar* scrolBar = static_cast<QScrollBar*>(QObject::sender());

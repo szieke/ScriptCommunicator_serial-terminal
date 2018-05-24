@@ -411,7 +411,7 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>758</width>
+            <width>358</width>
             <height>337</height>
            </rect>
           </property>
@@ -884,7 +884,7 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>758</width>
+            <width>725</width>
             <height>378</height>
            </rect>
           </property>
@@ -1868,8 +1868,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>775</width>
-            <height>324</height>
+            <width>327</width>
+            <height>234</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_12" stretch="2,1">
@@ -2144,8 +2144,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>775</width>
-            <height>324</height>
+            <width>636</width>
+            <height>297</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
@@ -2753,8 +2753,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>775</width>
-            <height>324</height>
+            <width>353</width>
+            <height>278</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -2989,8 +2989,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>775</width>
-            <height>324</height>
+            <width>737</width>
+            <height>305</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_11">
