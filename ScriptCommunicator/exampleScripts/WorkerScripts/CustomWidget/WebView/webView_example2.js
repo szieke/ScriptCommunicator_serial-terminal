@@ -1,4 +1,4 @@
-//Is called if the dialog is closed.
+﻿//Is called if the dialog is closed.
 function dialogFinished(e)
 {
 	scriptThread.stopScript()
@@ -122,7 +122,8 @@ try
 }
 catch(e)
 {
-	scriptThread.messageBox("Error", "Missing libraries", "See " + scriptFile.createAbsolutePath("readme.txt") + " for more informations.");
+	scriptThread.messageBox("Error", "Missing libraries", "Missing libraries. See " + scriptFile.createAbsolutePath("readme.txt") + " for more informations.");
+	scriptThread.stopScript()
 }
 
 

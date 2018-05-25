@@ -1,4 +1,4 @@
-
+﻿
 //Is called if this script shall be exited.
 function stopScript() 
 {
@@ -49,7 +49,8 @@ try
 }
 catch(e)
 {
-	scriptThread.messageBox("Error", "Missing libraries", "See " + scriptFile.createAbsolutePath("readme.txt") + " for more informations.");
+	scriptThread.messageBox("Error", "Missing libraries", "Missing libraries. See " + scriptFile.createAbsolutePath("readme.txt") + " for more informations.");
+	scriptThread.stopScript()
 }
 
 

@@ -19,8 +19,8 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\{#MyAppName}
-DefaultGroupName={#MyAppName}
+DefaultDirName={pf}\{#MyAppName}_{#MyAppVersion}
+DefaultGroupName={#MyAppName} {#MyAppVersion}
 AllowNoIcons=yes
 OutputDir=C:\Users\internet\Desktop\
 OutputBaseFilename=ScriptCommunicatorSetup_05_08_windows
@@ -29,6 +29,8 @@ Compression=lzma
 SolidCompression=yes
 PrivilegesRequired=lowest
 Uninstallable=yes
+DisableDirPage=no
+UsePreviousAppDir=no
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -46,32 +48,32 @@ Source: "C:\Users\internet\Desktop\ScriptCommunicator\*"; DestDir: "{app}"; Flag
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{commondesktop}\{#MyAppName} {#MyAppVersion}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
 
 [Registry]
-Root: HKCU; SubKey: "Software\Classes\.sce"; ValueType: string; ValueData: "ScriptCommunicator"; Flags: uninsdeletekey
-Root: HKCU; SubKey: "Software\Classes\.scez"; ValueType: string; ValueData: "ScriptCommunicator"; Flags: uninsdeletekey
-Root: HKCU; SubKey: "Software\Classes\.js"; ValueType: string; ValueData: "ScriptCommunicator_ScriptEditor"; Flags: uninsdeletekey; Tasks: associate_js_files
+Root: HKCU; SubKey: "Software\Classes\.sce"; ValueType: string; ValueData: "ScriptCommunicator_{#MyAppVersion}"; Flags: uninsdeletekey
+Root: HKCU; SubKey: "Software\Classes\.scez"; ValueType: string; ValueData: "ScriptCommunicator_{#MyAppVersion}"; Flags: uninsdeletekey
+Root: HKCU; SubKey: "Software\Classes\.js"; ValueType: string; ValueData: "ScriptCommunicator_{#MyAppVersion}_ScriptEditor"; Flags: uninsdeletekey; Tasks: associate_js_files
 
-Root: HKCU; SubKey: "Software\Classes\ScriptCommunicator"; ValueType: string; ValueData: "ScriptCommunicator"; Flags: uninsdeletekey
-Root: HKCU; SubKey: "Software\Classes\ScriptCommunicator\Shell\Open\Command"; ValueType: string; ValueData: """{app}\ScriptCommunicator.exe"" ""%1"""; Flags: uninsdeletekey
-Root: HKCU; Subkey: "Software\Classes\ScriptCommunicator\DefaultIcon"; ValueType: string; ValueData: "{app}\ScriptCommunicator.exe,0"; Flags: uninsdeletevalue
-Root: HKCU; SubKey: "Software\Classes\ScriptCommunicator\Uninstall"; ValueType: string; ValueName: UninstallString; ValueData: "{app}\{uninstallexe}"; Flags: uninsdeletekey
-Root: HKCU; SubKey: "Software\Classes\Applications\ScriptCommunicator"; ValueType: string; ValueData: "ScriptCommunicator"; Flags: uninsdeletekey
-Root: HKCU; SubKey: "Software\Classes\Applications\ScriptCommunicator\Shell\Open\Command"; ValueType: string; ValueData: """{app}\ScriptCommunicator.exe"" ""%1"""; Flags: uninsdeletekey
-Root: HKCU; Subkey: "Software\Classes\Applications\ScriptCommunicator\DefaultIcon"; ValueType: string; ValueData: "{app}\ScriptCommunicator.exe,0"; Flags: uninsdeletevalue
-Root: HKCU; SubKey: "Software\Classes\Applications\ScriptCommunicator\Uninstall"; ValueType: string; ValueName: UninstallString; ValueData: "{app}\{uninstallexe}"; Flags: uninsdeletekey
+Root: HKCU; SubKey: "Software\Classes\ScriptCommunicator_{#MyAppVersion}"; ValueType: string; ValueData: "ScriptCommunicator_{#MyAppVersion}"; Flags: uninsdeletekey
+Root: HKCU; SubKey: "Software\Classes\ScriptCommunicator_{#MyAppVersion}\Shell\Open\Command"; ValueType: string; ValueData: """{app}\ScriptCommunicator.exe"" ""%1"""; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Classes\ScriptCommunicator_{#MyAppVersion}\DefaultIcon"; ValueType: string; ValueData: "{app}\ScriptCommunicator.exe,0"; Flags: uninsdeletevalue
+Root: HKCU; SubKey: "Software\Classes\ScriptCommunicator_{#MyAppVersion}\Uninstall"; ValueType: string; ValueName: UninstallString; ValueData: "{uninstallexe}"; Flags: uninsdeletekey
+Root: HKCU; SubKey: "Software\Classes\Applications\ScriptCommunicator_{#MyAppVersion}"; ValueType: string; ValueData: "ScriptCommunicator_{#MyAppVersion}"; Flags: uninsdeletekey
+Root: HKCU; SubKey: "Software\Classes\Applications\ScriptCommunicator_{#MyAppVersion}\Shell\Open\Command"; ValueType: string; ValueData: """{app}\ScriptCommunicator.exe"" ""%1"""; Flags: uninsdeletekey
+Root: HKCU; Subkey: "Software\Classes\Applications\ScriptCommunicator_{#MyAppVersion}\DefaultIcon"; ValueType: string; ValueData: "{app}\ScriptCommunicator.exe,0"; Flags: uninsdeletevalue
+Root: HKCU; SubKey: "Software\Classes\Applications\ScriptCommunicator_{#MyAppVersion}\Uninstall"; ValueType: string; ValueName: UninstallString; ValueData: "{uninstallexe}"; Flags: uninsdeletekey
 
-Root: HKCU; SubKey: "Software\Classes\ScriptCommunicator_ScriptEditor"; ValueType: string; ValueData: "ScriptCommunicator_ScriptEditor"; Flags: uninsdeletekey; Tasks: associate_js_files
-Root: HKCU; SubKey: "Software\Classes\ScriptCommunicator_ScriptEditor\Shell\Open\Command"; ValueType: string; ValueData: """{app}\ScriptEditor.exe"" ""%1"""; Flags: uninsdeletekey; Tasks: associate_js_files
-Root: HKCU; Subkey: "Software\Classes\ScriptCommunicator_ScriptEditor\DefaultIcon"; ValueType: string; ValueData: "{app}\ScriptEditor.exe,0"; Flags: uninsdeletevalue; Tasks: associate_js_files
-Root: HKCU; SubKey: "Software\Classes\Applications\ScriptCommunicator_ScriptEditor"; ValueType: string; ValueData: "ScriptCommunicator_ScriptEditor"; Flags: uninsdeletekey; Tasks: associate_js_files
-Root: HKCU; SubKey: "Software\Classes\Applications\ScriptCommunicator_ScriptEditor\Shell\Open\Command"; ValueType: string; ValueData: """{app}\ScriptEditor.exe"" ""%1"""; Flags: uninsdeletekey; Tasks: associate_js_files
-Root: HKCU; Subkey: "Software\Classes\Applications\ScriptCommunicator_ScriptEditor\DefaultIcon"; ValueType: string; ValueData: "{app}\ScriptEditor.exe,0"; Flags: uninsdeletevalue; Tasks: associate_js_files
+Root: HKCU; SubKey: "Software\Classes\ScriptCommunicator_{#MyAppVersion}_ScriptEditor"; ValueType: string; ValueData: "ScriptCommunicator_{#MyAppVersion}_ScriptEditor"; Flags: uninsdeletekey; Tasks: associate_js_files
+Root: HKCU; SubKey: "Software\Classes\ScriptCommunicator_{#MyAppVersion}_ScriptEditor\Shell\Open\Command"; ValueType: string; ValueData: """{app}\ScriptEditor.exe"" ""%1"""; Flags: uninsdeletekey; Tasks: associate_js_files
+Root: HKCU; Subkey: "Software\Classes\ScriptCommunicator_{#MyAppVersion}_ScriptEditor\DefaultIcon"; ValueType: string; ValueData: "{app}\ScriptEditor.exe,0"; Flags: uninsdeletevalue; Tasks: associate_js_files
+Root: HKCU; SubKey: "Software\Classes\Applications\ScriptCommunicator_{#MyAppVersion}_ScriptEditor"; ValueType: string; ValueData: "ScriptCommunicator_ScriptEditor"; Flags: uninsdeletekey; Tasks: associate_js_files
+Root: HKCU; SubKey: "Software\Classes\Applications\ScriptCommunicator_{#MyAppVersion}_ScriptEditor\Shell\Open\Command"; ValueType: string; ValueData: """{app}\ScriptEditor.exe"" ""%1"""; Flags: uninsdeletekey; Tasks: associate_js_files
+Root: HKCU; Subkey: "Software\Classes\Applications\ScriptCommunicator_{#MyAppVersion}_ScriptEditor\DefaultIcon"; ValueType: string; ValueData: "{app}\ScriptEditor.exe,0"; Flags: uninsdeletevalue; Tasks: associate_js_files
 
 
 [Code]
@@ -80,11 +82,11 @@ var
   RegKey: string;
 begin
   Result := '';
-  RegKey := 'Software\Classes\ScriptCommunicator\Uninstall'
+  RegKey := 'Software\Classes\ScriptCommunicator_{#MyAppVersion}\Uninstall'
   if(not RegQueryStringValue(HKEY_CURRENT_USER, RegKey, 'UninstallString', Result)) then
   begin
-    RegQueryStringValue(HKEY_CURRENT_USER, 'Software\Classes\ScriptCommunicator\Shell\Open\Command', '', Result);    StringChangeEx(Result, ' "%1"', '', True);
-    StringChangeEx(Result, 'ScriptCommunicator.exe', 'unins000.exe', True);  end;
+    RegQueryStringValue(HKEY_CURRENT_USER, 'Software\Classes\ScriptCommunicator_{#MyAppVersion}\Shell\Open\Command', '', Result);    StringChangeEx(Result, ' "%1"', '', True);
+    StringChangeEx(Result, 'ScriptCommunicator_{#MyAppVersion}.exe', 'unins000.exe', True);  end;
 end;
 
 function PrepareToInstall(var NeedsRestart: Boolean): String;

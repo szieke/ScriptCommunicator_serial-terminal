@@ -66,27 +66,31 @@ UI_Dialog.hide();
 try
 {
 	UI_WebView.callWorkerScriptWithResultSignal.connect(callWorkerScriptWithResult);
+	UI_WebView.callWorkerScriptSignal.connect(callWorkerScript);
+	scriptInf.dataReceivedSignal.connect(dataReceivedSlot);
+
+	//Load the terminal.
+	UI_WebView.load("file:///" + scriptThread.getScriptFolder() + "/src/index.html")
+
+	/*Set:
+	* - font size to 12
+	* - cursor is blinking
+	* - max. lines to 10000
+	* - the background color to #ffffff
+	* - the foreground color to ##000000
+	*/
+	scriptThread.addMessageToLogAndConsoles(UI_WebView.evaluateJavaScript("setOptions(12, true, 10000, '#ffffff', '#000000')"));
+	
+	scriptThread.stopScript()
 	
 }
 catch(e)
 {
-	scriptThread.messageBox("Error", "Missing libraries", "See " + scriptFile.createAbsolutePath("readme.txt") + " for more informations.");
+	scriptThread.messageBox("Error", "Missing libraries", "Missing libraries. See " + scriptFile.createAbsolutePath("readme.txt") + " for more informations.");
+	scriptThread.stopScript()
 }
 
 
-UI_WebView.callWorkerScriptSignal.connect(callWorkerScript);
-scriptInf.dataReceivedSignal.connect(dataReceivedSlot);
 
-//Load the terminal.
-UI_WebView.load("file:///" + scriptThread.getScriptFolder() + "/src/index.html")
-
-/*Set:
-* - font size to 12
-* - cursor is blinking
-* - max. lines to 10000
-* - the background color to #ffffff
-* - the foreground color to ##000000
-*/
-scriptThread.addMessageToLogAndConsoles(UI_WebView.evaluateJavaScript("setOptions(12, true, 10000, '#ffffff', '#000000')"));
 
 
