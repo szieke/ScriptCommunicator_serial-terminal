@@ -81,8 +81,6 @@ try
 	*/
 	scriptThread.addMessageToLogAndConsoles(UI_WebView.evaluateJavaScript("setOptions(12, true, 10000, '#ffffff', '#000000')"));
 	
-	scriptThread.stopScript()
-	
 }
 catch(e)
 {
