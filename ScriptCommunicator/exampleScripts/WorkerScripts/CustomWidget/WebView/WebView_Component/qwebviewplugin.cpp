@@ -90,8 +90,7 @@ bool CustomWebViewPlugin::isContainer() const
 QWidget *CustomWebViewPlugin::createWidget(QWidget *parent)
 {
     QWebView* el = new QWebView(parent);
-    ScriptWebWidgetSlots* slotObject = new ScriptWebWidgetSlots();
-    slotObject->setParent(el);
+    ScriptWebWidgetSlots* slotObject = new ScriptWebWidgetSlots(el);
 
     m_pointerMap[el] = slotObject;
     return el;

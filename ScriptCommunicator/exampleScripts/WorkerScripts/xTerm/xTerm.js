@@ -79,7 +79,7 @@ try
 	* - the background color to #ffffff
 	* - the foreground color to ##000000
 	*/
-	scriptThread.addMessageToLogAndConsoles(UI_WebView.evaluateJavaScript("setOptions(12, true, 10000, '#ffffff', '#000000')"));
+	UI_WebView.evaluateJavaScript("setOptions(12, true, 1000, '#ffffff', '#000000')");
 	
 }
 catch(e)

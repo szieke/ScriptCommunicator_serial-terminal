@@ -32,7 +32,7 @@ class ScriptWebWidgetSlots : public QObject
     Q_OBJECT
 public:
 
-    ScriptWebWidgetSlots() : m_frame(0)
+    ScriptWebWidgetSlots(QWebView* webView) : QObject(webView), m_webView(webView), m_hasReturned(false)
     {
 
     }
@@ -40,60 +40,58 @@ public:
 
 public slots:
     ///Loads the specified url and displays it.
-    void load(QWebView* webView, QString url){attachToWebView(webView);webView->load(url);}
+    void load(QString url){attachToWebView();m_webView->load(url);}
 
     ///Finds the specified string, subString, in the page, using the given options.
-    void findText(QWebView* webView, QString subString, quint32 options, bool* result){*result = webView->findText(subString, (QWebPage::FindFlags)options);}
+    void findText(QString subString, quint32 options, bool* result){*result = m_webView->findText(subString, (QWebPage::FindFlags)options);}
 
     ///Loads the specified url and displays it.
-    void setHtml(QWebView* webView, QString html, QString baseUrl){attachToWebView(webView);webView->setHtml(html, baseUrl);}
+    void setHtml(QString html, QString baseUrl){attachToWebView();m_webView->setHtml(html, baseUrl);}
 
     ///Sets the given render hints on the painter if on is true; otherwise clears the render hints.
-    void setRenderHint(QWebView* webView, quint32 hints){webView->setRenderHints((QPainter::RenderHints)hints);}
+    void setRenderHint(quint32 hints){m_webView->setRenderHints((QPainter::RenderHints)hints);}
 
     ///Sets the value of the multiplier used to scale the text in a Web page to the factor.
-    void setTextSizeMultiplier(QWebView* webView, qreal factor){webView->setTextSizeMultiplier(factor);}
+    void setTextSizeMultiplier(qreal factor){m_webView->setTextSizeMultiplier(factor);}
 
     ///Sets the zoom factor for the view.
-    void setZoomFactor(QWebView* webView, qreal factor){webView->setZoomFactor(factor);}
+    void setZoomFactor(qreal factor){m_webView->setZoomFactor(factor);}
 
     ///Executes a javascript inside the web view.
-    void evaluateJavaScript(QWebView* webView, QString script, QVariant* result, bool* hasReturned)
+    void evaluateJavaScript(QString script, QVariant* result, bool* hasReturned)
     {
         *hasReturned  = false;
-        *result = webView->page()->mainFrame()->evaluateJavaScript(script);
+        *result = m_webView->page()->mainFrame()->evaluateJavaScript(script);
         *hasReturned = true;
     }
 
     ///Opens a print dialog.
-    void print(QWebView* webView, QString printDialogTitle)
+    void print(QString printDialogTitle)
     {
         QPrinter printer(QPrinter::HighResolution);
         printer.setFullPage(true);
 
-        QPrintDialog dialog(&printer, webView);
+        QPrintDialog dialog(&printer, m_webView);
         dialog.setWindowTitle(printDialogTitle);
 
         if (dialog.exec() == QDialog::Accepted)
         {
-            webView->print(&printer);
+            m_webView->print(&printer);
         }
 
     }
 
     QVariant callWorkerScriptWithResult(QVariant params, quint32 timeOut=5000)
     {
-        //result and hasReturned have to be static (it can happen that a timeout occurs and this function returns
-        //while the connected stub is running and trys to write to the variables from callWorkerScriptWithResultSignal).
-        static QVariant result;
-        static bool hasReturned = false;
-
         QDateTime start = QDateTime::currentDateTime();
 
-        emit callWorkerScriptWithResultSignal(params, &result, &hasReturned);
+        m_result  = QVariant();
+        m_hasReturned = false;
+
+        emit callWorkerScriptWithResultSignal(params, &m_result, &m_hasReturned);
 
 
-        while(!hasReturned && (start.msecsTo(QDateTime::currentDateTime()) < timeOut) &&
+        while(!m_hasReturned && (start.msecsTo(QDateTime::currentDateTime()) < timeOut) &&
               (QObject::receivers(SIGNAL(callWorkerScriptWithResultSignal(QVariant, QVariant*, bool*))) > 0))
         {//callWorkerScriptWithResult has not returned, timeout has not elapsed and
          //the signal is connected.
@@ -102,20 +100,17 @@ public slots:
             QCoreApplication::processEvents();
         }
 
-        if(start.msecsTo(QDateTime::currentDateTime()) >= timeOut)
-        {
-        }
 
-
-        return result;
+        return m_result;
     }
 
     void callWorkerScript(QVariant params){emit callWorkerScriptSignal(params);}
 
     void javaScriptWindowObjectCleared()
     {
-        m_frame->addToJavaScriptWindowObject( QString("webView"), this );
+        m_webView->page()->mainFrame()->addToJavaScriptWindowObject( QString("webView"), this );
     }
+
 
 
 Q_SIGNALS:
@@ -131,17 +126,21 @@ Q_SIGNALS:
 private:
 
 
-    void attachToWebView(QWebView* webView)
+    void attachToWebView()
     {
-        //QWebSettings::globalSettings()->setAttribute(QWebSettings::DeveloperExtrasEnabled, true);
-        QWebPage *page = webView->page();
-        m_frame = page->mainFrame();
+        QWebFrame* frame = m_webView->page()->mainFrame();
         javaScriptWindowObjectCleared();
-        connect(m_frame, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(javaScriptWindowObjectCleared()));
+        connect(frame, SIGNAL(javaScriptWindowObjectCleared()), this, SLOT(javaScriptWindowObjectCleared()));
 
     }
 
-    QWebFrame* m_frame;
+    QWebView* m_webView;
+
+    //The variable below are used in callWorkerScriptWithResult
+    //(it can happen that a timeout occurs and this function returns
+    //while the connected stub is running and trys to write to the variables from callWorkerScriptWithResultSignal (the stack is not valid).
+    QVariant m_result;
+    bool m_hasReturned ;
 };
 
 class ResultClass : public QObject
@@ -181,14 +180,14 @@ public:
 
         Qt::ConnectionType directConnectionType = scriptRunsInDebugger ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
-        connect(this, SIGNAL(loadSignal(QWebView*,QString)), slotObject, SLOT(load(QWebView*,QString)), directConnectionType);
-        connect(this, SIGNAL(findTextSignal(QWebView*,QString,quint32,bool*)), slotObject, SLOT(findText(QWebView*,QString,quint32,bool*)), directConnectionType);
-        connect(this, SIGNAL(setHtmlSignal(QWebView*, QString,QString)), slotObject, SLOT(setHtml(QWebView*,QString,QString)), directConnectionType);
-        connect(this, SIGNAL(setRenderHintSignal(QWebView*,quint32)), slotObject, SLOT(setRenderHint(QWebView*,quint32)), directConnectionType);
-        connect(this, SIGNAL(setTextSizeMultiplierSignal(QWebView*,qreal)), slotObject, SLOT(setTextSizeMultiplier(QWebView*,qreal)), directConnectionType);
-        connect(this, SIGNAL(setZoomFactorSignal(QWebView*,qreal)), slotObject, SLOT(setZoomFactor(QWebView*,qreal)), directConnectionType);
-        connect(this, SIGNAL(evaluateJavaScriptSignal(QWebView*,QString,QVariant*,bool*)), slotObject, SLOT(evaluateJavaScript(QWebView*,QString,QVariant*,bool*)), Qt::QueuedConnection);
-        connect(this, SIGNAL(printSignal(QWebView*,QString)), slotObject, SLOT(print(QWebView*,QString)), directConnectionType);
+        connect(this, SIGNAL(loadSignal(QString)), slotObject, SLOT(load(QString)), directConnectionType);
+        connect(this, SIGNAL(findTextSignal(QString,quint32,bool*)), slotObject, SLOT(findText(QString,quint32,bool*)), directConnectionType);
+        connect(this, SIGNAL(setHtmlSignal( QString,QString)), slotObject, SLOT(setHtml(QString,QString)), directConnectionType);
+        connect(this, SIGNAL(setRenderHintSignal(quint32)), slotObject, SLOT(setRenderHint(quint32)), directConnectionType);
+        connect(this, SIGNAL(setTextSizeMultiplierSignal(qreal)), slotObject, SLOT(setTextSizeMultiplier(qreal)), directConnectionType);
+        connect(this, SIGNAL(setZoomFactorSignal(qreal)), slotObject, SLOT(setZoomFactor(qreal)), directConnectionType);
+        connect(this, SIGNAL(evaluateJavaScriptSignal(QString,QVariant*,bool*)), slotObject, SLOT(evaluateJavaScript(QString,QVariant*,bool*)), Qt::QueuedConnection);
+        connect(this, SIGNAL(printSignal(QString)), slotObject, SLOT(print(QString)), directConnectionType);
 
         connect(this, SIGNAL(backSignal()), m_webView, SLOT(back()), directConnectionType);
         connect(this, SIGNAL(forwardSignal()), m_webView, SLOT(forward()), directConnectionType);
@@ -227,7 +226,7 @@ public:
     }
 
     ///Loads the specified url and displays it.
-    Q_INVOKABLE void load(QString url){emit loadSignal(m_webView, url);}
+    Q_INVOKABLE void load(QString url){emit loadSignal(url);}
 
     ///Returns the url of the web page currently viewed.
     Q_INVOKABLE QString url(void){return m_webView->url().toString();}
@@ -244,7 +243,7 @@ public:
     Q_INVOKABLE bool findText(QString subString, quint32 options = 0)
     {
         bool result = false;
-        emit findTextSignal(m_webView, subString, options, &result);
+        emit findTextSignal(subString, options, &result);
         return result;
     }
 
@@ -259,7 +258,7 @@ public:
     Q_INVOKABLE quint32 renderHints(void){return (quint32)m_webView->renderHints();}
 
     ///Sets the given render hints on the painter if on is true; otherwise clears the render hints.
-    Q_INVOKABLE void setRenderHint(quint32 hints){emit setRenderHintSignal(m_webView, hints);}
+    Q_INVOKABLE void setRenderHint(quint32 hints){emit setRenderHintSignal(hints);}
 
     ///Returns the HTML currently selected.
     ///By default, this property contains an empty string.
@@ -277,10 +276,10 @@ public:
     ///sheets are encoded in UTF-8 unless otherwise specified. For example, the encoding of an external script
     ///can be specified through the charset attribute of the HTML script tag. Alternatively, the encoding can also
     ///be specified by the web server.
-    Q_INVOKABLE void setHtml(QString html, QString baseUrl=""){emit setHtmlSignal(m_webView, html, baseUrl);}
+    Q_INVOKABLE void setHtml(QString html, QString baseUrl=""){emit setHtmlSignal(html, baseUrl);}
 
     ///Sets the value of the multiplier used to scale the text in a Web page to the factor.
-    Q_INVOKABLE void setTextSizeMultiplier(qreal factor){emit setTextSizeMultiplierSignal(m_webView, factor);}
+    Q_INVOKABLE void setTextSizeMultiplier(qreal factor){emit setTextSizeMultiplierSignal(factor);}
 
     ///Returns the zoom factor for the view.
     Q_INVOKABLE qreal textSizeMultiplier(void){return m_webView->textSizeMultiplier();}
@@ -289,7 +288,7 @@ public:
     Q_INVOKABLE QString title(void){return m_webView->title();}
 
     ///Sets the zoom factor for the view.
-    Q_INVOKABLE void setZoomFactor(qreal factor){emit setZoomFactorSignal(m_webView, factor);}
+    Q_INVOKABLE void setZoomFactor(qreal factor){emit setZoomFactorSignal(factor);}
 
     ///Returns the zoom factor for the view.
     Q_INVOKABLE qreal zoomFactor(void){return m_webView->zoomFactor();}
@@ -313,7 +312,7 @@ public:
         QVariant result;
         bool hasReturned = false;
 
-        emit evaluateJavaScriptSignal(m_webView, script, &result, &hasReturned);
+        emit evaluateJavaScriptSignal(script, &result, &hasReturned);
 
         while(!hasReturned)
         {
@@ -324,7 +323,7 @@ public:
     }
 
     ///Opens a print dialog.
-    Q_INVOKABLE void print(QString printDialogTitle = "Print"){emit printSignal(m_webView, printDialogTitle);}
+    Q_INVOKABLE void print(QString printDialogTitle = "Print"){emit printSignal(printDialogTitle);}
 
 Q_SIGNALS:
 
@@ -369,27 +368,27 @@ Q_SIGNALS:
 
     ///Is emitted by the load function.
     ///This signal is private and must not be used inside a script.
-    void loadSignal(QWebView*, QString);
+    void loadSignal(QString);
 
     ///Is emitted by the findText function.
     ///This signal is private and must not be used inside a script.
-    void findTextSignal(QWebView*, QString, quint32, bool*);
+    void findTextSignal(QString, quint32, bool*);
 
     ///Is emitted by the setHtml function.
     ///This signal is private and must not be used inside a script.
-    void setHtmlSignal(QWebView*, QString, QString);
+    void setHtmlSignal(QString, QString);
 
     ///Is emitted by the setRenderHint function.
     ///This signal is private and must not be used inside a script.
-    void setRenderHintSignal(QWebView*, quint32);
+    void setRenderHintSignal(quint32);
 
     ///Is emitted by the setTextSizeMultiplier function.
     ///This signal is private and must not be used inside a script.
-    void setTextSizeMultiplierSignal(QWebView*, qreal);
+    void setTextSizeMultiplierSignal(qreal);
 
     ///Is emitted by the setZoomFactor function.
     ///This signal is private and must not be used inside a script.
-    void setZoomFactorSignal(QWebView*, qreal);
+    void setZoomFactorSignal(qreal);
 
     ///Is emitted by the back function.
     ///This signal is private and must not be used inside a script.
@@ -409,11 +408,11 @@ Q_SIGNALS:
 
     ///Is emitted by the evaluateJavaScript function.
     ///This signal is private and must not be used inside a script.
-    void evaluateJavaScriptSignal(QWebView*, QString,QVariant*, bool*);
+    void evaluateJavaScriptSignal(QString,QVariant*, bool*);
 
     ///Is emitted by the print function.
     ///This signal is private and must not be used inside a script.
-    void printSignal(QWebView* webView, QString printDialogTitle);
+    void printSignal(QString printDialogTitle);
 
 public slots:
 
