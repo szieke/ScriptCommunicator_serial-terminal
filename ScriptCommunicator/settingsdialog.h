@@ -34,6 +34,7 @@
 #include <QSignalMapper>
 #include "aardvark.h"
 #include "aardvarkI2cSpi.h"
+#include <QAction>
 
 
 QT_USE_NAMESPACE
