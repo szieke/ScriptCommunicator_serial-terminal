@@ -172,6 +172,8 @@ public:
     ///Update the current plot view.
     Q_INVOKABLE void updatePlot(void){emit m_plotWindow->getWidget()->updatePlotSignal();}
 
+    Q_INVOKABLE bool saveAllGraphs(QString fileName){bool hasSucceeded;m_plotWindow->getWidget()->saveAllGraphsSignal(fileName, &hasSucceeded);return hasSucceeded;}
+
 Q_SIGNALS:
 
     ///Is emitted if the user press a mouse button inside the plot.
