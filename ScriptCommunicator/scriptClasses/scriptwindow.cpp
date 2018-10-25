@@ -267,10 +267,11 @@ void ScriptWindow::startCommandLineScripts(void)
 
             createNewTableRow();
 
-            m_userInterface->tableWidget->item(0, COLUMN_NAME)->setText(createScriptNameFromFileName(scriptFile));
+            QFileInfo fileInfo (script);
+            m_userInterface->tableWidget->item(0, COLUMN_NAME)->setText(fileInfo.baseName());
             m_userInterface->tableWidget->item(0, COLUMN_SCRIPT_PATH)->setText(script);
 
-            QString uiFile = script.split(".").at(0) + ".ui";
+            QString uiFile = fileInfo.absolutePath() + "/" + fileInfo.completeBaseName()+ ".ui";
             if(QFile::exists(uiFile))
             {
                 m_userInterface->tableWidget->item(0, COLUMN_UI_PATH)->setText(uiFile);
@@ -675,19 +676,6 @@ void ScriptWindow::cellChangedSlot(int row, int column)
     emit scriptTableHasChangedSignal();
 }
 
-/**
- * Creates a script name (for script table) from a file name.
- * @param fileName
- *      The file name.
- * @param trimName
- *      True if the script name should be timmed.
- * @return
- *      The created script name.
- */
-QString ScriptWindow::createScriptNameFromFileName(QString fileName)
-{
-    return fileName.section("/",-1,-1).split(".")[0];
-}
 
 /**
  * Adds a script to the script table.
@@ -698,24 +686,13 @@ void ScriptWindow::addScript(QString fileName)
 {
     createNewTableRow();
 
-    m_userInterface->tableWidget->item(0, COLUMN_NAME)->setText(createScriptNameFromFileName(fileName));
+    QFileInfo fileInfo (fileName);
+    m_userInterface->tableWidget->item(0, COLUMN_NAME)->setText(fileInfo.baseName());
     m_userInterface->tableWidget->item(0, COLUMN_SCRIPT_PATH)->setText(fileName);
     m_userInterface->tableWidget->item(0, COLUMN_SCRIPT_THREAD_STATUS)->setText("not running");
 
-    QString uiFile;
-    qint32 pos = fileName.lastIndexOf(".");
 
-    if(pos != -1)
-    {//Dot has been found.
-
-        uiFile = fileName.left(pos);
-    }
-    else
-    {
-        uiFile = fileName;
-    }
-
-    uiFile += ".ui";
+    QString uiFile = fileInfo.absolutePath() + "/" + fileInfo.completeBaseName()+ ".ui";
     if(QFile::exists(uiFile))
     {
         m_userInterface->tableWidget->item(0, COLUMN_UI_PATH)->setText(uiFile);
@@ -1488,14 +1465,15 @@ void ScriptWindow::newScriptSlot(void)
                 {
 
                     createNewTableRow();
-                    m_userInterface->tableWidget->item(0, COLUMN_NAME)->setText(createScriptNameFromFileName(scriptFileName));
+                    QFileInfo fileInfo (scriptFileName);
+                    m_userInterface->tableWidget->item(0, COLUMN_NAME)->setText(fileInfo.baseName());
                     m_userInterface->tableWidget->item(0, COLUMN_SCRIPT_PATH)->setText(scriptFileName);
                     m_userInterface->tableWidget->item(0, COLUMN_SCRIPT_THREAD_STATUS)->setText("not running");
 
                     if(QFile::exists(templateUiFile))
                     {
 
-                        QString uiFile = scriptFileName.split(".").at(0) + ".ui";
+                        QString uiFile = fileInfo.absolutePath() + "/" + fileInfo.completeBaseName()+ ".ui";
                         QFile(uiFile).remove();
 
                         if(QFile::copy(templateUiFile, uiFile))

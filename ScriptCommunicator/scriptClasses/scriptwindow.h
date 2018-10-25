@@ -301,9 +301,6 @@ private:
     ///Checks if ScriptCommunicatormust exit.
     void checkIfScriptCommunicatorMustExit();
 
-    ///Creates a script name (for script table) from a file name.
-    QString createScriptNameFromFileName(QString fileName);
-
     ///Converts the script table to a string (XML).
     QString tableToString(void);
 
