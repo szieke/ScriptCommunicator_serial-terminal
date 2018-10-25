@@ -154,6 +154,8 @@ public:
     ///Update the current plot view.
     Q_INVOKABLE void updatePlot(void){emit updatePlotSignal();}
 
+    Q_INVOKABLE bool saveAllGraphs(QString fileName){bool hasSucceed;emit saveAllGraphsSignal(fileName, &hasSucceed);return hasSucceed;}
+
     ///The default value for the plot update timer (m_plotTimer).
     static const quint32 DEFAULT_PLOT_UPDATE_TIME_MS = 100;
 
@@ -231,9 +233,13 @@ signals:
     ///This signal is private and must not be used inside a script.
     void setUpdateIntervalSignal(quint32 updateInterval);
 
-    ///Is emiited in updatePlot();
+    ///Is emitted in updatePlot();
     ///This signal is private and must not be used inside a script.
     void updatePlotSignal();
+
+    ///Is emitted in saveAllGraphs();
+    ///This signal is private and must not be used inside a script.
+    void saveAllGraphsSignal(QString fileName, bool *hasSucceed);
 
 public slots:
 
@@ -277,6 +283,10 @@ public slots:
     ///Sets the visibility of several plot widget elements.
     void showHelperElementsSlot(bool showXRange, bool showYRange, bool showUpdate, bool showSave,  bool showLoad, bool showClear, bool showGraphVisibility,
                                 quint32 graphVisibilityMaxSize, bool showLegend);
+
+
+    ///This function saves all displayed graphs to a file.
+    void saveAllGraphsSlot(QString fileName, bool *hasSucceed);
 
 private slots:
 

@@ -174,6 +174,9 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
 
     connect(m_scriptThread, SIGNAL(threadStateChangedSignal(ThreadSate,ScriptThread*)),
             this, SLOT(threadStateChangedSlot(ThreadSate,ScriptThread*)), Qt::QueuedConnection);
+
+    connect(this, SIGNAL(saveAllGraphsSignal(QString,bool*)),
+            this, SLOT(saveAllGraphsSlot(QString,bool*)), directConnectionType);
 }
 
 /**
@@ -323,26 +326,27 @@ void ScriptPlotWidget::clearButtonPressedSlot()
 }
 
 /**
- * This function saves the current displayed graphs.
- * It is called if the save button is pressed.
+ * This function saves all displayed graphs to a file.
+ * @param fileName
+ *  The file name. Possible file extensions are: png, jpg, bmp, pdf, csv. If fileName has no or an invalid file
+ *  extension then a file with comma separated values is created.
+ * @param hasSucceed
+ *  True if saving has succeeded.
  */
-void ScriptPlotWidget::saveButtonPressed()
+void ScriptPlotWidget::saveAllGraphsSlot(QString fileName, bool* hasSucceed)
 {
+    *hasSucceed = false;
 
-    QString selectedFilter;
-    QString tmpFileName = QFileDialog::getSaveFileName(m_plotWidget, tr("save as image/csv"),
-                                                      "",tr("PNG (*.png);;JPG (*.jpg);;BMP (*.bmp);;PDF (*.pdf);;CSV (*.csv)"), &selectedFilter);
-    if(!tmpFileName.isEmpty())
+    if(!fileName.isEmpty())
     {
-        QStringList tmpList = tmpFileName.split(".");
+        QStringList tmpList = fileName.split(".");
         QString suffix;
 
-        if(tmpList.length() < 2)
-        {//No suffix entered.
 
-            suffix = selectedFilter.remove(0, selectedFilter.indexOf(".") + 1);
-            suffix.remove(")");
-            tmpFileName += "." + suffix;
+        if(tmpList.length() < 2)
+        {//No suffix.
+
+            fileName += ".csv";
         }
         else
         {
@@ -351,21 +355,21 @@ void ScriptPlotWidget::saveButtonPressed()
 
         if(suffix == "png")
         {
-            m_plotWidget->savePng(tmpFileName);
+            *hasSucceed = m_plotWidget->savePng(fileName);
         }
         else if(suffix == "jpg")
         {
-            m_plotWidget->saveJpg(tmpFileName);
+            *hasSucceed = m_plotWidget->saveJpg(fileName);
         }
         else if(suffix == "bmp")
         {
-            m_plotWidget->saveBmp(tmpFileName);
+            *hasSucceed = m_plotWidget->saveBmp(fileName);
         }
         else if(suffix == "pdf")
         {
-            m_plotWidget->savePdf(tmpFileName);
+           *hasSucceed =  m_plotWidget->savePdf(fileName);
         }
-       else if(suffix == "csv")
+       else //Invalid suffix and csv
         {
             QString content = "";
 
@@ -390,13 +394,42 @@ void ScriptPlotWidget::saveButtonPressed()
 
             }
 
-             m_scriptThread->writeFile(tmpFileName, false,content,true);
+             *hasSucceed = m_scriptThread->writeFile(fileName, false,content,true);
 
         }
-        else
-        {
-            QMessageBox::critical(m_plotWidget, "invalid file-extension", QString("invalid file-extension: %1").arg("." + suffix));
+    }
+
+}
+/**
+ * This function saves the current displayed graphs.
+ * It is called if the save button is pressed.
+ */
+void ScriptPlotWidget::saveButtonPressed()
+{
+
+    bool hasSucceed;
+    QString selectedFilter;
+    QString fileName = QFileDialog::getSaveFileName(m_plotWidget, tr("save as image/csv"),
+                                                      "",tr("PNG (*.png);;JPG (*.jpg);;BMP (*.bmp);;PDF (*.pdf);;CSV (*.csv)"), &selectedFilter);
+    if(!fileName.isEmpty())
+    {
+        QStringList tmpList = fileName.split(".");
+        QString suffix;
+
+        if(tmpList.length() < 2)
+        {//No suffix entered.
+
+            QString suffix = selectedFilter.remove(0, selectedFilter.indexOf(".") + 1);
+            suffix.remove(")");
+            fileName += "." + suffix;
         }
+       saveAllGraphsSlot(fileName, &hasSucceed);
+
+       if(!hasSucceed)
+       {
+           QMessageBox::critical(m_plotWidget, "error", QString("error while saving graphs to file: %1").arg(fileName));
+
+       }
     }
 }
 
