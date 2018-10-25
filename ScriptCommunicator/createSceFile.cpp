@@ -979,7 +979,7 @@ void CreateSceFile::typeTextChangedSlot(QString text)
  */
 void CreateSceFile::setTitle(QString extraString)
 {
-    setWindowTitle("ScriptCommunicator " + MainWindow::VERSION + " - SCE File Dialog" + extraString);
+    setWindowTitle("ScriptCommunicator " + MainWindow::VERSION + " - SCE File Dialog: " + extraString);
 }
 
 /**
@@ -1143,7 +1143,7 @@ void CreateSceFile::setGuiElementsToDefault()
     ui->argumentsListWidget->clear();
     ui->fileLineEdit->setText("");
     ui->minScVersionMajor->setValue(MainWindow::VERSION.split(".")[0].toUInt());
-    ui->minScVersionMajor->setValue(MainWindow::VERSION.split(".")[1].toUInt());
+    ui->minScVersionMinor->setValue(MainWindow::VERSION.split(".")[1].toUInt());
     ui->withScriptWindowCheckBox->setChecked(false);
     ui->notMinimized->setChecked(false);
 }
