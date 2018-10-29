@@ -36,6 +36,9 @@ public:
     ///Converts an ascii string into a byte array.
     Q_INVOKABLE static QVector<unsigned char> stringToArray(QString str);
 
+    ///Converts a string into an utf8 byte array.
+    Q_INVOKABLE static QVector<unsigned char> stringToUtf8Array(QString str);
+
     ///Converts the first Bytes of a byte array to an uint16_t.
     ///Note: This functions works only if the return value is uint32_t (and not uint16_t).
     Q_INVOKABLE static uint32_t byteArrayToUint16(QVector<unsigned char> data, bool littleEndian);

@@ -3,6 +3,7 @@ conv::byteArrayToString(Array<Number> data):String \nConverts a byte array which
 conv::byteArrayToUtf8String(Array<Number> data):String \nConverts a byte array which contains utf8 characters into an utf8 string (QString).
 conv::byteArrayToHexString(Array<Number> data):String \nConverts a byte array into a hex string.
 conv::stringToArray(String str):Array<Number> \nConverts an ascii string into a byte array.
+conv::stringToUtf8Array(String str):Array<Number> \nConverts a string into an utf8 byte array.
 conv::byteArrayToUint16(Array<Number> data, bool littleEndian):Number \nConverts the first Bytes of a byte array to an uint16.
 conv::byteArrayToUint32(Array<Number> data, bool littleEndian):Number \nConverts the first Bytes of a byte array to an uint32.
 conv::byteArrayToUint64(Array<Number> data, bool littleEndian):Number \nConverts the first Bytes of a byte array to an uint64.

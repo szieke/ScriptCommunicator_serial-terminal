@@ -89,6 +89,23 @@ QVector<unsigned char> ScriptConverter::stringToArray(QString str)
     return result;
 }
 
+/**
+ * Converts a string into an utf8 byte array.
+ * @param str
+ *      The string
+ * @return
+ *      The byte array.
+ */
+QVector<unsigned char> ScriptConverter::stringToUtf8Array(QString str)
+{
+    QVector<unsigned char> result;
+    for(auto val : str.toUtf8())
+    {
+        result.append(val);
+    }
+    return result;
+}
+
 
 /**
  * Adds an ascii string to a byte array.
