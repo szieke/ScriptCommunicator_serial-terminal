@@ -188,6 +188,27 @@ qint32 ScriptXmlReader::readFile(QString fileName, bool isRelativePath)
     return result;
 }
 
+
+/**
+ * Parses a xml string. The parsed xml string is stored internally.
+ * @param xmlString
+ *      The xml string.
+ * @return
+ *      True on success.
+ */
+bool ScriptXmlReader::parseString(QString xmlString)
+{
+    bool result = false;
+
+    if (m_xmlDocument.setContent(xmlString))
+    {
+        result = true;
+        m_rootElement = m_xmlDocument.documentElement();
+    }
+
+    return result;
+}
+
 /**
  * Returns the root xml element.
  * @return

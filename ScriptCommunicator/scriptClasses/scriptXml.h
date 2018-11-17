@@ -256,6 +256,9 @@ public:
     ///Reads and parses a xml file. The parsed xml file is stored internally.
     Q_INVOKABLE qint32 readFile(QString fileName, bool isRelativePath=true);
 
+    ///Parses a xml string. The parsed xml string is stored internally.
+    Q_INVOKABLE bool parseString(QString xmlString);
+
     ///Returns a list containing all xml elements with the name 'name'.
     ///Note: The xml root element is not included.
     Q_INVOKABLE QList<ScriptXmlElement*> elementsByTagName(QString name);
