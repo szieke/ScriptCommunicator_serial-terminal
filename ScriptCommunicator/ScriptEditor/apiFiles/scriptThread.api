@@ -65,7 +65,7 @@ scriptThread::setGlobalRealNumber(String name, Number number):void \nSets a real
 scriptThread::getGlobalRealNumber(String name, bool removeValue=false):Array<Number> \nReturns a real number from the global real number map (Scripts can exchange data with this map). \nThe first element is the result status (1=name found, 0=name not found). The second element is the read value.
 scriptThread::setScriptThreadPriority(String priority):bool \nSets the priority of the script thread (which executes the current script). Possible values are:\n- LowestPriority\n- LowPriority\n- NormalPriority\n- HighPriority\n- HighestPriority\nNote: Per default script threads have LowestPriority.
 scriptThread::getCurrentVersion(void):String \nReturns the current version of ScriptCommunicator.
-scriptThread::exitScriptCommunicator(void):void \nThis function exits ScriptCommunicator.
+scriptThread::exitScriptCommunicator(Number exitCode):void \nThis function exits ScriptCommunicator.
 scriptThread::setBlockTime(Number blockTime):void \nSets the script block time (ms).\nNote: If the user presses the stop button the script must be exited after this time. If not then the script is\nregarded as blocked and will be terminated.
 scriptThread::setScriptState(Number state, String scriptTableEntryName):bool \nSets the state of a script (running, paused or stopped).\nNote: The script must be in the script table (script window) and a script can not set it's own state.
 scriptThread::getScriptTableName(void):String \nReturns the script-table (script window) name of the calling script.

@@ -1702,8 +1702,10 @@ void ScriptWindow::editScriptButtonPressedSlot(void)
 
 /**
  * This function exits ScriptCommunicator.
+ * @param exitCode
+ *      The exit code of ScriptCommunicator.
  */
-void ScriptWindow::exitScriptCommunicatorSlot(void)
+void ScriptWindow::exitScriptCommunicatorSlot(qint32 exitCode)
 {
     if(!m_commandLineScripts.isEmpty())
     {
@@ -1716,7 +1718,7 @@ void ScriptWindow::exitScriptCommunicatorSlot(void)
     }
     else
     {
-        m_mainWindow->exitScriptCommunicator();
+        m_mainWindow->exitScriptCommunicator(exitCode);
     }
 }
 /**

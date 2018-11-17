@@ -237,7 +237,7 @@ public:
     QTextEdit* getConsoleFromCurrentTab(QWidget *widget);
 
     ///This function exits ScriptCommunicator.
-    void exitScriptCommunicator(void);
+    void exitScriptCommunicator(qint32 exitCode);
 
     ///Returns m_handleData.
     MainWindowHandleData* getHandleDataObject(){return m_handleData;}
@@ -272,6 +272,12 @@ public:
 
     ///Returns the user interface.
     Ui::MainWindow * getUserInterface(void){ return m_userInterface;}
+
+    ///Returns m_closedByScript.
+    bool closedByScript(void){return m_closedByScript;}
+
+    ///Returns m_exitCode.
+    qint32 getExitCode(void){return m_exitCode;}
 
 
 signals:
@@ -695,6 +701,12 @@ private:
 
     ///Map which contains all script tool box page (the second argument is a pointer to the script thread).
     QMap<QWidget*, QObject*> m_scriptToolBoxPage;
+
+    ///True if the main window was closed by a script (exitScriptCommunicator).
+    bool m_closedByScript;
+
+    ///The exit code which was passed in exitScriptCommunicator.
+    qint32 m_exitCode;
 };
 
 

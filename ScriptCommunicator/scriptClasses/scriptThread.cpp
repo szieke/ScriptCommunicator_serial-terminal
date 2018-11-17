@@ -320,8 +320,8 @@ void ScriptThread::run()
         connect(this, SIGNAL(appendTextToConsoleSignal(QString, bool,bool)),
                 m_scriptWindow, SLOT(appendTextToConsoleSlot(QString, bool,bool)), Qt::QueuedConnection);
 
-        connect(this, SIGNAL(exitScriptCommunicatorSignal()),
-                m_scriptWindow, SLOT(exitScriptCommunicatorSlot()), Qt::QueuedConnection);
+        connect(this, SIGNAL(exitScriptCommunicatorSignal(qint32)),
+                m_scriptWindow, SLOT(exitScriptCommunicatorSlot(qint32)), Qt::QueuedConnection);
 
         connect(this, SIGNAL(threadStateChangedSignal(ThreadSate, ScriptThread*)),
                 m_scriptWindow, SLOT(threadStateChangedSlot(ThreadSate, ScriptThread*)), Qt::QueuedConnection);

@@ -208,7 +208,7 @@ public slots:
     void setScriptStateSlot(quint8 state, QString scriptTableEntryName, bool* result);
 
     ///This function exits ScriptCommunicator.
-    void exitScriptCommunicatorSlot(void);
+    void exitScriptCommunicatorSlot(qint32 exitCode);
 
     ///This slot function append text to the console.
     void appendTextToConsoleSlot(QString text, bool newLine=true, bool bringToForeground=false);

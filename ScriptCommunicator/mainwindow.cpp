@@ -325,7 +325,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     m_dataRateSend(0), m_dataRateReceive(0), m_handleData(0), m_toolBoxSplitterSizeSecond(0),
     m_sendAreaSplitterSizeSecond(0), m_sendAreaInputsSplitterSizeSecond(0), m_toolBoxSplitterSizesSecond(), m_currentToolBoxIndex(0), m_mainConfigLockFile(),
     m_configLockFileTimer(), m_extraPluginPaths(extraPluginPaths), m_scriptArguments(scriptArguments), updatesManager(0), m_scriptTabs(), m_scriptTabsTitles(),
-    m_scriptToolBoxPage()
+    m_scriptToolBoxPage(), m_closedByScript(false), m_exitCode(0)
 {
 
     m_userInterface->setupUi(this);
@@ -4394,9 +4394,13 @@ void MainWindow::deletePreviousConfigListSlot(void)
 
 /**
  * This function exits ScriptCommunicator.
+ * @param exitCode
+ *      The exit code of ScriptCommunicator.
  */
-void MainWindow::exitScriptCommunicator(void)
+void MainWindow::exitScriptCommunicator(qint32 exitCode)
 {
+    m_closedByScript = true;
+    m_exitCode = exitCode;
     close();
 }
 

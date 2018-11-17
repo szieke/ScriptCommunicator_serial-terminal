@@ -484,7 +484,7 @@ public:
     Q_INVOKABLE QString getCurrentVersion(void){return MainWindow::VERSION;}
 
     ///This function exits ScriptCommunicator.
-    Q_INVOKABLE void exitScriptCommunicator(void){emit exitScriptCommunicatorSignal();}
+    Q_INVOKABLE void exitScriptCommunicator(qint32 exitCode=0){emit exitScriptCommunicatorSignal(exitCode);}
 
     ///Sets the script block time (ms).
     ///Note: If the user presses the stop button the script must be exited after this time. If not then the script is
@@ -678,7 +678,7 @@ signals:
 	
 	///Is emitted if ScriptCommunicator shall exit.
     ///This signal must not be used from script.
-    void exitScriptCommunicatorSignal(void);
+    void exitScriptCommunicatorSignal(qint32 exitCode);
 	
 	///Is connected with ScriptWindow::loadUserInterfaceFileSlot (loads an user interface file).
     ///This signal must not be used from script.

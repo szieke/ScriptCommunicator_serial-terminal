@@ -275,12 +275,19 @@ int main(int argc, char *argv[])
             w->close();
         }
 
+        if(w->closedByScript())
+        {//A script has called exitScriptCommunicator.
+
+            //Get the exit code.
+            result = w->getExitCode();
+        }
+
         //Note: The main window must be deleted before QApplication.
         delete w;
 
         if(!g_aThreadHasBeenTerminated)
         {//No thread has been ternminated.
-            //If a thread has been terminated then the Destructor QApplication will crash.
+            //If a thread has been terminated then the Destructor of QApplication will crash.
             delete a;
         }
 
