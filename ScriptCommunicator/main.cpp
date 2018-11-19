@@ -260,19 +260,23 @@ int main(int argc, char *argv[])
         }
         result = a->exec();
 
-        if(!scripts.isEmpty())
-        {
-            if(!withScriptWindow)
-            {
-                //If no script window is shown, the last running script
-                //will exit ScriptCommunicator(in withScriptWindow)
-                while(1)
-                {
-                    a->processEvents();
-                }
-            }
+        if(!w->closedByScript())
+        {//No script has called exitScriptCommunicator.
 
-            w->close();
+            if(!scripts.isEmpty())
+            {
+                if(!withScriptWindow)
+                {
+                    //If no script window is shown, the last running script
+                    //will exit ScriptCommunicator(in withScriptWindow)
+                    while(1)
+                    {
+                        a->processEvents();
+                    }
+                }
+
+                w->close();
+            }
         }
 
         if(w->closedByScript())
@@ -281,6 +285,9 @@ int main(int argc, char *argv[])
             //Get the exit code.
             result = w->getExitCode();
         }
+
+
+
 
         //Note: The main window must be deleted before QApplication.
         delete w;

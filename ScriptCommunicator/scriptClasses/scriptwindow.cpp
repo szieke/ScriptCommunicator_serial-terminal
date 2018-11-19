@@ -1714,12 +1714,12 @@ void ScriptWindow::exitScriptCommunicatorSlot(qint32 exitCode)
             close();
         }
 
-        stopAllScripts();
+        QCoreApplication::exit(exitCode);
+        //stopAllScripts();
     }
-    else
-    {
-        m_mainWindow->exitScriptCommunicator(exitCode);
-    }
+
+    m_mainWindow->exitScriptCommunicator(exitCode);
+
 }
 /**
  * This slot function append text to the console.
