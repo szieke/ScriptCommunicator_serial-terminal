@@ -341,6 +341,9 @@ private:
     ///The create sce file dialog.
     CreateSceFile* m_createSceFileDialog;
 
+    ///The exit code which was passed in exitScriptCommunicator.
+    qint32 m_exitCode;
+
 
 };
 

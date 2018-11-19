@@ -132,7 +132,7 @@ Qt::DropActions DragDropTableWidget::supportedDropActions () const
  */
 ScriptWindow::ScriptWindow(MainWindow* mainWindow, MainInterfaceThread *thread, QStringList scripts) : ScriptSlots(),
     m_userInterface(new Ui::ScriptWindow), m_mainWindow(mainWindow), m_sendIdCounter(MainInterfaceThread::SEND_ID_SCRIPTS_START), m_mainInterfaceThread(thread),
-    m_commandLineScripts(scripts), m_createSceFileDialog(0)
+    m_commandLineScripts(scripts), m_createSceFileDialog(0), m_exitCode(0)
 {
     m_userInterface->setupUi(this);
 
@@ -1215,7 +1215,8 @@ void ScriptWindow::checkIfScriptCommunicatorMustExit()
         if(allScriptsStopped && !this->isVisible())
         {
             deleteCurrentScezFolder();
-            exit(0);
+
+            QCoreApplication::exit(m_exitCode);
         }
     }
 }
@@ -1707,18 +1708,20 @@ void ScriptWindow::editScriptButtonPressedSlot(void)
  */
 void ScriptWindow::exitScriptCommunicatorSlot(qint32 exitCode)
 {
-    if(!m_commandLineScripts.isEmpty())
-    {
-        if(!this->isHidden())
-        {
-            close();
-        }
 
-        QCoreApplication::exit(exitCode);
-        //stopAllScripts();
+    stopAllScripts();
+
+    if(!this->isHidden())
+    {
+        close();
     }
 
     m_mainWindow->exitScriptCommunicator(exitCode);
+    QCoreApplication::exit(exitCode);
+
+
+
+
 
 }
 /**
@@ -1776,7 +1779,7 @@ void ScriptWindow::stopScriptThread(int selectedRow)
             {
 
                 thread->m_shallExit = true;
-                thread->exit();
+                thread->exit(m_exitCode);
 
                 //Wait until the script thread has exited.
                 uint counter = 0;
