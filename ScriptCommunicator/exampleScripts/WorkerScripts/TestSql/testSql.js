@@ -1,4 +1,4 @@
-/********************************************************************************************************
+﻿/********************************************************************************************************
 * The script demonstrates the usage of the ScriptCommunicator SQL API.
 **********************************************************************************************/
 
@@ -182,24 +182,22 @@ function createTableAndInsertByteArray(name)
 
 
 scriptThread.appendTextToConsole('script has started');
-
-
 var db = scriptSql.addDatabase("QSQLITE")
 db.setDatabaseName(scriptFile.createAbsolutePath("test.db3"));
 db.open();
 if(!db.isOpen())
 {
 	scriptThread.appendTextToConsole("could not open db");
-	scriptThread.stopScript();
 }
-
-
-createTableAndInsertData("test1");
-createTableAndInsertData("test2");
-createTableAndInsertByteArray("test1")
-createTableAndInsertByteArray("test2")
-testBinding();
-testRecordAndField();
-testSqlIndex()
+else
+{
+	createTableAndInsertData("test1");
+	createTableAndInsertData("test2");
+	createTableAndInsertByteArray("test1")
+	createTableAndInsertByteArray("test2")
+	testBinding();
+	testRecordAndField();
+	testSqlIndex()
+}
 
 scriptThread.stopScript();
