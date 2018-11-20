@@ -4394,13 +4394,9 @@ void MainWindow::deletePreviousConfigListSlot(void)
 
 /**
  * This function exits ScriptCommunicator.
- * @param exitCode
- *      The exit code of ScriptCommunicator.
  */
-void MainWindow::exitScriptCommunicator(qint32 exitCode)
+void MainWindow::exitScriptCommunicator(void)
 {
-    m_closedByScript = true;
-    m_exitCode = exitCode;
     close();
 }
 

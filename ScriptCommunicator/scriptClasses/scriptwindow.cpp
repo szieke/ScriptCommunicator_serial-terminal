@@ -1217,6 +1217,7 @@ void ScriptWindow::checkIfScriptCommunicatorMustExit()
             deleteCurrentScezFolder();
 
             QCoreApplication::exit(m_exitCode);
+            exit(m_exitCode);
         }
     }
 }
@@ -1708,22 +1709,24 @@ void ScriptWindow::editScriptButtonPressedSlot(void)
  */
 void ScriptWindow::exitScriptCommunicatorSlot(qint32 exitCode)
 {
+    m_exitCode = exitCode;
+    m_mainWindow->setExitCodeFromScript(exitCode);
 
-    stopAllScripts();
-
-    if(!this->isHidden())
+    if(!m_commandLineScripts.isEmpty())
     {
-        close();
+        if(!this->isHidden())
+        {
+            close();
+        }
+
+        stopAllScripts();
     }
-
-    m_mainWindow->exitScriptCommunicator(exitCode);
-    QCoreApplication::exit(exitCode);
-
-
-
-
-
+    else
+    {
+        m_mainWindow->exitScriptCommunicator();
+    }
 }
+
 /**
  * This slot function append text to the console.
  * @param text

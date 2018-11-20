@@ -484,7 +484,7 @@ public:
     Q_INVOKABLE QString getCurrentVersion(void){return MainWindow::VERSION;}
 
     ///This function exits ScriptCommunicator.
-    Q_INVOKABLE void exitScriptCommunicator(qint32 exitCode=0){m_exitCode = exitCode;emit exitScriptCommunicatorSignal(exitCode);}
+    Q_INVOKABLE void exitScriptCommunicator(qint32 exitCode=0){emit exitScriptCommunicatorSignal(exitCode);}
 
     ///Sets the script block time (ms).
     ///Note: If the user presses the stop button the script must be exited after this time. If not then the script is
@@ -838,9 +838,6 @@ private:
 
     ///True if qRegisterMetaType was already called in ScriptWidget constructor.
     bool m_registerMetaTypeCalledinScriptWidget;
-
-    ///The exit code which was passed in exitScriptCommunicator.
-    qint32 m_exitCode;
 
 };
 

@@ -237,7 +237,7 @@ public:
     QTextEdit* getConsoleFromCurrentTab(QWidget *widget);
 
     ///This function exits ScriptCommunicator.
-    void exitScriptCommunicator(qint32 exitCode);
+    void exitScriptCommunicator(void);
 
     ///Returns m_handleData.
     MainWindowHandleData* getHandleDataObject(){return m_handleData;}
@@ -278,6 +278,9 @@ public:
 
     ///Returns m_exitCode.
     qint32 getExitCode(void){return m_exitCode;}
+
+    ///Sets the exit code from a script.
+    void setExitCodeFromScript(quint32 code){m_exitCode = code; m_closedByScript = true;}
 
 
 signals:

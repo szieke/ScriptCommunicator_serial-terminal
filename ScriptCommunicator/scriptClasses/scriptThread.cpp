@@ -109,7 +109,7 @@ ScriptThread::ScriptThread(ScriptWindow* scriptWindow, quint32 sendId, QString s
     m_shallExit(false), m_shallPause(false) ,m_scriptRunsInDebugger(scriptRunsInDebugger), m_state(INVALID),
     m_pauseTimer(0),m_scriptEngine(0), m_settingsDialog(settingsDialog), m_scriptSql(), m_blockTime(DEFAULT_BLOCK_TIME),
     m_standardDialogs(0), m_scriptFileObject(0), m_isSuspendedByDebuger(false), m_debugger(0), m_debugWindow(0), m_hasMainWindowGuiElements(false),
-    m_libraries(0), m_scriptInf(0), m_registerMetaTypeCalledinScriptWidget(false), m_exitCode(0)
+    m_libraries(0), m_scriptInf(0), m_registerMetaTypeCalledinScriptWidget(false)
 {
     m_scriptWindow = scriptWindow;
 
@@ -1286,7 +1286,7 @@ void ScriptThread::stopScript(void)
         m_shallExit = true;
         if(!m_scriptRunsInDebugger)
         {
-            exit(m_exitCode);
+            exit();
         }
     }
 }
