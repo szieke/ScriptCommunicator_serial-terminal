@@ -20,9 +20,9 @@ ScriptToolButton::setObjectName(String name):void \nSets the name of the current
 ScriptToolButton::setText(String text):void \nSets the button text.
 ScriptToolButton::text(void):String \nReturns the button text.
 ScriptToolButton::setIcon(String iconFileName):void \nSets the icon of the button.
-ScriptButton::setCheckable(bool checkable):void \nSets the checkable property of the button.
-ScriptButton::isCheckable(void):bool \nReturns true if the button is checkable and false if not.
-ScriptButton::isChecked(void):bool \nReturns true if the button is checked and false if not.
-ScriptButton::setChecked(bool checked):void \nChecks or unchecks the button.
-ScriptButton::setAutoFillBackground(bool enabled):void \nThis property holds whether the widget background is filled automatically.\nIf enabled, this property will cause Qt to fill the background of the widget before invoking the paint event.\nNote:\nSome GUI elements (like the RadioButton) need this property set to true if the background color shall be changed with setBackgroundColor.
+ScriptToolButton::setCheckable(bool checkable):void \nSets the checkable property of the button.
+ScriptToolButton::isCheckable(void):bool \nReturns true if the button is checkable and false if not.
+ScriptToolButton::isChecked(void):bool \nReturns true if the button is checked and false if not.
+ScriptToolButton::setChecked(bool checked):void \nChecks or unchecks the button.
+ScriptToolButton::setAutoFillBackground(bool enabled):void \nThis property holds whether the widget background is filled automatically.\nIf enabled, this property will cause Qt to fill the background of the widget before invoking the paint event.\nNote:\nSome GUI elements (like the RadioButton) need this property set to true if the background color shall be changed with setBackgroundColor.
 ScriptToolButton::clickedSignal.connect(void) \nThis signal is emitted if the user presses the button.
