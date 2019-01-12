@@ -339,19 +339,16 @@ void ScriptPlotWidget::saveAllGraphsSlot(QString fileName, bool* hasSucceed)
 
     if(!fileName.isEmpty())
     {
-        QStringList tmpList = fileName.split(".");
-        QString suffix;
+        QFileInfo fileInfo (fileName);
+        QString suffix = fileInfo.suffix();
 
 
-        if(tmpList.length() < 2)
+        if(suffix.isEmpty())
         {//No suffix.
 
             fileName += ".csv";
         }
-        else
-        {
-            suffix = tmpList[1];
-        }
+
 
         if(suffix == "png")
         {
@@ -413,10 +410,9 @@ void ScriptPlotWidget::saveButtonPressed()
                                                       "",tr("PNG (*.png);;JPG (*.jpg);;BMP (*.bmp);;PDF (*.pdf);;CSV (*.csv)"), &selectedFilter);
     if(!fileName.isEmpty())
     {
-        QStringList tmpList = fileName.split(".");
-        QString suffix;
+        QFileInfo fileInfo (fileName);
 
-        if(tmpList.length() < 2)
+        if(fileInfo.suffix().isEmpty())
         {//No suffix entered.
 
             QString suffix = selectedFilter.remove(0, selectedFilter.indexOf(".") + 1);

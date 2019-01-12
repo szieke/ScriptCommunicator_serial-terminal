@@ -4483,13 +4483,13 @@ void MainWindow::saveConsoleSlot()
         if(!tmpFileName.isEmpty())
         {
 
-            QStringList tmpList = tmpFileName.split(".");
+            QFileInfo fileInfo (tmpFileName);
             QString consoleContent;
             bool isHtml = false;
 
-            if(tmpList.size() > 1)
+            if(!fileInfo.suffix().isEmpty())
             {
-                if(tmpList[1] == "txt")
+                if(fileInfo.suffix() == "txt")
                 {
                     consoleContent = textEdit->toPlainText();
                      isHtml = false;

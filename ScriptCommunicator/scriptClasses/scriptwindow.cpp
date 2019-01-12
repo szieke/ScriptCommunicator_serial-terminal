@@ -1453,7 +1453,8 @@ void ScriptWindow::newScriptSlot(void)
                                                                   tr("worker script files (*.js);;Files (*)"));
     if(!templateScriptFileName.isEmpty())
     {
-        QString templateUiFile = templateScriptFileName.split(".").at(0) + ".ui";
+        QFileInfo fileInfo (templateScriptFileName);
+        QString templateUiFile = fileInfo.absolutePath() + "/" + fileInfo.completeBaseName()+ ".ui";
         if(!templateScriptFileName.isEmpty())
         {
 
