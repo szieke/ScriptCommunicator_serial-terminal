@@ -11,6 +11,7 @@
 #include <QNetworkInterface>
 
 
+
 ScriptInf::ScriptInf(ScriptThread *scriptThread, SettingsDialog *settingsDialog) : QObject(scriptThread), m_scriptThread(scriptThread),
     m_sendingSucceeded(false), m_isConnected(false), m_isConnectedWithCan(false),
     m_isConnectedWithI2c(false), m_isConnectedWithI2cMaster(false), m_settingsDialog(settingsDialog),
@@ -173,7 +174,6 @@ QScriptValue ScriptInf::createPcanInterface(void)
     return m_scriptThread->getScriptEngine()->newQObject(pcan, QScriptEngine::ScriptOwnership);
 
 }
-
 
 /**
  * Sends a byte array (QByteArray) with the main interface (in MainInterfaceThread).

@@ -1,0 +1,7 @@
+ScriptSound::fileName(void):String \nReturns the filename associated with this script sound object.
+ScriptSound::isFinished(void):bool \nReturns true if the sound has finished playing; otherwise returns false.
+ScriptSound::loops(void):Number \nReturns the number of times the sound will play. Return value of QSound::Infinite (-1) indicates infinite number of loops.
+ScriptSound::loopsRemaining(void):Number \nReturns the remaining number of times the sound will loop (for all positive values this value decreases each time the sound is played).\nReturn value of QSound::Infinite (-1) indicates infinite number of loops.
+ScriptSound::play(void):void \nStarts playing the sound specified by this QSound object.
+ScriptSound::setLoops(Number number):void \nSets the sound to repeat the given number of times when it is played.
+ScriptSound::stop(void):void \nStops the sound playing.

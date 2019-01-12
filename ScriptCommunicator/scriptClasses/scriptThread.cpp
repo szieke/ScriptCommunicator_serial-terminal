@@ -72,6 +72,7 @@
 #include "ui_mainwindow.h"
 #include "scriptTimer.h"
 #include "scriptAardvarkI2cSpi.h"
+#include "scriptSound.h"
 
 
 //Global data maps (scripts can exchange data with the maps).
@@ -520,6 +521,23 @@ QScriptValue ScriptThread::createTimer(void)
     ScriptTimer* timer =  new ScriptTimer(this);
     return m_scriptEngine->newQObject(timer, QScriptEngine::ScriptOwnership);
 }
+
+
+/**
+ * Creates a ScriptSound object.
+ * @return
+ */
+QScriptValue ScriptThread::createSoundObject(QString filename, bool isRelativePath)
+{
+    if(isRelativePath)
+    {
+        filename = m_scriptFileObject->createAbsolutePath(filename);
+    }
+    ScriptSound* sound = new ScriptSound(this, filename);
+    return m_scriptEngine->newQObject(sound, QScriptEngine::ScriptOwnership);
+
+}
+
 
 /**
  * Creates a plot window.

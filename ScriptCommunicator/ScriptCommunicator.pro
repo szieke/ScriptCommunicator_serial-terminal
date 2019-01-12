@@ -18,6 +18,7 @@ QT += uitools
 QT += network
 QT += sql
 QT += scripttools
+QT += multimedia
 win32{
 QT += winextras
 }
@@ -230,7 +231,8 @@ HEADERS += \
     aardvarkI2cSpi/aardvark.h \
     aardvarkI2cSpi/aardvarkI2cSpi.h \
     scriptClasses/scriptAardvarkI2cSpi.h \
-    scriptClasses/scriptInf.h
+    scriptClasses/scriptInf.h \
+    scriptClasses/scriptSound.h
 
 FORMS += \
     mainwindow.ui \

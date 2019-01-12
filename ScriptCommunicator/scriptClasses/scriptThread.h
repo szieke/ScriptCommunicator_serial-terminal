@@ -278,6 +278,9 @@ public:
     ///Creates a timer.
     Q_INVOKABLE QScriptValue createTimer(void);
 
+    ///Creates a ScriptSound object.
+    Q_INVOKABLE QScriptValue createSoundObject(QString filename, bool isRelativePath=true);
+
     ///Creates a plot window.
     Q_INVOKABLE QScriptValue createPlotWindow();
 

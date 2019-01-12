@@ -5,6 +5,7 @@ scriptThread::createUdpSocket(void):ScriptUdpSocket \nCreates an UDP socket.\nNo
 scriptThread::createTcpServer(void):ScriptTcpServer \nCreates a TCP server.\nNote: This function is deprecated. Use the scriptInf.createTcpServer instead.
 scriptThread::createTcpClient(void):ScriptTcpClient \nCreates a TCP socket.\nNote: This function is deprecated. Use the scriptInf.createTcpClient instead.
 scriptThread::createTimer(void):ScriptTimer \nCreates a timer.
+scriptThread::createSoundObject(QString wavFilename,bool isRelativePath=true):ScriptSound \nCreates a ScriptSound object (plays wav file).
 scriptThread::createSerialPort(void):ScriptSerialPort \nCreates a serial port.\nNote: This function is deprecated. Use the scriptInf.createSerialPort instead.
 scriptThread::createPlotWindow(void):ScriptPlotWindow \nCreates a plot window.
 scriptThread::createXmlReader(void):ScriptXmlReader \nCreates a XML reader.
