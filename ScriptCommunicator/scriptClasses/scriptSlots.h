@@ -81,6 +81,9 @@ public slots:
    ///Sets the icon.
    void setItemIconSlot(QTableWidgetItem* item, const QString iconFileName){item->setIcon(QIcon(iconFileName));}
 
+   ///Selects a cell in a table widget.
+   void selectCellSlot(QTableWidget* tableWidget, int row, int column,bool scrollToCell);
+
    ///Inserts a new item.
    void insertNewItem (int row, QString itemText, QListWidget* list){list->insertItem(row, itemText);}
 

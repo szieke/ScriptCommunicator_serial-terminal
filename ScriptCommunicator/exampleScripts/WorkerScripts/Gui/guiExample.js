@@ -28,6 +28,9 @@ function calendarSelectionChangedSignal(date)
 	UI_dateEdit.blockSignals(true);
 	UI_dateEdit.setDate(date);
 	UI_dateEdit.blockSignals(false);	
+	
+	//Test ScriptWidget::selectCell
+	UI_testSendTableWidget.selectCell(2, 0);
 }
 //the user has changed the date
 function dateEditDateChanged(date)

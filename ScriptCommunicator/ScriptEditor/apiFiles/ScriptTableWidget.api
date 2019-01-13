@@ -27,7 +27,9 @@ ScriptTableWidget::rowCount(void):Number \nReturn the row count.
 ScriptTableWidget::setColumnCount(Number columns):void \nSets the column count.
 ScriptTableWidget::columnCount(void):Number \nReturns the column count.
 ScriptTableWidget::setCellBackgroundColor(String color, Number row, Number column):void \nSets the background color of a single cell.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptTableWidget::setCellBackgroundColorRgb(Number row, Number column, Number r, Number g, Number b, Number alpha=255):void \nSets the background color of a single cell with the RGB value.
 ScriptTableWidget::setCellForegroundColor(String color, Number row, Number column):void \nSets the foreground color of a single cell.\nPossible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
+ScriptTableWidget::setCellForegroundColorRgb(Number row, Number column, Number r, Number g, Number b, Number alpha=255):void \nSets the foreground color of a single cell with the RGB value.
 ScriptTableWidget::resizeColumnToContents(Number column):void \nResizes the column given to the size of its contents.
 ScriptTableWidget::resizeRowToContents(Number row):void \nResizes the row given to the size of its contents.
 ScriptTableWidget::setRowHeight(Number row, Number height):void \nSets the height of the given row to be height.
@@ -50,6 +52,7 @@ ScriptTableWidget::insertColumn(Number column):void \nInserts one column at colu
 ScriptTableWidget::removeRow(Number row):void \nRemoves the row at row.
 ScriptTableWidget::removeColumn(Number column):void \nRemoves the column at column.
 ScriptTableWidget::clear(void):void \nClears the table (removes all cells).
+ScriptTableWidget::selectCell(Number row, Number column, bool scrollToCell=true):void \nSelects a cell in a table widget.
 ScriptTableWidget::setAutoFillBackground(bool enabled):void \nThis property holds whether the widget background is filled automatically.\nIf enabled, this property will cause Qt to fill the background of the widget before invoking the paint event.\nNote:\nSome GUI elements (like the RadioButton) need this property set to true if the background color shall be changed with setBackgroundColor.
 ScriptTableWidget::cellPressedSignal.connect(Number row, Number column) \nThis signal is emitted if the user has pressed a cell.
 ScriptTableWidget::cellClickedSignal.connect(Number row, Number column) \nThis signal is emitted if the user has clicked a cell.

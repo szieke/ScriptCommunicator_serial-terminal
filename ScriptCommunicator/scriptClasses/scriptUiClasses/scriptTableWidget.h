@@ -166,6 +166,9 @@ public:
         connect(this, SIGNAL(insertRowWithContentSignal(int,QStringList,QStringList,QStringList,QTableWidget*)), scriptThread->getScriptWindow(),
                 SLOT(insertRowWithContentSlot(int,QStringList,QStringList,QStringList,QTableWidget*)), directConnectionType);
 
+        connect(this, SIGNAL(selectCellSignal(QTableWidget*,int,int,bool)), scriptThread->getScriptWindow(),
+                SLOT(selectCellSlot(QTableWidget*,int,int,bool)), directConnectionType);
+
 
 
     }
@@ -292,6 +295,19 @@ public:
 
     }
 
+    ///Sets the background color of a single cell with the RGB value.
+    Q_INVOKABLE void setCellBackgroundColorRgb(int row, int column, int r, int g, int b, int alpha = 255)
+    {
+        QTableWidgetItem *item = m_tableWidget->item(row, column);
+        if(item == 0)
+        {
+            item = new QTableWidgetItem();
+            emit setItemSignal(row, column,item, m_tableWidget);
+        }
+
+        emit setCellBackgroundColorSignal(QColor(r, g, b, alpha), item);
+    }
+
     ///Sets the foreground color of a single cell.
     ///Possible colors are: black, white, gray, red, green, blue, cyan, magenta and yellow.
     Q_INVOKABLE void setCellForegroundColor(QString color, int row, int column)
@@ -304,6 +320,20 @@ public:
         }
 
         emit setCellForegroundColorSignal(ScriptWindow::stringToGlobalColor(color), item);
+
+    }
+
+    ///Sets the foreground color of a single cell with the RGB value.
+    Q_INVOKABLE void setCellForegroundColorRgb(int row, int column, int r, int g, int b, int alpha = 255)
+    {
+        QTableWidgetItem *item = m_tableWidget->item(row, column);
+        if(item == 0)
+        {
+            item = new QTableWidgetItem();
+            emit setItemSignal(row, column,item, m_tableWidget);
+        }
+
+        emit setCellForegroundColorSignal(QColor(r, g, b, alpha), item);
 
     }
 
@@ -509,6 +539,13 @@ public:
     {emit insertRowWithContentSignal(row, texts, backgroundColors, foregroundColors, m_tableWidget);}
 
 
+    ///Selects a cell in a table widget.
+    Q_INVOKABLE void selectCell(int row, int column, bool scrollToCell=true)
+    {
+        emit selectCellSignal(m_tableWidget, row, column, scrollToCell);
+    }
+
+
 public Q_SLOTS:
 
     ///This slot function inserts one row at row.
@@ -646,6 +683,10 @@ Q_SIGNALS:
     ///This signal is emitted in insertRowWithContent.
     ///This signal is private and must not be used inside a script.
     void insertRowWithContentSignal(int row, QStringList texts, QStringList backgroundColors, QStringList foregroundColors, QTableWidget* tableWidget);
+
+    ///This signal is emitted in selectCell.
+    ///This signal is private and must not be used inside a script.
+    void selectCellSignal(QTableWidget* tableWidget, int row, int column, bool scrollToCell);
 
 private Q_SLOTS:
 

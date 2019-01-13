@@ -219,6 +219,33 @@ void ScriptSlots::setScriptGuiElementAutoFillBackgroundSlot(QWidget* element, bo
 }
 
 /**
+ * Selects a cell in a table widget.
+ *
+ * @param tableWidget
+ *      The table widget.
+ * @param row
+ *      The row of the cell.
+ * @param column
+ *      The column of the cell.
+ */
+void ScriptSlots::selectCellSlot(QTableWidget* tableWidget, int row, int column, bool scrollToCell)
+{
+
+    QModelIndex index = tableWidget->model()->index(row,column);
+    if(index.isValid())
+    {
+        tableWidget->selectionModel()->clearSelection();
+        tableWidget->selectionModel()->select(index , QItemSelectionModel::Select);
+        tableWidget->setFocus();
+
+        if(scrollToCell)
+        {
+            tableWidget->scrollTo(index);
+        }
+    }
+}
+
+/**
  * Converts a string to Qt::GlobalColor.
  * @param color
  *  The color string. Possible values are:

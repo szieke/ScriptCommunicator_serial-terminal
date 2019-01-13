@@ -1882,7 +1882,7 @@ void MainWindowHandleData::addDataToSendHistory(const QByteArray* data)
 {
     const Settings* currentSettings = m_settingsDialog->settings();
 
-    m_sendHistory.push_front(*data);
+    m_sendHistory.push_back(*data);
 
     if(m_sendHistory.size() > MAX_SEND_HISTORY_ENTRIES)
     {
@@ -2022,6 +2022,8 @@ void MainWindowHandleData::historyConsoleTimerSlot()
     DecimalType decimalType = SendWindow::formatToDecimalType(currentFormat);
 
     m_mainWindow->setUpdatesEnabled(false);
+
+    int pos = m_mainWindow->m_userInterface->historyTextEdit->verticalScrollBar()->value();
     m_mainWindow->m_userInterface->historyTextEdit->clear();
 
     for(qint32 i = 0; m_sendHistory.size() > i ; i++)
@@ -2052,8 +2054,8 @@ void MainWindowHandleData::historyConsoleTimerSlot()
         m_mainWindow->m_userInterface->historyTextEdit->append(text);
     }
 
-    m_mainWindow->m_userInterface->historyTextEdit->verticalScrollBar()->setValue(0);
-    m_mainWindow->m_userInterface->historyTextEdit->moveCursor(QTextCursor::Start);
+    m_mainWindow->m_userInterface->historyTextEdit->verticalScrollBar()->setValue(pos);
+    //m_mainWindow->m_userInterface->historyTextEdit->moveCursor(QTextCursor::Start);
     m_mainWindow->setUpdatesEnabled(true);
 
 }
