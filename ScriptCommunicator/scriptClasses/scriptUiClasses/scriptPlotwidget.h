@@ -156,6 +156,15 @@ public:
 
     Q_INVOKABLE bool saveAllGraphs(QString fileName){bool hasSucceed;emit saveAllGraphsSignal(fileName, &hasSucceed);return hasSucceed;}
 
+    ///Sets the locale of the script plot widget (QLocale::Language, QLocale::Country).
+    Q_INVOKABLE void setLocale(int language, int country){emit setLocaleSignal(language, country);}
+
+    ///If called the x values are interpreted as milliseconds that have passed since
+    ///1970-01-01T00:00:00.000, Coordinated Universal Time (and the corresponding date time is shown).
+    ///See QDateTime::toString for more details on the format string.
+    Q_INVOKABLE void showDateTimeAtXAxis(QString format){emit showDateTimeAtXAxisSignal(format);}
+
+
     ///The default value for the plot update timer (m_plotTimer).
     static const quint32 DEFAULT_PLOT_UPDATE_TIME_MS = 100;
 
@@ -237,9 +246,17 @@ signals:
     ///This signal is private and must not be used inside a script.
     void updatePlotSignal();
 
-    ///Is emitted in saveAllGraphs();
+    ///Is emitted in saveAllGraphs;
     ///This signal is private and must not be used inside a script.
     void saveAllGraphsSignal(QString fileName, bool *hasSucceed);
+
+    ///Is emitted in setLocale;
+    ///This signal is private and must not be used inside a script.
+    void setLocaleSignal(int language, int country);
+
+    ///Is emitted in showDateTimeAtXAxis;
+    ///This signal is private and must not be used inside a script.
+    void showDateTimeAtXAxisSignal(QString format);
 
 public slots:
 
@@ -287,6 +304,13 @@ public slots:
 
     ///This function saves all displayed graphs to a file.
     void saveAllGraphsSlot(QString fileName, bool *hasSucceed);
+
+    ///If called the x values are interpreted as milliseconds that have passed since
+    ///1970-01-01T00:00:00.000, Coordinated Universal Time (and the corresponding date time is shown).
+    void showDateTimeAtXAxisSlot(QString format);
+
+    ///Sets the locale of the script plot widget.
+    void setLocaleSlot(int language, int country);
 
 private slots:
 

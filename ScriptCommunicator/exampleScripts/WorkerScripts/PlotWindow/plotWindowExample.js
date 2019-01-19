@@ -7,20 +7,24 @@ function plotWindowClosedSlot()
 	scriptThread.stopScript()
 }
 
-var x = 0;
+var tmp = new Date(Date.now());
+var x1 = 0;
 var y = 0;
-var i = 0;
 function timeout() 
 {
 	//add points to the graphs
-
-	x++;
-	y++;
-	plotWindow1.addDataToGraph(plotWindowGraph1Index,  x,  y);
-	plotWindow1.addDataToGraph(plotWindowGraph2Index,  x + 10,  y);
 	
-	plotWindow2.addDataToGraph(plotWindow2Graph1Index,  x,  y);
-	plotWindow2.addDataToGraph(plotWindow2Graph2Index,  x + 10,  y);
+	var tmp = new Date(Date.now());
+	var x2 = tmp.getTime();
+	y++;
+	x1++;
+	
+	plotWindow1.addDataToGraph(plotWindowGraph1Index,  x1,  y);
+	plotWindow1.addDataToGraph(plotWindowGraph2Index,  x1 + 10,  y);
+	
+	
+	plotWindow2.addDataToGraph(plotWindow2Graph1Index,  x2,  y);
+	plotWindow2.addDataToGraph(plotWindow2Graph2Index,  x2 + 100,  y );
 	
 	if(y > 20)
 	{
@@ -28,6 +32,8 @@ function timeout()
 	}
 	
 }
+
+
 
 //Is called if the user clicks the button.
 function clearButtonPressed()
@@ -39,7 +45,7 @@ function clearButtonPressed()
 	plotWindow1.clearGraphs();
 	plotWindow2.clearGraphs();
 	
-	x = 0;
+	x1 = 0;
 	y = 0;
 }
 
@@ -83,7 +89,7 @@ var plotWindow2 = scriptThread.createPlotWindow();
 plotWindow2.setWindowTitle("plot window created/used by script");
 plotWindow2.setAxisLabels("x axis plot 2", "y axis plot 2");
 plotWindow2.showLegend(true);
-plotWindow2.setInitialAxisRanges(50, 0, 30, false);
+plotWindow2.setInitialAxisRanges(10000, 0, 30, false);
 var plotWindow2Graph1Index = plotWindow2.addGraph("green", "solid", "graph 1");
 plotWindow2.setScatterStyle(plotWindow2Graph1Index, "Circle", 5);
 plotWindow2.setLineStyle(plotWindow2Graph1Index, "None");
@@ -96,6 +102,12 @@ plotWindow2.clearButtonPressedSignal.connect(clearButtonPressed)
 plotWindow2.setMaxDataPointsPerGraph(1000000);
 plotWindow2.setUpdateInterval(100);
 plotWindow2.plotMousePressSignal.connect(plotWindow2MousePress)
+
+//Show the date time at the x-axis.
+plotWindow2.showDateTimeAtXAxis("hh:mm:ss\nddd.MMM.yy");
+
+//QLocale::Language::English=31,  QLocale::Country::UnitedKingdom=224.
+plotWindow2.setLocale(31, 224);
 
 
 //get the window positon and size of the two plot windows.

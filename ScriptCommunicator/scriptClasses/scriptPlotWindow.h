@@ -174,6 +174,14 @@ public:
 
     Q_INVOKABLE bool saveAllGraphs(QString fileName){bool hasSucceeded;m_plotWindow->getWidget()->saveAllGraphsSignal(fileName, &hasSucceeded);return hasSucceeded;}
 
+    ///Sets the locale of the script plot window (QLocale::Language, QLocale::Country).
+    Q_INVOKABLE void setLocale(int language, int country){emit m_plotWindow->getWidget()->setLocaleSignal(language, country);}
+
+    ///If called the x values are interpreted as milliseconds that have passed since
+    ///1970-01-01T00:00:00.000, Coordinated Universal Time (and the corresponding date time is shown).
+    ///See QDateTime::toString for more details on the format string.
+    Q_INVOKABLE void showDateTimeAtXAxis(QString format){emit m_plotWindow->getWidget()->showDateTimeAtXAxisSignal(format);}
+
 Q_SIGNALS:
 
     ///Is emitted if the user press a mouse button inside the plot.

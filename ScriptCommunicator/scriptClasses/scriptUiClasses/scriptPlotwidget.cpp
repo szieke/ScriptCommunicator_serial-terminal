@@ -177,6 +177,12 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
 
     connect(this, SIGNAL(saveAllGraphsSignal(QString,bool*)),
             this, SLOT(saveAllGraphsSlot(QString,bool*)), directConnectionType);
+
+    connect(this, SIGNAL(setLocaleSignal(int,int)),this, SLOT(setLocaleSlot(int,int)), Qt::QueuedConnection);
+
+    connect(this, SIGNAL(showDateTimeAtXAxisSignal(QString)),
+            this, SLOT(showDateTimeAtXAxisSlot(QString)), Qt::QueuedConnection);
+
 }
 
 /**
@@ -193,6 +199,30 @@ ScriptPlotWidget::~ScriptPlotWidget()
     m_plotWidget->deleteLater();
 }
 
+/**
+ * Sets the locale of the script plot widget.
+ * @param language
+ *      The language (QLocale::Language).
+ * @param country
+ *      The country (QLocale::Country)
+ */
+void ScriptPlotWidget::setLocaleSlot(int language, int country)
+{
+    m_plotWidget->setLocale(QLocale(static_cast<QLocale::Language>(language), static_cast<QLocale::Country>(country)));
+}
+
+/**
+ * If called the x values are interpreted as milliseconds that have passed since
+ * 970-01-01T00:00:00.000, Coordinated Universal Time (and the corresponding date time is shown).
+ * @param format
+ *      The date time format (see QDateTime::toString for more details).
+ */
+void ScriptPlotWidget::showDateTimeAtXAxisSlot(QString format)
+{
+    QSharedPointer<QCPAxisTickerDateTime> dateTicker(new QCPAxisTickerDateTime);
+    dateTicker->setDateTimeFormat(format);
+    m_plotWidget->xAxis->setTicker(dateTicker);
+}
 
 /**
  * Is called if the state of the sript thread (to which this widget belong to) has been changed.
