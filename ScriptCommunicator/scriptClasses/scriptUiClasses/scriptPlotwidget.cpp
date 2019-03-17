@@ -212,7 +212,7 @@ void ScriptPlotWidget::setLocaleSlot(int language, int country)
 }
 
 /**
- * If called the x values are interpreted as milliseconds that have passed since
+ * If called the x values are interpreted as seconds that have passed since
  * 970-01-01T00:00:00.000, Coordinated Universal Time (and the corresponding date time is shown).
  * @param format
  *      The date time format (see QDateTime::toString for more details).

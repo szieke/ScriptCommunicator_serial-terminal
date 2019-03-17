@@ -159,7 +159,7 @@ public:
     ///Sets the locale of the script plot widget (QLocale::Language, QLocale::Country).
     Q_INVOKABLE void setLocale(int language, int country){emit setLocaleSignal(language, country);}
 
-    ///If called the x values are interpreted as milliseconds that have passed since
+    ///If called the x values are interpreted as seconds (the decimal places are the milliseconds) that have passed since
     ///1970-01-01T00:00:00.000, Coordinated Universal Time (and the corresponding date time is shown).
     ///See QDateTime::toString for more details on the format string.
     Q_INVOKABLE void showDateTimeAtXAxis(QString format){emit showDateTimeAtXAxisSignal(format);}

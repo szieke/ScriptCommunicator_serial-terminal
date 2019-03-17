@@ -7,31 +7,45 @@ function plotWindowClosedSlot()
 	scriptThread.stopScript()
 }
 
-var tmp = new Date(Date.now());
 var x1 = 0;
-var y = 0;
-function timeout() 
+var y1 = 0;
+function timeout1() 
+{
+	//add points to the graphs
+
+	y1++;
+	x1++;
+	
+	plotWindow1.addDataToGraph(plotWindowGraph1Index,  x1,  y1);
+	plotWindow1.addDataToGraph(plotWindowGraph2Index,  x1 + 10,  y1);
+	
+	if(y1 > 20)
+	{
+		y1 = 0;
+	}
+	
+}
+
+
+var y2 = 0;
+function timeout2() 
 {
 	//add points to the graphs
 	
 	var tmp = new Date(Date.now());
-	var x2 = tmp.getTime();
-	y++;
-	x1++;
+	var x2 = tmp.getTime() / 1000;
+	y2++;
 	
-	plotWindow1.addDataToGraph(plotWindowGraph1Index,  x1,  y);
-	plotWindow1.addDataToGraph(plotWindowGraph2Index,  x1 + 10,  y);
+	plotWindow2.addDataToGraph(plotWindow2Graph1Index,  x2,  y2);
+	plotWindow2.addDataToGraph(plotWindow2Graph2Index,  x2 ,  y2 + 2);
 	
-	
-	plotWindow2.addDataToGraph(plotWindow2Graph1Index,  x2,  y);
-	plotWindow2.addDataToGraph(plotWindow2Graph2Index,  x2 + 100,  y );
-	
-	if(y > 20)
+	if(y2 > 20)
 	{
-		y = 0;
+		y2 = 0;
 	}
 	
 }
+
 
 
 
@@ -46,7 +60,8 @@ function clearButtonPressed()
 	plotWindow2.clearGraphs();
 	
 	x1 = 0;
-	y = 0;
+	y1 = 0;
+	y2 = 0;
 }
 
 //Is called if the user clicks on the plot in window 1.
@@ -89,7 +104,7 @@ var plotWindow2 = scriptThread.createPlotWindow();
 plotWindow2.setWindowTitle("plot window created/used by script");
 plotWindow2.setAxisLabels("x axis plot 2", "y axis plot 2");
 plotWindow2.showLegend(true);
-plotWindow2.setInitialAxisRanges(10000, 0, 30, false);
+plotWindow2.setInitialAxisRanges(60, 0, 30, false);
 var plotWindow2Graph1Index = plotWindow2.addGraph("green", "solid", "graph 1");
 plotWindow2.setScatterStyle(plotWindow2Graph1Index, "Circle", 5);
 plotWindow2.setLineStyle(plotWindow2Graph1Index, "None");
@@ -120,9 +135,13 @@ var string =  plot2PositionAndSizelist[0] + "," + plot2PositionAndSizelist[1] + 
 plotWindow2.setWindowPositionAndSize(string);
 
 //start the periodically timer which calls the function timeout
-var timer = scriptThread.createTimer()
-timer.timeoutSignal.connect(timeout);
-timer.start(100);
+var timer1 = scriptThread.createTimer()
+timer1.timeoutSignal.connect(timeout1);
+timer1.start(100);
+
+var timer2 = scriptThread.createTimer()
+timer2.timeoutSignal.connect(timeout2);
+timer2.start(1000);
 
 
 
