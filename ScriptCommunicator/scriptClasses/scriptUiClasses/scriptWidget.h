@@ -106,6 +106,9 @@ public:
 
             connect(this, SIGNAL(createShortCutSignal(QString,QWidget*,QShortcut**)),
                     scriptWindow, SLOT(createShortCutSlot(QString,QWidget*,QShortcut**)), directConnectionType);
+
+            connect(this, SIGNAL(setStyleSheetSignal(QString,QWidget*)),
+                    scriptWindow, SLOT(setStyleSheetSlot(QString,QWidget*)), Qt::QueuedConnection);
         }
     }
     ///Returns a semicolon separated list with all public functions, signals and properties.
@@ -260,6 +263,9 @@ public:
         }
     }
 
+    ///Sets the style sheet of a script widget.
+    Q_INVOKABLE void setStyleSheet(QString styleSheet){emit setStyleSheetSignal(styleSheet, m_widget);}
+
 Q_SIGNALS:
 
     ///Is emitted by the setWindowFlag function,
@@ -341,6 +347,10 @@ Q_SIGNALS:
     ///This signal is emitted in createShortCut.
     ///This signal is private and must not be used inside a script.
     void createShortCutSignal(QString key, QWidget* parent, QShortcut** shortCut);
+
+    ///This signal is emitted in setStyleSheet.
+    ///This signal is private and must not be used inside a script.
+    void setStyleSheetSignal(QString styleSheet, QWidget* element);
 
 protected:
     ///Script window pointer.

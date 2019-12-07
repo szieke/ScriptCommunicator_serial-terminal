@@ -393,6 +393,9 @@ public slots:
    ///Creates a shortcut.
    void createShortCutSlot(QString keys, QWidget* parent, QShortcut **shortCut);
 
+   ///Sets the style sheet of a script widget.
+   void setStyleSheetSlot(QString styleSheet, QWidget* element);
+
 };
 
 #endif // SCRIPTSLOTS_H

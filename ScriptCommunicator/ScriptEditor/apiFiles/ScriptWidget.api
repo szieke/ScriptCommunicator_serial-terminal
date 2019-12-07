@@ -31,3 +31,4 @@ ScriptWidget::getObjectName(void):String \nReturns the name of this object (UI_'
 ScriptWidget::setObjectName(String name):void \nSets the name of the current object (can be retrieved with getObjectName).
 ScriptWidget::setWindowIcon(String iconFile, bool isRelativePath=true):void \nSets the window icon of a dialog or a main window.\nSupported formats: .ico, .gif, .png, .jpeg, .tiff, .bmp, .icns.
 ScriptWidget::setAutoFillBackground(bool enabled):void \nThis property holds whether the widget background is filled automatically.\nIf enabled, this property will cause Qt to fill the background of the widget before invoking the paint event.\nNote:\nSome GUI elements (like the RadioButton) need this property set to true if the background color shall be changed with setBackgroundColor.
+ScriptWidget::setStyleSheet(String styleSheet):void \nSets the style sheet (see QT style sheet syntax for more details) of a script widget.

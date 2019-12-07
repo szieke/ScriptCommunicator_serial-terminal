@@ -1009,3 +1009,15 @@ void ScriptSlots::createShortCutSlot(QString keys, QWidget *parent, QShortcut **
     *shortCut = new QShortcut(QKeySequence(keys),parent);
 
 }
+
+/**
+ * Sets the style sheet of a script widget.
+ * @param styleSheet
+ *      The style sheet.
+ * @param element
+ *      The widget.
+ */
+void ScriptSlots::setStyleSheetSlot(QString styleSheet, QWidget* element)
+{
+    element->setStyleSheet(styleSheet);
+}
