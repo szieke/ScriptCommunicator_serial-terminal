@@ -121,41 +121,29 @@ bool PCANBasicClass::open(quint8 channel, quint32 baudRate, bool busOffAutoReset
        m_dataReadyForRead = false;
 
        quint32 buffer = busOffAutoReset ? 1 : 0;
-       status = setValue(m_currentHandle, PCAN_BUSOFF_AUTORESET, (void*)&buffer, sizeof(buffer));
-       if(status == PCAN_ERROR_OK)
+       (void)setValue(m_currentHandle, PCAN_BUSOFF_AUTORESET, (void*)&buffer, sizeof(buffer));
+
+       buffer = powerSupply ? 1 : 0;
+       (void)setValue(m_currentHandle, PCAN_5VOLTS_POWER, (void*)&buffer, sizeof(buffer));
+
+       QThread::msleep(100);
+
+       //Read all available messages.
+       TPCANMsg message;
+       TPCANTimestamp time;
+       do
        {
-           buffer = powerSupply ? 1 : 0;
-           status = setValue(m_currentHandle, PCAN_5VOLTS_POWER, (void*)&buffer, sizeof(buffer));
-           if(status == PCAN_ERROR_OK)
-           {
-               QThread::msleep(100);
+           m_currentStatus = read(m_currentHandle, &message, &time);
+           if((m_currentStatus & PCAN_ERROR_QRCVEMPTY) || (message.MSGTYPE == PCAN_MESSAGE_STATUS))
+           {//Message received.
 
-               //Read all available messages.
-               TPCANMsg message;
-               TPCANTimestamp time;
-               do
-               {
-                   m_currentStatus = read(m_currentHandle, &message, &time);
-                   if((m_currentStatus & PCAN_ERROR_QRCVEMPTY) || (message.MSGTYPE == PCAN_MESSAGE_STATUS))
-                   {//Message received.
-
-                       message.ID = 0xffffffff;
-                   }
-               }while(message.ID != 0xffffffff);
-
-               result = true;
-               m_receiveTimer.start(1);
+               message.ID = 0xffffffff;
            }
-           else
-           {
-               close();
-           }
+       }while(message.ID != 0xffffffff);
 
-       }
-       else
-       {
-           close();
-       }
+       result = true;
+       m_receiveTimer.start(1);
+
     }
     else
     {
