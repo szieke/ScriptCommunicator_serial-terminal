@@ -811,8 +811,8 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
             if(split[1] == "getWidget()")
             {
                 bool isOk;
-                int row = entry.additionalInformation[0].toInt(&isOk);
-                int column = entry.additionalInformation[1].toInt(&isOk);
+                int row = (entry.additionalInformation.size() >= 1) ? entry.additionalInformation[0].toInt(&isOk) : 0;
+                int column = (entry.additionalInformation.size() >= 2) ? entry.additionalInformation[1].toInt(&isOk) : 0;
                 QVector<TableWidgetSubObject> tableWidgetObjects = m_tableWidgetObjects[split[0]];
                 for(auto el : tableWidgetObjects)
                 {
