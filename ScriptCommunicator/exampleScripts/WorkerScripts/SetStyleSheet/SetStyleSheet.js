@@ -21,9 +21,9 @@ UI_Dialog.finishedSignal.connect(UI_DialogFinished);
 
 
 var styleSheet = "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(131, 16, 0, 255), stop:1 rgba(227, 6, 19, 255));\n"
-styleSheet += "image: url(" + scriptFile.getScriptFolder() + "/lock.ico);"
-styleSheet += "image-position: right center;"
-styleSheet += "background-repeat: no-repeat"
+styleSheet += "image: url(" + scriptFile.getScriptFolder() + "/lock.ico);\n"
+styleSheet += "image-position: right center;\n"
+styleSheet += "background-repeat: no-repeat\n"
 
 UI_Label.setStyleSheet(styleSheet);
 

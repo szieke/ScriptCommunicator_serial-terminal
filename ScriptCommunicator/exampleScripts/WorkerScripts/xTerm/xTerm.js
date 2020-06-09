@@ -22,7 +22,7 @@ function savePage()
 		g_fileName = scriptThread.showFileDialog(true, "save terminal content", "", "");
 		if(g_fileName != "")
 		{//One file selected.
-			if(scriptFile.writeFile(g_fileName, false, UI_WebView.evaluateJavaScript("getContent()"), true))
+			if(!scriptFile.writeFile(g_fileName, false, UI_WebView.evaluateJavaScript("getContent()"), true))
 			{
 				scriptThread.messageBox("Critical", "error", "could not write " + g_fileName);
 			}
