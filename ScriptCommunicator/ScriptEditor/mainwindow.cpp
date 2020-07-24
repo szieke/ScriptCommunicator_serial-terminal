@@ -653,6 +653,7 @@ bool MainWindow::addTab(QString script, bool setTabIndex)
         SingleDocument* textEditor = new SingleDocument(this, newTab);
         vBoxlayout->addWidget(textEditor);
         newTab->setLayout(vBoxlayout);
+
         ui->documentsTabWidget->setCurrentWidget(newTab);
 
         connect(textEditor, SIGNAL(copyAvailable(bool)), ui->actionCut, SLOT(setEnabled(bool)));
@@ -2386,8 +2387,8 @@ void MainWindow::readSettings()
         restoreState(settings.value("mainWindowState", QByteArray()).toByteArray());
 
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-        textEditor->lexer()->readSettings(settings);
         textEditor->setFocus();
+
     }
     else
     {
@@ -2793,7 +2794,7 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
 
         if(ui->outlineTreeWidget->topLevelItem(i) == 0)
         {
-            insertFileElementForTabIndex(i, QColor(0,0,0));
+            insertFileElementForTabIndex(i, QColor(255,255,255));
         }
         else
         {
@@ -2828,7 +2829,7 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
 
             if(root->child(iter.key()))
             {
-                root->child(iter.key())->setTextColor(0, QColor(0,0,0));
+                root->child(iter.key())->setTextColor(0, QColor(255,255,255));
             }
 
             if(iter.value().isEmpty())
@@ -2864,7 +2865,7 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
 
                 clearOutlineWindow(iter.key());
 
-                insertFileElementForTabIndex(iter.key(), QColor(0,0,0));
+                insertFileElementForTabIndex(iter.key(), QColor(255,255,255));
 
                 QTreeWidgetItem* fileElement = ui->outlineTreeWidget->topLevelItem(iter.key());
 

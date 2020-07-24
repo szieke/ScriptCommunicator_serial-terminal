@@ -28,6 +28,8 @@ public:
     ///Initializes the lexer.
     void initLexer(QString script);
 
+    void setUpColors();
+
     ///Updates the last modified time stamp.
     void updateLastModified(void);
 

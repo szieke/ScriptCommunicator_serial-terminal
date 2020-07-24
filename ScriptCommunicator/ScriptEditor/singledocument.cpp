@@ -30,6 +30,10 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
     setIndicatorForegroundColor(QColor(0,0,255), m_clickIndicatorIdentifier);
 
     setUtf8(true);
+
+    setStyleSheet("border-radius: 2px;border: 1px solid #76797C;background-color: #fAfAfA;");
+
+    setUpColors();
 }
 
 void SingleDocument::keyReleaseEvent(QKeyEvent *event)
@@ -161,6 +165,22 @@ void SingleDocument::setDocumentName(QString name, QFont font)
     setLineNumberMarginFont(font);
 }
 
+
+void SingleDocument::setUpColors()
+{
+    if(lexer() != 0)
+    {
+        lexer()->setDefaultPaper(QColor(250,250,250));
+        lexer()->setPaper(QColor(250,250,250));
+       // lexer()->setDefaultColor(QColor(0xff,0xff,0xff));
+        //lexer()->setColor(QColor(0xff,0xff,0xff));
+    }
+
+    //setPaper(QColor(0,0,0));
+    //setColor(QColor(0xff,0xff,0xff));
+    //setMarginsBackgroundColor(QColor(0,0,0));
+    //setMarginsForegroundColor(QColor(255,255,255));
+}
 /**
  * Initializes the lexer.
  * @param script
@@ -190,6 +210,8 @@ void SingleDocument::initLexer(QString script)
 
         dynamic_cast<QsciLexerJavaScript*>(lexer())->setFoldComments(true);
         dynamic_cast<QsciLexerJavaScript*>(lexer())->setFoldCompact(false);
+
+        setUpColors();
        }
 
 

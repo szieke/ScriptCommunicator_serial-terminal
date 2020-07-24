@@ -23,7 +23,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget1">
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tabTableWidgets">
       <attribute name="title">
@@ -121,6 +121,9 @@
          </item>
          <item>
           <widget class="QToolButton" name="NewElementsButton">
+           <property name="styleSheet">
+            <string notr="true"/>
+           </property>
            <property name="text">
             <string>...</string>
            </property>
@@ -129,6 +132,15 @@
            </property>
            <property name="checked">
             <bool>false</bool>
+           </property>
+           <property name="popupMode">
+            <enum>QToolButton::DelayedPopup</enum>
+           </property>
+           <property name="toolButtonStyle">
+            <enum>Qt::ToolButtonIconOnly</enum>
+           </property>
+           <property name="arrowType">
+            <enum>Qt::NoArrow</enum>
            </property>
           </widget>
          </item>
@@ -360,14 +372,14 @@
      </property>
      <widget class="QToolBox" name="toolBox">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="pageProgressBar_Slider_SpinBox_Dial">
        <property name="geometry">
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>367</width>
+         <width>393</width>
          <height>245</height>
         </rect>
        </property>
@@ -462,7 +474,7 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>350</width>
+         <width>376</width>
          <height>255</height>
         </rect>
        </property>

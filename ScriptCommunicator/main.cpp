@@ -32,6 +32,7 @@
 #include <QLibrary>
 #include <QProcess>
 #include <QStandardPaths>
+#include <QResource>
 
 #ifdef Q_OS_WIN32
 #include <Windows.h>
@@ -89,6 +90,24 @@ int main(int argc, char *argv[])
 #ifdef Q_OS_WIN32
     qInstallMessageHandler(messageHandler);
 #endif
+
+    //Prevent the text shadow in disabled gui elements if the old XP-Windows style is set.
+    QPalette p = QApplication::palette();
+    p.setColor(QPalette::Disabled, QPalette::Light, QColor(0, 0, 0, 0));
+    QApplication::setPalette(p);
+
+    (void)QResource::registerResource(QCoreApplication::applicationDirPath() + "/stylesheet.rcc");
+    QFile file(QCoreApplication::applicationDirPath() + "/stylesheet.qss");
+
+    QString styleSheet;
+    if(file.exists())
+    {
+
+        file.open(QFile::ReadOnly);
+        styleSheet= QLatin1String(file.readAll());
+        a->setStyleSheet(styleSheet);
+    }
+
 
     //Parse all arguments.
     for(int i = 1; i < argc; i++)
