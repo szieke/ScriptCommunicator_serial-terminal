@@ -376,6 +376,9 @@ private:
     ///This timer starts if the showEvent occurs.
     QTimer m_showEventTimer;
 
+    ///True if the dark style shall be used.
+    bool m_useDarkStyle;
+
 };
 
 ///Return a main window pointer.

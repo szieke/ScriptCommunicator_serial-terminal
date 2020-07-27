@@ -77,7 +77,7 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     m_lockFiles(), m_unsavedInfoFiles(), m_checkForFileChangesTimer(),
     m_lastMouseMoveEvent(QEvent::None,QPointF(),Qt::NoButton, Qt::NoButton, Qt::NoModifier), m_mouseEventTimer(),
     m_ctrlIsPressed(false), m_indicatorClickTimer(), m_lastIndicatorClickPosition(0), m_showParseError(true),
-    m_scriptsToLoadAfterStart(scripts)
+    m_scriptsToLoadAfterStart(scripts), m_useDarkStyle(false)
 {
     ui->setupUi(this);
 
@@ -1389,6 +1389,8 @@ void MainWindow::useDarkStyleMenuPressedSlot(void)
 {
     QString styleSheet;
 
+    m_useDarkStyle = ui->actionUseDarkStyle->isChecked();
+
     if(ui->actionUseDarkStyle->isChecked())
     {
         (void)QResource::registerResource(QCoreApplication::applicationDirPath() + "/stylesheet.rcc");
@@ -2407,6 +2409,7 @@ void MainWindow::readSettings()
         m_currentFont.setPointSize(settings.value("fontPointSize", QFont().pointSize()).toInt(&ok));
         m_currentFont.setWeight(settings.value("fontWeight", QFont().weight()).toInt(&ok));
         m_currentFont.setItalic(settings.value("fontItalic", QFont().italic()).toBool());
+        ui->actionUseDarkStyle->setChecked(settings.value("useDarkStyle", false).toBool());
 
         if(m_scriptsToLoadAfterStart.isEmpty())
         {
@@ -2454,6 +2457,8 @@ void MainWindow::readSettings()
     list[0] = static_cast<int>(size);
     ui->splitter2->setSizes(list);
 
+    useDarkStyleMenuPressedSlot();
+
 
 }
 
@@ -2470,6 +2475,7 @@ void MainWindow::writeSettings()
     settings.setValue("fontPointSize", m_currentFont.pointSize());
     settings.setValue("fontWeight", m_currentFont.weight());
     settings.setValue("fontItalic", m_currentFont.italic());
+    settings.setValue("useDarkStyle", m_useDarkStyle);
     settings.setValue("mainWindowState", saveState());
 
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
