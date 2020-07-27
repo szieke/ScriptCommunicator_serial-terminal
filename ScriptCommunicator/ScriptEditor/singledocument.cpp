@@ -174,6 +174,63 @@ void SingleDocument::setDocumentName(QString name, QFont font)
     setLineNumberMarginFont(font);
 }
 
+
+void SingleDocument::setTextColors(QColor defaultColor)
+{
+    lexer()->setColor(defaultColor, QsciLexerCPP::Default);
+    lexer()->setColor(QColor(0xc0, 0xc0, 0xc0), QsciLexerCPP::InactiveDefault);
+
+    lexer()->setColor(m_useDarkStyle ? QColor(0xad, 0xff, 0x2f) : QColor(0x00, 0x7f, 0x00), QsciLexerCPP::Comment);
+    lexer()->setColor(m_useDarkStyle ? QColor(0xad, 0xff, 0x2f) : QColor(0x00, 0x7f, 0x00), QsciLexerCPP::InactiveComment);
+
+    lexer()->setColor(m_useDarkStyle ? QColor(0xad, 0xff, 0x2f) : QColor(0x00, 0x7f, 0x00), QsciLexerCPP::CommentLine);
+    lexer()->setColor(m_useDarkStyle ? QColor(0xad, 0xff, 0x2f) : QColor(0x00, 0x7f, 0x00), QsciLexerCPP::InactiveCommentLine);
+
+    lexer()->setColor(m_useDarkStyle ? QColor(0xad, 0xff, 0x2f) : QColor(0x00, 0x7f, 0x00), QsciLexerCPP::CommentDoc);
+    lexer()->setColor(m_useDarkStyle ? QColor(0xad, 0xff, 0x2f) : QColor(0x00, 0x7f, 0x00), QsciLexerCPP::InactiveCommentDoc);
+
+    lexer()->setColor(m_useDarkStyle ? QColor(0xad, 0xff, 0x2f) : QColor(0x00, 0x7f, 0x00), QsciLexerCPP::CommentLineDoc);
+    lexer()->setColor(m_useDarkStyle ? QColor(0xad, 0xff, 0x2f) : QColor(0x00, 0x7f, 0x00), QsciLexerCPP::InactiveCommentLineDoc);
+
+    lexer()->setColor(m_useDarkStyle ? QColor(0xad, 0xff, 0x2f) : QColor(0x00, 0x7f, 0x00), QsciLexerCPP::CommentDocKeyword);
+    lexer()->setColor(m_useDarkStyle ? QColor(0xad, 0xff, 0x2f) : QColor(0x00, 0x7f, 0x00), QsciLexerCPP::InactiveCommentDocKeyword);
+    lexer()->setColor(m_useDarkStyle ? QColor(0xad, 0xff, 0x2f) : QColor(0x00, 0x7f, 0x00), QsciLexerCPP::CommentDocKeywordError);
+    lexer()->setColor(m_useDarkStyle ? QColor(0xad, 0xff, 0x2f) : QColor(0x00, 0x7f, 0x00), QsciLexerCPP::InactiveCommentDocKeywordError);
+
+    lexer()->setColor(QColor(0x00, 0x7f, 0x7f), QsciLexerCPP::Number);
+    lexer()->setColor(QColor(0x90, 0xb0, 0x90), QsciLexerCPP::InactiveNumber);
+
+    lexer()->setColor(m_useDarkStyle ? QColor(0x87, 0xce, 0xfa) : QColor(0x00, 0x00, 0x7f), QsciLexerCPP::Keyword);
+    lexer()->setColor(m_useDarkStyle ? QColor(0x87, 0xce, 0xfa) : QColor(0x00, 0x00, 0x7f), QsciLexerCPP::InactiveKeyword);
+    lexer()->setColor(m_useDarkStyle ? QColor(0x87, 0xce, 0xfa) : QColor(0x00, 0x00, 0x7f), QsciLexerCPP::InactiveKeywordSet2);
+
+
+    lexer()->setColor(QColor(0x00, 0x7f, 0x00), QsciLexerCPP::DoubleQuotedString);
+    lexer()->setColor(QColor(0x90, 0xb0, 0x90), QsciLexerCPP::InactiveDoubleQuotedString);
+    lexer()->setColor(QColor(0x00, 0x7f, 0x00), QsciLexerCPP::SingleQuotedString);
+    lexer()->setColor(QColor(0x90, 0xb0, 0x90), QsciLexerCPP::InactiveSingleQuotedString);
+    lexer()->setColor(QColor(0x00, 0x7f, 0x00), QsciLexerCPP::RawString);
+    lexer()->setColor(QColor(0x90, 0xb0, 0x90), QsciLexerCPP::InactiveRawString);
+    lexer()->setColor(QColor(0x00, 0x7f, 0x00), QsciLexerCPP::VerbatimString);
+    lexer()->setColor(QColor(0x90, 0xb0, 0x90), QsciLexerCPP::InactiveVerbatimString);
+    lexer()->setColor(QColor(0x00, 0x7f, 0x00), QsciLexerCPP::TripleQuotedVerbatimString);
+    lexer()->setColor(QColor(0x90, 0xb0, 0x90), QsciLexerCPP::InactiveTripleQuotedVerbatimString);
+    lexer()->setColor(QColor(0x00, 0x7f, 0x00), QsciLexerCPP::HashQuotedString);
+    lexer()->setColor(QColor(0x90, 0xb0, 0x90), QsciLexerCPP::InactiveHashQuotedString);
+     lexer()->setColor(defaultColor, QsciLexerCPP::InactiveUnclosedString);
+
+    lexer()->setColor(defaultColor, QsciLexerCPP::Operator);
+    lexer()->setColor(defaultColor, QsciLexerCPP::InactiveOperator);
+
+    lexer()->setColor(defaultColor, QsciLexerCPP::UnclosedString);
+
+    lexer()->setColor(defaultColor, QsciLexerCPP::Identifier);
+    lexer()->setColor(m_useDarkStyle ? defaultColor : QColor(0xb0, 0xb0, 0xb0), QsciLexerCPP::InactiveIdentifier);
+    lexer()->setColor(m_useDarkStyle ? defaultColor : QColor(0xb0, 0xb0, 0xb0), QsciLexerCPP::InactiveGlobalClass);
+
+
+
+}
 /**
  * Sets the background color.
  */
@@ -193,7 +250,7 @@ void SingleDocument::setUpBackgroundColor(void)
         lexer()->setDefaultPaper(colorBack);
         lexer()->setPaper(colorBack);
         lexer()->setDefaultColor(colorFor);
-        lexer()->setColor(colorFor);
+        setTextColors(colorFor);
     }
 }
 /**

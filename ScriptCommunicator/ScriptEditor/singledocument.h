@@ -92,6 +92,8 @@ protected:
 
 private:
 
+   void setTextColors(QColor defaultColor);
+
     ///Checks if in the current document user interface files are loaded.
     ///If user interface are loaded then they will be parsed and added to the auto-completion
     ///list (g_autoCompletionEntries).
