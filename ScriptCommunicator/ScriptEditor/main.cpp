@@ -24,26 +24,13 @@
 #include <QApplication>
 
 #include "mainwindow.h"
-#include <QResource>
+
 
 int main(int argc, char *argv[])
 {
     Q_INIT_RESOURCE(ScriptEditor);
 
     QApplication app(argc, argv);
-
-
-    (void)QResource::registerResource(QCoreApplication::applicationDirPath() + "/stylesheet.rcc");
-    QFile file(QCoreApplication::applicationDirPath() + "/stylesheet.qss");
-
-    QString styleSheet;
-    if(file.exists())
-    {
-
-        file.open(QFile::ReadOnly);
-        styleSheet= QLatin1String(file.readAll());
-        app.setStyleSheet(styleSheet);
-    }
 
     QStringList scripts;
 

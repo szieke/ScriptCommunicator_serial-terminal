@@ -32,6 +32,8 @@
 #include <QScrollBar>
 #include <QMutex>
 #include <QTime>
+#include <QResource>
+#include <QCommonStyle>
 
 #ifdef Q_OS_WIN32
 #include <Windows.h>
@@ -453,6 +455,8 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
     connect(m_settingsDialog, SIGNAL(textLogActivatedSignal(bool)),
             this, SLOT(textLogActivatedSlot(bool)));
+
+    connect(m_settingsDialog, SIGNAL(setStyleSignal(bool)), this, SLOT(setStyleSlot(bool)));
 
     connect(m_userInterface->tabWidget, SIGNAL(currentChanged(int)),
             this, SLOT(tabIndexChangedSlot(int)));
@@ -1395,6 +1399,39 @@ void MainWindow::show(void)
 }
 
 /**
+ * Is called if the style shall be changed.
+ *
+ * @param useDarkStyle True if the dark style shall be used
+ */
+void MainWindow::setStyleSlot(bool useDarkStyle)
+{
+    QString styleSheet;
+
+    if(useDarkStyle)
+    {
+        //Prevent the text shadow in disabled gui elements if the old XP-Windows style is set.
+        QPalette p = QApplication::palette();
+        p.setColor(QPalette::Disabled, QPalette::Light, QColor(0, 0, 0, 0));
+        QApplication::setPalette(p);
+
+        (void)QResource::registerResource(QCoreApplication::applicationDirPath() + "/stylesheet.rcc");
+        QFile file(QCoreApplication::applicationDirPath() + "/stylesheet.qss");
+
+        if(file.exists())
+        {
+            file.open(QFile::ReadOnly);
+            styleSheet= QLatin1String(file.readAll());
+        }
+    }
+
+    qApp->setStyleSheet(styleSheet);
+    QCommonStyle().unpolish(qApp);
+    QCommonStyle().polish(qApp);
+
+}
+
+
+/**
  * Loads the main configuration.
  *
  * return
@@ -1495,6 +1532,8 @@ bool MainWindow::loadSettings()
                         currentSettings.consoleTimestampFormat = currentSettings.consoleTimestampFormat.isEmpty() ? " \\nyyyy-MM-dd hh:mm:ss.zzz\\n" : currentSettings.consoleTimestampFormat;
                         currentSettings.consoleCreateTimestampAt = node.attributes().namedItem("consoleCreateTimestampAt").nodeValue().toUInt();
                         currentSettings.consoleDecimalsType = (DecimalType)node.attributes().namedItem("consoleDecimalsType").nodeValue().toUInt();
+                        currentSettings.useDarkStyle = (bool)node.attributes().namedItem("useDarkStyle").nodeValue().toUInt();
+                        setStyleSlot(currentSettings.useDarkStyle);
 
 
                         if(node.attributes().namedItem("consoleTimestampAt").nodeValue() != "")
@@ -2562,6 +2601,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("consoleCreateTimestampAt"), QString("%1").arg(currentSettings->consoleCreateTimestampAt)),
                  std::make_pair(QString("consoleTimestampAt"), QString("%1").arg(currentSettings->consoleTimestampAt)),
                  std::make_pair(QString("consoleDecimalsType"), QString("%1").arg(currentSettings->consoleDecimalsType)),
+                 std::make_pair(QString("useDarkStyle"), QString("%1").arg(currentSettings->useDarkStyle)),
                 };
 
                 writeXmlElement(xmlWriter, "consoleSettings", settingsMap);

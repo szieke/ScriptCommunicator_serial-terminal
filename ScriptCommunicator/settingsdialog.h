@@ -191,6 +191,9 @@ struct Settings
     ///The update settings.
     UpdateSetings updateSettings;
 
+    ///True if the dark style shall be used.
+    bool useDarkStyle;
+
     /**************Console settings**********************/
     ///True if the received data (main interface) shall be shown in the console.
     bool showReceivedDataInConsole;
@@ -290,6 +293,7 @@ struct Settings
 
     ///The type of the decimals in the decimal console.
     DecimalType consoleDecimalsType;
+
 
     /**************Log settings**********************/
     ///True if the received/sended data (main interface) shall logged in a html log.
@@ -561,9 +565,14 @@ private slots:
     ///The state of the 'append time stamp at logs' check box has been changed.
     void appendTimestampAtLogsChangedSlot(int newState);
 
+    ///Is called if the set style checkbox has been pressed.
+    void setStyleCheckBoxPressedSlot(void);
+
 
 Q_SIGNALS:
 
+    ///Is emitted if the style shall be changed.
+    void setStyleSignal(bool useDarkStyle);
 
     ///Is emitted if the pin configuration has been changed (in the GUI).
     void pinConfigChangedSignal(AardvarkI2cSpiSettings settings);

@@ -23,12 +23,13 @@ class MainWindow;
 class SingleDocument : public QsciScintilla
 {
 public:
-    SingleDocument(MainWindow* mainWindow, QWidget *parent = 0);
+    SingleDocument(MainWindow* mainWindow, bool useDarkStyle, QWidget *parent = 0);
 
     ///Initializes the lexer.
     void initLexer(QString script);
 
-    void setUpColors();
+    ///Sets the background color.
+    void setUpBackgroundColor(void);
 
     ///Updates the last modified time stamp.
     void updateLastModified(void);
@@ -74,6 +75,9 @@ public:
 
     ///Returns the current context string.
     QString getContextString(int line);
+
+    ///Sets the style to 'dark style' if useDarkStyle is true otherwise the default style is used.
+    void setUseDarkStyle(bool useDarkStyle);
 
 protected:
 
@@ -128,6 +132,9 @@ private:
 
     ///All function which belongs to the current document.
     QVector<ParsedEntry> m_functions;
+
+    ///True if the dark style shall be used.
+    bool m_useDarkStyle;
 };
 
 #endif // SINGLEDOCUMENT_H

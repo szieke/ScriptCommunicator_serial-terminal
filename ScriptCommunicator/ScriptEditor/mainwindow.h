@@ -236,6 +236,9 @@ private slots:
     ///Is called by m_showEventTimer.
     void showEventTimerSlot();
 
+    ///Is called if the use dark style menu is pressed.
+    void useDarkStyleMenuPressedSlot(void);
+
 private:
 
     ///The user interface.

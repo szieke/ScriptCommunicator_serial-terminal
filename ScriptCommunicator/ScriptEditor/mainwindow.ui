@@ -180,6 +180,7 @@
      <string>Settings</string>
     </property>
     <addaction name="actionSetFont"/>
+    <addaction name="actionUseDarkStyle"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -480,6 +481,14 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+G</string>
+   </property>
+  </action>
+  <action name="actionUseDarkStyle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Use dark style</string>
    </property>
   </action>
  </widget>

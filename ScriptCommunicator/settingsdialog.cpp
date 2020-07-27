@@ -108,6 +108,10 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->ClearTextLogPushButton, SIGNAL(clicked()),
             this, SLOT(deleteTextLogButtonPressedSlot()));
 
+    connect(m_userInterface->useDarkStyleCheckBox, SIGNAL(pressed()),
+            this, SLOT(setStyleCheckBoxPressedSlot()));
+
+
     connect(m_userInterface->logTextLogPushButton, SIGNAL(clicked()),
             this, SLOT(searchTextLogButtonPressedSlot()));
 
@@ -546,6 +550,22 @@ SettingsDialog::~SettingsDialog()
 
 
 /**
+ * Is called if the set style checkbox has been pressed.
+ */
+void SettingsDialog::setStyleCheckBoxPressedSlot(void)
+{
+    emit setStyleSignal(!m_userInterface->useDarkStyleCheckBox->isChecked());
+
+    //Force the checkox to be unchecked (MainWindow::setStyleSlot prevents it).
+    if(m_userInterface->useDarkStyleCheckBox->isChecked())
+    {
+        m_userInterface->useDarkStyleCheckBox->setChecked(false);
+    }
+}
+
+
+
+/**
  * Shows (socket tab) all local ip addresses found on this PC.
  */
 void SettingsDialog::showAllLocalIpAddresses(void)
@@ -828,6 +848,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     m_userInterface->consoleNewLineAfterPause->setText(QString("%1").arg(settings.consoleNewLineAfterPause));
     m_userInterface->ConsoleTimestampFormat->setText(QString(settings.consoleTimestampFormat).replace("\n", "\\n"));
 
+    m_userInterface->useDarkStyleCheckBox->setChecked(settings.useDarkStyle);
 
     m_userInterface->consoleTimestampAtByteCheckBox->setChecked(settings.consoleCreateTimestampAt);
     setDecimalComboBox(settings.consoleDecimalsType, m_userInterface->consoleDecimalsType);
@@ -2047,6 +2068,7 @@ void SettingsDialog::updateSettings(bool forceUpdate)
     m_currentSettings.consoleTimestampFormat.replace("\\n", "\n");
     m_currentSettings.consoleCreateTimestampAt= m_userInterface->consoleTimestampAtByteCheckBox->isChecked();
     updatesDecimalsTypes(&m_currentSettings.consoleDecimalsType, m_userInterface->consoleDecimalsType);
+    m_currentSettings.useDarkStyle = m_userInterface->useDarkStyleCheckBox->isChecked();
 
 
     //Console time stamp at byte.

@@ -20,7 +20,7 @@ QWidget {
 
 QWidget:disabled {
     color: #b4b4b4;
-	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #31363b, stop:1 #4b535b);
+	  background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #31363b, stop:1 #4b535b);
 }
 
 

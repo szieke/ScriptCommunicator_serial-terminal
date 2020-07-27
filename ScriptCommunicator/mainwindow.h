@@ -375,6 +375,9 @@ public slots:
 
 private slots:
 
+   ///Is called if the style shall be changed.
+    void setStyleSlot(bool useDarkStyle);
+
     ///Menu debug sequence script slot function.
     void debugSequenceScript(void);
 
@@ -541,6 +544,7 @@ private slots:
     void textLogActivatedSlot(bool activated);
 
 private:
+
 
     ///Event filter function.
     bool eventFilter(QObject *target, QEvent *event);

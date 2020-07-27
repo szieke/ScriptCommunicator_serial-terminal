@@ -1,4 +1,4 @@
-/*************************************************************************
+﻿/*************************************************************************
 This worker script (worker scripts can be added in the script window) demonstrates the use of the following classes:
 - UDP socket
 - TCP client

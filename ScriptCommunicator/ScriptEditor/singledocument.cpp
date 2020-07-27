@@ -18,10 +18,10 @@
  * @param parent
  *      The parent.
  */
-SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
+SingleDocument::SingleDocument(MainWindow *mainWindow, bool useDarkStyle, QWidget *parent) :
     QsciScintilla(parent), m_mainWindow(mainWindow), m_documentName(""), m_fileLastModified(QDateTime::currentDateTime()),
     m_fileMustBeParsed(true), m_clickIndicatorStart(-1), m_clickIndicatorEnd(-1), m_clickIndicatorIdentifier(1),
-    m_functions()
+    m_functions(), m_useDarkStyle(useDarkStyle)
 {
 
     connect(this, SIGNAL(textChanged()), m_mainWindow, SLOT(documentWasModified()));
@@ -31,9 +31,7 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, QWidget *parent) :
 
     setUtf8(true);
 
-    setStyleSheet("border-radius: 2px;border: 1px solid #76797C;background-color: #fAfAfA;");
-
-    setUpColors();
+    setUpBackgroundColor();
 }
 
 void SingleDocument::keyReleaseEvent(QKeyEvent *event)
@@ -53,6 +51,17 @@ void SingleDocument::keyPressEventChild(QKeyEvent *event)
         m_mainWindow->m_ctrlIsPressed = true;
         m_mainWindow->m_mouseEventTimer.start(100);
     }
+}
+
+/**
+ * Sets the style to 'dark style' if useDarkStyle is true otherwise the default style is used.
+ *
+ * @param useDarkStyle True if the 'dark style' shall be used.
+ */
+void SingleDocument::setUseDarkStyle(bool useDarkStyle)
+{
+    m_useDarkStyle = useDarkStyle;
+    setUpBackgroundColor();
 }
 
 /**
@@ -165,21 +174,27 @@ void SingleDocument::setDocumentName(QString name, QFont font)
     setLineNumberMarginFont(font);
 }
 
-
-void SingleDocument::setUpColors()
+/**
+ * Sets the background color.
+ */
+void SingleDocument::setUpBackgroundColor(void)
 {
+    QColor colorBack = m_useDarkStyle ? QColor(0x31, 0x36, 0x3b) : QColor(0xff, 0xff, 0xff);
+    QColor colorFor = m_useDarkStyle ?  QColor(0xef, 0xf0, 0xf1) : QColor(0, 0, 0);
+
+    setMarginsBackgroundColor(m_useDarkStyle ? QColor(0x20, 0x20, 0x20) : QColor(0xe0, 0xe0, 0xe0));
+    setMarginsForegroundColor(m_useDarkStyle ? QColor(0xdc, 0xdc, 0xdc) : QColor(0x50, 0x50, 0x50));
+
+    QColor color = m_useDarkStyle ? QColor(0x2a, 0x2a, 0x2a) : QColor(0xf0, 0xf0, 0xf0);
+    setFoldMarginColors(color, color);
+
     if(lexer() != 0)
     {
-        lexer()->setDefaultPaper(QColor(250,250,250));
-        lexer()->setPaper(QColor(250,250,250));
-       // lexer()->setDefaultColor(QColor(0xff,0xff,0xff));
-        //lexer()->setColor(QColor(0xff,0xff,0xff));
+        lexer()->setDefaultPaper(colorBack);
+        lexer()->setPaper(colorBack);
+        lexer()->setDefaultColor(colorFor);
+        lexer()->setColor(colorFor);
     }
-
-    //setPaper(QColor(0,0,0));
-    //setColor(QColor(0xff,0xff,0xff));
-    //setMarginsBackgroundColor(QColor(0,0,0));
-    //setMarginsForegroundColor(QColor(255,255,255));
 }
 /**
  * Initializes the lexer.
@@ -211,7 +226,7 @@ void SingleDocument::initLexer(QString script)
         dynamic_cast<QsciLexerJavaScript*>(lexer())->setFoldComments(true);
         dynamic_cast<QsciLexerJavaScript*>(lexer())->setFoldCompact(false);
 
-        setUpColors();
+        setUpBackgroundColor();
        }
 
 

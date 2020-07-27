@@ -3974,14 +3974,23 @@ Note: The reopen buton in the main window is only visible if this option is sele
       <property name="rightMargin">
        <number>12</number>
       </property>
-      <item row="2" column="8">
-       <widget class="QPushButton" name="searchScriptEditorPushButton">
-        <property name="text">
-         <string>search</string>
+      <item row="0" column="7">
+       <spacer name="horizontalSpacer_24">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-       </widget>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
-      <item row="2" column="2" colspan="6">
+      <item row="2" column="2" colspan="8">
        <widget class="DragDropLineEdit" name="scriptEditorPathLineEdit">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
@@ -3994,37 +4003,22 @@ Note: The reopen buton in the main window is only visible if this option is sele
         </property>
        </widget>
       </item>
-      <item row="0" column="6">
-       <widget class="QComboBox" name="endianessComboBox">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="2" column="10">
+       <widget class="QPushButton" name="searchScriptEditorPushButton">
+        <property name="text">
+         <string>search</string>
         </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
+       </widget>
+      </item>
+      <item row="0" column="5">
+       <widget class="QLabel" name="label_26">
         <property name="toolTip">
          <string>endianess of the connected device (is used to interpret the decimals
 in the log, the decimal console and the send window)</string>
         </property>
-        <property name="sizeAdjustPolicy">
-         <enum>QComboBox::AdjustToContents</enum>
+        <property name="text">
+         <string>endianness</string>
         </property>
-        <item>
-         <property name="text">
-          <string>little-endian</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>big-endian</string>
-         </property>
-        </item>
        </widget>
       </item>
       <item row="0" column="2">
@@ -4069,18 +4063,7 @@ in the log, the decimal console and the send window)</string>
         </item>
        </widget>
       </item>
-      <item row="0" column="5">
-       <widget class="QLabel" name="label_26">
-        <property name="toolTip">
-         <string>endianess of the connected device (is used to interpret the decimals
-in the log, the decimal console and the send window)</string>
-        </property>
-        <property name="text">
-         <string>endianness</string>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="8">
+      <item row="3" column="10">
        <widget class="QPushButton" name="closeButton">
         <property name="toolTip">
          <string>Ctrl+X</string>
@@ -4090,17 +4073,50 @@ in the log, the decimal console and the send window)</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_25">
-        <property name="statusTip">
-         <string>the current interface</string>
+      <item row="0" column="6">
+       <widget class="QComboBox" name="endianessComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>endianess of the connected device (is used to interpret the decimals
+in the log, the decimal console and the send window)</string>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContents</enum>
+        </property>
+        <item>
+         <property name="text">
+          <string>little-endian</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>big-endian</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="useExternalScriptEditorCheckBox">
+        <property name="toolTip">
+         <string>use an external script editor (instead of the integrated)</string>
         </property>
         <property name="text">
-         <string>current interface</string>
+         <string>use ext. script editor</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="7">
+      <item row="0" column="9">
        <spacer name="horizontalSpacer_8">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -4112,6 +4128,16 @@ in the log, the decimal console and the send window)</string>
          </size>
         </property>
        </spacer>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_25">
+        <property name="statusTip">
+         <string>the current interface</string>
+        </property>
+        <property name="text">
+         <string>current interface</string>
+        </property>
+       </widget>
       </item>
       <item row="0" column="4">
        <spacer name="horizontalSpacer">
@@ -4136,13 +4162,10 @@ in the log, the decimal console and the send window)</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
-       <widget class="QCheckBox" name="useExternalScriptEditorCheckBox">
-        <property name="toolTip">
-         <string>use an external script editor (instead of the integrated)</string>
-        </property>
+      <item row="0" column="8">
+       <widget class="QCheckBox" name="useDarkStyleCheckBox">
         <property name="text">
-         <string>use ext. script editor</string>
+         <string>use dark style</string>
         </property>
        </widget>
       </item>

@@ -45,6 +45,8 @@
 #include "version.h"
 #include <QFontDialog>
 #include "Qsci/qscistyle.h"
+#include <QResource>
+#include <QCommonStyle>
 
 
 
@@ -650,7 +652,7 @@ bool MainWindow::addTab(QString script, bool setTabIndex)
         ui->documentsTabWidget->addTab(newTab, strippedName(script));
 
         QVBoxLayout* vBoxlayout	= new QVBoxLayout();
-        SingleDocument* textEditor = new SingleDocument(this, newTab);
+        SingleDocument* textEditor = new SingleDocument(this, ui->actionUseDarkStyle->isChecked(), newTab);
         vBoxlayout->addWidget(textEditor);
         newTab->setLayout(vBoxlayout);
 
@@ -1377,6 +1379,39 @@ void MainWindow::showEventTimerSlot()
     parseTimeout(false);
 
     qApp->installEventFilter(this);
+
+}
+
+/**
+ * Is called if the use dark style menu is pressed.
+ */
+void MainWindow::useDarkStyleMenuPressedSlot(void)
+{
+    QString styleSheet;
+
+    if(ui->actionUseDarkStyle->isChecked())
+    {
+        (void)QResource::registerResource(QCoreApplication::applicationDirPath() + "/stylesheet.rcc");
+        QFile file(QCoreApplication::applicationDirPath() + "/stylesheetEditor.qss");
+
+        if(file.exists())
+        {
+            file.open(QFile::ReadOnly);
+            styleSheet= QLatin1String(file.readAll());
+        }
+    }
+
+
+    qApp->setStyleSheet(styleSheet);
+
+    for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+    {
+        SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
+        textEditor->setUseDarkStyle(ui->actionUseDarkStyle->isChecked());
+    }
+
+    QCommonStyle().unpolish(qApp);
+    QCommonStyle().polish(qApp);
 
 }
 
@@ -2340,9 +2375,10 @@ void MainWindow::initActions()
     connect(ui->actionCloseDocument, SIGNAL(triggered()), this, SLOT(closeDocumentSlot()));
     connect(ui->actionOpenAllIncludedScripts, SIGNAL(triggered()), this, SLOT(openAllIncludedScriptsSlot()));
     connect(ui->actionSetFont, SIGNAL(triggered()), this, SLOT(setFont()));
-    connect(ui->actionEditUi , SIGNAL(triggered()), this, SLOT(editUiButtonSlot()));
-    connect(ui->actionReload , SIGNAL(triggered()), this, SLOT(reloadSlot()));
-    connect(ui->actionGoToLine , SIGNAL(triggered()), this, SLOT(goToLineSlot()));
+    connect(ui->actionEditUi, SIGNAL(triggered()), this, SLOT(editUiButtonSlot()));
+    connect(ui->actionReload, SIGNAL(triggered()), this, SLOT(reloadSlot()));
+    connect(ui->actionGoToLine, SIGNAL(triggered()), this, SLOT(goToLineSlot()));
+    connect(ui->actionUseDarkStyle, SIGNAL(triggered()), this, SLOT(useDarkStyleMenuPressedSlot()));
 
     ui->actionEditUi->setEnabled(false);
 
@@ -2794,7 +2830,8 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
 
         if(ui->outlineTreeWidget->topLevelItem(i) == 0)
         {
-            insertFileElementForTabIndex(i, QColor(255,255,255));
+            int color = ui->actionUseDarkStyle ? 255 : 0;
+            insertFileElementForTabIndex(i, QColor(color,color,color));
         }
         else
         {
@@ -2829,7 +2866,8 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
 
             if(root->child(iter.key()))
             {
-                root->child(iter.key())->setTextColor(0, QColor(255,255,255));
+                int color = ui->actionUseDarkStyle ? 255 : 0;
+                root->child(iter.key())->setTextColor(0, QColor(color,color,color));
             }
 
             if(iter.value().isEmpty())
@@ -2865,7 +2903,8 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
 
                 clearOutlineWindow(iter.key());
 
-                insertFileElementForTabIndex(iter.key(), QColor(255,255,255));
+                int color = ui->actionUseDarkStyle ? 255 : 0;
+                insertFileElementForTabIndex(iter.key(), QColor(color,color,color));
 
                 QTreeWidgetItem* fileElement = ui->outlineTreeWidget->topLevelItem(iter.key());
 
