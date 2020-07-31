@@ -96,9 +96,11 @@ void DragDropLineEdit::dropEvent(QDropEvent *event)
 #else
         QString files = event->mimeData()->text().remove("file:///");
 #endif
-        QStringList list = files.split("\n");
+        QStringList list = files.split(files.contains("\r\n") ? "\r\n" : "\n");
         if(!list.isEmpty())
         {
+            list[0].remove("\n");
+            list[0].remove("\r");
             setText(list[0]);
         }
         event->acceptProposedAction();
@@ -1093,7 +1095,7 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
 #else
                 QString files = dropEvent->mimeData()->text().remove("file:///");
 #endif
-                m_scriptWindow->tableDropEventSlot(-1, -1, files.split("\n"));
+                m_scriptWindow->tableDropEventSlot(-1, -1, files.split(files.contains("\r\n") ? "\r\n" : "\n"));
 
                 dropEvent->acceptProposedAction();
             }
@@ -1427,6 +1429,7 @@ void MainWindow::setStyleSlot(bool useDarkStyle)
     qApp->setStyleSheet(styleSheet);
     QCommonStyle().unpolish(qApp);
     QCommonStyle().polish(qApp);
+    m_settingsDialog->setUseDarkStyle(useDarkStyle);
 
 }
 

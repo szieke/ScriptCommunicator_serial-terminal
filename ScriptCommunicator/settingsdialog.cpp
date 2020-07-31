@@ -108,8 +108,8 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->ClearTextLogPushButton, SIGNAL(clicked()),
             this, SLOT(deleteTextLogButtonPressedSlot()));
 
-    connect(m_userInterface->useDarkStyleCheckBox, SIGNAL(pressed()),
-            this, SLOT(setStyleCheckBoxPressedSlot()));
+    connect(m_userInterface->useDarkStyleCheckBox, SIGNAL(toggled(bool)),
+            this, SLOT(setStyleCheckBoxPressedSlot(bool)));
 
 
     connect(m_userInterface->logTextLogPushButton, SIGNAL(clicked()),
@@ -551,19 +551,25 @@ SettingsDialog::~SettingsDialog()
 
 /**
  * Is called if the set style checkbox has been pressed.
+ *
+ * @param isChecked True the checkbox is checked.
  */
-void SettingsDialog::setStyleCheckBoxPressedSlot(void)
+void SettingsDialog::setStyleCheckBoxPressedSlot(bool isChecked)
 {
-    emit setStyleSignal(!m_userInterface->useDarkStyleCheckBox->isChecked());
-
-    //Force the checkox to be unchecked (MainWindow::setStyleSlot prevents it).
-    if(m_userInterface->useDarkStyleCheckBox->isChecked())
-    {
-        m_userInterface->useDarkStyleCheckBox->setChecked(false);
-    }
+    m_userInterface->useDarkStyleCheckBox->blockSignals(true);
+    emit setStyleSignal(isChecked);
 }
 
-
+/**
+ * True if the dark style shall be used.
+ *
+ * @param useDarkStyle True if the dark style shall be used.
+ */
+void SettingsDialog::setUseDarkStyle(bool useDarkStyle)
+{
+    m_userInterface->useDarkStyleCheckBox->setChecked(useDarkStyle);
+    m_userInterface->useDarkStyleCheckBox->blockSignals(false);
+}
 
 /**
  * Shows (socket tab) all local ip addresses found on this PC.
