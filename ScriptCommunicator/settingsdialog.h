@@ -464,6 +464,10 @@ public:
     ///The previous elements of serialPortInfoListBox are replaced by the result of the scan.
     ///After this the mouse event is passed to the parent of serialPortInfoListBox.
     bool eventFilter(QObject *obj, QEvent *ev);
+
+    ///True if the dark style shall be used.
+    void setUseDarkStyle(bool useDarkStyle);
+
 public slots:
 
     ///Sets all settings in the gui and the settings struct (m_currentSettings).
@@ -566,7 +570,7 @@ private slots:
     void appendTimestampAtLogsChangedSlot(int newState);
 
     ///Is called if the set style checkbox has been pressed.
-    void setStyleCheckBoxPressedSlot(void);
+    void setStyleCheckBoxPressedSlot(bool isChecked);
 
 
 Q_SIGNALS:

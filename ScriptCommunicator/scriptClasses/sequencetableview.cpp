@@ -218,9 +218,11 @@ void SequenceTablePlainTextEdit::dropEvent(QDropEvent *event)
 #else
         QString files = event->mimeData()->text().remove("file:///");
 #endif
-        QStringList list = files.split("\n");
+        QStringList list = files.split(files.contains("\r\n") ? "\r\n" : "\n");
         if(!list.isEmpty())
         {
+            list[0].remove("\n");
+            list[0].remove("\r");
             setPlainText(list[0]);
         }
         event->acceptProposedAction();

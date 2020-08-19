@@ -88,7 +88,7 @@ bool DragDropTableWidget::dropMimeData(int row, int column, const QMimeData *dat
 #else
         QString files = data->text().remove("file:///");
 #endif
-        QStringList list = files.split("\n");
+        QStringList list = files.split(files.contains("\r\n") ? "\r\n" : "\n");
         if(!list.isEmpty())
         {
             emit dropEventSignal(row, column, list);
@@ -717,6 +717,8 @@ void ScriptWindow::tableDropEventSlot(int row, int column, QStringList files)
     {
         if(!el.isEmpty())
         {
+            el.remove("\n");
+            el.remove("\r");
 #ifdef Q_OS_MAC
             addScript("/" + el);
 #else
