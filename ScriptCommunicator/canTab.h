@@ -38,6 +38,7 @@ class CanTab : public QObject
 {
     Q_OBJECT
 
+    friend class MainWindow;
 public:
     CanTab(MainWindow* mainWindow);
 
@@ -125,12 +126,6 @@ private:
 
     ///The time at which this object has been created.
     QDateTime m_creationTime;
-
-    ///The received CAN messages.
-    QVector<QByteArray> m_receivedCanMessages;
-
-    ///The transmitted CAN messages.
-    QVector<QByteArray> m_transmittedCanMessages;
 };
 
 #endif // CANTAB_H
