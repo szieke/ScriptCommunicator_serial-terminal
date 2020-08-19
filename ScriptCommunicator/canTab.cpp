@@ -31,7 +31,7 @@
  * @param mainWindow
  *      Main window pointer.
  */
-CanTab::CanTab(MainWindow *mainWindow) : QObject(mainWindow), m_mainWindow(mainWindow)
+CanTab::CanTab(MainWindow *mainWindow) : QObject(mainWindow), m_mainWindow(mainWindow), m_receivedCanMessages(), m_transmittedCanMessages()
 {
     m_creationTime = QDateTime::currentDateTime();
 
@@ -312,8 +312,6 @@ void CanTab::updateTableEntry(QTableWidget* table, const QByteArray &data, bool 
         table->item(row, RECEIVE_TABLE_TYPE_COLUMN)->setText(typeToString(type));
 
         table->resizeColumnsToContents();
-        updateTableSlot();
-
     }
 
     table->item(row, RECEIVE_TABLE_DLC_COLUMN)->setText(QString("%1").arg(data.length() -
@@ -386,7 +384,7 @@ void CanTab::canMessageReceived(const QByteArray &data)
 {
     if(m_mainWindow->m_userInterface->pcanUpdateReceiveTableCheckBox->isChecked())
     {
-        updateTableEntry( m_mainWindow->m_userInterface->canReceiveTableWidget, data, true);
+        m_receivedCanMessages.append(data);
     }
 }
 
@@ -399,7 +397,7 @@ void CanTab::canMessageTransmitted(const QByteArray &data)
 {
     if(m_mainWindow->m_userInterface->pcanUpdateTransmitTableCheckBox->isChecked())
     {
-        updateTableEntry( m_mainWindow->m_userInterface->canTransmitTableWidget, data, false);
+        m_transmittedCanMessages.append(data);
     }
 }
 
@@ -424,12 +422,19 @@ void CanTab::resizeTable(QTableWidget* table)
  */
 void CanTab::updateTableSlot(void)
 {
-    m_mainWindow->m_userInterface->canReceiveTableWidget->setUpdatesEnabled(true);
-    m_mainWindow->m_userInterface->canTransmitTableWidget->setUpdatesEnabled(true);
+    for(int i = 0; i< m_receivedCanMessages.length(); i++)
+    {
+        updateTableEntry(m_mainWindow->m_userInterface->canReceiveTableWidget, m_receivedCanMessages[i], true);
+    }
+    m_receivedCanMessages.clear();
+
+    for(int i = 0; i< m_transmittedCanMessages.length(); i++)
+    {
+        updateTableEntry( m_mainWindow->m_userInterface->canTransmitTableWidget, m_transmittedCanMessages[i], true);
+    }
+    m_transmittedCanMessages.clear();
+
 
     resizeTable(m_mainWindow->m_userInterface->canReceiveTableWidget);
     resizeTable(m_mainWindow->m_userInterface->canTransmitTableWidget);
-    m_mainWindow->m_userInterface->canReceiveTableWidget->setUpdatesEnabled(false);
-    m_mainWindow->m_userInterface->canTransmitTableWidget->setUpdatesEnabled(false);
-
 }
