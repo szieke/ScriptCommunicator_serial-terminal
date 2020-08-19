@@ -38,7 +38,6 @@ class CanTab : public QObject
 {
     Q_OBJECT
 
-    friend class MainWindow;
 public:
     CanTab(MainWindow* mainWindow);
 
