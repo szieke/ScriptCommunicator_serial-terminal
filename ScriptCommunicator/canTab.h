@@ -126,6 +126,9 @@ private:
 
     ///The time at which this object has been created.
     QDateTime m_creationTime;
+
+    ///Contains the revieved CAN messages.
+    QVector<QByteArray> m_recievedCanMessages;
 };
 
 #endif // CANTAB_H

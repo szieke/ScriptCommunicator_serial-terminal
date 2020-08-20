@@ -31,7 +31,7 @@
  * @param mainWindow
  *      Main window pointer.
  */
-CanTab::CanTab(MainWindow *mainWindow) : QObject(mainWindow), m_mainWindow(mainWindow)
+CanTab::CanTab(MainWindow *mainWindow) : QObject(mainWindow), m_mainWindow(mainWindow), m_recievedCanMessages()
 {
     m_creationTime = QDateTime::currentDateTime();
 
@@ -382,10 +382,7 @@ void CanTab::updateTableEntry(QTableWidget* table, const QByteArray &data, bool 
  */
 void CanTab::canMessageReceived(const QByteArray &data)
 {
-    if(m_mainWindow->m_userInterface->pcanUpdateReceiveTableCheckBox->isChecked())
-    {
-        updateTableEntry( m_mainWindow->m_userInterface->canReceiveTableWidget, data, true);
-    }
+    m_recievedCanMessages.append(data);
 }
 
 /**
@@ -397,7 +394,7 @@ void CanTab::canMessageTransmitted(const QByteArray &data)
 {
     if(m_mainWindow->m_userInterface->pcanUpdateTransmitTableCheckBox->isChecked())
     {
-        updateTableEntry( m_mainWindow->m_userInterface->canTransmitTableWidget, data, false);
+        updateTableEntry(m_mainWindow->m_userInterface->canTransmitTableWidget, data, false);
     }
 }
 
@@ -422,6 +419,12 @@ void CanTab::resizeTable(QTableWidget* table)
  */
 void CanTab::updateTableSlot(void)
 {
+
+    for(auto el : m_recievedCanMessages)
+    {
+        updateTableEntry(m_mainWindow->m_userInterface->canReceiveTableWidget, el, true);
+    }
+    m_recievedCanMessages.clear();
 
     resizeTable(m_mainWindow->m_userInterface->canReceiveTableWidget);
     resizeTable(m_mainWindow->m_userInterface->canTransmitTableWidget);
