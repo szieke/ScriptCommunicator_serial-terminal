@@ -167,6 +167,40 @@ private:
 
 };
 
+///Wrapper class for a HEX QPlainTextEdit in the sequence table.
+class SequenceTableHexTextEdit : public SequenceTablePlainTextEdit
+{
+public:
+    SequenceTableHexTextEdit(SequenceTableView* tableView, SendWindow* sendWindow) :  SequenceTablePlainTextEdit(tableView, sendWindow)
+    {
+        connect(this, &QPlainTextEdit::textChanged, this, &SequenceTableHexTextEdit::textChangedSlot);
+    }
+
+    /**
+    * Configures the hex line edit.
+    *
+    * @param max Max. value.
+    */
+    void configure(quint32 max){m_max = max;textChangedSlot();}
+
+    ///Returns the current value.
+    quint32 getValue(void)
+    {
+        bool isOk;
+        return toPlainText().toULong(&isOk, 16);
+    }
+
+    ///Is called if the current text/value has changed.
+    void textChangedSlot(void);
+
+
+
+private:
+
+    ///Max. value.
+    quint32 m_max;
+};
+
 
 ///Wrapper class for a QComboBox in the sequence table.
 class SequenceTableComboBox : public QComboBox
@@ -290,6 +324,18 @@ public:
     ///Sets the current send string format (in the gui).
     void setCurrentSendStringFormat(QString text);
 
+    ///Returns the current send CAN type (from the gui).
+    QString getCurrentCanType();
+
+    ///Sets the current send send CAN (in the gui).
+    void setCurrentCanType(QString type);
+
+    ///Returns the current send CAN ID (from the gui).
+    QString getCurrentCanId();
+
+    ///Sets the current send CAN ID(in the gui).
+    void setCurrentCanId(QString text);
+
     ///Returns the current send repetition value (from the gui).
     QString getCurrentSendRepetition();
 
@@ -320,11 +366,18 @@ public:
     ///The format column (in the sequence table)
     static const int COLUMN_FORMAT = 1;
 
+    ///The CAN type column (in the sequence table)
+    static const int COLUMN_CAN_TYPE = 2;
+
+    ///The CAN ID column (in the sequence table)
+    static const int COLUMN_CAN_ID = 3;
+
     ///The value column (in the sequence table)
-    static const int COLUMN_VALUE = 2;
+    static const int COLUMN_VALUE = 4;
 
     ///The script column (in the sequence table)
-    static const int COLUMN_SCRIPT = 3;
+    static const int COLUMN_SCRIPT = 5;
+
 
     ///Sends a sequence.
     void sendSequence(quint32 sequenceIndex, bool debug, QWidget* callerWidget);
@@ -445,6 +498,9 @@ private slots:
     ///This slot is called if the value of the send string format combobox has been changed.
     void currentSendStringFormatChangedSlot(QString format);
 
+    ///This slot is called if the value of the CAN type combobox has been changed.
+    void currentCanTypeChangedSlot(QString type);
+
     ///This slot function is called if the user enters a cell in the script table.
     ///With this function the user can move the selected row up or down (while holding the mouse at the row)
     void cellEnteredSlot(int row, int column);
@@ -465,6 +521,9 @@ private slots:
     void moveTableEntryDownSlot(void);
 
 private:
+
+    ///Sets the CAN GUI elements in the sequence table.
+    void setCanElementsInSequenceTable(void);
 
     ///Swaps the position of 2 table rows.
     void swapTableRowPositions(int row1, int row2);

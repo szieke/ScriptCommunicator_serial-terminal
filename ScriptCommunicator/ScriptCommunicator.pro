@@ -115,7 +115,8 @@ SOURCES += \
     scriptClasses/scriptConverter.cpp \
     aardvarkI2cSpi/aardvark.c \
     aardvarkI2cSpi/aardvarkI2cSpi.cpp \
-    scriptClasses/scriptInf.cpp
+    scriptClasses/scriptInf.cpp \
+    hexLineEdit.cpp
 
 HEADERS += \
     mainwindow.h \
@@ -232,7 +233,8 @@ HEADERS += \
     aardvarkI2cSpi/aardvarkI2cSpi.h \
     scriptClasses/scriptAardvarkI2cSpi.h \
     scriptClasses/scriptInf.h \
-    scriptClasses/scriptSound.h
+    scriptClasses/scriptSound.h \
+    hexLineEdit.h
 
 FORMS += \
     mainwindow.ui \

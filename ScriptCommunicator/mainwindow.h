@@ -405,8 +405,9 @@ private slots:
     ///This slot function is called if the user changes the text of the send text edit box.
     void sendInputTextChangedSlot(void);
 
-    ////Checks if the text has the correct format.
+    ////Checks if the text in the send text edit box has the correct format.
     void checkSendInputSlot(void);
+
 
     ///Is called if the user presses the clear history button.
     void clearHistoryButtonSlot();
@@ -431,6 +432,9 @@ private slots:
 
     ///This slot is called if the value of the send format combobox has been changed.
     void currentSendFormatChangedSlot(QString format);
+
+    ///This slot is called if the value of the CAN type combobox has been changed.
+    void currentCanTypeChangedSlot(QString type);
 
     ///Timer slot function for minimizing the script window (command line mode).
     void commandLineModeMinimizeTimerSlot();

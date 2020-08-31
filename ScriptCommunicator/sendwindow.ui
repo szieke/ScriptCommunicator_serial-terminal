@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>659</width>
-    <height>483</height>
+    <width>692</width>
+    <height>525</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -68,7 +68,7 @@
            <number>0</number>
           </property>
           <property name="columnCount">
-           <number>4</number>
+           <number>6</number>
           </property>
           <attribute name="horizontalHeaderVisible">
            <bool>true</bool>
@@ -89,6 +89,8 @@
           <column/>
           <column/>
           <column/>
+          <column/>
+          <column/>
          </widget>
         </item>
        </layout>
@@ -99,7 +101,7 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,1,0">
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
+         <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,0,0,0,0,0,0,0,0,1">
           <item>
            <widget class="QPushButton" name="SendPushButton">
             <property name="enabled">
@@ -116,6 +118,30 @@
              <string>data format</string>
             </property>
            </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="CanIdLabel">
+            <property name="text">
+             <string>ID</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="HexLineEdit" name="CanIdLineEdit">
+            <property name="text">
+             <string>0x0</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QLabel" name="CanTypeLabel">
+            <property name="text">
+             <string>Type</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="CanTypeBox"/>
           </item>
           <item>
            <widget class="QLabel" name="Repetition_Label">
@@ -337,7 +363,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>659</width>
+     <width>692</width>
      <height>21</height>
     </rect>
    </property>
@@ -578,6 +604,11 @@
    <class>SendWindowTextEdit</class>
    <extends>QPlainTextEdit</extends>
    <header location="global">sendwindow.h</header>
+  </customwidget>
+  <customwidget>
+   <class>HexLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>hexLineEdit.h</header>
   </customwidget>
   <customwidget>
    <class>SequenceTableView</class>

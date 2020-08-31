@@ -343,16 +343,25 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     m_userInterface->pauseWorkerScriptPushButton->setText("debug");
     m_userInterface->startWorkerScriptsPushButton->setText("start");
 
+    m_userInterface->CanTypeBox->addItems(QStringList() << "11 Bit" << "11 Bit RTR" << "29 Bit" << "29 Bit RTR");
+    m_userInterface->CanTypeBox->setCurrentText("11 Bit");
+    m_userInterface->CanTypeBox->setVisible(false);
+    m_userInterface->CanTypeLabel->setVisible(false);
+    m_userInterface->CanIdLabel->setVisible(false);
+    m_userInterface->CanIdLineEdit->setVisible(false);
+    m_userInterface->CanIdLineEdit->configure(0x7ff);
 
 
     QStringList availTargets;
     availTargets << "ascii" << "hex" << "bin" << "uint8" << "uint16" << "uint32" << "int8" << "int16" << "int32";
-    m_userInterface->SendFormatComboBox->addItems(availTargets);
-    m_userInterface->SendFormatComboBox->setCurrentText("ascii");
-    m_oldSendFormat = "ascii";
 
     m_userInterface->historyFormatComboBox->addItems(availTargets);
     m_userInterface->historyFormatComboBox->setCurrentText("hex");
+
+    m_userInterface->SendFormatComboBox->addItems(availTargets << "can");
+    m_userInterface->SendFormatComboBox->setCurrentText("ascii");
+    m_oldSendFormat = "ascii";
+
 
     m_canTab = new CanTab(this);
 
@@ -478,6 +487,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     connect(m_userInterface->SendTextEdit, SIGNAL(textChanged()), this, SLOT(sendInputTextChangedSlot()));
     connect(m_userInterface->SendTextEdit, SIGNAL(focusOutSignal()), this, SLOT(checkSendInputSlot()));
     connect(m_userInterface->SendFormatComboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(currentSendFormatChangedSlot(QString)));
+    connect(m_userInterface->CanTypeBox, SIGNAL(currentTextChanged(QString)), this, SLOT(currentCanTypeChangedSlot(QString)));
     connect(m_userInterface->SendPushButton, SIGNAL(clicked()), this, SLOT(sendButtonPressedSlot()));
     connect(m_userInterface->ScriptTextEdit, SIGNAL(textChanged()), this, SLOT(scriptTextEditSlot()));
     connect(m_userInterface->ScriptTextEdit, SIGNAL(doubleClickSignal()), this, SLOT(scriptTextEditDoubleClickedSlot()));
@@ -814,6 +824,19 @@ void MainWindow::sendButtonPressedSlot(bool debug)
         const Settings* settings = m_settingsDialog->settings();
         sendData.replace("\n", settings->consoleSendOnEnter.toLocal8Bit());
     }
+    else if(m_userInterface->SendFormatComboBox->currentText() == "can")
+    {
+        QByteArray canData;
+        canData.append(m_userInterface->CanTypeBox->currentIndex());
+        quint32 value = m_userInterface->CanIdLineEdit->getValue();
+        canData.append((value >> 24) & 0xff);
+        canData.append((value >> 16) & 0xff);
+        canData.append((value >> 8) & 0xff);
+        canData.append(value & 0xff);
+
+        sendData.prepend(canData);
+    }
+
     if(!sendData.isEmpty())
     {
         m_sendWindow->sendDataWithTheMainInterface(sendData, this, 0, 0, false, m_userInterface->ScriptTextEdit->toPlainText(), debug);
@@ -968,6 +991,13 @@ void MainWindow::createScriptButtonSlot()
  */
 void MainWindow::currentSendFormatChangedSlot(QString format)
 {
+    bool setVisible = (format == "can") ? true : false;
+    m_userInterface->CanTypeBox->setVisible(setVisible);
+    m_userInterface->CanTypeLabel->setVisible(setVisible);
+    m_userInterface->CanIdLabel->setVisible(setVisible);
+    m_userInterface->CanIdLineEdit->setVisible(setVisible);
+    currentCanTypeChangedSlot(m_userInterface->CanTypeBox->currentText());
+
 
     if(!m_userInterface->SendTextEdit->toPlainText().isEmpty())
     {
@@ -976,6 +1006,17 @@ void MainWindow::currentSendFormatChangedSlot(QString format)
     }
 
     m_oldSendFormat = format;
+}
+
+/**
+ * This slot is called if the value of the CAN type combobox has been changed.
+ * @param type
+ *      The new type.
+ */
+void MainWindow::currentCanTypeChangedSlot(QString type)
+{
+    bool is11Bit = ((type == "11 Bit" ) || (type == "11 Bit RTR" )) ? true : false;
+    m_userInterface->CanIdLineEdit->configure(is11Bit ? 0x7ff :  0x1fffffff);
 }
 /**
  * Timer slot function for minimizing the script window (command line mode).
@@ -1753,6 +1794,15 @@ bool MainWindow::loadSettings()
                         m_userInterface->SendTextEdit->blockSignals(false);
                         m_userInterface->SendFormatComboBox->blockSignals(false);
 
+                        m_userInterface->CanTypeBox->blockSignals(true);
+                        m_userInterface->CanIdLineEdit->blockSignals(true);
+                        m_userInterface->CanIdLineEdit->setText(node.attributes().namedItem("canIdLineEdit").nodeValue());
+                        m_userInterface->CanTypeBox->setCurrentText(node.attributes().namedItem("canTypeBox").nodeValue());
+                        m_userInterface->CanTypeBox->blockSignals(false);
+                        m_userInterface->CanIdLineEdit->blockSignals(false);
+
+                        currentSendFormatChangedSlot(m_userInterface->SendFormatComboBox->currentText());
+
                         QString script = node.attributes().namedItem("scriptTextEdit").nodeValue();
                         if(script.startsWith("./")){script.replace("./", getScriptCommunicatorFilesFolder() + "/");}
                         m_userInterface->ScriptTextEdit->setPlainText(script);
@@ -1819,6 +1869,8 @@ bool MainWindow::loadSettings()
                         m_sendWindow->setCurrentSendString(node.attributes().namedItem("sendString").nodeValue());
                         m_sendWindow->setCurrentCyclicScript(node.attributes().namedItem("cyclicScript").nodeValue());
                         m_sendWindow->setCurrentSendStringFormat(node.attributes().namedItem("sendStringFormat").nodeValue());
+                        m_sendWindow->setCurrentCanType(node.attributes().namedItem("sendCanType").nodeValue());
+                        m_sendWindow->setCurrentCanId(node.attributes().namedItem("sendCanId").nodeValue());
                         m_sendWindow->setCurrentSendRepetition(node.attributes().namedItem("sendStringRepetition").nodeValue());
                         m_sendWindow->setCurrentSendPause(node.attributes().namedItem("sendStringPause").nodeValue());
                         isConnected = (node.attributes().namedItem("isConnected").nodeValue() == "1") ? true : false;
@@ -2703,6 +2755,8 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("sendTextEdit"), m_userInterface->SendTextEdit->toPlainText()),
                  std::make_pair(QString("scriptTextEdit"), m_userInterface->ScriptTextEdit->toPlainText()),
                  std::make_pair(QString("sendFormatComboBox"), m_userInterface->SendFormatComboBox->currentText()),
+                 std::make_pair(QString("canTypeBox"), m_userInterface->CanTypeBox->currentText()),
+                 std::make_pair(QString("canIdLineEdit"), m_userInterface->CanIdLineEdit->text()),
                  std::make_pair(QString("mainWindowState"), saveState().toHex()),
                  std::make_pair(QString("isMaximized"), QString("%1").arg(isMaximized())),
                  std::make_pair(QString("toolBoxSplitterSizes"),
@@ -2721,6 +2775,8 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("sendString"), m_sendWindow->getCurrentSendString()),
                  std::make_pair(QString("cyclicScript"), m_sendWindow->getCurrentCyclicScript()),
                  std::make_pair(QString("sendStringFormat"), m_sendWindow->getCurrentSendStringFormat()),
+                 std::make_pair(QString("sendCanType"), m_sendWindow->getCurrentCanId()),
+                 std::make_pair(QString("sendCanId"), m_sendWindow->getCurrentCanId()),
                  std::make_pair(QString("sendStringRepetition"), m_sendWindow->getCurrentSendRepetition()),
                  std::make_pair(QString("sendStringPause"), m_sendWindow->getCurrentSendPause()),
                  std::make_pair(QString("isConnected"),QString("%1").arg(m_isConnected)),

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1183</width>
-    <height>742</height>
+    <height>786</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -33,7 +33,7 @@
    <set>Qt::ImhNoPredictiveText</set>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_13" stretch="1,0">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0">
     <item>
      <widget class="QSplitter" name="ToolboxSplitter">
       <property name="frameShape">
@@ -633,8 +633,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>718</width>
-                  <height>200</height>
+                  <width>332</width>
+                  <height>108</height>
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_3">
@@ -816,7 +816,7 @@ p, li { white-space: pre-wrap; }
           <widget class="QWidget" name="verticalLayoutWidget">
            <layout class="QVBoxLayout" name="verticalLayout_10" stretch="0,0">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_7">
+             <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,0,0,0,0,0,0">
               <item>
                <spacer name="horizontalSpacer_4">
                 <property name="orientation">
@@ -837,6 +837,30 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="CanTypeLabel">
+                <property name="text">
+                 <string>Type:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="CanTypeBox"/>
+              </item>
+              <item>
+               <widget class="QLabel" name="CanIdLabel">
+                <property name="text">
+                 <string>ID:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="HexLineEdit" name="CanIdLineEdit">
+                <property name="text">
+                 <string>0x0</string>
                 </property>
                </widget>
               </item>
@@ -914,8 +938,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>414</width>
-          <height>517</height>
+          <width>98</width>
+          <height>93</height>
          </rect>
         </property>
         <attribute name="label">
@@ -959,7 +983,7 @@ p, li { white-space: pre-wrap; }
           <x>0</x>
           <y>0</y>
           <width>414</width>
-          <height>517</height>
+          <height>561</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1045,8 +1069,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>414</width>
-          <height>517</height>
+          <width>188</width>
+          <height>301</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1271,8 +1295,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>414</width>
-          <height>517</height>
+          <width>139</width>
+          <height>271</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1937,6 +1961,11 @@ option is enabled then the enabled log files will be closed and recreated with t
    <class>SendWindowTextEdit</class>
    <extends>QPlainTextEdit</extends>
    <header location="global">sendwindow.h</header>
+  </customwidget>
+  <customwidget>
+   <class>HexLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>hexLineEdit.h</header>
   </customwidget>
  </customwidgets>
  <resources>

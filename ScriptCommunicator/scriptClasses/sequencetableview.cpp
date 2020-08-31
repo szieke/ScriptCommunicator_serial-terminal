@@ -587,6 +587,8 @@ void SequenceTableView::sendSequence(int row, bool debug, QWidget* callerWidget)
     const Settings* settings = m_mainWindow->getSettingsDialog()->settings();
 
     SequenceTableComboBox* box = static_cast<SequenceTableComboBox*>(m_sendWindow->m_userInterface->tableWidget->cellWidget(row, SendWindow::COLUMN_FORMAT));
+    SequenceTableComboBox* typeBox = static_cast<SequenceTableComboBox*>(m_sendWindow->m_userInterface->tableWidget->cellWidget(row, SendWindow::COLUMN_CAN_TYPE));
+    SequenceTableHexTextEdit* canIdLineEdit = static_cast<SequenceTableHexTextEdit*>(m_sendWindow->m_userInterface->tableWidget->cellWidget(row, SendWindow::COLUMN_CAN_ID));
     SequenceTablePlainTextEdit* lineEdit = static_cast<SequenceTablePlainTextEdit*>(m_sendWindow->m_userInterface->tableWidget->cellWidget(row, SendWindow::COLUMN_VALUE));
     SequenceTablePlainTextEdit* scriptLineEdit = static_cast<SequenceTablePlainTextEdit*>(m_sendWindow->m_userInterface->tableWidget->cellWidget(row, SendWindow::COLUMN_SCRIPT));
 
@@ -599,6 +601,18 @@ void SequenceTableView::sendSequence(int row, bool debug, QWidget* callerWidget)
         {
             const Settings* settings = m_sendWindow->m_settingsDialog->settings();
             sendData.replace("\n", settings->consoleSendOnEnter.toLocal8Bit());
+        }
+        else if(box->currentText() == "can")
+        {
+            QByteArray canData;
+            canData.append(typeBox->currentIndex());
+            quint32 value = canIdLineEdit->getValue();
+            canData.append((value >> 24) & 0xff);
+            canData.append((value >> 16) & 0xff);
+            canData.append((value >> 8) & 0xff);
+            canData.append(value & 0xff);
+
+            sendData.prepend(canData);
         }
 
         if(!sendData.isEmpty())

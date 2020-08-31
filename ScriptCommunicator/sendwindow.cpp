@@ -49,6 +49,85 @@
 
 
 /**
+ * Is called if the current value has been changed.
+ *
+ * @param newText The new text/value.
+ */
+void SequenceTableHexTextEdit::textChangedSlot(void)
+{
+    QString tmpText1;
+    QString tmpText2;
+
+    blockSignals(true);
+
+    QString newText = toPlainText();
+    int cursorPosition = textCursor().position();
+    QTextCursor cursor = textCursor();
+
+    //Allow only hexedecimal characters.
+    newText.replace(QRegularExpression("[^xa-fA-F\\d\\s]"), "");
+
+    if(newText.startsWith("x"))
+    {//The current value starts with x.
+
+        newText = "0" + newText;
+    }
+    else if(newText == "0")
+    {
+        newText = "0x";
+    }
+    else if(!newText.startsWith("0x"))
+    {//The current value does not start with 0x.
+
+        newText = "0x" + newText;
+    }
+
+    //Remove all 0 after 0x (except the string is 0x0).
+    bool replaced = false;
+    do
+    {
+        replaced = false;
+        if(newText.startsWith("0x0") && (newText != "0x0"))
+        {
+            newText.replace("0x0", "0x");
+            replaced = true;
+        }
+    }while(replaced);
+
+
+
+    if(newText.length() > 2)
+    {
+        //Remove all x that are not the second character (0x).
+        tmpText1 = newText.right(newText.length() - 2);
+        tmpText1.replace("x", "");
+
+        tmpText2 = newText.left(2);
+        newText = tmpText2 + tmpText1;
+
+    }
+
+
+    bool isOk;
+    quint32 value = newText.toULongLong(&isOk, 16);
+    if(value > m_max)
+    {
+        newText = "0x" + QString::number(m_max, 16);
+    }
+
+
+
+    setPlainText(newText);
+
+    cursor.movePosition(QTextCursor::Start, QTextCursor::MoveAnchor);
+    cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor, cursorPosition);
+    cursor.clearSelection();
+    setTextCursor(cursor);
+
+    blockSignals(false);
+}
+
+/**
  * Drag enter event.
  * @param event
  *      The drag enter event.
@@ -129,6 +208,14 @@ SendWindow::SendWindow(SettingsDialog *settingsDialog, MainWindow *mainWindow) :
 {
     m_userInterface->setupUi(this);
 
+    m_userInterface->CanTypeBox->addItems(QStringList() << "11 Bit" << "11 Bit RTR" << "29 Bit" << "29 Bit RTR");
+    m_userInterface->CanTypeBox->setCurrentText("11 Bit");
+    m_userInterface->CanTypeBox->setVisible(false);
+    m_userInterface->CanTypeLabel->setVisible(false);
+    m_userInterface->CanIdLabel->setVisible(false);
+    m_userInterface->CanIdLineEdit->setVisible(false);
+    m_userInterface->CanIdLineEdit->configure(0x7ff);
+
     connect(m_userInterface->tableWidget->horizontalHeader(), SIGNAL(sectionResized(int, int, int)), this, SLOT(resizeTableColumnsSlot()));
     connect(m_userInterface->tableWidget, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(sequenceNameChangeSlot(QTableWidgetItem*)));
 
@@ -154,6 +241,7 @@ SendWindow::SendWindow(SettingsDialog *settingsDialog, MainWindow *mainWindow) :
     connect(m_userInterface->actionDebugCyclicSequenceScript, SIGNAL(triggered()), this, SLOT(debugCyclicScriptSlot()));
 
     connect(m_userInterface->CyclicSendFormat, SIGNAL(currentTextChanged(QString)), this, SLOT(currentSendStringFormatChangedSlot(QString)));
+    connect(m_userInterface->CanTypeBox, SIGNAL(currentTextChanged(QString)), this, SLOT(currentCanTypeChangedSlot(QString)));
 
     connect(m_userInterface->CyclicSendInput, SIGNAL(textChanged()), this, SLOT(cyclicSendInputTextChangedSlot()));
     connect(m_userInterface->CyclicSendInput, SIGNAL(focusOutSignal()), this, SLOT(checkCyclicSendInputSlot()));
@@ -171,7 +259,7 @@ SendWindow::SendWindow(SettingsDialog *settingsDialog, MainWindow *mainWindow) :
     m_userInterface->CyclicSendRepetition->setValidator(new QIntValidator(0, MAX_REPETITIONS, m_userInterface->CyclicSendRepetition));
     m_userInterface->CyclicSendPause->setValidator(new QIntValidator(0, MAX_PAUSE, m_userInterface->CyclicSendPause));
 
-    m_userInterface->tableWidget->setHorizontalHeaderLabels({"name", "format", "value", "optional sequence script"});
+    m_userInterface->tableWidget->setHorizontalHeaderLabels({"name", "format", "CAN type", "CAN id", "value", "optional sequence script"});
 
     m_userInterface->tableWidget->setSendWindow(this);
     m_userInterface->tableWidget->setMainWindow(m_mainWindow);
@@ -179,7 +267,7 @@ SendWindow::SendWindow(SettingsDialog *settingsDialog, MainWindow *mainWindow) :
     m_currentSequenceFileString = tableToString();
 
     QStringList availTargets;
-    availTargets << "ascii" << "hex" << "bin" << "uint8" << "uint16" << "uint32" << "int8" << "int16" << "int32";
+    availTargets << "ascii" << "hex" << "bin" << "uint8" << "uint16" << "uint32" << "int8" << "int16" << "int32" << "can";
     m_userInterface->CyclicSendFormat->addItems(availTargets);
 
     QShortcut* shortcut = new QShortcut(QKeySequence("Ctrl+Shift+X"), this);
@@ -532,7 +620,7 @@ void SendWindow::checkTextEditContent(QPlainTextEdit* textEdit, QString currentF
 
             QByteArray array = textToByteArray(currentFormat, text, formatToDecimalType(currentFormat), settings->targetEndianess);
 
-            text = MainWindow::byteArrayToNumberString(array, (currentFormat == "bin") ? true : false, (currentFormat == "hex") ? true : false,
+            text = MainWindow::byteArrayToNumberString(array, (currentFormat == "bin") ? true : false, ((currentFormat == "hex") || (currentFormat == "can")) ? true : false,
                                                        false, true, true, formatToDecimalType(currentFormat), settings->targetEndianess);
 
             textEdit->blockSignals(true);
@@ -577,6 +665,16 @@ QString SendWindow::formatComboBoxChanged(QPlainTextEdit* textEdit, QString form
 {
     QString newText;
     const Settings* settings = m_settingsDialog->settings();
+
+    if(format == "can")
+    {
+        format = "hex";
+    }
+
+    if(oldFormat == "can")
+    {
+        oldFormat = "hex";
+    }
 
     if(format != "ascii")
     {
@@ -624,6 +722,53 @@ void SendWindow::comboBoxCellChangedSlot(QString text)
     textEdit->blockSignals(false);
     m_userInterface->tableWidget->item(box->row(), COLUMN_VALUE)->setData(Qt::UserRole + 1, format);
 
+    setCanElementsInSequenceTable();
+
+
+}
+
+/**
+ * Sets the CAN GUI elements in the sequence table.
+ */
+void SendWindow::setCanElementsInSequenceTable(void)
+{
+    bool canIsSelected = false;
+    for(int i = 0; i < m_userInterface->tableWidget->rowCount(); i++)
+    {
+        SequenceTableComboBox* box = static_cast<SequenceTableComboBox*>(m_userInterface->tableWidget->cellWidget(i,COLUMN_FORMAT));
+        bool enable = false;
+        if(box->currentText() == "can")
+        {
+            canIsSelected = true;
+            enable = true;
+        }
+
+        static_cast<SequenceTableComboBox*>(m_userInterface->tableWidget->cellWidget(i,COLUMN_CAN_TYPE))->setEnabled(enable);
+        static_cast<SequenceTableHexTextEdit*>(m_userInterface->tableWidget->cellWidget(i,COLUMN_CAN_ID))->setEnabled(enable);
+    }
+
+    if(canIsSelected)
+    {
+        m_userInterface->tableWidget->showColumn(COLUMN_CAN_TYPE);
+        m_userInterface->tableWidget->showColumn(COLUMN_CAN_ID);
+    }
+    else
+    {
+        m_userInterface->tableWidget->hideColumn(COLUMN_CAN_TYPE);
+        m_userInterface->tableWidget->hideColumn(COLUMN_CAN_ID);
+    }
+
+}
+
+/**
+ * This slot is called if the value of the CAN type combobox has been changed.
+ * @param type
+ *      The new type.
+ */
+void SendWindow::currentCanTypeChangedSlot(QString type)
+{
+    bool is11Bit = ((type == "11 Bit" ) || (type == "11 Bit RTR" )) ? true : false;
+    m_userInterface->CanIdLineEdit->configure(is11Bit ? 0x7ff :  0x1fffffff);
 }
 
 /**
@@ -633,6 +778,13 @@ void SendWindow::comboBoxCellChangedSlot(QString text)
  */
 void SendWindow::currentSendStringFormatChangedSlot(QString format)
 {
+    bool setVisible = (format == "can") ? true : false;
+    m_userInterface->CanTypeBox->setVisible(setVisible);
+    m_userInterface->CanTypeLabel->setVisible(setVisible);
+    m_userInterface->CanIdLabel->setVisible(setVisible);
+    m_userInterface->CanIdLineEdit->setVisible(setVisible);
+    currentCanTypeChangedSlot(m_userInterface->CanTypeBox->currentText());
+
 
     if(!m_userInterface->CyclicSendInput->toPlainText().isEmpty())
     {
@@ -718,12 +870,14 @@ void SendWindow::newButtonClickedSlot(void)
 
     m_userInterface->tableWidget->setItem(0, COLUMN_NAME,  new QTableWidgetItem(QString("%1").arg(m_userInterface->tableWidget->rowCount())));
     m_userInterface->tableWidget->setItem(0, COLUMN_FORMAT, new QTableWidgetItem());
+    m_userInterface->tableWidget->setItem(0, COLUMN_CAN_TYPE, new QTableWidgetItem());
+    m_userInterface->tableWidget->setItem(0, COLUMN_CAN_ID, new QTableWidgetItem());
     m_userInterface->tableWidget->setItem(0, COLUMN_SCRIPT, new QTableWidgetItem());
     m_userInterface->tableWidget->setItem(0, COLUMN_VALUE, new QTableWidgetItem());
 
     SequenceTableComboBox* comboBox = new SequenceTableComboBox(m_userInterface->tableWidget);
     QStringList availTargets;
-    availTargets  << "ascii" << "hex" << "bin" << "uint8" << "uint16" << "uint32" << "int8" << "int16" << "int32";
+    availTargets  << "ascii" << "hex" << "bin" << "uint8" << "uint16" << "uint32" << "int8" << "int16" << "int32" << "can";
     comboBox->addItems(availTargets);
     comboBox->setToolTip(toolTip());
     m_userInterface->tableWidget->setCellWidget(0, COLUMN_FORMAT, comboBox);
@@ -731,6 +885,26 @@ void SendWindow::newButtonClickedSlot(void)
     comboBox->setFrame(false);
     connect(comboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(comboBoxCellChangedSlot(QString)));
 
+
+    comboBox = new SequenceTableComboBox(m_userInterface->tableWidget);
+    comboBox->addItems(QStringList() << "11 Bit" << "11 Bit RTR" << "29 Bit" << "29 Bit RTR");
+    comboBox->setCurrentText("11 Bit");
+    comboBox->setEnabled(false);
+    comboBox->setToolTip(toolTip());
+    m_userInterface->tableWidget->setCellWidget(0, COLUMN_CAN_TYPE, comboBox);
+    comboBox->setRow(0);
+    comboBox->setFrame(false);
+
+    SequenceTableHexTextEdit* hexEdit = new SequenceTableHexTextEdit(m_userInterface->tableWidget, this);
+    hexEdit->setContextMenuPolicy(Qt::NoContextMenu);
+    hexEdit->setToolTip(toolTip());
+    hexEdit->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+    hexEdit->setRow(0);
+    hexEdit->setFrameStyle(QFrame::NoFrame);
+    hexEdit->setEnabled(false);
+    hexEdit->configure(0x7ff);
+    hexEdit->setPlainText("0x0");
+    m_userInterface->tableWidget->setCellWidget(0, COLUMN_CAN_ID, hexEdit);
 
 
     SequenceTablePlainTextEdit* lineEdit = new SequenceTablePlainTextEdit(m_userInterface->tableWidget, this);
@@ -765,6 +939,10 @@ void SendWindow::newButtonClickedSlot(void)
     {
         SequenceTableComboBox* box = static_cast<SequenceTableComboBox*>(m_userInterface->tableWidget->cellWidget(r,COLUMN_FORMAT));
         box->setRow(r);
+        box = static_cast<SequenceTableComboBox*>(m_userInterface->tableWidget->cellWidget(r,COLUMN_CAN_TYPE));
+        box->setRow(r);
+        SequenceTableHexTextEdit* hextEdit = static_cast<SequenceTableHexTextEdit*>(m_userInterface->tableWidget->cellWidget(r,COLUMN_CAN_ID));
+        hextEdit->setRow(r);
         SequenceTablePlainTextEdit* textEdit = static_cast<SequenceTablePlainTextEdit*>(m_userInterface->tableWidget->cellWidget(r,COLUMN_VALUE));
         textEdit->setRow(r);
         textEdit = static_cast<SequenceTablePlainTextEdit*>(m_userInterface->tableWidget->cellWidget(r,COLUMN_SCRIPT));
@@ -775,6 +953,8 @@ void SendWindow::newButtonClickedSlot(void)
     m_userInterface->tableWidget->selectRow(0);
     m_userInterface->tableWidget->blockSignals(false);
     itemSelectionChangedSlot();
+
+    setCanElementsInSequenceTable();
 
     emit sequenceTableHasChangedSignal();
 }
@@ -795,6 +975,20 @@ void SendWindow::debugCyclicScriptSlot(void)
         const Settings* settings = m_settingsDialog->settings();
         sendData.replace("\n", settings->consoleSendOnEnter.toLocal8Bit());
     }
+    else if(m_userInterface->CyclicSendFormat->currentText() == "can")
+    {
+        QByteArray canData;
+        canData.append(m_userInterface->CanTypeBox->currentIndex());
+        quint32 value = m_userInterface->CanIdLineEdit->getValue();
+        canData.append((value >> 24) & 0xff);
+        canData.append((value >> 16) & 0xff);
+        canData.append((value >> 8) & 0xff);
+        canData.append(value & 0xff);
+
+        sendData.prepend(canData);
+
+    }
+
     if(!sendData.isEmpty())
     {
         sendDataWithTheMainInterface(sendData, this,
@@ -886,6 +1080,8 @@ void SendWindow::resizeTableColumnsSlot(void)
     m_userInterface->tableWidget->setColumnWidth(COLUMN_SCRIPT, m_userInterface->tableWidget->width() -
                                                  (m_userInterface->tableWidget->columnWidth(COLUMN_NAME)
                                                   + m_userInterface->tableWidget->columnWidth(COLUMN_FORMAT)
+                                                  + m_userInterface->tableWidget->columnWidth(COLUMN_CAN_TYPE)
+                                                  + m_userInterface->tableWidget->columnWidth(COLUMN_CAN_ID)
                                                   + m_userInterface->tableWidget->columnWidth(COLUMN_VALUE)
                                                   + 2 *m_userInterface->tableWidget->frameWidth()
                                                   + m_userInterface->tableWidget->verticalHeader()->width()
@@ -1064,6 +1260,7 @@ void SendWindow::loadTableData(void)
         }
 
         resizeTableColumnsSlot();
+        setCanElementsInSequenceTable();
         emit sequenceTableHasChangedSignal();
     }
 
@@ -1668,6 +1865,50 @@ void SendWindow::setCurrentSendStringFormat(QString text)
 }
 
 /**
+ * Returns the current send CAN type (from the gui).
+ * @return
+ *      The format string.
+ */
+QString SendWindow::getCurrentCanType()
+{
+    return m_userInterface->CanTypeBox->currentText();
+}
+
+/**
+ * Sets the current send send CAN (in the gui).
+ * @param type
+ *      The new type string.
+ */
+void SendWindow::setCurrentCanType(QString type)
+{
+    m_userInterface->CanTypeBox->blockSignals(true);
+    m_userInterface->CanTypeBox->setCurrentText(type);
+    m_userInterface->CanTypeBox->blockSignals(false);
+
+    currentSendStringFormatChangedSlot(m_userInterface->CyclicSendFormat->currentText());
+}
+
+/**
+ * Returns the current send CAN ID (from the gui).
+ * @return
+ *      The current send repetition.
+ */
+QString SendWindow::getCurrentCanId()
+{
+    return m_userInterface->CanIdLineEdit->text();
+}
+
+/**
+ * Sets the current send CAN ID(in the gui).
+ * @param text
+ *      The new send repetition.
+ */
+void SendWindow::setCurrentCanId(QString text)
+{
+    m_userInterface->CanIdLineEdit->setText(text);
+}
+
+/**
  * Returns the current send repetition value (from the gui).
  * @return
  *      The current send repetition.
@@ -1748,6 +1989,20 @@ void SendWindow::sendButtonPressedSlot()
             const Settings* settings = m_settingsDialog->settings();
             sendData.replace("\n", settings->consoleSendOnEnter.toLocal8Bit());
         }
+        else if(m_userInterface->CyclicSendFormat->currentText() == "can")
+        {
+            QByteArray canData;
+            canData.append(m_userInterface->CanTypeBox->currentIndex());
+            quint32 value = m_userInterface->CanIdLineEdit->getValue();
+            canData.append((value >> 24) & 0xff);
+            canData.append((value >> 16) & 0xff);
+            canData.append((value >> 8) & 0xff);
+            canData.append(value & 0xff);
+
+            sendData.prepend(canData);
+
+        }
+
         if(!sendData.isEmpty())
         {
             sendDataWithTheMainInterface(sendData, this,

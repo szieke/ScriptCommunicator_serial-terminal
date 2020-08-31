@@ -185,7 +185,7 @@ QMenu {
 }
 
 QMenu::icon {
-    margin: 0px;
+    margin: 5px;
 }
 
 QMenu::item {
@@ -440,13 +440,22 @@ QTextEdit {
     color: #eff0f1;
     border: 1px solid #76797C;
 }
+QTextEdit:disabled {
+   color: #b4b4b4;
+	 background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #31363b, stop:1 #4b535b);
+}
+
 
 QPlainTextEdit {
     background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #232629, stop:1 #2e3237);
-    ;
     color: #eff0f1;
     border-radius: 2px;
     border: 1px solid #76797C;
+}
+
+QPlainTextEdit:disabled {
+   color: #b4b4b4;
+	 background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 #31363b, stop:1 #4b535b);
 }
 
 QHeaderView::section {
