@@ -421,6 +421,9 @@ public slots:
     ///This slot function is called if a combobox (all comboboxes inside sequence table) value has been changed.
     void comboBoxCellChangedSlot(QString text);
 
+    ///This slot function is called if a CAN type combobox (all comboboxes inside sequence table) value has been changed.
+    void canTypeCellChangedSlot(QString type);
+
     ///This slot function is called if a line edit (all line edit inside the sequence table) value has been changed.
     void textEditCellChangedSlot();
 

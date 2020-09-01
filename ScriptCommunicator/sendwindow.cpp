@@ -724,8 +724,21 @@ void SendWindow::comboBoxCellChangedSlot(QString text)
 
     setCanElementsInSequenceTable();
 
-
 }
+
+/**
+ * This slot function is called if a CAN type combobox (all comboboxes inside sequence table) value has been changed.
+ * @param type
+ *      The new type.
+ */
+void SendWindow::canTypeCellChangedSlot(QString type)
+{
+    SequenceTableComboBox* box = static_cast<SequenceTableComboBox*>(sender());
+    SequenceTableHexTextEdit* textEdit = static_cast<SequenceTableHexTextEdit*>(m_userInterface->tableWidget->cellWidget(box->row(),COLUMN_CAN_ID));
+    bool is11Bit = ((type == "11 Bit" ) || (type == "11 Bit RTR" )) ? true : false;
+    textEdit->configure(is11Bit ? 0x7ff :  0x1fffffff);
+}
+
 
 /**
  * Sets the CAN GUI elements in the sequence table.
@@ -894,6 +907,7 @@ void SendWindow::newButtonClickedSlot(void)
     m_userInterface->tableWidget->setCellWidget(0, COLUMN_CAN_TYPE, comboBox);
     comboBox->setRow(0);
     comboBox->setFrame(false);
+    connect(comboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(canTypeCellChangedSlot(QString)));
 
     SequenceTableHexTextEdit* hexEdit = new SequenceTableHexTextEdit(m_userInterface->tableWidget, this);
     hexEdit->setContextMenuPolicy(Qt::NoContextMenu);
@@ -1225,6 +1239,20 @@ void SendWindow::loadTableData(void)
                     box->setCurrentText(format);
                     box->blockSignals(false);
 
+                    QString type = nodeSequence.attributes().namedItem("canType").nodeValue();
+                    if(type.isEmpty()){type = "11 Bit";}
+                    box = static_cast<SequenceTableComboBox*>(m_userInterface->tableWidget->cellWidget(0, COLUMN_CAN_TYPE));
+                    box->blockSignals(true);
+                    box->setCurrentText(type);
+                    box->blockSignals(false);
+
+                    SequenceTableHexTextEdit* hexEdit = static_cast<SequenceTableHexTextEdit*>(m_userInterface->tableWidget->cellWidget(0,COLUMN_CAN_ID));
+                    hexEdit->blockSignals(true);
+                    QString id = nodeSequence.attributes().namedItem("canId").nodeValue();
+                    if(id.isEmpty()){id = "0x0";}
+                    hexEdit->setPlainText(id);
+                    hexEdit->blockSignals(false);
+
                     textEdit = static_cast<SequenceTablePlainTextEdit*>(m_userInterface->tableWidget->cellWidget(0,COLUMN_VALUE));
                     textEdit->blockSignals(true);
                     m_userInterface->tableWidget->item(0, COLUMN_VALUE)->setData(Qt::UserRole + 1, format);
@@ -1305,6 +1333,7 @@ QString SendWindow::tableToString(void)
             QTableWidgetItem* item1 = m_userInterface->tableWidget->item(r,COLUMN_NAME);
             SequenceTablePlainTextEdit* lineEdit = static_cast<SequenceTablePlainTextEdit*>(m_userInterface->tableWidget->cellWidget(r, COLUMN_VALUE));
             SequenceTablePlainTextEdit* scriptTextEdit = static_cast<SequenceTablePlainTextEdit*>(m_userInterface->tableWidget->cellWidget(r, COLUMN_SCRIPT));
+            SequenceTableHexTextEdit* hexEdit = static_cast<SequenceTableHexTextEdit*>(m_userInterface->tableWidget->cellWidget(r, COLUMN_CAN_ID));
 
             if(item1 && lineEdit)
             {
@@ -1315,8 +1344,12 @@ QString SendWindow::tableToString(void)
                 xmlWriter.writeStartElement("sequence");
 
                 SequenceTableComboBox* box = static_cast<SequenceTableComboBox*>(m_userInterface->tableWidget->cellWidget(r, COLUMN_FORMAT));
-
                 xmlWriter.writeAttribute("format", box->currentText());
+
+                box = static_cast<SequenceTableComboBox*>(m_userInterface->tableWidget->cellWidget(r, COLUMN_CAN_TYPE));
+                xmlWriter.writeAttribute("canType", box->currentText());
+
+                xmlWriter.writeAttribute("canId", hexEdit->toPlainText());
                 xmlWriter.writeAttribute("value", lineEdit->toPlainText());
                 xmlWriter.writeAttribute("script", MainWindow::convertToRelativePath(m_currentSequenceFileName, scriptTextEdit->toPlainText()));
                 xmlWriter.writeAttribute("height", QString("%1").arg(m_userInterface->tableWidget->rowHeight(r)));
