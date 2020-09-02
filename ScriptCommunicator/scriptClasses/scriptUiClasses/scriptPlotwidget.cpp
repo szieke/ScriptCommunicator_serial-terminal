@@ -10,7 +10,8 @@
  *      The layout of the group box in which the plot widget resides.
  */
 ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scriptWindow, QHBoxLayout *hLayout) :
-    QObject(0), m_scriptThread(scriptThread), m_maxDataPointsPerGraph(10000000), m_addSpaceAfterBiggestValues(false)
+    QObject(0), m_scriptThread(scriptThread), m_maxDataPointsPerGraph(10000000), m_addSpaceAfterBiggestValues(false), m_yAxis2IsVisible(false),
+    m_yRangeHelperVisible(false)
 {
 
     Qt::ConnectionType directConnectionType = m_scriptThread->runsInDebugger() ? Qt::DirectConnection : Qt::BlockingQueuedConnection ;
@@ -45,6 +46,22 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
     m_yMaxRangeLineEdit->setValidator(new QDoubleValidator(INT_MIN, INT_MAX, 20, m_yMaxRangeLineEdit));
     m_yMaxRangeLineEdit->setMaximumWidth(80);
     vLayout->addWidget(m_yMaxRangeLineEdit);
+
+    m_y2MinRangeLabel = new QLabel("y 2 min Range",m_plotWidget);
+    vLayout->addWidget(m_y2MinRangeLabel);
+    //Create and add the y 2 min range line edit.
+    m_y2MinRangeLineEdit = new QLineEdit(m_plotWidget);
+    m_y2MinRangeLineEdit->setValidator(new QDoubleValidator(INT_MIN, INT_MAX, 20, m_y2MinRangeLineEdit));
+    m_y2MinRangeLineEdit->setMaximumWidth(80);
+    vLayout->addWidget(m_y2MinRangeLineEdit);
+
+    m_y2MaxRangeLabel = new QLabel("y 2 max Range",m_plotWidget);
+    vLayout->addWidget(m_y2MaxRangeLabel);
+    //Create and add the y 2 max range line edit.
+    m_y2MaxRangeLineEdit = new QLineEdit(m_plotWidget);
+    m_y2MaxRangeLineEdit->setValidator(new QDoubleValidator(INT_MIN, INT_MAX, 20, m_y2MaxRangeLineEdit));
+    m_y2MaxRangeLineEdit->setMaximumWidth(80);
+    vLayout->addWidget(m_y2MaxRangeLineEdit);
 
     //Create and add the update check box.
     m_updatePlotCheckBox = new QCheckBox(m_plotWidget);
@@ -116,11 +133,11 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
     connect(this, SIGNAL(updatePlotSignal()), m_plotWidget, SLOT(replot()), Qt::QueuedConnection);
 
 
-    connect(this, SIGNAL(addGraphSignal(QString, QString, QString, int*)),
-            this, SLOT(addGraphSlot(QString, QString, QString, int*)), directConnectionType);
+    connect(this, SIGNAL(addGraphSignal(QString, QString, QString, int*,bool)),
+            this, SLOT(addGraphSlot(QString, QString, QString, int*,bool)), directConnectionType);
 
-    connect(this, SIGNAL(setInitialAxisRangesSignal(double, double, double, bool)),
-            this, SLOT(setInitialAxisRangesSlot(double, double, double, bool)), Qt::QueuedConnection);
+    connect(this, SIGNAL(setInitialAxisRangesSignal(double, double, double, bool,double,double)),
+            this, SLOT(setInitialAxisRangesSlot(double, double, double, bool, double,double)), Qt::QueuedConnection);
 
     connect(this, SIGNAL(addDataToGraphSignal(int, double, double, bool)),
             this, SLOT(addDataToGraphSlot(int, double, double, bool)), Qt::QueuedConnection);
@@ -137,8 +154,8 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
     connect(this, SIGNAL(setLineWidthSignal(int,int)),
             this, SLOT(setLineWidthSlot(int,int)), Qt::QueuedConnection);
 
-    connect(this, SIGNAL(setAxisLabelsSignal(QString,QString)),
-            this, SLOT(setAxisLabelsSlot(QString,QString)), Qt::QueuedConnection);
+    connect(this, SIGNAL(setAxisLabelsSignal(QString,QString,QString)),
+            this, SLOT(setAxisLabelsSlot(QString,QString,QString)), Qt::QueuedConnection);
 
     connect(this, SIGNAL(showLegendSignal(bool)),
             this, SLOT(showLegendSlot(bool)), Qt::QueuedConnection);
@@ -159,6 +176,12 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
             this, SLOT(doubleLineEditChangedSlot(QString)), Qt::QueuedConnection);
 
     connect(m_yMaxRangeLineEdit, SIGNAL(textChanged(QString)),
+            this, SLOT(doubleLineEditChangedSlot(QString)), Qt::QueuedConnection);
+
+    connect(m_y2MinRangeLineEdit, SIGNAL(textChanged(QString)),
+            this, SLOT(doubleLineEditChangedSlot(QString)), Qt::QueuedConnection);
+
+    connect(m_y2MaxRangeLineEdit, SIGNAL(textChanged(QString)),
             this, SLOT(doubleLineEditChangedSlot(QString)), Qt::QueuedConnection);
 
     connect(m_plotWidget, SIGNAL(mousePress(QMouseEvent*)),
@@ -271,6 +294,7 @@ void ScriptPlotWidget::removeAllGraphsSlot(void)
     m_xAxisMaxValues.clear();
     m_plotWidget->xAxis->setRange(m_xRangeLineEdit->text().toDouble() * -1,  0);
     m_plotWidget->yAxis->setRange(m_yMinRangeLineEdit->text().toDouble(), m_yMaxRangeLineEdit->text().toDouble());
+    m_plotWidget->yAxis2->setRange(m_y2MinRangeLineEdit->text().toDouble(), m_y2MaxRangeLineEdit->text().toDouble());
     m_plotWidget->replot();
 
     for(auto el : m_visibilityCheckBoxes)
@@ -398,15 +422,17 @@ void ScriptPlotWidget::saveAllGraphsSlot(QString fileName, bool* hasSucceed)
         }
        else //Invalid suffix and csv
         {
-            QString content = "";
+            QString content = "plot version=1\n";
 
             for (int i = 0; i < m_plotWidget->graphCount(); i++)
             {
                 if(m_plotWidget->graph(i)->visible())
                 {
+
                     content += m_plotWidget->graph(i)->name() + ",";
                     content += QString("%1,").arg(m_plotWidget->graph(i)->pen().color().name());
                     content += QString("%1,").arg(m_plotWidget->graph(i)->pen().style());
+                    content += QString("%1,").arg((m_plotWidget->graph(i)->valueAxis() == m_plotWidget->yAxis2) ? "useYAxis2=true" : "useYAxis2=false");
 
                     QSharedPointer<QCPGraphDataContainer>  map = m_plotWidget->graph(i)->data();
                     QCPDataContainer<QCPGraphData>::const_iterator iter;
@@ -414,7 +440,8 @@ void ScriptPlotWidget::saveAllGraphsSlot(QString fileName, bool* hasSucceed)
                     {
                         content += QString("%1:%2,").arg(iter->key).arg(iter->value);
                     }
-                    //Remove the last ,
+
+                    //Remove the last ','
                     content.remove(content.length() - 1, 1);
                     content += "\n";
                 }
@@ -477,6 +504,13 @@ void ScriptPlotWidget::loadButtonPressed()
         //The singles graphs are separated with a \n
         QStringList graphs = fileContent.split("\n");
 
+        bool containsUseYAxis2 = false;
+        if(graphs[0].indexOf("plot version=") != -1)
+        {
+            containsUseYAxis2 = true;
+            graphs.removeFirst();
+        }
+
 
         //The update check box must be checked for addDataToGraphSlot.
         bool updateCheckBoxState = m_updatePlotCheckBox->isChecked();
@@ -487,10 +521,16 @@ void ScriptPlotWidget::loadButtonPressed()
             //The single values are separated with ,.
             QStringList values = graphs[i].split(",");
 
-            if(values.size() > 3)
+            if(values.size() > 4)
             {
                 int graphIndex = 0;
-                addGraphSlot("blue", "solid", values[0], &graphIndex);
+                bool useYAxis2 = false;
+                if(containsUseYAxis2)
+                {
+                    useYAxis2 = (values[3] == "useYAxis2=true") ? true : false;;
+                }
+
+                addGraphSlot("blue", "solid", values[0], &graphIndex, useYAxis2);
 
                 QPen pen;
                 pen.setColor(values[1]);
@@ -498,7 +538,7 @@ void ScriptPlotWidget::loadButtonPressed()
                 m_plotWidget->graph(graphIndex)->setPen(pen);
 
 
-                for(qint32 index = 3; index < values.size(); index++)
+                for(qint32 index = 4; index < values.size(); index++)
                 {
                     QStringList valuePair = values[index].split(":");
                     if(valuePair.size() == 2)
@@ -610,16 +650,23 @@ void ScriptPlotWidget::updateCheckBoxSlot(int state)
  *      The min. values of the y axis.
  * @param yMaxValue
  *      The max. value of the y axis.
+ * @param y2MinValue
+ *      The min. values of the y axis 2.
+ * @param y2MaxValue
+ *      The max. value of the y axis 2.
  * @param addSpaceAfterBiggestValues
  *      True if a space shall be added after the biggest value of a graph.
  */
-void ScriptPlotWidget::setInitialAxisRangesSlot(double xRange, double yMinValue, double yMaxValue, bool addSpaceAfterBiggestValues)
+void ScriptPlotWidget::setInitialAxisRangesSlot(double xRange, double yMinValue, double yMaxValue, bool addSpaceAfterBiggestValues, double y2MinValue, double y2MaxValue)
 {
     m_addSpaceAfterBiggestValues = addSpaceAfterBiggestValues;
     m_xRangeLineEdit->setText(QString("%1").arg(xRange));
     m_yMinRangeLineEdit->setText(QString("%1").arg(yMinValue));
     m_yMaxRangeLineEdit->setText(QString("%1").arg(yMaxValue));
+    m_y2MinRangeLineEdit->setText(QString("%1").arg(y2MinValue));
+    m_y2MaxRangeLineEdit->setText(QString("%1").arg(y2MaxValue));
     m_plotWidget->yAxis->setRange(yMinValue, yMaxValue);
+    m_plotWidget->yAxis2->setRange(y2MinValue, y2MaxValue);
     m_plotWidget->xAxis->setRange(xRange * -1, 0);
 }
 
@@ -633,10 +680,15 @@ void ScriptPlotWidget::setInitialAxisRangesSlot(double xRange, double yMinValue,
  *      The min. values of the y axis.
  * @param yMaxValue
  *      The max. value of the y axis.
+ * @param y2MinValue
+ *      The min. values of the y axis 2.
+ * @param y2MaxValue
+ *      The max. value of the y axis 2.
  */
-void ScriptPlotWidget::setCurrentAxisRanges(double xMinValue, double xMaxValue, double yMinValue, double yMaxValue)
+void ScriptPlotWidget::setCurrentAxisRanges(double xMinValue, double xMaxValue, double yMinValue, double yMaxValue, double y2MinValue, double y2MaxValue)
 {
     m_plotWidget->yAxis->setRange(yMinValue, yMaxValue);
+    m_plotWidget->yAxis2->setRange(y2MinValue, y2MaxValue);
     m_plotWidget->xAxis->setRange(xMinValue, xMaxValue);
     m_plotWidget->replot();
 }
@@ -650,13 +702,15 @@ QScriptValue ScriptPlotWidget::getCurrentAxisRanges(void)
 {
     const QCPRange xrange = m_plotWidget->xAxis->range();
     const QCPRange yrange = m_plotWidget->yAxis->range();
+    const QCPRange y2range = m_plotWidget->yAxis2->range();
 
-    QRectF rect(QPointF(xrange.lower, yrange.upper), QPointF(xrange.upper, yrange.lower));
     QScriptValue ret = m_scriptThread->getScriptEngine()->newObject();
     ret.setProperty("xMinValue", xrange.lower);
     ret.setProperty("xMaxValue", xrange.upper);
     ret.setProperty("yMinValue", yrange.lower);
     ret.setProperty("yMaxValue", yrange.upper);
+    ret.setProperty("y2MinValue", y2range.lower);
+    ret.setProperty("y2MaxValue", y2range.upper);
     return ret;
 }
 
@@ -667,10 +721,11 @@ QScriptValue ScriptPlotWidget::getCurrentAxisRanges(void)
  * @param yAxisLabel
  *      The label for the y axis.
  */
-void ScriptPlotWidget::setAxisLabelsSlot(QString xAxisLabel, QString yAxisLabel)
+void ScriptPlotWidget::setAxisLabelsSlot(QString xAxisLabel, QString yAxisLabel, QString yAxis2Label)
 {
     m_plotWidget->xAxis->setLabel(xAxisLabel);
     m_plotWidget->yAxis->setLabel(yAxisLabel);
+    m_plotWidget->yAxis2->setLabel(yAxis2Label);
 }
 
 
@@ -1027,10 +1082,24 @@ void ScriptPlotWidget::setLineWidthSlot(int graphIndex, int width)
  *      The name of the graph.
  * @graphIndex
  *     The index off the added graph.
+ * @param useYAxis2
+ *     True if y axis 2 shall be used for this graph
  */
-void ScriptPlotWidget::addGraphSlot(QString color, QString penStyle, QString name, int *graphIndex)
+void ScriptPlotWidget::addGraphSlot(QString color, QString penStyle, QString name, int *graphIndex, bool useYAxis2)
 {
-    m_plotWidget->addGraph();
+    if(useYAxis2)
+    {
+        m_plotWidget->yAxis2->setVisible(true);
+        m_plotWidget->yAxis2->setTickLabels(true);
+        m_yAxis2IsVisible = true;
+
+        m_y2MinRangeLabel->setVisible(m_yRangeHelperVisible);
+        m_y2MaxRangeLabel->setVisible(m_yRangeHelperVisible);
+        m_y2MinRangeLineEdit->setVisible(m_yRangeHelperVisible);
+        m_y2MaxRangeLineEdit->setVisible(m_yRangeHelperVisible);
+    }
+
+    m_plotWidget->addGraph( m_plotWidget->xAxis, useYAxis2 ? m_plotWidget->yAxis2 : m_plotWidget->yAxis);
     int index = m_plotWidget->graphCount()- 1;
 
     QPen pen;
@@ -1125,6 +1194,13 @@ void ScriptPlotWidget::showHelperElementsSlot(bool showXRange, bool showYRange, 
     m_yMinRangeLineEdit->setVisible(showYRange);
     m_yMaxRangeLineEdit->setVisible(showYRange);
 
+    m_yRangeHelperVisible = showYRange;
+    m_y2MinRangeLabel->setVisible(showYRange && m_yAxis2IsVisible);
+    m_y2MaxRangeLabel->setVisible(showYRange && m_yAxis2IsVisible);
+    m_y2MinRangeLineEdit->setVisible(showYRange && m_yAxis2IsVisible);
+    m_y2MaxRangeLineEdit->setVisible(showYRange && m_yAxis2IsVisible);
+
+
     m_updatePlotCheckBox->setVisible(showUpdate);
     m_savePushButton->setVisible(showSave);
     m_loadPushButton->setVisible(showLoad);
@@ -1153,6 +1229,7 @@ void ScriptPlotWidget::adjustBordersAndReplot(void)
     }
 
     m_plotWidget->yAxis->setRange(m_yMinRangeLineEdit->text().toDouble(), m_yMaxRangeLineEdit->text().toDouble());
+    m_plotWidget->yAxis2->setRange(m_y2MinRangeLineEdit->text().toDouble(), m_y2MaxRangeLineEdit->text().toDouble());
     m_plotWidget->replot();
 }
 

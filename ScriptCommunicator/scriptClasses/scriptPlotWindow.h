@@ -72,19 +72,20 @@ public:
     }
 
     ///This function adds a graph to the diagram.
-    Q_INVOKABLE int addGraph(QString color, QString penStyle, QString name)
+    Q_INVOKABLE int addGraph(QString color, QString penStyle, QString name, bool useYAxis2 = false)
     {
         int graphIndex = 0;
-        emit m_plotWindow->getWidget()->addGraphSignal(color, penStyle, name, &graphIndex);
+        emit m_plotWindow->getWidget()->addGraphSignal(color, penStyle, name, &graphIndex, useYAxis2);
         return graphIndex;
     }
 
     ///The slot function sets the initial ranges of the diagram.
-    Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue, bool addSpaceAfterBiggestValues = true)
-    {emit m_plotWindow->getWidget()->setInitialAxisRangesSignal(xRange, yMinValue, ymaxValue, addSpaceAfterBiggestValues);}
+    Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double yMaxValue, bool addSpaceAfterBiggestValues = true, double y2MinValue=0, double y2MaxValue=0)
+    {emit m_plotWindow->getWidget()->setInitialAxisRangesSignal(xRange, yMinValue, yMaxValue, addSpaceAfterBiggestValues, y2MinValue, y2MaxValue);}
 
     ///The function sets the current ranges of the diagram.
-    Q_INVOKABLE void setCurrentAxisRanges(double xMinValue, double xMaxValue, double yMinValue, double yMaxValue){m_plotWindow->getWidget()->setCurrentAxisRanges(xMinValue, xMaxValue, yMinValue, yMaxValue);}
+    Q_INVOKABLE void setCurrentAxisRanges(double xMinValue, double xMaxValue, double yMinValue, double yMaxValue, double y2MinValue=0, double y2MaxValue=0)
+    {m_plotWindow->getWidget()->setCurrentAxisRanges(xMinValue, xMaxValue, yMinValue, yMaxValue, y2MinValue, y2MaxValue);}
 
     ///The function gets the current ranges of the diagram.
     Q_INVOKABLE QScriptValue getCurrentAxisRanges(void){return m_plotWindow->getWidget()->getCurrentAxisRanges();}
@@ -141,7 +142,7 @@ public:
     Q_INVOKABLE void setLineWidth(int graphIndex, int width){emit m_plotWindow->getWidget()->setLineWidthSignal(graphIndex, width);}
 
     ///Sets the axis label.
-    Q_INVOKABLE void setAxisLabels(QString xAxisLabel, QString yAxisLabel){emit m_plotWindow->getWidget()->setAxisLabelsSignal(xAxisLabel, yAxisLabel);}
+    Q_INVOKABLE void setAxisLabels(QString xAxisLabel, QString yAxisLabel, QString yAxis2Label=""){emit m_plotWindow->getWidget()->setAxisLabelsSignal(xAxisLabel, yAxisLabel, yAxis2Label);}
 
     ///This function shows or hides the diagram legend.
     Q_INVOKABLE void showLegend(bool show){emit m_plotWindow->getWidget()->showLegendSignal(show);}
@@ -154,7 +155,7 @@ public:
 
     ///Sets the visibility of several plot widget elements.
     Q_INVOKABLE void showHelperElements(bool showXRange, bool showYRange, bool showUpdate, bool showSave, bool showLoad, bool showClear, bool showGraphVisibility,
-                                        quint32 graphVisibilityMaxSize=80, bool showLegend=true)
+                                        quint32 graphVisibilityMaxSize=100, bool showLegend=true)
     {emit m_plotWindow->getWidget()->showHelperElementsSignal(showXRange, showYRange, showUpdate, showSave, showLoad, showClear, showGraphVisibility, graphVisibilityMaxSize, showLegend);}
 
     ///Sets tThe max. number of data points per graph (the default is 10.000.000).

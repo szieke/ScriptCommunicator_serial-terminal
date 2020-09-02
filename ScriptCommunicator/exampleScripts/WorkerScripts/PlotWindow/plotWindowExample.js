@@ -53,7 +53,7 @@ function timeout2()
 function clearButtonPressed()
 {
 	//Remove data with removeDataRangeFromGraph (this line only shows the usage of removeDataRangeFromGraph).
-	plotWindow1.removeDataRangeFromGraph(plotWindowGraph1Index, 0, x + 10);
+	plotWindow1.removeDataRangeFromGraph(plotWindowGraph1Index, 0, x1 + 10);
 	
 	//Clear all data with clearGraphs.
 	plotWindow1.clearGraphs();
@@ -82,15 +82,15 @@ scriptThread.appendTextToConsole('script plot window started ');
 //create and configure plot window 1
 var plotWindow1 = scriptThread.createPlotWindow();
 plotWindow1.setWindowTitle("plot window created/used by script");
-plotWindow1.setAxisLabels("x axis plot 1", "y axis plot 1");
+plotWindow1.setAxisLabels("x axis plot 1", "y axis plot 1", "y axis 2 plot 2");
 plotWindow1.showLegend(true);
-plotWindow1.setInitialAxisRanges(50, 0, 30);
+plotWindow1.setInitialAxisRanges(50, 0, 30, true, 0, 60);
 var plotWindowGraph1Index = plotWindow1.addGraph("blue", "solid", "graph 1");
 plotWindow1.setScatterStyle(plotWindowGraph1Index, "Cross", 5);
 plotWindow1.setLineStyle(plotWindowGraph1Index, "None");
 
-var plotWindowGraph2Index = plotWindow1.addGraph("red", "solid", "graph 2");
-plotWindow1.showHelperElements(true, true, true, true, true, true, true, 80, true);
+var plotWindowGraph2Index = plotWindow1.addGraph("red", "solid", "graph 2", true);//this graph uses the second y axis
+plotWindow1.showHelperElements(true, true, true, true, true, true, true, 150, true);
 plotWindow1.show();
 plotWindow1.clearButtonPressedSignal.connect(clearButtonPressed)
 plotWindow1.closedSignal.connect(plotWindowClosedSlot)
@@ -110,7 +110,7 @@ plotWindow2.setScatterStyle(plotWindow2Graph1Index, "Circle", 5);
 plotWindow2.setLineStyle(plotWindow2Graph1Index, "None");
 
 var plotWindow2Graph2Index = plotWindow2.addGraph("black", "dot", "graph 2");
-plotWindow2.showHelperElements(true, true, true, true, true, true, true, 80, true);
+plotWindow2.showHelperElements(true, true, true, true, true, true, true, 150, true);
 plotWindow2.show();
 plotWindow2.closedSignal.connect(plotWindowClosedSlot)
 plotWindow2.clearButtonPressedSignal.connect(clearButtonPressed)

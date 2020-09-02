@@ -50,22 +50,24 @@ public:
     *      dash, dot and solid.
     * @param name
     *      The name of the graph.
-    * @graphIndex
+    * @param graphIndex
     *     The index off the added graph.
+    * @param useYAxis2
+    *     True if y axis 2 shall be used for this graph
     */
-    Q_INVOKABLE int addGraph(QString color, QString penStyle, QString name)
+    Q_INVOKABLE int addGraph(QString color, QString penStyle, QString name, bool useYAxis2 = false)
     {
         int graphIndex = 0;
-        emit addGraphSignal(color, penStyle, name, &graphIndex);
+        emit addGraphSignal(color, penStyle, name, &graphIndex, useYAxis2);
         return graphIndex;
     }
 
     ///The function sets the initial ranges of the diagram.
-    Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double ymaxValue, bool addSpaceAfterBiggestValues = true)
-    {emit setInitialAxisRangesSignal(xRange, yMinValue, ymaxValue, addSpaceAfterBiggestValues);}
+    Q_INVOKABLE void setInitialAxisRanges(double xRange, double yMinValue, double yMaxValue, bool addSpaceAfterBiggestValues = true, double y2MinValue=0, double y2MaxValue=0)
+    {emit setInitialAxisRangesSignal(xRange, yMinValue, yMaxValue, addSpaceAfterBiggestValues, y2MinValue, y2MaxValue);}
 
     ///The function sets the current ranges of the diagram.
-    Q_INVOKABLE void setCurrentAxisRanges(double xMinValue, double xMaxValue, double yMinValue, double yMaxValue);
+    Q_INVOKABLE void setCurrentAxisRanges(double xMinValue, double xMaxValue, double yMinValue, double yMaxValue, double y2MinValue=0, double y2MaxValue=0);
 
     ///The function gets the current ranges of the diagram.
     Q_INVOKABLE QScriptValue getCurrentAxisRanges(void);
@@ -122,7 +124,7 @@ public:
     Q_INVOKABLE void setLineWidth(int graphIndex, int width){emit setLineWidthSignal(graphIndex, width);}
 
     ///Sets the axis label.
-    Q_INVOKABLE void setAxisLabels(QString xAxisLabel, QString yAxisLabel){emit setAxisLabelsSignal(xAxisLabel, yAxisLabel);}
+    Q_INVOKABLE void setAxisLabels(QString xAxisLabel, QString yAxisLabel, QString yAxis2Label=""){emit setAxisLabelsSignal(xAxisLabel, yAxisLabel, yAxis2Label);}
 
     ///This function shows or hides the diagram legend.
     Q_INVOKABLE void showLegend(bool show){emit showLegendSignal(show);}
@@ -136,7 +138,7 @@ public:
 
     ///Sets the visibility of several plot widget elements.
     Q_INVOKABLE void showHelperElements(bool showXRange, bool showYRange, bool showUpdate, bool showSave,
-                                        bool showLoad, bool showClear, bool showGraphVisibility, quint32 graphVisibilityMaxSize=80, bool showLegend=true)
+                                        bool showLoad, bool showClear, bool showGraphVisibility, quint32 graphVisibilityMaxSize=100, bool showLegend=true)
     {emit showHelperElementsSignal(showXRange, showYRange, showUpdate, showSave, showLoad, showClear, showGraphVisibility, graphVisibilityMaxSize, showLegend);}
 
     ///Sets tThe max. number of data points per graph (the default is 10.000.000.).
@@ -194,11 +196,11 @@ signals:
 
     ///Is connected with PlotWindow::addGraphSlot (adds a graph).
     ///This signal is private and must not be used inside a script.
-    void addGraphSignal(QString color, QString penStyle, QString name, int* graphIndex);
+    void addGraphSignal(QString color, QString penStyle, QString name, int* graphIndex, bool useYAxis2);
 
     ///Is connected with PlotWindow::setInitialAxisRangesSlot (sets the ranges of the diagram).
     ///This signal is private and must not be used inside a script.
-    void setInitialAxisRangesSignal(double xRange, double yMinValue, double ymaxValue, bool addSpaceAfterBiggestValues);
+    void setInitialAxisRangesSignal(double xRange, double yMinValue, double ymaxValue, bool addSpaceAfterBiggestValues, double y2MinValue, double y2maxValue);
 
     ///Is connected with PlotWindow::addDataToGraphSlot (adds one point to a given specific graph).
     ///This signal is private and must not be used inside a script.
@@ -222,7 +224,7 @@ signals:
 
     ///Is connected with PlotWindow::showFromScriptSlot (Sets the axis labels).
     ///This signal is private and must not be used inside a script.
-    void setAxisLabelsSignal(QString xAxisLabel, QString yAxisLabel);
+    void setAxisLabelsSignal(QString xAxisLabel, QString yAxisLabe, QString yAxis2Label);
 
     ///Is connected with PlotWindow::showLegendSlot (shows or hides the plot legend).
     ///This signal is private and must not be used inside a script.
@@ -268,10 +270,10 @@ public slots:
     void threadStateChangedSlot(ThreadSate state, ScriptThread* thread);
 
     ///This function adds a graph to the diagram.
-    void addGraphSlot(QString color, QString penStyle, QString name, int* graphIndex);
+    void addGraphSlot(QString color, QString penStyle, QString name, int* graphIndex, bool useYAxis2);
 
     ///The slot function sets the initial ranges of the diagram.
-    void setInitialAxisRangesSlot(double xRange, double yMinValue, double ymaxValue, bool addSpaceAfterBiggestValues);
+    void setInitialAxisRangesSlot(double xRange, double yMinValue, double ymaxValue, bool addSpaceAfterBiggestValues, double y2MinValue, double y2MaxValue);
 
     ///This slot function adds one point to a graph.
     bool addDataToGraphSlot(int graphIndex, double x, double y, bool force=false);
@@ -289,7 +291,7 @@ public slots:
     void setLineWidthSlot(int graphIndex, int width);
 
     ///Sets the axis labels.
-    void setAxisLabelsSlot(QString xAxisLabel, QString yAxisLabel);
+    void setAxisLabelsSlot(QString xAxisLabel, QString yAxisLabel, QString yAxis2Label);
 
     ///This function clears the data of all graphs.
     void clearGraphsSlot(void);
@@ -388,6 +390,18 @@ private:
     ///The max y range input field label.
     QLabel* m_yMaxRangeLabel;
 
+    ///The min y range input field.
+    QLineEdit* m_y2MinRangeLineEdit;
+
+    ///The min y 2 range input field label.
+    QLabel* m_y2MinRangeLabel;
+
+    ///The max y 2 range input field.
+    QLineEdit* m_y2MaxRangeLineEdit;
+
+    ///The max y 2 range input field label.
+    QLabel* m_y2MaxRangeLabel;
+
     ///The update plot check box.
     QCheckBox* m_updatePlotCheckBox;
 
@@ -417,6 +431,12 @@ private:
 
     ///True if a space shall be added after the biggest value of a graph.
     bool m_addSpaceAfterBiggestValues;
+
+    ///True if y axis is visible.
+    bool m_yAxis2IsVisible;
+
+    ///True if the y ranger helper elements are shown.
+    bool m_yRangeHelperVisible;
 };
 
 
