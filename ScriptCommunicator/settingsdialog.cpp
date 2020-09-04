@@ -321,6 +321,9 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
         colorButtonPressed(btn);
     });
 
+    connect(m_userInterface->consoleWrapLinesCheckbox, SIGNAL(toggled(bool)),
+            this, SIGNAL(consoleWrapLinesChangedSignal(bool)));
+
     connect(m_userInterface->consoleNewLineAfterNumberBytes, SIGNAL(textChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
 
@@ -853,6 +856,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     m_userInterface->consoleNewLineAfterNumberBytes->setText(QString("%1").arg(settings.consoleNewLineAfterBytes));
     m_userInterface->consoleNewLineAfterPause->setText(QString("%1").arg(settings.consoleNewLineAfterPause));
     m_userInterface->ConsoleTimestampFormat->setText(QString(settings.consoleTimestampFormat).replace("\n", "\\n"));
+    m_userInterface->consoleWrapLinesCheckbox->setChecked(settings.wrapLines);
 
     m_userInterface->useDarkStyleCheckBox->setChecked(settings.useDarkStyle);
 
@@ -2069,6 +2073,7 @@ void SettingsDialog::updateSettings(bool forceUpdate)
     m_currentSettings.consoleMixedBinaryColor= getColorStringFromButton(m_userInterface->btnColorBin);
     m_currentSettings.consoleNewLineAfterBytes = m_userInterface->consoleNewLineAfterNumberBytes->text().toUInt();
     m_currentSettings.consoleNewLineAfterPause = m_userInterface->consoleNewLineAfterPause->text().toUInt();
+    m_currentSettings.wrapLines = m_userInterface->consoleWrapLinesCheckbox->isChecked();
     m_currentSettings.consoleSendOnEnter = m_userInterface->consoleSendOnEnter->itemData(m_userInterface->consoleSendOnEnter->currentIndex()).toString();
     m_currentSettings.consoleTimestampFormat = m_userInterface->ConsoleTimestampFormat->text();
     m_currentSettings.consoleTimestampFormat.replace("\\n", "\n");

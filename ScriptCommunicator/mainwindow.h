@@ -373,6 +373,9 @@ public slots:
     ///Supported formats: .ico, .gif, .png, .jpeg, .tiff, .bmp, .icns.
    void setMainWindowAndTaskBarIconSlot(QString iconFile);
 
+   ///Is emitted if the console wrap mode has changed.
+   void consoleWrapLinesChangedSlot(bool wrap);
+
 private slots:
 
    ///Is called if the style shall be changed.

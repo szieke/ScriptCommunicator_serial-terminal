@@ -237,6 +237,9 @@ struct Settings
     ///If true then the consoles do not scroll to the end after adding new data.
     bool lockScrollingInConsole;
 
+    ///True if the lines shall be wrapped at the right edge of the consoles.
+    bool wrapLines;
+
     ///The consoles font.
     QString stringConsoleFont;
 
@@ -607,6 +610,9 @@ Q_SIGNALS:
 
     ///This signal is emitted if the text log has to be activated.
     void textLogActivatedSignal(bool);
+
+    ///This signal is emitted if the console wrap mode has changed.
+    void consoleWrapLinesChangedSignal(bool wrap);
 
 private:
     ///Fills the gui elements which correspond to the serial port.

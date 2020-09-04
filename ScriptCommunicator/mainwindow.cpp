@@ -450,6 +450,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     connect(m_settingsDialog, SIGNAL(deleteLogFileSignal(QString)),this, SLOT(deleteLogFileSlot(QString)));
     connect(m_settingsDialog, SIGNAL(configHasToBeSavedSignal()),this, SLOT(configHasToBeSavedSlot()));
     connect(m_settingsDialog, SIGNAL(conectionTypeChangesSignal()),this, SLOT(conectionTypeChangesSlot()));
+    connect(m_settingsDialog, SIGNAL(consoleWrapLinesChangedSignal(bool)),this, SLOT(consoleWrapLinesChangedSlot(bool)));
 
     connect(this, SIGNAL(connectDataConnectionSignal(Settings, bool)),m_mainInterface,
             SLOT(connectDataConnectionSlot(Settings, bool)), Qt::QueuedConnection);
@@ -739,6 +740,22 @@ void MainWindow::setMainWindowAndTaskBarIconSlot(QString iconFile)
 {
     setWindowIcon(QIcon(iconFile));
     qApp->setWindowIcon(QIcon(iconFile));
+}
+
+/**
+ * Is emitted if the console wrap mode has changed.
+ * @param wrap
+ *      True if the lines shall be wrapped at the right edge of the consoles.
+ */
+void MainWindow::consoleWrapLinesChangedSlot(bool wrap)
+{
+    QTextEdit::LineWrapMode mode = wrap ? QTextEdit::WidgetWidth : QTextEdit::NoWrap;
+
+    m_userInterface->ReceiveTextEditAscii->setLineWrapMode(mode);
+    m_userInterface->ReceiveTextEditHex->setLineWrapMode(mode);
+    m_userInterface->ReceiveTextEditDecimal->setLineWrapMode(mode);
+    m_userInterface->ReceiveTextEditMixed->setLineWrapMode(mode);
+    m_userInterface->ReceiveTextEditBinary->setLineWrapMode(mode);
 }
 
 /**
@@ -1619,6 +1636,19 @@ bool MainWindow::loadSettings()
                         {
                             currentSettings.showAsciiInConsole = true;
                         }
+
+                        if(node.attributes().namedItem("consoleWrapLines").nodeValue() != "")
+                        {
+                            currentSettings.wrapLines = (bool)node.attributes().namedItem("consoleWrapLines").nodeValue().toUInt();
+                        }
+                        else
+                        {
+                            currentSettings.wrapLines = true;
+                        }
+                        consoleWrapLinesChangedSlot(currentSettings.wrapLines);
+
+
+
                     }
                 }
                 {//log settings
@@ -2657,6 +2687,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("consoleTimestampAt"), QString("%1").arg(currentSettings->consoleTimestampAt)),
                  std::make_pair(QString("consoleDecimalsType"), QString("%1").arg(currentSettings->consoleDecimalsType)),
                  std::make_pair(QString("useDarkStyle"), QString("%1").arg(currentSettings->useDarkStyle)),
+                 std::make_pair(QString("consoleWrapLines"), QString("%1").arg(currentSettings->wrapLines)),
                 };
 
                 writeXmlElement(xmlWriter, "consoleSettings", settingsMap);
