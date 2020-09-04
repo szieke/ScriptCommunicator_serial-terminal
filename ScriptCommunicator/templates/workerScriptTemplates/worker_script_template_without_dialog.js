@@ -1,11 +1,11 @@
-/*
+﻿/*
 In the main function (all code outside a function) only the script initialization code should be placed. 
 The working code should be placed in asynchronous function calls (like timer callbacks or data receive callbacks).  
 If the main function has been left the script does not stop. To stop a script call scriptThread.stopScript() or 
 press the stop button (main or script window).
 Example:
 ************************************************************************************************************
-function dataReceived()
+function dataReceived(data)
 {
 	//Working code.
 	if(workDone)
