@@ -162,9 +162,16 @@ qint64 ScriptFile::getFileSize(QString path, bool isRelativePath)
  */
 bool ScriptFile::checkFileExists(QString path, bool isRelativePath)
 {
-    path = isRelativePath ? createAbsolutePath(path) : path;
-    QFileInfo fi(path);
-    return fi.exists();
+    if(path.isEmpty())
+    {
+        return false;
+    }
+    else
+    {
+        path = isRelativePath ? createAbsolutePath(path) : path;
+        QFileInfo fi(path);
+        return fi.exists();
+    }
 }
 
 
