@@ -289,7 +289,7 @@ void ScriptThread::run()
                 m_scriptWindow->m_mainWindow, SLOT(setWindowTitle(QString)), directConnectionType);
 
         connect(this, SIGNAL(addTabsToMainWindowSignal(QTabWidget*)),
-                m_scriptWindow->m_mainWindow, SLOT(addTabsToMainWindowSlot(QTabWidget*)), Qt::QueuedConnection);
+                m_scriptWindow->m_mainWindow, SLOT(addTabsToMainWindowSlot(QTabWidget*)), directConnectionType);
 
         connect(m_scriptWindow->m_mainWindow->getUserInterface()->actionClear, SIGNAL(triggered()),
                 this, SLOT(mainWindowClearConsoleSlot()), Qt::QueuedConnection);
@@ -301,7 +301,7 @@ void ScriptThread::run()
                 m_scriptWindow->m_mainWindow, SLOT(setMainWindowAndTaskBarIconSlot(QString)), Qt::QueuedConnection);
 
         connect(this, SIGNAL(addToolBoxPagesToMainWindowSignal(QToolBox*)),
-                m_scriptWindow->m_mainWindow, SLOT(addToolBoxPagesToMainWindowSlot(QToolBox*)), Qt::QueuedConnection);
+                m_scriptWindow->m_mainWindow, SLOT(addToolBoxPagesToMainWindowSlot(QToolBox*)), directConnectionType);
 
         connect(this, SIGNAL(enableAllTabsForOneScriptThreadSignal(QObject*,bool)),
                 m_scriptWindow->m_mainWindow, SLOT(enableAllTabsForOneScriptThreadSlot(QObject*,bool)), directConnectionType);

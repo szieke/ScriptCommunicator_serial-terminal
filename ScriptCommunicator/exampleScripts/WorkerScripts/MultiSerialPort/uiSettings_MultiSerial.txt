@@ -1,0 +1,6 @@
+UI_SerialPortInfoListBox=COM1
+UI_BaudRateBox=115200
+UI_DataBitsBox=8
+UI_StopBitsBox=1
+UI_ParityBox=None
+UI_FlowControlBox=None

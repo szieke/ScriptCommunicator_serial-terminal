@@ -169,6 +169,9 @@ public:
         connect(this, SIGNAL(selectCellSignal(QTableWidget*,int,int,bool)), scriptThread->getScriptWindow(),
                 SLOT(selectCellSlot(QTableWidget*,int,int,bool)), directConnectionType);
 
+        connect(this, SIGNAL(scrollToRowSignal(QTableWidget*,int)), scriptThread->getScriptWindow(),
+                        SLOT(scrollToRowSlot(QTableWidget*,int)), directConnectionType);
+
 
 
     }
@@ -545,6 +548,12 @@ public:
         emit selectCellSignal(m_tableWidget, row, column, scrollToCell);
     }
 
+    ///Scrolls to a row in a table widget.
+    Q_INVOKABLE void scrollToRow(int row)
+    {
+        emit scrollToRowSignal(m_tableWidget, row);
+    }
+
 
 public Q_SLOTS:
 
@@ -687,6 +696,10 @@ Q_SIGNALS:
     ///This signal is emitted in selectCell.
     ///This signal is private and must not be used inside a script.
     void selectCellSignal(QTableWidget* tableWidget, int row, int column, bool scrollToCell);
+
+    ///This signal is emitted in scrollToRow.
+    ///This signal is private and must not be used inside a script.
+    void scrollToRowSignal(QTableWidget* tableWidget, int row);
 
 private Q_SLOTS:
 

@@ -54,6 +54,7 @@ ScriptTableWidget::removeColumn(Number column):void \nRemoves the column at colu
 ScriptTableWidget::clear(void):void \nClears the table (removes all cells).
 ScriptTableWidget::selectCell(Number row, Number column, bool scrollToCell=true):void \nSelects a cell in a table widget.
 ScriptTableWidget::setAutoFillBackground(bool enabled):void \nThis property holds whether the widget background is filled automatically.\nIf enabled, this property will cause Qt to fill the background of the widget before invoking the paint event.\nNote:\nSome GUI elements (like the RadioButton) need this property set to true if the background color shall be changed with setBackgroundColor.
+ScriptTableWidget::scrollToRow(Number row):void \nScrolls to a row.
 ScriptTableWidget::cellPressedSignal.connect(Number row, Number column) \nThis signal is emitted if the user has pressed a cell.
 ScriptTableWidget::cellClickedSignal.connect(Number row, Number column) \nThis signal is emitted if the user has clicked a cell.
 ScriptTableWidget::cellDoubleClickedSignal.connect(Number row, Number column) \nThis signal is emitted if the user has Number clicked a cell.

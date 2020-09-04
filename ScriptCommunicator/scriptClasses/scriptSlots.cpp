@@ -246,6 +246,26 @@ void ScriptSlots::selectCellSlot(QTableWidget* tableWidget, int row, int column,
 }
 
 /**
+ * Scrolls to a row in a table widget.
+ *
+ * @param tableWidget
+ *      The table widget.
+ * @param row
+ *      The row of the cell.
+ * @param column
+ *      The column of the cell.
+ */
+void ScriptSlots::scrollToRowSlot(QTableWidget* tableWidget, int row)
+{
+
+    QModelIndex index = tableWidget->model()->index(row,0);
+    if(index.isValid())
+    {
+        tableWidget->scrollTo(index);
+    }
+}
+
+/**
  * Converts a string to Qt::GlobalColor.
  * @param color
  *  The color string. Possible values are:
