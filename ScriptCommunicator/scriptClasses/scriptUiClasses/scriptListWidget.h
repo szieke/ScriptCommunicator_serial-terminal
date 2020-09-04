@@ -107,7 +107,12 @@ public:
     Q_INVOKABLE int rowCount(void){return m_list->count();}
 
     ///Removes a item from the list widget.
-    Q_INVOKABLE void removeItem(int row){emit removeItemSignal(row, m_list);}
+    Q_INVOKABLE void removeItem(int row)
+    {
+        m_list->blockSignals(true);
+        emit removeItemSignal(row, m_list);
+        m_list->blockSignals(false);
+    }
 
     ///Returns the current selected row.
     Q_INVOKABLE int currentSelectedRow(void){return m_list->currentRow();}
