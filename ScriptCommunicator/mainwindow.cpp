@@ -452,8 +452,8 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     connect(m_settingsDialog, SIGNAL(conectionTypeChangesSignal()),this, SLOT(conectionTypeChangesSlot()));
     connect(m_settingsDialog, SIGNAL(consoleWrapLinesChangedSignal(bool)),this, SLOT(consoleWrapLinesChangedSlot(bool)));
 
-    connect(this, SIGNAL(connectDataConnectionSignal(Settings, bool)),m_mainInterface,
-            SLOT(connectDataConnectionSlot(Settings, bool)), Qt::QueuedConnection);
+    connect(this, SIGNAL(connectDataConnectionSignal(Settings, bool,bool)),m_mainInterface,
+            SLOT(connectDataConnectionSlot(Settings, bool,bool)), Qt::QueuedConnection);
     connect(m_mainInterface, SIGNAL(dataConnectionStatusSignal(bool, QString, bool)),this, SLOT(dataConnectionStatusSlot(bool, QString, bool)), Qt::QueuedConnection);
 
     connect(this, SIGNAL(exitThreadSignal()),m_mainInterface, SLOT(exitThreadSlot()), Qt::BlockingQueuedConnection);
@@ -3294,12 +3294,12 @@ void MainWindow::toggleConnectionSlot(bool connectionStatus)
         settings.serialPort.setDTR = m_userInterface->dtrCheckBox->isChecked();
         settings.serialPort.setRTS = m_userInterface->rtsCheckBox->isChecked();
         configHasToBeSavedSlot();
-        emit connectDataConnectionSignal(settings, true);
+        emit connectDataConnectionSignal(settings, true, true);
     }
     else
     {
         //disconnect
-        emit connectDataConnectionSignal(settings, false);
+        emit connectDataConnectionSignal(settings, false, true);
     }
 }
 
@@ -4131,7 +4131,7 @@ void MainWindow::bringWindowsToFrontSlot(void)
  */
 void MainWindow::closeEvent(QCloseEvent * event)
 {
-    emit connectDataConnectionSignal(*m_settingsDialog->settings(), false);
+    emit connectDataConnectionSignal(*m_settingsDialog->settings(), false, false);
 
     m_sendWindow->programIsClosing();
 

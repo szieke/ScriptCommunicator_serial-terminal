@@ -381,11 +381,20 @@ function connectButtonPressed()
 		{
 			connectionType = "UDP_SOCKET";
 			isConnectedSecondInterface = true;
-			udpSocket.bind(UI_socketUdpOwnPortLineEdit.text());
-			appendToConsoleBuffer("<br>udp socket: waiting data<br>");
-			
-			UI_disconnectButton.setEnabled(true);
-			UI_connectButton.setEnabled(false);
+			if(udpSocket.bind(UI_socketUdpOwnPortLineEdit.text()))
+			{
+				appendToConsoleBuffer("<br>udp socket: waiting data<br>");
+				
+				UI_disconnectButton.setEnabled(true);
+				UI_connectButton.setEnabled(false);
+			}
+			else
+			{
+	
+				udpSocket.close();
+				isConnectedSecondInterface = false;
+				scriptThread.messageBox("Critical", 'UDP socket open error', 'could not open UDP socket')
+			}
 		}
 		else
 		{

@@ -152,7 +152,7 @@ protected:
 public slots:
 
     ///The slot function is used to connect to or disconnect from the main interface.
-    void connectDataConnectionSlot(Settings globalSettings, bool shallConnect);
+    void connectDataConnectionSlot(Settings globalSettings, bool shallConnect, bool showMessageBoxOnError);
 
     ///The slot function is called if the global settings have been changed.
     void globalSettingsChangedSlot(Settings globalSettings);
@@ -285,6 +285,9 @@ private:
 
     ///True if the main interface thread is initialized.
     bool m_isInitialized;
+
+    ///True if a message box shall be shown in case of an error.
+    bool m_showMessageBoxOnError;
 
 };
 

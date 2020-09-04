@@ -44,3 +44,4 @@ ScriptCommunicator/exampleScripts/WorkerScripts/AdditionalInterface/Serial/uiSet
 ScriptCommunicator/exampleScripts/WorkerScripts/AdditionalInterface/TCP_Client/uiSettings_TCP_1.txt
 ScriptCommunicator/exampleScripts/WorkerScripts/AdditionalInterface/UDP/uiSettings_UDP_1.txt
 build_editor/
+ScriptCommunicator/exampleScripts/WorkerScripts/Sniffer/snif_convertUiSettings.txt

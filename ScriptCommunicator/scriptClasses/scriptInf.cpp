@@ -63,8 +63,8 @@ void ScriptInf::intSignals(bool runsInDebugger)
     connect(m_scriptThread->getScriptWindow()->getMainInterfaceThread(), SIGNAL(dataConnectionStatusSignal(bool, QString, bool)),
             this, SLOT(dataConnectionStatusSlot(bool,QString,bool)), Qt::DirectConnection);
 
-    connect(this, SIGNAL(connectDataConnectionSignal(Settings, bool)),m_scriptThread->getScriptWindow()->getMainInterfaceThread(),
-            SLOT(connectDataConnectionSlot(Settings, bool)), Qt::BlockingQueuedConnection);
+    connect(this, SIGNAL(connectDataConnectionSignal(Settings, bool,bool)),m_scriptThread->getScriptWindow()->getMainInterfaceThread(),
+            SLOT(connectDataConnectionSlot(Settings, bool,bool)), Qt::BlockingQueuedConnection);
 
     connect(this, SIGNAL(setSerialPortPinsSignal(bool,bool)),
             m_scriptThread->getScriptWindow()->getMainWindow(), SLOT(setSerialPortPinsSlot(bool,bool)), directConnectionType);
@@ -400,14 +400,14 @@ bool ScriptInf::connectPcan(quint8 channel, quint32 baudrate, quint32 connectTim
     newSettings.pcanInterface.filterFrom = QString::number(filterFrom, 16);
     newSettings.pcanInterface.filterTo = QString::number(filterTo, 16);
     emit setAllSettingsSignal(newSettings, false);
-    emit connectDataConnectionSignal(newSettings, true);
+    emit connectDataConnectionSignal(newSettings, true, false);
 
     waitForMainInterfaceToConnect(connectTimeout);
 
     if(!m_isConnected)
     {
         emit setAllSettingsSignal(oldSettings, false);
-        emit connectDataConnectionSignal(oldSettings, false);
+        emit connectDataConnectionSignal(oldSettings, false, false);
     }
 
     succeeded = m_isConnected;
@@ -441,14 +441,14 @@ bool ScriptInf::aardvarkI2cSpiConnect(QScriptValue aardvarkI2cSpiSettings, quint
     if(succeeded)
     {
         emit setAllSettingsSignal(settings, false);
-        emit connectDataConnectionSignal(settings, true);
+        emit connectDataConnectionSignal(settings, true, false);
 
         waitForMainInterfaceToConnect(connectTimeout);
 
         if(!m_isConnected)
         {
             emit setAllSettingsSignal(oldSettings, false);
-            emit connectDataConnectionSignal(oldSettings, false);
+            emit connectDataConnectionSignal(oldSettings, false, false);
         }
 
         succeeded = m_isConnected;
@@ -552,14 +552,14 @@ bool ScriptInf::connectSerialPort(QString name, qint32 baudRate, quint32 connect
 
 
     emit setAllSettingsSignal(settings, false);
-    emit connectDataConnectionSignal(settings, true);
+    emit connectDataConnectionSignal(settings, true, false);
 
     waitForMainInterfaceToConnect(connectTimeout);
 
     if(!m_isConnected)
     {
         emit setAllSettingsSignal(oldSettings, false);
-        emit connectDataConnectionSignal(oldSettings, false);
+        emit connectDataConnectionSignal(oldSettings, false, false);
     }
 
     succeeded = m_isConnected;
@@ -610,14 +610,14 @@ bool ScriptInf::connectSocket(bool isTcp, bool isServer, QString ip, quint32 des
     settings.socketSettings.ownPort = ownPort;
     settings.socketSettings.destinationPort = destinationPort;
     emit setAllSettingsSignal(settings, false);
-    emit connectDataConnectionSignal(settings, true);
+    emit connectDataConnectionSignal(settings, true, false);
 
     waitForMainInterfaceToConnect(connectTimeout);
 
     if(!m_isConnected)
     {
         emit setAllSettingsSignal(oldSettings, false);
-        emit connectDataConnectionSignal(oldSettings, false);
+        emit connectDataConnectionSignal(oldSettings, false, false);
     }
 
     succeeded = m_isConnected;

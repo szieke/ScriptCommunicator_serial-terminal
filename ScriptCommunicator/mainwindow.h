@@ -286,7 +286,7 @@ public:
 signals:
     ///With this signal the main window requests the main interface thread to connect with the man interface interface.
     ///This signal is connected to the MainInterfaceThread::connectDataConnectionSlot slot.
-    void connectDataConnectionSignal(Settings settings, bool connect);
+    void connectDataConnectionSignal(Settings settings, bool connect, bool showMessageBoxOnError);
 
     ///The signal is emitted if the global settings have been changed.
     void globalSettingsChangedSignal(Settings globalSettings);

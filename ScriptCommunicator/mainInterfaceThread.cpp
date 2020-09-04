@@ -51,7 +51,7 @@ MainInterfaceThread::MainInterfaceThread(MainWindow* mainWindow):m_exit(false),
     m_serial(0),m_tcpServer(0),m_tcpServerSockets(),m_tcpClientSocket(0),
     m_udpServerSocket(0), m_udpClientSocket(0), m_aardvarkI2cSpi(0), m_isConnected(false), m_showAdditionalInformationTimer(0), m_pcanInterface(0),
     m_numberOfSentBytes(0), m_lastNumberOfSentBytes(0), m_numberOfReceivedBytes(0),m_lastNumberOfReceivedBytes(0),  m_dataRateTimer(0),
-    m_isInitialized(false)
+    m_isInitialized(false), m_showMessageBoxOnError(true)
 {
     m_mainWindow = mainWindow;
 }
@@ -143,7 +143,7 @@ void MainInterfaceThread::tcpServerSocketOnDisconnectedSlot(void)
 
     if(m_tcpServerSockets.length() == 0)
     {
-        connectDataConnectionSlot(m_currentGlobalSettings, true);
+        connectDataConnectionSlot(m_currentGlobalSettings, true, true);
     }
     else
     {
@@ -395,7 +395,7 @@ void MainInterfaceThread::tcpClientSocketErrorSlot(QAbstractSocket::SocketError 
         }
     }
 
-    connectDataConnectionSlot(m_currentGlobalSettings, false);
+    connectDataConnectionSlot(m_currentGlobalSettings, false, true);
     emit setConnectionButtonsSignal(true);
 }
 
@@ -650,9 +650,10 @@ void MainInterfaceThread::globalSettingsChangedSlot(Settings globalSettings)
  * @param shallConnect
  *      True for connect or false for disconnect
  */
-void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, bool shallConnect)
+void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, bool shallConnect, bool showMessageBoxOnError)
 {
     m_currentGlobalSettings = globalSettings;
+    m_showMessageBoxOnError = showMessageBoxOnError;
 
     if(m_serial->isOpen())
     {
@@ -957,10 +958,14 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
  */
 void MainInterfaceThread::showMessageBox(QMessageBox::Icon icon, QString title, QString text)
 {
-    emit disableMouseEventsSignal();
-    emit enableMouseEventsSignal();
 
-    emit showMessageBoxSignal(icon, title, text, QMessageBox::Ok);
+    if(m_showMessageBoxOnError)
+    {
+        emit disableMouseEventsSignal();
+        emit enableMouseEventsSignal();
+
+        emit showMessageBoxSignal(icon, title, text, QMessageBox::Ok);
+    }
 }
 
 /**
@@ -1079,8 +1084,8 @@ bool MainInterfaceThread::sendDataWithTheMainInterface(const QByteArray &data, Q
             if(!success)
             {
                 m_pcanInterface->close();
-                connectDataConnectionSlot(m_currentGlobalSettings, true);
-                 emit showAdditionalConnectionInformationSignal("Bus off event occurred (interface has been restartet)");
+                connectDataConnectionSlot(m_currentGlobalSettings, true, true);
+                emit showAdditionalConnectionInformationSignal("Bus off event occurred (interface has been restartet)");
             }
         }
         else

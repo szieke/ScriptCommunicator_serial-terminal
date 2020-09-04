@@ -74,7 +74,7 @@ public:
     Q_INVOKABLE bool isConnectedWithI2c(void){return m_isConnectedWithI2c;}
 
     ///Disconnects the main interface.
-    Q_INVOKABLE void disconnect(void){emit connectDataConnectionSignal(*m_settingsDialog->settings(), false);}
+    Q_INVOKABLE void disconnect(void){emit connectDataConnectionSignal(*m_settingsDialog->settings(), false, false);}
 
     ///Connects the main interface (PCAN).
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
@@ -188,7 +188,7 @@ signals:
     ///With this signal the script thread requests the main interface thread to connect with the man interface interface.
     ///This signal is connected to the MainInterfaceThread::connectDataConnectionSlot slot.
     ///This signal must not be used from script.
-    void connectDataConnectionSignal(Settings settings, bool connect);
+    void connectDataConnectionSignal(Settings settings, bool connect, bool showMessageBoxOnError);
 
     ///With this signal scripts can change the current settings.
     ///This signal must not be used from script.
