@@ -1,4 +1,4 @@
-/*This script demonstrates sending of user input*/
+﻿/*This script demonstrates sending of user input*/
 
 //Is called if this script shall be exited.
 function stopScript() 
@@ -63,3 +63,13 @@ UI_Dialog.createShortCut("F1", testShortcut2)
 //- enter Ctrl+S, release Ctrl+S
 //- enter Q
 UI_Dialog.createShortCut("Alt+Ctrl+X,Ctrl+S,Q", testShortcut3)
+
+var ports = scriptInf.availableSerialPortsExt();
+for(var i = 0; i < ports.length; i++)
+{
+	scriptThread.appendTextToConsole("serial port info name:" + ports[i].portName + "  systemLocation:" + ports[i].systemLocation 
+	+ "  description:" + ports[i].description + "  manufacturer:" + ports[i].manufacturer+ "  serialNumber:" + ports[i].serialNumber 
+	+ " vendorIdentifier: " + ports[i].vendorIdentifier + "  productIdentifier:" + ports[i].productIdentifier);
+}
+
+

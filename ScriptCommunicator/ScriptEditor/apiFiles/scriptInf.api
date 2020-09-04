@@ -28,6 +28,7 @@ scriptInf::getMainInterfaceSerialPortSettings(void):SerialPortSettings \nReturns
 scriptInf::getMainInterfaceSocketSettings(void):SocketSettings \nReturns the socket (UDP, TCP client/server) settings of the main interface.
 scriptInf::getLocalIpAdress(void):Array<String> \nReturns all IP addresses found on the host machine.
 scriptInf::availableSerialPorts(void):Array<String> \nReturns a list with the name of all available serial ports.
+scriptInf::availableSerialPortsExt(void):Array<PortInfo> \nReturns a list with the information of all available serial ports.
 scriptInf::dataReceivedSignal.connect(Array<Number> data)\nThis signal is emitted if data has been received with the main interface\n(only if the main interface is not a CAN or I2C master interface, use canMessagesReceivedSignal if the main interface is a CAN interface and\ni2cMasterDataReceivedSignal if the main interface is an I2C master interface).
 scriptInf::i2cMasterDataReceivedSignal.connect(Number flags, Number address, Array<Number> data):void \nThis signal is emitted if data has been received with the main interface and the main interface is an I2C master.
 scriptInf::canMessagesReceivedSignal.connect(Array<Number> types, Array<Number> messageIds, Array<Number> timestamps, Array<Array<Number>>  data)\nThis signal is emitted if a can message (or several) has been received with the main interface.	

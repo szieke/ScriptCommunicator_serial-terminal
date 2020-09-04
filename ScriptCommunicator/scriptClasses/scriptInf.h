@@ -136,6 +136,9 @@ public:
     ///Returns a list with the name of all available serial ports.
     Q_INVOKABLE QStringList availableSerialPorts(void);
 
+    ///Returns a list with the information of all available serial ports.
+    Q_INVOKABLE QScriptValue availableSerialPortsExt(void);
+
 
 signals:
 

@@ -1008,6 +1008,32 @@ QStringList ScriptInf::availableSerialPorts(void)
 }
 
 /**
+ * Returns a list with the information of all available serial ports.
+ *
+ * @return
+ *      The list.
+ */
+ QScriptValue ScriptInf::availableSerialPortsExt(void)
+{
+    QList<QSerialPortInfo> ports = QSerialPortInfo::availablePorts();
+    QScriptValue result = m_scriptThread->getScriptEngine()->newArray(ports.length());
+
+    for (int i = 0; i < ports.length(); i++)
+    {
+        QScriptValue obj = m_scriptThread->getScriptEngine()->newObject();
+        obj.setProperty("portName", ports[i].portName());
+        obj.setProperty("systemLocation", ports[i].systemLocation());
+        obj.setProperty("description", ports[i].description());
+        obj.setProperty("manufacturer", ports[i].manufacturer());
+        obj.setProperty("serialNumber", ports[i].serialNumber());
+        obj.setProperty("vendorIdentifier", ports[i].vendorIdentifier());
+        obj.setProperty("productIdentifier", ports[i].productIdentifier());
+        result.setProperty(i, obj);
+    }
+    return result;
+}
+
+/**
  * Is called if the main interface is a I2C or SPI slave and has sent data.
  *
  * @param data
