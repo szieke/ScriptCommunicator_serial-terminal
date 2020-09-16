@@ -1251,6 +1251,8 @@ void SendWindow::loadTableData(void)
                     QString id = nodeSequence.attributes().namedItem("canId").nodeValue();
                     if(id.isEmpty()){id = "0x0";}
                     hexEdit->setPlainText(id);
+                    bool is11Bit = ((type == "11 Bit" ) || (type == "11 Bit RTR" )) ? true : false;
+                    hexEdit->configure(is11Bit ? 0x7ff :  0x1fffffff);
                     hexEdit->blockSignals(false);
 
                     textEdit = static_cast<SequenceTablePlainTextEdit*>(m_userInterface->tableWidget->cellWidget(0,COLUMN_VALUE));
@@ -1588,11 +1590,20 @@ void SendWindow::swapTableRowPositions(int row1, int row2)
     SequenceTablePlainTextEdit * scriptEdit1 = static_cast<SequenceTablePlainTextEdit*>(m_userInterface->tableWidget->cellWidget(row1, COLUMN_SCRIPT));
     SequenceTablePlainTextEdit * scriptEdit2 = static_cast<SequenceTablePlainTextEdit*>(m_userInterface->tableWidget->cellWidget(row2, COLUMN_SCRIPT));
 
+    SequenceTableComboBox* typeBox1 = static_cast<SequenceTableComboBox*>(m_userInterface->tableWidget->cellWidget(row1, SendWindow::COLUMN_CAN_TYPE));
+    SequenceTableComboBox* typeBox2 = static_cast<SequenceTableComboBox*>(m_userInterface->tableWidget->cellWidget(row2, SendWindow::COLUMN_CAN_TYPE));
+    SequenceTableHexTextEdit* canIdLineEdit1 = static_cast<SequenceTableHexTextEdit*>(m_userInterface->tableWidget->cellWidget(row1, SendWindow::COLUMN_CAN_ID));
+    SequenceTableHexTextEdit* canIdLineEdit2 = static_cast<SequenceTableHexTextEdit*>(m_userInterface->tableWidget->cellWidget(row2, SendWindow::COLUMN_CAN_ID));
+
 
     box1->blockSignals(true);
     box2->blockSignals(true);
     listEdit1->blockSignals(true);
     listEdit2->blockSignals(true);
+    typeBox1->blockSignals(true);
+    typeBox2->blockSignals(true);
+    canIdLineEdit1->blockSignals(true);
+    canIdLineEdit2->blockSignals(true);
     scriptEdit1->blockSignals(true);
     scriptEdit2->blockSignals(true);
 
@@ -1618,22 +1629,38 @@ void SendWindow::swapTableRowPositions(int row1, int row2)
     QString tmpFormat = box1->currentText();
     box1->setCurrentText(box2->currentText());
     box2->setCurrentText(tmpFormat);
-
     box1->setRow(row1);
     box2->setRow(row2);
 
+    QString type = typeBox1->currentText();
+    typeBox1->setCurrentText(typeBox2->currentText());
+    typeBox2->setCurrentText(type);
+    typeBox1->setEnabled(box1->currentText() == "can");
+    typeBox2->setEnabled(box2->currentText() == "can");
+    typeBox1->setRow(row1);
+    typeBox2->setRow(row2);
 
-    QString tmpValue = listEdit1->toPlainText();
+    QString tmpValue = canIdLineEdit1->toPlainText();
+    canIdLineEdit1->setPlainText(canIdLineEdit2->toPlainText());
+    canIdLineEdit2->setPlainText(tmpValue);
+    canIdLineEdit1->setEnabled(box1->currentText() == "can");
+    canIdLineEdit2->setEnabled(box2->currentText() == "can");
+    canIdLineEdit1->setRow(row1);
+    canIdLineEdit2->setRow(row2);
+    bool is11Bit = ((typeBox1->currentText() == "11 Bit" ) || (typeBox1->currentText() == "11 Bit RTR" )) ? true : false;
+    canIdLineEdit1->configure(is11Bit ? 0x7ff :  0x1fffffff);
+    is11Bit = ((typeBox2->currentText() == "11 Bit" ) || (typeBox2->currentText() == "11 Bit RTR" )) ? true : false;
+    canIdLineEdit2->configure(is11Bit ? 0x7ff :  0x1fffffff);
+
+    tmpValue = listEdit1->toPlainText();
     listEdit1->setPlainText(listEdit2->toPlainText());
     listEdit2->setPlainText(tmpValue);
-
     listEdit1->setRow(row1);
     listEdit2->setRow(row2);
 
     tmpValue = scriptEdit1->toPlainText();
     scriptEdit1->setPlainText(scriptEdit2->toPlainText());
     scriptEdit2->setPlainText(tmpValue);
-
     scriptEdit1->setRow(row1);
     scriptEdit2->setRow(row2);
 
@@ -1644,6 +1671,10 @@ void SendWindow::swapTableRowPositions(int row1, int row2)
     listEdit2->blockSignals(false);
     scriptEdit1->blockSignals(false);
     scriptEdit2->blockSignals(false);
+    typeBox1->blockSignals(false);
+    typeBox2->blockSignals(false);
+    canIdLineEdit1->blockSignals(false);
+    canIdLineEdit2->blockSignals(false);
 
     emit sequenceTableHasChangedSignal();
 }
@@ -1916,6 +1947,7 @@ void SendWindow::setCurrentCanType(QString type)
 {
     m_userInterface->CanTypeBox->blockSignals(true);
     m_userInterface->CanTypeBox->setCurrentText(type);
+    currentCanTypeChangedSlot(type);
     m_userInterface->CanTypeBox->blockSignals(false);
 
     currentSendStringFormatChangedSlot(m_userInterface->CyclicSendFormat->currentText());
