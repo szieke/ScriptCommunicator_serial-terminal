@@ -1777,7 +1777,7 @@ QByteArray SendWindow::textToByteArray(QString formatString, QString text, Decim
         uint format = 10;
         qint32 bytesPerNumber = 1;
 
-        if(formatString == "hex")
+        if((formatString == "hex") || (formatString == "can"))
         {
             format = 16;
             bytesPerNumber = 2;
@@ -1792,7 +1792,7 @@ QByteArray SendWindow::textToByteArray(QString formatString, QString text, Decim
         {
             bool isOk = false;
 
-            if((formatString == "hex") || (formatString == "bin"))
+            if((formatString == "hex") || (formatString == "can") || (formatString == "bin"))
             {
                 while(!var.isEmpty())
                 {
