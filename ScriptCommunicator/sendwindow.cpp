@@ -477,7 +477,7 @@ void SendWindow::textEditChanged(QPlainTextEdit* textEdit, QString currentFormat
         {
             text.replace("\n", "");
 
-            if(currentFormat == "hex")
+            if((currentFormat == "hex") || (currentFormat == "can"))
             {
                 text.replace(QRegularExpression("[^a-fA-F\\d\\s]"), "");
             }
