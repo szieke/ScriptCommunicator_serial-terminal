@@ -32,50 +32,59 @@ function readConsoleSetting()
 
 function addDataToConsole(data, fontColor)
 {
+	var stringToAdd = "<span style=\"font-family:'"+ g_settings.font;
+	stringToAdd += "';font-size:" + g_settings.fontSize + "pt;color:#" + fontColor + "\">";
+	
 	if(g_settings.generateCyclicTimeStamps)
 	{
 		if((Date.now() - g_timeLastTimestamp) >= g_settings.timeStampInterval)
 		{
 			g_timeLastTimestamp = Date.now();
-			
-			var htmlString = "<span style=\"font-family:'"+ g_settings.font;
-			htmlString += "';font-size:" + g_settings.fontSize + "pt;color:#" + g_settings.timestampColor + "\">";
-			
-			var dataString = UI_TextEdit1.replaceNonHtmlChars(scriptThread.getTimestamp(), false);
-			
-			var list = dataString.split("\n");
-			UI_TextEdit1.insertHtml(htmlString + list[0] + "</span>");	
-			for(var i = 1; i < list.length; i++)
-			{
-				//Note: append adds automatically a new line and is much faster then insertHtml.
-				UI_TextEdit1.append(htmlString + list[i] + "</span>");
-			}
+			stringToAdd += UI_TextEdit1.replaceNonHtmlChars(scriptThread.getTimestamp(), true);
 		}
 	}
 	
-	var htmlString = "<span style=\"font-family:'"+ g_settings.font;
-	htmlString += "';font-size:" + g_settings.fontSize + "pt;color:#" + fontColor + "\">";
+
+	var newLineAtByte = String.fromCharCode(g_settings.newLineAtByte);
 	
 	//Replace all HTML characters (all but '\n').
-	var dataString = UI_TextEdit1.replaceNonHtmlChars(conv.byteArrayToUtf8String(data), false);
+	stringToAdd += UI_TextEdit1.replaceNonHtmlChars(conv.byteArrayToUtf8String(data), false);
 	
 	if(g_settings.createNewLineAtByte)
 	{
-		//Replace the new line bytes.
-		var newLineAtByte = String.fromCharCode(g_settings.newLineAtByte);
 		
-		var list = dataString.split(newLineAtByte);
-		UI_TextEdit1.insertHtml(htmlString + list[0] + "</span>");	
-		for(var i = 1; i < list.length; i++)
-		{
-			//Note: append adds automatically a new line and is much faster then insertHtml.
-			UI_TextEdit1.append(htmlString + list[i] + "</span>");
-		}
+		//Replace the new line bytes.
+		stringToAdd = stringToAdd.replace(newLineAtByte, "<br>" + newLineAtByte)
+
 	}
-	else
+	
+	if(g_settings.ceateTimestampAtByte)
 	{
-		UI_TextEdit1.insertHtml(htmlString + dataString + "</span>");	
+		var timeAtByte = "\n"//String.fromCharCode(g_settings.timestampAtByte);
+		
+		var list = stringToAdd.split(timeAtByte);
+		stringToAdd = "";
+		for(var i = 0; i < list.length; i++)
+		{
+			stringToAdd += list[i] ;
+			
+			if(i < (list.length - 1))
+			{
+				stringToAdd += UI_TextEdit1.replaceNonHtmlChars(scriptThread.getTimestamp(), true);
+			}
+		}
+		
 	}
+	
+	if(g_settings.createNewLineAtByte)
+	{
+		stringToAdd = stringToAdd.replace(newLineAtByte, "");
+	}
+	
+
+	
+	UI_TextEdit1.insertHtml(stringToAdd);	
+	
 
 }
 //The main interface has sent data.
