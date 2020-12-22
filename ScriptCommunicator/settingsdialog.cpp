@@ -610,7 +610,7 @@ void SettingsDialog::colorButtonPressed(QToolButton* button)
     {
         QColor color = dialog->color();
 
-        button->setStyleSheet(QString("background-color: %1;}").arg(color.name()));
+        button->setStyleSheet(QString("background-color: %1;").arg(color.name()));
         updateSettings();
         emit configHasToBeSavedSignal();
     }

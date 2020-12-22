@@ -2459,9 +2459,26 @@ void MainWindow::inititializeTab(void)
         m_settingsDialog->setEnabled(false);
         QCoreApplication::processEvents();
 
-        setWidgetBackgroundColorFromString(currentSettings->consoleBackgroundColor, m_userInterface->historyTextEdit);
-        setWidgetTextColorFromString(currentSettings->consoleReceiveColor, m_userInterface->historyTextEdit);
+        QString consoleStyle = QString("QTextEdit {background-color: #%1;color: #%2;border: 1px solid #76797C;}")
+                .arg(currentSettings->consoleBackgroundColor).arg(currentSettings->consoleReceiveColor);
+
+        m_userInterface->historyTextEdit->setStyleSheet(consoleStyle);
         setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->historyTextEdit);
+
+        m_userInterface->ReceiveTextEditMixed->setStyleSheet(consoleStyle);
+        setConsoleFont("Courier new", currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditMixed);
+
+        m_userInterface->ReceiveTextEditAscii->setStyleSheet(consoleStyle);
+        setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditAscii);
+
+        m_userInterface->ReceiveTextEditHex->setStyleSheet(consoleStyle);
+        setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditHex);
+
+        m_userInterface->ReceiveTextEditDecimal->setStyleSheet(consoleStyle);
+        setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditDecimal);
+
+        m_userInterface->ReceiveTextEditBinary->setStyleSheet(consoleStyle);
+        setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditBinary);
 
 
         int index = m_userInterface->tabWidget->currentIndex();
@@ -2469,50 +2486,35 @@ void MainWindow::inititializeTab(void)
         //remove all tabs
         for(int i = m_userInterface->tabWidget->count(); i > 0; i--)
         {
-            m_userInterface->tabWidget->removeTab(i - 1);
+           m_userInterface->tabWidget->removeTab(i - 1);
         }
 
 
         if(currentSettings->showMixedConsole)
         {
             m_userInterface->tabWidget->addTab( m_userInterface->tabMixed, "Mixed");
-            setWidgetBackgroundColorFromString(currentSettings->consoleBackgroundColor, m_userInterface->ReceiveTextEditMixed);
-            setWidgetTextColorFromString(currentSettings->consoleReceiveColor, m_userInterface->ReceiveTextEditMixed);
-            setConsoleFont("Courier new", currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditMixed);
         }
 
 
         if(currentSettings->showAsciiInConsole)
         {
             m_userInterface->tabWidget->addTab( m_userInterface->tabAscii, "Ascii");
-            setWidgetBackgroundColorFromString(currentSettings->consoleBackgroundColor, m_userInterface->ReceiveTextEditAscii);
-            setWidgetTextColorFromString(currentSettings->consoleReceiveColor, m_userInterface->ReceiveTextEditAscii);
-            setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditAscii);
         }
 
 
         if(currentSettings->showHexInConsole)
         {
             m_userInterface->tabWidget->addTab( m_userInterface->tabHex, "Hex");
-            setWidgetBackgroundColorFromString(currentSettings->consoleBackgroundColor, m_userInterface->ReceiveTextEditHex);
-            setWidgetTextColorFromString(currentSettings->consoleReceiveColor, m_userInterface->ReceiveTextEditHex);
-            setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditHex);
         }
 
         if(currentSettings->showDecimalInConsole)
         {
             m_userInterface->tabWidget->addTab( m_userInterface->tabDecimal, "Dec");
-            setWidgetBackgroundColorFromString(currentSettings->consoleBackgroundColor, m_userInterface->ReceiveTextEditDecimal);
-            setWidgetTextColorFromString(currentSettings->consoleReceiveColor, m_userInterface->ReceiveTextEditDecimal);
-            setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditDecimal);
         }
 
         if(currentSettings->showBinaryConsole)
         {
             m_userInterface->tabWidget->addTab( m_userInterface->tabBinary, "Binary");
-            setWidgetBackgroundColorFromString(currentSettings->consoleBackgroundColor, m_userInterface->ReceiveTextEditBinary);
-            setWidgetTextColorFromString(currentSettings->consoleReceiveColor, m_userInterface->ReceiveTextEditBinary);
-            setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditBinary);
         }
 
         if(currentSettings->showCanTab)
