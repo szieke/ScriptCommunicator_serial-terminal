@@ -1841,7 +1841,12 @@ void MainWindowHandleData::reInsertDataInMixecConsoleSlot(void)
         int pos = 0;
         pos = m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->value();
 
+        m_userInterface->ReceiveTextEditMixed->blockSignals(true);
+        m_userInterface->ReceiveTextEditMixed->document()->blockSignals(true);
         m_userInterface->ReceiveTextEditMixed->clear();
+        m_userInterface->ReceiveTextEditMixed->blockSignals(false);
+        m_userInterface->ReceiveTextEditMixed->document()->blockSignals(false);
+
         m_mixedConsoleByteBuffer.clear();
         calculateConsoleData();
 
