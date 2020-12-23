@@ -2244,9 +2244,9 @@ QScriptValue ScriptThread::getConsoleSettings(void)
     ret.setProperty("newLineAfterPause", settings->consoleNewLineAfterPause);
     ret.setProperty("createNewLineAtByte", (settings->consoleNewLineAt != 0xffff) ? true : false);
     ret.setProperty("newLineAtByte", (quint8)settings->consoleNewLineAt);
-    ret.setProperty("ceateTimestampAtByte", (settings->consoleCreateTimestampAt != 0) ? true : false);
-    ret.setProperty("timestampAtByte", (quint8)settings->consoleCreateTimestampAt);
-	ret.setProperty("generateCyclicTimeStamps", settings->generateTimeStampsInConsole);
+    ret.setProperty("ceateTimestampAtByte", settings->consoleCreateTimestampAtEnabled);
+    ret.setProperty("timestampAtByte", (quint8)settings->consoleTimestampAt);
+    ret.setProperty("generateCyclicTimeStamps", settings->generateTimeStampsInConsoleAfterTimeEnabled);
     ret.setProperty("timeStampInterval", settings->timeStampIntervalConsole);
 	ret.setProperty("timestampFormat", settings->consoleTimestampFormat);
     return ret;

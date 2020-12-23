@@ -675,7 +675,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
         Settings settings = *m_settingsDialog->settings();
         settings.showReceivedDataInConsole = false;
         settings.showSendDataInConsole = false;
-        settings.generateTimeStampsInConsole = false;
+        settings.generateTimeStampsInConsoleAfterTimeEnabled = false;
         settings.htmlLogFile = false;
         settings.textLogFile = false;
 
@@ -1563,7 +1563,7 @@ bool MainWindow::loadSettings()
                     {
                         QDomNode node = nodeList.at(0);
                         currentSettings.maxCharsInConsole = node.attributes().namedItem("maxCharsInConsole").nodeValue().toUInt();
-                        currentSettings.generateTimeStampsInConsole = node.attributes().namedItem("generateTimeStampsInConsole").nodeValue().toUInt();
+                        currentSettings.generateTimeStampsInConsoleAfterTimeEnabled = node.attributes().namedItem("generateTimeStampsInConsole").nodeValue().toUInt();
                         currentSettings.showSendDataInConsole = node.attributes().namedItem("showSendDataInConsole").nodeValue().toUInt();
                         currentSettings.showReceivedDataInConsole = node.attributes().namedItem("showReceivedDataInConsole").nodeValue().toUInt();
                         currentSettings.lockScrollingInConsole = node.attributes().namedItem("lockScrollingInConsole").nodeValue().toUInt();
@@ -1591,7 +1591,7 @@ bool MainWindow::loadSettings()
                         currentSettings.consoleSendOnEnter = node.attributes().namedItem("consoleSendOnEnter").nodeValue();
                         currentSettings.consoleTimestampFormat = node.attributes().namedItem("consoleTimestampFormat").nodeValue();
                         currentSettings.consoleTimestampFormat = currentSettings.consoleTimestampFormat.isEmpty() ? " \\nyyyy-MM-dd hh:mm:ss.zzz\\n" : currentSettings.consoleTimestampFormat;
-                        currentSettings.consoleCreateTimestampAt = node.attributes().namedItem("consoleCreateTimestampAt").nodeValue().toUInt();
+                        currentSettings.consoleCreateTimestampAtEnabled = node.attributes().namedItem("consoleCreateTimestampAt").nodeValue().toUInt();
                         currentSettings.consoleDecimalsType = (DecimalType)node.attributes().namedItem("consoleDecimalsType").nodeValue().toUInt();
                         currentSettings.useDarkStyle = (bool)node.attributes().namedItem("useDarkStyle").nodeValue().toUInt();
                         setStyleSlot(currentSettings.useDarkStyle);
@@ -2655,7 +2655,7 @@ void MainWindow::saveSettings()
             {//console settings
                 std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("maxCharsInConsole"), QString("%1").arg(currentSettings->maxCharsInConsole)),
-                 std::make_pair(QString("generateTimeStampsInConsole"), QString("%1").arg(currentSettings->generateTimeStampsInConsole)),
+                 std::make_pair(QString("generateTimeStampsInConsole"), QString("%1").arg(currentSettings->generateTimeStampsInConsoleAfterTimeEnabled)),
                  std::make_pair(QString("showSendDataInConsole"), QString("%1").arg(currentSettings->showSendDataInConsole)),
                  std::make_pair(QString("showReceivedDataInConsole"), QString("%1").arg(currentSettings->showReceivedDataInConsole)),
                  std::make_pair(QString("lockScrollingInConsole"), QString("%1").arg(currentSettings->lockScrollingInConsole)),
@@ -2685,7 +2685,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("logNewLineAt"), QString("%1").arg(currentSettings->logNewLineAt)),
                  std::make_pair(QString("consoleSendOnEnter"), currentSettings->consoleSendOnEnter),
                  std::make_pair(QString("consoleTimestampFormat"), currentSettings->consoleTimestampFormat),
-                 std::make_pair(QString("consoleCreateTimestampAt"), QString("%1").arg(currentSettings->consoleCreateTimestampAt)),
+                 std::make_pair(QString("consoleCreateTimestampAt"), QString("%1").arg(currentSettings->consoleCreateTimestampAtEnabled)),
                  std::make_pair(QString("consoleTimestampAt"), QString("%1").arg(currentSettings->consoleTimestampAt)),
                  std::make_pair(QString("consoleDecimalsType"), QString("%1").arg(currentSettings->consoleDecimalsType)),
                  std::make_pair(QString("useDarkStyle"), QString("%1").arg(currentSettings->useDarkStyle)),

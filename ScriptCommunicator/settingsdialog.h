@@ -202,9 +202,9 @@ struct Settings
     bool showSendDataInConsole;
 
     ///True if timestamps shall be created in the consoles.
-    bool generateTimeStampsInConsole;
+    bool generateTimeStampsInConsoleAfterTimeEnabled;
 
-    ///The console timestamp interval
+    ///The console timestamp interval (generateTimeStampsInConsoleAfterTimeEnabled must be true).
     int timeStampIntervalConsole;
 
     ///Max. numbers of chars in the consoles.
@@ -282,11 +282,11 @@ struct Settings
     ///New line at.
     quint16 consoleNewLineAt;
 
-    ///Time stamp at.
+    ///The byte at which a time stamp is created (consoleCreateTimestampAtEnabled must be true).
     quint16 consoleTimestampAt;
 
-    ///Create time stamp at.
-    quint16 consoleCreateTimestampAt;
+    ///True if the option time stamp at is enabled.
+    bool consoleCreateTimestampAtEnabled;
 
     ///This is sent/used for the enter key (console, message dialog and ascii sequence in the send window).
     QString consoleSendOnEnter;

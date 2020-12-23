@@ -1237,7 +1237,7 @@ void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isS
             m_bytesInUnprocessedConsoleData += m_unprocessedConsoleData.last().data.length();
             createTimeStampOnNextCall = false;
         }
-        if(currentSettings->consoleCreateTimestampAt && (data.indexOf((quint8)currentSettings->consoleTimestampAt) != -1)
+        if(currentSettings->consoleCreateTimestampAtEnabled && (data.indexOf((quint8)currentSettings->consoleTimestampAt) != -1)
            && timeStampIsAllowed)
         {//Data contains a time stamp at byte.
 
@@ -1300,7 +1300,7 @@ void MainWindowHandleData::appendUnprocessConsoleData(QByteArray &data, bool isS
             return;
         }
 
-        if(forceTimeStamp || (currentSettings->generateTimeStampsInConsole && (lastConsoleTimeInBuffer.msecsTo(QDateTime::currentDateTime()) > (qint64)currentSettings->timeStampIntervalConsole)))
+        if(forceTimeStamp || (currentSettings->generateTimeStampsInConsoleAfterTimeEnabled && (lastConsoleTimeInBuffer.msecsTo(QDateTime::currentDateTime()) > (qint64)currentSettings->timeStampIntervalConsole)))
         {
             appendTimestamp(&m_unprocessedConsoleData, isSend, isUserMessage, isFromCan, isFromI2cMaster, currentSettings->consoleTimestampFormat);
             m_bytesInUnprocessedConsoleData += m_unprocessedConsoleData.last().data.length();

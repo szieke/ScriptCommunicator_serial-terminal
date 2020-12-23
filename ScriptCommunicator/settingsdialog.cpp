@@ -839,7 +839,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     //Console options
     m_userInterface->ShowReceivedCheckBox->setChecked(settings.showReceivedDataInConsole);
     m_userInterface->ShowSendInConsoleCheckBox->setChecked(settings.showSendDataInConsole);
-    m_userInterface->PrintTimeStampCheckBox->setChecked(settings.generateTimeStampsInConsole);
+    m_userInterface->PrintTimeStampCheckBox->setChecked(settings.generateTimeStampsInConsoleAfterTimeEnabled);
     m_actionLockScrolling->setChecked(settings.lockScrollingInConsole);
     m_userInterface->ConsoleBufferLineEdit->setText(QString("%1").arg(settings.maxCharsInConsole));
     m_userInterface->consoleFontComboBox->setCurrentText(settings.stringConsoleFont);
@@ -860,7 +860,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
 
     m_userInterface->useDarkStyleCheckBox->setChecked(settings.useDarkStyle);
 
-    m_userInterface->consoleTimestampAtByteCheckBox->setChecked(settings.consoleCreateTimestampAt);
+    m_userInterface->consoleTimestampAtByteCheckBox->setChecked(settings.consoleCreateTimestampAtEnabled);
     setDecimalComboBox(settings.consoleDecimalsType, m_userInterface->consoleDecimalsType);
 
     if(settings.consoleTimestampAt == 10)
@@ -2047,7 +2047,7 @@ void SettingsDialog::updateSettings(bool forceUpdate)
     // console options
     m_currentSettings.showReceivedDataInConsole = m_userInterface->ShowReceivedCheckBox->isChecked();
     m_currentSettings.showSendDataInConsole = m_userInterface->ShowSendInConsoleCheckBox->isChecked();
-    m_currentSettings.generateTimeStampsInConsole = m_userInterface->PrintTimeStampCheckBox->isChecked();
+    m_currentSettings.generateTimeStampsInConsoleAfterTimeEnabled = m_userInterface->PrintTimeStampCheckBox->isChecked();
     m_currentSettings.maxCharsInConsole = m_userInterface->ConsoleBufferLineEdit->text().toInt();
     m_currentSettings.lockScrollingInConsole = m_actionLockScrolling->isChecked();
     m_currentSettings.stringConsoleFont = m_userInterface->consoleFontComboBox->currentText();
@@ -2077,7 +2077,7 @@ void SettingsDialog::updateSettings(bool forceUpdate)
     m_currentSettings.consoleSendOnEnter = m_userInterface->consoleSendOnEnter->itemData(m_userInterface->consoleSendOnEnter->currentIndex()).toString();
     m_currentSettings.consoleTimestampFormat = m_userInterface->ConsoleTimestampFormat->text();
     m_currentSettings.consoleTimestampFormat.replace("\\n", "\n");
-    m_currentSettings.consoleCreateTimestampAt= m_userInterface->consoleTimestampAtByteCheckBox->isChecked();
+    m_currentSettings.consoleCreateTimestampAtEnabled= m_userInterface->consoleTimestampAtByteCheckBox->isChecked();
     updatesDecimalsTypes(&m_currentSettings.consoleDecimalsType, m_userInterface->consoleDecimalsType);
     m_currentSettings.useDarkStyle = m_userInterface->useDarkStyleCheckBox->isChecked();
 
