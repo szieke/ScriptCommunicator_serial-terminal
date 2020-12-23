@@ -82,7 +82,7 @@ QString ScriptConverter::byteArrayToUtf8String(QVector<unsigned char> data)
 QVector<unsigned char> ScriptConverter::stringToArray(QString str)
 {
     QVector<unsigned char> result;
-    for(auto val : str.toLocal8Bit())
+    for(auto val : str.toUtf8())
     {
         result.append(val);
     }
@@ -118,7 +118,7 @@ QVector<unsigned char> ScriptConverter::stringToUtf8Array(QString str)
  */
 QVector<unsigned char> ScriptConverter::addStringToArray(QVector<unsigned char> array , QString str)
 {
-    for(auto val : str.toLocal8Bit())
+    for(auto val : str.toUtf8())
     {
         array.append(val);
     }

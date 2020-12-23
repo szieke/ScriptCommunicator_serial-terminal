@@ -59,7 +59,7 @@ public:
     ///By default, ScriptXmlWriter uses UTF-8.
     ///The encoding information is stored in the initial xml tag which gets written when you call writeStartDocument().
     ///Call this function before calling writeStartDocument().
-    Q_INVOKABLE void setCodec(QString codecName){m_xmlWriter.setCodec(codecName.toLocal8Bit().constData());}
+    Q_INVOKABLE void setCodec(QString codecName){m_xmlWriter.setCodec(codecName.toUtf8().constData());}
 
     ///Sets the autoFormatting property. This property controls whether or not the stream writer automatically formats
     ///the generated XML data. If enabled, the writer automatically adds line-breaks and indentation to empty sections between elements

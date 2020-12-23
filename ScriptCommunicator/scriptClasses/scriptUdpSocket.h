@@ -135,7 +135,7 @@ public:
                                    quint16 hostPort)
     {
         QVector<unsigned char> dataVector;
-        QByteArray data = string.toLocal8Bit();
+        QByteArray data = string.toUtf8();
         for(auto val : data)
         {
             dataVector.push_back((unsigned char) val);

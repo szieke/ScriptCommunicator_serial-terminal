@@ -341,7 +341,7 @@ public:
     ///Writes a string to the serial port. Returns the number of written bytes.
     Q_INVOKABLE qint64 writeString(QString string)
     {
-         return m_serialPort.write(string.toLocal8Bit());
+         return m_serialPort.write(string.toUtf8());
     }
 
     ///Returns the number of bytes which are not written yet.

@@ -297,6 +297,9 @@ struct Settings
     ///The type of the decimals in the decimal console.
     DecimalType consoleDecimalsType;
 
+    ///True if the data shall be added in front of the consoles (instead of appending the data).
+    bool addDataInFrontOfTheConsoles;
+
 
     /**************Log settings**********************/
     ///True if the received/sended data (main interface) shall logged in a html log.

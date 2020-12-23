@@ -171,6 +171,9 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->consoleShowAsciiCheckBox, SIGNAL(stateChanged(int)),
             this, SLOT(stateFromCheckboxChangedSlot(int)));
 
+    connect(m_userInterface->consoleAddDataFrontCheckBox, SIGNAL(stateChanged(int)),
+            this, SLOT(stateFromCheckboxChangedSlot(int)));
+
     connect(m_userInterface->consoleShowBinaryCheckBox, SIGNAL(stateChanged(int)),
             this, SLOT(stateFromCheckboxChangedSlot(int)));
 
@@ -846,6 +849,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     m_userInterface->consoleFontSizeComboBox->setCurrentText(settings.stringConsoleFontSize);
     m_userInterface->consoleI2cMetadata->setCurrentIndex((int)settings.i2cMetaInformationInConsole);
     m_userInterface->consoleShowAsciiCheckBox->setChecked(settings.showAsciiInConsole);
+    m_userInterface->consoleAddDataFrontCheckBox->setChecked(settings.addDataInFrontOfTheConsoles);
     m_userInterface->PrintTimeStampLineEdit->setText(QString("%1").arg(settings.timeStampIntervalConsole));
     m_userInterface->ConsoleUpdateIntervallLineEdit->setText(QString("%1").arg(settings.updateIntervalConsole));
     m_userInterface->consoleShowMixedCheckBox->setChecked(settings.showMixedConsole);
@@ -2056,6 +2060,7 @@ void SettingsDialog::updateSettings(bool forceUpdate)
     m_currentSettings.showDecimalInConsole = m_userInterface->consoleShowDecimalCheckBox->isChecked();
     m_currentSettings.showHexInConsole = m_userInterface->consoleShowHexCheckBox->isChecked();
     m_currentSettings.showAsciiInConsole = m_userInterface->consoleShowAsciiCheckBox->isChecked();
+    m_currentSettings.addDataInFrontOfTheConsoles = m_userInterface->consoleAddDataFrontCheckBox->isChecked();
     m_currentSettings.timeStampIntervalConsole = m_userInterface->PrintTimeStampLineEdit->text().toInt();
     m_currentSettings.updateIntervalConsole = m_userInterface->ConsoleUpdateIntervallLineEdit->text().toUInt();
     m_userInterface->ConsoleUpdateIntervallLineEdit->setText(QString("%1").arg(m_currentSettings.updateIntervalConsole));

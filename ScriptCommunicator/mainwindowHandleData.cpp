@@ -393,7 +393,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
             QByteArray asciiArray = data;
             asciiArray.replace(0, 255);
 
-            result = QString::fromLocal8Bit(asciiArray);
+            result = QString::fromUtf8(asciiArray);
             result.replace("<", "&lt;");
             result.replace(">", "&gt;");
             if(!hasCanMeta){result.replace("\n", "<br>");}
@@ -417,19 +417,25 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                 QString asciiString;
                 bool closeSpan = false;
 
-                tmpString = QString::fromLocal8Bit(asciiArray);
+                tmpString = QString::fromUtf8(asciiArray);
                 result += "<br>";
 
+                bool twoByteSymbolInProgress = false;
                 qint32 modulo = m_consoleData.mixedData.bytesPerDecimal;
                 ///Create the ascii string.
                 for(int i = 0; i < tmpString.length(); i++)
                 {
-                    if(!currentSettings->showDecimalInConsole || ((i % modulo) == 0))
+
+
+                    if(!twoByteSymbolInProgress)
                     {
-                        asciiString += "&nbsp;";    // uncolored
-                        asciiString += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMixedAsciiColor);
-                        asciiString += m_consoleData.mixedData.asciiSpaces;
-                        closeSpan = true;
+                        if(!currentSettings->showDecimalInConsole || ((i % modulo) == 0))
+                        {
+                            asciiString += "&nbsp;";    // uncolored
+                            asciiString += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMixedAsciiColor);
+                            asciiString += m_consoleData.mixedData.asciiSpaces;
+                            closeSpan = true;
+                        }
                     }
 
 
@@ -452,11 +458,21 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                             asciiString += "</span>";
                         }
                     }
-
-                    else if (tmpString[i] < 33 || tmpString[i] > 126) asciiString += 255;
                     else asciiString += tmpString[i];
 
-                    if(closeSpan)
+                    if(!twoByteSymbolInProgress)
+                    {
+                        if(QChar::Other_Surrogate == tmpString[i].category())
+                        {
+                            twoByteSymbolInProgress = true;
+                        }
+                    }
+                    else
+                    {
+                        twoByteSymbolInProgress = false;
+                    }
+
+                    if(closeSpan && !twoByteSymbolInProgress)
                     {
                         asciiString += "</span>";
                         closeSpan = false;
@@ -583,7 +599,7 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
 
     if(isNewLine)
     {
-        QString tmpString = QString::fromLocal8Bit(data);
+        QString tmpString = QString::fromUtf8(data);
         //Note: "\n" is not replaces with "<br>" because in MainWindow::appendConsoleStringToConsole for every "\n"
         //a new block is created (much better performance).
 
@@ -598,7 +614,7 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
         {
             bool startsWithNewLine = false;
 
-            QString tmpString = QString::fromLocal8Bit(data);
+            QString tmpString = QString::fromUtf8(data);
 
             if(tmpString.startsWith("\n"))
             {
@@ -764,14 +780,13 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                 dataArray->replace(0, 255);
 
                 QString tmpString;
-                for(auto el : QString::fromLocal8Bit(*dataArray))
+                for(auto el : QString::fromUtf8(*dataArray))
                 {
                     if (el == '<')tmpString += "&lt;";
                     else if (el == '>')tmpString += "&gt;";
                     else if (el == ' ')tmpString += "&nbsp;";
                     else if (el == '\n')tmpString += "";
                     else if (el == '\r')tmpString += "";
-                    else if (el < 33 || el > 126) tmpString += 255;
                     else tmpString += el;
                 }
 
@@ -915,7 +930,7 @@ void MainWindowHandleData::appendDataToLog(const QByteArray &data, bool isSend, 
             QByteArray asciiArray = QByteArray(*dataArray);
             asciiArray.replace(0, 255);
 
-            QString tmp = QString::fromLocal8Bit(asciiArray);
+            QString tmp = QString::fromUtf8(asciiArray);
 
             if(!isUserMessage && !isTimeStamp && !isNewLine)
             {
@@ -1164,7 +1179,7 @@ void MainWindowHandleData::appendTimestamp(QVector<StoredData>* storedDataVector
     StoredData storedData;
     storedData.isFromCan = isFromCan;
     storedData.isFromI2cMaster = isFromI2cMaster;
-    storedData.data = QDateTime::currentDateTime().toString(timeStampFormat).toLocal8Bit();
+    storedData.data = QDateTime::currentDateTime().toString(timeStampFormat).toUtf8();
     storedData.type = isUserMessage ? STORED_DATA_TYPE_USER_MESSAGE : STORED_DATA_TYPE_TIMESTAMP;
     storedData.isSend = isSend;
     storedDataVector->push_back(storedData);
@@ -1188,7 +1203,7 @@ void MainWindowHandleData::appendNewLine(QVector<StoredData>* storedDataVector, 
     StoredData storedData;
     storedData.isFromCan = isFromCan;
     storedData.isFromI2cMaster = isFromI2cMaster;
-    storedData.data = QString("\n").toLocal8Bit();
+    storedData.data = QString("\n").toUtf8();
     storedData.type = STORED_DATA_TYPE_NEW_LINE;
     storedData.isSend = isSend;
     storedDataVector->push_back(storedData);
@@ -1666,7 +1681,7 @@ void MainWindowHandleData::processDataInStoredData()
                                                    el.isFromCan, el.isFromI2cMaster, isNewLine);
                         array.remove(0, settings->consoleNewLineAfterBytes - m_bytesSinceLastNewLineInConsole);
 
-                        tmpArray = QString("\n").toLocal8Bit();
+                        tmpArray = QString("\n").toUtf8();
                         //Save the console data before calling appendDataToConsoleStrings (0 are replace by 0xff in this function).
                         storedData.data = tmpArray;
                         storedData.type = STORED_DATA_TYPE_NEW_LINE;
@@ -1715,7 +1730,7 @@ void MainWindowHandleData::processDataInStoredData()
                     {
                         //After 1000000 added bytes without a new line (and with a data rate bigger then 10000) a new line is added to
                         //improve the performance of the consoles.
-                        QByteArray tmp = QString("\n").toLocal8Bit();
+                        QByteArray tmp = QString("\n").toUtf8();
                         appendDataToConsoleStrings(tmp, settings, el.isSend , isFromAddMessageDialog, isTimeStamp,
                                                    el.isFromCan, el.isFromI2cMaster,  true);
                         m_bytesSinceLastNewLineInConsole = 0;
@@ -1775,7 +1790,7 @@ void MainWindowHandleData::processDataInStoredData()
                                         el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, el.isFromI2cMaster, isNewLine);
                         array->remove(0, settings->logNewLineAfterBytes - m_bytesSinceLastNewLineInLog);
 
-                        QByteArray tmpArray = QString("\n").toLocal8Bit();
+                        QByteArray tmpArray = QString("\n").toUtf8();
                         appendDataToLog(tmpArray, el.isSend , isFromAddMessageDialog, isTimeStamp, el.isFromCan, el.isFromI2cMaster, true);
 
                         m_bytesSinceLastNewLineInLog = 0;

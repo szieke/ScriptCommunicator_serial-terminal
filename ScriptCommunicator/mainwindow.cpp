@@ -173,7 +173,7 @@ void SendConsole::keyPressEvent(QKeyEvent *event)
     if(m_mainWindow->m_userInterface->interactiveConsoleCheckBox->isChecked() && !ignoreEvent)
     {
         const Settings* settings = m_mainWindow->m_settingsDialog->settings();
-        m_mainWindow->m_sendWindow->sendDataWithTheMainInterface(textToSend.toLocal8Bit().replace("\r", settings->consoleSendOnEnter.toLocal8Bit()), this);
+        m_mainWindow->m_sendWindow->sendDataWithTheMainInterface(textToSend.toUtf8().replace("\r", settings->consoleSendOnEnter.toUtf8()), this);
     }
     else
     {
@@ -220,7 +220,7 @@ void SendConsole::contentsChangeSlot(int from, int charsRemoved, int charsAdded)
 
 
             const Settings* settings = m_mainWindow->m_settingsDialog->settings();
-            m_mainWindow->m_sendWindow->sendDataWithTheMainInterface(added.toLocal8Bit().replace("\n", settings->consoleSendOnEnter.toLocal8Bit()), this);
+            m_mainWindow->m_sendWindow->sendDataWithTheMainInterface(added.toUtf8().replace("\n", settings->consoleSendOnEnter.toUtf8()), this);
         }
     }
 }
@@ -839,7 +839,7 @@ void MainWindow::sendButtonPressedSlot(bool debug)
     if(m_userInterface->SendFormatComboBox->currentText() == "ascii")
     {
         const Settings* settings = m_settingsDialog->settings();
-        sendData.replace("\n", settings->consoleSendOnEnter.toLocal8Bit());
+        sendData.replace("\n", settings->consoleSendOnEnter.toUtf8());
     }
     else if(m_userInterface->SendFormatComboBox->currentText() == "can")
     {
@@ -980,7 +980,7 @@ void MainWindow::createScriptButtonSlot()
             (void)scriptFile.remove();
             if(scriptFile.open(QIODevice::WriteOnly))
             {
-                if(scriptFile.write(content.toLocal8Bit()))
+                if(scriptFile.write(content.toUtf8()))
                 {
                     m_scriptWindow->addScript(scriptFile.fileName());
                     QMessageBox::information(this, "information", QString("%1 has been created and added to the scripts config (script window and script tab in the main window)").arg(createdScriptFileName));
@@ -1637,6 +1637,15 @@ bool MainWindow::loadSettings()
                             currentSettings.showAsciiInConsole = true;
                         }
 
+                        if(node.attributes().namedItem("addDataInFrontOfTheConsoles").nodeValue() != "")
+                        {
+                            currentSettings.addDataInFrontOfTheConsoles = node.attributes().namedItem("addDataInFrontOfTheConsoles").nodeValue().toUInt();
+                        }
+                        else
+                        {
+                            currentSettings.addDataInFrontOfTheConsoles = false;
+                        }
+
                         if(node.attributes().namedItem("consoleWrapLines").nodeValue() != "")
                         {
                             currentSettings.wrapLines = (bool)node.attributes().namedItem("consoleWrapLines").nodeValue().toUInt();
@@ -1869,7 +1878,7 @@ bool MainWindow::loadSettings()
                         QString stateValue = node.attributes().namedItem("mainWindowState").nodeValue();
                         if(stateValue != "")
                         {
-                            restoreState(QByteArray().fromHex(stateValue.toLocal8Bit()));
+                            restoreState(QByteArray().fromHex(stateValue.toUtf8()));
                         }
 
                         if(node.attributes().namedItem("isMaximized").nodeValue().toUInt())
@@ -2664,6 +2673,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("showDecimalInConsole"), QString("%1").arg(currentSettings->showDecimalInConsole)),
                  std::make_pair(QString("showHexInConsole"), QString("%1").arg(currentSettings->showHexInConsole)),
                  std::make_pair(QString("showAsciiInConsole"), QString("%1").arg(currentSettings->showAsciiInConsole)),
+                 std::make_pair(QString("addDataInFrontOfTheConsoles"), QString("%1").arg(currentSettings->addDataInFrontOfTheConsoles)),
                  std::make_pair(QString("timeStampIntervalConsole"), QString("%1").arg(currentSettings->timeStampIntervalConsole)),
                  std::make_pair(QString("updateIntervalConsole"), QString("%1").arg(currentSettings->updateIntervalConsole)),
                  std::make_pair(QString("showMixedConsole"), QString("%1").arg(currentSettings->showMixedConsole)),
@@ -3104,7 +3114,7 @@ QString MainWindow::createLogFileName(QString fileName)
 {
     QString result;
 
-    QString time = QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss").toLocal8Bit();
+    QString time = QDateTime::currentDateTime().toString("yyyy-MM-dd_hh-mm-ss").toUtf8();
 
     QFileInfo fileInfo(fileName);
 
@@ -3699,7 +3709,7 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
         //Store the scroll bar position.
         int val = textEdit->verticalScrollBar()->value();
 
-        textEdit->moveCursor(QTextCursor::End);
+        textEdit->moveCursor(settings->addDataInFrontOfTheConsoles ? QTextCursor::Start : QTextCursor::End);
 
         if(consoleString->indexOf('\n') != -1)
         {//consoleString contains a '\n'.
@@ -3720,7 +3730,7 @@ void MainWindow::appendConsoleStringToConsole(QString* consoleString, QTextEdit*
             textEdit->insertHtml(*consoleString);
         }
 
-        textEdit->moveCursor(QTextCursor::End);
+        textEdit->moveCursor(settings->addDataInFrontOfTheConsoles ? QTextCursor::Start : QTextCursor::End);
         consoleString->clear();
 
         limtCharsInTextEdit(textEdit, settings->maxCharsInConsole);
@@ -3763,7 +3773,7 @@ void MainWindow::verticalSliderMovedSlot(int pos)
  */
 void MainWindow::messageEnteredSlot(QString message, bool forceTimeStamp)
 {
-    QByteArray array = message.toLocal8Bit();
+    QByteArray array = message.toUtf8();
     m_handleData->appendDataToStoredData(array, true, true, m_isConnectedWithCan, forceTimeStamp, m_isConnectedWithI2cMaster);
 }
 
@@ -4661,7 +4671,7 @@ void MainWindow::saveConsoleSlot()
 
             if(file.open(QIODevice::WriteOnly))
             {
-                QByteArray data = consoleContent.toLocal8Bit();
+                QByteArray data = consoleContent.toUtf8();
                 file.write(data);
                 file.close();
             }

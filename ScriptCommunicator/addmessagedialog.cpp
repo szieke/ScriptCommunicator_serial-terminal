@@ -46,5 +46,5 @@ void AddMessageDialog::enterButtonClicketSlot(void)
 {
     const Settings* settings = m_settingsDialog->settings();
 
-    emit messageEnteredSignal(ui->textEdit->toPlainText().toLocal8Bit().replace("\n", settings->consoleSendOnEnter.toLocal8Bit()), false);
+    emit messageEnteredSignal(ui->textEdit->toPlainText().toUtf8().replace("\n", settings->consoleSendOnEnter.toUtf8()), false);
 }

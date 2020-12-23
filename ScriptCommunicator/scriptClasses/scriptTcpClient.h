@@ -104,7 +104,7 @@ public:
     ///Writes a string to the socket. Returns the number of written bytes.
     Q_INVOKABLE qint64 writeString(QString string)
     {
-        return m_tcpSocket->write(string.toLocal8Bit());
+        return m_tcpSocket->write(string.toUtf8());
     }
 
     ///Returns true if the TCP client is open/connected.

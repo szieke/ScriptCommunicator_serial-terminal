@@ -600,7 +600,7 @@ void SequenceTableView::sendSequence(int row, bool debug, QWidget* callerWidget)
         if(box->currentText() == "ascii")
         {
             const Settings* settings = m_sendWindow->m_settingsDialog->settings();
-            sendData.replace("\n", settings->consoleSendOnEnter.toLocal8Bit());
+            sendData.replace("\n", settings->consoleSendOnEnter.toUtf8());
         }
         else if(box->currentText() == "can")
         {

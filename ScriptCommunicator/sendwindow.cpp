@@ -686,17 +686,9 @@ QString SendWindow::formatComboBoxChanged(QPlainTextEdit* textEdit, QString form
     else
     {
         QByteArray array = textToByteArray(oldFormat,textEdit->toPlainText(), formatToDecimalType(oldFormat), settings->targetEndianess);
-        for(auto el : array)
-        {
-            if(el == '\r')
-            {
-                newText += "<|#CR#|>";
-            }
-            else
-            {
-                newText += el;
-            }
-        }
+
+        newText = QString::fromUtf8(array);
+        newText.replace('\r', "<|#CR#|>");
     }
     return newText;
 }
@@ -987,7 +979,7 @@ void SendWindow::debugCyclicScriptSlot(void)
     if(m_userInterface->CyclicSendFormat->currentText() == "ascii")
     {
         const Settings* settings = m_settingsDialog->settings();
-        sendData.replace("\n", settings->consoleSendOnEnter.toLocal8Bit());
+        sendData.replace("\n", settings->consoleSendOnEnter.toUtf8());
     }
     else if(m_userInterface->CyclicSendFormat->currentText() == "can")
     {
@@ -1855,7 +1847,7 @@ QByteArray SendWindow::textToByteArray(QString formatString, QString text, Decim
     else
     {
         text.replace("<|#CR#|>", "\r");
-        dataArray = text.toLocal8Bit();
+        dataArray = text.toUtf8();
     }
 
     return dataArray;
@@ -2052,7 +2044,7 @@ void SendWindow::sendButtonPressedSlot()
         if(m_userInterface->CyclicSendFormat->currentText() == "ascii")
         {
             const Settings* settings = m_settingsDialog->settings();
-            sendData.replace("\n", settings->consoleSendOnEnter.toLocal8Bit());
+            sendData.replace("\n", settings->consoleSendOnEnter.toUtf8());
         }
         else if(m_userInterface->CyclicSendFormat->currentText() == "can")
         {

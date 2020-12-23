@@ -506,7 +506,7 @@ QStringList JlCompress::getFileList(QString fileCompressed) {
           return QStringList();
       }
       lst << info.name;
-      //info.name.toLocal8Bit().constData()
+      //info.name.toUtf8().constData()
     }
 
     // Chiudo il file zip

@@ -856,7 +856,7 @@ void Context2D::setSize(int width, int height)
  */
 bool Context2D::saveToFile(QString fileName, QString imageType)
 {
-    QImageWriter writer(fileName, imageType.toLocal8Bit());
+    QImageWriter writer(fileName, imageType.toUtf8());
     return writer.write(m_image);
 }
 

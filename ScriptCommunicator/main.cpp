@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
     //Parse all arguments.
     for(int i = 1; i < argc; i++)
     {
-        QString currentArg = QString::fromLocal8Bit(argv[i]);
+        QString currentArg = QString::fromUtf8(argv[i]);
 
         if(currentArg.indexOf("-") == 0)
         {//The current argument is not a script.

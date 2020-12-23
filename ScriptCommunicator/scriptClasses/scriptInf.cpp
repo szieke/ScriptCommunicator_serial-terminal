@@ -354,7 +354,7 @@ bool ScriptInf::i2cMasterReadWrite(quint8 flags, quint16 slaveAddress, quint16 n
  */
 bool ScriptInf::sendString(QString string, int repetitionCount, int pause, bool addToMainWindowSendHistory)
 {
-    return sendByteArray(string.toLocal8Bit(), repetitionCount, pause, addToMainWindowSendHistory);
+    return sendByteArray(string.toUtf8(), repetitionCount, pause, addToMainWindowSendHistory);
 }
 
 
