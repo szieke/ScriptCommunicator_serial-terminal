@@ -2351,7 +2351,7 @@ for TCP clients.</string>
              <item row="3" column="2">
               <widget class="QCheckBox" name="consoleShowMixedCheckBox">
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;show mixed console (ascii, dec and hex together in one console if they are selected)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;show mixed console (utf8, dec and hex together in one console if they are selected)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="statusTip">
                 <string/>
@@ -2538,7 +2538,7 @@ for TCP clients.</string>
              <item row="12" column="6">
               <widget class="QLabel" name="label_18">
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;this is sent/used for the enter key (console, message dialog, main window send area and ascii sequence in the send window)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;this is sent/used for the enter key (console, message dialog, main window send area and utf8 sequence in the send window)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>send on enter key</string>
@@ -2572,7 +2572,7 @@ for TCP clients.</string>
               </widget>
              </item>
              <item row="3" column="0">
-              <widget class="QCheckBox" name="consoleShowAsciiCheckBox">
+              <widget class="QCheckBox" name="consoleShowUtf8CheckBox">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                  <horstretch>0</horstretch>
@@ -2580,10 +2580,10 @@ for TCP clients.</string>
                 </sizepolicy>
                </property>
                <property name="toolTip">
-                <string>show ascii console</string>
+                <string>show utf8 console</string>
                </property>
                <property name="text">
-                <string>ascii</string>
+                <string>utf8</string>
                </property>
                <property name="checked">
                 <bool>true</bool>
@@ -2676,7 +2676,7 @@ for TCP clients.</string>
                 </size>
                </property>
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;this is sent/used for the enter key (console, message dialog, main window send area and ascii sequence in the send window)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;this is sent/used for the enter key (console, message dialog, main window send area and utf8 sequence in the send window)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -2947,14 +2947,14 @@ for TCP clients.</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_12">
               <item row="1" column="1">
-               <widget class="QLabel" name="lblColorAscii_5">
+               <widget class="QLabel" name="lblColorUtf8_5">
                 <property name="text">
                  <string>background-color for hexadecimal data</string>
                 </property>
                </widget>
               </item>
               <item row="0" column="0">
-               <widget class="QToolButton" name="btnColorAscii">
+               <widget class="QToolButton" name="btnColorUtf8">
                 <property name="autoFillBackground">
                  <bool>true</bool>
                 </property>
@@ -2970,14 +2970,14 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QLabel" name="lblColorAscii">
+               <widget class="QLabel" name="lblColorUtf8">
                 <property name="text">
-                 <string>background-color for ascii data</string>
+                 <string>background-color for utf8 data</string>
                 </property>
                </widget>
               </item>
               <item row="3" column="1">
-               <widget class="QLabel" name="lblColorAscii_6">
+               <widget class="QLabel" name="lblColorUtf8_6">
                 <property name="text">
                  <string>background-color for binary data</string>
                 </property>
@@ -3000,7 +3000,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="2" column="1">
-               <widget class="QLabel" name="lblColorAscii_2">
+               <widget class="QLabel" name="lblColorUtf8_2">
                 <property name="text">
                  <string>background-color for decimal data</string>
                 </property>
@@ -3469,7 +3469,7 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="1" column="0">
-               <widget class="QCheckBox" name="logShowAsciiCheckBox">
+               <widget class="QCheckBox" name="logShowUtf8CheckBox">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                   <horstretch>0</horstretch>
@@ -3477,10 +3477,10 @@ for TCP clients.</string>
                  </sizepolicy>
                 </property>
                 <property name="toolTip">
-                 <string>write ascii into log</string>
+                 <string>write utf8 into log</string>
                 </property>
                 <property name="text">
-                 <string>ascii</string>
+                 <string>utf8</string>
                 </property>
                 <property name="checked">
                  <bool>true</bool>

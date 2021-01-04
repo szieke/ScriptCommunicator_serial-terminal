@@ -353,19 +353,19 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
 
     QStringList availTargets;
-    availTargets << "ascii" << "hex" << "bin" << "uint8" << "uint16" << "uint32" << "int8" << "int16" << "int32";
+    availTargets << "utf8" << "hex" << "bin" << "uint8" << "uint16" << "uint32" << "int8" << "int16" << "int32";
 
     m_userInterface->historyFormatComboBox->addItems(availTargets);
     m_userInterface->historyFormatComboBox->setCurrentText("hex");
 
     m_userInterface->SendFormatComboBox->addItems(availTargets << "can");
-    m_userInterface->SendFormatComboBox->setCurrentText("ascii");
-    m_oldSendFormat = "ascii";
+    m_userInterface->SendFormatComboBox->setCurrentText("utf8");
+    m_oldSendFormat = "utf8";
 
 
     m_canTab = new CanTab(this);
 
-    m_userInterface->ReceiveTextEditAscii->setMainWindow(this);
+    m_userInterface->ReceiveTextEditUtf8->setMainWindow(this);
     m_userInterface->ReceiveTextEditBinary->setMainWindow(this);
     m_userInterface->ReceiveTextEditDecimal->setMainWindow(this);
     m_userInterface->ReceiveTextEditHex->setMainWindow(this);
@@ -403,12 +403,12 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
     m_userInterface->ReceiveLable->setText("0 bytes received");
 
-    m_userInterface->ReceiveTextEditAscii->setFocus();
+    m_userInterface->ReceiveTextEditUtf8->setFocus();
 
 
     qRegisterMetaType< QVector<QByteArray>>("QVector<QByteArray>");
 
-    connect(m_userInterface->ReceiveTextEditAscii->verticalScrollBar(), SIGNAL(sliderMoved(int)),this, SLOT(verticalSliderMovedSlot(int)));
+    connect(m_userInterface->ReceiveTextEditUtf8->verticalScrollBar(), SIGNAL(sliderMoved(int)),this, SLOT(verticalSliderMovedSlot(int)));
     connect(m_userInterface->ReceiveTextEditBinary->verticalScrollBar(), SIGNAL(sliderMoved(int)),this, SLOT(verticalSliderMovedSlot(int)));
     connect(m_userInterface->ReceiveTextEditDecimal->verticalScrollBar(), SIGNAL(sliderMoved(int)),this, SLOT(verticalSliderMovedSlot(int)));
     connect(m_userInterface->ReceiveTextEditHex->verticalScrollBar(), SIGNAL(sliderMoved(int)),this, SLOT(verticalSliderMovedSlot(int)));
@@ -624,7 +624,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
             m_mainConfigFile = getAndCreateProgramUserFolder() + "/" + INIT_MAIN_CONFIG_FILE;
         }
 
-        m_userInterface->ReceiveTextEditAscii->setWordWrapMode (QTextOption::WrapAnywhere);
+        m_userInterface->ReceiveTextEditUtf8->setWordWrapMode (QTextOption::WrapAnywhere);
 
         QFileInfo fi(m_mainConfigFile + ".lock");
         bool lockFileExists = fi.exists();
@@ -751,7 +751,7 @@ void MainWindow::consoleWrapLinesChangedSlot(bool wrap)
 {
     QTextEdit::LineWrapMode mode = wrap ? QTextEdit::WidgetWidth : QTextEdit::NoWrap;
 
-    m_userInterface->ReceiveTextEditAscii->setLineWrapMode(mode);
+    m_userInterface->ReceiveTextEditUtf8->setLineWrapMode(mode);
     m_userInterface->ReceiveTextEditHex->setLineWrapMode(mode);
     m_userInterface->ReceiveTextEditDecimal->setLineWrapMode(mode);
     m_userInterface->ReceiveTextEditMixed->setLineWrapMode(mode);
@@ -836,7 +836,7 @@ void MainWindow::sendButtonPressedSlot(bool debug)
     const Settings* settings = m_settingsDialog->settings();
     QByteArray sendData = m_sendWindow->textToByteArray(m_userInterface->SendFormatComboBox->currentText(), m_userInterface->SendTextEdit->toPlainText(),
                                                         m_sendWindow->formatToDecimalType(m_userInterface->SendFormatComboBox->currentText()), settings->targetEndianess);
-    if(m_userInterface->SendFormatComboBox->currentText() == "ascii")
+    if(m_userInterface->SendFormatComboBox->currentText() == "utf8")
     {
         const Settings* settings = m_settingsDialog->settings();
         sendData.replace("\n", settings->consoleSendOnEnter.toUtf8());
@@ -1582,7 +1582,7 @@ bool MainWindow::loadSettings()
                         currentSettings.consoleSendColor = node.attributes().namedItem("consoleSendColor").nodeValue();
                         currentSettings.consoleBackgroundColor = node.attributes().namedItem("consoleBackgroundColor").nodeValue();
                         currentSettings.consoleMessageAndTimestampColor = node.attributes().namedItem("consoleMessageAndTimestampColor").nodeValue();
-                        currentSettings.consoleMixedAsciiColor = node.attributes().namedItem("consoleMixedAsciiColor").nodeValue();
+                        currentSettings.consoleMixedUtf8Color = node.attributes().namedItem("consoleMixedUtf8Color").nodeValue();
                         currentSettings.consoleMixedDecimalColor = node.attributes().namedItem("consoleMixedDecimalColor").nodeValue();
                         currentSettings.consoleMixedHexadecimalColor = node.attributes().namedItem("consoleMixedHexadecimalColor").nodeValue();
                         currentSettings.consoleMixedBinaryColor = node.attributes().namedItem("consoleMixedBinaryColor").nodeValue();
@@ -1628,13 +1628,13 @@ bool MainWindow::loadSettings()
                             currentSettings.logNewLineAt = 10;
                         }
 
-                        if(node.attributes().namedItem("showAsciiInConsole").nodeValue() != "")
+                        if(node.attributes().namedItem("showUtf8InConsole").nodeValue() != "")
                         {
-                            currentSettings.showAsciiInConsole = node.attributes().namedItem("showAsciiInConsole").nodeValue().toUInt();
+                            currentSettings.showUtf8InConsole = node.attributes().namedItem("showUtf8InConsole").nodeValue().toUInt();
                         }
                         else
                         {
-                            currentSettings.showAsciiInConsole = true;
+                            currentSettings.showUtf8InConsole = true;
                         }
 
                         if(node.attributes().namedItem("addDataInFrontOfTheConsoles").nodeValue() != "")
@@ -1700,13 +1700,13 @@ bool MainWindow::loadSettings()
                         }
 
 
-                        if(node.attributes().namedItem("writeAsciiInToLog").nodeValue() != "")
+                        if(node.attributes().namedItem("writeUtf8InToLog").nodeValue() != "")
                         {
-                            currentSettings.writeAsciiInToLog = node.attributes().namedItem("writeAsciiInToLog").nodeValue().toUInt();
+                            currentSettings.writeUtf8InToLog = node.attributes().namedItem("writeUtf8InToLog").nodeValue().toUInt();
                         }
                         else
                         {
-                            currentSettings.writeAsciiInToLog = true;
+                            currentSettings.writeUtf8InToLog = true;
                         }
 
                         m_handleData->m_htmlLogFile.setFileName(currentSettings.htmlLogfileName);
@@ -2319,7 +2319,7 @@ void MainWindow::setWidgetTextColorFromString(QString colorString, QWidget* widg
 void MainWindow::inititializeTab(void)
 {
     const Settings* currentSettings = m_settingsDialog->settings();
-    static bool showAsciiInConsole = false;
+    static bool showUtf8InConsole = false;
     static bool showHexInConsole = false;
     static bool showDecimalInConsole = false;
     static bool showMixedConsole = false;
@@ -2329,7 +2329,7 @@ void MainWindow::inititializeTab(void)
     static QString sendColor = "";
     static QString backgroundColor = "";
     static QString messageAndTimestampColor = "";
-    static QString mixedAsciiColor = "";
+    static QString mixedUtf8Color = "";
     static QString mixedDecimalColor = "";
     static QString mixedHexadecimalColor = "";
     static QString mixedBinaryColor = "";
@@ -2396,10 +2396,10 @@ void MainWindow::inititializeTab(void)
         messageAndTimestampColor = currentSettings->consoleMessageAndTimestampColor;
     }
 
-    if(mixedAsciiColor != currentSettings->consoleMixedAsciiColor)
+    if(mixedUtf8Color != currentSettings->consoleMixedUtf8Color)
     {
         tabsChanged = true;
-        mixedAsciiColor = currentSettings->consoleMixedAsciiColor;
+        mixedUtf8Color = currentSettings->consoleMixedUtf8Color;
     }
 
     if(mixedDecimalColor != currentSettings->consoleMixedDecimalColor)
@@ -2420,10 +2420,10 @@ void MainWindow::inititializeTab(void)
         mixedBinaryColor = currentSettings->consoleMixedBinaryColor;
     }
 
-    if(showAsciiInConsole != currentSettings->showAsciiInConsole)
+    if(showUtf8InConsole != currentSettings->showUtf8InConsole)
     {
         tabsChanged = true;
-        showAsciiInConsole = currentSettings->showAsciiInConsole;
+        showUtf8InConsole = currentSettings->showUtf8InConsole;
     }
     if(showHexInConsole != currentSettings->showHexInConsole)
     {
@@ -2453,7 +2453,7 @@ void MainWindow::inititializeTab(void)
 
 
     if((currentSettings->showDecimalInConsole == false) &&(currentSettings->showHexInConsole == false) &&
-       (currentSettings->showAsciiInConsole == false) && (currentSettings->showMixedConsole == false) &&
+       (currentSettings->showUtf8InConsole == false) && (currentSettings->showMixedConsole == false) &&
        (currentSettings->showBinaryConsole == false))
     {
         m_handleData->m_noConsoleVisible = true;
@@ -2477,8 +2477,8 @@ void MainWindow::inititializeTab(void)
         m_userInterface->ReceiveTextEditMixed->setStyleSheet(consoleStyle);
         setConsoleFont("Courier new", currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditMixed);
 
-        m_userInterface->ReceiveTextEditAscii->setStyleSheet(consoleStyle);
-        setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditAscii);
+        m_userInterface->ReceiveTextEditUtf8->setStyleSheet(consoleStyle);
+        setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditUtf8);
 
         m_userInterface->ReceiveTextEditHex->setStyleSheet(consoleStyle);
         setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->ReceiveTextEditHex);
@@ -2505,9 +2505,9 @@ void MainWindow::inititializeTab(void)
         }
 
 
-        if(currentSettings->showAsciiInConsole)
+        if(currentSettings->showUtf8InConsole)
         {
-            m_userInterface->tabWidget->addTab( m_userInterface->tabAscii, "Ascii");
+            m_userInterface->tabWidget->addTab( m_userInterface->tabUtf8, "Utf8");
         }
 
 
@@ -2672,7 +2672,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("stringConsoleFontSize"), QString("%1").arg(currentSettings->stringConsoleFontSize)),
                  std::make_pair(QString("showDecimalInConsole"), QString("%1").arg(currentSettings->showDecimalInConsole)),
                  std::make_pair(QString("showHexInConsole"), QString("%1").arg(currentSettings->showHexInConsole)),
-                 std::make_pair(QString("showAsciiInConsole"), QString("%1").arg(currentSettings->showAsciiInConsole)),
+                 std::make_pair(QString("showUtf8InConsole"), QString("%1").arg(currentSettings->showUtf8InConsole)),
                  std::make_pair(QString("addDataInFrontOfTheConsoles"), QString("%1").arg(currentSettings->addDataInFrontOfTheConsoles)),
                  std::make_pair(QString("timeStampIntervalConsole"), QString("%1").arg(currentSettings->timeStampIntervalConsole)),
                  std::make_pair(QString("updateIntervalConsole"), QString("%1").arg(currentSettings->updateIntervalConsole)),
@@ -2685,7 +2685,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("consoleSendColor"), QString("%1").arg(currentSettings->consoleSendColor)),
                  std::make_pair(QString("consoleBackgroundColor"), QString("%1").arg(currentSettings->consoleBackgroundColor)),
                  std::make_pair(QString("consoleMessageAndTimestampColor"), QString("%1").arg(currentSettings->consoleMessageAndTimestampColor)),
-                 std::make_pair(QString("consoleMixedAsciiColor"), QString("%1").arg(currentSettings->consoleMixedAsciiColor)),
+                 std::make_pair(QString("consoleMixedUtf8Color"), QString("%1").arg(currentSettings->consoleMixedUtf8Color)),
                  std::make_pair(QString("consoleMixedDecimalColor"), QString("%1").arg(currentSettings->consoleMixedDecimalColor)),
                  std::make_pair(QString("consoleMixedHexadecimalColor"), QString("%1").arg(currentSettings->consoleMixedHexadecimalColor)),
                  std::make_pair(QString("consoleMixedBinaryColor"), QString("%1").arg(currentSettings->consoleMixedBinaryColor)),
@@ -2718,7 +2718,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("stringHtmlLogFontSize"), QString("%1").arg(currentSettings->stringHtmlLogFontSize)),
                  std::make_pair(QString("writeDecimalInToLog"), QString("%1").arg(currentSettings->writeDecimalInToLog)),
                  std::make_pair(QString("writeHexInToLog"), QString("%1").arg(currentSettings->writeHexInToLog)),
-                 std::make_pair(QString("writeAsciiInToLog"), QString("%1").arg(currentSettings->writeAsciiInToLog)),
+                 std::make_pair(QString("writeUtf8InToLog"), QString("%1").arg(currentSettings->writeUtf8InToLog)),
                  std::make_pair(QString("writeBinaryInToLog"), QString("%1").arg(currentSettings->writeBinaryInToLog)),
                  std::make_pair(QString("timeStampIntervalLog"), QString("%1").arg(currentSettings->timeStampIntervalLog)),
                  std::make_pair(QString("writeCanMetaInformationInToLog"), QString("%1").arg(currentSettings->writeCanMetaInformationInToLog)),
@@ -3846,19 +3846,19 @@ void MainWindow::initActionsConnections()
  */
 void MainWindow::clearConsoleSlot(void)
 {
-    m_userInterface->ReceiveTextEditAscii->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditUtf8->document()->blockSignals(true);
     m_userInterface->ReceiveTextEditHex->document()->blockSignals(true);
     m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(true);
     m_userInterface->ReceiveTextEditMixed->document()->blockSignals(true);
     m_userInterface->ReceiveTextEditBinary->document()->blockSignals(true);
 
-    m_userInterface->ReceiveTextEditAscii->clear();
+    m_userInterface->ReceiveTextEditUtf8->clear();
     m_userInterface->ReceiveTextEditHex->clear();
     m_userInterface->ReceiveTextEditDecimal->clear();
     m_userInterface->ReceiveTextEditMixed->clear();
     m_userInterface->ReceiveTextEditBinary->clear();
 
-    m_userInterface->ReceiveTextEditAscii->document()->blockSignals(false);
+    m_userInterface->ReceiveTextEditUtf8->document()->blockSignals(false);
     m_userInterface->ReceiveTextEditHex->document()->blockSignals(false);
     m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(false);
     m_userInterface->ReceiveTextEditMixed->document()->blockSignals(false);

@@ -168,7 +168,7 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->ShowReceivedCheckBox, SIGNAL(stateChanged(int)),
             this, SLOT(stateFromCheckboxChangedSlot(int)));
 
-    connect(m_userInterface->consoleShowAsciiCheckBox, SIGNAL(stateChanged(int)),
+    connect(m_userInterface->consoleShowUtf8CheckBox, SIGNAL(stateChanged(int)),
             this, SLOT(stateFromCheckboxChangedSlot(int)));
 
     connect(m_userInterface->consoleAddDataFrontCheckBox, SIGNAL(stateChanged(int)),
@@ -233,7 +233,7 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->logShowHexCheckBox, SIGNAL(stateChanged(int)),
             this, SLOT(stateFromCheckboxChangedSlot(int)));
 
-    connect(m_userInterface->logShowAsciiCheckBox, SIGNAL(stateChanged(int)),
+    connect(m_userInterface->logShowUtf8CheckBox, SIGNAL(stateChanged(int)),
             this, SLOT(stateFromCheckboxChangedSlot(int)));
 
     connect(m_userInterface->consoleShowMixedCheckBox, SIGNAL(stateChanged(int)),
@@ -306,7 +306,7 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     mapColorButtons->setMapping(m_userInterface->consoleMessageColorButton, m_userInterface->consoleMessageColorButton);
     mapColorButtons->setMapping(m_userInterface->consoleReceiveColorButton, m_userInterface->consoleReceiveColorButton);
     mapColorButtons->setMapping(m_userInterface->consoleBackgroundColorButton, m_userInterface->consoleBackgroundColorButton);
-    mapColorButtons->setMapping(m_userInterface->btnColorAscii, m_userInterface->btnColorAscii);
+    mapColorButtons->setMapping(m_userInterface->btnColorUtf8, m_userInterface->btnColorUtf8);
     mapColorButtons->setMapping(m_userInterface->btnColorDec, m_userInterface->btnColorDec);
     mapColorButtons->setMapping(m_userInterface->btnColorHex, m_userInterface->btnColorHex);
     mapColorButtons->setMapping(m_userInterface->btnColorBin, m_userInterface->btnColorBin);
@@ -314,7 +314,7 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->consoleMessageColorButton, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
     connect(m_userInterface->consoleReceiveColorButton, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
     connect(m_userInterface->consoleBackgroundColorButton, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
-    connect(m_userInterface->btnColorAscii, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
+    connect(m_userInterface->btnColorUtf8, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
     connect(m_userInterface->btnColorDec, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
     connect(m_userInterface->btnColorHex, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
     connect(m_userInterface->btnColorBin, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
@@ -479,7 +479,7 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     setButtonColorFromString("7c0000", m_userInterface->consoleSendColorButton);
     setButtonColorFromString("efefef", m_userInterface->consoleBackgroundColorButton);
     setButtonColorFromString("7c0000", m_userInterface->consoleMessageColorButton);
-    setButtonColorFromString("8faf9f", m_userInterface->btnColorAscii);
+    setButtonColorFromString("8faf9f", m_userInterface->btnColorUtf8);
     setButtonColorFromString("f8f893", m_userInterface->btnColorDec);
     setButtonColorFromString("6c9339", m_userInterface->btnColorHex);
     setButtonColorFromString("bf9b76", m_userInterface->btnColorBin);
@@ -848,7 +848,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     m_userInterface->consoleFontComboBox->setCurrentText(settings.stringConsoleFont);
     m_userInterface->consoleFontSizeComboBox->setCurrentText(settings.stringConsoleFontSize);
     m_userInterface->consoleI2cMetadata->setCurrentIndex((int)settings.i2cMetaInformationInConsole);
-    m_userInterface->consoleShowAsciiCheckBox->setChecked(settings.showAsciiInConsole);
+    m_userInterface->consoleShowUtf8CheckBox->setChecked(settings.showUtf8InConsole);
     m_userInterface->consoleAddDataFrontCheckBox->setChecked(settings.addDataInFrontOfTheConsoles);
     m_userInterface->PrintTimeStampLineEdit->setText(QString("%1").arg(settings.timeStampIntervalConsole));
     m_userInterface->ConsoleUpdateIntervallLineEdit->setText(QString("%1").arg(settings.updateIntervalConsole));
@@ -920,7 +920,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     if(settings.consoleSendColor.isEmpty()){settings.consoleSendColor = "7c0000";}
     if(settings.consoleBackgroundColor.isEmpty()){settings.consoleBackgroundColor = "efefef";}
     if(settings.consoleMessageAndTimestampColor.isEmpty()){settings.consoleMessageAndTimestampColor = "7c0000";}
-    if(settings.consoleMixedAsciiColor.isEmpty()){settings.consoleMixedAsciiColor = "8faf9f";}
+    if(settings.consoleMixedUtf8Color.isEmpty()){settings.consoleMixedUtf8Color = "8faf9f";}
     if(settings.consoleMixedDecimalColor.isEmpty()){settings.consoleMixedDecimalColor = "f8f893";}
     if(settings.consoleMixedHexadecimalColor.isEmpty()){settings.consoleMixedHexadecimalColor = "6c9339";}
     if(settings.consoleMixedBinaryColor.isEmpty()){settings.consoleMixedBinaryColor = "bf9b76";}
@@ -929,7 +929,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     setButtonColorFromString(settings.consoleSendColor, m_userInterface->consoleSendColorButton);
     setButtonColorFromString(settings.consoleBackgroundColor, m_userInterface->consoleBackgroundColorButton);
     setButtonColorFromString(settings.consoleMessageAndTimestampColor, m_userInterface->consoleMessageColorButton);
-    setButtonColorFromString(settings.consoleMixedAsciiColor, m_userInterface->btnColorAscii);
+    setButtonColorFromString(settings.consoleMixedUtf8Color, m_userInterface->btnColorUtf8);
     setButtonColorFromString(settings.consoleMixedDecimalColor, m_userInterface->btnColorDec);
     setButtonColorFromString(settings.consoleMixedHexadecimalColor, m_userInterface->btnColorHex);
     setButtonColorFromString(settings.consoleMixedBinaryColor, m_userInterface->btnColorBin);
@@ -949,7 +949,7 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     m_userInterface->consoleShowHexCheckBox->setChecked(settings.showHexInConsole);
     m_userInterface->logShowDecimalCheckBox->setChecked(settings.writeDecimalInToLog);
     m_userInterface->logShowHexCheckBox->setChecked(settings.writeHexInToLog);
-    m_userInterface->logShowAsciiCheckBox->setChecked(settings.writeAsciiInToLog);
+    m_userInterface->logShowUtf8CheckBox->setChecked(settings.writeUtf8InToLog);
     m_userInterface->logShowBinaryCheckBox->setChecked(settings.writeBinaryInToLog);
     m_userInterface->logWithTimeStampLineEdit->setText(QString("%1").arg(settings.timeStampIntervalLog));
     m_userInterface->LogWriteCanMetaCheckBox->setChecked(settings.writeCanMetaInformationInToLog);
@@ -1765,7 +1765,7 @@ void SettingsDialog::updateProxyRadioButtonClickedSlot(void)
  */
 void SettingsDialog::checkMixedConsoleCheckbox()
 {
-    if(!m_userInterface->consoleShowAsciiCheckBox->isChecked() &&
+    if(!m_userInterface->consoleShowUtf8CheckBox->isChecked() &&
        !m_userInterface->consoleShowHexCheckBox->isChecked() &&
        !m_userInterface->consoleShowBinaryCheckBox->isChecked() &&
        !m_userInterface->consoleShowDecimalCheckBox->isChecked())
@@ -2059,7 +2059,7 @@ void SettingsDialog::updateSettings(bool forceUpdate)
     m_currentSettings.i2cMetaInformationInConsole = (I2cMetadata)m_userInterface->consoleI2cMetadata->currentIndex();
     m_currentSettings.showDecimalInConsole = m_userInterface->consoleShowDecimalCheckBox->isChecked();
     m_currentSettings.showHexInConsole = m_userInterface->consoleShowHexCheckBox->isChecked();
-    m_currentSettings.showAsciiInConsole = m_userInterface->consoleShowAsciiCheckBox->isChecked();
+    m_currentSettings.showUtf8InConsole = m_userInterface->consoleShowUtf8CheckBox->isChecked();
     m_currentSettings.addDataInFrontOfTheConsoles = m_userInterface->consoleAddDataFrontCheckBox->isChecked();
     m_currentSettings.timeStampIntervalConsole = m_userInterface->PrintTimeStampLineEdit->text().toInt();
     m_currentSettings.updateIntervalConsole = m_userInterface->ConsoleUpdateIntervallLineEdit->text().toUInt();
@@ -2072,7 +2072,7 @@ void SettingsDialog::updateSettings(bool forceUpdate)
     m_currentSettings.consoleSendColor= getColorStringFromButton(m_userInterface->consoleSendColorButton);
     m_currentSettings.consoleBackgroundColor= getColorStringFromButton(m_userInterface->consoleBackgroundColorButton);
     m_currentSettings.consoleMessageAndTimestampColor= getColorStringFromButton(m_userInterface->consoleMessageColorButton);
-    m_currentSettings.consoleMixedAsciiColor = getColorStringFromButton(m_userInterface->btnColorAscii);
+    m_currentSettings.consoleMixedUtf8Color = getColorStringFromButton(m_userInterface->btnColorUtf8);
     m_currentSettings.consoleMixedDecimalColor = getColorStringFromButton(m_userInterface->btnColorDec);
     m_currentSettings.consoleMixedHexadecimalColor= getColorStringFromButton(m_userInterface->btnColorHex);
     m_currentSettings.consoleMixedBinaryColor= getColorStringFromButton(m_userInterface->btnColorBin);
@@ -2124,7 +2124,7 @@ void SettingsDialog::updateSettings(bool forceUpdate)
     m_currentSettings.stringHtmlLogFontSize = m_userInterface->htmlLogFontSizeComboBox->currentText();
     m_currentSettings.writeDecimalInToLog = m_userInterface->logShowDecimalCheckBox->isChecked();
     m_currentSettings.writeHexInToLog = m_userInterface->logShowHexCheckBox->isChecked();
-    m_currentSettings.writeAsciiInToLog = m_userInterface->logShowAsciiCheckBox->isChecked();
+    m_currentSettings.writeUtf8InToLog = m_userInterface->logShowUtf8CheckBox->isChecked();
     m_currentSettings.writeBinaryInToLog = m_userInterface->logShowBinaryCheckBox->isChecked();
     m_currentSettings.timeStampIntervalLog = m_userInterface->logWithTimeStampLineEdit->text().toInt();
     m_currentSettings.writeCanMetaInformationInToLog = m_userInterface->LogWriteCanMetaCheckBox->isChecked();

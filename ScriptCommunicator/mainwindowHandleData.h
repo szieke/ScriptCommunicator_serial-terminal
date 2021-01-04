@@ -64,7 +64,7 @@ typedef struct
     ///The divider for the bytes bytes per line calcualtion.
     double divider;
 
-    ///True if only the type is in the mixed console (ascii, or hex...).
+    ///True if only the type is in the mixed console (utf8, or hex...).
     bool onlyOneType;
 
     ///The bytes per decimal.
@@ -73,8 +73,8 @@ typedef struct
     ///The max. number of bytes per line.
     int maxBytePerLine;
 
-    ///The spaces for the ascii characters.
-    QString asciiSpaces;
+    ///The spaces for the utf8 characters.
+    QString utf8Spaces;
 
     ///The spaces for the hex characters.
     QString hexSpaces;
@@ -126,7 +126,7 @@ public:
     ///Caclulates the console data.
     void calculateConsoleData();
 
-    ///Appends data to the console strings (m_consoleDataBufferAscii, m_consoleDataBufferHex;
+    ///Appends data to the console strings (m_consoleDataBufferUtf8, m_consoleDataBufferHex;
     ///m_consoleDataBufferDec)
     void appendDataToConsoleStrings(QByteArray& data, const Settings *currentSettings, bool isSend, bool isUserMessage,
                                     bool isTimeStamp, bool isFromCan, bool isFromI2cMaster, bool isNewLine);
@@ -233,8 +233,8 @@ private:
     ///Cyclic timer which call the function updateConsoleAndLog.
     QTimer *m_updateConsoleAndLogTimer ;
 
-    ///The data buffer for the ascii console.
-    QString m_consoleDataBufferAscii;
+    ///The data buffer for the utf8 console.
+    QString m_consoleDataBufferUtf8;
 
     ///The data buffer for the hex console.
     QString m_consoleDataBufferHex;

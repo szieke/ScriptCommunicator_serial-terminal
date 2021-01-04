@@ -59,13 +59,13 @@
            <property name="currentIndex">
             <number>0</number>
            </property>
-           <widget class="QWidget" name="tabAscii">
+           <widget class="QWidget" name="tabUtf8">
             <attribute name="title">
-             <string>Ascii</string>
+             <string>Utf8</string>
             </attribute>
             <layout class="QVBoxLayout" name="verticalLayout_14">
              <item>
-              <widget class="SendConsole" name="ReceiveTextEditAscii">
+              <widget class="SendConsole" name="ReceiveTextEditUtf8">
                <property name="palette">
                 <palette>
                  <active>
@@ -1463,7 +1463,7 @@ p, li { white-space: pre-wrap; }
         <item>
          <widget class="QCheckBox" name="interactiveConsoleCheckBox">
           <property name="toolTip">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;if checked all text entered in a console will be sent (ascii format, other formats are available in the send window and in the send area above)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;if checked all text entered in a console will be sent (utf8 format, other formats are available in the send window and in the send area above)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="text">
            <string>send input</string>

@@ -597,7 +597,7 @@ void SequenceTableView::sendSequence(int row, bool debug, QWidget* callerWidget)
         QByteArray sendData = m_sendWindow->textToByteArray(box->currentText(), lineEdit->toPlainText(),
                                                             m_sendWindow->formatToDecimalType(box->currentText()), settings->targetEndianess);
 
-        if(box->currentText() == "ascii")
+        if(box->currentText() == "utf8")
         {
             const Settings* settings = m_sendWindow->m_settingsDialog->settings();
             sendData.replace("\n", settings->consoleSendOnEnter.toUtf8());

@@ -82,8 +82,8 @@ void MainWindowHandleData::updateConsoleAndLog(void)
     m_mainWindow->setUpdatesEnabled(false);
 
     /*********Append the console strings to the corresponding console and clear them.***********/
-    if(settings->showAsciiInConsole){m_mainWindow->appendConsoleStringToConsole(&m_consoleDataBufferAscii, m_userInterface->ReceiveTextEditAscii);}
-    else{m_consoleDataBufferAscii.clear();}
+    if(settings->showUtf8InConsole){m_mainWindow->appendConsoleStringToConsole(&m_consoleDataBufferUtf8, m_userInterface->ReceiveTextEditUtf8);}
+    else{m_consoleDataBufferUtf8.clear();}
 
     if(settings->showHexInConsole){m_mainWindow->appendConsoleStringToConsole(&m_consoleDataBufferHex, m_userInterface->ReceiveTextEditHex);}
     else{m_consoleDataBufferHex.clear();}
@@ -207,7 +207,7 @@ void MainWindowHandleData::calculateConsoleData()
              m_consoleData.mixedData.divider = 8.2;
         }
 
-        m_consoleData.mixedData.onlyOneType = (!currentSettings->showHexInConsole && !currentSettings->showAsciiInConsole && !currentSettings->showDecimalInConsole) ? true : false;
+        m_consoleData.mixedData.onlyOneType = (!currentSettings->showHexInConsole && !currentSettings->showUtf8InConsole && !currentSettings->showDecimalInConsole) ? true : false;
     }
     else if(currentSettings->showDecimalInConsole)
     {
@@ -231,15 +231,15 @@ void MainWindowHandleData::calculateConsoleData()
         {
             m_consoleData.mixedData.divider = 2;
         }
-        m_consoleData.mixedData.onlyOneType = (!currentSettings->showHexInConsole && !currentSettings->showAsciiInConsole) ? true : false;
+        m_consoleData.mixedData.onlyOneType = (!currentSettings->showHexInConsole && !currentSettings->showUtf8InConsole) ? true : false;
     }
     else if(currentSettings->showHexInConsole)
     {
         m_consoleData.mixedData.divider = 3;
-        m_consoleData.mixedData.onlyOneType = (!currentSettings->showAsciiInConsole) ? true : false;
+        m_consoleData.mixedData.onlyOneType = (!currentSettings->showUtf8InConsole) ? true : false;
     }
     else
-    {//ascii
+    {//utf8
         m_consoleData.mixedData.divider = 1;
         m_consoleData.mixedData.onlyOneType = true;
     }
@@ -266,11 +266,11 @@ void MainWindowHandleData::calculateConsoleData()
         }
     }
 
-    /******calculate the ascii spaces*********/
-    m_consoleData.mixedData.asciiSpaces.clear();
+    /******calculate the utf8 spaces*********/
+    m_consoleData.mixedData.utf8Spaces.clear();
     if(m_consoleData.mixedData.onlyOneType)
     {
-        m_consoleData.mixedData.asciiSpaces = "";
+        m_consoleData.mixedData.utf8Spaces = "";
     }
     else
     {
@@ -295,7 +295,7 @@ void MainWindowHandleData::calculateConsoleData()
 
         for(int i = 0; i < numberOfSpaces; i++)
         {
-            m_consoleData.mixedData.asciiSpaces += "&nbsp;";
+            m_consoleData.mixedData.utf8Spaces += "&nbsp;";
         }
     }
 
@@ -306,7 +306,7 @@ void MainWindowHandleData::calculateConsoleData()
     {
         m_consoleData.mixedData.hexSpaces = "&nbsp;";
     }
-    else if(currentSettings->showAsciiInConsole && !currentSettings->showDecimalInConsole && !currentSettings->showBinaryConsole)
+    else if(currentSettings->showUtf8InConsole && !currentSettings->showDecimalInConsole && !currentSettings->showBinaryConsole)
     {
         m_consoleData.mixedData.hexSpaces = "";
     }
@@ -387,13 +387,13 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
         if(currentSettings->showHexInConsole)result = MainWindow::byteArrayToNumberString(data, false, true, false) + " ";
         if(currentSettings->showBinaryConsole)result = MainWindow::byteArrayToNumberString(data, true, false, false) + " ";
 
-        if(currentSettings->showAsciiInConsole)
+        if(currentSettings->showUtf8InConsole)
         {
-            //Replace the binary 0 (for the ascii console).
-            QByteArray asciiArray = data;
-            asciiArray.replace(0, 255);
+            //Replace the binary 0 (for the utf8 console).
+            QByteArray utf8Array = data;
+            utf8Array.replace(0, 255);
 
-            result = QString::fromUtf8(asciiArray);
+            result = QString::fromUtf8(utf8Array);
             result.replace("<", "&lt;");
             result.replace(">", "&gt;");
             if(!hasCanMeta){result.replace("\n", "<br>");}
@@ -409,77 +409,82 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
             QByteArray arrayWithMaxBytes = data.mid(convertedBytes, m_consoleData.mixedData.maxBytePerLine);
             convertedBytes += arrayWithMaxBytes.length();
 
-            if(currentSettings->showAsciiInConsole)
+            if(currentSettings->showUtf8InConsole)
             {
-                //Replace the binary 0 (for the ascii console).
-                QByteArray asciiArray = arrayWithMaxBytes;
-                asciiArray.replace(0, 255);
-                QString asciiString;
-                bool closeSpan = false;
+                //Replace the binary 0 (for the utf8 console).
+                QByteArray utf8Array = arrayWithMaxBytes;
+                utf8Array.replace(0, 255);
+                QString utf8String;
 
-                tmpString = QString::fromUtf8(asciiArray);
                 result += "<br>";
 
-                bool twoByteSymbolInProgress = false;
                 qint32 modulo = m_consoleData.mixedData.bytesPerDecimal;
-                ///Create the ascii string.
-                for(int i = 0; i < tmpString.length(); i++)
+                ///Create the utf8 string.
+                for(int i = 0; i < utf8Array.length();)
                 {
 
+                    int bytesPerChar = 1;
 
-                    if(!twoByteSymbolInProgress)
+                    if((quint8)utf8Array[i] >= 0b11110000)
                     {
-                        if(!currentSettings->showDecimalInConsole || ((i % modulo) == 0))
-                        {
-                            asciiString += "&nbsp;";    // uncolored
-                            asciiString += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMixedAsciiColor);
-                            asciiString += m_consoleData.mixedData.asciiSpaces;
-                            closeSpan = true;
-                        }
+                        bytesPerChar = 4;
+                    }
+                    else if((quint8)utf8Array[i] >= 0b11100000)
+                    {
+                        bytesPerChar = 3;
+                    }
+                    else if((quint8)utf8Array[i] >= 0b11000000)
+                    {
+                        bytesPerChar = 2;
+                    }
+
+                    if(!currentSettings->showDecimalInConsole || ((i % modulo) == 0))
+                    {
+                        utf8String += "&nbsp;";    // uncolored
+                        utf8String += QString("<span style=background-color:#%1>").arg(currentSettings->consoleMixedUtf8Color);
+                        utf8String += m_consoleData.mixedData.utf8Spaces;
                     }
 
 
+                    QTextCodec::ConverterState state;
+                    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
+                    tmpString = codec->toUnicode(utf8Array.mid(i, bytesPerChar),bytesPerChar, &state);
+
+                    //tmpString = QString::fromUtf8(utf8Array.mid(i, bytesPerChar));
+
                     //Replace tags so our span does not get mangled up.
-                    if (tmpString[i] == '<')asciiString += "&lt;";
-                    else if (tmpString[i] == '>')asciiString += "&gt;";
-                    else if (tmpString[i] == ' ')
+                    if (tmpString == "<")utf8String += "&lt;";
+                    else if (tmpString == ">")utf8String += "&gt;";
+                    else if (tmpString == " ")
                     {
-                        if(i < (tmpString.length() - 1))
+                        if(i < (utf8Array.length() - 1))
                         {//The last element is not reached yet.
 
-                            asciiString += "&nbsp;";
+                            utf8String += "&nbsp;";
                         }
                         else
                         {
                             //If the last element is a &nbsp; then QTextEdit discards some characters from that line (bug in QTextEdit?).
                             //Because of this a '_' is added whose text color is the same like the background color.
-                            asciiString += QString("<span style=\"color:#" + currentSettings->consoleMixedAsciiColor + ";\">");
-                            asciiString += "_";
-                            asciiString += "</span>";
+                            utf8String += QString("<span style=\"color:#" + currentSettings->consoleMixedUtf8Color + ";\">");
+                            utf8String += "_";
+                            utf8String += "</span>";
                         }
                     }
-                    else asciiString += tmpString[i];
+                    else utf8String += (state.invalidChars == 0) ? tmpString : tmpString.left(1);
 
-                    if(!twoByteSymbolInProgress)
+                    for(int j = 1; j < bytesPerChar; j++)
                     {
-                        if(QChar::Other_Surrogate == tmpString[i].category())
-                        {
-                            twoByteSymbolInProgress = true;
-                        }
+                        utf8String += "&nbsp;";
+                        utf8String += m_consoleData.mixedData.utf8Spaces;
+                        utf8String += "&nbsp;";
                     }
-                    else
-                    {
-                        twoByteSymbolInProgress = false;
-                    }
+                    utf8String += "</span>";
+                    i += bytesPerChar;
 
-                    if(closeSpan && !twoByteSymbolInProgress)
-                    {
-                        asciiString += "</span>";
-                        closeSpan = false;
-                    }
                 }
 
-                result += asciiString;
+                result += utf8String;
             }
 
             if(currentSettings->showHexInConsole)
@@ -570,7 +575,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
 }
 
 /**
- * Appends data to the console buffers (m_consoleDataBufferAscii, m_consoleDataBufferHex;
+ * Appends data to the console buffers (m_consoleDataBufferUtf8, m_consoleDataBufferHex;
  * m_consoleDataBufferDec)
  * @param data
  *      The data.
@@ -606,7 +611,7 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
         if(currentSettings->showDecimalInConsole)m_consoleDataBufferDec.append(tmpString);
         if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(tmpString);
         if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(tmpString);
-        if(currentSettings->showAsciiInConsole)m_consoleDataBufferAscii.append(tmpString);
+        if(currentSettings->showUtf8InConsole)m_consoleDataBufferUtf8.append(tmpString);
     }
     else
     {
@@ -635,7 +640,7 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
             if(currentSettings->showHexInConsole)m_consoleDataBufferHex.append(htmlStartString);
             if(currentSettings->showMixedConsole)m_consoleDataBufferMixed.append(htmlStartString);
             if(currentSettings->showBinaryConsole)m_consoleDataBufferBinary.append(htmlStartString);
-            if(currentSettings->showAsciiInConsole)m_consoleDataBufferAscii.append(htmlStartString);
+            if(currentSettings->showUtf8InConsole)m_consoleDataBufferUtf8.append(htmlStartString);
         }
         else
         {
@@ -773,10 +778,10 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                 }
             }
 
-            if(currentSettings->showAsciiInConsole)
+            if(currentSettings->showUtf8InConsole)
             {
 
-                //Replace the binary 0 (for the ascii console).
+                //Replace the binary 0 (for the utf8 console).
                 dataArray->replace(0, 255);
 
                 QString tmpString;
@@ -790,11 +795,11 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                     else tmpString += el;
                 }
 
-                m_consoleDataBufferAscii.append(*htmlStartString + additionalInformation + tmpString + QString("</span>"));
+                m_consoleDataBufferUtf8.append(*htmlStartString + additionalInformation + tmpString + QString("</span>"));
             }
         }
 
-        //Note: data/dataArray is modified during the creation of dataStringAscii (see above), therefore data/dataArray must not be used.
+        //Note: data/dataArray is modified during the creation of dataStringutf8 (see above), therefore data/dataArray must not be used.
     }
 }
 
@@ -913,12 +918,12 @@ void MainWindowHandleData::appendDataToLog(const QByteArray &data, bool isSend, 
         }
 
 
-        if(isNewLine && !currentSettings->writeAsciiInToLog)
+        if(isNewLine && !currentSettings->writeUtf8InToLog)
         {
             return;
         }
 
-        if(currentSettings->writeAsciiInToLog || isTimeStamp || isUserMessage || isNewLine)
+        if(currentSettings->writeUtf8InToLog || isTimeStamp || isUserMessage || isNewLine)
         {
             if (isNewLine && (currentSettings->writeDecimalInToLog
                               || currentSettings->writeHexInToLog || currentSettings->writeBinaryInToLog))
@@ -926,11 +931,11 @@ void MainWindowHandleData::appendDataToLog(const QByteArray &data, bool isSend, 
                 return;
             }
 
-            //Replace the binary 0 (for the ascii string).
-            QByteArray asciiArray = QByteArray(*dataArray);
-            asciiArray.replace(0, 255);
+            //Replace the binary 0 (for the utf8 string).
+            QByteArray utf8Array = QByteArray(*dataArray);
+            utf8Array.replace(0, 255);
 
-            QString tmp = QString::fromUtf8(asciiArray);
+            QString tmp = QString::fromUtf8(utf8Array);
 
             if(!isUserMessage && !isTimeStamp && !isNewLine)
             {
@@ -938,7 +943,7 @@ void MainWindowHandleData::appendDataToLog(const QByteArray &data, bool isSend, 
                 tmp.replace("\r", "");
             }
 
-            if(currentSettings->writeAsciiInToLog && (currentSettings->writeDecimalInToLog
+            if(currentSettings->writeUtf8InToLog && (currentSettings->writeDecimalInToLog
                                                      || currentSettings->writeHexInToLog || currentSettings->writeBinaryInToLog))
             {
                 if(!isFromCan && !isTimeStamp && !isUserMessage && !isNewLine){dataString = "\n";}
@@ -956,20 +961,20 @@ void MainWindowHandleData::appendDataToLog(const QByteArray &data, bool isSend, 
             {
                 if(!isFromCan){dataString.append("\n");}
                 dataString.append(MainWindow::byteArrayToNumberString(*dataArray, false, false,
-                                                          (currentSettings->writeAsciiInToLog || currentSettings->writeHexInToLog || currentSettings->writeBinaryInToLog),
+                                                          (currentSettings->writeUtf8InToLog || currentSettings->writeHexInToLog || currentSettings->writeBinaryInToLog),
                                                            true, true, currentSettings->logDecimalsType, currentSettings->targetEndianess));
             }
             if(currentSettings->writeHexInToLog)
             {
                 if(!isFromCan){dataString.append("\n");}
                 dataString.append(MainWindow::byteArrayToNumberString(*dataArray, false, true,
-                                                          (currentSettings->writeAsciiInToLog || currentSettings->writeDecimalInToLog || currentSettings->writeBinaryInToLog)));
+                                                          (currentSettings->writeUtf8InToLog || currentSettings->writeDecimalInToLog || currentSettings->writeBinaryInToLog)));
             }
             if(currentSettings->writeBinaryInToLog)
             {
                 if(!isFromCan){dataString.append("\n");}
                 dataString.append(MainWindow::byteArrayToNumberString(*dataArray, true, false,
-                                                          (currentSettings->writeAsciiInToLog || currentSettings->writeDecimalInToLog || currentSettings->writeHexInToLog)));
+                                                          (currentSettings->writeUtf8InToLog || currentSettings->writeDecimalInToLog || currentSettings->writeHexInToLog)));
             }
         }
 
@@ -1142,7 +1147,7 @@ void MainWindowHandleData::dataHasBeenSendSlot(QByteArray data, bool success, ui
  */
 void MainWindowHandleData::clear(void)
 {
-    m_consoleDataBufferAscii.clear();
+    m_consoleDataBufferUtf8.clear();
     m_consoleDataBufferHex.clear();
     m_consoleDataBufferDec.clear();
     m_consoleDataBufferMixed.clear();;
@@ -1624,14 +1629,14 @@ void MainWindowHandleData::processDataInStoredData()
     {
         if(el.type == STORED_DATA_CLEAR_ALL_STANDARD_CONSOLES)
         {
-            m_userInterface->ReceiveTextEditAscii->document()->blockSignals(true);
+            m_userInterface->ReceiveTextEditUtf8->document()->blockSignals(true);
             m_userInterface->ReceiveTextEditHex->document()->blockSignals(true);
             m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(true);
             m_userInterface->ReceiveTextEditMixed->document()->blockSignals(true);
             m_userInterface->ReceiveTextEditBinary->document()->blockSignals(true);
 
-            m_userInterface->ReceiveTextEditAscii->clear();
-            m_consoleDataBufferAscii.clear();
+            m_userInterface->ReceiveTextEditUtf8->clear();
+            m_consoleDataBufferUtf8.clear();
             m_userInterface->ReceiveTextEditHex->clear();
             m_consoleDataBufferHex.clear();
             m_userInterface->ReceiveTextEditDecimal->clear();
@@ -1646,7 +1651,7 @@ void MainWindowHandleData::processDataInStoredData()
             m_decimalConsoleByteBuffer.clear();
             m_mixedConsoleByteBuffer.clear();
 
-            m_userInterface->ReceiveTextEditAscii->document()->blockSignals(false);
+            m_userInterface->ReceiveTextEditUtf8->document()->blockSignals(false);
             m_userInterface->ReceiveTextEditHex->document()->blockSignals(false);
             m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(false);
             m_userInterface->ReceiveTextEditMixed->document()->blockSignals(false);
@@ -1866,7 +1871,7 @@ void MainWindowHandleData::reInsertDataInMixecConsoleSlot(void)
         calculateConsoleData();
 
         //Only the mixed console data shall be generated.
-        settings.showAsciiInConsole = false;
+        settings.showUtf8InConsole = false;
         if(m_consoleData.mixedData.bytesPerDecimal == 1) settings.showDecimalInConsole = false;
         settings.showHexInConsole = false;
         settings.showBinaryConsole = false;
@@ -1881,7 +1886,7 @@ void MainWindowHandleData::reInsertDataInMixecConsoleSlot(void)
                                        el.isFromCan, el.isFromI2cMaster, isNewLine);
         }
 
-        m_consoleDataBufferAscii.clear();
+        m_consoleDataBufferUtf8.clear();
         m_consoleDataBufferHex.clear();
         m_consoleDataBufferDec.clear();
         m_consoleDataBufferBinary.clear();
@@ -2038,7 +2043,7 @@ void MainWindowHandleData::historyConsoleTimerSlot()
 
     bool isBinary = (currentFormat == "bin") ? true : false;
     bool isHex = (currentFormat == "hex") ? true : false;
-    bool isAscii = (currentFormat == "ascii") ? true : false;
+    bool isutf8 = (currentFormat == "utf8") ? true : false;
     DecimalType decimalType = SendWindow::formatToDecimalType(currentFormat);
 
     m_mainWindow->setUpdatesEnabled(false);
@@ -2050,7 +2055,7 @@ void MainWindowHandleData::historyConsoleTimerSlot()
     {
         QString text = QString("index: %1<br>").arg(i);
 
-        if(isAscii)
+        if(isutf8)
         {
             QString tmpString;
             for(auto el : m_sendHistory[i])
@@ -2125,7 +2130,7 @@ void MainWindowHandleData::reInsertDataInConsole(void)
 
 
     m_userInterface->ReceiveTextEditMixed->document()->blockSignals(true);
-    m_userInterface->ReceiveTextEditAscii->document()->blockSignals(true);
+    m_userInterface->ReceiveTextEditUtf8->document()->blockSignals(true);
     m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(true);
     m_userInterface->ReceiveTextEditHex->document()->blockSignals(true);
     m_userInterface->ReceiveTextEditBinary->document()->blockSignals(true);
@@ -2139,14 +2144,14 @@ void MainWindowHandleData::reInsertDataInConsole(void)
         QApplication::processEvents();
     }
 
-    if(settings->showAsciiInConsole){val1 = m_userInterface->ReceiveTextEditAscii->verticalScrollBar()->value();}
+    if(settings->showUtf8InConsole){val1 = m_userInterface->ReceiveTextEditUtf8->verticalScrollBar()->value();}
     if(settings->showHexInConsole){val2 = m_userInterface->ReceiveTextEditHex->verticalScrollBar()->value();}
     if(settings->showDecimalInConsole){val3 = m_userInterface->ReceiveTextEditDecimal->verticalScrollBar()->value();}
     if(settings->showMixedConsole){val4 = m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->value();}
     if(settings->showBinaryConsole){val5 = m_userInterface->ReceiveTextEditBinary->verticalScrollBar()->value();}
 
     m_userInterface->ReceiveTextEditMixed->clear();
-    m_userInterface->ReceiveTextEditAscii->clear();
+    m_userInterface->ReceiveTextEditUtf8->clear();
     m_userInterface->ReceiveTextEditDecimal->clear();
     m_userInterface->ReceiveTextEditHex->clear();
     m_userInterface->ReceiveTextEditBinary->clear();
@@ -2170,14 +2175,14 @@ void MainWindowHandleData::reInsertDataInConsole(void)
 
     updateConsoleAndLog();
 
-    if(settings->showAsciiInConsole){m_userInterface->ReceiveTextEditAscii->verticalScrollBar()->setValue(val1);}
+    if(settings->showUtf8InConsole){m_userInterface->ReceiveTextEditUtf8->verticalScrollBar()->setValue(val1);}
     if(settings->showHexInConsole){m_userInterface->ReceiveTextEditHex->verticalScrollBar()->setValue(val2);}
     if(settings->showDecimalInConsole){m_userInterface->ReceiveTextEditDecimal->verticalScrollBar()->setValue(val3);}
     if(settings->showMixedConsole){m_userInterface->ReceiveTextEditMixed->verticalScrollBar()->setValue(val4);}
     if(settings->showBinaryConsole){m_userInterface->ReceiveTextEditBinary->verticalScrollBar()->setValue(val5);}
 
     m_userInterface->ReceiveTextEditMixed->document()->blockSignals(false);
-    m_userInterface->ReceiveTextEditAscii->document()->blockSignals(false);
+    m_userInterface->ReceiveTextEditUtf8->document()->blockSignals(false);
     m_userInterface->ReceiveTextEditDecimal->document()->blockSignals(false);
     m_userInterface->ReceiveTextEditHex->document()->blockSignals(false);
     m_userInterface->ReceiveTextEditBinary->document()->blockSignals(false);

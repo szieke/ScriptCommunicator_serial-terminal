@@ -222,8 +222,8 @@ struct Settings
     ///True if the received/sended data (main interface) shall be displayed as hexadecimal numbers in console.
     bool showHexInConsole;
 
-    ///True if the received/sended data (main interface) shall be displayed as ascii characters in console.
-    bool showAsciiInConsole;
+    ///True if the received/sended data (main interface) shall be displayed as utf8 characters in console.
+    bool showUtf8InConsole;
 
     ///True if the mixed console shall be shown.
     bool showMixedConsole;
@@ -268,7 +268,7 @@ struct Settings
     QString consoleMessageAndTimestampColor;
 
     ///Colors for mixed console
-    QString consoleMixedAsciiColor;
+    QString consoleMixedUtf8Color;
     QString consoleMixedDecimalColor;
     QString consoleMixedHexadecimalColor;
     QString consoleMixedBinaryColor;
@@ -288,7 +288,7 @@ struct Settings
     ///True if the option time stamp at is enabled.
     bool consoleCreateTimestampAtEnabled;
 
-    ///This is sent/used for the enter key (console, message dialog and ascii sequence in the send window).
+    ///This is sent/used for the enter key (console, message dialog and utf8 sequence in the send window).
     QString consoleSendOnEnter;
 
     ///The console time stamp format.
@@ -353,8 +353,8 @@ struct Settings
     ///True if the received/sended data (main interface) shall be added as hexadecimal numbers in the log.
     bool writeHexInToLog;
 
-    ///True if the received/sended data (main interface) shall be added as ascii characters in the log.
-    bool writeAsciiInToLog;
+    ///True if the received/sended data (main interface) shall be added as utf8 characters in the log.
+    bool writeUtf8InToLog;
 
     ///True if the received/sended data (main interface) shall be added as binary characters in the log.
     bool writeBinaryInToLog;

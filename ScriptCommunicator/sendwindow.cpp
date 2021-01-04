@@ -267,7 +267,7 @@ SendWindow::SendWindow(SettingsDialog *settingsDialog, MainWindow *mainWindow) :
     m_currentSequenceFileString = tableToString();
 
     QStringList availTargets;
-    availTargets << "ascii" << "hex" << "bin" << "uint8" << "uint16" << "uint32" << "int8" << "int16" << "int32" << "can";
+    availTargets << "utf8" << "hex" << "bin" << "uint8" << "uint16" << "uint32" << "int8" << "int16" << "int32" << "can";
     m_userInterface->CyclicSendFormat->addItems(availTargets);
 
     QShortcut* shortcut = new QShortcut(QKeySequence("Ctrl+Shift+X"), this);
@@ -473,7 +473,7 @@ void SendWindow::textEditChanged(QPlainTextEdit* textEdit, QString currentFormat
 
     if(!text.isEmpty())
     {
-        if(currentFormat != "ascii")
+        if(currentFormat != "utf8")
         {
             text.replace("\n", "");
 
@@ -612,7 +612,7 @@ void SendWindow::checkTextEditContent(QPlainTextEdit* textEdit, QString currentF
 
     if(!text.isEmpty())
     {
-        if(currentFormat != "ascii")
+        if(currentFormat != "utf8")
         {
             const Settings* settings = m_settingsDialog->settings();
             textEditChanged(textEdit, currentFormat, formatToDecimalType(currentFormat));
@@ -676,7 +676,7 @@ QString SendWindow::formatComboBoxChanged(QPlainTextEdit* textEdit, QString form
         oldFormat = "hex";
     }
 
-    if(format != "ascii")
+    if(format != "utf8")
     {
         QByteArray array = textToByteArray(oldFormat,textEdit->toPlainText(), formatToDecimalType(oldFormat), settings->targetEndianess);
         bool isHex = (format == "hex") ? true : false;
@@ -882,7 +882,7 @@ void SendWindow::newButtonClickedSlot(void)
 
     SequenceTableComboBox* comboBox = new SequenceTableComboBox(m_userInterface->tableWidget);
     QStringList availTargets;
-    availTargets  << "ascii" << "hex" << "bin" << "uint8" << "uint16" << "uint32" << "int8" << "int16" << "int32" << "can";
+    availTargets  << "utf8" << "hex" << "bin" << "uint8" << "uint16" << "uint32" << "int8" << "int16" << "int32" << "can";
     comboBox->addItems(availTargets);
     comboBox->setToolTip(toolTip());
     m_userInterface->tableWidget->setCellWidget(0, COLUMN_FORMAT, comboBox);
@@ -932,7 +932,7 @@ void SendWindow::newButtonClickedSlot(void)
 
 
 
-    m_userInterface->tableWidget->item(0, COLUMN_VALUE)->setData(Qt::UserRole + 1, "ascii");
+    m_userInterface->tableWidget->item(0, COLUMN_VALUE)->setData(Qt::UserRole + 1, "utf8");
 
     QStringList list;
     for(int i = 0; i <  m_userInterface->tableWidget->rowCount(); i++)
@@ -976,7 +976,7 @@ void SendWindow::debugCyclicScriptSlot(void)
     const Settings* settings = m_settingsDialog->settings();
     QByteArray sendData = textToByteArray(m_userInterface->CyclicSendFormat->currentText(), m_userInterface->CyclicSendInput->toPlainText(),
                                           formatToDecimalType(m_userInterface->CyclicSendFormat->currentText()), settings->targetEndianess);
-    if(m_userInterface->CyclicSendFormat->currentText() == "ascii")
+    if(m_userInterface->CyclicSendFormat->currentText() == "utf8")
     {
         const Settings* settings = m_settingsDialog->settings();
         sendData.replace("\n", settings->consoleSendOnEnter.toUtf8());
@@ -1749,7 +1749,7 @@ void SendWindow::setProgressbarValue(int value)
  *      The format of the string. Possible value are:
  *      - decimal
  *      - hex
- *      - ascii
+ *      - utf8
  * @param text
  *      The string.
  * @param decimalType
@@ -1764,7 +1764,7 @@ QByteArray SendWindow::textToByteArray(QString formatString, QString text, Decim
     QByteArray dataArray;
     QStringList strList = text.split(" ");
 
-    if(formatString != "ascii")
+    if(formatString != "utf8")
     {
         uint format = 10;
         qint32 bytesPerNumber = 1;
@@ -2041,7 +2041,7 @@ void SendWindow::sendButtonPressedSlot()
         const Settings* settings = m_settingsDialog->settings();
         QByteArray sendData = textToByteArray(m_userInterface->CyclicSendFormat->currentText(), m_userInterface->CyclicSendInput->toPlainText(),
                                               formatToDecimalType(m_userInterface->CyclicSendFormat->currentText()), settings->targetEndianess);
-        if(m_userInterface->CyclicSendFormat->currentText() == "ascii")
+        if(m_userInterface->CyclicSendFormat->currentText() == "utf8")
         {
             const Settings* settings = m_settingsDialog->settings();
             sendData.replace("\n", settings->consoleSendOnEnter.toUtf8());
