@@ -421,6 +421,15 @@ void ScriptThread::run()
             m_debugger->action(QScriptEngineDebugger::InterruptAction)->trigger();
             m_debugWindow->setWindowTitle(m_scriptFileName);
 
+            if(!qApp->styleSheet().isEmpty())
+            {
+                QWidget* widget = m_debugger->widget(QScriptEngineDebugger::LocalsWidget);
+                widget->setStyleSheet("QWidget {color: grey}");
+                QCommonStyle().unpolish(widget);
+                QCommonStyle().polish(widget);
+            }
+
+
 
 #ifdef Q_OS_MAC
 //Using this debugger signals causes the debugger to block (only on Mac OS X)
