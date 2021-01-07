@@ -421,6 +421,18 @@ void ScriptThread::run()
             m_debugger->action(QScriptEngineDebugger::InterruptAction)->trigger();
             m_debugWindow->setWindowTitle(m_scriptFileName);
 
+            if(!qApp->styleSheet().isEmpty())
+            {//A stylesheet was applied.
+
+                //The locals widgets overrides some stylesheet elements. Therefore the background color
+                //has to be adjusted.
+                QWidget* widget = m_debugger->widget(QScriptEngineDebugger::LocalsWidget);
+                widget->setStyleSheet("QWidget {color: grey}");
+                QCommonStyle().unpolish(widget);
+                QCommonStyle().polish(widget);
+            }
+
+
 
 #ifdef Q_OS_MAC
 //Using this debugger signals causes the debugger to block (only on Mac OS X)
