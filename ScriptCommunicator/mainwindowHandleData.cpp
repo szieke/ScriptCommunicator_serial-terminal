@@ -404,6 +404,10 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
     {
         int convertedBytes = 0;
 
+        //If the last element is a &nbsp; then QTextEdit discards some characters from that line (bug in QTextEdit?).
+        //Because of this a '_' is added whose text color is the same like the background color.
+        static const QString lastSpace = QString("<span style=\"color:#" + currentSettings->consoleMixedUtf8Color + ";\">_</span>");
+
         do
         {
             QByteArray arrayWithMaxBytes = data.mid(convertedBytes, m_consoleData.mixedData.maxBytePerLine);
@@ -411,9 +415,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
 
             if(currentSettings->showUtf8InConsole)
             {
-                //Replace the binary 0 (for the utf8 console).
                 QByteArray utf8Array = arrayWithMaxBytes;
-                utf8Array.replace(0, 255);
                 QString utf8String;
 
                 result += "<br>";
@@ -425,17 +427,27 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
 
                     int bytesPerChar = 1;
 
-                    if((quint8)utf8Array[i] >= 0b11110000)
+                    if(((quint8)utf8Array[i] >= 240) && ((quint8)utf8Array[i] <= 244))
                     {
                         bytesPerChar = 4;
                     }
-                    else if((quint8)utf8Array[i] >= 0b11100000)
+                    else if(((quint8)utf8Array[i] >= 224) && ((quint8)utf8Array[i] <= 239))
                     {
                         bytesPerChar = 3;
                     }
-                    else if((quint8)utf8Array[i] >= 0b11000000)
+                    else if(((quint8)utf8Array[i] >= 194) && ((quint8)utf8Array[i] <= 223))
                     {
                         bytesPerChar = 2;
+                    }
+                    else if(((quint8)utf8Array[i] > 126) || ((quint8)utf8Array[i] < 32))
+                    {//Non printable ascii character.
+
+                        utf8Array[i] = ' ';//Replace the current caracter with a space.
+                    }
+
+                    if((i + bytesPerChar) > utf8Array.length())
+                    {
+                      bytesPerChar = utf8Array.length() - i;
                     }
 
                     if(!currentSettings->showDecimalInConsole || ((i % modulo) == 0))
@@ -450,7 +462,15 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
                     tmpString = codec->toUnicode(utf8Array.mid(i, bytesPerChar),bytesPerChar, &state);
 
-                    //tmpString = QString::fromUtf8(utf8Array.mid(i, bytesPerChar));
+                    if (tmpString == "\n")
+                    {
+                        tmpString.replace("\n", " ");
+                    }
+
+                    if((state.invalidChars != 0) || tmpString.isEmpty())
+                    {
+                        tmpString = " ";
+                    }
 
                     //Replace tags so our span does not get mangled up.
                     if (tmpString == "<")utf8String += "&lt;";
@@ -464,20 +484,28 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                         }
                         else
                         {
-                            //If the last element is a &nbsp; then QTextEdit discards some characters from that line (bug in QTextEdit?).
-                            //Because of this a '_' is added whose text color is the same like the background color.
-                            utf8String += QString("<span style=\"color:#" + currentSettings->consoleMixedUtf8Color + ";\">");
-                            utf8String += "_";
-                            utf8String += "</span>";
+                            utf8String += lastSpace;
                         }
                     }
-                    else utf8String += (state.invalidChars == 0) ? tmpString : tmpString.left(1);
+                    else
+                    {
+                        utf8String += tmpString;
+                    }
 
                     for(int j = 1; j < bytesPerChar; j++)
                     {
                         utf8String += "&nbsp;";
                         utf8String += m_consoleData.mixedData.utf8Spaces;
-                        utf8String += "&nbsp;";
+
+                        if((i + j) < (utf8Array.length() -1))
+                        {//The last element is not reached yet.
+
+                            utf8String += "&nbsp;";
+                        }
+                        else
+                        {
+                            utf8String += lastSpace;
+                        }
                     }
                     utf8String += "</span>";
                     i += bytesPerChar;
