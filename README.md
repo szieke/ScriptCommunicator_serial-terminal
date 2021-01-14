@@ -17,7 +17,7 @@ This script interface has the following features:
 * SPI (Aardvark I2C/SPI)
 * I2C (Aardvark I2C/SPI)
 * CAN (PCAN-USB, only on windows)
-* ascii, hexadecimal, decimal, binary and mixed console
+* utf8, hexadecimal, decimal, binary and mixed console
 * html and text log
 * script interface (QtScript)->run automated test jobs, automatic device configuration scripts...
 * use ui files (user interface created with QtDesigner (is included) or QtCreator) from script->building test GUIs, control GUIs...
