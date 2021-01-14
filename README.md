@@ -1,14 +1,13 @@
 # ScriptCommunicator
-ScriptCommunicator is a scriptable cross-platform data terminal which supports serial port (RS232, USB to serial), UDP, TCP client/server, SPI, I2C and CAN.
+ScriptCommunicator is a scriptable cross-platform data terminal that supports serial port (RS232, USB to serial), UDP, TCP client/server, SPI, I2C, and CAN.
 All sent and received data can be shown in a console and can be logged in an html and a text log.
 
-In addition to the simple sending and receiving of data ScriptCommunicator has a QtScript (similar to JavaScript) interface.
-This script interface has following features:
+In addition to the simple sending and receiving of data, ScriptCommunicator has a QtScript (similar to JavaScript) interface.
+This script interface has the following features:
 * Scripts can send and receive data with the main interface.
-* In addition to the main interface scripts can create and use own interfaces (serial port (RS232, USB to serial), UDP, TCP client, TCP server, PCAN and SPI/I2C).
+* In addition to the main interface scripts can create and use their own interfaces (serial port (RS232, USB to serial), UDP, TCP client, TCP server, PCAN, and SPI/I2C).
 * Scripts can use their own GUI (GUI files which have been created with QtDesigner (is included) or QtCreator). 
-* Multiple plot windows can be created by scripts (QCustomPlot  from Emanuel Eichhammer is used)
-
+* Multiple plot windows can be created by scripts (QCustomPlot  developed by Emanuel Eichhammer is used)
 
 **Features**
 
@@ -40,9 +39,9 @@ This script interface has following features:
 # Homepage
 [https://sourceforge.net/projects/scriptcommunicator/](https://sourceforge.net/projects/scriptcommunicator/)
 
-# Downloads (release 05.12)
-- [Windows](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicatorSetup_05_12_windows.exe/download)
-- [Windows no installer](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicator_05_12_windows_no_installer.zip/download)
-- [Linux 64 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_64Bit/ScriptCommunicator_05_12_linux_64_bit.zip/download)
-- [Linux 32 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_32Bit/ScriptCommunicator_05_12_linux_32_bit.zip/download)
-- [Source](http://sourceforge.net/projects/scriptcommunicator/files/Source/ScriptCommunicator_05_12_source.zip/download)
+# Downloads (release 05.13)
+- [Windows](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicatorSetup_05_13_windows.exe/download)
+- [Windows no installer](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicator_05_13_windows_no_installer.zip/download)
+- [Linux 64 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_64Bit/ScriptCommunicator_05_13_linux_64_bit.zip/download)
+- [Linux 32 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_32Bit/ScriptCommunicator_05_13_linux_32_bit.zip/download)
+- [Source](http://sourceforge.net/projects/scriptcommunicator/files/Source/ScriptCommunicator_05_13_source.zip/download)
