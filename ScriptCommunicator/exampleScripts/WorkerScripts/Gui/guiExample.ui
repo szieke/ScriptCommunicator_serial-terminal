@@ -23,7 +23,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget1">
      <property name="currentIndex">
-      <number>1</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="tabTableWidgets">
       <attribute name="title">
@@ -153,129 +153,6 @@
        <string>LineEdit_CheckBox_ComboBox_RadioButton</string>
       </attribute>
       <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QLineEdit" name="testGetTextLineEdit"/>
-         </item>
-         <item>
-          <widget class="QLineEdit" name="testSetTextLineEdit"/>
-         </item>
-        </layout>
-       </item>
-       <item row="1" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
-          <widget class="QCheckBox" name="testSendCheckBox">
-           <property name="text">
-            <string>CheckSend</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="testReceiveCheckBox">
-           <property name="text">
-            <string>CheckReceive</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="2" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_9">
-         <item>
-          <widget class="QRadioButton" name="radioButton1">
-           <property name="text">
-            <string>RadioButton 1</string>
-           </property>
-           <property name="checked">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QRadioButton" name="radioButton2">
-           <property name="text">
-            <string>RadioButton 2</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="3" column="0">
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="1" column="0" colspan="2">
-          <widget class="QFontComboBox" name="testSendFontComboBox"/>
-         </item>
-         <item row="1" column="2" colspan="2">
-          <widget class="QFontComboBox" name="testReceiveFontComboBox"/>
-         </item>
-         <item row="0" column="2">
-          <widget class="QLabel" name="label_3">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>receive</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="text">
-            <string>send</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QComboBox" name="testSendComboBox">
-           <item>
-            <property name="text">
-             <string>Element 1</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Element 2</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Element 3</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-         <item row="0" column="3">
-          <widget class="QComboBox" name="testReceiveComboBox">
-           <item>
-            <property name="text">
-             <string>Element 1</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Element 2</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>Element 3</string>
-            </property>
-           </item>
-          </widget>
-         </item>
-        </layout>
-       </item>
        <item row="3" column="1">
         <spacer name="horizontalSpacer_3">
          <property name="orientation">
@@ -288,6 +165,141 @@
           </size>
          </property>
         </spacer>
+       </item>
+       <item row="0" column="0" rowspan="2">
+        <widget class="QGroupBox" name="checkableGroupBox">
+         <property name="title">
+          <string>Checkable Groupbox</string>
+         </property>
+         <property name="checkable">
+          <bool>true</bool>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout">
+            <item>
+             <widget class="QLineEdit" name="testGetTextLineEdit"/>
+            </item>
+            <item>
+             <widget class="QLineEdit" name="testSetTextLineEdit"/>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_3">
+            <item>
+             <widget class="QCheckBox" name="testSendCheckBox">
+              <property name="text">
+               <string>CheckSend</string>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QCheckBox" name="testReceiveCheckBox">
+              <property name="text">
+               <string>CheckReceive</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QHBoxLayout" name="horizontalLayout_9">
+            <item>
+             <widget class="QRadioButton" name="radioButton1">
+              <property name="text">
+               <string>RadioButton 1</string>
+              </property>
+              <property name="checked">
+               <bool>false</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QRadioButton" name="radioButton2">
+              <property name="text">
+               <string>RadioButton 2</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item>
+           <layout class="QGridLayout" name="gridLayout_2">
+            <item row="1" column="0" colspan="2">
+             <widget class="QFontComboBox" name="testSendFontComboBox"/>
+            </item>
+            <item row="1" column="2" colspan="2">
+             <widget class="QFontComboBox" name="testReceiveFontComboBox"/>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLabel" name="label_3">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>receive</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="0">
+             <widget class="QLabel" name="label">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="text">
+               <string>send</string>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QComboBox" name="testSendComboBox">
+              <item>
+               <property name="text">
+                <string>Element 1</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Element 2</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Element 3</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+            <item row="0" column="3">
+             <widget class="QComboBox" name="testReceiveComboBox">
+              <item>
+               <property name="text">
+                <string>Element 1</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Element 2</string>
+               </property>
+              </item>
+              <item>
+               <property name="text">
+                <string>Element 3</string>
+               </property>
+              </item>
+             </widget>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
        </item>
       </layout>
      </widget>

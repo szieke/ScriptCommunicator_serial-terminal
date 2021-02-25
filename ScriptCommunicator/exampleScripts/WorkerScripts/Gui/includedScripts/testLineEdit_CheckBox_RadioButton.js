@@ -40,6 +40,11 @@ function testSendCheckBoxClicked(isChecked)
 	UI_testReceiveCheckBox.setWindowTextColor("red");
 }
 
+function groupBoxCheckBoxClickedSlot(checked)
+{
+	scriptThread.UI_testTextEdit.append("groupBoxCheckBoxClickedSlot: " + checked)
+}
+
 UI_testGetTextLineEdit.setToolTip("tool tip text", -1);
 UI_testGetTextLineEdit.textChangedSignal.connect(UI_testGetTextLineEditTextChangedSignal)
 
@@ -54,3 +59,8 @@ UI_testReceiveComboBox.setCurrentText(UI_testSendComboBox.currentText());
 UI_testSendFontComboBox.currentTextChangedSignal.connect(testSendFontComboBoxCurrentTextChanged)
 
 UI_radioButton1.clickedSignal.connect(radioButton1Clicked)
+
+
+//Toggle the group box checkbox.
+UI_checkableGroupBox.setChecked(!UI_checkableGroupBox.isChecked())
+UI_checkableGroupBox.checkBoxClickedSignal.connect(groupBoxCheckBoxClickedSlot)
