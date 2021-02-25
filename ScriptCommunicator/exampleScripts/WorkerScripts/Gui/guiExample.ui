@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>683</width>
-    <height>593</height>
+    <height>559</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -23,7 +23,7 @@
    <item>
     <widget class="QTabWidget" name="tabWidget1">
      <property name="currentIndex">
-      <number>2</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabTableWidgets">
       <attribute name="title">
@@ -173,6 +173,9 @@
          </property>
          <property name="checkable">
           <bool>true</bool>
+         </property>
+         <property name="checked">
+          <bool>false</bool>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_4">
           <item>
@@ -392,7 +395,7 @@
          <x>0</x>
          <y>0</y>
          <width>393</width>
-         <height>245</height>
+         <height>211</height>
         </rect>
        </property>
        <attribute name="label">
