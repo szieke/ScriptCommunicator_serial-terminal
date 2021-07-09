@@ -618,6 +618,10 @@ Q_SIGNALS:
     void consoleWrapLinesChangedSignal(bool wrap);
 
 private:
+
+    ///Sets the style sheet of the consoleNewLineAt combo box.
+    void setConsoleNewLineAtStyleSheet(void);
+
     ///Fills the gui elements which correspond to the serial port.
     void fillSerialPortParameters();
 

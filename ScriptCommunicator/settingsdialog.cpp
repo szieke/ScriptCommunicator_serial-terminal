@@ -554,7 +554,26 @@ SettingsDialog::~SettingsDialog()
     delete m_userInterface;
 }
 
+/**
+ * Sets the style sheet of the consoleNewLineAt combo box.
+ */
+void SettingsDialog::setConsoleNewLineAtStyleSheet(void)
+{
+    QLineEdit *edit = m_userInterface->consoleNewLineAt->lineEdit();
+    if(edit)
+    {
+        QString style;
 
+        if(m_userInterface->useDarkStyleCheckBox->isChecked())
+        {
+            style = "color: #eff0f1;background-color: #31363b;border: 0px transparent black;"
+                    "outline: 0;padding: 2px;";
+        }
+
+        edit->setStyleSheet(style);
+
+    }
+}
 /**
  * Is called if the set style checkbox has been pressed.
  *
@@ -563,6 +582,7 @@ SettingsDialog::~SettingsDialog()
 void SettingsDialog::setStyleCheckBoxPressedSlot(bool isChecked)
 {
     m_userInterface->useDarkStyleCheckBox->blockSignals(true);
+    setConsoleNewLineAtStyleSheet();
     emit setStyleSignal(isChecked);
 }
 
@@ -1348,6 +1368,7 @@ void SettingsDialog::checkCustomConsoleNewLineAtSlot(int idx)
     {
         m_userInterface->consoleNewLineAt->clearEditText();
         QLineEdit *edit = m_userInterface->consoleNewLineAt->lineEdit();
+        setConsoleNewLineAtStyleSheet();
 
         if(edit->validator() == 0)
         {//the text edit has no validator
