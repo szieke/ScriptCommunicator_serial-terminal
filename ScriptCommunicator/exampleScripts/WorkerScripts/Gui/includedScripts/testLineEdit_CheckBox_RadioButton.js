@@ -42,7 +42,7 @@ function testSendCheckBoxClicked(isChecked)
 
 function groupBoxCheckBoxClickedSlot(checked)
 {
-	scriptThread.UI_testTextEdit.append("groupBoxCheckBoxClickedSlot: " + checked)
+	UI_testTextEdit.append("groupBoxCheckBoxClickedSlot: " + checked)
 }
 
 UI_testGetTextLineEdit.setToolTip("tool tip text", -1);
