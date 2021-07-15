@@ -4789,7 +4789,7 @@ void MainWindow::updateManagerReplyFinished(QNetworkReply* reply)
         QStringList list = result.split("Downloads (release ");
 
         bool pageIsInvalid = false;
-        if(list.length() == 2)
+        if(list.length() >= 2)
         {
             QString version = list[1].left(5);
 
