@@ -22,3 +22,6 @@ ScriptGroupBox::title(void):String \nReturns the group box title.
 ScriptGroupBox::setAutoFillBackground(bool enabled):void \nThis property holds whether the widget background is filled automatically.\nIf enabled, this property will cause Qt to fill the background of the widget before invoking the paint event.\nNote:\nSome GUI elements (like the RadioButton) need this property set to true if the background color shall be changed with setBackgroundColor.
 ScriptGroupBox::addPlotWidget(void):ScriptPlotWidget \nAdds a plot widget to the group box.
 ScriptGroupBox::addCanvas2DWidget(void):ScriptCanvas2DWidget \nAdds a Canvas2D widget to the group box.
+ScriptGroupBox::setChecked(bool checked):void \nChecks or unchecks the group box checkbox.
+ScriptGroupBox::isChecked(void):bool \nReturns true if the groub box check box is checked.
+ScriptGroupBox::checkBoxClickedSignal.connect(bool checked) \nIs emitted if the group box checkbox is clicked.

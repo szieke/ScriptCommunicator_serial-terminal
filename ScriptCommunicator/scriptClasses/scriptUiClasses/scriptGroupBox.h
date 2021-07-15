@@ -55,6 +55,9 @@ public:
                 SLOT(createGuiElementSlot(QString,QObject**,ScriptWindow*,ScriptThread*,QObject*)), directConnectionType);
 
 
+        connect(this, SIGNAL(setCheckedSignal(bool)), m_box,SLOT(setChecked(bool)), directConnectionType);
+        connect(m_box, SIGNAL(clicked(bool)), this,SIGNAL(checkBoxClickedSignal(bool)), Qt::QueuedConnection);
+
     }
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
@@ -93,8 +96,17 @@ public:
         return m_scriptThread->getScriptEngine()->newQObject(context, QScriptEngine::ScriptOwnership);;
 
     }
+    ///Checks or unchecks the group box checkbox.
+    Q_INVOKABLE void setChecked(bool checked){emit setCheckedSignal(checked);}
+
+    ///Returns true if the groub box check box is checked.
+    Q_INVOKABLE bool isChecked(void){return m_box->isChecked();}
 
 Q_SIGNALS:
+
+    ///Is emitted if the group box checkbox is clicked.
+    void checkBoxClickedSignal(bool checked);
+
 
     ///Is emitted in setTitle.
     ///This signal is private and must not be used inside a script.
@@ -105,6 +117,10 @@ Q_SIGNALS:
     /// Note: Gui elements in Qt can only be created in the main thread.
     ///This function must not be used from script.
     void createGuiElementSignal(QString elementType, QObject** createdGuiElement, ScriptWindow* scriptWindow, ScriptThread* thread, QObject* additionalArgument);
+
+    ///This signal is used to checks or unchecks the checkbox
+    ///Is connected with ScriptWindow::createGuiElementSlot (to signalize the thread state change).
+    void setCheckedSignal(bool checked);
 
     void addCreatedGuiElementsFromScriptSignal(QObject* entry);
 
