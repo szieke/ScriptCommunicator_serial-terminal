@@ -31,6 +31,9 @@
        <property name="text">
         <string>send</string>
        </property>
+       <property name="shortcut">
+        <string>Ctrl+S</string>
+       </property>
       </widget>
      </item>
      <item row="1" column="2">
