@@ -2584,7 +2584,7 @@ QString MainWindow::getPluginsFolder(void)
 {
     QString path;
 #ifdef Q_OS_LINUX
-    path = QCoreApplication::applicationDirPath() + "/bin/plugins";
+    path = QCoreApplication::applicationDirPath() + "/plugins";
 #elif defined Q_OS_MAC
     path =  getScriptCommunicatorFilesFolder () + "/plugins";
 #else
