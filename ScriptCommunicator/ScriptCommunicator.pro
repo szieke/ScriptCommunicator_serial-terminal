@@ -8,6 +8,8 @@ CONFIG += c++11
 
 QMAKE_CXXFLAGS += -Wno-int-to-pointer-cast
 QMAKE_CXXFLAGS +=-Wno-write-strings
+QMAKE_CXXFLAGS += -Wno-deprecated-declarations
+QMAKE_CXXFLAGS += -Wno-cast-function-type
 
 TARGET = ScriptCommunicator
 TEMPLATE = app
@@ -28,8 +30,6 @@ unix{
 LIBS += -ldl
 }
 
-
-QMAKE_CXXFLAGS += -Wno-deprecated-declarations
 
 INCLUDEPATH += scriptClasses \
 scriptClasses/scriptUiClasses \
