@@ -80,6 +80,9 @@
  * The history for versions after 1.2.0 are in ChangeLog in zlib distribution.
  */
 
+#pragma GCC diagnostic ignored "-Wshift-negative-value"
+#pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
+
 #include "zutil.h"
 #include "inftrees.h"
 #include "inflate.h"

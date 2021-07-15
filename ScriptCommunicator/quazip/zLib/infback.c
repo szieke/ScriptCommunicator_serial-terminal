@@ -475,6 +475,8 @@ void FAR *out_desc;
                 state->mode = BAD;
                 break;
             }
+
+            #pragma GCC diagnostic ignored "-Wimplicit-fallthrough"
             Tracev((stderr, "inflate:       codes ok\n"));
             state->mode = LEN;
 

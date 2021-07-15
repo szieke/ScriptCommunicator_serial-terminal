@@ -29,6 +29,8 @@ LIBS += -ldl
 }
 
 
+QMAKE_CXXFLAGS += -Wno-deprecated-declarations
+
 INCLUDEPATH += scriptClasses \
 scriptClasses/scriptUiClasses \
 cheetahSpi \
