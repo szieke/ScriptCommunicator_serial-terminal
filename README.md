@@ -30,7 +30,7 @@ This script interface has the following features:
 
 **dark mode**
 
-![dask mode](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2020-12-23_14h01_25.png/max/max/1
+![dask mode](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2020-12-23_14h01_25.png/max/max/1)
 
 **example script GUI**
 
