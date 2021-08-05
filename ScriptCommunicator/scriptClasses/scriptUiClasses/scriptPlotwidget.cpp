@@ -422,7 +422,7 @@ void ScriptPlotWidget::saveAllGraphsSlot(QString fileName, bool* hasSucceed)
         }
        else //Invalid suffix and csv
         {
-            QString content = "plot version=1\n";
+            QString content = "plot version=2\n";
 
             for (int i = 0; i < m_plotWidget->graphCount(); i++)
             {
@@ -430,15 +430,18 @@ void ScriptPlotWidget::saveAllGraphsSlot(QString fileName, bool* hasSucceed)
                 {
 
                     content += m_plotWidget->graph(i)->name() + ",";
-                    content += QString("%1,").arg(m_plotWidget->graph(i)->pen().color().name());
-                    content += QString("%1,").arg(m_plotWidget->graph(i)->pen().style());
+                    content += QString("%1,").arg("color=" + m_plotWidget->graph(i)->pen().color().name());
+                    content += QString("%1,").arg("style=" + QString::number(m_plotWidget->graph(i)->pen().style()));
                     content += QString("%1,").arg((m_plotWidget->graph(i)->valueAxis() == m_plotWidget->yAxis2) ? "useYAxis2=true" : "useYAxis2=false");
+                    content += QString("%1,").arg("shape=" + QString::number(m_plotWidget->graph(i)->scatterStyle().shape()));
+                    content += QString("%1,").arg("scatterStyle=" + QString::number(m_plotWidget->graph(i)->scatterStyle().size(), 'g', 20));
+                    content += QString("%1,").arg("lineStyle=" + QString::number(m_plotWidget->graph(i)->lineStyle()));
 
                     QSharedPointer<QCPGraphDataContainer>  map = m_plotWidget->graph(i)->data();
                     QCPDataContainer<QCPGraphData>::const_iterator iter;
                     for (iter = map->begin(); iter != map->end(); ++iter)
                     {
-                        content += QString("%1:%2,").arg(iter->key).arg(iter->value);
+                        content += QString("%1:%2,").arg(QString::number(iter->key, 'g', 20)).arg(QString::number(iter->value, 'g', 20));
                     }
 
                     //Remove the last ','
@@ -503,12 +506,21 @@ void ScriptPlotWidget::loadButtonPressed()
         QString fileContent = m_scriptThread->readFile(tmpFileName, false);
         //The singles graphs are separated with a \n
         QStringList graphs = fileContent.split("\n");
+        int dataStartIndex = 4;
 
         bool containsUseYAxis2 = false;
-        if(graphs[0].indexOf("plot version=") != -1)
+        int versionIndex = graphs[0].indexOf("plot version=");
+        int version = 0;
+        if(versionIndex != -1)
         {
             containsUseYAxis2 = true;
+            version = graphs[0].remove("plot version=").toUInt();
             graphs.removeFirst();
+        }
+
+        if(version > 1)
+        {
+            dataStartIndex = 7;
         }
 
 
@@ -521,7 +533,8 @@ void ScriptPlotWidget::loadButtonPressed()
             //The single values are separated with ,.
             QStringList values = graphs[i].split(",");
 
-            if(values.size() > 4)
+            int minNumberOfValues = (version > 1) ? 7 : 4;
+            if(values.size() >= minNumberOfValues)
             {
                 int graphIndex = 0;
                 bool useYAxis2 = false;
@@ -532,13 +545,25 @@ void ScriptPlotWidget::loadButtonPressed()
 
                 addGraphSlot("blue", "solid", values[0], &graphIndex, useYAxis2);
 
+                QString colorString = (version > 1) ? values[1].remove("color=") : values[1];
+                QString styleString = (version > 1) ? values[2].remove("style=") : values[2];
                 QPen pen;
-                pen.setColor(values[1]);
-                pen.setStyle((Qt::PenStyle)values[2].toUInt());
+                pen.setColor(colorString);
+                pen.setStyle((Qt::PenStyle)styleString.toUInt());
                 m_plotWidget->graph(graphIndex)->setPen(pen);
 
+                if(version > 1)
+                {
+                    QCPScatterStyle::ScatterShape shape = (QCPScatterStyle::ScatterShape)values[4].remove("shape=").toUInt();
+                    double size = values[5].remove("scatterStyle=").toDouble();
+                    m_plotWidget->graph(graphIndex)->setScatterStyle(QCPScatterStyle(shape, size));
 
-                for(qint32 index = 4; index < values.size(); index++)
+                    QCPGraph::LineStyle lineStyle = (QCPGraph::LineStyle)values[6].remove("lineStyle=").toUInt();
+                    m_plotWidget->graph(graphIndex)->setLineStyle(lineStyle);
+                }
+
+
+                for(qint32 index = dataStartIndex; index < values.size(); index++)
                 {
                     QStringList valuePair = values[index].split(":");
                     if(valuePair.size() == 2)
