@@ -33,7 +33,6 @@
 #include <QProcess>
 #include <QStandardPaths>
 
-
 #ifdef Q_OS_WIN32
 #include <Windows.h>
 #endif
@@ -73,6 +72,9 @@ void deleteCurrentScezFolder(void)
 
 int main(int argc, char *argv[])
 {
+#if QT_VERSION >= QT_VERSION_CHECK(5,6,0)
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+#endif
 
     QApplication* a = new QApplication(argc, argv);
     QStringList extraPluginPaths;
@@ -86,6 +88,10 @@ int main(int argc, char *argv[])
     bool scriptWindowIsMinimized = true;
     QString minimumScVersion;
     QString iconFile;
+
+    QFont font = a->font();
+    font.setPixelSize(14);
+    a->setFont(font);
 
 #ifdef Q_OS_WIN32
     qInstallMessageHandler(messageHandler);
