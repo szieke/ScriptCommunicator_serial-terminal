@@ -11,6 +11,7 @@ QMAKE_CXXFLAGS +=-Wno-write-strings
 QMAKE_CXXFLAGS += -Wno-deprecated-declarations
 QMAKE_CXXFLAGS += -Wno-cast-function-type
 
+
 TARGET = ScriptCommunicator
 TEMPLATE = app
 QT += xml
@@ -28,6 +29,7 @@ QT += winextras
 DEFINES += QUAZIP_STATIC
 unix{
 LIBS += -ldl
+QMAKE_RPATHDIR += lib
 }
 
 

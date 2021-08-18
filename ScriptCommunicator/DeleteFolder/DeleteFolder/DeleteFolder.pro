@@ -9,3 +9,8 @@ TEMPLATE = app
 
 SOURCES += main.cpp
 
+unix{
+QMAKE_RPATHDIR += lib
+}
+
+

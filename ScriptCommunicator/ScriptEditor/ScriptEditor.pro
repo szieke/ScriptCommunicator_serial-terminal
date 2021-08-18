@@ -17,6 +17,11 @@ RC_FILE = images/ScriptEditor.rc
 macx:QT += macextras
 CONFIG += c++11
 
+unix{
+QMAKE_RPATHDIR += lib
+}
+
+
 HEADERS      = \
     QScintilla/Qsci/qsciabstractapis.h \
     QScintilla/Qsci/qsciapis.h \
