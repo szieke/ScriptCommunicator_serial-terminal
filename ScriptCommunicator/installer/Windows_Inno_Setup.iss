@@ -53,7 +53,6 @@ Name: "{commondesktop}\{#MyAppName} {#MyAppVersion}"; Filename: "{app}\{#MyAppEx
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
 
-
 [Registry]
 Root: HKCU; SubKey: "Software\Classes\.sce"; ValueType: string; ValueData: "ScriptCommunicator_{#MyAppVersion}"; Flags: uninsdeletekey
 Root: HKCU; SubKey: "Software\Classes\.scez"; ValueType: string; ValueData: "ScriptCommunicator_{#MyAppVersion}"; Flags: uninsdeletekey
