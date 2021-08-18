@@ -1330,7 +1330,20 @@ void MainWindow::dropEvent(QDropEvent *event)
 #else
         QString files = event->mimeData()->text().remove("file:///");
 #endif
-        QStringList list = files.split("\n");
+        QStringList list;
+        if(!files.isEmpty())
+        {
+            list = files.split(files.contains("\r\n") ? "\r\n" : "\n");
+        }
+        else
+        {
+            QList<QUrl> urls = event->mimeData()->urls();
+            for(auto el : urls)
+            {
+                list.append(el.path());
+            }
+        }
+
 
         for(auto file : list)
         {

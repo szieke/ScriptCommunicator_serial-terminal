@@ -83,6 +83,19 @@ void DragDropLineEdit::dragEnterEvent(QDragEnterEvent *event)
 }
 
 /**
+ * Drag move event.
+ * @param event
+ *      The drag move event.
+ */
+void DragDropLineEdit::dragMoveEvent(QDragMoveEvent *event)
+{
+    if(event->mimeData()->hasUrls())
+    {
+        event->acceptProposedAction();
+    }
+}
+
+/**
  * Drop event.
  * @param event
  *      The drop event.
@@ -96,7 +109,21 @@ void DragDropLineEdit::dropEvent(QDropEvent *event)
 #else
         QString files = event->mimeData()->text().remove("file:///");
 #endif
-        QStringList list = files.split(files.contains("\r\n") ? "\r\n" : "\n");
+
+        QStringList list;
+        if(!files.isEmpty())
+        {
+            list = files.split(files.contains("\r\n") ? "\r\n" : "\n");
+        }
+        else
+        {
+            QList<QUrl> urls = event->mimeData()->urls();
+            for(auto el : urls)
+            {
+                list.append(el.path());
+            }
+        }
+
         if(!list.isEmpty())
         {
             list[0].remove("\n");
@@ -1153,7 +1180,21 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
 #else
                 QString files = dropEvent->mimeData()->text().remove("file:///");
 #endif
-                m_scriptWindow->tableDropEventSlot(-1, -1, files.split(files.contains("\r\n") ? "\r\n" : "\n"));
+                QStringList list;
+                if(!files.isEmpty())
+                {
+                    list = files.split(files.contains("\r\n") ? "\r\n" : "\n");
+                }
+                else
+                {
+                    QList<QUrl> urls = dropEvent->mimeData()->urls();
+                    for(auto el : urls)
+                    {
+                        list.append(el.path());
+                    }
+                }
+
+                m_scriptWindow->tableDropEventSlot(-1, -1, list);
 
                 dropEvent->acceptProposedAction();
             }

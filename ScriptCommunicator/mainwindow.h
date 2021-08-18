@@ -81,7 +81,7 @@ public:
 
     explicit DragDropLineEdit(QWidget* parent = 0) : QLineEdit(parent)
     {
-
+        setAcceptDrops(true);
     }
 protected:
     ///Drag enter event.
@@ -89,6 +89,9 @@ protected:
 
     ///Drop event.
     void dropEvent(QDropEvent *event);
+
+    ///Drag move event.
+    void dragMoveEvent(QDragMoveEvent *event);
 
 };
 

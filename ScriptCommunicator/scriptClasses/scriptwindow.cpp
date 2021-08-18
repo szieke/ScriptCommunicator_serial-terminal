@@ -88,7 +88,20 @@ bool DragDropTableWidget::dropMimeData(int row, int column, const QMimeData *dat
 #else
         QString files = data->text().remove("file:///");
 #endif
-        QStringList list = files.split(files.contains("\r\n") ? "\r\n" : "\n");
+        QStringList list;
+        if(!files.isEmpty())
+        {
+            list = files.split(files.contains("\r\n") ? "\r\n" : "\n");
+        }
+        else
+        {
+            QList<QUrl> urls = data->urls();
+            for(auto el : urls)
+            {
+                list.append(el.path());
+            }
+        }
+
         if(!list.isEmpty())
         {
             emit dropEventSignal(row, column, list);

@@ -82,6 +82,9 @@ protected:
     ///Drop event.
     void dropEvent(QDropEvent *event);
 
+    ///Drag move event.
+    void dragMoveEvent(QDragMoveEvent *event);
+
     ///The user has pressed a key.
     void keyPressEvent(QKeyEvent *event);
 
@@ -147,6 +150,9 @@ protected:
 
     ///Drop event.
     void dropEvent(QDropEvent *event);
+
+    ///Drag move event.
+    void dragMoveEvent(QDragMoveEvent *event);
 
     ///This function is called if the text looses the focus
     void focusOutEvent(QFocusEvent *e);
