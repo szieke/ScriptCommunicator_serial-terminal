@@ -101,3 +101,4 @@ begin
     Exec(UninstPath, '/SILENT /NORESTART', '', SW_SHOW, ewWaitUntilTerminated, ResultCode)
   end;
 end;
+
