@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "ScriptCommunicator"
-#define MyAppVersion "5.15"
+#define MyAppVersion "5.16"
 #define MyAppPublisher "Stefan Zieker"
 #define MyAppURL "https://sourceforge.net/projects/scriptcommunicator/"
 #define MyAppExeName "ScriptCommunicator.exe"
@@ -23,7 +23,7 @@ DefaultDirName={pf}\{#MyAppName}_{#MyAppVersion}
 DefaultGroupName={#MyAppName} {#MyAppVersion}
 AllowNoIcons=yes
 OutputDir=C:\Users\internet\Desktop\
-OutputBaseFilename=ScriptCommunicatorSetup_05_15_windows
+OutputBaseFilename=ScriptCommunicatorSetup_05_16_windows
 SetupIconFile=D:\ScriptCommunicator\source\ScriptCommunicator\images\main.ico
 Compression=lzma
 SolidCompression=yes
@@ -85,7 +85,8 @@ begin
   RegKey := 'Software\Classes\ScriptCommunicator_{#MyAppVersion}\Uninstall'
   if(not RegQueryStringValue(HKEY_CURRENT_USER, RegKey, 'UninstallString', Result)) then
   begin
-    RegQueryStringValue(HKEY_CURRENT_USER, 'Software\Classes\ScriptCommunicator_{#MyAppVersion}\Shell\Open\Command', '', Result);    StringChangeEx(Result, ' "%1"', '', True);
+    RegQueryStringValue(HKEY_CURRENT_USER, 'Software\Classes\ScriptCommunicator_{#MyAppVersion}\Shell\Open\Command', '', Result);
+    StringChangeEx(Result, ' "%1"', '', True);
     StringChangeEx(Result, 'ScriptCommunicator_{#MyAppVersion}.exe', 'unins000.exe', True);  end;
 end;
 
