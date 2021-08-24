@@ -555,11 +555,11 @@ SettingsDialog::~SettingsDialog()
 }
 
 /**
- * Sets the style sheet of the consoleNewLineAt combo box.
+ * Sets the style sheet of an editable combo box.
  */
-void SettingsDialog::setConsoleNewLineAtStyleSheet(void)
+void SettingsDialog::setEditableComboBoxStyleSheet(QComboBox* comboBox)
 {
-    QLineEdit *edit = m_userInterface->consoleNewLineAt->lineEdit();
+    QLineEdit *edit = comboBox->lineEdit();
     if(edit)
     {
         QString style;
@@ -582,7 +582,11 @@ void SettingsDialog::setConsoleNewLineAtStyleSheet(void)
 void SettingsDialog::setStyleCheckBoxPressedSlot(bool isChecked)
 {
     m_userInterface->useDarkStyleCheckBox->blockSignals(true);
-    setConsoleNewLineAtStyleSheet();
+    setEditableComboBoxStyleSheet(m_userInterface->consoleNewLineAt);
+    setEditableComboBoxStyleSheet(m_userInterface->logNewLineAt);
+    setEditableComboBoxStyleSheet(m_userInterface->baudRateBox);
+    setEditableComboBoxStyleSheet(m_userInterface->consoleTimestampAtByteComboBox);
+    setEditableComboBoxStyleSheet(m_userInterface->logTimestampAtByteComboBox);
     emit setStyleSignal(isChecked);
 }
 
@@ -1293,6 +1297,7 @@ void SettingsDialog::checkCustomBaudRatePolicySlot(int idx)
     {
         m_userInterface->baudRateBox->clearEditText();
         QLineEdit *edit = m_userInterface->baudRateBox->lineEdit();
+        setEditableComboBoxStyleSheet(m_userInterface->baudRateBox);
 
         if(edit->validator() == 0)
         {//the text edit has no validator
@@ -1300,6 +1305,8 @@ void SettingsDialog::checkCustomBaudRatePolicySlot(int idx)
             //create a validator for the text edit
             edit->setValidator(new QIntValidator(0, MAX_BAUDRATE, edit));
         }
+
+        edit->setText("0");
     }
 }
 
@@ -1318,6 +1325,7 @@ void SettingsDialog::checkCustomConsoleTimestampAtSlot(int idx)
     {
         m_userInterface->consoleTimestampAtByteComboBox->clearEditText();
         QLineEdit *edit = m_userInterface->consoleTimestampAtByteComboBox->lineEdit();
+        setEditableComboBoxStyleSheet(m_userInterface->consoleTimestampAtByteComboBox);
 
         if(edit->validator() == 0)
         {//the text edit has no validator
@@ -1325,6 +1333,7 @@ void SettingsDialog::checkCustomConsoleTimestampAtSlot(int idx)
             //create a validator for the text edit
             edit->setValidator(new QIntValidator(0, 255, edit));
         }
+        edit->setText("0");
     }
 }
 
@@ -1343,6 +1352,7 @@ void SettingsDialog::checkCustomLogTimestampAtSlot(int idx)
     {
         m_userInterface->logTimestampAtByteComboBox->clearEditText();
         QLineEdit *edit = m_userInterface->logTimestampAtByteComboBox->lineEdit();
+        setEditableComboBoxStyleSheet(m_userInterface->logTimestampAtByteComboBox);
 
         if(edit->validator() == 0)
         {//the text edit has no validator
@@ -1350,6 +1360,8 @@ void SettingsDialog::checkCustomLogTimestampAtSlot(int idx)
             //create a validator for the text edit
             edit->setValidator(new QIntValidator(0, 255, edit));
         }
+
+        edit->setText("0");
     }
 }
 
@@ -1368,7 +1380,7 @@ void SettingsDialog::checkCustomConsoleNewLineAtSlot(int idx)
     {
         m_userInterface->consoleNewLineAt->clearEditText();
         QLineEdit *edit = m_userInterface->consoleNewLineAt->lineEdit();
-        setConsoleNewLineAtStyleSheet();
+        setEditableComboBoxStyleSheet(m_userInterface->consoleNewLineAt);
 
         if(edit->validator() == 0)
         {//the text edit has no validator
@@ -1376,6 +1388,8 @@ void SettingsDialog::checkCustomConsoleNewLineAtSlot(int idx)
             //create a validator for the text edit
             edit->setValidator(new QIntValidator(0, 255, edit));
         }
+
+        edit->setText("0");
     }
 }
 
@@ -1394,6 +1408,7 @@ void SettingsDialog::checkCustomLogNewLineAtSlot(int idx)
     {
         m_userInterface->logNewLineAt->clearEditText();
         QLineEdit *edit = m_userInterface->logNewLineAt->lineEdit();
+        setEditableComboBoxStyleSheet(m_userInterface->logNewLineAt);
 
         if(edit->validator() == 0)
         {//the text edit has no validator
@@ -1401,6 +1416,8 @@ void SettingsDialog::checkCustomLogNewLineAtSlot(int idx)
             //create a validator for the text edit
             edit->setValidator(new QIntValidator(0, 255, edit));
         }
+
+        edit->setText("0");
     }
 }
 

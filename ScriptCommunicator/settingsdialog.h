@@ -619,8 +619,8 @@ Q_SIGNALS:
 
 private:
 
-    ///Sets the style sheet of the consoleNewLineAt combo box.
-    void setConsoleNewLineAtStyleSheet(void);
+    ///Sets the style sheet of an editable combo box.
+    void setEditableComboBoxStyleSheet(QComboBox *comboBox);
 
     ///Fills the gui elements which correspond to the serial port.
     void fillSerialPortParameters();
