@@ -7,4 +7,5 @@ ScriptTimer::start(void):void \nStarts or restarts the timer with the timeout in
 ScriptTimer::stop(void):void \nStops the timer.
 ScriptTimer::isActive(void):bool \nReturns true if the timer is running, otherwise false.
 ScriptTimer::remainingTime(void):Number \nReturns the timer's remaining value in milliseconds left until the timeout.\nIf the timer is inactive, the returned value will be -1. If the timer is overdue,\nthe returned value will be 0.
+ScriptTimer::setTimerType(String type):bool \nSets the type of the timer.\nPossible values are:\nPreciseTimer (Precise timers try to keep millisecond accuracy)\nCoarseTimer (Coarse timers try to keep accuracy within 5% of the desired interval)\nVeryCoarseTimer (Very coarse timers only keep full second accuracy)
 ScriptTimer::timeoutSignal.connect(void) \nThis signal is emitted if the timer times out.

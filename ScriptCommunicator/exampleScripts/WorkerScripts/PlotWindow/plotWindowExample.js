@@ -140,6 +140,7 @@ timer1.timeoutSignal.connect(timeout1);
 timer1.start(100);
 
 var timer2 = scriptThread.createTimer()
+timer2.setTimerType("PreciseTimer");
 timer2.timeoutSignal.connect(timeout2);
 timer2.start(1000);
 

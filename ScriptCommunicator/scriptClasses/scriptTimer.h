@@ -64,6 +64,44 @@ public:
     ///the returned value will be 0.
     Q_INVOKABLE int remainingTime(void){return m_timer.remainingTime();}
 
+    /**
+     * Sets the type of the timer.
+     * Possible values are:
+     * - PreciseTimer (Precise timers try to keep millisecond accuracy)
+     * - CoarseTimer (Coarse timers try to keep accuracy within 5% of the desired interval)
+     * - VeryCoarseTimer (Very coarse timers only keep full second accuracy)
+     *
+     * @param type The new type
+     * @return True on success.
+     */
+    Q_INVOKABLE bool setTimerType(QString type)
+    {
+
+        bool result = false;
+
+        if(type == "PreciseTimer")
+        {
+            m_timer.setTimerType(Qt::PreciseTimer);
+            result = true;
+        }
+        else if(type == "CoarseTimer")
+        {
+            m_timer.setTimerType(Qt::CoarseTimer);
+            result = true;
+        }
+        else if(type == "VeryCoarseTimer")
+        {
+            m_timer.setTimerType(Qt::VeryCoarseTimer);
+            result = true;
+        }
+        else
+        {
+            result = false;
+        }
+
+        return result;
+    }
+
 signals:
 
     ///This signal is emitted if the timer times out.
