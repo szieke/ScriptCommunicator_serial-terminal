@@ -424,8 +424,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>358</width>
-            <height>357</height>
+            <width>819</width>
+            <height>395</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0,1">
@@ -840,6 +840,15 @@ for TCP clients.</string>
                   </color>
                  </brush>
                 </colorrole>
+                <colorrole role="PlaceholderText">
+                 <brush brushstyle="NoBrush">
+                  <color alpha="128">
+                   <red>0</red>
+                   <green>255</green>
+                   <blue>0</blue>
+                  </color>
+                 </brush>
+                </colorrole>
                </active>
                <inactive>
                 <colorrole role="Text">
@@ -856,6 +865,15 @@ for TCP clients.</string>
                   <color alpha="255">
                    <red>0</red>
                    <green>0</green>
+                   <blue>0</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+                <colorrole role="PlaceholderText">
+                 <brush brushstyle="NoBrush">
+                  <color alpha="128">
+                   <red>0</red>
+                   <green>255</green>
                    <blue>0</blue>
                   </color>
                  </brush>
@@ -877,6 +895,15 @@ for TCP clients.</string>
                    <red>240</red>
                    <green>240</green>
                    <blue>240</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+                <colorrole role="PlaceholderText">
+                 <brush brushstyle="NoBrush">
+                  <color alpha="128">
+                   <red>0</red>
+                   <green>255</green>
+                   <blue>0</blue>
                   </color>
                  </brush>
                 </colorrole>
@@ -909,8 +936,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>725</width>
-            <height>378</height>
+            <width>819</width>
+            <height>395</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_18">
@@ -1824,6 +1851,15 @@ for TCP clients.</string>
                   </color>
                  </brush>
                 </colorrole>
+                <colorrole role="PlaceholderText">
+                 <brush brushstyle="NoBrush">
+                  <color alpha="128">
+                   <red>0</red>
+                   <green>255</green>
+                   <blue>0</blue>
+                  </color>
+                 </brush>
+                </colorrole>
                </active>
                <inactive>
                 <colorrole role="Text">
@@ -1840,6 +1876,15 @@ for TCP clients.</string>
                   <color alpha="255">
                    <red>0</red>
                    <green>0</green>
+                   <blue>0</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+                <colorrole role="PlaceholderText">
+                 <brush brushstyle="NoBrush">
+                  <color alpha="128">
+                   <red>0</red>
+                   <green>255</green>
                    <blue>0</blue>
                   </color>
                  </brush>
@@ -1861,6 +1906,15 @@ for TCP clients.</string>
                    <red>240</red>
                    <green>240</green>
                    <blue>240</blue>
+                  </color>
+                 </brush>
+                </colorrole>
+                <colorrole role="PlaceholderText">
+                 <brush brushstyle="NoBrush">
+                  <color alpha="128">
+                   <red>0</red>
+                   <green>255</green>
+                   <blue>0</blue>
                   </color>
                  </brush>
                 </colorrole>
@@ -1893,8 +1947,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>550</width>
-            <height>240</height>
+            <width>819</width>
+            <height>395</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2659,14 +2713,14 @@ for TCP clients.</string>
              <item row="8" column="6">
               <widget class="QComboBox" name="consoleFontSizeComboBox">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
                </property>
                <property name="minimumSize">
                 <size>
-                 <width>0</width>
+                 <width>50</width>
                  <height>0</height>
                 </size>
                </property>
@@ -2842,8 +2896,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>353</width>
-            <height>284</height>
+            <width>819</width>
+            <height>395</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3091,8 +3145,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>737</width>
-            <height>305</height>
+            <width>819</width>
+            <height>395</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -3705,8 +3759,8 @@ Note: The reopen buton in the main window is only visible if this option is sele
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>404</width>
-            <height>271</height>
+            <width>819</width>
+            <height>395</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
@@ -4013,6 +4067,13 @@ Note: The reopen buton in the main window is only visible if this option is sele
       <property name="rightMargin">
        <number>12</number>
       </property>
+      <item row="2" column="13">
+       <widget class="QPushButton" name="searchScriptEditorPushButton">
+        <property name="text">
+         <string>search</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="7">
        <spacer name="horizontalSpacer_24">
         <property name="orientation">
@@ -4029,25 +4090,31 @@ Note: The reopen buton in the main window is only visible if this option is sele
         </property>
        </spacer>
       </item>
-      <item row="2" column="2" colspan="8">
-       <widget class="DragDropLineEdit" name="scriptEditorPathLineEdit">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_25">
+        <property name="statusTip">
+         <string>the current interface</string>
         </property>
-        <property name="toolTip">
-         <string>path to the external script editor</string>
+        <property name="text">
+         <string>current interface</string>
         </property>
        </widget>
       </item>
-      <item row="2" column="10">
-       <widget class="QPushButton" name="searchScriptEditorPushButton">
-        <property name="text">
-         <string>search</string>
+      <item row="0" column="4">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
         </property>
-       </widget>
+        <property name="sizeType">
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
       <item row="0" column="5">
        <widget class="QLabel" name="label_26">
@@ -4057,6 +4124,56 @@ in the log, the decimal console and the send window)</string>
         </property>
         <property name="text">
          <string>endianness</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="13">
+       <widget class="QPushButton" name="closeButton">
+        <property name="toolTip">
+         <string>Ctrl+X</string>
+        </property>
+        <property name="text">
+         <string>Close</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="6">
+       <widget class="QComboBox" name="endianessComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>endianess of the connected device (is used to interpret the decimals
+in the log, the decimal console and the send window)</string>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContents</enum>
+        </property>
+        <item>
+         <property name="text">
+          <string>little-endian</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>big-endian</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="3">
+       <widget class="QPushButton" name="connectButton">
+        <property name="text">
+         <string>connect</string>
         </property>
        </widget>
       </item>
@@ -4102,60 +4219,7 @@ in the log, the decimal console and the send window)</string>
         </item>
        </widget>
       </item>
-      <item row="3" column="10">
-       <widget class="QPushButton" name="closeButton">
-        <property name="toolTip">
-         <string>Ctrl+X</string>
-        </property>
-        <property name="text">
-         <string>Close</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="6">
-       <widget class="QComboBox" name="endianessComboBox">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="toolTip">
-         <string>endianess of the connected device (is used to interpret the decimals
-in the log, the decimal console and the send window)</string>
-        </property>
-        <property name="sizeAdjustPolicy">
-         <enum>QComboBox::AdjustToContents</enum>
-        </property>
-        <item>
-         <property name="text">
-          <string>little-endian</string>
-         </property>
-        </item>
-        <item>
-         <property name="text">
-          <string>big-endian</string>
-         </property>
-        </item>
-       </widget>
-      </item>
-      <item row="2" column="0">
-       <widget class="QCheckBox" name="useExternalScriptEditorCheckBox">
-        <property name="toolTip">
-         <string>use an external script editor (instead of the integrated)</string>
-        </property>
-        <property name="text">
-         <string>use ext. script editor</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="9">
+      <item row="0" column="12">
        <spacer name="horizontalSpacer_8">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
@@ -4168,18 +4232,8 @@ in the log, the decimal console and the send window)</string>
         </property>
        </spacer>
       </item>
-      <item row="0" column="0">
-       <widget class="QLabel" name="label_25">
-        <property name="statusTip">
-         <string>the current interface</string>
-        </property>
-        <property name="text">
-         <string>current interface</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="4">
-       <spacer name="horizontalSpacer">
+      <item row="0" column="9">
+       <spacer name="horizontalSpacer_25">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
@@ -4194,10 +4248,13 @@ in the log, the decimal console and the send window)</string>
         </property>
        </spacer>
       </item>
-      <item row="0" column="3">
-       <widget class="QPushButton" name="connectButton">
+      <item row="2" column="0">
+       <widget class="QCheckBox" name="useExternalScriptEditorCheckBox">
+        <property name="toolTip">
+         <string>use an external script editor (instead of the integrated)</string>
+        </property>
         <property name="text">
-         <string>connect</string>
+         <string>use ext. script editor</string>
         </property>
        </widget>
       </item>
@@ -4205,6 +4262,99 @@ in the log, the decimal console and the send window)</string>
        <widget class="QCheckBox" name="useDarkStyleCheckBox">
         <property name="text">
          <string>use dark style</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" colspan="11">
+       <widget class="DragDropLineEdit" name="scriptEditorPathLineEdit">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="toolTip">
+         <string>path to the external script editor</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="11">
+       <widget class="QComboBox" name="appFontSizeComboBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>50</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>the default application font size (consoles and logs have their own font size)</string>
+        </property>
+        <property name="currentText">
+         <string>14</string>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContents</enum>
+        </property>
+        <item>
+         <property name="text">
+          <string>10</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>11</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>12</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>13</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>14</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>15</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>16</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>17</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>18</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item row="0" column="10">
+       <widget class="QLabel" name="label_7">
+        <property name="statusTip">
+         <string/>
+        </property>
+        <property name="text">
+         <string>font size</string>
         </property>
        </widget>
       </item>

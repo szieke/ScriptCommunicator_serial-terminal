@@ -36,6 +36,7 @@
 #include <QProcess>
 #include <QShortcut>
 #include "colorWidgets/color_dialog.hpp"
+#include <QCommonStyle>
 
 QT_USE_NAMESPACE
 
@@ -91,11 +92,18 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     QStringList listFontSize;
     for (int fs = Settings::MIN_FONT_SIZE; fs <= Settings::MAX_FONT_SIZE; fs++)
+    {
         listFontSize.append(QString::number(fs));
+    }
 
     m_userInterface->consoleFontSizeComboBox->addItems(listFontSize);
     m_userInterface->consoleFontSizeComboBox->setCurrentText("10");
 
+    connect(m_userInterface->appFontSizeComboBox, SIGNAL(currentTextChanged(QString)),
+            this, SLOT(appFontSizeChangedSlot(QString)));
+
+
+    m_userInterface->htmlLogFontSizeComboBox->clear();
     m_userInterface->htmlLogFontSizeComboBox->addItems(listFontSize);
     m_userInterface->htmlLogFontSizeComboBox->setCurrentText("10");
 
@@ -544,6 +552,8 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     m_userInterface->logNewLineAt->setAutoCompletion(false);
 
     setWindowTitle("ScriptCommunicator " + MainWindow::VERSION + " - Settings");
+
+
 }
 
 /**
@@ -552,6 +562,12 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 SettingsDialog::~SettingsDialog()
 {
     delete m_userInterface;
+}
+
+
+void SettingsDialog::appFontSizeChangedSlot(QString)
+{
+    setStyleCheckBoxPressedSlot(m_userInterface->useDarkStyleCheckBox->isChecked());
 }
 
 /**
@@ -587,7 +603,7 @@ void SettingsDialog::setStyleCheckBoxPressedSlot(bool isChecked)
     setEditableComboBoxStyleSheet(m_userInterface->baudRateBox);
     setEditableComboBoxStyleSheet(m_userInterface->consoleTimestampAtByteComboBox);
     setEditableComboBoxStyleSheet(m_userInterface->logTimestampAtByteComboBox);
-    emit setStyleSignal(isChecked);
+    emit setStyleSignal(isChecked, m_userInterface->appFontSizeComboBox->currentText().toUInt());
 }
 
 /**
@@ -887,6 +903,8 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     m_userInterface->consoleWrapLinesCheckbox->setChecked(settings.wrapLines);
 
     m_userInterface->useDarkStyleCheckBox->setChecked(settings.useDarkStyle);
+    m_userInterface->appFontSizeComboBox->setCurrentText(settings.appFontSize);
+
 
     m_userInterface->consoleTimestampAtByteCheckBox->setChecked(settings.consoleCreateTimestampAtEnabled);
     setDecimalComboBox(settings.consoleDecimalsType, m_userInterface->consoleDecimalsType);
@@ -2123,6 +2141,7 @@ void SettingsDialog::updateSettings(bool forceUpdate)
     m_currentSettings.consoleCreateTimestampAtEnabled= m_userInterface->consoleTimestampAtByteCheckBox->isChecked();
     updatesDecimalsTypes(&m_currentSettings.consoleDecimalsType, m_userInterface->consoleDecimalsType);
     m_currentSettings.useDarkStyle = m_userInterface->useDarkStyleCheckBox->isChecked();
+    m_currentSettings.appFontSize = m_userInterface->appFontSizeComboBox->currentText();
 
 
     //Console time stamp at byte.

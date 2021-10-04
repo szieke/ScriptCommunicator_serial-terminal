@@ -382,7 +382,7 @@ public slots:
 private slots:
 
    ///Is called if the style shall be changed.
-    void setStyleSlot(bool useDarkStyle);
+    void setStyleSlot(bool useDarkStyle, int fontSize);
 
     ///Menu debug sequence script slot function.
     void debugSequenceScript(void);

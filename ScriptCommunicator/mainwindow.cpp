@@ -495,7 +495,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     connect(m_settingsDialog, SIGNAL(textLogActivatedSignal(bool)),
             this, SLOT(textLogActivatedSlot(bool)));
 
-    connect(m_settingsDialog, SIGNAL(setStyleSignal(bool)), this, SLOT(setStyleSlot(bool)));
+    connect(m_settingsDialog, SIGNAL(setStyleSignal(bool,int)), this, SLOT(setStyleSlot(bool,int)));
 
     connect(m_userInterface->tabWidget, SIGNAL(currentChanged(int)),
             this, SLOT(tabIndexChangedSlot(int)));
@@ -1503,8 +1503,9 @@ void MainWindow::show(void)
  * Is called if the style shall be changed.
  *
  * @param useDarkStyle True if the dark style shall be used
+ * @param fontSize The font size.
  */
-void MainWindow::setStyleSlot(bool useDarkStyle)
+void MainWindow::setStyleSlot(bool useDarkStyle, int fontSize)
 {
     QString styleSheet;
 
@@ -1522,6 +1523,7 @@ void MainWindow::setStyleSlot(bool useDarkStyle)
         {
             file.open(QFile::ReadOnly);
             styleSheet= QLatin1String(file.readAll());
+            styleSheet.replace("@FONT_SIZE@", QString::number(fontSize));
         }
     }
 
@@ -1529,6 +1531,13 @@ void MainWindow::setStyleSlot(bool useDarkStyle)
     QCommonStyle().unpolish(qApp);
     QCommonStyle().polish(qApp);
     m_settingsDialog->setUseDarkStyle(useDarkStyle);
+
+    if(!useDarkStyle)
+    {
+        QFont font = QApplication::font();
+        font.setPixelSize(fontSize);
+        QApplication::setFont(font);
+    }
 
 }
 
@@ -1596,6 +1605,8 @@ bool MainWindow::loadSettings()
             }
             else
             {
+                m_settingsDialog->blockSignals(true);
+
                 QDomElement docElem = doc.documentElement();
 
                 {
@@ -1635,7 +1646,17 @@ bool MainWindow::loadSettings()
                         currentSettings.consoleCreateTimestampAtEnabled = node.attributes().namedItem("consoleCreateTimestampAt").nodeValue().toUInt();
                         currentSettings.consoleDecimalsType = (DecimalType)node.attributes().namedItem("consoleDecimalsType").nodeValue().toUInt();
                         currentSettings.useDarkStyle = (bool)node.attributes().namedItem("useDarkStyle").nodeValue().toUInt();
-                        setStyleSlot(currentSettings.useDarkStyle);
+
+                        if(node.attributes().namedItem("appFontSize").nodeValue() != "")
+                        {
+                            currentSettings.appFontSize = node.attributes().namedItem("appFontSize").nodeValue();
+                        }
+                        else
+                        {
+                            currentSettings.appFontSize = QApplication::font().pixelSize();
+                        }
+
+                        setStyleSlot(currentSettings.useDarkStyle, currentSettings.appFontSize.toInt());
 
 
                         if(node.attributes().namedItem("consoleTimestampAt").nodeValue() != "")
@@ -2202,7 +2223,7 @@ bool MainWindow::loadSettings()
                     }
                 }
 
-                m_settingsDialog->blockSignals(true);
+
                 m_settingsDialog->setAllSettingsSlot(currentSettings, true);
                 m_settingsDialog->blockSignals(false);
 
@@ -2740,6 +2761,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("consoleTimestampAt"), QString("%1").arg(currentSettings->consoleTimestampAt)),
                  std::make_pair(QString("consoleDecimalsType"), QString("%1").arg(currentSettings->consoleDecimalsType)),
                  std::make_pair(QString("useDarkStyle"), QString("%1").arg(currentSettings->useDarkStyle)),
+                 std::make_pair(QString("appFontSize"), QString("%1").arg(currentSettings->appFontSize)),
                  std::make_pair(QString("consoleWrapLines"), QString("%1").arg(currentSettings->wrapLines)),
                 };
 

@@ -194,6 +194,9 @@ struct Settings
     ///True if the dark style shall be used.
     bool useDarkStyle;
 
+    ///The application font size.
+    QString appFontSize;
+
     /**************Console settings**********************/
     ///True if the received data (main interface) shall be shown in the console.
     bool showReceivedDataInConsole;
@@ -578,11 +581,13 @@ private slots:
     ///Is called if the set style checkbox has been pressed.
     void setStyleCheckBoxPressedSlot(bool isChecked);
 
+    void appFontSizeChangedSlot(QString);
+
 
 Q_SIGNALS:
 
     ///Is emitted if the style shall be changed.
-    void setStyleSignal(bool useDarkStyle);
+    void setStyleSignal(bool useDarkStyle, int fontSize);
 
     ///Is emitted if the pin configuration has been changed (in the GUI).
     void pinConfigChangedSignal(AardvarkI2cSpiSettings settings);
