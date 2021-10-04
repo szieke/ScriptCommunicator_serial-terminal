@@ -377,8 +377,6 @@ void MainWindow::mouseMoveTimerSlot()
 
         clearCurrentIndicator();
 
-        //Cancel any existing call tip.
-        textEditor->SendScintilla(QsciScintillaBase::SCI_CALLTIPCANCEL);
         if(m_ctrlIsPressed)
         {
             QString completeWord = textEditor->wordAtPosition(pos, true);
@@ -2788,7 +2786,7 @@ static void parsedEntryToString(const QVector<ParsedEntry>& parsedEntries,
  * @param tabIndex
  *      The index of the tab to which the file element belongs to.
  */
-void MainWindow::insertFileElementForTabIndex(int tabIndex, QColor textColor)
+void MainWindow::insertFileElementForTabIndex(int tabIndex)
 {
     QTreeWidgetItem* root = ui->outlineTreeWidget->invisibleRootItem();
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(tabIndex)->layout()->itemAt(0)->widget());
@@ -2810,7 +2808,6 @@ void MainWindow::insertFileElementForTabIndex(int tabIndex, QColor textColor)
     fileElement->setText(0, textData);
     fileElement->setToolTip(0, textEditor->getDocumentName());
     fileElement->setIcon(0, QIcon(":/images/document.png"));
-    fileElement->setTextColor(0, textColor);
 
     root->insertChild(tabIndex, fileElement);
     ui->outlineTreeWidget->expandItem(fileElement);
@@ -2849,8 +2846,7 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
 
         if(ui->outlineTreeWidget->topLevelItem(i) == 0)
         {
-            int color = ui->actionUseDarkStyle ? 255 : 0;
-            insertFileElementForTabIndex(i, QColor(color,color,color));
+            insertFileElementForTabIndex(i);
         }
         else
         {
@@ -2885,7 +2881,7 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
 
             if(root->child(iter.key()))
             {
-                int color = ui->actionUseDarkStyle ? 255 : 0;
+                int color = ui->actionUseDarkStyle->isChecked() ? 255 : 0;
                 root->child(iter.key())->setTextColor(0, QColor(color,color,color));
             }
 
@@ -2922,8 +2918,7 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
 
                 clearOutlineWindow(iter.key());
 
-                int color = ui->actionUseDarkStyle ? 255 : 0;
-                insertFileElementForTabIndex(iter.key(), QColor(color,color,color));
+                insertFileElementForTabIndex(iter.key());
 
                 QTreeWidgetItem* fileElement = ui->outlineTreeWidget->topLevelItem(iter.key());
 
@@ -2957,7 +2952,7 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
                     else
                     {
                         //Add the element for the current documents tab.
-                        insertFileElementForTabIndex(iter.key(), QColor(255,0,0));
+                        insertFileElementForTabIndex(iter.key());
                     }
                 }
 
