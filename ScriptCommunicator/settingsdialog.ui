@@ -4296,7 +4296,7 @@ in the log, the decimal console and the send window)</string>
          <string>the default application font size (consoles and logs have their own font size)</string>
         </property>
         <property name="currentText">
-         <string>14</string>
+         <string>10</string>
         </property>
         <property name="sizeAdjustPolicy">
          <enum>QComboBox::AdjustToContents</enum>
@@ -4350,6 +4350,9 @@ in the log, the decimal console and the send window)</string>
       </item>
       <item row="0" column="10">
        <widget class="QLabel" name="label_7">
+        <property name="toolTip">
+         <string>the default application font size (consoles and logs have their own font size)</string>
+        </property>
         <property name="statusTip">
          <string/>
         </property>
