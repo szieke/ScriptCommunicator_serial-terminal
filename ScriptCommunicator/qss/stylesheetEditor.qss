@@ -16,6 +16,7 @@ QWidget {
     border: 0px transparent black;
     outline: 0;
     padding: 2px;
+    font-size: @FONT_SIZE@px
 }
 
 QWidget:disabled {

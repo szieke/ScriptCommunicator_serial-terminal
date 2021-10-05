@@ -252,6 +252,8 @@ void SingleDocument::setUpBackgroundColor(void)
         lexer()->setDefaultColor(colorFor);
         setTextColors(colorFor);
     }
+
+    setCaretForegroundColor(m_useDarkStyle ? QColor(0xff, 0xff, 0xff) : QColor(0, 0, 0));
 }
 /**
  * Initializes the lexer.

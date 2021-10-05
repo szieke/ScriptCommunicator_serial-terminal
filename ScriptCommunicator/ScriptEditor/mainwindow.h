@@ -239,6 +239,9 @@ private slots:
     ///Is called if the use dark style menu is pressed.
     void useDarkStyleMenuPressedSlot(void);
 
+    ///Is called if the set application font size menu is pressed.
+    void setApplicationFontSizeSlot();
+
 private:
 
     ///The user interface.
@@ -378,6 +381,9 @@ private:
 
     ///True if the dark style shall be used.
     bool m_useDarkStyle;
+
+    ///The application font size.
+    int m_applicationFontSize;
 
 };
 

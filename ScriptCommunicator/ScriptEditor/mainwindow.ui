@@ -181,6 +181,7 @@
     </property>
     <addaction name="actionSetFont"/>
     <addaction name="actionUseDarkStyle"/>
+    <addaction name="actionSetApplicationFontSize"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
@@ -232,6 +233,9 @@
    <property name="toolTip">
     <string>Open an existing file</string>
    </property>
+   <property name="statusTip">
+    <string>Open an existing file</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
    </property>
@@ -247,12 +251,18 @@
    <property name="toolTip">
     <string>Save the current document to disk</string>
    </property>
+   <property name="statusTip">
+    <string>Save the current document to disk</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
    </property>
   </action>
   <action name="actionSaveAs">
    <property name="text">
+    <string>Save As</string>
+   </property>
+   <property name="statusTip">
     <string>Save As</string>
    </property>
    <property name="shortcut">
@@ -264,6 +274,9 @@
     <string>Quit</string>
    </property>
    <property name="toolTip">
+    <string>Exit the application</string>
+   </property>
+   <property name="statusTip">
     <string>Exit the application</string>
    </property>
    <property name="shortcut">
@@ -284,6 +297,9 @@
    <property name="toolTip">
     <string>Cut the current selection's contents to the clipboard</string>
    </property>
+   <property name="statusTip">
+    <string>Cut the current selection's contents to the clipboard</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+X</string>
    </property>
@@ -300,6 +316,9 @@
     <string>Copy</string>
    </property>
    <property name="toolTip">
+    <string>Copy the current selection's contents to the clipboard</string>
+   </property>
+   <property name="statusTip">
     <string>Copy the current selection's contents to the clipboard</string>
    </property>
    <property name="shortcut">
@@ -320,6 +339,9 @@
    <property name="toolTip">
     <string>Paste the clipboard's contents into the current selection</string>
    </property>
+   <property name="statusTip">
+    <string>Paste the clipboard's contents into the current selection</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+V</string>
    </property>
@@ -335,6 +357,9 @@
    <property name="toolTip">
     <string>Find text</string>
    </property>
+   <property name="statusTip">
+    <string>Find text</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
    </property>
@@ -346,6 +371,9 @@
    <property name="toolTip">
     <string>Zoom in (Ctrl++ or Ctrl+'mouse wheel up' can be used)</string>
    </property>
+   <property name="statusTip">
+    <string>Zoom in (Ctrl++ or Ctrl+'mouse wheel up' can be used)</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl++</string>
    </property>
@@ -355,6 +383,9 @@
     <string>Zoom out</string>
    </property>
    <property name="toolTip">
+    <string>Zoom out (Ctrl+- or Ctrl+'mouse wheel down' can be used)</string>
+   </property>
+   <property name="statusTip">
     <string>Zoom out (Ctrl+- or Ctrl+'mouse wheel down' can be used)</string>
    </property>
    <property name="shortcut">
@@ -372,6 +403,9 @@
    <property name="toolTip">
     <string>Undo</string>
    </property>
+   <property name="statusTip">
+    <string>Undo</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+Z</string>
    </property>
@@ -385,6 +419,9 @@
     <string>Redo</string>
    </property>
    <property name="toolTip">
+    <string>Redo</string>
+   </property>
+   <property name="statusTip">
     <string>Redo</string>
    </property>
    <property name="shortcut">
@@ -402,6 +439,9 @@
    <property name="toolTip">
     <string>Open all included scripts</string>
    </property>
+   <property name="statusTip">
+    <string>Open all included scripts</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+Shift+O</string>
    </property>
@@ -417,6 +457,9 @@
    <property name="toolTip">
     <string>Create new script</string>
    </property>
+   <property name="statusTip">
+    <string>Create new script</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
    </property>
@@ -427,10 +470,13 @@
      <normaloff>:/images/font.png</normaloff>:/images/font.png</iconset>
    </property>
    <property name="text">
-    <string>Set font</string>
+    <string>Set editor font</string>
    </property>
    <property name="toolTip">
-    <string>Set font</string>
+    <string>Set the editor font</string>
+   </property>
+   <property name="statusTip">
+    <string>Set the editor font</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+F</string>
@@ -459,6 +505,9 @@
    <property name="toolTip">
     <string>Reload the current document</string>
    </property>
+   <property name="statusTip">
+    <string>Reload the current document</string>
+   </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
    </property>
@@ -477,7 +526,10 @@
     <string>Go to line</string>
    </property>
    <property name="toolTip">
-    <string>go to line</string>
+    <string>Go to line</string>
+   </property>
+   <property name="statusTip">
+    <string>Go to line</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+G</string>
@@ -489,6 +541,20 @@
    </property>
    <property name="text">
     <string>Use dark style</string>
+   </property>
+   <property name="statusTip">
+    <string>Use dark style</string>
+   </property>
+  </action>
+  <action name="actionSetApplicationFontSize">
+   <property name="text">
+    <string>Set application font size</string>
+   </property>
+   <property name="toolTip">
+    <string>Set the application font size(not the editor font size)</string>
+   </property>
+   <property name="statusTip">
+    <string>Set the application font size(not the editor font size)</string>
    </property>
   </action>
  </widget>

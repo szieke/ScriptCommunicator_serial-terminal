@@ -77,7 +77,7 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     m_lockFiles(), m_unsavedInfoFiles(), m_checkForFileChangesTimer(),
     m_lastMouseMoveEvent(QEvent::None,QPointF(),Qt::NoButton, Qt::NoButton, Qt::NoModifier), m_mouseEventTimer(),
     m_ctrlIsPressed(false), m_indicatorClickTimer(), m_lastIndicatorClickPosition(0), m_showParseError(true),
-    m_scriptsToLoadAfterStart(scripts), m_useDarkStyle(false)
+    m_scriptsToLoadAfterStart(scripts), m_useDarkStyle(false), m_applicationFontSize(10)
 {
     ui->setupUi(this);
 
@@ -1394,6 +1394,25 @@ void MainWindow::showEventTimerSlot()
 }
 
 /**
+ * Is called if the set application font size menu is pressed.
+ */
+void MainWindow::setApplicationFontSizeSlot()
+{
+    bool okPressed;
+    QStringList list = QStringList() << "8" << "9" << "10" << "11" << "12"
+                                    << "13" << "14" << "15" << "16" << "17" << "18";
+
+    QString result = QInputDialog::getItem(this, "Select font size", "font size", list,
+                                           list.indexOf(QString::number(m_applicationFontSize)), false, &okPressed);
+    if(okPressed)
+    {
+        m_applicationFontSize = result.toInt();
+
+        useDarkStyleMenuPressedSlot();
+    }
+}
+
+/**
  * Is called if the use dark style menu is pressed.
  */
 void MainWindow::useDarkStyleMenuPressedSlot(void)
@@ -1411,6 +1430,7 @@ void MainWindow::useDarkStyleMenuPressedSlot(void)
         {
             file.open(QFile::ReadOnly);
             styleSheet= QLatin1String(file.readAll());
+            styleSheet.replace("@FONT_SIZE@", QString::number(m_applicationFontSize));
         }
     }
 
@@ -1425,6 +1445,13 @@ void MainWindow::useDarkStyleMenuPressedSlot(void)
 
     QCommonStyle().unpolish(qApp);
     QCommonStyle().polish(qApp);
+
+    if(!m_useDarkStyle)
+    {
+        QFont font = QApplication::font();
+        font.setPixelSize(m_applicationFontSize);
+        QApplication::setFont(font);
+    }
 
 }
 
@@ -2392,6 +2419,7 @@ void MainWindow::initActions()
     connect(ui->actionReload, SIGNAL(triggered()), this, SLOT(reloadSlot()));
     connect(ui->actionGoToLine, SIGNAL(triggered()), this, SLOT(goToLineSlot()));
     connect(ui->actionUseDarkStyle, SIGNAL(triggered()), this, SLOT(useDarkStyleMenuPressedSlot()));
+    connect(ui->actionSetApplicationFontSize, SIGNAL(triggered()), this, SLOT(setApplicationFontSizeSlot()));
 
     ui->actionEditUi->setEnabled(false);
 
@@ -2421,6 +2449,9 @@ void MainWindow::readSettings()
         m_currentFont.setWeight(settings.value("fontWeight", QFont().weight()).toInt(&ok));
         m_currentFont.setItalic(settings.value("fontItalic", QFont().italic()).toBool());
         ui->actionUseDarkStyle->setChecked(settings.value("useDarkStyle", false).toBool());
+        m_applicationFontSize = settings.value("appFontSize", QApplication::font().pixelSize()).toInt();
+
+
 
         if(m_scriptsToLoadAfterStart.isEmpty())
         {
@@ -2487,6 +2518,7 @@ void MainWindow::writeSettings()
     settings.setValue("fontWeight", m_currentFont.weight());
     settings.setValue("fontItalic", m_currentFont.italic());
     settings.setValue("useDarkStyle", m_useDarkStyle);
+    settings.setValue("appFontSize", m_applicationFontSize);
     settings.setValue("mainWindowState", saveState());
 
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());

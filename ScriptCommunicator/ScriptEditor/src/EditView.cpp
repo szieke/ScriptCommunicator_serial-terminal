@@ -1205,7 +1205,7 @@ void EditView::DrawCarets(Surface *surface, const EditModel &model, const ViewSt
 				if (drawBlockCaret) {
 					DrawBlockCaret(surface, model, vsDraw, ll, subLine, xStart, offset, posCaret.Position(), rcCaret, caretColour);
 				} else {
-					surface->FillRectangle(rcCaret, caretColour);
+                    surface->FillRectangle(rcCaret, caretColour);
 				}
 			}
 		}
