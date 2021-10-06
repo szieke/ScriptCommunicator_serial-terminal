@@ -950,7 +950,12 @@ void ScriptWindow::editUiSlot()
             myProcess->setArguments(arguments);
         }
 
+#if QT_VERSION > QT_VERSION_CHECK(5, 5, 1)
         if(!myProcess->startDetached())
+#else
+        if(!myProcess->startDetached(program, arguments))
+#endif
+
         {
             QMessageBox::critical(this, "error starting QtDesigner", "could not start QtDesigner ");
         }
