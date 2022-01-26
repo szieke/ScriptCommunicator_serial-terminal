@@ -117,7 +117,6 @@ bool PCANBasicClass::open(quint8 channel, quint32 baudRate, bool busOffAutoReset
     TPCANStatus status = initialize(m_currentHandle, (TPCANBaudrate)baudRate);
     if(status == PCAN_ERROR_OK)
     {
-       reset(m_currentHandle);
        m_dataReadyForRead = false;
 
        quint32 buffer = busOffAutoReset ? 1 : 0;
@@ -127,19 +126,17 @@ bool PCANBasicClass::open(quint8 channel, quint32 baudRate, bool busOffAutoReset
        (void)setValue(m_currentHandle, PCAN_5VOLTS_POWER, (void*)&buffer, sizeof(buffer));
 
        QThread::msleep(100);
+       reset(m_currentHandle);
+       QThread::msleep(100);
 
-       //Read all available messages.
+       //Discard all available messages.
        TPCANMsg message;
        TPCANTimestamp time;
        do
        {
            m_currentStatus = read(m_currentHandle, &message, &time);
-           if((m_currentStatus & PCAN_ERROR_QRCVEMPTY) || (message.MSGTYPE == PCAN_MESSAGE_STATUS))
-           {//Message received.
 
-               message.ID = 0xffffffff;
-           }
-       }while(message.ID != 0xffffffff);
+       }while(!(m_currentStatus & PCAN_ERROR_QRCVEMPTY));
 
        result = true;
        m_receiveTimer.start(1);
@@ -460,8 +457,8 @@ QByteArray PCANBasicClass::readLastMessage(void)
 
             m_currentStatus = read(m_currentHandle, &m_lastReadMessage, &m_timeStampLastReceivedMessage);
 
-            if((m_currentStatus & PCAN_ERROR_QRCVEMPTY) || (m_lastReadMessage.MSGTYPE == PCAN_MESSAGE_STATUS))
-            {//Message received.
+            if((m_currentStatus & PCAN_ERROR_QRCVEMPTY) || (m_currentStatus & PCAN_ERROR_BUSOFF) || (m_lastReadMessage.MSGTYPE == PCAN_MESSAGE_STATUS))
+            {//The message is not a CAN message.
                 m_lastReadMessage.ID = 0xffffffff;
 
             }
@@ -527,7 +524,7 @@ void PCANBasicClass::receiveTimerSlot()
 
             m_currentStatus = read(m_currentHandle, &m_lastReadMessage, &m_timeStampLastReceivedMessage);
 
-            if(!(m_currentStatus & PCAN_ERROR_QRCVEMPTY))
+            if(!((m_currentStatus & PCAN_ERROR_QRCVEMPTY) || (m_currentStatus & PCAN_ERROR_BUSOFF)))
             {//message received
 
                 if(m_lastReadMessage.MSGTYPE != PCAN_MESSAGE_STATUS)
