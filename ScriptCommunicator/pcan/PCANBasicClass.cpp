@@ -117,7 +117,6 @@ bool PCANBasicClass::open(quint8 channel, quint32 baudRate, bool busOffAutoReset
     TPCANStatus status = initialize(m_currentHandle, (TPCANBaudrate)baudRate);
     if(status == PCAN_ERROR_OK)
     {
-       reset(m_currentHandle);
        m_dataReadyForRead = false;
 
        quint32 buffer = busOffAutoReset ? 1 : 0;
@@ -128,18 +127,8 @@ bool PCANBasicClass::open(quint8 channel, quint32 baudRate, bool busOffAutoReset
 
        QThread::msleep(100);
 
-       //Read all available messages.
-       TPCANMsg message;
-       TPCANTimestamp time;
-       do
-       {
-           m_currentStatus = read(m_currentHandle, &message, &time);
-           if((m_currentStatus & PCAN_ERROR_QRCVEMPTY) || (message.MSGTYPE == PCAN_MESSAGE_STATUS))
-           {//Message received.
-
-               message.ID = 0xffffffff;
-           }
-       }while(message.ID != 0xffffffff);
+       //Reset the RX/TX queues.
+       reset(m_currentHandle);
 
        result = true;
        m_receiveTimer.start(1);
