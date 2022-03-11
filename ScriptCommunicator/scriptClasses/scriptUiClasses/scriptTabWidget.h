@@ -35,7 +35,8 @@ class ScriptTabWidget : public ScriptWidget
     Q_OBJECT
 public:
     explicit ScriptTabWidget(QTabWidget* tabWidget, ScriptThread *scriptThread) :
-        ScriptWidget(tabWidget, scriptThread, scriptThread->getScriptWindow()), m_tabWidget(tabWidget)
+        ScriptWidget(tabWidget, scriptThread, scriptThread->getScriptWindow()), m_tabWidget(tabWidget),
+        m_storedTabs(), m_storedTabIdCounter(0)
     {
         //connect the necessary signals with the wrapper slots (in this slots the
         //events of the wrapper class are generated, the script can connect to this
@@ -50,8 +51,19 @@ public:
 
         connect(m_tabWidget, SIGNAL(currentChanged(int)), this, SIGNAL(currentTabChangedSignal(int)), Qt::QueuedConnection);
 
+        connect(this, SIGNAL(removeTabSignal(QTabWidget*,int,QWidget**, QString*)), scriptThread->getScriptWindow(),
+                SLOT(removeTabSlot(QTabWidget*,int,QWidget**, QString*)), directConnectionType);
+
+        connect(this, SIGNAL(insertTabSignal(QTabWidget*,QWidget*,QString,int)), scriptThread->getScriptWindow(),
+                SLOT(insertTabSlot(QTabWidget*,QWidget*,QString,int)), directConnectionType);
 
     }
+
+    typedef struct
+    {
+        QWidget* tabPointer;
+        QString tabText;
+    }Tab;
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
@@ -71,6 +83,35 @@ public:
     ///Returns the current tab index.
     Q_INVOKABLE int currentIndex(void){return m_tabWidget->currentIndex();}
 
+    /**
+     * Removes a tab and returns the tab id (can be used in insertTab).
+     * @param index The index of the tab.
+     * @return The tab id.
+     */
+    Q_INVOKABLE int removeTab(int index)
+    {
+        Tab tab;
+        emit removeTabSignal(m_tabWidget, index, &tab.tabPointer, &tab.tabText);
+
+        m_storedTabs[m_storedTabIdCounter] = tab;
+        m_storedTabIdCounter++;
+        return m_storedTabIdCounter - 1;
+    }
+
+    /**
+     * Inserts a tab that was removed with removeTab.
+     * @param tabId The tab id.
+     * @param index The index at wich the tab shall be inserted.
+     */
+    Q_INVOKABLE void insertTab(int tabId, int index)
+    {
+       if(m_storedTabs.contains(tabId))
+       {
+           emit insertTabSignal(m_tabWidget, m_storedTabs[tabId].tabPointer, m_storedTabs[tabId].tabText, index);
+           m_storedTabs.remove(tabId);
+       }
+    }
+
 
 
 Q_SIGNALS:
@@ -87,9 +128,20 @@ Q_SIGNALS:
     ///This signal is private and must not be used inside a script.
     void setCurrentIndexSignal(int index, QTabWidget* tabWidget);
 
+    ///This signal is emitted in removeTab.
+    ///This signal is private and must not be used inside a script.
+    void removeTabSignal(QTabWidget* tabWidget, int index, QWidget** tab, QString* tabText);
+
+    ///This signal is emitted in addTab.
+    ///This signal is private and must not be used inside a script.
+    void insertTabSignal(QTabWidget* tabWidget, QWidget* tab, QString tabText, int index);
+
 private:
     ///The wrapped push button.
     QTabWidget* m_tabWidget;
+
+    QMap<int, Tab> m_storedTabs;
+    int m_storedTabIdCounter;
 };
 
 #endif // SCRIPTTABEDWIDGET_H

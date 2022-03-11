@@ -1041,3 +1041,30 @@ void ScriptSlots::setStyleSheetSlot(QString styleSheet, QWidget* element)
 {
     element->setStyleSheet(styleSheet);
 }
+
+/**
+ * Removes a tab and returns the tab id (can be used in insertTab).
+ * @param tabWidget The tab widget.
+ * @param index The index of the tab.
+ * @param tab The removed tab.
+ * @param tabText The tab text.
+ */
+void ScriptSlots::removeTabSlot(QTabWidget* tabWidget, int index, QWidget** tab, QString* tabText)
+{
+    *tabText = tabWidget->tabText(index);
+    *tab = tabWidget->widget(index);
+    tabWidget->removeTab(index);
+}
+
+/**
+ * Inserts a tab that was removed with removeTab.
+ * @param tabWidget The tab widget.
+ * @param tab The tab that shall be inserted.
+ * @param tabText The tab text.
+ * @param index The index at wich the tab shall be inserted.
+ */
+void ScriptSlots::insertTabSlot(QTabWidget* tabWidget, QWidget* tab, QString tabText, int index)
+{
+    tabWidget->insertTab(index, tab, tabText);
+}
+

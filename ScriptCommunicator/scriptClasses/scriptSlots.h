@@ -153,6 +153,12 @@ public slots:
    ///Sets the current tab index.
    void setCurrentIndexSlot(int index, QTabWidget* tabWidget){tabWidget->setCurrentIndex(index);}
 
+   ///Removes a tab and returns the tab id (can be used in insertTab).
+   void removeTabSlot(QTabWidget* tabWidget, int index, QWidget** tab, QString* tabText);
+
+   ///Inserts a tab that was removed with removeTab.
+   void insertTabSlot(QTabWidget* tabWidget, QWidget* tab, QString tabText, int index);
+
    ///Sets the text of an action.
    void setActionTextSlot(QString text, QAction* action){action->setText(text);}
 
