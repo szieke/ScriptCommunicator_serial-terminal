@@ -553,6 +553,12 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     setWindowTitle("ScriptCommunicator " + MainWindow::VERSION + " - Settings");
 
+    int pixelSize = QApplication::font().pixelSize();
+    m_userInterface->appFontSizeComboBox->blockSignals(true);
+    m_userInterface->appFontSizeComboBox->setCurrentText(QString::number(pixelSize));
+    m_userInterface->appFontSizeComboBox->blockSignals(false);
+
+
 
 }
 
@@ -603,6 +609,15 @@ void SettingsDialog::setStyleCheckBoxPressedSlot(bool isChecked)
     setEditableComboBoxStyleSheet(m_userInterface->baudRateBox);
     setEditableComboBoxStyleSheet(m_userInterface->consoleTimestampAtByteComboBox);
     setEditableComboBoxStyleSheet(m_userInterface->logTimestampAtByteComboBox);
+
+    if(isChecked)
+    {
+        m_userInterface->consoleSendColorButton->setStyleSheet("background-color: #ff0000;");
+        m_userInterface->consoleReceiveColorButton->setStyleSheet("background-color: #00ff00;");
+        m_userInterface->consoleBackgroundColorButton->setStyleSheet("background-color: #000000;");
+        updateSettings();
+        emit configHasToBeSavedSignal();
+    }
     emit setStyleSignal(isChecked, m_userInterface->appFontSizeComboBox->currentText().toUInt());
 }
 

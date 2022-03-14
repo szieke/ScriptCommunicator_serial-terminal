@@ -1,9 +1,7 @@
 seq::appendTextToConsole(String string, bool newLine=true, bool bringToForeground=false):void \nAppends text to the script window console.
-seq::calculateCrc8(Array<Number> data):Number \nCalculates a crc8.
 seq::calculateCrc8WithPolynomial(Array<Number> data, Number polynomial, Number startValue=0):Number \nCalculates a crc8 with a given polynomial.
-seq::calculateCrc16(Array<Number> data):Number \nCalculates a crc16.
-seq::calculateCrc32(Array<Number> data):Number \nCalculates a crc32.
-seq::calculateCrc64(Array<Number> data):quint64 \nCalculates a crc64.
+seq::calculateCrc16WithPolynomial(Array<Number> data, Number polynomial, Number startValue=0):Number \nCalculates a crc16 with a given polynomial.
+seq::calculateCrc32WithPolynomial(Array<Number> data, Number polynomial, Number startValue=0):Number \nCalculates a crc32 with a given polynomial.
 seq::setGlobalString(String name, String string):void \nSets a string in the global string map (Scripts can exchange data with this map).
 seq::getGlobalString(String name, bool removeValue=false):String \nReturns a string from the global string map (Scripts can exchange data with this map).\nNote: Returns an empty string if name is not in the map.
 seq::setGlobalDataArray(String name, Array<Number> data):void \nSets a data vector in the global data vector map (Scripts can exchange data with this map).

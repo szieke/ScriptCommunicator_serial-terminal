@@ -121,21 +121,29 @@ public:
     Q_INVOKABLE QVector<unsigned char> addStringToArray(QVector<unsigned char> array, QString str){return ScriptConverter::addStringToArray(array, str);}
     /*************************************************************************************************************************/
 
-    ///Calculates a crc8.
-    Q_INVOKABLE static quint8 calculateCrc8(const QVector<unsigned char> data){return CRC::calculateCrc8(data);}
-
     ///Calculates a crc8 with a given polynomial.
     Q_INVOKABLE static quint8 calculateCrc8WithPolynomial(const QVector<unsigned char> data, const unsigned char polynomial, const unsigned char startValue=0)
                 {return CRC::calculateCrc8(data, polynomial,startValue);}
+
+    ///Calculates a crc16 with a given polynomial.
+    Q_INVOKABLE static quint16 calculateCrc16WithPolynomial(const QVector<unsigned char> data, const quint16 polynomial, const unsigned char startValue=0)
+                {return CRC::calculateCrc16(data, polynomial, startValue);}
+
+    ///Calculates a crc32 with a given polynomial.
+    Q_INVOKABLE static quint32 calculateCrc32WithPolynomial(const QVector<unsigned char> data, const quint32 polynomial, const unsigned char startValue=0)
+                {return CRC::calculateCrc32(data, polynomial, startValue);}
+
+    /****************Deprecated******************************************************/
+    ///Calculates a crc8.
+    Q_INVOKABLE static quint8 calculateCrc8(const QVector<unsigned char> data){return CRC::calculateCrc8(data);}
 
     ///Calculates a crc16.
     Q_INVOKABLE static quint16 calculateCrc16(const QVector<unsigned char> data){return CRC::calculateCrc16(data);}
 
     ///Calculates a crc32.
     Q_INVOKABLE static quint32 calculateCrc32(const QVector<unsigned char> data){return CRC::calculateCrc32(data);}
+    /********************************************************************************/
 
-    ///Calculates a crc64.
-    Q_INVOKABLE static quint64 calculateCrc64(const QVector<unsigned char> data){return CRC::calculateCrc64(data);}
 
     ///Sets a string in the global sequence string map.
     Q_INVOKABLE void setGlobalString(QString name, QString string);

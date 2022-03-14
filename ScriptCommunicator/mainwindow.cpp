@@ -1654,6 +1654,10 @@ bool MainWindow::loadSettings()
                         else
                         {
                             currentSettings.appFontSize = QApplication::font().pixelSize();
+                            if(currentSettings.appFontSize < 12)
+                            {
+                                currentSettings.appFontSize = 12;
+                            }
                         }
 
                         setStyleSlot(currentSettings.useDarkStyle, currentSettings.appFontSize.toInt());

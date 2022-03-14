@@ -36,9 +36,16 @@ public:
     ///Calculates a crc8 with a generic polynomial
     static quint8 calculateCrc8(const QVector<unsigned char> data,
                                 const unsigned char polynomial, const unsigned char startValue);
-	
-    ///Calculates a crc8.
-    static quint8 calculateCrc8(const QVector<unsigned char> data);
+
+    ///Calculates a crc16.
+    static quint16 calculateCrc16(const QVector<unsigned char> data,
+                              const quint16 polynomial, const unsigned char startValue);
+
+    ///Calculates a crc32.
+    static quint32 calculateCrc32(const QVector<unsigned char> data,
+                              const quint32 polynomial, const unsigned char startValue);
+
+    /****************Deprecated******************************************************/
 
     ///Calculates a crc16.
     static quint16 calculateCrc16(const QVector<unsigned char> data);
@@ -46,8 +53,10 @@ public:
     ///Calculates a crc32.
     static quint32 calculateCrc32(const QVector<unsigned char> data);
 
-    ///Calculates a crc64.
-    static quint64 calculateCrc64(const QVector<unsigned char> data);
+    ///Calculates a crc8.
+    static quint8 calculateCrc8(const QVector<unsigned char> data);
+
+
 };
 
 #endif // CRC_H

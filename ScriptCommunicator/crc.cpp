@@ -69,6 +69,77 @@ quint8 CRC::calculateCrc8(const QVector<unsigned char> data,
 	return crc;	
 } 
  
+/**
+ * Calculates a crc16 with a generic polynomial.
+ * @param date
+ *		The data.
+ * @param polynomial
+ *		The polynomial to be used to calculate the CRC.
+ * @param startValue
+ *      The CRC start value.
+ * @return
+ *		The calculated crc.
+ */
+quint16 CRC::calculateCrc16(const QVector<unsigned char> data,
+                          const quint16 polynomial, const unsigned char startValue)
+{
+    quint16 crc = startValue;
+
+    for( auto val: data )
+    {
+        crc ^= (uint16_t)(val << 8);
+
+        for( qint32 i = 0; i < CHAR_BIT; ++i )
+        {
+            if( (crc & 0x8000) != 0 )
+            {
+                crc = ((crc << 1)) ^ polynomial;
+            }
+            else
+            {
+                crc = (crc << 1);
+            }
+        }
+    }
+
+    return crc;
+}
+
+/**
+ * Calculates a crc32 with a generic polynomial.
+ * @param date
+ *		The data.
+ * @param polynomial
+ *		The polynomial to be used to calculate the CRC.
+ * @param startValue
+ *      The CRC start value.
+ * @return
+ *		The calculated crc.
+ */
+quint32 CRC::calculateCrc32(const QVector<unsigned char> data,
+                          const quint32 polynomial, const unsigned char startValue)
+{
+    quint32 crc = startValue;
+
+    for( auto val: data )
+    {
+        crc ^= (uint32_t)(val << 8);
+
+        for( qint32 i = 0; i < CHAR_BIT; ++i )
+        {
+            if( (crc & 0x80000000) != 0 )
+            {
+                crc = ((crc << 1)) ^ polynomial;
+            }
+            else
+            {
+                crc = (crc << 1);
+            }
+        }
+    }
+
+    return crc;
+}
  
  
 
@@ -216,49 +287,3 @@ quint32 CRC::calculateCrc32(const QVector<unsigned char> data)
 
 }
 
-/**
- * Calculates a crc64.
- * @param data
- *      The data.
- * @return
- *      The calculated crc.
- */
-quint64 CRC::calculateCrc64(const QVector<unsigned char> data)
-{
-    static bool crc64TableCreated = false;
-    static quint64 crc64Table[256];
-
-    if(!crc64TableCreated)
-    {
-        const quint64 CRCPOLY = 0x42F0E1EBA9EA3693;
-
-        quint64 value;
-        for (quint32 i = 0; i < 256; i++)
-        {
-            value = i;
-            for (int j = 8; j > 0; j--)
-            {
-                if (value & 1)
-                {
-                    value = (value >> 1) ^ CRCPOLY;
-                }
-                else
-                {
-                    value >>= 1;
-                }
-            }
-            crc64Table[i] = value;
-        }
-
-        crc64TableCreated = true;
-    }
-
-    quint64 crc = 0;
-    for (auto val : data)
-    {
-        crc = crc64Table[(crc ^ val) & 0xFF] ^ (crc >> 8);
-    }
-    crc = ~crc;
-    return crc;
-
-}
