@@ -38,7 +38,8 @@ class ScriptLineEdit: public ScriptWidget
 
 public:
     ScriptLineEdit(QLineEdit* lineEdit, ScriptThread *scriptThread) :
-        ScriptWidget(lineEdit,scriptThread, scriptThread->getScriptWindow()), m_lineEdit(lineEdit)
+        ScriptWidget(lineEdit,scriptThread, scriptThread->getScriptWindow()), m_lineEdit(lineEdit), m_hexModeActivated(false),
+        m_maxValue(0), m_savedText()
     {
         //connect the necessary signals with the wrapper slots (in this slots the
         //events of the wrapper class are generated, the script can connect to this
@@ -92,6 +93,81 @@ public:
     ///This slot functions clears the line edit.
     Q_INVOKABLE void clear(void){m_lineEdit->clear();}
 
+    ///Activates the hexadecimal mode (only hexedecimal values are allowed).
+    Q_INVOKABLE void setToHexMode(quint64 maxValue)
+    {
+        m_hexModeActivated = true;
+        m_maxValue = maxValue;
+
+        connect(m_lineEdit, SIGNAL(textChanged(const QString&)),this, SLOT(textChangedInHexMode(const QString&)));
+    };
+
+public slots:
+
+    void textChangedInHexMode(QString newText)
+    {
+
+        QString tmpText1;
+        QString tmpText2;
+        QString savedNewText = newText;
+
+        //Allow only hexedecimal characters.
+        newText.replace(QRegularExpression("[^xa-fA-F\\d\\s]"), "");
+
+        if(newText.startsWith("x"))
+        {//The current value starts with x.
+
+            newText = "0" + newText;
+        }
+        else if(newText == "0")
+        {
+            newText = "0x";
+        }
+        else if(!newText.startsWith("0x"))
+        {//The current value does not start with 0x.
+
+            newText = "0x" + newText;
+        }
+
+        //Remove all 0 after 0x (except the string is 0x0).
+        bool replaced = false;
+        do
+        {
+            replaced = false;
+            if(newText.startsWith("0x0") && (newText != "0x0"))
+            {
+                newText.replace("0x0", "0x");
+                replaced = true;
+            }
+        }while(replaced);
+
+
+
+        if(newText.length() > 2)
+        {
+            //Remove all x that are not the second character (0x).
+            tmpText1 = newText.right(newText.length() - 2);
+            tmpText1.replace("x", "");
+
+            tmpText2 = newText.left(2);
+            newText = tmpText2 + tmpText1;
+
+        }
+
+        if(text().toULongLong(nullptr, 16) > m_maxValue)
+        {
+            newText = m_savedText;
+        }
+
+        if(savedNewText != newText)
+        {//The text was modified.
+
+            setText(newText);
+        }
+
+        m_savedText = newText;
+    }
+
 Q_SIGNALS:
     ///This signal is emitted if the text of the line edit has been changed.
     ///Scripts can connect a function to this signal.
@@ -124,6 +200,15 @@ private:
 
     ///The wrapped line edit.
     QLineEdit* m_lineEdit;
+
+    ///True if the hex mode is activated.
+    bool m_hexModeActivated;
+
+    ///the max. value in hex mode.
+    quint64 m_maxValue;
+
+    ///The save text in hex mode.
+    QString m_savedText;
 };
 
 #endif // SCRIPTLINEEDIT_H

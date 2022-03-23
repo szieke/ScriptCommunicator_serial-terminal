@@ -109,6 +109,8 @@ scriptThread::getScriptFolder(void):String \nReturns the folder in which the scr
 scriptThread::zipDirectory(String fileName, String sourceDirName, String comment=""):bool \nZips a directory.\nNote: This function is deprecated. Use the scriptFile.zipDirectory instead.
 scriptThread::zipFiles(String fileName, VariantList fileList, String comment=""):bool \nAdds files to a zip file.\nNote: This function is deprecated. Use the scriptFile.zipFiles instead.
 scriptThread::extractZipFile(String fileName, String destinationDirectory):bool \nExtracts a zip file.\nNote: This function is deprecated. Use the scriptFile.extractZipFile instead.
+scriptThread::activateDarkMode(bool activate):void \nActivates/deactivates the ScriptCommunicator dark mode (affects ScriptCommunicator and all script GUIs).
+scriptThread::setApplicationFontSize(Number fontSizePx):void \nSets the application font size (pixel, affects ScriptCommunicator and all script GUIs).
 scriptThread::globalStringChangedSignal.connect(String name, String string)\nIs emitted if a string in the global string map has been changed.
 scriptThread::globalDataArrayChangedSignal.connect(String name, Array<Number> data)\nIs emitted if a data vector in the global string data vector has been changed.
 scriptThread::globalUnsignedChangedSignal.connect(String name, Number number)\nIs emitted if an unsigned number in the global unsigned number map has been changed

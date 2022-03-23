@@ -91,7 +91,7 @@ static QMutex g_realNumberMapMutex;
 
 
 ///Is set to true if a thread has been terminated.
-///This variabke is used un the main function.
+///This variable is used un the main function.
 extern bool g_aThreadHasBeenTerminated;
 
 /**
@@ -234,6 +234,39 @@ void ScriptThread::resumedByDebuggerSlot()
 }
 
 /**
+ * Activates/deactivates the ScriptCommunicator dark mode (affects ScriptCommunicator and all script GUIs).
+ * @param activate
+ *      True for activate.
+ */
+void ScriptThread::activateDarkMode(bool activate)
+{
+    Settings settings = *m_settingsDialog->settings();
+
+    if(settings.useDarkStyle != activate)
+    {
+        settings.useDarkStyle = activate;
+        emit setAllSettingsSignal(settings, false);
+    }
+}
+
+/**
+ * Sets the application font size (affects ScriptCommunicator and all script GUIs).
+ * @param fontSizePx
+ *      The new font size (pixel).
+ */
+void ScriptThread::setApplicationFontSize(quint32 fontSizePx)
+{
+    Settings settings = *m_settingsDialog->settings();
+
+    if(settings.appFontSize != QString::number(fontSizePx))
+    {
+        settings.appFontSize = QString::number(fontSizePx);
+        emit setAllSettingsSignal(settings, false);
+    }
+}
+
+
+/**
  * The thread main function. Here the script is executed.
  */
 void ScriptThread::run()
@@ -347,6 +380,7 @@ void ScriptThread::run()
 
         connect(this, SIGNAL(getScriptTableNameSignal(QString*)),
                 m_scriptWindow, SLOT(getScriptTableNameSlot(QString*)), directConnectionType);
+
 
         //start the pause timer
         m_pauseTimer = new QTimer(this);

@@ -563,6 +563,12 @@ public:
         return QDateTime::currentDateTime().toString(format.isEmpty() ? m_settingsDialog->settings()->consoleTimestampFormat : format);
     }
 
+    ///Activates/deactivates the ScriptCommunicator dark mode (affects ScriptCommunicator and all script GUIs).
+    Q_INVOKABLE void activateDarkMode(bool activate);
+
+    ///Sets the application font size (affects ScriptCommunicator and all script GUIs).
+    Q_INVOKABLE void setApplicationFontSize(quint32 fontSizePx);
+
     ///Returns the console settings (settings dialog).
     Q_INVOKABLE QScriptValue getConsoleSettings(void);
 
@@ -710,6 +716,7 @@ signals:
     ///Is connected with MainWindow::setWindowTitle.
     ///This signal must not be used from script.
     void setMainWindowTitleSignal(QString newTitle);
+
 
 protected:
     ///The thread main function.
