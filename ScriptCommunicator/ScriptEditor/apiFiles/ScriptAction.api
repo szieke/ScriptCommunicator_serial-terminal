@@ -1,4 +1,4 @@
-ScriptWidget::setEnabled(bool isEnabled):void \nEnables or disables the action.
+ScriptAction::setEnabled(bool isEnabled):void \nEnables or disables the action.
 ScriptAction::setText(String text):void \nSets the action text.
 ScriptAction::text(void):String \nReturns the action text.
 ScriptAction::setChecked(bool checked):void \nSets the checked state of the action.
