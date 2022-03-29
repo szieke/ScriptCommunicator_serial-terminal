@@ -52,6 +52,8 @@ public:
                 SLOT(setActionTextSlot(QString,QAction*)), directConnectionType);
         connect(this, SIGNAL(setCheckStateSignal(bool,QAction*)), scriptThread->getScriptWindow(), SLOT(setActionCheckStateSlot(bool,QAction*)));
 
+        connect(this, SIGNAL(setEnabledSignal(bool)), m_action, SLOT(setEnabled(bool)), Qt::QueuedConnection);
+
     }
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
@@ -71,6 +73,9 @@ public:
     ///Returns true of the action is checked.
     Q_INVOKABLE bool isChecked(void){return m_action->isChecked();}
 
+    ///Enables or disables the widget.
+    Q_INVOKABLE void setEnabled(bool isEnabled){emit setEnabledSignal(isEnabled);}
+
 Q_SIGNALS:
     ///This signal is emitted if the user presses the action.
     ///Scripts can connect a function to this signal.
@@ -83,6 +88,10 @@ Q_SIGNALS:
     ///Is emitted in setChecked.
     ///This signal is private and must not be used inside a script.
     void setCheckStateSignal(bool checked, QAction* action);
+
+    ///This signal is emitted if the setEnabled function is called.
+    ///This signal is private and must not be used inside a script.
+    void setEnabledSignal(bool);
 
 private:
     ///The wrapped action.
