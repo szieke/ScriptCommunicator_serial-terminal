@@ -282,7 +282,6 @@ void MainWindow::checkForFileChanges(void)
         }
     }
 
-    parseTimeout(true);
     m_checkForFileChangesTimer.start(2000);
 }
 
