@@ -1524,12 +1524,36 @@ void MainWindow::setStyleSlot(bool useDarkStyle, int fontSize)
             file.open(QFile::ReadOnly);
             styleSheet= QLatin1String(file.readAll());
             styleSheet.replace("@FONT_SIZE@", QString::number(fontSize));
+
+            QString groupBoxPadding = "10";
+            if(fontSize > 22){groupBoxPadding = "0";}
+            else if(fontSize > 18){groupBoxPadding = "5";}
+            else if(fontSize < 11){groupBoxPadding = "15";}
+            styleSheet.replace("@GROUPBOX_PADDING@", groupBoxPadding);
+
         }
     }
 
+    if(fontSize > 22)
+    {
+        m_settingsDialog->getUserInterface()->connectionTypeComboBox->setMinimumWidth(160);
+        m_settingsDialog->getUserInterface()->endianessComboBox->setMinimumWidth(180);
+        m_settingsDialog->getUserInterface()->appFontSizeComboBox->setMinimumWidth(60);
+    }
+    else if(fontSize > 18)
+    {
+        m_settingsDialog->getUserInterface()->connectionTypeComboBox->setMinimumWidth(130);
+        m_settingsDialog->getUserInterface()->endianessComboBox->setMinimumWidth(150);
+        m_settingsDialog->getUserInterface()->appFontSizeComboBox->setMinimumWidth(60);
+    }
+    else
+    {
+        m_settingsDialog->getUserInterface()->connectionTypeComboBox->setMinimumWidth(100);
+        m_settingsDialog->getUserInterface()->endianessComboBox->setMinimumWidth(120);
+        m_settingsDialog->getUserInterface()->appFontSizeComboBox->setMinimumWidth(50);
+    }
+
     qApp->setStyleSheet(styleSheet);
-    QCommonStyle().unpolish(qApp);
-    QCommonStyle().polish(qApp);
     m_settingsDialog->setUseDarkStyle(useDarkStyle);
 
     if(!useDarkStyle)
@@ -1538,6 +1562,9 @@ void MainWindow::setStyleSlot(bool useDarkStyle, int fontSize)
         font.setPixelSize(fontSize);
         QApplication::setFont(font);
     }
+
+    QCommonStyle().unpolish(qApp);
+    QCommonStyle().polish(qApp);
 
 }
 
@@ -1654,9 +1681,9 @@ bool MainWindow::loadSettings()
                         else
                         {
                             currentSettings.appFontSize = QApplication::font().pixelSize();
-                            if(currentSettings.appFontSize < 12)
+                            if(currentSettings.appFontSize < 14)
                             {
-                                currentSettings.appFontSize = 12;
+                                currentSettings.appFontSize = 14;
                             }
                         }
 

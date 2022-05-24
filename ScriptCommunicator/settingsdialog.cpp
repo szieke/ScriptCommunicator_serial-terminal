@@ -868,7 +868,15 @@ void SettingsDialog::aardvarkI2cSpiInputStatesChangedSlot(QVector<bool> states)
  */
 void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
 {
+    bool fontSizeOrDarkModeChanged = false;
+
     showAllLocalIpAddresses();
+
+    if((m_currentSettings.appFontSize != settings.appFontSize) ||
+       (m_currentSettings.useDarkStyle != settings.useDarkStyle))
+    {
+        fontSizeOrDarkModeChanged = true;
+    }
 
     m_currentSettings = settings;
 
@@ -1178,6 +1186,11 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     updateSettings(true);
 
     initializeInterfaceTabs();
+
+    if(fontSizeOrDarkModeChanged)
+    {
+        appFontSizeChangedSlot(settings.appFontSize);
+    }
 }
 
 /**

@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>863</width>
-    <height>579</height>
+    <width>927</width>
+    <height>567</height>
    </rect>
   </property>
   <property name="sizePolicy">
-   <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+   <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
@@ -62,8 +62,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>819</width>
-            <height>395</height>
+            <width>883</width>
+            <height>383</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0">
@@ -124,7 +124,7 @@
              <item row="3" column="1">
               <widget class="QComboBox" name="parityBox">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -194,7 +194,7 @@
              <item row="1" column="1">
               <widget class="QComboBox" name="baudRateBox">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -222,7 +222,7 @@
              <item row="0" column="1">
               <widget class="QComboBox" name="serialPortInfoListBox">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -247,7 +247,7 @@
              <item row="2" column="1">
               <widget class="QComboBox" name="stopBitsBox">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -269,7 +269,7 @@
              <item row="5" column="1">
               <widget class="QComboBox" name="dataBitsBox">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -297,7 +297,7 @@
              <item row="4" column="1">
               <widget class="QComboBox" name="flowControlBox">
                <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
                  <horstretch>0</horstretch>
                  <verstretch>0</verstretch>
                 </sizepolicy>
@@ -424,8 +424,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>819</width>
-            <height>395</height>
+            <width>883</width>
+            <height>383</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0,1">
@@ -459,9 +459,12 @@
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>110</width>
+                   <width>16777215</width>
                    <height>16777215</height>
                   </size>
+                 </property>
+                 <property name="sizeAdjustPolicy">
+                  <enum>QComboBox::AdjustToContents</enum>
                  </property>
                  <item>
                   <property name="text">
@@ -500,7 +503,7 @@
                   <bool>true</bool>
                  </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -514,7 +517,7 @@
                  <property name="maximumSize">
                   <size>
                    <width>16777215</width>
-                   <height>20</height>
+                   <height>16777215</height>
                   </size>
                  </property>
                  <property name="text">
@@ -528,7 +531,7 @@
                   <bool>true</bool>
                  </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -542,7 +545,7 @@
                  <property name="maximumSize">
                   <size>
                    <width>16777215</width>
-                   <height>20</height>
+                   <height>16777215</height>
                   </size>
                  </property>
                  <property name="inputMask">
@@ -559,7 +562,7 @@
                   <bool>false</bool>
                  </property>
                  <property name="sizePolicy">
-                  <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                    <horstretch>0</horstretch>
                    <verstretch>0</verstretch>
                   </sizepolicy>
@@ -573,7 +576,7 @@
                  <property name="maximumSize">
                   <size>
                    <width>16777215</width>
-                   <height>20</height>
+                   <height>16777215</height>
                   </size>
                  </property>
                 </widget>
@@ -595,7 +598,7 @@
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>200</width>
+                   <width>16777215</width>
                    <height>16777215</height>
                   </size>
                  </property>
@@ -646,8 +649,8 @@
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>100</width>
-                   <height>20</height>
+                   <width>16777215</width>
+                   <height>16777215</height>
                   </size>
                  </property>
                 </widget>
@@ -662,7 +665,7 @@
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>100</width>
+                   <width>16777215</width>
                    <height>16777215</height>
                   </size>
                  </property>
@@ -692,7 +695,7 @@ for TCP clients.</string>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>200</width>
+                   <width>16777215</width>
                    <height>16777215</height>
                   </size>
                  </property>
@@ -734,8 +737,8 @@ for TCP clients.</string>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>100</width>
-                   <height>20</height>
+                   <width>16777215</width>
+                   <height>16777215</height>
                   </size>
                  </property>
                 </widget>
@@ -759,8 +762,8 @@ for TCP clients.</string>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>100</width>
-                   <height>20</height>
+                   <width>16777215</width>
+                   <height>16777215</height>
                   </size>
                  </property>
                 </widget>
@@ -791,8 +794,8 @@ for TCP clients.</string>
                  </property>
                  <property name="maximumSize">
                   <size>
-                   <width>100</width>
-                   <height>20</height>
+                   <width>16777215</width>
+                   <height>16777215</height>
                   </size>
                  </property>
                  <property name="echoMode">
@@ -936,8 +939,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>819</width>
-            <height>395</height>
+            <width>883</width>
+            <height>383</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_18">
@@ -949,6 +952,12 @@ for TCP clients.</string>
              <layout class="QGridLayout" name="gridLayout_15">
               <item row="1" column="1">
                <widget class="QComboBox" name="aardvarkSpiPhase">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToContents</enum>
                 </property>
@@ -979,6 +988,12 @@ for TCP clients.</string>
               </item>
               <item row="0" column="1">
                <widget class="QComboBox" name="aardvarkSpiPolarity">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="sizeAdjustPolicy">
                  <enum>QComboBox::AdjustToContents</enum>
                 </property>
@@ -1024,7 +1039,7 @@ for TCP clients.</string>
               <item row="2" column="1">
                <widget class="QLineEdit" name="aardvarkSpiBaudrate">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -1049,6 +1064,12 @@ for TCP clients.</string>
               </item>
               <item row="0" column="3">
                <widget class="QComboBox" name="aardvarkSpiSSPolarity">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <item>
                  <property name="text">
                   <string>Active Low</string>
@@ -1070,6 +1091,12 @@ for TCP clients.</string>
               </item>
               <item row="1" column="3">
                <widget class="QComboBox" name="aardvarkSpiBitorder">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <item>
                  <property name="text">
                   <string>MSB</string>
@@ -1113,6 +1140,12 @@ for TCP clients.</string>
               </item>
               <item row="3" column="1">
                <widget class="QPushButton" name="aardvarkI2cFreeBus">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
                  <string>free bus</string>
                 </property>
@@ -1134,7 +1167,7 @@ for TCP clients.</string>
               <item row="0" column="1">
                <widget class="QLineEdit" name="aardvarkI2cBaudrate">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -1159,6 +1192,12 @@ for TCP clients.</string>
               </item>
               <item row="2" column="1">
                <widget class="QComboBox" name="aardvarkI2cPullUp">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <item>
                  <property name="text">
                   <string>On</string>
@@ -1181,7 +1220,7 @@ for TCP clients.</string>
               <item row="1" column="1">
                <widget class="QLineEdit" name="aardvarkI2cSlaveAddress">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -1239,6 +1278,12 @@ for TCP clients.</string>
               </item>
               <item row="2" column="3">
                <widget class="QComboBox" name="aardvarkGpioOutValue5">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -1253,6 +1298,12 @@ for TCP clients.</string>
               </item>
               <item row="2" column="9">
                <widget class="QComboBox" name="aardvarkGpioOutValue2">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -1268,7 +1319,7 @@ for TCP clients.</string>
               <item row="3" column="13">
                <widget class="QLineEdit" name="aardvarkGpioInValue0">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -1281,7 +1332,7 @@ for TCP clients.</string>
               <item row="3" column="5">
                <widget class="QLineEdit" name="aardvarkGpioInValue4">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -1294,7 +1345,7 @@ for TCP clients.</string>
               <item row="3" column="9">
                <widget class="QLineEdit" name="aardvarkGpioInValue2">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -1307,7 +1358,7 @@ for TCP clients.</string>
               <item row="3" column="7">
                <widget class="QLineEdit" name="aardvarkGpioInValue3">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -1319,6 +1370,12 @@ for TCP clients.</string>
               </item>
               <item row="1" column="11">
                <widget class="QComboBox" name="aardvarkGpioMode1">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -1338,6 +1395,12 @@ for TCP clients.</string>
               </item>
               <item row="1" column="5">
                <widget class="QComboBox" name="aardvarkGpioMode4">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -1372,7 +1435,7 @@ for TCP clients.</string>
               <item row="3" column="11">
                <widget class="QLineEdit" name="aardvarkGpioInValue1">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -1385,7 +1448,7 @@ for TCP clients.</string>
               <item row="3" column="3">
                <widget class="QLineEdit" name="aardvarkGpioInValue5">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -1404,6 +1467,12 @@ for TCP clients.</string>
               </item>
               <item row="1" column="3">
                <widget class="QComboBox" name="aardvarkGpioMode5">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -1423,6 +1492,12 @@ for TCP clients.</string>
               </item>
               <item row="1" column="13">
                <widget class="QComboBox" name="aardvarkGpioMode0">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -1442,6 +1517,12 @@ for TCP clients.</string>
               </item>
               <item row="2" column="11">
                <widget class="QComboBox" name="aardvarkGpioOutValue1">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -1456,6 +1537,12 @@ for TCP clients.</string>
               </item>
               <item row="2" column="5">
                <widget class="QComboBox" name="aardvarkGpioOutValue4">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -1470,6 +1557,12 @@ for TCP clients.</string>
               </item>
               <item row="1" column="7">
                <widget class="QComboBox" name="aardvarkGpioMode3">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -1489,6 +1582,12 @@ for TCP clients.</string>
               </item>
               <item row="1" column="9">
                <widget class="QComboBox" name="aardvarkGpioMode2">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <item>
                  <property name="text">
                   <string>in</string>
@@ -1536,6 +1635,12 @@ for TCP clients.</string>
               </item>
               <item row="2" column="7">
                <widget class="QComboBox" name="aardvarkGpioOutValue3">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -1570,6 +1675,12 @@ for TCP clients.</string>
               </item>
               <item row="2" column="13">
                <widget class="QComboBox" name="aardvarkGpioOutValue0">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <item>
                  <property name="text">
                   <string>0</string>
@@ -1715,6 +1826,12 @@ for TCP clients.</string>
               </item>
               <item row="3" column="1">
                <widget class="QPushButton" name="aardvarkI2cSpiScan">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
                  <string>scan</string>
                 </property>
@@ -1723,7 +1840,7 @@ for TCP clients.</string>
               <item row="1" column="1">
                <widget class="QComboBox" name="aardvarkI2cSpiMode">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -1758,7 +1875,7 @@ for TCP clients.</string>
               <item row="0" column="1">
                <widget class="QLineEdit" name="aardvarkI2cSpiPort">
                 <property name="sizePolicy">
-                 <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
                   <horstretch>0</horstretch>
                   <verstretch>0</verstretch>
                  </sizepolicy>
@@ -1806,6 +1923,12 @@ for TCP clients.</string>
               </item>
               <item row="2" column="1">
                <widget class="QComboBox" name="aardvarkI2cSpi5V">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <item>
                  <property name="text">
                   <string>Off</string>
@@ -1947,8 +2070,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>819</width>
-            <height>395</height>
+            <width>883</width>
+            <height>383</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -1973,6 +2096,12 @@ for TCP clients.</string>
               </item>
               <item row="0" column="2">
                <widget class="QPushButton" name="pcanDetectPushButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
                  <string>detect</string>
                 </property>
@@ -1986,10 +2115,23 @@ for TCP clients.</string>
                </widget>
               </item>
               <item row="0" column="1">
-               <widget class="QComboBox" name="pcanDevicesComboBox"/>
+               <widget class="QComboBox" name="pcanDevicesComboBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+               </widget>
               </item>
               <item row="1" column="1">
                <widget class="QComboBox" name="pcanBaudratecomboBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="toolTip">
                  <string>kBaud</string>
                 </property>
@@ -2077,6 +2219,12 @@ for TCP clients.</string>
               </item>
               <item row="2" column="1">
                <widget class="QComboBox" name="pcan5VoltComboBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="statusTip">
                  <string>5 volt power supply</string>
                 </property>
@@ -2104,6 +2252,12 @@ for TCP clients.</string>
               </item>
               <item row="3" column="1">
                <widget class="QComboBox" name="pcanBusOffResetComboBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="statusTip">
                  <string>automatic reset on BUS-OFF</string>
                 </property>
@@ -2149,6 +2303,12 @@ for TCP clients.</string>
              <layout class="QGridLayout" name="gridLayout_13" columnstretch="1,0,0,0,0,0">
               <item row="1" column="0">
                <widget class="QRadioButton" name="pcanExtendedRadioButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
                  <string>extended</string>
                 </property>
@@ -2159,6 +2319,12 @@ for TCP clients.</string>
               </item>
               <item row="0" column="0">
                <widget class="QRadioButton" name="pcanStandardRadioButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="text">
                  <string>standard</string>
                 </property>
@@ -2173,6 +2339,12 @@ for TCP clients.</string>
               </item>
               <item row="0" column="2">
                <widget class="QLineEdit" name="pcanFilterFromLineEdit">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="inputMask">
                  <string/>
                 </property>
@@ -2203,6 +2375,12 @@ for TCP clients.</string>
               </item>
               <item row="0" column="4">
                <widget class="QLineEdit" name="pcanFilterToLineEdit">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="inputMask">
                  <string/>
                 </property>
@@ -2248,8 +2426,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>819</width>
-            <height>395</height>
+            <width>883</width>
+            <height>383</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
@@ -2896,8 +3074,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>819</width>
-            <height>395</height>
+            <width>883</width>
+            <height>383</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3145,8 +3323,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>819</width>
-            <height>395</height>
+            <width>883</width>
+            <height>383</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -3759,20 +3937,20 @@ Note: The reopen buton in the main window is only visible if this option is sele
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>819</width>
-            <height>395</height>
+            <width>883</width>
+            <height>383</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_10">
-           <item row="1" column="4">
-            <spacer name="horizontalSpacer_18">
+           <item row="10" column="0">
+            <spacer name="verticalSpacer_19">
              <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+              <enum>Qt::Vertical</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
-               <width>321</width>
-               <height>17</height>
+               <width>17</width>
+               <height>174</height>
               </size>
              </property>
             </spacer>
@@ -3803,7 +3981,7 @@ Note: The reopen buton in the main window is only visible if this option is sele
              </property>
              <property name="maximumSize">
               <size>
-               <width>200</width>
+               <width>16777215</width>
                <height>16777215</height>
               </size>
              </property>
@@ -3812,19 +3990,28 @@ Note: The reopen buton in the main window is only visible if this option is sele
              </property>
             </widget>
            </item>
-           <item row="0" column="0">
-            <widget class="QRadioButton" name="updateNoProxy">
-             <property name="maximumSize">
+           <item row="3" column="2">
+            <widget class="QLineEdit" name="updateProxyAddress">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
               <size>
-               <width>100</width>
-               <height>16777215</height>
+               <width>0</width>
+               <height>20</height>
               </size>
              </property>
-             <property name="text">
-              <string>no proxy</string>
-             </property>
-             <property name="checked">
-              <bool>false</bool>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>16777215</height>
+              </size>
              </property>
             </widget>
            </item>
@@ -3838,7 +4025,7 @@ Note: The reopen buton in the main window is only visible if this option is sele
              </property>
              <property name="maximumSize">
               <size>
-               <width>200</width>
+               <width>16777215</width>
                <height>16777215</height>
               </size>
              </property>
@@ -3850,68 +4037,13 @@ Note: The reopen buton in the main window is only visible if this option is sele
              </property>
             </widget>
            </item>
-           <item row="3" column="0">
-            <widget class="QLabel" name="label_85">
-             <property name="text">
-              <string>proxy ip address</string>
-             </property>
-            </widget>
-           </item>
-           <item row="3" column="1">
-            <spacer name="horizontalSpacer_9">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>40</width>
-               <height>20</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="3" column="2">
-            <widget class="QLineEdit" name="updateProxyAddress">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>200</width>
-               <height>20</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item row="4" column="0">
-            <widget class="QLabel" name="label_86">
-             <property name="text">
-              <string>proxy port</string>
-             </property>
-            </widget>
-           </item>
            <item row="4" column="2">
             <widget class="QLineEdit" name="updateProxyPort">
              <property name="enabled">
               <bool>false</bool>
              </property>
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -3924,58 +4056,39 @@ Note: The reopen buton in the main window is only visible if this option is sele
              </property>
              <property name="maximumSize">
               <size>
-               <width>200</width>
-               <height>20</height>
+               <width>16777215</width>
+               <height>16777215</height>
               </size>
              </property>
             </widget>
            </item>
-           <item row="5" column="0">
-            <widget class="QLabel" name="label_87">
-             <property name="text">
-              <string>proxy user name</string>
-             </property>
-            </widget>
-           </item>
-           <item row="5" column="2">
-            <widget class="QLineEdit" name="updateProxyUserName">
-             <property name="enabled">
-              <bool>false</bool>
-             </property>
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>0</width>
-               <height>20</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>200</width>
-               <height>20</height>
-              </size>
-             </property>
-            </widget>
-           </item>
-           <item row="6" column="0">
+           <item row="7" column="0">
             <widget class="QLabel" name="label_88">
              <property name="text">
               <string>proxy password</string>
              </property>
             </widget>
            </item>
-           <item row="6" column="2">
+           <item row="1" column="4">
+            <spacer name="horizontalSpacer_18">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>321</width>
+               <height>17</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="7" column="2">
             <widget class="QLineEdit" name="updateProxyPassword">
              <property name="enabled">
               <bool>false</bool>
              </property>
              <property name="sizePolicy">
-              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
                <horstretch>0</horstretch>
                <verstretch>0</verstretch>
               </sizepolicy>
@@ -3988,8 +4101,8 @@ Note: The reopen buton in the main window is only visible if this option is sele
              </property>
              <property name="maximumSize">
               <size>
-               <width>200</width>
-               <height>20</height>
+               <width>16777215</width>
+               <height>16777215</height>
               </size>
              </property>
              <property name="echoMode">
@@ -3997,39 +4110,16 @@ Note: The reopen buton in the main window is only visible if this option is sele
              </property>
             </widget>
            </item>
-           <item row="7" column="0">
-            <spacer name="verticalSpacer_4">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeType">
-              <enum>QSizePolicy::Fixed</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="9" column="0">
-            <spacer name="verticalSpacer_19">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>17</width>
-               <height>174</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item row="8" column="0" colspan="2">
+           <item row="9" column="0" colspan="2">
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
               <widget class="QPushButton" name="checkForUpdates">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
                <property name="text">
                 <string>check for updates</string>
                </property>
@@ -4050,6 +4140,100 @@ Note: The reopen buton in the main window is only visible if this option is sele
              </item>
             </layout>
            </item>
+           <item row="3" column="1">
+            <spacer name="horizontalSpacer_9">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="label_86">
+             <property name="text">
+              <string>proxy port</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QRadioButton" name="updateNoProxy">
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>16777215</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>no proxy</string>
+             </property>
+             <property name="checked">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_85">
+             <property name="text">
+              <string>proxy ip address</string>
+             </property>
+            </widget>
+           </item>
+           <item row="8" column="0">
+            <spacer name="verticalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeType">
+              <enum>QSizePolicy::Fixed</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="6" column="2">
+            <widget class="QLineEdit" name="updateProxyUserName">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>20</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>16777215</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item row="6" column="0">
+            <widget class="QLabel" name="label_87">
+             <property name="text">
+              <string>proxy user name</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
         </widget>
@@ -4069,6 +4253,12 @@ Note: The reopen buton in the main window is only visible if this option is sele
       </property>
       <item row="2" column="13">
        <widget class="QPushButton" name="searchScriptEditorPushButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>search</string>
         </property>
@@ -4129,6 +4319,12 @@ in the log, the decimal console and the send window)</string>
       </item>
       <item row="3" column="13">
        <widget class="QPushButton" name="closeButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="toolTip">
          <string>Ctrl+X</string>
         </property>
@@ -4140,10 +4336,16 @@ in the log, the decimal console and the send window)</string>
       <item row="0" column="6">
        <widget class="QComboBox" name="endianessComboBox">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>120</width>
+          <height>0</height>
+         </size>
         </property>
         <property name="maximumSize">
          <size>
@@ -4172,6 +4374,12 @@ in the log, the decimal console and the send window)</string>
       </item>
       <item row="0" column="3">
        <widget class="QPushButton" name="connectButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>connect</string>
         </property>
@@ -4180,10 +4388,16 @@ in the log, the decimal console and the send window)</string>
       <item row="0" column="2">
        <widget class="QComboBox" name="connectionTypeComboBox">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
         </property>
         <property name="maximumSize">
          <size>
@@ -4250,6 +4464,12 @@ in the log, the decimal console and the send window)</string>
       </item>
       <item row="2" column="0">
        <widget class="QCheckBox" name="useExternalScriptEditorCheckBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="toolTip">
          <string>use an external script editor (instead of the integrated)</string>
         </property>
@@ -4260,6 +4480,12 @@ in the log, the decimal console and the send window)</string>
       </item>
       <item row="0" column="8">
        <widget class="QCheckBox" name="useDarkStyleCheckBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
          <string>use dark style</string>
         </property>
@@ -4281,7 +4507,7 @@ in the log, the decimal console and the send window)</string>
       <item row="0" column="11">
        <widget class="QComboBox" name="appFontSizeComboBox">
         <property name="sizePolicy">
-         <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
@@ -4296,11 +4522,24 @@ in the log, the decimal console and the send window)</string>
          <string>the default application font size (consoles and logs have their own font size)</string>
         </property>
         <property name="currentText">
-         <string>12</string>
+         <string>14</string>
+        </property>
+        <property name="currentIndex">
+         <number>6</number>
         </property>
         <property name="sizeAdjustPolicy">
          <enum>QComboBox::AdjustToContents</enum>
         </property>
+        <item>
+         <property name="text">
+          <string>6</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>8</string>
+         </property>
+        </item>
         <item>
          <property name="text">
           <string>10</string>
@@ -4344,6 +4583,26 @@ in the log, the decimal console and the send window)</string>
         <item>
          <property name="text">
           <string>18</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>20</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>22</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>24</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>26</string>
          </property>
         </item>
        </widget>
