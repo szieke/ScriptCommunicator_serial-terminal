@@ -876,15 +876,19 @@ void ScriptThread::installOneChild(QObject* child, QScriptEngine* scriptEngine)
     }
     else if(QString(child->metaObject()->className()) == QString("QListView"))
     {
-        messageBox("Warning", "not supported gui element", "QListView is not supported, use QListWidget instead");
+        messageBox("Warning", "not supported GUI element", "QListView is not supported, use QListWidget instead");
     }
     else if(QString(child->metaObject()->className()) == QString("QTreeView"))
     {
-        messageBox("Warning", "not supported gui element", "QTreeView is not supported, use QTreeWidget instead");
+        messageBox("Warning", "not supported GUI element", "QTreeView is not supported, use QTreeWidget instead");
     }
     else if(QString(child->metaObject()->className()) == QString("QPlainTextEdit"))
     {
-        messageBox("Warning", "not supported gui element", "QPlainTextEdit is not supported, use QTextEdit instead");
+        messageBox("Warning", "not supported GUI element", "QPlainTextEdit is not supported, use QTextEdit instead");
+    }
+    else if(QString(child->metaObject()->className()) == QString("QLCDNumber"))
+    {
+        messageBox("Warning", "not supported GUI element", "QLCDNumber is not supported");
     }
     else if(QString(child->metaObject()->className()) == QString("QFormInternal::TranslationWatcher") ||
             QString(child->metaObject()->className()) == QString("QVBoxLayout") ||
