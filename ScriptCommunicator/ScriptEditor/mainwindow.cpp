@@ -1398,8 +1398,8 @@ void MainWindow::showEventTimerSlot()
 void MainWindow::setApplicationFontSizeSlot()
 {
     bool okPressed;
-    QStringList list = QStringList() << "8" << "9" << "10" << "11" << "12"
-                                    << "13" << "14" << "15" << "16" << "17" << "18";
+    QStringList list = QStringList() << "6" << "8" << "9" << "10" << "11" << "12" << "13" << "14"
+                                     << "15" << "16" << "17" << "18" << "20" << "22" << "24" << "26";
 
     QString result = QInputDialog::getItem(this, "Select font size", "font size", list,
                                            list.indexOf(QString::number(m_applicationFontSize)), false, &okPressed);
@@ -1442,15 +1442,16 @@ void MainWindow::useDarkStyleMenuPressedSlot(void)
         textEditor->setUseDarkStyle(ui->actionUseDarkStyle->isChecked());
     }
 
-    QCommonStyle().unpolish(qApp);
-    QCommonStyle().polish(qApp);
-
     if(!m_useDarkStyle)
     {
         QFont font = QApplication::font();
         font.setPixelSize(m_applicationFontSize);
         QApplication::setFont(font);
     }
+
+    QCommonStyle().unpolish(qApp);
+    QCommonStyle().polish(qApp);
+
 
 }
 
