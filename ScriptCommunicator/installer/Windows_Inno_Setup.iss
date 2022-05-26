@@ -22,9 +22,9 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}_{#MyAppVersion}
 DefaultGroupName={#MyAppName} {#MyAppVersion}
 AllowNoIcons=yes
-OutputDir=C:\Users\internet\Desktop\
+OutputDir=C:\Users\sziek\Desktop\
 OutputBaseFilename=ScriptCommunicatorSetup_05_18_windows
-SetupIconFile=D:\ScriptCommunicator\source\ScriptCommunicator\images\main.ico
+SetupIconFile=C:\ScriptCommunicator_serial-terminal\ScriptCommunicator\images\main.ico
 Compression=lzma
 SolidCompression=yes
 PrivilegesRequired=lowest
@@ -40,8 +40,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: associate_js_files; Description: "&Associate .js files with the ScriptCommunicator editor"; GroupDescription: "Other tasks:"
 
 [Files]
-Source: "C:\Users\internet\Desktop\ScriptCommunicator\ScriptCommunicator.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\internet\Desktop\ScriptCommunicator\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\sziek\Desktop\ScriptCommunicator\ScriptCommunicator.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\sziek\Desktop\ScriptCommunicator\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
