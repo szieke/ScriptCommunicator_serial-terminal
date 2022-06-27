@@ -869,14 +869,16 @@ void SettingsDialog::aardvarkI2cSpiInputStatesChangedSlot(QVector<bool> states)
 void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
 {
     bool fontSizeOrDarkModeChanged = false;
+    static bool isFirstCall = true;
 
     showAllLocalIpAddresses();
 
-    if((m_currentSettings.appFontSize != settings.appFontSize) ||
-       (m_currentSettings.useDarkStyle != settings.useDarkStyle))
+    if(((m_currentSettings.appFontSize != settings.appFontSize) ||
+       (m_currentSettings.useDarkStyle != settings.useDarkStyle)) && !isFirstCall)
     {
         fontSizeOrDarkModeChanged = true;
     }
+    isFirstCall = false;
 
     m_currentSettings = settings;
 
