@@ -51,6 +51,9 @@ public:
    ///Clears the tables.
    void clearTables();
 
+   ///Sets m_isActivated.
+   void setActivated(bool activated){m_isActivated = activated;}
+
 private slots:
 
     ///Cyclic slot function which updates the can receive table.
@@ -129,6 +132,9 @@ private:
 
     ///Contains the revieved CAN messages.
     QVector<QByteArray> m_recievedCanMessages;
+
+    ///True if the CAN tab is actived.
+    bool m_isActivated;
 };
 
 #endif // CANTAB_H

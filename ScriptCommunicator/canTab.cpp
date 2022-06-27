@@ -31,7 +31,7 @@
  * @param mainWindow
  *      Main window pointer.
  */
-CanTab::CanTab(MainWindow *mainWindow) : QObject(mainWindow), m_mainWindow(mainWindow), m_recievedCanMessages()
+CanTab::CanTab(MainWindow *mainWindow) : QObject(mainWindow), m_mainWindow(mainWindow), m_recievedCanMessages(), m_isActivated(false)
 {
     m_creationTime = QDateTime::currentDateTime();
 
@@ -382,7 +382,10 @@ void CanTab::updateTableEntry(QTableWidget* table, const QByteArray &data, bool 
  */
 void CanTab::canMessageReceived(const QByteArray &data)
 {
-    m_recievedCanMessages.append(data);
+    if(m_isActivated)
+    {
+        m_recievedCanMessages.append(data);
+    }
 }
 
 /**
@@ -392,7 +395,7 @@ void CanTab::canMessageReceived(const QByteArray &data)
  */
 void CanTab::canMessageTransmitted(const QByteArray &data)
 {
-    if(m_mainWindow->m_userInterface->pcanUpdateTransmitTableCheckBox->isChecked())
+    if(m_mainWindow->m_userInterface->pcanUpdateTransmitTableCheckBox->isChecked() && m_isActivated)
     {
         updateTableEntry(m_mainWindow->m_userInterface->canTransmitTableWidget, data, false);
     }

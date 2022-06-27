@@ -2623,6 +2623,7 @@ void MainWindow::inititializeTab(void)
         {
             m_userInterface->tabWidget->addTab(m_userInterface->tabCan, "Can");
         }
+        m_canTab->setActivated(currentSettings->showCanTab);
 
         //Add all script tabs.
         QMap<QWidget*, QObject*>::iterator i;
