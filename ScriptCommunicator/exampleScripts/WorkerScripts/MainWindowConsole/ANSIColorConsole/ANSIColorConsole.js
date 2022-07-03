@@ -67,7 +67,7 @@ function addDataToConsole(data, fontColor)
 	if(g_settings.createNewLineAtByte)
 	{
 		//Replace the new line bytes.
-		stringToAdd = stringToAdd.replace(newLineAtByte, "<br>" + newLineAtByte)
+		stringToAdd = stringToAdd.replace(RegExp(newLineAtByte, 'g'), "<br>" + newLineAtByte)
 	}
 	
 	if(g_settings.ceateTimestampAtByte)
@@ -93,7 +93,7 @@ function addDataToConsole(data, fontColor)
 	
 	if(g_settings.createNewLineAtByte)
 	{
-		stringToAdd = stringToAdd.replace(newLineAtByte, "");
+		stringToAdd = stringToAdd.replace(RegExp(newLineAtByte, 'g'), "")
 	}
 
 	UI_TextEdit1.insertHtml(stringToAdd);	

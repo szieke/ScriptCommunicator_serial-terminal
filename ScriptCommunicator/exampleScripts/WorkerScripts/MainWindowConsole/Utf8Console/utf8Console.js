@@ -54,7 +54,7 @@ function addDataToConsole(data, fontColor)
 	{
 		
 		//Replace the new line bytes.
-		stringToAdd = stringToAdd.replace(newLineAtByte, "<br>" + newLineAtByte)
+		stringToAdd = stringToAdd.replace(RegExp(newLineAtByte, 'g'), "<br>" + newLineAtByte)
 
 	}
 	
@@ -78,7 +78,7 @@ function addDataToConsole(data, fontColor)
 	
 	if(g_settings.createNewLineAtByte)
 	{
-		stringToAdd = stringToAdd.replace(newLineAtByte, "");
+		stringToAdd = stringToAdd.replace(RegExp(newLineAtByte, 'g'), "")
 	}
 	
 
