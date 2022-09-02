@@ -3742,6 +3742,9 @@ void MainWindow::openScriptEditor(QStringList arguments, const Settings* current
 
 /**
  * Limits the number of char in the given text edit to the value of maxChars.
+ *
+ * IMPORTANT!!! To prevent memory consumption the undoRedoEnbale and acceptRichText properties of the QTextEdit must be disabled (in the designer).
+ *
  * @param textEdit
  *      The text edit.
  * @param maxChars
