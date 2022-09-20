@@ -72,7 +72,7 @@ function addDataToConsole(data, fontColor)
 	
 	if(g_settings.ceateTimestampAtByte)
 	{
-		var timeAtByte = "\n"//String.fromCharCode(g_settings.timestampAtByte);
+		var timeAtByte = String.fromCharCode(g_settings.timestampAtByte);
 		var list = stringToAdd.split(timeAtByte);
 		stringToAdd = "";
 		for(var i = 0; i < list.length; i++)
