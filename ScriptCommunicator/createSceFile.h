@@ -175,4 +175,5 @@ private:
     QString m_configFileName;
 };
 
+
 #endif // CREATESCEFILE_H
