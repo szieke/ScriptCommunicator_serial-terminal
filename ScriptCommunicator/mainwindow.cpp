@@ -1671,7 +1671,18 @@ bool MainWindow::loadSettings()
                         currentSettings.consoleTimestampFormat = currentSettings.consoleTimestampFormat.isEmpty() ? " \\nyyyy-MM-dd hh:mm:ss.zzz\\n" : currentSettings.consoleTimestampFormat;
                         currentSettings.consoleCreateTimestampAtEnabled = node.attributes().namedItem("consoleCreateTimestampAt").nodeValue().toUInt();
                         currentSettings.consoleDecimalsType = (DecimalType)node.attributes().namedItem("consoleDecimalsType").nodeValue().toUInt();
-                        currentSettings.useDarkStyle = (bool)node.attributes().namedItem("useDarkStyle").nodeValue().toUInt();
+
+                        if(node.attributes().contains("useDarkStyle"))
+                        {
+                            currentSettings.useDarkStyle = (bool)node.attributes().namedItem("useDarkStyle").nodeValue().toUInt();
+                        }
+                        else
+                        {
+                            currentSettings.useDarkStyle = 1;
+                            currentSettings.consoleBackgroundColor = "000000";
+                            currentSettings.consoleReceiveColor = "00ff00";
+                            currentSettings.consoleSendColor = "ff0000";
+                        }
 
                         if(node.attributes().namedItem("appFontSize").nodeValue() != "")
                         {
