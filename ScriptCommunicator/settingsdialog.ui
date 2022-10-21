@@ -3017,7 +3017,7 @@ for TCP clients.</string>
                 </size>
                </property>
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;time stamp format ('optinal new lines (\n)' date and time format (chapter Time format and Date format in the manual) 'optional new lines (\n)'&lt;/p&gt;&lt;p&gt;Example:&lt;/p&gt;&lt;p&gt;\nyyyy-MM-dd hh:mm:ss.zzz\n&lt;/p&gt;&lt;p&gt;Example without date and with spaces in front of the time stamp:&lt;/p&gt;&lt;p&gt;\n       hh:mm:ss\n&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;time stamp format ('optional new lines (\n)' date and time format (chapter Time format and Date format in the manual) 'optional new lines (\n)'&lt;/p&gt;&lt;p&gt;Example:&lt;/p&gt;&lt;p&gt;\nyyyy-MM-dd hh:mm:ss.zzz\n&lt;/p&gt;&lt;p&gt;Example without date and with a space in front of the time stamp:&lt;/p&gt;&lt;p&gt;\n hh:mm:ss\n&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>\nyyyy-MM-dd hh:mm:ss.zzz\n</string>
@@ -4354,8 +4354,7 @@ in the log, the decimal console and the send window)</string>
          </size>
         </property>
         <property name="toolTip">
-         <string>endianess of the connected device (is used to interpret the decimals
-in the log, the decimal console and the send window)</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;endianess of the connected device (is used to interpret the decimals&lt;/p&gt;&lt;p&gt;in the log, in the decimal console and in the send window)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="sizeAdjustPolicy">
          <enum>QComboBox::AdjustToContents</enum>
