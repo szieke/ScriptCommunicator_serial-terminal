@@ -460,6 +460,11 @@ void ScriptSlots::setWindowPositionAndSizeSlot(QString positionAndSize, QWidget*
     QStringList list = positionAndSize.split(",");
     QRect rect(QPoint(list[0].toInt(), list[1].toInt()), QSize(list[2].toInt(), list[3].toInt()));
 
+    if(QGuiApplication::screenAt(QPoint(list[0].toInt(),list[1].toInt())) == nullptr)
+    {//The position is not valid.
+        rect.setX(0);
+        rect.setY(0);
+    }
     MainWindow::setWindowPositionAndSize(widget, rect);
 }
 

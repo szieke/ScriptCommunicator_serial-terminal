@@ -735,7 +735,6 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     {
         setMainWindowAndTaskBarIconSlot(iconFile);
     }
-
 }
 
 
@@ -1870,12 +1869,17 @@ bool MainWindow::loadSettings()
                     if(!nodeList.isEmpty())
                     {
                         QDomNode node = nodeList.at(0);
-
                         QRect rect;
-                        rect.setLeft(node.attributes().namedItem("left").nodeValue().toInt());
-                        rect.setTop(node.attributes().namedItem("top").nodeValue().toInt());
                         rect.setWidth(node.attributes().namedItem("width").nodeValue().toInt());
                         rect.setHeight(node.attributes().namedItem("height").nodeValue().toInt());
+
+                        if(QGuiApplication::screenAt(QPoint(node.attributes().namedItem("left").nodeValue().toInt(),
+                                                         node.attributes().namedItem("top").nodeValue().toInt())) != nullptr)
+                        {//The position is valid.
+
+                            rect.setLeft(node.attributes().namedItem("left").nodeValue().toInt());
+                            rect.setTop(node.attributes().namedItem("top").nodeValue().toInt());
+                        }
                         setWindowPositionAndSize(this, rect);
 
 
@@ -2044,11 +2048,16 @@ bool MainWindow::loadSettings()
                     {
                         QDomNode node = nodeList.at(0);
                         QRect rect;
-                        rect.setLeft(node.attributes().namedItem("left").nodeValue().toInt());
-                        rect.setTop(node.attributes().namedItem("top").nodeValue().toInt());
                         rect.setWidth(node.attributes().namedItem("width").nodeValue().toInt());
                         rect.setHeight(node.attributes().namedItem("height").nodeValue().toInt());
 
+                        if(QGuiApplication::screenAt(QPoint(node.attributes().namedItem("left").nodeValue().toInt(),
+                                                         node.attributes().namedItem("top").nodeValue().toInt())) != nullptr)
+                        {//The position is valid.
+
+                            rect.setLeft(node.attributes().namedItem("left").nodeValue().toInt());
+                            rect.setTop(node.attributes().namedItem("top").nodeValue().toInt());
+                        }
                         setWindowPositionAndSize(m_sendWindow, rect);
                         m_sendWindowPositionAndSizeloaded = true;
 
@@ -2063,12 +2072,17 @@ bool MainWindow::loadSettings()
                     {
                         QDomNode node = nodeList.at(0);
                         QRect rect;
-                        rect.setLeft(node.attributes().namedItem("left").nodeValue().toInt());
-                        rect.setTop(node.attributes().namedItem("top").nodeValue().toInt());
                         rect.setWidth(node.attributes().namedItem("width").nodeValue().toInt());
                         rect.setHeight(node.attributes().namedItem("height").nodeValue().toInt());
                         currentSettings.settingsDialogTabIndex = node.attributes().namedItem("settingsDialogTabIndex").nodeValue().toUInt();
 
+                        if(QGuiApplication::screenAt(QPoint(node.attributes().namedItem("left").nodeValue().toInt(),
+                                                         node.attributes().namedItem("top").nodeValue().toInt())) != nullptr)
+                        {//The position is valid.
+
+                            rect.setLeft(node.attributes().namedItem("left").nodeValue().toInt());
+                            rect.setTop(node.attributes().namedItem("top").nodeValue().toInt());
+                        }
                         setWindowPositionAndSize(m_settingsDialog, rect);
 
                         showSettingWindow = (node.attributes().namedItem("visible").nodeValue() == "1") ? true : false;
@@ -2115,11 +2129,16 @@ bool MainWindow::loadSettings()
                     {
                         QDomNode node = nodeList.at(0);
                         QRect rect;
-                        rect.setLeft(node.attributes().namedItem("left").nodeValue().toInt());
-                        rect.setTop(node.attributes().namedItem("top").nodeValue().toInt());
                         rect.setWidth(node.attributes().namedItem("width").nodeValue().toInt());
                         rect.setHeight(node.attributes().namedItem("height").nodeValue().toInt());
 
+                        if(QGuiApplication::screenAt(QPoint(node.attributes().namedItem("left").nodeValue().toInt(),
+                                                         node.attributes().namedItem("top").nodeValue().toInt())) != nullptr)
+                        {//The position is valid.
+
+                            rect.setLeft(node.attributes().namedItem("left").nodeValue().toInt());
+                            rect.setTop(node.attributes().namedItem("top").nodeValue().toInt());
+                        }
                         setWindowPositionAndSize(m_scriptWindow, rect);
                         m_scriptWindowPositionAndSizeloaded = true;
 
@@ -2184,10 +2203,16 @@ bool MainWindow::loadSettings()
 
                         Ui::CreateSceFile* windowUi = m_scriptWindow->getCreateSceFileDialog()->getUI();
                         QRect rect;
-                        rect.setLeft(node.attributes().namedItem("left").nodeValue().toInt());
-                        rect.setTop(node.attributes().namedItem("top").nodeValue().toInt());
                         rect.setWidth(node.attributes().namedItem("width").nodeValue().toInt());
                         rect.setHeight(node.attributes().namedItem("height").nodeValue().toInt());
+
+                        if(QGuiApplication::screenAt(QPoint(node.attributes().namedItem("left").nodeValue().toInt(),
+                                                         node.attributes().namedItem("top").nodeValue().toInt())) != nullptr)
+                        {//The position is valid.
+
+                            rect.setLeft(node.attributes().namedItem("left").nodeValue().toInt());
+                            rect.setTop(node.attributes().namedItem("top").nodeValue().toInt());
+                        }
                         setWindowPositionAndSize(m_scriptWindow->getCreateSceFileDialog(), rect);
                         m_scriptWindow->getCreateSceFileDialog()->setConfigFileName(node.attributes().namedItem("configFileName").nodeValue());
 
