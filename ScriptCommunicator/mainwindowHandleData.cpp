@@ -39,8 +39,8 @@ MainWindowHandleData::~MainWindowHandleData()
 
 
 /**
- * The function append the received/send data to the consoles and the logs.
- * This function is called periodically (log update interval).
+ * This function appends the received/send data to the consoles and the logs.
+ * It is called periodically (log update interval).
  */
 void MainWindowHandleData::updateConsoleAndLog(void)
 {
@@ -1069,8 +1069,8 @@ void MainWindowHandleData::appendDataToLog(const QByteArray &data, bool isSend, 
 }
 
 /**
- * The slot is called if the main interface thread has received can messages.
- * This slot is connected to the MainInterfaceThread::canMessageReceivedSignal signal.
+ * This slot is called if the main interface thread has received can messages.
+ * It is connected to the MainInterfaceThread::canMessageReceivedSignal signal.
  * @param data
  *      The received data.
  */
@@ -1088,8 +1088,8 @@ void MainWindowHandleData::dataReceivedSlot(QByteArray data)
 }
 
 /**
- * The slot is called if the main interface thread has received CAN messages..
- * This slot is connected to the MainInterfaceThread::dataReceivedSignal signal.
+ * This slot is called if the main interface thread has received CAN messages..
+ * It slot is connected to the MainInterfaceThread::dataReceivedSignal signal.
  * @param messages
  *      The received messages.
  */
@@ -1106,8 +1106,8 @@ void MainWindowHandleData::canMessagesReceivedSlot(QVector<QByteArray> messages)
 }
 
 /**
- * The slot is called if the main interface thread has send data.
- * This slot is connected to the MainInterfaceThread::sendingFinishedSignal signal.
+ * This slot is called if the main interface thread has send data.
+ * It is connected to the MainInterfaceThread::sendingFinishedSignal signal.
  * @param data
  *      The send data
  * @param success

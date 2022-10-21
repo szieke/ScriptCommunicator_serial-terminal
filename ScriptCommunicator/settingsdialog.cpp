@@ -1272,7 +1272,6 @@ void SettingsDialog::closeButtonPressed()
 {
     updateSettings();
     hide();
-    emit configHasToBeSavedSignal();
 }
 
 /**

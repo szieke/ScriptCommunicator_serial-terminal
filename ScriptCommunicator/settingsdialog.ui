@@ -3027,7 +3027,7 @@ for TCP clients.</string>
              <item row="4" column="3" colspan="3">
               <widget class="QComboBox" name="consoleI2cMetadata">
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;show I2C master meta information (address &amp;amp; flags) in consoles&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;show I2C master meta information (address &amp;amp; flags) in the consoles&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <item>
                 <property name="text">
@@ -3465,7 +3465,7 @@ for TCP clients.</string>
               <item row="3" column="0" colspan="2">
                <widget class="QComboBox" name="logI2cMetadata">
                 <property name="toolTip">
-                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;show I2C master meta information (address &amp;amp; flags) in consoles&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;show I2C master meta information (address &amp;amp; flags) in the consoles&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <item>
                  <property name="text">
