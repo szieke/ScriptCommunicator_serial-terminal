@@ -39,7 +39,7 @@ scriptThread::showFileDialog(bool isSaveDialog, String caption, String dir, Stri
 scriptThread::showOpenFileNamesDialog(String caption, String dir, String filter, QWidget* parent=0):Array<String> \nShows a file dialog for selecting one or more existing files (QFileDialog::getOpenFileNames).
 scriptThread::showDirectoryDialog(String caption, String dir, QWidget* parent=0):String \nWrapper for QFileDialog::getExistingDirectory.
 scriptThread::messageBox(String icon, String title, String text, QWidget* parent=0):void \nShows a message box. Possible values for icon:\n- 'Information'\n- 'Warning'\n- 'Critical'\n- 'Question'
-scriptThread::showYesNoDialog(String icon, String title, String text, QWidget* parent=0):bool \nShows a yes/no dialog.
+scriptThread::showYesNoDialog(String icon, String title, String text, QWidget* parent=0):bool \nShows a yes/no dialog. Possible values for icon:\n- 'Information'\n- 'Warning'\n- 'Critical'\n- 'Question'
 scriptThread::showTextInputDialog(String title, String label, String displayedText="", QWidget* parent=0):String \nscriptThreadenience function to get a string from the user.\nShows a QInputDialog::getText dialog (line edit).
 scriptThread::showMultiLineTextInputDialog(String title, String label, String displayedText="", QWidget* parent=0):String \nscriptThreadenience function to get a multiline string from the user.\nShows a QInputDialog::getMultiLineText dialog (plain text edit).
 scriptThread::showGetItemDialog(String title, String label, Array<String> displayedItems, Number currentItemIndex=0, bool editable=false, QWidget* parent=0):String \nscriptThreadenience function to let the user select an item from a string list.\nShows a QInputDialog::getItem dialog (combobox).
