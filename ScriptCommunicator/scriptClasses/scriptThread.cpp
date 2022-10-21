@@ -1352,6 +1352,7 @@ void ScriptThread::stopScript(void)
     if(!m_shallExit)
     {
         m_shallExit = true;
+        m_scriptEngine->abortEvaluation();
         if(!m_scriptRunsInDebugger)
         {
             exit();
