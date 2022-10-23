@@ -95,7 +95,7 @@ public:
     void installAllChilds(QObject* obj, QScriptEngine* scriptEngine, bool firstObj = false);
 
     ///This function installs one (child) object. This object can be accessed from the script.
-    void installOneChild(QObject* child, QScriptEngine* scriptEngine);
+    bool installOneChild(QObject* child, QScriptEngine* scriptEngine);
 
     ///Installs one custom widget.
     void installsCustomWidget(QObject* child, QScriptEngine* scriptEngine);

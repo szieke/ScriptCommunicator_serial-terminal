@@ -391,6 +391,7 @@ void ScriptThread::run()
 
         //create the script engine
         m_scriptEngine = new QScriptEngine();
+
         ScriptMap::registerScriptMetaTypes(m_scriptEngine);
         ScriptXmlReader::registerScriptMetaTypes(m_scriptEngine);
         ScriptXmlWriter::registerScriptMetaTypes(m_scriptEngine);
@@ -431,7 +432,6 @@ void ScriptThread::run()
         m_scriptInf = new ScriptInf(this, m_settingsDialog);
         m_scriptInf->intSignals(m_scriptRunsInDebugger);
         m_scriptEngine->globalObject().setProperty("scriptInf", m_scriptEngine->newQObject(m_scriptInf));
-
 
         if(m_userInterface[0]->getWidgetPointer())
         {//the script has an user interface
@@ -541,7 +541,7 @@ void ScriptThread::run()
         }//if (loadScript(m_scriptFileName))
 
         delete m_pauseTimer;
-        delete m_scriptEngine;
+        m_scriptEngine->deleteLater();
         m_isSuspendedByDebuger = false;
 
 
@@ -692,10 +692,12 @@ void ScriptThread::installsCustomWidget(QObject* child, QScriptEngine* scriptEng
  *      The child object.
  * @param scriptEngine
  *      The script engine.
+ * @return True if hte childs of the given child must/can be installed too.
  */
-void ScriptThread::installOneChild(QObject* child, QScriptEngine* scriptEngine)
+bool ScriptThread::installOneChild(QObject* child, QScriptEngine* scriptEngine)
 {
     QString objectName = "UI_" + child->objectName();
+    bool childsOfGuiElementMustBeInstalled = true;
 
     if((QString(child->metaObject()->className()) == QString("QComboBox")) ||
             (QString(child->metaObject()->className()) == QString("QFontComboBox")))
@@ -703,12 +705,14 @@ void ScriptThread::installOneChild(QObject* child, QScriptEngine* scriptEngine)
         ScriptComboBox* element = new ScriptComboBox(static_cast<QComboBox*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QLineEdit"))
     {
         ScriptLineEdit* element = new ScriptLineEdit(static_cast<QLineEdit*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QTableWidget"))
     {
@@ -721,24 +725,28 @@ void ScriptThread::installOneChild(QObject* child, QScriptEngine* scriptEngine)
         ScriptTextEdit* element = new ScriptTextEdit(static_cast<QTextEdit*>(child), this, m_scriptWindow);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QCheckBox"))
     {
         ScriptCheckBox* element = new ScriptCheckBox(static_cast<QCheckBox*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QPushButton"))
     {
         ScriptButton* element = new ScriptButton(static_cast<QPushButton*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QToolButton"))
     {
         ScriptToolButton* element = new ScriptToolButton(static_cast<QToolButton*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QWidget"))
     {
@@ -759,24 +767,28 @@ void ScriptThread::installOneChild(QObject* child, QScriptEngine* scriptEngine)
         ScriptProgressBar* element = new ScriptProgressBar(static_cast<QProgressBar*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QLabel"))
     {
         ScriptLabel* element = new ScriptLabel(static_cast<QLabel*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QSlider"))
     {
         ScriptSlider* element = new ScriptSlider(static_cast<QAbstractSlider*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QDial"))
     {
         ScriptSlider* element = new ScriptSlider(static_cast<QAbstractSlider*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QMainWindow"))
     {
@@ -791,6 +803,7 @@ void ScriptThread::installOneChild(QObject* child, QScriptEngine* scriptEngine)
         ScriptAction* element = new ScriptAction(static_cast<QAction*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QTabWidget"))
     {
@@ -809,36 +822,42 @@ void ScriptThread::installOneChild(QObject* child, QScriptEngine* scriptEngine)
         ScriptRadioButton* element = new ScriptRadioButton(static_cast<QRadioButton*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QSpinBox"))
     {
         ScriptSpinBox* element = new ScriptSpinBox(static_cast<QSpinBox*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QDoubleSpinBox"))
     {
         ScriptDoubleSpinBox* element = new ScriptDoubleSpinBox(static_cast<QDoubleSpinBox*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QTimeEdit"))
     {
         ScriptTimeEdit* element = new ScriptTimeEdit(static_cast<QTimeEdit*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QDateEdit"))
     {
         ScriptDateEdit* element = new ScriptDateEdit(static_cast<QDateEdit*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QDateTimeEdit"))
     {
         ScriptDateTimeEdit* element = new ScriptDateTimeEdit(static_cast<QDateTimeEdit*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QListWidget"))
     {
@@ -869,6 +888,7 @@ void ScriptThread::installOneChild(QObject* child, QScriptEngine* scriptEngine)
         ScriptCalendarWidget* element = new ScriptCalendarWidget(static_cast<QCalendarWidget*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QTableView"))
     {
@@ -933,6 +953,8 @@ void ScriptThread::installOneChild(QObject* child, QScriptEngine* scriptEngine)
         installsCustomWidget(child, scriptEngine);
     }
 
+    return childsOfGuiElementMustBeInstalled;
+
 }
 
 
@@ -950,13 +972,15 @@ void ScriptThread::installAllChilds(QObject* obj, QScriptEngine* scriptEngine, b
     if(firstObj)
     {
         //the first object is the dialog
-        installOneChild(obj, scriptEngine);
+        (void)installOneChild(obj, scriptEngine);
 
     }
     for(auto child : obj->children())
     {
-        installOneChild(child, scriptEngine);
-        installAllChilds(child,scriptEngine);
+        if(installOneChild(child, scriptEngine))
+        {
+            installAllChilds(child,scriptEngine);
+        }
 
     }
 }
@@ -2135,6 +2159,7 @@ bool ScriptThread::loadUserInterfaceFile(QString path, bool isRelativePath, bool
         {
             m_userInterface.push_back(newElement);
         }
+
 
         //install all elements from the script user interface
         installAllChilds(ui, m_scriptEngine, true);
