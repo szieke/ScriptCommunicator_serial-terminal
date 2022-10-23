@@ -295,6 +295,7 @@ void MainWindow::clearCurrentIndicator(void)
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex())->layout()->itemAt(0)->widget());
         textEditor->removeUndlineFromWordWhichCanBeClicked();
     }
+    m_indicatorClickTimer.stop();
 }
 
 /**
@@ -2103,7 +2104,7 @@ void MainWindow::zoomOutSlot()
 void MainWindow::zoomInSlot()
 {
     m_currentFont.setPointSize(m_currentFont.pointSize() + 1);
-    for(quint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+    for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
     {
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
         textEditor->lexer()->setFont(m_currentFont, -1);
@@ -2135,18 +2136,7 @@ void MainWindow::uiViewDoubleClicked(QTreeWidgetItem* item, int column)
             if(!checkIfDocumentAlreadyLoaded(entry->uiFile, index))
             {//The ui file is not already loaded.
 
-                int ret = QMessageBox::question(this, tr("Edit user interface"), "Edit " + strippedName(entry->uiFile) + " in text mode?",
-                                               QMessageBox::Yes | QMessageBox::Default,
-                                               QMessageBox::No);
-
-                if (ret == QMessageBox::Yes)
-                {
-                    addTab(entry->uiFile, true);
-                }
-                else
-                {
-                    startDesigner(entry->uiFile);
-                }
+                addTab(entry->uiFile, true);
             }
 
 
