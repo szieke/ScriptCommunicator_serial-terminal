@@ -857,6 +857,9 @@ private:
     ///True if qRegisterMetaType was already called in ScriptWidget constructor.
     bool m_registerMetaTypeCalledinScriptWidget;
 
+    ///True if a script is loading.
+    bool m_scriptIsLoading;
+
 };
 
 #endif // SCRIPTTHREAD_H

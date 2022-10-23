@@ -110,7 +110,7 @@ ScriptThread::ScriptThread(ScriptWindow* scriptWindow, quint32 sendId, QString s
     m_shallExit(false), m_shallPause(false) ,m_scriptRunsInDebugger(scriptRunsInDebugger), m_state(INVALID),
     m_pauseTimer(0),m_scriptEngine(0), m_settingsDialog(settingsDialog), m_scriptSql(), m_blockTime(DEFAULT_BLOCK_TIME),
     m_standardDialogs(0), m_scriptFileObject(0), m_isSuspendedByDebuger(false), m_debugger(0), m_debugWindow(0), m_hasMainWindowGuiElements(false),
-    m_libraries(0), m_scriptInf(0), m_registerMetaTypeCalledinScriptWidget(false)
+    m_libraries(0), m_scriptInf(0), m_registerMetaTypeCalledinScriptWidget(false), m_scriptIsLoading(false)
 {
     m_scriptWindow = scriptWindow;
 
@@ -1317,7 +1317,10 @@ bool ScriptThread::loadScript(QString scriptPath, bool isRelativePath)
 {
     QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
     bool scriptShallBeStopped = false;
+
+    m_scriptIsLoading = true;
     bool result =  m_scriptFileObject->loadScript(scriptPath, isRelativePath, m_scriptEngine, parent, m_scriptWindow, true, &scriptShallBeStopped);
+    m_scriptIsLoading = false;
 
     if(!result && scriptShallBeStopped)
     {
@@ -1372,11 +1375,13 @@ void ScriptThread::terminateScriptThread(void)
  */
 void ScriptThread::stopScript(void)
 {
-
     if(!m_shallExit)
     {
         m_shallExit = true;
-        m_scriptEngine->abortEvaluation();
+        if(m_scriptIsLoading)
+        {
+            m_scriptEngine->abortEvaluation();
+        }
         if(!m_scriptRunsInDebugger)
         {
             exit();
