@@ -1881,6 +1881,7 @@ bool MainWindow::loadSettings()
                     {
                         QDomNode node = nodeList.at(0);
                         QRect rect;
+
                         rect.setWidth(node.attributes().namedItem("width").nodeValue().toInt());
                         rect.setHeight(node.attributes().namedItem("height").nodeValue().toInt());
 
@@ -1893,6 +1894,11 @@ bool MainWindow::loadSettings()
                         }
                         setWindowPositionAndSize(this, rect);
 
+                        QString geometryValue = node.attributes().namedItem("geometry").nodeValue();
+                        if(geometryValue != "")
+                        {
+                            restoreGeometry(QByteArray().fromHex(geometryValue.toUtf8()));
+                        }
 
                         QString splitterSizes = node.attributes().namedItem("splitterSizes").nodeValue();
                         if(splitterSizes.size() > 0)
@@ -2059,6 +2065,7 @@ bool MainWindow::loadSettings()
                     {
                         QDomNode node = nodeList.at(0);
                         QRect rect;
+
                         rect.setWidth(node.attributes().namedItem("width").nodeValue().toInt());
                         rect.setHeight(node.attributes().namedItem("height").nodeValue().toInt());
 
@@ -2070,6 +2077,12 @@ bool MainWindow::loadSettings()
                             rect.setTop(node.attributes().namedItem("top").nodeValue().toInt());
                         }
                         setWindowPositionAndSize(m_sendWindow, rect);
+                        QString geometryValue = node.attributes().namedItem("geometry").nodeValue();
+                        if(geometryValue != "")
+                        {
+                            m_sendWindow->restoreGeometry(QByteArray().fromHex(geometryValue.toUtf8()));
+                        }
+
                         m_sendWindowPositionAndSizeloaded = true;
 
                         showSendWindow = (node.attributes().namedItem("visible").nodeValue() == "1") ? true : false;
@@ -2083,6 +2096,7 @@ bool MainWindow::loadSettings()
                     {
                         QDomNode node = nodeList.at(0);
                         QRect rect;
+
                         rect.setWidth(node.attributes().namedItem("width").nodeValue().toInt());
                         rect.setHeight(node.attributes().namedItem("height").nodeValue().toInt());
                         currentSettings.settingsDialogTabIndex = node.attributes().namedItem("settingsDialogTabIndex").nodeValue().toUInt();
@@ -2095,6 +2109,12 @@ bool MainWindow::loadSettings()
                             rect.setTop(node.attributes().namedItem("top").nodeValue().toInt());
                         }
                         setWindowPositionAndSize(m_settingsDialog, rect);
+
+                        QString geometryValue = node.attributes().namedItem("geometry").nodeValue();
+                        if(geometryValue != "")
+                        {
+                            m_settingsDialog->restoreGeometry(QByteArray().fromHex(geometryValue.toUtf8()));
+                        }
 
                         showSettingWindow = (node.attributes().namedItem("visible").nodeValue() == "1") ? true : false;
 
@@ -2140,6 +2160,7 @@ bool MainWindow::loadSettings()
                     {
                         QDomNode node = nodeList.at(0);
                         QRect rect;
+
                         rect.setWidth(node.attributes().namedItem("width").nodeValue().toInt());
                         rect.setHeight(node.attributes().namedItem("height").nodeValue().toInt());
 
@@ -2151,6 +2172,13 @@ bool MainWindow::loadSettings()
                             rect.setTop(node.attributes().namedItem("top").nodeValue().toInt());
                         }
                         setWindowPositionAndSize(m_scriptWindow, rect);
+
+                        QString geometryValue = node.attributes().namedItem("geometry").nodeValue();
+                        if(geometryValue != "")
+                        {
+                            m_scriptWindow->restoreGeometry(QByteArray().fromHex(geometryValue.toUtf8()));
+                        }
+
                         m_scriptWindowPositionAndSizeloaded = true;
 
                         scriptWindowIsVisible = (node.attributes().namedItem("visible").nodeValue() == "1") ? true : false;
@@ -2922,6 +2950,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("top"), QString("%1").arg(rect.top())),
                  std::make_pair(QString("width"), QString("%1").arg(rect.width())),
                  std::make_pair(QString("height"), QString("%1").arg(rect.height())),
+                 std::make_pair(QString("geometry"), saveGeometry().toHex()),
                  std::make_pair(QString("splitterSizes"), QString("%1:%2").arg(splitterSizes[0]).arg(splitterSizes[1])),
                  std::make_pair(QString("sendAreaSplitterSizes"), QString("%1:%2").arg(sendAreaSplitterSizes[0]).arg(sendAreaSplitterSizes[1])),
                  std::make_pair(QString("sendAreaInputsSplitterSizes"), QString("%1:%2").arg(sendAreaInputsSplitterSizes[0]).arg(sendAreaInputsSplitterSizes[1])),
@@ -2939,6 +2968,20 @@ void MainWindow::saveSettings()
 
                 };
                 writeXmlElement(xmlWriter, "mainWindowPositionAndSize", settingsMap);
+
+                QSettings qsettings( "iforce2d", "killerapp" );
+
+                    qsettings.beginGroup( "mainwindow" );
+
+                    qsettings.setValue( "geometry", saveGeometry() );
+                    //qsettings.setValue( "savestate", saveState() );
+                    qsettings.setValue( "maximized", isMaximized() );
+                    if ( !isMaximized() ) {
+                        qsettings.setValue( "pos", pos() );
+                        qsettings.setValue( "size", size() );
+                    }
+
+                    qsettings.endGroup();
             }
             {//send window
                 QList<int> windowSplitterSizes = m_sendWindow->getWindowSplitter()->sizes();
@@ -2973,6 +3016,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("top"), QString("%1").arg(rect.top())),
                  std::make_pair(QString("width"), QString("%1").arg(rect.width())),
                  std::make_pair(QString("height"), QString("%1").arg(rect.height())),
+                 std::make_pair(QString("geometry"), m_sendWindow->saveGeometry().toHex()),
                  std::make_pair(QString("visible"), QString("%1").arg(m_sendWindow->isVisible()))
                 };
                 writeXmlElement(xmlWriter, "sendWindowPositionAndSize", settingsMap);
@@ -2987,6 +3031,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("top"), QString("%1").arg(rect.top())),
                  std::make_pair(QString("width"), QString("%1").arg(rect.width())),
                  std::make_pair(QString("height"), QString("%1").arg(rect.height())),
+                 std::make_pair(QString("geometry"), m_settingsDialog->saveGeometry().toHex()),
                  std::make_pair(QString("visible"), QString("%1").arg(m_settingsDialog->isVisible())),
                  std::make_pair(QString("settingsDialogTabIndex"), QString("%1").arg(currentSettings->settingsDialogTabIndex))
                 };
@@ -3013,6 +3058,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("top"), QString("%1").arg(rect.top())),
                  std::make_pair(QString("width"), QString("%1").arg(rect.width())),
                  std::make_pair(QString("height"), QString("%1").arg(rect.height())),
+                 std::make_pair(QString("geometry"), m_scriptWindow->saveGeometry().toHex()),
                  std::make_pair(QString("isMaximized"), QString("%1").arg(m_scriptWindow->isMaximized())),
                  std::make_pair(QString("visible"), QString("%1").arg(m_scriptWindow->isVisible()))
                 };
@@ -3069,6 +3115,7 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("top"), QString("%1").arg(rect.top())),
                  std::make_pair(QString("width"), QString("%1").arg(rect.width())),
                  std::make_pair(QString("height"), QString("%1").arg(rect.height())),
+                 std::make_pair(QString("geometry"), m_scriptWindow->getCreateSceFileDialog()->saveGeometry().toHex()),
                  std::make_pair(QString("splitterSizes"), QString("%1:%2").arg(splitterSizes[0]).arg(splitterSizes[1])),
                  std::make_pair(QString("configFileName"), m_scriptWindow->getCreateSceFileDialog()->getConfigFileName()),
                  std::make_pair(QString("visible"), QString("%1").arg(m_scriptWindow->getCreateSceFileDialog()->isVisible())),
@@ -3810,9 +3857,10 @@ void MainWindow::limtCharsInTextEdit(const QTextEdit* textEdit, const int maxCha
  */
 void MainWindow::setWindowPositionAndSize(QWidget* widget, const QRect& positionAndSize)
 {
-    widget->resize(positionAndSize.size());
     widget->move(positionAndSize.topLeft());
+    widget->resize(positionAndSize.size());
 }
+
 /**
  * Shows the number of received and sent bytes.
  */
@@ -4059,9 +4107,9 @@ void MainWindow::showAboutWindowSlot(void)
 {
 
     QString text = "author: Stefan Zieker";
-    text.append("<br>email: <a href=\"s.zieker@gmx.net\">s.zieker@gmx.net</a>");
-    text.append("<br>web1: <a href=\"https://sourceforge.net/projects/scriptcommunicator/\">https://sourceforge.net/projects/scriptcommunicator/</a>");
-    text.append("<br>web2: <a href=\"https://github.com/szieke/ScriptCommunicator_serial-terminal\">https://github.com/szieke/ScriptCommunicator_serial-terminal</a>");
+    text.append("<br>email: <a href=\"s.zieker@gmx.net\" style=\"color: #1c86ce\">s.zieker@gmx.net</a>");
+    text.append("<br>web1: <a href=\"https://sourceforge.net/projects/scriptcommunicator/\" style=\"color: #1c86ce\">https://sourceforge.net/projects/scriptcommunicator/</a>");
+    text.append("<br>web2: <a href=\"https://github.com/szieke/ScriptCommunicator_serial-terminal\" style=\"color: #1c86ce\">https://github.com/szieke/ScriptCommunicator_serial-terminal</a>");
 
     //Current version
     text.append("<br>version: " + VERSION);
