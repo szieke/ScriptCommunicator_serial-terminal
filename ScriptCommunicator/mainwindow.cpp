@@ -1599,6 +1599,7 @@ bool MainWindow::loadSettings()
 
         setWindowTitle("ScriptCommunicator " + MainWindow::VERSION + "   " + m_mainConfigFile);
 
+
         QFile settingsFile(m_mainConfigFile);
         m_settingsDialog->updateSettings();
         Settings currentSettings = *m_settingsDialog->settings();
