@@ -66,14 +66,13 @@ private slots:
     void deleteTransmitTableEntrySlot(void);
 private:
 
+    int getRowToInsert(QTableWidget* table, quint32 canId, quint32 type);
+
     ///Resizes a table.
     void resizeTable(QTableWidget* table);
 
     ///Update a table entry.
     void updateTableEntry(QTableWidget* table, const QByteArray &data, bool isReceived);
-
-    ///Sorts the can receive table entries.
-    void sortReceiveTable(QTableWidget *table);
 
     ///Deletes the selected table entries.
     void deleteSelectedEntries(QTableWidget* table);
@@ -82,7 +81,7 @@ private:
     QString typeToString(quint8 type);
 
     ///Creates a new entry in the can receive table.
-    void createNewReceiveEntry(QTableWidget *table);
+    void createNewReceiveEntry(QTableWidget *table, int row);
 
     ///User role value for the can id in the table.
     static const int  USER_ROLE_CAN_ID_IN_TABLE = Qt::UserRole + 1;

@@ -90,33 +90,34 @@ void CanTab::clearTables()
  * @param table
  *      The table.
  */
-void CanTab::createNewReceiveEntry(QTableWidget* table)
+void CanTab::createNewReceiveEntry(QTableWidget* table, int row)
 {
-    table->setRowCount(table->rowCount() + 1);
+    //table->setRowCount(table->rowCount() + 1);
+    table->insertRow(row);
 
     QTableWidgetItem* item = new QTableWidgetItem();
     item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-    table->setItem(table->rowCount()- 1, RECEIVE_TABLE_ID_COLUMN, item);
+    table->setItem(row, RECEIVE_TABLE_ID_COLUMN, item);
 
     item = new QTableWidgetItem();
     item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-    table->setItem(table->rowCount()- 1, RECEIVE_TABLE_TYPE_COLUMN, item);
+    table->setItem(row, RECEIVE_TABLE_TYPE_COLUMN, item);
 
     item = new QTableWidgetItem();
     item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-    table->setItem(table->rowCount()- 1, RECEIVE_TABLE_DLC_COLUMN, item);
+    table->setItem(row, RECEIVE_TABLE_DLC_COLUMN, item);
 
     item = new QTableWidgetItem();
     item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-    table->setItem(table->rowCount()- 1, RECEIVE_TABLE_DATA_COLUMN, item);
+    table->setItem(row, RECEIVE_TABLE_DATA_COLUMN, item);
 
     item = new QTableWidgetItem();
     item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-    table->setItem(table->rowCount()- 1, RECEIVE_TABLE_CYCLE_COLUMN, item);
+    table->setItem(row, RECEIVE_TABLE_CYCLE_COLUMN, item);
 
     item = new QTableWidgetItem();
     item->setFlags(item->flags() ^ Qt::ItemIsEditable);
-    table->setItem(table->rowCount()- 1, RECEIVE_TABLE_COUNT_COLUMN, item);
+    table->setItem(row, RECEIVE_TABLE_COUNT_COLUMN, item);
 
 
 }
@@ -205,51 +206,27 @@ void CanTab::deleteSelectedEntries(QTableWidget* table)
     table->selectRow(table->rowCount() - 1);
 }
 
-/**
- * Sorts the can receive table entries.
- * @param table
- *      The table.
- */
-void CanTab::sortReceiveTable(QTableWidget* table)
+int CanTab::getRowToInsert(QTableWidget* table, quint32 canId, quint32 type)
 {
-     bool elementsChanged = false;
+    int rowIndex = 0;
 
-     do
-     {
-         for(int row = 0; row < (table->rowCount() - 1); row++)
-         {
-             elementsChanged = false;
-             QList<QTableWidgetItem*> rowItems1,rowItems2;
-             quint32 id1 = table->item(row, RECEIVE_TABLE_ID_COLUMN)->data(USER_ROLE_CAN_ID_IN_TABLE).toUInt();
-             quint32 id2 = table->item(row + 1, RECEIVE_TABLE_ID_COLUMN)->data(USER_ROLE_CAN_ID_IN_TABLE).toUInt();
-             quint32 type1 = table->item(row, RECEIVE_TABLE_ID_COLUMN)->data(USER_ROLE_CAN_TYPE_IN_TABLE).toUInt();
-             quint32 type2 = table->item(row + 1, RECEIVE_TABLE_ID_COLUMN)->data(USER_ROLE_CAN_TYPE_IN_TABLE).toUInt();
+    for(int row = 0; row < table->rowCount(); row++)
+    {
+        quint32 rowId = table->item(row, RECEIVE_TABLE_ID_COLUMN)->data(USER_ROLE_CAN_ID_IN_TABLE).toUInt();
+        quint32 rowType = table->item(row, RECEIVE_TABLE_ID_COLUMN)->data(USER_ROLE_CAN_TYPE_IN_TABLE).toUInt();
 
-             if((id1 > id2) || ((id1 == id2) && (type1 > type2)))
-             {
-                 elementsChanged = true;
+        if((canId < rowId) || ((canId == rowId) && (type < rowType)))
+        {
+            rowIndex = row;
+            break;
+        }
+        else
+        {
+            rowIndex = row + 1;
+        }
+    }
 
-                 //remove all cells from the two rows which position have to be swapped
-                 for (int col = 0; col < table->columnCount(); col++)
-                 {
-                     rowItems1 << table->takeItem(row, col);
-                     rowItems2 << table->takeItem(row + 1, col);
-
-                 }
-                 //insert all cells from the two rows which positions have to be swapped
-                 //at their new positions
-                 for (int cola = 0; cola < table->columnCount(); cola++)
-                 {
-                     table->setItem(row + 1, cola, rowItems1.at(cola));
-                     table->setItem(row, cola, rowItems2.at(cola));
-
-                 }
-                 break;
-             }
-         }
-
-     }while(elementsChanged);
-
+    return rowIndex;
 }
 
 /**
@@ -285,9 +262,10 @@ void CanTab::updateTableEntry(QTableWidget* table, const QByteArray &data, bool 
     if(row == -1)
     {//New item
 
+        row = getRowToInsert(table, canId, type);
         newItemInserted= true;
-        createNewReceiveEntry(table);
-        row = table->rowCount()- 1;
+        createNewReceiveEntry(table, row);
+
 
         QString idString = QString::number(canId, 16);
         QString leadingZeros;
@@ -311,7 +289,7 @@ void CanTab::updateTableEntry(QTableWidget* table, const QByteArray &data, bool 
         table->item(row, RECEIVE_TABLE_ID_COLUMN)->setText(idString);
         table->item(row, RECEIVE_TABLE_TYPE_COLUMN)->setText(typeToString(type));
 
-        table->resizeColumnsToContents();
+        //table->resizeColumnsToContents();
     }
 
     table->item(row, RECEIVE_TABLE_DLC_COLUMN)->setText(QString("%1").arg(data.length() -
@@ -364,8 +342,6 @@ void CanTab::updateTableEntry(QTableWidget* table, const QByteArray &data, bool 
 
     if(newItemInserted)
     {
-        sortReceiveTable(table);
-
         if(firstItemAdded)
         {
             table->resizeColumnsToContents();
