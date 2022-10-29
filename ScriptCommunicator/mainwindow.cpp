@@ -361,7 +361,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
     m_userInterface->setupUi(this);
 
-    m_userInterface->SendAreaSplitter->setStretchFactor(0, 6);
+    m_userInterface->SendAreaSplitter->setStretchFactor(0, 8);
     m_userInterface->SendAreaSplitter->setStretchFactor(1, 1);
 
     m_userInterface->SendAreaInputsSplitter->setStretchFactor(0, 1);
