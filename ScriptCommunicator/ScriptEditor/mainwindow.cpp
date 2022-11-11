@@ -1597,24 +1597,18 @@ QMap<QString, bool> MainWindow::getAllIncludedScripts(int tabIndex)
 
                     int startIndex = script.indexOf("(", 0);
                     script.remove(0, startIndex + 1);
+                    script.remove('"');
+                    script.remove("'");
+                    QStringList list = script.split(",");
 
-                    if(script.contains("\"") || script.contains("'"))
+                    if(list.count() > 1)
                     {
-                        script.remove('"');
-                        script.remove("'");
-                        QStringList list = script.split(",");
-
-                        if(list.count() > 1)
-                        {
-                            result[list[0]] = list[1].contains("true") ? true : false;
-                        }
-                        else
-                        {
-                            result[list[0]] = true;
-                        }
+                        result[list[0]] = list[1].contains("true") ? true : false;
                     }
-
-
+                    else
+                    {
+                        result[list[0]] = true;
+                    }
                 }
                 index++;
             }
