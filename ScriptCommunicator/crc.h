@@ -35,15 +35,15 @@ public:
 
     ///Calculates a crc8 with a generic polynomial
     static quint8 calculateCrc8(const QVector<unsigned char> data,
-                                const unsigned char polynomial, const unsigned char startValue);
+                                const unsigned char polynomial, const unsigned char startValue, quint8 finalXorValue);
 
     ///Calculates a crc16.
     static quint16 calculateCrc16(const QVector<unsigned char> data,
-                              const quint16 polynomial, const unsigned char startValue);
+                              const quint16 polynomial, quint16 startValue, quint16 finalXorValue);
 
     ///Calculates a crc32.
     static quint32 calculateCrc32(const QVector<unsigned char> data,
-                              const quint32 polynomial, const unsigned char startValue);
+                              const quint32 polynomial, quint32 startValue, quint32 finalXorValue);
 
     /****************Deprecated******************************************************/
 

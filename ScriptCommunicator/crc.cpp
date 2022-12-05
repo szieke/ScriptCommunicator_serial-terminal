@@ -45,7 +45,7 @@ CRC::CRC()
  *		The calculated crc.
  */
 quint8 CRC::calculateCrc8(const QVector<unsigned char> data,
-                          const unsigned char polynomial, const unsigned char startValue)
+                          const unsigned char polynomial, const unsigned char startValue, quint8 finalXorValue)
 {
     quint8 crc = startValue;
 	
@@ -66,7 +66,7 @@ quint8 CRC::calculateCrc8(const QVector<unsigned char> data,
 		}
 	}
 	
-	return crc;	
+    return (uint8_t)(crc ^ finalXorValue);
 } 
  
 /**
@@ -81,7 +81,7 @@ quint8 CRC::calculateCrc8(const QVector<unsigned char> data,
  *		The calculated crc.
  */
 quint16 CRC::calculateCrc16(const QVector<unsigned char> data,
-                          const quint16 polynomial, const unsigned char startValue)
+                          const quint16 polynomial, quint16 startValue, quint16 finalXorValue)
 {
     quint16 crc = startValue;
 
@@ -102,7 +102,7 @@ quint16 CRC::calculateCrc16(const QVector<unsigned char> data,
         }
     }
 
-    return crc;
+    return (uint16_t)(crc ^ finalXorValue);
 }
 
 /**
@@ -117,13 +117,13 @@ quint16 CRC::calculateCrc16(const QVector<unsigned char> data,
  *		The calculated crc.
  */
 quint32 CRC::calculateCrc32(const QVector<unsigned char> data,
-                          const quint32 polynomial, const unsigned char startValue)
+                          const quint32 polynomial, quint32 startValue, quint32 finalXorValue)
 {
     quint32 crc = startValue;
 
     for( auto val: data )
     {
-        crc ^= (uint32_t)(val << 8);
+        crc ^= (uint32_t)(val << 24);
 
         for( qint32 i = 0; i < CHAR_BIT; ++i )
         {
@@ -138,7 +138,7 @@ quint32 CRC::calculateCrc32(const QVector<unsigned char> data,
         }
     }
 
-    return crc;
+    return (uint32_t)(crc ^ finalXorValue);
 }
  
  
