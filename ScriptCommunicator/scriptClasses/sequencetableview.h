@@ -123,17 +123,17 @@ public:
 
     ///Calculates a crc8 with a given polynomial.
     Q_INVOKABLE static quint8 calculateCrc8WithPolynomial(const QVector<unsigned char> data, const unsigned char polynomial, const unsigned char startValue=0xff,
-                                                          quint8 finalXorValue = 0xff)
+                                                          quint8 finalXorValue = 0)
                 {return CRC::calculateCrc8(data, polynomial, startValue, finalXorValue);}
 
     ///Calculates a crc16 with a given polynomial.
     Q_INVOKABLE static quint16 calculateCrc16WithPolynomial(const QVector<unsigned char> data, const quint16 polynomial, quint16 startValue=0xffff,
-                                                            quint16 finalXorValue = 0xffff)
+                                                            quint16 finalXorValue = 0)
                 {return CRC::calculateCrc16(data, polynomial, startValue, finalXorValue);}
 
     ///Calculates a crc32 with a given polynomial.
     Q_INVOKABLE static quint32 calculateCrc32WithPolynomial(const QVector<unsigned char> data, const quint32 polynomial, quint32 startValue= 0xffffffff,
-                                                            quint32 finalXorValue = 0xffffffff)
+                                                            quint32 finalXorValue = 0)
                 {return CRC::calculateCrc32(data, polynomial, startValue, finalXorValue);}
 
     /****************Deprecated******************************************************/
