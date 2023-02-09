@@ -2979,19 +2979,6 @@ void MainWindow::saveSettings()
                 };
                 writeXmlElement(xmlWriter, "mainWindowPositionAndSize", settingsMap);
 
-                QSettings qsettings( "iforce2d", "killerapp" );
-
-                    qsettings.beginGroup( "mainwindow" );
-
-                    qsettings.setValue( "geometry", saveGeometry() );
-                    //qsettings.setValue( "savestate", saveState() );
-                    qsettings.setValue( "maximized", isMaximized() );
-                    if ( !isMaximized() ) {
-                        qsettings.setValue( "pos", pos() );
-                        qsettings.setValue( "size", size() );
-                    }
-
-                    qsettings.endGroup();
             }
             {//send window
                 QList<int> windowSplitterSizes = m_sendWindow->getWindowSplitter()->sizes();
