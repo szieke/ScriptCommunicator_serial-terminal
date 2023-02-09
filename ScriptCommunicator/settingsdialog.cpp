@@ -603,7 +603,6 @@ void SettingsDialog::setEditableComboBoxStyleSheet(QComboBox* comboBox)
  */
 void SettingsDialog::setStyleCheckBoxPressedSlot(bool isChecked)
 {
-    m_userInterface->useDarkStyleCheckBox->blockSignals(true);
     setEditableComboBoxStyleSheet(m_userInterface->consoleNewLineAt);
     setEditableComboBoxStyleSheet(m_userInterface->logNewLineAt);
     setEditableComboBoxStyleSheet(m_userInterface->baudRateBox);
@@ -628,6 +627,7 @@ void SettingsDialog::setStyleCheckBoxPressedSlot(bool isChecked)
  */
 void SettingsDialog::setUseDarkStyle(bool useDarkStyle)
 {
+    m_userInterface->useDarkStyleCheckBox->blockSignals(true);
     m_userInterface->useDarkStyleCheckBox->setChecked(useDarkStyle);
     m_userInterface->useDarkStyleCheckBox->blockSignals(false);
 }
