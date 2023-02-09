@@ -559,6 +559,8 @@ void SettingsDialog::appFontSizeChangedSlot(QString)
     setStyleCheckBoxPressedSlot(m_userInterface->useDarkStyleCheckBox->isChecked());
 }
 
+
+
 /**
  * Sets the style sheet of an editable combo box.
  */
@@ -1157,6 +1159,16 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     {
         appFontSizeChangedSlot(settings.appFontSize);
     }
+}
+
+/**
+ * Is called if the user clicks a socket proxy radio button.
+ */
+void SettingsDialog::socketProxyRadioButtonClickedSlot(void)
+{
+    initializeInterfaceTabs();
+    updateSettings();
+    emit configHasToBeSavedSignal();
 }
 
 /**
