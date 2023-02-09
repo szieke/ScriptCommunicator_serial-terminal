@@ -2283,24 +2283,6 @@ bool MainWindow::loadSettings()
                     }
                 }
 
-                {//update setting
-
-                    QDomNodeList nodeList = docElem.elementsByTagName("updateSetting");
-                    if(!nodeList.isEmpty())
-                    {
-                        QDomNode node = nodeList.at(0);
-                        currentSettings.updateSettings.proxySettings = node.attributes().namedItem("proxySettings").nodeValue().toUInt();
-                        currentSettings.updateSettings.proxyIpAddress = node.attributes().namedItem("proxyIpAddress").nodeValue();
-                        currentSettings.updateSettings.proxyPort = node.attributes().namedItem("proxyPort").nodeValue().toUInt();
-                        currentSettings.updateSettings.proxyUserName = node.attributes().namedItem("proxyUserName").nodeValue();
-                        currentSettings.updateSettings.proxyPassword = node.attributes().namedItem("proxyPassword").nodeValue();
-                    }
-                    else
-                    {
-                        currentSettings.updateSettings.proxySettings = 1;//use system settings.
-                    }
-
-                }
                 {//aardvarkI2cSpi
 
                     QDomNodeList nodeList = docElem.elementsByTagName("aardvarkI2cSpi");
@@ -3120,17 +3102,7 @@ void MainWindow::saveSettings()
                 };
                 writeXmlElement(xmlWriter, "createSceWindow", settingsMap);
             }
-            {//update settings
-                std::map<QString, QString> settingsMap =
-                {std::make_pair(QString("proxyIpAddress"), QString("%1").arg(currentSettings->updateSettings.proxyIpAddress)),
-                 std::make_pair(QString("proxyPassword"), QString("%1").arg(currentSettings->updateSettings.proxyPassword)),
-                 std::make_pair(QString("proxyPort"), QString("%1").arg(currentSettings->updateSettings.proxyPort)),
-                 std::make_pair(QString("proxySettings"), QString("%1").arg(currentSettings->updateSettings.proxySettings)),
-                 std::make_pair(QString("proxyUserName"), QString("%1").arg(currentSettings->updateSettings.proxyUserName)),
-                };
 
-                writeXmlElement(xmlWriter, "updateSetting", settingsMap);
-            }
             {//aardvark I2C/SPI
                 std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("devicePort"), QString("%1").arg(currentSettings->aardvarkI2cSpi.devicePort)),
@@ -4011,8 +3983,6 @@ void MainWindow::initActionsConnections()
     connect(m_userInterface->actionRequestFeature, SIGNAL(triggered()),this, SLOT(requestFeatureSlot()));
     connect(m_userInterface->actionVideo, SIGNAL(triggered()),this, SLOT(watchVideoSlot()));
     connect(m_userInterface->actionGetSupport, SIGNAL(triggered()),this, SLOT(getSupportSlot()));
-    connect(m_userInterface->actionCheckForUpdates, SIGNAL(triggered()),this, SLOT(checkForUpdatesSlot()));
-    connect(m_settingsDialog->getUserInterface()->checkForUpdates, SIGNAL(pressed()),this, SLOT(checkForUpdatesSlot()));
 
     connect(m_userInterface->actionAddScript, SIGNAL(triggered()),this, SLOT(addScriptSlot()));
     connect(m_userInterface->actionEditScript, SIGNAL(triggered()),this, SLOT(editScriptSlot()));
@@ -4474,6 +4444,7 @@ QStringList MainWindow::readMainConfigFileList(bool removeDefaultMarker)
     if (inputFile.open(QIODevice::ReadOnly))
     {
         QTextStream in(&inputFile);
+        in.setCodec("UTF-8");
         while ( !in.atEnd() )
         {
             QString line = in.readLine();
@@ -4917,40 +4888,6 @@ void MainWindow::addScriptSlot()
         m_userInterface->ScriptTextEdit->setPlainText(fileName);
         saveSettings();
     }
-}
-
-
-/**
- * Menu check for updates slot function.
- */
-void MainWindow::checkForUpdatesSlot()
-{
-    Settings settings = *m_settingsDialog->settings();
-    QString type = "NO_PROXY";
-    if(settings.updateSettings.proxySettings == 1)
-    {
-        type = "SYSTEM_PROXY";
-    }
-    else if(settings.updateSettings.proxySettings == 2)
-    {
-        type = "CUSTOM_PROXY";
-    }
-    else
-    {
-        type = "NO_PROXY";
-    }
-
-    QNetworkProxy proxy = ScriptTcpClient::createProxy(type, settings.updateSettings.proxyUserName,
-                                                       settings.updateSettings.proxyPassword,
-                                                       settings.updateSettings.proxyIpAddress,
-                                                       settings.updateSettings.proxyPort);
-
-    m_userInterface->actionCheckForUpdates->setEnabled(false);
-    updatesManager = new QNetworkAccessManager(this);
-    updatesManager->setProxy(proxy);
-    connect(updatesManager, SIGNAL(finished(QNetworkReply*)),this, SLOT(updateManagerReplyFinished(QNetworkReply*)));
-
-    updatesManager->get(QNetworkRequest(QUrl("https://github.com/szieke/ScriptCommunicator_serial-terminal/blob/master/README.md")));
 }
 
 /**

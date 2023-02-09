@@ -124,16 +124,6 @@ typedef struct
     QString proxyPassword;
 }SocketSetings;
 
-///The update settings.
-typedef struct
-{
-    quint8 proxySettings;
-    QString proxyIpAddress;
-    quint16 proxyPort;
-    QString proxyUserName;
-    QString proxyPassword;
-}UpdateSetings;
-
 
 ///The GUI elements for one aardvark I2C/SPI GPIO.
 typedef struct
@@ -187,9 +177,6 @@ struct Settings
 
     ///The current tab index of the settings dialog tab widget.
     quint8 settingsDialogTabIndex;
-
-    ///The update settings.
-    UpdateSetings updateSettings;
 
     ///True if the dark style shall be used.
     bool useDarkStyle;
@@ -447,9 +434,6 @@ public:
     ///Initializes the pcan interface tab.
     void initializePcanTab(void);
 
-    ///Initializes the update tab.
-    void initializeUpdateTab(void);
-
     ///Initializes the sockets interface tab.
     void initializeSocketsTab(void);
 
@@ -549,16 +533,9 @@ private slots:
     ///It updates the gui elements and the settings struct (m_currentSettings).
     void textFromGuiElementChangedSlot(QString text);
 
-
     ///This slot function is called if a selection from a check box has been changed.
     ///It updates the settings struct (m_currentSettings).
     void stateFromCheckboxChangedSlot(int state);
-
-    ///Is called if the user clickes a socket proxy radio button.
-    void socketProxyRadioButtonClickedSlot(void);
-
-    ///Is called if the user clickes a update proxy radio button.
-    void updateProxyRadioButtonClickedSlot(void);
 
     ///Slot function for the search script editor button.
     void searchScriptEditorButtonPressedSlot(void);

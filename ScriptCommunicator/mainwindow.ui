@@ -96,6 +96,15 @@
                     </color>
                    </brush>
                   </colorrole>
+                  <colorrole role="PlaceholderText">
+                   <brush brushstyle="NoBrush">
+                    <color alpha="128">
+                     <red>0</red>
+                     <green>255</green>
+                     <blue>0</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
                  </active>
                  <inactive>
                   <colorrole role="WindowText">
@@ -121,6 +130,15 @@
                     <color alpha="255">
                      <red>0</red>
                      <green>0</green>
+                     <blue>0</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
+                  <colorrole role="PlaceholderText">
+                   <brush brushstyle="NoBrush">
+                    <color alpha="128">
+                     <red>0</red>
+                     <green>255</green>
                      <blue>0</blue>
                     </color>
                    </brush>
@@ -154,6 +172,15 @@
                     </color>
                    </brush>
                   </colorrole>
+                  <colorrole role="PlaceholderText">
+                   <brush brushstyle="NoBrush">
+                    <color alpha="128">
+                     <red>0</red>
+                     <green>255</green>
+                     <blue>0</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
                  </disabled>
                 </palette>
                </property>
@@ -179,7 +206,7 @@
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="acceptRichText">
@@ -220,6 +247,15 @@ p, li { white-space: pre-wrap; }
                     </color>
                    </brush>
                   </colorrole>
+                  <colorrole role="PlaceholderText">
+                   <brush brushstyle="NoBrush">
+                    <color alpha="128">
+                     <red>0</red>
+                     <green>255</green>
+                     <blue>0</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
                  </active>
                  <inactive>
                   <colorrole role="Text">
@@ -236,6 +272,15 @@ p, li { white-space: pre-wrap; }
                     <color alpha="255">
                      <red>0</red>
                      <green>0</green>
+                     <blue>0</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
+                  <colorrole role="PlaceholderText">
+                   <brush brushstyle="NoBrush">
+                    <color alpha="128">
+                     <red>0</red>
+                     <green>255</green>
                      <blue>0</blue>
                     </color>
                    </brush>
@@ -257,6 +302,15 @@ p, li { white-space: pre-wrap; }
                      <red>236</red>
                      <green>233</green>
                      <blue>216</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
+                  <colorrole role="PlaceholderText">
+                   <brush brushstyle="NoBrush">
+                    <color alpha="128">
+                     <red>0</red>
+                     <green>255</green>
+                     <blue>0</blue>
                     </color>
                    </brush>
                   </colorrole>
@@ -282,7 +336,7 @@ p, li { white-space: pre-wrap; }
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="acceptRichText">
@@ -323,6 +377,15 @@ p, li { white-space: pre-wrap; }
                     </color>
                    </brush>
                   </colorrole>
+                  <colorrole role="PlaceholderText">
+                   <brush brushstyle="NoBrush">
+                    <color alpha="128">
+                     <red>0</red>
+                     <green>255</green>
+                     <blue>0</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
                  </active>
                  <inactive>
                   <colorrole role="Text">
@@ -339,6 +402,15 @@ p, li { white-space: pre-wrap; }
                     <color alpha="255">
                      <red>0</red>
                      <green>0</green>
+                     <blue>0</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
+                  <colorrole role="PlaceholderText">
+                   <brush brushstyle="NoBrush">
+                    <color alpha="128">
+                     <red>0</red>
+                     <green>255</green>
                      <blue>0</blue>
                     </color>
                    </brush>
@@ -360,6 +432,15 @@ p, li { white-space: pre-wrap; }
                      <red>236</red>
                      <green>233</green>
                      <blue>216</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
+                  <colorrole role="PlaceholderText">
+                   <brush brushstyle="NoBrush">
+                    <color alpha="128">
+                     <red>0</red>
+                     <green>255</green>
+                     <blue>0</blue>
                     </color>
                    </brush>
                   </colorrole>
@@ -388,7 +469,7 @@ p, li { white-space: pre-wrap; }
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="acceptRichText">
@@ -429,6 +510,15 @@ p, li { white-space: pre-wrap; }
                     </color>
                    </brush>
                   </colorrole>
+                  <colorrole role="PlaceholderText">
+                   <brush brushstyle="NoBrush">
+                    <color alpha="128">
+                     <red>0</red>
+                     <green>255</green>
+                     <blue>0</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
                  </active>
                  <inactive>
                   <colorrole role="Text">
@@ -445,6 +535,15 @@ p, li { white-space: pre-wrap; }
                     <color alpha="255">
                      <red>0</red>
                      <green>0</green>
+                     <blue>0</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
+                  <colorrole role="PlaceholderText">
+                   <brush brushstyle="NoBrush">
+                    <color alpha="128">
+                     <red>0</red>
+                     <green>255</green>
                      <blue>0</blue>
                     </color>
                    </brush>
@@ -466,6 +565,15 @@ p, li { white-space: pre-wrap; }
                      <red>236</red>
                      <green>233</green>
                      <blue>216</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
+                  <colorrole role="PlaceholderText">
+                   <brush brushstyle="NoBrush">
+                    <color alpha="128">
+                     <red>0</red>
+                     <green>255</green>
+                     <blue>0</blue>
                     </color>
                    </brush>
                   </colorrole>
@@ -494,7 +602,7 @@ p, li { white-space: pre-wrap; }
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'MS Shell Dlg 2'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="acceptRichText">
@@ -535,6 +643,15 @@ p, li { white-space: pre-wrap; }
                     </color>
                    </brush>
                   </colorrole>
+                  <colorrole role="PlaceholderText">
+                   <brush brushstyle="NoBrush">
+                    <color alpha="128">
+                     <red>0</red>
+                     <green>255</green>
+                     <blue>0</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
                  </active>
                  <inactive>
                   <colorrole role="Text">
@@ -551,6 +668,15 @@ p, li { white-space: pre-wrap; }
                     <color alpha="255">
                      <red>0</red>
                      <green>0</green>
+                     <blue>0</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
+                  <colorrole role="PlaceholderText">
+                   <brush brushstyle="NoBrush">
+                    <color alpha="128">
+                     <red>0</red>
+                     <green>255</green>
                      <blue>0</blue>
                     </color>
                    </brush>
@@ -572,6 +698,15 @@ p, li { white-space: pre-wrap; }
                      <red>236</red>
                      <green>233</green>
                      <blue>216</blue>
+                    </color>
+                   </brush>
+                  </colorrole>
+                  <colorrole role="PlaceholderText">
+                   <brush brushstyle="NoBrush">
+                    <color alpha="128">
+                     <red>0</red>
+                     <green>255</green>
+                     <blue>0</blue>
                     </color>
                    </brush>
                   </colorrole>
@@ -605,7 +740,7 @@ p, li { white-space: pre-wrap; }
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Courier New'; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Courier New'; font-size:7.8pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:'MS Shell Dlg 2'; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="acceptRichText">
@@ -633,8 +768,8 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>332</width>
-                  <height>108</height>
+                  <width>743</width>
+                  <height>213</height>
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_3">
@@ -938,8 +1073,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>98</width>
-          <height>93</height>
+          <width>389</width>
+          <height>541</height>
          </rect>
         </property>
         <attribute name="label">
@@ -982,8 +1117,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>414</width>
-          <height>561</height>
+          <width>389</width>
+          <height>541</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1069,8 +1204,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>188</width>
-          <height>301</height>
+          <width>389</width>
+          <height>541</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1295,8 +1430,8 @@ p, li { white-space: pre-wrap; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>139</width>
-          <height>271</height>
+          <width>389</width>
+          <height>541</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1576,7 +1711,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>1183</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp">
@@ -1586,7 +1721,6 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionManual"/>
     <addaction name="actionVideo"/>
     <addaction name="separator"/>
-    <addaction name="actionCheckForUpdates"/>
     <addaction name="actionGetSupport"/>
     <addaction name="separator"/>
     <addaction name="actionSubmitBug"/>

@@ -518,9 +518,6 @@ private slots:
     ///Menu add script slot function.
     void addScriptSlot();
 
-    ///Menu check for updates slot function.
-    void checkForUpdatesSlot();
-
     ///Slot function for the update manager replies.
     void updateManagerReplyFinished(QNetworkReply* reply);
 

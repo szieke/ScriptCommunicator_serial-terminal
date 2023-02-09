@@ -363,14 +363,6 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->useSpecificProxyRadioButton, SIGNAL(clicked()),
             this, SLOT(socketProxyRadioButtonClickedSlot()));
 
-    connect(m_userInterface->updateNoProxy, SIGNAL(clicked()),
-            this, SLOT(updateProxyRadioButtonClickedSlot()));
-    connect(m_userInterface->updateUseSystemProxy, SIGNAL(clicked()),
-            this, SLOT(updateProxyRadioButtonClickedSlot()));
-    connect(m_userInterface->updateUseSpecificProxy, SIGNAL(clicked()),
-            this, SLOT(updateProxyRadioButtonClickedSlot()));
-
-
     connect(m_userInterface->proxyAddressLineEdit, SIGNAL(textChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
     connect(m_userInterface->proxyPortLineEdit, SIGNAL(textChanged(QString)),
@@ -378,15 +370,6 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->proxyUserNameLineEdit, SIGNAL(textChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
     connect(m_userInterface->proxyPasswordLineEdit, SIGNAL(textChanged(QString)),
-            this, SLOT(textFromGuiElementChangedSlot(QString)));
-
-    connect(m_userInterface->updateProxyAddress, SIGNAL(textChanged(QString)),
-            this, SLOT(textFromGuiElementChangedSlot(QString)));
-    connect(m_userInterface->updateProxyPort, SIGNAL(textChanged(QString)),
-            this, SLOT(textFromGuiElementChangedSlot(QString)));
-    connect(m_userInterface->updateProxyUserName, SIGNAL(textChanged(QString)),
-            this, SLOT(textFromGuiElementChangedSlot(QString)));
-    connect(m_userInterface->updateProxyPassword, SIGNAL(textChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
 
 
@@ -1139,25 +1122,6 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
         m_userInterface->tabWidget->setCurrentIndex(settings.settingsDialogTabIndex);
     }
 
-    //Update settings
-    m_userInterface->updateProxyAddress->setText(settings.updateSettings.proxyIpAddress);
-    m_userInterface->updateProxyPort->setText(QString("%1").arg(settings.updateSettings.proxyPort));
-    m_userInterface->updateProxyUserName->setText(settings.updateSettings.proxyUserName);
-    m_userInterface->updateProxyPassword->setText(settings.updateSettings.proxyPassword);
-    if(settings.updateSettings.proxySettings == 1)
-    {
-        m_userInterface->updateUseSystemProxy->setChecked(true);
-    }
-    else if(settings.updateSettings.proxySettings == 2)
-    {
-        m_userInterface->updateUseSpecificProxy->setChecked(true);
-    }
-    else
-    {
-        m_userInterface->updateNoProxy->setChecked(true);
-
-    }
-
     //aardvark I2C/SPI settings
     m_userInterface->aardvarkI2cSpiPort->setText(QString("%1").arg(settings.aardvarkI2cSpi.devicePort));
     m_userInterface->aardvarkI2cSpiMode->setCurrentIndex((int)settings.aardvarkI2cSpi.deviceMode);
@@ -1614,39 +1578,6 @@ void SettingsDialog::initializePcanTab(void)
     }
 }
 
-/**
- * Initializes the update tab.
- */
-void SettingsDialog::initializeUpdateTab(void)
-{
-    //Update proxy settings.
-    m_userInterface->updateNoProxy->setEnabled(true);
-    m_userInterface->updateUseSystemProxy->setEnabled(true);
-    m_userInterface->updateUseSpecificProxy->setEnabled(true);
-    if(m_userInterface->updateUseSpecificProxy->isChecked())
-    {
-        m_userInterface->updateProxyAddress->setEnabled(true);
-        m_userInterface->updateProxyPort->setEnabled(true);
-        m_userInterface->updateProxyUserName->setEnabled(true);
-        m_userInterface->updateProxyPassword->setEnabled(true);
-    }
-    else
-    {
-        m_userInterface->updateProxyAddress->setEnabled(false);
-        m_userInterface->updateProxyPort->setEnabled(false);
-
-        if(m_userInterface->updateUseSystemProxy->isChecked())
-        {
-            m_userInterface->updateProxyUserName->setEnabled(true);
-            m_userInterface->updateProxyPassword->setEnabled(true);
-        }
-        else
-        {
-            m_userInterface->updateProxyUserName->setEnabled(false);
-            m_userInterface->updateProxyPassword->setEnabled(false);
-        }
-    }
-}
 
 /**
  * Initializes the sockets interface tab.
@@ -1733,7 +1664,6 @@ void SettingsDialog::initializeInterfaceTabs(void)
 
     initializeSocketsTab();
     initializePcanTab();
-    initializeUpdateTab();
     initializeAardvarkIc2SpiTab();
 }
 
@@ -1824,25 +1754,6 @@ void SettingsDialog::textFromGuiElementChangedSlot(QString text)
     }
 }
 
-/**
- * Is called if the user clickes a socket proxy radio button.
- */
-void SettingsDialog::socketProxyRadioButtonClickedSlot(void)
-{
-    initializeInterfaceTabs();
-    updateSettings();
-    emit configHasToBeSavedSignal();
-}
-
-/**
- * Is called if the user clickes a update proxy radio button.
- */
-void SettingsDialog::updateProxyRadioButtonClickedSlot(void)
-{
-    initializeInterfaceTabs();
-    updateSettings();
-    emit configHasToBeSavedSignal();
-}
 
 
 /**
@@ -2319,27 +2230,6 @@ void SettingsDialog::updateSettings(bool forceUpdate)
 
     m_currentSettings.settingsDialogTabIndex = m_userInterface->tabWidget->currentIndex();
 
-
-    //update settings
-    m_currentSettings.updateSettings.proxyIpAddress = m_userInterface->updateProxyAddress->text();
-    m_currentSettings.updateSettings.proxyPort = m_userInterface->updateProxyPort->text().toUInt();
-    m_currentSettings.updateSettings.proxyUserName = m_userInterface->updateProxyUserName->text();
-    m_currentSettings.updateSettings.proxyPassword = m_userInterface->updateProxyPassword->text();
-
-    if(m_userInterface->updateUseSystemProxy->isChecked())
-    {
-        m_currentSettings.updateSettings.proxySettings = 1;
-
-    }
-    else if(m_userInterface->updateUseSpecificProxy->isChecked())
-    {
-        m_currentSettings.updateSettings.proxySettings = 2;
-
-    }
-    else
-    {
-        m_currentSettings.updateSettings.proxySettings = 0;
-    }
 
     //aardvark I2C/SPI settings
     m_currentSettings.aardvarkI2cSpi.devicePort = m_userInterface->aardvarkI2cSpiPort->text().toUInt();
