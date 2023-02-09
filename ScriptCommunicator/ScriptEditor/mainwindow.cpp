@@ -2457,6 +2457,11 @@ void MainWindow::readSettings()
 
         restoreState(settings.value("mainWindowState", QByteArray()).toByteArray());
 
+        if(settings.value("isMaximized", false).toBool())
+        {
+          showMaximized();
+        }
+
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
         textEditor->setFocus();
 
@@ -2510,6 +2515,7 @@ void MainWindow::writeSettings()
     settings.setValue("useDarkStyle", m_useDarkStyle);
     settings.setValue("appFontSize", m_applicationFontSize);
     settings.setValue("mainWindowState", saveState());
+    settings.setValue("isMaximized", isMaximized());
 
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
     textEditor->lexer()->writeSettings(settings);
