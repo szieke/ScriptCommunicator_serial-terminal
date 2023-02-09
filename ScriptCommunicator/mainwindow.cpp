@@ -2263,6 +2263,13 @@ bool MainWindow::loadSettings()
                             rect.setTop(node.attributes().namedItem("top").nodeValue().toInt());
                         }
                         setWindowPositionAndSize(m_scriptWindow->getCreateSceFileDialog(), rect);
+
+                        QString geometryValue = node.attributes().namedItem("geometry").nodeValue();
+                        if(geometryValue != "")
+                        {
+                            m_scriptWindow->getCreateSceFileDialog()->restoreGeometry(QByteArray().fromHex(geometryValue.toUtf8()));
+                        }
+
                         m_scriptWindow->getCreateSceFileDialog()->setConfigFileName(node.attributes().namedItem("configFileName").nodeValue());
 
                         createSceWindowIsVisible = (node.attributes().namedItem("visible").nodeValue() == "1") ? true : false;
