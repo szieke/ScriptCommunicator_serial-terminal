@@ -526,6 +526,9 @@ private slots:
     ///Slot function for the activate html log check box.
     void htmLogActivatedSlot(bool activated);
 
+    ///Is called if the user clicks a socket proxy radio button.
+    void socketProxyRadioButtonClickedSlot(void);
+
     ///Slot function for the activate text log check box.
     void textLogActivatedSlot(bool activated);
 
