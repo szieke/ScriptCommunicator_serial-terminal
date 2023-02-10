@@ -47,8 +47,6 @@
 #include "mainwindowHandleData.h"
 #include <QSplitter>
 #include <QListWidgetItem>
-#include <QNetworkAccessManager>
-#include <QNetworkReply>
 #include <QLineEdit>
 #include <QFileInfo>
 #include <QDir>
@@ -518,9 +516,6 @@ private slots:
     ///Menu add script slot function.
     void addScriptSlot();
 
-    ///Slot function for the update manager replies.
-    void updateManagerReplyFinished(QNetworkReply* reply);
-
     ///Menu get support slot function.
     void getSupportSlot();
 
@@ -703,9 +698,6 @@ private:
 
     ///Contains the script arguments (command-line argument -A).
     QStringList m_scriptArguments;
-
-    ///Checks for ScriptCommunicator updates.
-    QNetworkAccessManager *updatesManager;
 
     ///Map which contains all script tabs (the second argument is a pointer to the script thread).
     QMap<QWidget*, QObject*> m_scriptTabs;

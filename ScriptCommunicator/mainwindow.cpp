@@ -355,7 +355,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     m_isFirstProgramStart(false), m_mouseGrabWidget(0), m_searchConsole(0),
     m_dataRateSend(0), m_dataRateReceive(0), m_handleData(0), m_toolBoxSplitterSizeSecond(0),
     m_sendAreaSplitterSizeSecond(0), m_sendAreaInputsSplitterSizeSecond(0), m_toolBoxSplitterSizesSecond(), m_currentToolBoxIndex(0), m_mainConfigLockFile(),
-    m_configLockFileTimer(), m_extraPluginPaths(extraPluginPaths), m_scriptArguments(scriptArguments), updatesManager(0), m_scriptTabs(), m_scriptTabsTitles(),
+    m_configLockFileTimer(), m_extraPluginPaths(extraPluginPaths), m_scriptArguments(scriptArguments), m_scriptTabs(), m_scriptTabsTitles(),
     m_scriptToolBoxPage(), m_closedByScript(false), m_exitCode(0)
 {
 
@@ -4895,95 +4895,6 @@ void MainWindow::addScriptSlot()
         m_userInterface->ScriptTextEdit->setPlainText(fileName);
         saveSettings();
     }
-}
-
-/**
- * Slot function for the update manager replies.
- * @param reply
- *      The replies.
- */
-void MainWindow::updateManagerReplyFinished(QNetworkReply* reply)
-{
-    QNetworkReply::NetworkError error = reply->error();
-
-    if(error == QNetworkReply::NoError)
-    {
-        QString result = reply->readAll();
-        QStringList list = result.split("Downloads (release ");
-
-        bool pageIsInvalid = false;
-        if(list.length() >= 2)
-        {
-            QString version = list[1].left(5);
-
-            list = version.split(".");
-            if(list.length() == 2)
-            {
-                bool newVersionAvailable = false;
-                QStringList tmpList = VERSION.split(".");
-                quint32 currentMajor = tmpList[0].toUInt();
-                quint32 currentMinor = tmpList[1].toUInt();
-
-                quint32 serverMajor = list[0].toUInt();
-                quint32 serverMinor = list[1].toUInt();
-
-                if(serverMajor > currentMajor)
-                {
-                    newVersionAvailable = true;
-                }
-                else if(serverMajor == currentMajor)
-                {
-                    if(serverMinor > currentMinor)
-                    {
-                        newVersionAvailable = true;
-                    }
-                }
-
-                if(newVersionAvailable)
-                {
-                    QString text = "A new version of ScriptCommunicator is available. To download this new version go to: ";
-                    text.append("<a href=\"http://sourceforge.net/p/scriptcommunicator/\">http://sourceforge.net/p/scriptcommunicator/</a>");
-
-                    QMessageBox msgBox(QMessageBox::Information, "update available",text);
-                    msgBox.setTextFormat(Qt::RichText);
-                    msgBox.exec();
-                }
-                else
-                {
-                    QMessageBox msgBox(QMessageBox::Information, "no update available", "ScriptCommunicator is up to date.");
-                    msgBox.setTextFormat(Qt::RichText);
-                    msgBox.exec();
-                }
-            }
-            else
-            {
-                pageIsInvalid = true;
-            }
-
-        }//if(list.length() == 2)
-        else
-        {
-            pageIsInvalid = true;
-        }
-
-        if(pageIsInvalid)
-        {
-            QMessageBox msgBox(QMessageBox::Information, "error while searching for an update", "Invalid data received: " + result);
-            msgBox.setTextFormat(Qt::PlainText);
-            msgBox.exec();
-        }
-    }
-    else
-    {
-        QString text = "Connection error (eror code: %1). Are you connected with the internet and are your proxy settings (update tab in the setting dialog) correct?";
-        text = text.arg(error);
-        QMessageBox msgBox(QMessageBox::Information, "connection error",text);
-        msgBox.setTextFormat(Qt::RichText);
-        msgBox.exec();
-    }
-
-    m_userInterface->actionCheckForUpdates->setEnabled(true);
-    reply->deleteLater();
 }
 
 /**
