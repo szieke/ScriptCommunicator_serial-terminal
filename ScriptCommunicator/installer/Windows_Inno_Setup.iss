@@ -22,9 +22,9 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}_{#MyAppVersion}
 DefaultGroupName={#MyAppName} {#MyAppVersion}
 AllowNoIcons=yes
-OutputDir=C:\Users\sziek\Desktop\
+OutputDir=C:\Users\bcsstzi\Desktop\
 OutputBaseFilename=ScriptCommunicatorSetup_05_20_windows
-SetupIconFile=C:\ScriptCommunicator_serial-terminal\ScriptCommunicator\images\main.ico
+SetupIconFile=D:\ScriptCommunicator\ScriptCommunicator\images\main.ico
 Compression=lzma
 SolidCompression=yes
 PrivilegesRequired=lowest
@@ -40,15 +40,15 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: associate_js_files; Description: "&Associate .js files with the ScriptCommunicator editor"; GroupDescription: "Other tasks:"
 
 [Files]
-Source: "C:\Users\sziek\Desktop\ScriptCommunicator\ScriptCommunicator.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\sziek\Desktop\ScriptCommunicator\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\bcsstzi\Desktop\ScriptCommunicator\ScriptCommunicator.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\bcsstzi\Desktop\ScriptCommunicator\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{group}\{cm:ProgramOnTheWeb,{#MyAppName}}"; Filename: "{#MyAppURL}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
-Name: "{commondesktop}\{#MyAppName} {#MyAppVersion}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
+Name: "{userdesktop}\{#MyAppName} {#MyAppVersion}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
