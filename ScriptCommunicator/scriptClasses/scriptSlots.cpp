@@ -837,18 +837,19 @@ void ScriptSlots::createGuiElementSlot(QString elementType, QObject** createdGui
 {
     *createdGuiElement = 0;
 
-    if(elementType == "ScriptPlotWindow")
+    if(elementType == "PlotWindow")
     {
         PlotWindow* plotWindow = new PlotWindow(scriptThread, scriptWindow);
-        *createdGuiElement = new ScriptPlotWindow(plotWindow, scriptThread, scriptWindow);
-
-        connect(scriptWindow->getMainWindow(), SIGNAL(bringWindowsToFrontSignal()),
-                *createdGuiElement, SLOT(bringWindowsToFrontSlot()), Qt::DirectConnection);
+        *createdGuiElement = plotWindow;
     }
     else if(elementType == "ScriptPlotWidget")
     {
         *createdGuiElement = new ScriptPlotWidget(scriptThread, scriptWindow, (QHBoxLayout*) additionalArgument);
         (*createdGuiElement)->setParent((QHBoxLayout*) additionalArgument);
+    }
+    else if(elementType == "QHBoxLayout")
+    {
+        *createdGuiElement = new QHBoxLayout((QWidget*) additionalArgument);
     }
     else
     {//invalid element type

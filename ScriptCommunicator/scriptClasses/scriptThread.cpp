@@ -134,13 +134,12 @@ ScriptThread::~ScriptThread()
         el->deleteLater();
     }
 
-#if 0
     //Delete all created gui elements (created by the script).
     for(auto el : m_allCreatedGuiElementsFromScript)
     {
         el->deleteLater();
     }
-#endif
+
 
     //Unload all loaded libraries.
     for(auto el : m_libraries)
@@ -525,15 +524,22 @@ QJSValue ScriptThread::createPlotWindow()
 {
     ScriptPlotWindow* scriptPlotWindow = 0;
     QObject* obj = 0;
-    emit createGuiElementSignal("ScriptPlotWindow", &obj, m_scriptWindow, this, 0);
+    QJSValue scriptObj;
+    emit createGuiElementSignal("PlotWindow", &obj, m_scriptWindow, this, 0);
 
     if(obj != 0)
     {
-        scriptPlotWindow = static_cast<ScriptPlotWindow*>(obj);
+        scriptPlotWindow = new ScriptPlotWindow(static_cast<PlotWindow*>(obj), this, m_scriptWindow);
+
+        connect(m_scriptWindow->getMainWindow(), SIGNAL(bringWindowsToFrontSignal()),
+                scriptPlotWindow, SLOT(bringWindowsToFrontSlot()), Qt::DirectConnection);
+
         m_allCreatedGuiElementsFromScript.push_back(scriptPlotWindow);
-        QJSEngine::setObjectOwnership(m_scriptEngine, QJSEngine::CppOwnership);
+        scriptObj = m_scriptEngine->newQObject(scriptPlotWindow);
+        QJSEngine::setObjectOwnership(scriptPlotWindow, QJSEngine::CppOwnership);
     }
-    return m_scriptEngine->newQObject(scriptPlotWindow);
+
+    return scriptObj;
 }
 
 /**
