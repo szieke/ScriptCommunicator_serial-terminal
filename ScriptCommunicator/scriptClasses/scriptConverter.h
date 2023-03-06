@@ -2,7 +2,6 @@
 #define SCRIPTCONVERTER_H
 
 #include <QObject>
-#include <QScriptable>
 #include "scriptObject.h"
 
 class ScriptConverter : public QObject, public ScriptObject
@@ -22,7 +21,7 @@ public:
     }
 
     ///Registers all (for this class) necessary meta types.
-    void registerScriptMetaTypes(QScriptEngine* scriptEngine);
+    void registerScriptMetaTypes(QJSEngine* scriptEngine);
 
     ///Converts a byte array into a hex string.
     Q_INVOKABLE static QString byteArrayToHexString(QVector<unsigned char> data);

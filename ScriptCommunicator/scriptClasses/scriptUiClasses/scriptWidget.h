@@ -252,15 +252,19 @@ public:
     }
 
     ///Creates a shortcut and connects it to a script function.
-    Q_INVOKABLE void createShortCut(QString keys, QScriptValue scriptFunction)
+    Q_INVOKABLE void createShortCut(QString keys, QJSValue scriptFunction)
     {
+      (void)keys;
+      (void)scriptFunction;
+      /*ToDo
         QShortcut* shortCut;
         emit createShortCutSignal(keys, m_widget, &shortCut);
-        if (!qScriptConnect(shortCut, SIGNAL(activated()), QScriptValue(), scriptFunction))
+        if (!qScriptConnect(shortCut, SIGNAL(activated()), QJSValue(), scriptFunction))
         {
             m_scriptThread->getScriptEngine()->currentContext()->throwError("could not find function: " + scriptFunction.toString());
 
         }
+        */
     }
 
     ///Sets the style sheet of a script widget.

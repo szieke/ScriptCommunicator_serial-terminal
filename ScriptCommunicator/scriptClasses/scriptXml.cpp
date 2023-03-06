@@ -21,7 +21,7 @@ bool ScriptXmlWriter::writeBufferToFile(QString fileName, bool isRelativePath)
     if(file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         QTextStream data( &file );
-        data.setCodec("UTF-8");
+        data.setEncoding(QStringConverter::Utf8);
 
         data << m_xmlBuffer.data();
         file.close();
@@ -105,7 +105,7 @@ QList<ScriptXmlElement*> ScriptXmlElement::childElements()
     {
         if(nodeList.at(i).isElement())
         {
-            ScriptXmlElement* newNode = new ScriptXmlElement(nodeList.at(i), engine());
+            ScriptXmlElement* newNode = new ScriptXmlElement(nodeList.at(i), m_scriptEngine);
             result.append(newNode);
         }
     }
@@ -126,7 +126,7 @@ QList<ScriptXmlAttribute*> ScriptXmlElement::attributes()
     for(qint32 i = 0; i < attributes.length(); i++)
     {
         QDomNode node = attributes.item(i);
-        ScriptXmlAttribute* newAttr = new ScriptXmlAttribute(node.nodeName(), node.nodeValue(), engine());
+        ScriptXmlAttribute* newAttr = new ScriptXmlAttribute(node.nodeName(), node.nodeValue(), m_scriptEngine);
         result.append(newAttr);
     }
 
@@ -141,8 +141,8 @@ QList<ScriptXmlAttribute*> ScriptXmlElement::attributes()
  * @param parent
  *      Pointer to the parent.
  */
-ScriptXmlReader::ScriptXmlReader(ScriptFile* scriptFileObject, QObject *parent) : QObject(parent),
-    m_scriptFileObject(scriptFileObject), m_xmlDocument(), m_rootElement()
+ScriptXmlReader::ScriptXmlReader(ScriptFile* scriptFileObject, QJSEngine *scriptEngine, QObject *parent) : QObject(parent),
+    m_scriptFileObject(scriptFileObject), m_xmlDocument(), m_rootElement(), m_scriptEngine(scriptEngine)
 {
 
 }
@@ -216,8 +216,8 @@ bool ScriptXmlReader::parseString(QString xmlString)
  */
 ScriptXmlElement* ScriptXmlReader::getRootElement(void)
 {
-    ScriptXmlElement* newNode = new ScriptXmlElement(m_rootElement);
-    engine()->newQObject(newNode, QScriptEngine::ScriptOwnership);
+    ScriptXmlElement* newNode = new ScriptXmlElement(m_rootElement, m_scriptEngine);
+    m_scriptEngine->newQObject(newNode);
     return newNode;
 }
 
@@ -235,7 +235,7 @@ QList<ScriptXmlElement*> ScriptXmlReader::elementsByTagName(QString name)
 
     for(qint32 i = 0; i < nodeList.length(); i++)
     {
-        ScriptXmlElement* newNode = new ScriptXmlElement(nodeList.at(i), engine());
+        ScriptXmlElement* newNode = new ScriptXmlElement(nodeList.at(i), m_scriptEngine, m_scriptEngine);
         result.append(newNode);
     }
 

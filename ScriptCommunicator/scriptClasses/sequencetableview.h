@@ -31,13 +31,12 @@
 #include <QMutex>
 #include <QTableWidget>
 #include<QFile>
-#include "QScriptEngine"
+#include "QJSEngine"
 #include "QPlainTextEdit"
 #include "QComboBox"
 #include <QTimer>
 #include <QSplitter>
 #include <mainwindow.h>
-#include <QScriptEngineDebugger>
 #include <scriptHelper.h>
 #include "scriptFile.h"
 #include "crc.h"
@@ -74,10 +73,10 @@ public:
     }
 
     ///Pointer to the script engine.
-    QScriptEngine* scriptEngine;
+    QJSEngine* scriptEngine;
 
     ///Pointer to the send data script function.
-    QScriptValue* sendDataFunction;
+    QJSValue* sendDataFunction;
 
     ///True if the scripts runs in a script debugger.
     bool runsInDebugger;
@@ -95,7 +94,7 @@ class SequenceScriptThread : public QThread, public ScriptObject
 public:
     SequenceScriptThread( SendWindow* sendWindow, MainWindow* mainWindow,  SequenceTableView* sequencteTable, bool runsInDebugger) : QThread(0), m_sendWindow(sendWindow),
     m_mainWindow(mainWindow), m_sequencteTable(sequencteTable), m_blockTime(DEFAULT_BLOCK_TIME), m_dialogIsShown(false),
-    m_scriptFunctionIsFinished(true), m_standardDialogs(0), m_runsInDebugger(runsInDebugger), m_debugger(0), m_debugWindow(0){}
+    m_scriptFunctionIsFinished(true), m_standardDialogs(0), m_runsInDebugger(runsInDebugger), m_debugWindow(0){}
     virtual ~SequenceScriptThread(){}
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
@@ -218,16 +217,11 @@ public:
     Q_INVOKABLE void setBlockTime(quint32 blockTime){m_blockTime = blockTime;}
 
     ///Returns all functions and properties of an object.
-    Q_INVOKABLE QStringList getAllObjectPropertiesAndFunctions(QScriptValue object);
+    Q_INVOKABLE QStringList getAllObjectPropertiesAndFunctions(QJSValue object);
 
     ///The default value for m_blockTime.
     static const quint32 DEFAULT_BLOCK_TIME= 10000;
 
-    ///Returns m_runsInDebugger.
-    bool getRunsInDebugger(void){return m_runsInDebugger;}
-
-    ///Closes the debugger.
-    void closeDebugger(void);
 
 signals:
 
@@ -302,9 +296,6 @@ private:
     ///True if the scripts runs in a script debugger.
     bool m_runsInDebugger;
 
-    ///The script debugger;
-    QScriptEngineDebugger *m_debugger ;
-
     ///The debug window.
     QMainWindow *m_debugWindow;
 
@@ -340,9 +331,6 @@ public:
     ///Executes a script before sending the data.
     QByteArray executeScript(QString sendScript, QByteArray sendData, SequenceScriptEngineWrapper** scriptEngineWrapper,
                              bool isSingle, bool debug=false, bool firstCyclicSend=false);
-
-    ///Closes the debugger.
-    void closeDebugger(bool isSingle);
 
 protected:
 

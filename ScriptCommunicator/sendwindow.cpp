@@ -36,11 +36,10 @@
 #include <QDebug>
 #include "mainwindow.h"
 #include "mainInterfaceThread.h"
-#include "QScriptEngine"
+#include "QJSEngine"
 #include "QRegularExpression"
 #include <QPainter>
 #include <QScrollBar>
-#include "scriptThread.h"
 #include <QProcess>
 #include <QInputDialog>
 #include <QStringList>
@@ -1182,19 +1181,16 @@ void SendWindow::loadTableData(void)
 
         if (file.open(QFile::ReadOnly))
         {
+            QByteArray content = file.readAll();
             file.close();
 
-
-            if (!doc.setContent(&file))
+            if (!doc.setContent(content))
             {
-                if(!file.readAll().isEmpty())
-                {
-                    QMessageBox::critical(this, "parse error", "could not parse " + m_currentSequenceFileName);
+                QMessageBox::critical(this, "parse error", "could not parse " + m_currentSequenceFileName);
 
-                    m_currentSequenceFileName = "";
-                    setTitle(m_currentSequenceFileName);
-                    emit configHasToBeSavedSignal();
-                }
+                m_currentSequenceFileName = "";
+                setTitle(m_currentSequenceFileName);
+                emit configHasToBeSavedSignal();
             }
             else
             {
@@ -1400,7 +1396,7 @@ void SendWindow::saveTable(void)
     if(file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         QTextStream data( &file );
-        data.setCodec("UTF-8");
+        data.setEncoding(QStringConverter::Utf8);
         m_currentSequenceFileString = tableToString();
         data << m_currentSequenceFileString;
         file.close();
@@ -2057,8 +2053,6 @@ void SendWindow::sendButtonPressedSlot()
     if(m_cyclicSendingIsInProgress)
     {
         currentCyclicSendFinished();
-
-        m_userInterface->tableWidget->closeDebugger(false);
     }
     else
     {
@@ -2229,7 +2223,6 @@ void SendWindow::dataHasBeenSendSlot(bool success, uint id)
 
                     if(m_currentSendNumberOfSends > m_currentSendRepetitionCount)
                     {
-                        m_userInterface->tableWidget->closeDebugger(false);
                         currentCyclicSendFinished();
                     }
                     else
@@ -2246,7 +2239,6 @@ void SendWindow::dataHasBeenSendSlot(bool success, uint id)
                 }
                 else
                 {
-                    m_userInterface->tableWidget->closeDebugger(false);
                     m_currentSendTimer.stop();
                     m_cyclicSendingIsInProgress = false;
                 }
@@ -2255,7 +2247,6 @@ void SendWindow::dataHasBeenSendSlot(bool success, uint id)
         }
         else
         {
-            m_userInterface->tableWidget->closeDebugger(false);
             cyclicSendErrorReceived();
         }
 
@@ -2297,8 +2288,6 @@ void SendWindow::dataHasBeenSendSlot(bool success, uint id)
             }
 
         }
-
-        m_userInterface->tableWidget->closeDebugger(true);
     }
 }
 
@@ -2386,8 +2375,6 @@ void SendWindow::sendDataWithTheMainInterface(const QByteArray &data, QWidget* c
         }// if(!sendData.isEmpty())
         else
         {
-            m_userInterface->tableWidget->closeDebugger(!isCyclicSend);
-
             if(scriptEngineWrapper != 0)
             {
                 scriptEngineWrapper->deleteLater();
@@ -2489,7 +2476,6 @@ void SendWindow::sendTimerElapsedSlot(void)
             m_currentSendTimer.stop();
             m_cyclicSendingIsInProgress = false;
             enableWindowForCyclicSend(true);
-            m_userInterface->tableWidget->closeDebugger(false);
         }
     }
     else

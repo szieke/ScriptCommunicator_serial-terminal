@@ -14,7 +14,7 @@ SearchConsole::SearchConsole(MainWindow *mainWindow) : m_mainWindow(mainWindow),
 
     connect(m_mainWindow->m_userInterface->findWhatComboBox, SIGNAL(currentTextChanged(QString)),this, SLOT(currentSearchTextChangedSlot(QString)));
 
-    m_mainWindow->m_userInterface->findWhatComboBox->setAutoCompletion(false);
+    m_mainWindow->m_userInterface->findWhatComboBox->setCompleter(nullptr);
 }
 
 /**
@@ -164,7 +164,7 @@ void SearchConsole::findButtonClickedSlot(void)
 
         m_mainWindow->m_userInterface->findWhatComboBox->setCurrentIndex(0);
 
-        QTextDocument::FindFlags options = 0;
+        QTextDocument::FindFlags options = (QTextDocument::FindFlags)0;
 
         if(m_mainWindow->m_userInterface->directionUpRadioButton->isChecked())
         {

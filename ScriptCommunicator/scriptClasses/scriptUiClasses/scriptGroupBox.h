@@ -30,8 +30,6 @@
 #include "scriptWidget.h"
 #include "scriptPlotwidget.h"
 
-#include "context2d.h"
-#include "qcontext2dcanvas.h"
 
 ///This wrapper class is used to access a QGroupBox object (located in a script gui/ui-file) from a script.
 class ScriptGroupBox : public ScriptWidget
@@ -83,19 +81,6 @@ public:
         return widget;
     }
 
-    ///Adds a Canvas2D object to the group box.
-    Q_INVOKABLE QScriptValue addCanvas2DWidget(void)
-    {
-        Context2D* context = new Context2D();
-        QContext2DCanvas* widget;
-        context->setSize(m_box->size().width(), m_box->size().height());
-        emit createGuiElementSignal("QContext2DCanvas", (QObject**)&widget, m_scriptWindow, m_scriptThread, m_box);
-        widget->connectContextSignals(context);
-
-
-        return m_scriptThread->getScriptEngine()->newQObject(context, QScriptEngine::ScriptOwnership);;
-
-    }
     ///Checks or unchecks the group box checkbox.
     Q_INVOKABLE void setChecked(bool checked){emit setCheckedSignal(checked);}
 

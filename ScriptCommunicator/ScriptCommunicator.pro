@@ -16,16 +16,12 @@ QMAKE_CXXFLAGS += -Wno-cast-function-type
 TARGET = ScriptCommunicator
 TEMPLATE = app
 QT += xml
-QT += script
 QT += printsupport
 QT += uitools
 QT += network
 QT += sql
-QT += scripttools
+QT += qml
 QT += multimedia
-win32{
-QT += winextras
-}
 
 DEFINES += QUAZIP_STATIC
 unix{
@@ -85,8 +81,6 @@ SOURCES += \
     colorWidgets/color_selector.cpp \
     colorWidgets/swatch.cpp \
     scriptClasses/scriptXml.cpp \
-    scriptClasses/canvas2D/context2d.cpp \
-    scriptClasses/canvas2D/qcontext2dcanvas.cpp \
     createSceFile.cpp \
     quazip/JlCompress.cpp \
     quazip/qioapi.cpp \
@@ -200,8 +194,6 @@ HEADERS += \
     colorWidgets/color_selector.hpp \
     colorWidgets/swatch.hpp \
     scriptClasses/scriptXml.h \
-    scriptClasses/canvas2D/context2d.h \
-    scriptClasses/canvas2D/qcontext2dcanvas.h \
     createSceFile.h \
     quazip/zLib/crc32.h \
     quazip/zLib/deflate.h \

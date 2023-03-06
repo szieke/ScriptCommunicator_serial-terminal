@@ -1,6 +1,6 @@
 #include "scriptConverter.h"
 #include <QVector>
-#include <QScriptEngine>
+#include <QJSEngine>
 
 ScriptConverter::ScriptConverter()
 {
@@ -12,9 +12,9 @@ ScriptConverter::ScriptConverter()
  * @param engine
  *      The script engine.
  */
-void ScriptConverter::registerScriptMetaTypes(QScriptEngine* engine)
+void ScriptConverter::registerScriptMetaTypes(QJSEngine* engine)
 {
-    qRegisterMetaType<QScriptEngine*>("ConverterDll*");
+    qRegisterMetaType<QJSEngine*>("ConverterDll*");
     qRegisterMetaType<int64_t>("int64_t");
     qRegisterMetaType<int32_t>("int32_t");
     qRegisterMetaType<int16_t>("int16_t");
@@ -23,6 +23,7 @@ void ScriptConverter::registerScriptMetaTypes(QScriptEngine* engine)
     qRegisterMetaType<int32_t>("uint32_t");
     qRegisterMetaType<int16_t>("uint16_t");
     engine->globalObject().setProperty("conv", engine->newQObject(this));
+    QJSEngine::setObjectOwnership(this, QJSEngine::CppOwnership);
 }
 
 /**

@@ -32,7 +32,7 @@
 #include <QMutex>
 #include <QTableWidget>
 #include<QFile>
-#include "QScriptEngine"
+#include "QJSEngine"
 #include "QPlainTextEdit"
 #include "QComboBox"
 #include <QTimer>

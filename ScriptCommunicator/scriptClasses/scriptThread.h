@@ -28,7 +28,7 @@
 #include "QNetworkInterface"
 #include <QThread>
 #include <QMessageBox>
-#include <QScriptEngine>
+#include <QJSEngine>
 #include "settingsdialog.h"
 #include "mainwindow.h"
 #include "scriptsqldatabase.h"
@@ -36,7 +36,6 @@
 #include "scriptStandardDialogs.h"
 #include "scriptFile.h"
 #include <QFileInfo>
-#include <QScriptEngineDebugger>
 #include <QProcess>
 #include <scriptHelper.h>
 #include <QStandardPaths>
@@ -44,7 +43,6 @@
 #include "scriptObject.h"
 #include <QLibrary>
 #include "scriptConverter.h"
-#include "aardvarkI2cSpi.h"
 #include "scriptInf.h"
 
 
@@ -92,13 +90,13 @@ public:
     virtual QString getPublicScriptElements(void){return MainWindow::parseApiFile("scriptThread.api");}
 
     ///Installs obj and all child objects from obj. This objects can be accessed from the script.
-    void installAllChilds(QObject* obj, QScriptEngine* scriptEngine, bool firstObj = false);
+    void installAllChilds(QObject* obj, QJSEngine* scriptEngine, bool firstObj = false);
 
     ///This function installs one (child) object. This object can be accessed from the script.
-    bool installOneChild(QObject* child, QScriptEngine* scriptEngine);
+    bool installOneChild(QObject* child, QJSEngine* scriptEngine);
 
     ///Installs one custom widget.
-    void installsCustomWidget(QObject* child, QScriptEngine* scriptEngine);
+    void installsCustomWidget(QObject* child, QJSEngine* scriptEngine);
 
     ///Appends text to the script window console.
     Q_INVOKABLE void appendTextToConsole(QString string, bool newLine=true, bool bringToForeground=false){ emit appendTextToConsoleSignal(string, newLine,bringToForeground);}
@@ -208,16 +206,16 @@ public:
 
 
     ///Creates an UDP socket.
-    Q_INVOKABLE QScriptValue createUdpSocket(void){return m_scriptInf->createUdpSocket();}
+    Q_INVOKABLE QJSValue createUdpSocket(void){return m_scriptInf->createUdpSocket();}
 
     ///Creates a TCP server.
-    Q_INVOKABLE QScriptValue createTcpServer(void){return m_scriptInf->createTcpServer();}
+    Q_INVOKABLE QJSValue createTcpServer(void){return m_scriptInf->createTcpServer();}
 
     ///Creates a TCP socket.
-    Q_INVOKABLE QScriptValue createTcpClient(void){return m_scriptInf->createTcpClient();}
+    Q_INVOKABLE QJSValue createTcpClient(void){return m_scriptInf->createTcpClient();}
 
     ///Creates a serial port.
-    Q_INVOKABLE QScriptValue createSerialPort(void){return m_scriptInf->createSerialPort();}
+    Q_INVOKABLE QJSValue createSerialPort(void){return m_scriptInf->createSerialPort();}
 
     ///Sends a data array (QVector) with the main interface (in MainInterfaceThread).
     Q_INVOKABLE bool sendDataArray(QVector<unsigned char> data, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false)
@@ -259,10 +257,10 @@ public:
     {return m_scriptInf->connectSocket(isTcp, isServer, ip, destinationPort, ownPort, connectTimeout);}
 
     ///Returns the serial port settings of the main interface.
-    Q_INVOKABLE QScriptValue getMainInterfaceSerialPortSettings(void){return m_scriptInf->getMainInterfaceSerialPortSettings();}
+    Q_INVOKABLE QJSValue getMainInterfaceSerialPortSettings(void){return m_scriptInf->getMainInterfaceSerialPortSettings();}
 
     ///Returns the socket (UDP, TCP client/server) settings of the main interface.
-    Q_INVOKABLE QScriptValue getMainInterfaceSocketSettings(void){return m_scriptInf->getMainInterfaceSocketSettings();}
+    Q_INVOKABLE QJSValue getMainInterfaceSocketSettings(void){return m_scriptInf->getMainInterfaceSocketSettings();}
 
     ///Returns a list with the name of all available serial ports.
     Q_INVOKABLE QStringList availableSerialPorts(void){return m_scriptInf->availableSerialPorts();}
@@ -276,24 +274,24 @@ public:
     Q_INVOKABLE void sleepFromScript(quint32 timeMs);
 
     ///Creates a timer.
-    Q_INVOKABLE QScriptValue createTimer(void);
+    Q_INVOKABLE QJSValue createTimer(void);
 
     ///Creates a ScriptSound object.
-    Q_INVOKABLE QScriptValue createSoundObject(QString filename, bool isRelativePath=true);
+    Q_INVOKABLE QJSValue createSoundObject(QString filename, bool isRelativePath=true);
 
     ///Creates a plot window.
-    Q_INVOKABLE QScriptValue createPlotWindow();
+    Q_INVOKABLE QJSValue createPlotWindow();
 
     ///Creates a XML reader.
-    Q_INVOKABLE QScriptValue createXmlReader();
+    Q_INVOKABLE QJSValue createXmlReader();
 
     ///Creates a XML writer.
-    Q_INVOKABLE QScriptValue createXmlWriter();
+    Q_INVOKABLE QJSValue createXmlWriter();
 
     ///Loads/includes one script (QtScript has no built in include mechanism).
     Q_INVOKABLE bool loadScript(QString scriptPath, bool isRelativePath=true);
 
-    ///Loads a dynamic link library and calls the init function (void init(QScriptEngine* engine)).
+    ///Loads a dynamic link library and calls the init function (void init(QJSEngine* engine)).
     ///With this function a script can extend his functionality.
     Q_INVOKABLE bool loadLibrary(QString path, bool isRelativePath=true);
 
@@ -318,39 +316,39 @@ public:
     ///Any data the new process writes to the console is forwarded to the return process object.
     ///The environment and working directory are inherited from the calling process.
     ///Note: Blocks until the process has been created or until startWaitTime milliseconds have passed (-1=infinite).
-     Q_INVOKABLE QScriptValue createProcessAsynchronous (QString program, QStringList arguments,
+     Q_INVOKABLE QJSValue createProcessAsynchronous (QString program, QStringList arguments,
                                                          int startWaitTime=30000, QString workingDirectory="");
 
     ///Blocks until the process has finished or until msecs milliseconds have passed (-1=infinite).
-    Q_INVOKABLE bool waitForFinishedProcess(QScriptValue process, int waitTime=30000);
+    Q_INVOKABLE bool waitForFinishedProcess(QJSValue process, int waitTime=30000);
 
     ///Returns the exit code of process.
-    Q_INVOKABLE int getProcessExitCode(QScriptValue process);
+    Q_INVOKABLE int getProcessExitCode(QJSValue process);
 
     ///Kills the current process, causing it to exit immediately.
-    Q_INVOKABLE void killProcess(QScriptValue process);
+    Q_INVOKABLE void killProcess(QJSValue process);
 
     ///Attempts to terminate the process.
     ///The process may not exit as a result of calling this function (it is given the chance to prompt the user for any unsaved files, etc).
-    Q_INVOKABLE void terminateProcess(QScriptValue process);
+    Q_INVOKABLE void terminateProcess(QJSValue process);
 
     ///Write data to the standard input of process. Returns true on success.
     ///Note: Blocks until the writing is finished or until msecs milliseconds have passed (-1=infinite).
-    Q_INVOKABLE bool writeToProcessStdin(QScriptValue process, QVector<unsigned char> data, int waitTime=30000);
+    Q_INVOKABLE bool writeToProcessStdin(QJSValue process, QVector<unsigned char> data, int waitTime=30000);
 
     ///Returns true if the process is running.
-    Q_INVOKABLE bool processIsRunning(QScriptValue process);
+    Q_INVOKABLE bool processIsRunning(QJSValue process);
 
     ///This function returns all data available from the standard output of process (can be called after the process is finished).
 	///Note: If isBlocking is true then this function blocks until the blockByte has been received, blockTime has elapsed (-1=infinite) or
 	///the process is finished.
-    Q_INVOKABLE QVector<unsigned char> readAllStandardOutputFromProcess(QScriptValue process, bool isBlocking=false,
+    Q_INVOKABLE QVector<unsigned char> readAllStandardOutputFromProcess(QJSValue process, bool isBlocking=false,
                                                                         quint8 blockByte='\n', qint32 blockTime=30000);
 
     ///This function returns all data available from the standard error of process (can be called after the process is finished).
 	///Note: If isBlocking is true then this function blocks until the blockByte has been received, blockTime has elapsed (-1=infinite) or
 	///the process is finished.
-    Q_INVOKABLE QVector<unsigned char> readAllStandardErrorFromProcess(QScriptValue process, bool isBlocking=false,
+    Q_INVOKABLE QVector<unsigned char> readAllStandardErrorFromProcess(QJSValue process, bool isBlocking=false,
                                                                        quint8 blockByte='\n', qint32 blockTime=30000);
 
     ///Loads an user interface file.
@@ -551,7 +549,7 @@ public:
     ///Returns and prints (if printInScriptWindowConsole is true) all functions, signals and properties of an object in the script window console.
     ///Note: Only ScriptCommunicator classes are supported. Calling this function with a QtScript built-in class (e.g. Array) will result
     ///in an empty list.
-    Q_INVOKABLE QStringList getAllObjectPropertiesAndFunctions(QScriptValue object, bool printInScriptWindowConsole=false);
+    Q_INVOKABLE QStringList getAllObjectPropertiesAndFunctions(QJSValue object, bool printInScriptWindowConsole=false);
 
     ///Returns the title of the main window.
     Q_INVOKABLE QString getMainWindowTitle(void);
@@ -573,14 +571,14 @@ public:
     Q_INVOKABLE void setApplicationFontSize(quint32 fontSizePx);
 
     ///Returns the console settings (settings dialog).
-    Q_INVOKABLE QScriptValue getConsoleSettings(void);
+    Q_INVOKABLE QJSValue getConsoleSettings(void);
 
     ///Sets the main window and the ScriptCommunicator task bar icon.
     ///Supported formats: .ico, .gif, .png, .jpeg, .tiff, .bmp, .icns.
     Q_INVOKABLE void setMainWindowAndTaskBarIcon(QString iconFile, bool isRelativePath=true);
 
     ///Returns and all functions, signals and properties of an object.
-    static void getAllObjectPropertiesAndFunctionsInternal(QScriptValue object, QStringList* resultList, QString* resultString);
+    static void getAllObjectPropertiesAndFunctionsInternal(QJSValue object, QStringList* resultList, QString* resultString);
 
     ///Returns the tread state.
     ThreadSate getThreadState(){return m_state;}
@@ -589,7 +587,7 @@ public:
     ScriptWindow* getScriptWindow(void){return m_scriptWindow;}
 
     ///Returns the script engine
-    QScriptEngine* getScriptEngine(void){return m_scriptEngine;}
+    QJSEngine* getScriptEngine(void){return m_scriptEngine;}
 
     ///Converts a string into a QMessageBox::Icon.
     static QMessageBox::Icon stringToMessageBoxIcon(QString icon);
@@ -749,7 +747,7 @@ public slots:
     void globalRealChangedSlot(QString* name, double number){emit globalRealChangedSignal(*name, number);}
 
     ///This slot function is called if a script function connected to a signal causes an exception.
-    void scriptSignalHandlerSlot(const QScriptValue & exception);
+    void scriptSignalHandlerSlot(const QJSValue & exception);
 
     ///This slot is called periodically by the timer m_pauseTimer.
     ///This function checks if the thread has to be paused and do the necessary actions.
@@ -803,7 +801,7 @@ private:
     QList<ScriptWidget*> m_userInterface;
 
     ///The script interpreter/engine
-    QScriptEngine* m_scriptEngine;
+    QJSEngine* m_scriptEngine;
 
     ///Pointer to the settings dialog.
     SettingsDialog *m_settingsDialog;
@@ -827,9 +825,6 @@ private:
 
     ///True if the script is suspended by the debugger.
     bool m_isSuspendedByDebuger;
-
-    ///The script debugger;
-    QScriptEngineDebugger *m_debugger ;
 
     ///The debug window.
     QMainWindow *m_debugWindow;

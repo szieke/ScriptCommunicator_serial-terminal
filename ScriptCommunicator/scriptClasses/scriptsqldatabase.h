@@ -6,15 +6,14 @@
 #include <QStringList>
 #include <QSqlField>
 #include <QSqlIndex>
-#include <QScriptValue>
-#include <QScriptable>
-#include <QScriptEngine>
+#include <QJSValue>
+#include <QJSEngine>
 #include <QSqlField>
 #include <QSqlResult>
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlDriver>
-#include <QScriptValueIterator>
+#include <QJSValueIterator>
 #include "scriptHelper.h"
 #include "scriptObject.h"
 
@@ -98,7 +97,7 @@ private:
     QSqlField m_field;
 };
 
-class  ScriptSqlRecord : public QObject, protected QScriptable, public ScriptObject
+class  ScriptSqlRecord : public QObject, public ScriptObject
 {
     Q_OBJECT
 
@@ -106,11 +105,12 @@ class  ScriptSqlRecord : public QObject, protected QScriptable, public ScriptObj
     Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 
 public:
-    ScriptSqlRecord(const QSqlRecord& other) : QObject(0), m_record(other){}
+    ScriptSqlRecord(const QSqlRecord& other, QJSEngine* engine) : QObject(0), m_record(other), m_engine(engine){}
 
     ScriptSqlRecord& operator=(const ScriptSqlRecord& other)
     {
         m_record = other.m_record;
+        m_engine = other.m_engine;
         return *this;
     }
 
@@ -153,16 +153,16 @@ public:
     Q_INVOKABLE int indexOf(QString name){return m_record.indexOf(name);}
     Q_INVOKABLE QString fieldName(int i) {return m_record.fieldName(i);}
 
-    Q_INVOKABLE QScriptValue field(int i)
+    Q_INVOKABLE QJSValue field(int i)
     {
         ScriptSqlField* field = new ScriptSqlField(m_record.field(i));
-        return engine()->newQObject(field, QScriptEngine::ScriptOwnership);
+        return m_engine->newQObject(field);
     }
 
-    Q_INVOKABLE QScriptValue field(QString name)
+    Q_INVOKABLE QJSValue field(QString name)
     {
         ScriptSqlField* field = new ScriptSqlField(m_record.field(name));
-        return engine()->newQObject(field, QScriptEngine::ScriptOwnership);
+        return m_engine->newQObject(field);
     }
 
 
@@ -181,14 +181,15 @@ public:
     Q_INVOKABLE void clear(){m_record.clear();}
     Q_INVOKABLE void clearValues(){m_record.clearValues();}
     Q_INVOKABLE int count(){return m_record.count();}
-    Q_INVOKABLE QScriptValue keyValues(ScriptSqlRecord* keyFields)
+    Q_INVOKABLE QJSValue keyValues(ScriptSqlRecord* keyFields)
     {
-        ScriptSqlRecord* record = new ScriptSqlRecord(m_record.keyValues(keyFields->m_record));
-        return engine()->newQObject(record, QScriptEngine::ScriptOwnership);
+        ScriptSqlRecord* record = new ScriptSqlRecord(m_record.keyValues(keyFields->m_record), m_engine);
+        return m_engine->newQObject(record);
     }
 
 private:
     QSqlRecord m_record;
+    QJSEngine* m_engine;
 };
 
 class  ScriptSqlIndex : public QObject, public ScriptObject
@@ -264,7 +265,7 @@ private:
 };
 
 
-class  ScriptSqlQuery : public QObject, protected QScriptable, public ScriptObject
+class  ScriptSqlQuery : public QObject, public ScriptObject
 {
     Q_OBJECT
 
@@ -273,10 +274,11 @@ class  ScriptSqlQuery : public QObject, protected QScriptable, public ScriptObje
 
 public:
 
-    ScriptSqlQuery(const QSqlQuery& other) : QObject(0), m_query(other){}
+    ScriptSqlQuery(const QSqlQuery& other, QJSEngine* engine) : QObject(0), m_query(other), m_engine(engine){}
     ScriptSqlQuery& operator=(const ScriptSqlQuery& other)
     {
         m_query = other.m_query;
+        m_engine = other.m_engine;
         return *this;
     }
 
@@ -294,10 +296,10 @@ public:
     Q_INVOKABLE int at(){return m_query.at();}
     Q_INVOKABLE QString lastQuery(){return m_query.lastQuery();}
     Q_INVOKABLE int numRowsAffected(){return m_query.numRowsAffected();}
-    Q_INVOKABLE QScriptValue lastError()
+    Q_INVOKABLE QJSValue lastError()
     {
         ScriptSqlError* error = new ScriptSqlError(m_query.lastError());
-        return engine()->newQObject(error, QScriptEngine::ScriptOwnership);
+        return m_engine->newQObject(error);
     }
 
     Q_INVOKABLE bool isSelect(){return m_query.isSelect();}
@@ -305,10 +307,10 @@ public:
     //const QSqlDriver* driver() const;
     //const QSqlResult* result() const;
     Q_INVOKABLE bool isForwardOnly(){return m_query.isForwardOnly();}
-    Q_INVOKABLE QScriptValue record()
+    Q_INVOKABLE QJSValue record()
     {
-        ScriptSqlRecord* record = new ScriptSqlRecord(m_query.record());
-        return engine()->newQObject(record, QScriptEngine::ScriptOwnership);
+        ScriptSqlRecord* record = new ScriptSqlRecord(m_query.record(), m_engine);
+        return m_engine->newQObject(record);
     }
 
     Q_INVOKABLE void setForwardOnly(bool forward){m_query.setForwardOnly(forward);}
@@ -370,7 +372,9 @@ public:
         if(val.type() == QVariant::ByteArray){val =ScriptHelper:: byteArrayToVariantList(val.toByteArray());}
         return val;
     }
+    /*ToDo
     Q_INVOKABLE ScriptMap boundValues(){return ScriptMap(m_query.boundValues());}
+    */
     Q_INVOKABLE QString executedQuery(){return m_query.executedQuery();}
     Q_INVOKABLE QVariant lastInsertId(){return m_query.lastInsertId();}
     Q_INVOKABLE void finish(){m_query.finish();}
@@ -378,12 +382,13 @@ public:
 
 private:
     QSqlQuery m_query;
+    QJSEngine* m_engine;
 };
 
 
 class ScriptSql;
 
-class ScriptSqlDatabase : public QObject, protected QScriptable, public ScriptObject
+class ScriptSqlDatabase : public QObject, public ScriptObject
 {
     Q_OBJECT
     friend class ScriptSql;
@@ -392,9 +397,9 @@ class ScriptSqlDatabase : public QObject, protected QScriptable, public ScriptOb
     Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 
 public:
-    explicit ScriptSqlDatabase(QObject *parent = 0) : QObject(parent), m_database(){}
+    explicit ScriptSqlDatabase(QJSEngine* engine, QObject *parent = 0) : QObject(parent), m_database(), m_engine(engine){}
 
-    ScriptSqlDatabase(QSqlDatabase db, QObject *parent = 0) : QObject(parent), m_database(db){}
+    ScriptSqlDatabase(QSqlDatabase db, QJSEngine* engine, QObject *parent = 0) : QObject(parent), m_database(db), m_engine(engine){}
 
     virtual QString getPublicScriptElements(void)
     {
@@ -407,28 +412,28 @@ public:
     Q_INVOKABLE bool isOpen(){return m_database.isOpen();}
     Q_INVOKABLE bool isOpenError(){return m_database.isOpenError();}
     Q_INVOKABLE QStringList tables(quint32 type = QSql::TableType::Tables){return m_database.tables((QSql::TableType)type);}
-    Q_INVOKABLE QScriptValue primaryIndex(QString tablename)
+    Q_INVOKABLE QJSValue primaryIndex(QString tablename)
     {
         ScriptSqlIndex* index = new ScriptSqlIndex(m_database.primaryIndex(tablename));
-        return engine()->newQObject(index, QScriptEngine::ScriptOwnership);
+        return m_engine->newQObject(index);
     }
 
-    Q_INVOKABLE QScriptValue record(QString tablename)
+    Q_INVOKABLE QJSValue record(QString tablename)
     {
-        ScriptSqlRecord* record = new ScriptSqlRecord(m_database.record(tablename));
-        return engine()->newQObject(record, QScriptEngine::ScriptOwnership);
+        ScriptSqlRecord* record = new ScriptSqlRecord(m_database.record(tablename), m_engine);
+        return m_engine->newQObject(record);
     }
 
-    Q_INVOKABLE QScriptValue exec(QString query = QString())
+    Q_INVOKABLE QJSValue exec(QString query = QString())
     {
-        ScriptSqlQuery* obj = new ScriptSqlQuery(m_database.exec(query));
-        return engine()->newQObject(obj, QScriptEngine::ScriptOwnership);
+        ScriptSqlQuery* obj = new ScriptSqlQuery(m_database.exec(query), m_engine);
+        return m_engine->newQObject(obj);
     }
 
-    Q_INVOKABLE QScriptValue lastError()
+    Q_INVOKABLE QJSValue lastError()
     {
         ScriptSqlError* obj = new ScriptSqlError(m_database.lastError());
-        return engine()->newQObject(obj, QScriptEngine::ScriptOwnership);
+        return m_engine->newQObject(obj);
     }
 
     Q_INVOKABLE bool isValid(){return m_database.isValid();}
@@ -464,10 +469,11 @@ public:
 
 private:
     QSqlDatabase m_database;
+    QJSEngine* m_engine;
 
 };
 
-class ScriptSql : public QObject, protected QScriptable, public ScriptObject
+class ScriptSql : public QObject, public ScriptObject
 {
     Q_OBJECT
 
@@ -477,13 +483,19 @@ public:
     ScriptSql() : QObject(0){}
 
     ///Registers all (for this class) necessary meta types.
-    void registerScriptMetaTypes(QScriptEngine* scriptEngine)
+    void registerScriptMetaTypes(QJSEngine* scriptEngine)
     {
         qRegisterMetaType<ScriptSqlField*>("ScriptSqlField*");
         qRegisterMetaType<ScriptSqlRecord*>("ScriptSqlRecord*");
         qRegisterMetaType<ScriptSqlDatabase*>("ScriptSqlDatabase*");
 
          scriptEngine->globalObject().setProperty("scriptSql", scriptEngine->newQObject(this));
+         QJSEngine::setObjectOwnership(this, QJSEngine::CppOwnership);
+    }
+
+    void setScriptEngine(QJSEngine* engine)
+    {
+      m_engine = engine;
     }
 
     virtual QString getPublicScriptElements(void)
@@ -505,11 +517,11 @@ public:
      * replaces the old one. If you call this function more than once without specifying connectionName, the
      * default connection will be the one replaced.
      */
-    Q_INVOKABLE QScriptValue addDatabase(QString type,
+    Q_INVOKABLE QJSValue addDatabase(QString type,
                                  QString connectionName = QLatin1String(QSqlDatabase::defaultConnection))
     {
-        ScriptSqlDatabase* obj = new ScriptSqlDatabase(QSqlDatabase::addDatabase(type, connectionName));
-        return engine()->newQObject(obj, QScriptEngine::ScriptOwnership);
+        ScriptSqlDatabase* obj = new ScriptSqlDatabase(QSqlDatabase::addDatabase(type, connectionName), m_engine);
+        return m_engine->newQObject(obj);
     }
 
     /**
@@ -518,10 +530,10 @@ public:
      * is an invalid database. Returns the newly created database connection.
      * Note: The new connection has not been opened. Before using the new connection, you must call open().
      */
-    Q_INVOKABLE QScriptValue cloneDatabase(ScriptSqlDatabase* other, QString connectionName)
+    Q_INVOKABLE QJSValue cloneDatabase(ScriptSqlDatabase* other, QString connectionName)
     {
-        ScriptSqlDatabase* obj = new ScriptSqlDatabase(QSqlDatabase::cloneDatabase(other->m_database, connectionName));
-        return engine()->newQObject(obj, QScriptEngine::ScriptOwnership);
+        ScriptSqlDatabase* obj = new ScriptSqlDatabase(QSqlDatabase::cloneDatabase(other->m_database, connectionName), m_engine);
+        return m_engine->newQObject(obj);
     }
     /**
      * Returns the database connection called connectionName. The database connection must have been
@@ -529,11 +541,11 @@ public:
      *  already open it is opened now. If no connectionName is specified the default connection is used.
      * If connectionName does not exist in the list of databases, an invalid connection is returned.
      */
-    Q_INVOKABLE QScriptValue database(QString connectionName = QLatin1String(QSqlDatabase::defaultConnection),
+    Q_INVOKABLE QJSValue database(QString connectionName = QLatin1String(QSqlDatabase::defaultConnection),
                                  bool open = true)
     {
-        ScriptSqlDatabase* obj = new ScriptSqlDatabase(QSqlDatabase::database(connectionName, open));
-        return engine()->newQObject(obj, QScriptEngine::ScriptOwnership);
+        ScriptSqlDatabase* obj = new ScriptSqlDatabase(QSqlDatabase::database(connectionName, open), m_engine);
+        return m_engine->newQObject(obj);
     }
     /**
      * Removes the database connection connectionName from the list of database connections.
@@ -556,24 +568,28 @@ public:
     Q_INVOKABLE bool isDriverAvailable(QString name){return QSqlDatabase::isDriverAvailable(name);}
 
     ///Creates a ScriptSqlQuery object using the SQL query and the current database.
-    Q_INVOKABLE QScriptValue createQuery(ScriptSqlDatabase* dataBase, QString query = QString())
+    Q_INVOKABLE QJSValue createQuery(ScriptSqlDatabase* dataBase, QString query = QString())
     {
-        ScriptSqlQuery* obj = new ScriptSqlQuery(QSqlQuery(query, dataBase->m_database));
-        return engine()->newQObject(obj, QScriptEngine::ScriptOwnership);
+        ScriptSqlQuery* obj = new ScriptSqlQuery(QSqlQuery(query, dataBase->m_database), m_engine);
+        return m_engine->newQObject(obj);
     }
     ///Creates a ScriptSqlField object.
-    Q_INVOKABLE QScriptValue createField(QString fieldName = QString(),
+    Q_INVOKABLE QJSValue createField(QString fieldName = QString(),
                                          quint32 type = (quint32)QVariant::Invalid)
     {
         ScriptSqlField* obj = new ScriptSqlField(QSqlField(fieldName, (QVariant::Type)type));
-        return engine()->newQObject(obj, QScriptEngine::ScriptOwnership);
+        return m_engine->newQObject(obj);
     }
     ///Creates a ScriptSqlRecord object.
-    Q_INVOKABLE QScriptValue createRecord(void)
+    Q_INVOKABLE QJSValue createRecord(void)
     {
-        ScriptSqlRecord* obj = new ScriptSqlRecord(QSqlRecord());
-        return engine()->newQObject(obj, QScriptEngine::ScriptOwnership);
+        ScriptSqlRecord* obj = new ScriptSqlRecord(QSqlRecord(), m_engine);
+        return m_engine->newQObject(obj);
     }
+
+private:
+
+    QJSEngine* m_engine;
 
 };
 

@@ -137,7 +137,7 @@ public:
         }
         else
         {
-            parity = QSerialPort::UnknownParity;
+            parity = QSerialPort::NoParity;
         }
         return m_serialPort.setParity(parity);
     }

@@ -491,7 +491,7 @@ void MainInterfaceThread::run(void)
 
     m_tcpClientSocket = new QTcpSocket(this);
     connect(m_tcpClientSocket, SIGNAL(connected()),this, SLOT(tcpClientSocketOnConnectedSlot()));
-    connect(m_tcpClientSocket, SIGNAL(error(QAbstractSocket::SocketError)),this, SLOT(tcpClientSocketErrorSlot(QAbstractSocket::SocketError)));
+    connect(m_tcpClientSocket, SIGNAL(errorOccurred(QAbstractSocket::SocketError)),this, SLOT(tcpClientSocketErrorSlot(QAbstractSocket::SocketError)));
 
     m_udpServerSocket = new QUdpSocket(this);
     connect(m_udpServerSocket, SIGNAL(readyRead()),this, SLOT(udpServerSocketOnReadyReadSlot()));

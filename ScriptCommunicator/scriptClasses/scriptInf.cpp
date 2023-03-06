@@ -112,10 +112,10 @@ void ScriptInf::intSignals(bool runsInDebugger)
  * @return
  *      The created socket.
  */
-QScriptValue ScriptInf::createTcpClient(void)
+QJSValue ScriptInf::createTcpClient(void)
 {
     ScriptTcpClient* socket =  new ScriptTcpClient(new QTcpSocket(m_scriptThread), m_scriptThread, m_scriptThread->getScriptWindow()->getMainInterfaceThread());
-    return m_scriptThread->getScriptEngine()->newQObject(socket, QScriptEngine::ScriptOwnership);
+    return m_scriptThread->getScriptEngine()->newQObject(socket);
 }
 
 /**
@@ -123,10 +123,10 @@ QScriptValue ScriptInf::createTcpClient(void)
  * @return
  *      The created socket.
  */
-QScriptValue ScriptInf::createUdpSocket(void)
+QJSValue ScriptInf::createUdpSocket(void)
 {
     ScriptUdpSocket* socket =  new ScriptUdpSocket(m_scriptThread, m_scriptThread->getScriptWindow()->getMainInterfaceThread());
-    return m_scriptThread->getScriptEngine()->newQObject(socket, QScriptEngine::ScriptOwnership);
+    return m_scriptThread->getScriptEngine()->newQObject(socket);
 }
 
 /**
@@ -134,10 +134,10 @@ QScriptValue ScriptInf::createUdpSocket(void)
  * @return
  *      The created server.
  */
-QScriptValue ScriptInf::createTcpServer(void)
+QJSValue ScriptInf::createTcpServer(void)
 {
-    ScriptTcpServer* server =  new ScriptTcpServer(m_scriptThread, m_scriptThread->getScriptWindow()->getMainInterfaceThread());
-    return m_scriptThread->getScriptEngine()->newQObject(server, QScriptEngine::ScriptOwnership);
+    ScriptTcpServer* server =  new ScriptTcpServer(m_scriptThread, m_scriptThread->getScriptWindow()->getMainInterfaceThread(), m_scriptThread->getScriptEngine());
+    return m_scriptThread->getScriptEngine()->newQObject(server);
 }
 
 /**
@@ -145,10 +145,10 @@ QScriptValue ScriptInf::createTcpServer(void)
  * @return
  *      The created serial port.
  */
-QScriptValue ScriptInf::createSerialPort(void)
+QJSValue ScriptInf::createSerialPort(void)
 {
     ScriptSerialPort* serialPort =  new ScriptSerialPort(m_scriptThread, m_scriptThread->getScriptWindow()->getMainInterfaceThread());
-    return m_scriptThread->getScriptEngine()->newQObject(serialPort, QScriptEngine::ScriptOwnership);
+    return m_scriptThread->getScriptEngine()->newQObject(serialPort);
 }
 
 
@@ -157,10 +157,10 @@ QScriptValue ScriptInf::createSerialPort(void)
  * @return
  *      The created interface.
  */
-QScriptValue ScriptInf::aardvarkI2cSpiCreateInterface(void)
+QJSValue ScriptInf::aardvarkI2cSpiCreateInterface(void)
 {
     ScriptAardvarkI2cSpi* aardvarkInterface = new ScriptAardvarkI2cSpi(m_scriptThread);
-    return m_scriptThread->getScriptEngine()->newQObject(aardvarkInterface, QScriptEngine::ScriptOwnership);
+    return m_scriptThread->getScriptEngine()->newQObject(aardvarkInterface);
 }
 
 /**
@@ -168,10 +168,10 @@ QScriptValue ScriptInf::aardvarkI2cSpiCreateInterface(void)
  * @return
  *      The created pcan interface.
  */
-QScriptValue ScriptInf::createPcanInterface(void)
+QJSValue ScriptInf::createPcanInterface(void)
 {
     ScriptPcan* pcan = new ScriptPcan(m_scriptThread);
-    return m_scriptThread->getScriptEngine()->newQObject(pcan, QScriptEngine::ScriptOwnership);
+    return m_scriptThread->getScriptEngine()->newQObject(pcan);
 
 }
 
@@ -425,7 +425,7 @@ bool ScriptInf::connectPcan(quint8 channel, quint32 baudrate, quint32 connectTim
  * @return
  *      True on success.
  */
-bool ScriptInf::aardvarkI2cSpiConnect(QScriptValue aardvarkI2cSpiSettings, quint32 connectTimeout)
+bool ScriptInf::aardvarkI2cSpiConnect(QJSValue aardvarkI2cSpiSettings, quint32 connectTimeout)
 {
     bool succeeded = false;
 
@@ -492,7 +492,22 @@ bool ScriptInf::connectSerialPort(QString name, qint32 baudRate, quint32 connect
     settings.serialPort.baudRate = baudRate;
     settings.serialPort.stringBaudRate = QString("%1").arg(baudRate);
 
-    settings.serialPort.stringDataBits = dataBits;
+    if(dataBits == 5)
+    {
+      settings.serialPort.dataBits = QSerialPort::Data5;
+    }
+    else if(dataBits == 6)
+    {
+      settings.serialPort.dataBits = QSerialPort::Data6;
+    }
+    else if(dataBits == 7)
+    {
+      settings.serialPort.dataBits = QSerialPort::Data7;
+    }
+    else
+    {
+      settings.serialPort.dataBits = QSerialPort::Data8;
+    }
     settings.serialPort.stringDataBits = QString("%1").arg(dataBits);
 
     settings.serialPort.stringParity = parity;
@@ -518,7 +533,7 @@ bool ScriptInf::connectSerialPort(QString name, qint32 baudRate, quint32 connect
     }
     else
     {
-        settings.serialPort.parity = QSerialPort::UnknownParity;
+        settings.serialPort.parity = QSerialPort::NoParity;
     }
 
 
@@ -725,7 +740,7 @@ QVector<bool> ScriptInf::aardvarkI2cSpiReadAllInputs(void)
  * @return
  *      The settings.
  */
-QScriptValue ScriptInf::aardvarkI2cSpiGetMainInterfaceSettings(void)
+QJSValue ScriptInf::aardvarkI2cSpiGetMainInterfaceSettings(void)
 {
     const Settings* settings = m_settingsDialog->settings();
     return ScriptAardvarkI2cSpi::convertConfigToScriptValue(&settings->aardvarkI2cSpi, m_scriptThread);
@@ -736,10 +751,10 @@ QScriptValue ScriptInf::aardvarkI2cSpiGetMainInterfaceSettings(void)
  * @return
  *      The serial port settings.
  */
-QScriptValue ScriptInf::getMainInterfaceSerialPortSettings(void)
+QJSValue ScriptInf::getMainInterfaceSerialPortSettings(void)
 {
     const Settings* settings = m_settingsDialog->settings();
-    QScriptValue ret = m_scriptThread->getScriptEngine()->newObject();
+    QJSValue ret = m_scriptThread->getScriptEngine()->newObject();
 
     ret.setProperty("name", settings->serialPort.name);
     ret.setProperty("baudRate", settings->serialPort.baudRate);
@@ -758,10 +773,10 @@ QScriptValue ScriptInf::getMainInterfaceSerialPortSettings(void)
  * @return
  *      The socket settings.
  */
-QScriptValue ScriptInf::getMainInterfaceSocketSettings(void)
+QJSValue ScriptInf::getMainInterfaceSocketSettings(void)
 {
     const Settings* settings = m_settingsDialog->settings();
-    QScriptValue ret = m_scriptThread->getScriptEngine()->newObject();
+    QJSValue ret = m_scriptThread->getScriptEngine()->newObject();
 
     ret.setProperty("destinationPort", settings->socketSettings.destinationPort);
     ret.setProperty("destinationIpAddress", settings->socketSettings.destinationIpAddress);
@@ -1013,14 +1028,14 @@ QStringList ScriptInf::availableSerialPorts(void)
  * @return
  *      The list.
  */
- QScriptValue ScriptInf::availableSerialPortsExt(void)
+ QJSValue ScriptInf::availableSerialPortsExt(void)
 {
     QList<QSerialPortInfo> ports = QSerialPortInfo::availablePorts();
-    QScriptValue result = m_scriptThread->getScriptEngine()->newArray(ports.length());
+    QJSValue result = m_scriptThread->getScriptEngine()->newArray(ports.length());
 
     for (int i = 0; i < ports.length(); i++)
     {
-        QScriptValue obj = m_scriptThread->getScriptEngine()->newObject();
+        QJSValue obj = m_scriptThread->getScriptEngine()->newObject();
         obj.setProperty("portName", ports[i].portName());
         obj.setProperty("systemLocation", ports[i].systemLocation());
         obj.setProperty("description", ports[i].description());

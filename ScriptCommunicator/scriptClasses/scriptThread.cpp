@@ -24,13 +24,11 @@
 
 #include "scriptwindow.h"
 #include "scriptThread.h"
-#include "ui_scriptwindow.h"
 #include<QTimer>
 #include <QMenu>
 #include <QFileDialog>
 #include <QBuffer>
 #include<QDomDocument>
-#include "plotwindow.h"
 #include "scriptComboBox.h"
 #include "scriptLineEdit.h"
 #include "mainwindow.h"
@@ -67,7 +65,6 @@
 #include "scriptUdpSocket.h"
 #include "scriptsqldatabase.h"
 #include "scriptXml.h"
-#include <QScriptEngineDebugger>
 #include <QSerialPortInfo>
 #include "ui_mainwindow.h"
 #include "scriptTimer.h"
@@ -109,7 +106,7 @@ ScriptThread::ScriptThread(ScriptWindow* scriptWindow, quint32 sendId, QString s
                            SettingsDialog *settingsDialog, bool scriptRunsInDebugger) :
     m_shallExit(false), m_shallPause(false) ,m_scriptRunsInDebugger(scriptRunsInDebugger), m_state(INVALID),
     m_pauseTimer(0),m_scriptEngine(0), m_settingsDialog(settingsDialog), m_scriptSql(), m_blockTime(DEFAULT_BLOCK_TIME),
-    m_standardDialogs(0), m_scriptFileObject(0), m_isSuspendedByDebuger(false), m_debugger(0), m_debugWindow(0), m_hasMainWindowGuiElements(false),
+    m_standardDialogs(0), m_scriptFileObject(0), m_isSuspendedByDebuger(false), m_debugWindow(0), m_hasMainWindowGuiElements(false),
     m_libraries(0), m_scriptInf(0), m_registerMetaTypeCalledinScriptWidget(false), m_scriptIsLoading(false)
 {
     m_scriptWindow = scriptWindow;
@@ -312,10 +309,10 @@ void ScriptThread::run()
         qRegisterMetaType<ScriptPlotWidget*>("ScriptPlotWidget*");
         qRegisterMetaType< QMessageBox::Icon>("QMessageBox::Icon");
         qRegisterMetaType<QMessageBox::StandardButtons>("QMessageBox::StandardButtons");
-        qRegisterMetaType<Context2D*>("Context2D*");
         qRegisterMetaType<QVector<quint8>>("QVector<quint8>");
         qRegisterMetaType<QVector<quint32>>("QVector<quint32>");
         qRegisterMetaType<QVector<QVector<unsigned char>>>("QVector<QVector<unsigned char>>");
+        qRegisterMetaType<ScriptTabWidget*>("ScriptTabWidget*");
 
 
         connect(this, SIGNAL(setMainWindowTitleSignal(QString)),
@@ -390,35 +387,25 @@ void ScriptThread::run()
 
 
         //create the script engine
-        m_scriptEngine = new QScriptEngine();
+        m_scriptEngine = new QJSEngine();
 
-        ScriptMap::registerScriptMetaTypes(m_scriptEngine);
+       // ScriptMap::registerScriptMetaTypes(m_scriptEngine);
         ScriptXmlReader::registerScriptMetaTypes(m_scriptEngine);
         ScriptXmlWriter::registerScriptMetaTypes(m_scriptEngine);
-        ScriptTableCellPosition::registerType(m_scriptEngine);
 
-
-        qScriptRegisterSequenceMetaType<QVector<unsigned char> >(m_scriptEngine);
-        qScriptRegisterSequenceMetaType<QVector<bool> >(m_scriptEngine);
-        qScriptRegisterSequenceMetaType<QVector<quint8> >(m_scriptEngine);
-        qScriptRegisterSequenceMetaType<QVector<quint32> >(m_scriptEngine);
-        qScriptRegisterSequenceMetaType<QVector<QVector<unsigned char>> >(m_scriptEngine);
-        qScriptRegisterSequenceMetaType<QList<double> >(m_scriptEngine);
-        qScriptRegisterSequenceMetaType<QList<quint8> >(m_scriptEngine);
-        qScriptRegisterSequenceMetaType<QList<int> >(m_scriptEngine);
-        qScriptRegisterSequenceMetaType<QList<quint32> >(m_scriptEngine);
-        qScriptRegisterSequenceMetaType<QList<qint32> >(m_scriptEngine);
-
-
+/*      ToDo
          if(!m_scriptRunsInDebugger)
          {
-            connect(m_scriptEngine, SIGNAL(signalHandlerException(QScriptValue)),
-                    this, SLOT(scriptSignalHandlerSlot(QScriptValue)));
+            connect(m_scriptEngine, SIGNAL(signalHandlerException(QJSValue)),
+                    this, SLOT(scriptSignalHandlerSlot(QJSValue)));
          }
+         */
 
         //register the script thread object
         m_scriptEngine->globalObject().setProperty("scriptThread", m_scriptEngine->newQObject(this));
+        QJSEngine::setObjectOwnership(this, QJSEngine::CppOwnership);
 
+        m_scriptSql.setScriptEngine(m_scriptEngine);
         m_scriptSql.registerScriptMetaTypes(m_scriptEngine);
         m_converterObject.registerScriptMetaTypes(m_scriptEngine);
 
@@ -428,10 +415,12 @@ void ScriptThread::run()
         m_scriptFileObject = new ScriptFile(this, m_scriptFileName, true);
         m_scriptFileObject->intSignals(m_scriptWindow, m_scriptRunsInDebugger);
         m_scriptEngine->globalObject().setProperty("scriptFile", m_scriptEngine->newQObject(m_scriptFileObject));
+        QJSEngine::setObjectOwnership(m_scriptEngine, QJSEngine::CppOwnership);
 
         m_scriptInf = new ScriptInf(this, m_settingsDialog);
         m_scriptInf->intSignals(m_scriptRunsInDebugger);
         m_scriptEngine->globalObject().setProperty("scriptInf", m_scriptEngine->newQObject(m_scriptInf));
+        QJSEngine::setObjectOwnership(m_scriptInf, QJSEngine::CppOwnership);
 
         if(m_userInterface[0]->getWidgetPointer())
         {//the script has an user interface
@@ -445,80 +434,17 @@ void ScriptThread::run()
         setThreadState(RUNNING);
 
 
-        if(m_scriptRunsInDebugger)
-        {
-            m_debugger = new QScriptEngineDebugger(this);
-            m_debugWindow = m_debugger->standardWindow();
-            m_debugWindow->setWindowModality(Qt::NonModal);
-            m_debugWindow->resize(1280, 704);
-            m_debugger->attachTo(m_scriptEngine);
-            m_debugger->action(QScriptEngineDebugger::InterruptAction)->trigger();
-            m_debugWindow->setWindowTitle(m_scriptFileName);
-
-            if(!qApp->styleSheet().isEmpty())
-            {//A stylesheet was applied.
-
-                //The locals widgets overrides some stylesheet elements. Therefore the background color
-                //has to be adjusted.
-                QWidget* widget = m_debugger->widget(QScriptEngineDebugger::LocalsWidget);
-                widget->setStyleSheet("QWidget {color: grey}");
-                QCommonStyle().unpolish(widget);
-                QCommonStyle().polish(widget);
-            }
-
-
-
-#ifdef Q_OS_MAC
-//Using this debugger signals causes the debugger to block (only on Mac OS X)
-
-            connect(&m_debugTimer, SIGNAL(timeout()),this, SLOT(debugTimerSlot()));
-            m_debugTimer.start(200);
-
-#else
-
-            connect(m_debugger, SIGNAL(evaluationSuspended()),
-                    this, SLOT(suspendedByDebuggerSlot()), Qt::DirectConnection);
-            connect(m_debugger, SIGNAL(evaluationResumed()),
-                    this, SLOT(resumedByDebuggerSlot()), Qt::DirectConnection);
-#endif
-        }
-
-
-
         if (loadScript(m_scriptFileName, false))
         {
-            if(!m_scriptRunsInDebugger)
-            {
-                exec();
-            }
-            else
-            {
-                while(!m_shallExit)
-                {
-                    QCoreApplication::processEvents(QEventLoop::AllEvents, 100);
-                    if(!m_debugWindow->isVisible())
-                    {
-                        stopScript();
-                    }
-                }
-
-            }
+            exec();
 
             //stop the timer
             m_pauseTimer->stop();
             blockSignals(false);
             m_scriptInf->blockSignals(false);
 
-            if(m_scriptRunsInDebugger)
-            {
-#ifdef Q_OS_MAC
-                m_debugTimer.stop();
-#endif
-                m_debugger->detach();
-            }
             //call the script stop function
-            QScriptValue stopFunction = m_scriptEngine->evaluate("stopScript");
-            if(m_scriptRunsInDebugger){m_debugger->attachTo(m_scriptEngine);}
+            QJSValue stopFunction = m_scriptEngine->evaluate("stopScript");
 
             if (stopFunction.isError())
             {//The script has no stop function
@@ -528,12 +454,14 @@ void ScriptThread::run()
             {
                 stopFunction.call();
 
+                /*ToDo
                 if(m_scriptEngine->hasUncaughtException())
                 {//In stopScript an error has been occured.
 
                     QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
                     m_scriptFileObject->showExceptionInMessageBox(m_scriptEngine->uncaughtException(), m_scriptFileName, m_scriptEngine, parent, m_scriptWindow);
                 }
+                */
             }
 
 
@@ -562,10 +490,10 @@ void ScriptThread::run()
  * @return
  *      The created timer.
  */
-QScriptValue ScriptThread::createTimer(void)
+QJSValue ScriptThread::createTimer(void)
 {
     ScriptTimer* timer =  new ScriptTimer(this);
-    return m_scriptEngine->newQObject(timer, QScriptEngine::ScriptOwnership);
+    return m_scriptEngine->newQObject(timer);
 }
 
 
@@ -573,14 +501,14 @@ QScriptValue ScriptThread::createTimer(void)
  * Creates a ScriptSound object.
  * @return
  */
-QScriptValue ScriptThread::createSoundObject(QString filename, bool isRelativePath)
+QJSValue ScriptThread::createSoundObject(QString filename, bool isRelativePath)
 {
     if(isRelativePath)
     {
         filename = m_scriptFileObject->createAbsolutePath(filename);
     }
     ScriptSound* sound = new ScriptSound(this, filename);
-    return m_scriptEngine->newQObject(sound, QScriptEngine::ScriptOwnership);
+    return m_scriptEngine->newQObject(sound);
 
 }
 
@@ -590,7 +518,7 @@ QScriptValue ScriptThread::createSoundObject(QString filename, bool isRelativePa
  * @return
  *      The create plot window.
  */
-QScriptValue ScriptThread::createPlotWindow()
+QJSValue ScriptThread::createPlotWindow()
 {
     ScriptPlotWindow* scriptPlotWindow = 0;
     QObject* obj = 0;
@@ -601,7 +529,7 @@ QScriptValue ScriptThread::createPlotWindow()
         scriptPlotWindow = static_cast<ScriptPlotWindow*>(obj);
         m_allCreatedGuiElementsFromScript.push_back(scriptPlotWindow);
     }
-    return m_scriptEngine->newQObject(scriptPlotWindow, QScriptEngine::QtOwnership);
+    return m_scriptEngine->newQObject(scriptPlotWindow);
 }
 
 /**
@@ -609,10 +537,10 @@ QScriptValue ScriptThread::createPlotWindow()
  * @return
  *      The created XML reader.
  */
-QScriptValue ScriptThread::createXmlReader()
+QJSValue ScriptThread::createXmlReader()
 {
-    ScriptXmlReader* reader =  new ScriptXmlReader(m_scriptFileObject, this);
-    return m_scriptEngine->newQObject(reader, QScriptEngine::ScriptOwnership);
+    ScriptXmlReader* reader =  new ScriptXmlReader(m_scriptFileObject, m_scriptEngine, this);
+    return m_scriptEngine->newQObject(reader);
 }
 
 /**
@@ -620,10 +548,10 @@ QScriptValue ScriptThread::createXmlReader()
  * @return
  *      The created XML writer.
  */
-QScriptValue ScriptThread::createXmlWriter()
+QJSValue ScriptThread::createXmlWriter()
 {
     ScriptXmlWriter* reader =  new ScriptXmlWriter(m_scriptFileObject, this);
-    return m_scriptEngine->newQObject(reader, QScriptEngine::ScriptOwnership);
+    return m_scriptEngine->newQObject(reader);
 }
 
 
@@ -634,7 +562,7 @@ QScriptValue ScriptThread::createXmlWriter()
  * @param scriptEngine
  *      The script engine.
  */
-void ScriptThread::installsCustomWidget(QObject* child, QScriptEngine* scriptEngine)
+void ScriptThread::installsCustomWidget(QObject* child, QJSEngine* scriptEngine)
 {
      QStringList files;
 
@@ -694,7 +622,7 @@ void ScriptThread::installsCustomWidget(QObject* child, QScriptEngine* scriptEng
  *      The script engine.
  * @return True if hte childs of the given child must/can be installed too.
  */
-bool ScriptThread::installOneChild(QObject* child, QScriptEngine* scriptEngine)
+bool ScriptThread::installOneChild(QObject* child, QJSEngine* scriptEngine)
 {
     QString objectName = "UI_" + child->objectName();
     bool childsOfGuiElementMustBeInstalled = true;
@@ -967,7 +895,7 @@ bool ScriptThread::installOneChild(QObject* child, QScriptEngine* scriptEngine)
  * @param firstObj
  *      True, if obj is the first object (this function is called recursive for every object)
  */
-void ScriptThread::installAllChilds(QObject* obj, QScriptEngine* scriptEngine, bool firstObj)
+void ScriptThread::installAllChilds(QObject* obj, QJSEngine* scriptEngine, bool firstObj)
 {
     if(firstObj)
     {
@@ -1101,12 +1029,12 @@ bool ScriptThread::showYesNoDialog(QString icon, QString title, QString text, QW
 */
 void ScriptThread::debugTimerSlot(void)
 {
-    static QScriptEngineDebugger::DebuggerState state = QScriptEngineDebugger::SuspendedState;
+    static QJSEngineDebugger::DebuggerState state = QJSEngineDebugger::SuspendedState;
 
     if(m_debugger->state() != state)
     {
         state = m_debugger->state();
-        if(state == QScriptEngineDebugger::RunningState)
+        if(state == QJSEngineDebugger::RunningState)
         {//The script is suspended (seems to be a bug on Mac OS X).
 
             m_pauseTimer->stop();
@@ -1297,7 +1225,7 @@ void ScriptThread::pauseTimerSlot()
  * @param exception
  *      The exception.
  */
-void ScriptThread::scriptSignalHandlerSlot(const QScriptValue & exception)
+void ScriptThread::scriptSignalHandlerSlot(const QJSValue & exception)
 {
     QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
     m_scriptFileObject->showExceptionInMessageBox(exception, m_scriptFileName, m_scriptEngine, parent, m_scriptWindow);
@@ -1380,7 +1308,7 @@ void ScriptThread::stopScript(void)
         m_shallExit = true;
         if(m_scriptIsLoading)
         {
-            m_scriptEngine->abortEvaluation();
+            m_scriptEngine->setInterrupted(true);
         }
         if(!m_scriptRunsInDebugger)
         {
@@ -1443,17 +1371,17 @@ int ScriptThread::createProcess(QString program, QStringList arguments)
  * @return
  *      The created process on success. An invalid value on failure.
  */
-QScriptValue ScriptThread::createProcessAsynchronous (QString program, QStringList arguments,
+QJSValue ScriptThread::createProcessAsynchronous (QString program, QStringList arguments,
                                                       int startWaitTime, QString workingDirectory)
 {
-    QScriptValue result;
+    QJSValue result;
     QProcess* process = new QProcess(this);
     process->setWorkingDirectory(workingDirectory.isEmpty()? QCoreApplication::applicationDirPath() : workingDirectory);
     process->start(program, arguments);
 
     if(process->waitForStarted(startWaitTime))
     {
-        result = m_scriptEngine->newQObject(static_cast<QObject*>(process), QScriptEngine::ScriptOwnership);
+        result = m_scriptEngine->newQObject(static_cast<QObject*>(process));
     }
 
     return result;
@@ -1468,10 +1396,10 @@ QScriptValue ScriptThread::createProcessAsynchronous (QString program, QStringLi
  * @return
  *      True if the process is finished.
  */
-bool ScriptThread::waitForFinishedProcess(QScriptValue process, int waitTime)
+bool ScriptThread::waitForFinishedProcess(QJSValue process, int waitTime)
 {
     bool result = false;
-    if(process.isValid() && process.isQObject())
+    if(process.isQObject())
     {
         QObject* obj = process.toQObject();
         if(QString(obj->metaObject()->className()) == QString("QProcess"))
@@ -1491,10 +1419,10 @@ bool ScriptThread::waitForFinishedProcess(QScriptValue process, int waitTime)
  * @return
  *      The exit code.
  */
-int ScriptThread::getProcessExitCode(QScriptValue process)
+int ScriptThread::getProcessExitCode(QJSValue process)
 {
     int result = -1;
-    if(process.isValid() && process.isQObject())
+    if(process.isQObject())
     {
         QObject* obj = process.toQObject();
         if(QString(obj->metaObject()->className()) == QString("QProcess"))
@@ -1512,9 +1440,9 @@ int ScriptThread::getProcessExitCode(QScriptValue process)
  * @param process
  *      The process.
  */
-void ScriptThread::killProcess(QScriptValue process)
+void ScriptThread::killProcess(QJSValue process)
 {
-    if(process.isValid() && process.isQObject())
+    if(process.isQObject())
     {
         QObject* obj = process.toQObject();
         if(QString(obj->metaObject()->className()) == QString("QProcess"))
@@ -1532,9 +1460,9 @@ void ScriptThread::killProcess(QScriptValue process)
  * @param process
  *      The process.
  */
-void ScriptThread::terminateProcess(QScriptValue process)
+void ScriptThread::terminateProcess(QJSValue process)
 {
-    if(process.isValid() && process.isQObject())
+    if(process.isQObject())
     {
         QObject* obj = process.toQObject();
         if(QString(obj->metaObject()->className()) == QString("QProcess"))
@@ -1557,10 +1485,10 @@ void ScriptThread::terminateProcess(QScriptValue process)
  * @return
  *      True on sucess.
  */
-bool ScriptThread::writeToProcessStdin(QScriptValue process, QVector<unsigned char> data, int waitTime)
+bool ScriptThread::writeToProcessStdin(QJSValue process, QVector<unsigned char> data, int waitTime)
 {
     bool result = false;
-    if(process.isValid() && process.isQObject())
+    if(process.isQObject())
     {
         QObject* obj = process.toQObject();
         if(QString(obj->metaObject()->className()) == QString("QProcess"))
@@ -1581,11 +1509,11 @@ bool ScriptThread::writeToProcessStdin(QScriptValue process, QVector<unsigned ch
  * @param process
  *      The process.
  */
-bool ScriptThread::processIsRunning(QScriptValue process)
+bool ScriptThread::processIsRunning(QJSValue process)
 {
     bool isRunning = false;
 
-    if(process.isValid() && process.isQObject())
+    if(process.isQObject())
     {
         QObject* obj = process.toQObject();
         if(QString(obj->metaObject()->className()) == QString("QProcess"))
@@ -1612,11 +1540,11 @@ bool ScriptThread::processIsRunning(QScriptValue process)
  * @return
  *      The data.
  */
-QVector<unsigned char>  ScriptThread::readAllStandardOutputFromProcess(QScriptValue process, bool isBlocking,
+QVector<unsigned char>  ScriptThread::readAllStandardOutputFromProcess(QJSValue process, bool isBlocking,
                                                                        quint8 blockByte, qint32 blockTime)
 {
     QVector<unsigned char> result;
-    if(process.isValid() && process.isQObject())
+    if(process.isQObject())
     {
         QObject* obj = process.toQObject();
         if(QString(obj->metaObject()->className()) == QString("QProcess"))
@@ -1669,11 +1597,11 @@ QVector<unsigned char>  ScriptThread::readAllStandardOutputFromProcess(QScriptVa
  * @return
  *      The data.
  */
-QVector<unsigned char>  ScriptThread::readAllStandardErrorFromProcess(QScriptValue process, bool isBlocking,
+QVector<unsigned char>  ScriptThread::readAllStandardErrorFromProcess(QJSValue process, bool isBlocking,
                                                                       quint8 blockByte, qint32 blockTime)
 {
     QVector<unsigned char> result;
-    if(process.isValid() && process.isQObject())
+    if(process.isQObject())
     {
         QObject* obj = process.toQObject();
         if(QString(obj->metaObject()->className()) == QString("QProcess"))
@@ -1712,7 +1640,7 @@ QVector<unsigned char>  ScriptThread::readAllStandardErrorFromProcess(QScriptVal
 }
 
 /**
- * Loads a dynamic link library and calls the init function (void init(QScriptEngine* engine)).
+ * Loads a dynamic link library and calls the init function (void init(QJSEngine* engine)).
  * With this function a script can extend his functionality.
  *
  * The library can register functions/objects which can be used/called from the script and the library
@@ -1736,7 +1664,7 @@ bool ScriptThread::loadLibrary(QString path, bool isRelativePath)
         if(lib->load())
         {
 
-            typedef void (*initFunction)(QScriptEngine*);
+            typedef void (*initFunction)(QJSEngine*);
 
             initFunction func = (initFunction) lib->resolve("init");
             if (func)
@@ -2305,10 +2233,10 @@ void ScriptThread::sendReceivedDataToMainInterface(QVector<unsigned char> data)
  * Returns the console settings (settings dialog).
  *      The console settings.
  */
-QScriptValue ScriptThread::getConsoleSettings(void)
+QJSValue ScriptThread::getConsoleSettings(void)
 {
     const Settings* settings = m_settingsDialog->settings();
-    QScriptValue ret = m_scriptEngine->newObject();
+    QJSValue ret = m_scriptEngine->newObject();
 
     ret.setProperty("showReceivedData", settings->showReceivedDataInConsole);
     ret.setProperty("showSendData", settings->showSendDataInConsole);
@@ -2357,7 +2285,7 @@ void ScriptThread::setMainWindowAndTaskBarIcon(QString iconFile, bool isRelative
  * @param resultString
  *      All functions and properties of the object in a string (separated by \n). If not needed then a 0 can be given.
  */
-void ScriptThread::getAllObjectPropertiesAndFunctionsInternal(QScriptValue object, QStringList* resultList, QString* resultString)
+void ScriptThread::getAllObjectPropertiesAndFunctionsInternal(QJSValue object, QStringList* resultList, QString* resultString)
 {
 
     QObject* objPointer = object.toQObject();
@@ -2409,7 +2337,7 @@ void ScriptThread::getAllObjectPropertiesAndFunctionsInternal(QScriptValue objec
  * @return
  *      All functions and properties of the object.
  */
-QStringList ScriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object, bool printInScriptWindowConsole)
+QStringList ScriptThread::getAllObjectPropertiesAndFunctions(QJSValue object, bool printInScriptWindowConsole)
 {
     QString resultString;
     QStringList resultList;

@@ -245,7 +245,7 @@ QString ScriptFile::createAbsolutePath(QString fileName)
  * @param parent
  *      The parent window.
  */
-void ScriptFile::showExceptionInMessageBox(QScriptValue exception, QString scriptPath, QScriptEngine* scriptEngine, QWidget *parent, ScriptWindow *scriptWindow)
+void ScriptFile::showExceptionInMessageBox(QJSValue exception, QString scriptPath, QJSEngine* scriptEngine, QWidget *parent, ScriptWindow *scriptWindow)
 {
     QString textToShow;
     QString functionsAndProperies;
@@ -258,7 +258,7 @@ void ScriptFile::showExceptionInMessageBox(QScriptValue exception, QString scrip
     if(list.length() >= 2)
     {
         list = list[1].split(".");
-        QScriptValue object = scriptEngine->evaluate(list[0]);
+        QJSValue object = scriptEngine->evaluate(list[0]);
         if(!object.isError())
         {
             ScriptThread::getAllObjectPropertiesAndFunctionsInternal(object, 0, &functionsAndProperies);
@@ -302,7 +302,7 @@ void ScriptFile::showExceptionInMessageBox(QScriptValue exception, QString scrip
     emit showMessageBoxSignal(QMessageBox::Critical, scriptPath,
                               QString::fromLatin1("%0:%1: %2")
                               .arg(scriptPath)
-                              .arg(exception.property("lineNumber").toInt32())
+                              .arg(exception.property("lineNumber").toInt())
                               .arg(textToShow), QMessageBox::Ok, parent);
 
     if((scriptWindow == 0) && !functionsAndProperies.isEmpty())
@@ -328,7 +328,7 @@ void ScriptFile::showExceptionInMessageBox(QScriptValue exception, QString scrip
  * @return
  *      True on success.
  */
-bool ScriptFile::loadScript(QString scriptPath, bool isRelativePath, QScriptEngine* scriptEngine, QWidget *parent, ScriptWindow *scriptWindow,
+bool ScriptFile::loadScript(QString scriptPath, bool isRelativePath, QJSEngine* scriptEngine, QWidget *parent, ScriptWindow *scriptWindow,
                             bool checkForUnsavedData, bool* scriptShallBeStopped)
 {
     bool hasSucceded = true;
@@ -366,23 +366,15 @@ bool ScriptFile::loadScript(QString scriptPath, bool isRelativePath, QScriptEngi
     }
     else
     {
-        //set ScriptContext
-        QScriptContext* context = scriptEngine->currentContext();
-        QScriptContext* parentContext = context->parentContext();
-        if(parentContext!=0)
-        {
-            context->setActivationObject(parentContext->activationObject());
-            context->setThisObject(parentContext->thisObject());
-        }
 
-        QScriptValue result = scriptEngine->evaluate(scriptFile.readAll(), scriptPath);
+        QJSValue result = scriptEngine->evaluate(scriptFile.readAll(), scriptPath);
         scriptFile.close();
 
         // If any Error, Display line number and error in a message box.
         if (result.isError())
         {
             QString str;
-            QScriptValueIterator it(result);
+            QJSValueIterator it(result);
             while (it.hasNext())
             {
                 it.next();
@@ -479,7 +471,7 @@ QStringList ScriptFile::readDirectory(QString directory, bool isRelativePath, bo
     QStringList list;
     directory = isRelativePath ? createAbsolutePath(directory) : directory;
 
-    QDir::Filters filter = 0;
+    QDir::Filters filter = QDir::NoFilter;
 
     if(returnDirectories){filter |= QDir::Filter::Dirs;}
     if(returnFiles){filter |= QDir::Filter::Files;}
@@ -746,7 +738,6 @@ bool ScriptFile::zipFiles(const QString& fileName, const QList<QStringList> file
 
     QFile inFile;
     QuaZip zip(fileName);
-    zip.setFileNameCodec("IBM866");
 
     if(fileList.isEmpty()){return false;}
 
@@ -814,8 +805,6 @@ bool ScriptFile::extractZipFile(const QString& fileName, const QString& destinat
     {
         if(!QDir().mkdir(destinationDirectory)){return false;}
     }
-
-    zip.setFileNameCodec("IBM866");
 
     QuaZipFileInfo info;
     QuaZipFile zipFile(&zip);

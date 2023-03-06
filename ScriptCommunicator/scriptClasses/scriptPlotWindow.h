@@ -88,13 +88,13 @@ public:
     {m_plotWindow->getWidget()->setCurrentAxisRanges(xMinValue, xMaxValue, yMinValue, yMaxValue, y2MinValue, y2MaxValue);}
 
     ///The function gets the current ranges of the diagram.
-    Q_INVOKABLE QScriptValue getCurrentAxisRanges(void){return m_plotWindow->getWidget()->getCurrentAxisRanges();}
+    Q_INVOKABLE QJSValue getCurrentAxisRanges(void){return m_plotWindow->getWidget()->getCurrentAxisRanges();}
 
     ///This function adds one point to a graph.
     Q_INVOKABLE void addDataToGraph(int graphIndex, double x, double y, bool force = false){emit m_plotWindow->getWidget()->addDataToGraphSignal(graphIndex, x, y, force);}
 
     ///This function returns several data points from a graph.
-    Q_INVOKABLE QScriptValue getDataFromGraph(int graphIndex, double xStart, int count = 1){return m_plotWindow->getWidget()->getDataFromGraph(graphIndex, xStart, count);}
+    Q_INVOKABLE QJSValue getDataFromGraph(int graphIndex, double xStart, int count = 1){return m_plotWindow->getWidget()->getDataFromGraph(graphIndex, xStart, count);}
 
     /**
      * Removes all data points with (sort-)keys between xFrom and xTo. If

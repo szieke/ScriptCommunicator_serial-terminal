@@ -4,8 +4,7 @@
 #include <QObject>
 #include <QDomDocument>
 #include <QDomNode>
-#include <QScriptable>
-#include <QScriptEngine>
+#include <QJSEngine>
 #include <QBuffer>
 #include <QXmlStreamWriter>
 #include "scriptObject.h"
@@ -16,7 +15,7 @@ class ScriptFile;
 ///Note: All function are working on an internal XML buffer.
 ///The function writteBufferToFile must be used to write the content of the internal XML buffer
 ///to a file.
-class ScriptXmlWriter : public QObject, protected QScriptable, public ScriptObject
+class ScriptXmlWriter : public QObject, public ScriptObject
 {
     Q_OBJECT
 
@@ -34,7 +33,7 @@ public:
     }
 
     ///Registers all (for this class) necessary meta types.
-    static void registerScriptMetaTypes(QScriptEngine* scriptEngine)
+    static void registerScriptMetaTypes(QJSEngine* scriptEngine)
     {
         (void)scriptEngine;
         qRegisterMetaType<ScriptXmlWriter*>("ScriptXmlWriter*");
@@ -55,11 +54,13 @@ public:
     ///Clears the internal buffer.
     Q_INVOKABLE void clearInternalBuffer(void){m_xmlBuffer.close();m_xmlBuffer.open(QIODevice::WriteOnly);}
 
+    /*ToDo entfernen, ist immer UTF8
     ///Sets the codec for this object to codec. The codec is used for encoding any data that is written.
     ///By default, ScriptXmlWriter uses UTF-8.
     ///The encoding information is stored in the initial xml tag which gets written when you call writeStartDocument().
     ///Call this function before calling writeStartDocument().
-    Q_INVOKABLE void setCodec(QString codecName){m_xmlWriter.setCodec(codecName.toUtf8().constData());}
+    Q_INVOKABLE void setCodec(QString codecName){m_xmlWriter.set(codecName.toUtf8().constData());}
+    */
 
     ///Sets the autoFormatting property. This property controls whether or not the stream writer automatically formats
     ///the generated XML data. If enabled, the writer automatically adds line-breaks and indentation to empty sections between elements
@@ -161,7 +162,7 @@ private:
 };
 
 ///This class represents a xml attributte.
-class ScriptXmlAttribute : public QObject, protected QScriptable, public ScriptObject
+class ScriptXmlAttribute : public QObject, public ScriptObject
 {
     Q_OBJECT
 
@@ -194,14 +195,14 @@ private:
 };
 
 ///Represents a xml element.
-class ScriptXmlElement : public QObject, protected QScriptable, public ScriptObject
+class ScriptXmlElement : public QObject, public ScriptObject
 {
     Q_OBJECT
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
     Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 public:
-    ScriptXmlElement(const QDomNode& node, QObject *parent = 0) : QObject(parent), m_node(node)
+    ScriptXmlElement(const QDomNode& node, QJSEngine* scriptEngine, QObject *parent = 0) : QObject(parent), m_node(node), m_scriptEngine(scriptEngine)
     {
     }
 
@@ -234,18 +235,19 @@ public:
 
 private:
     QDomNode m_node;
+    QJSEngine* m_scriptEngine;
 
 };
 
 ///Class for reading a xml file.
-class ScriptXmlReader : public QObject, protected QScriptable, public ScriptObject
+class ScriptXmlReader : public QObject, public ScriptObject
 {
     Q_OBJECT
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
     Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 public:
-    explicit ScriptXmlReader(ScriptFile* scriptFileObject, QObject *parent = 0);
+    explicit ScriptXmlReader(ScriptFile* scriptFileObject, QJSEngine* scriptEngine, QObject *parent = 0);
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
@@ -267,16 +269,15 @@ public:
     Q_INVOKABLE ScriptXmlElement *getRootElement(void);
 
     ///Registers all (for this class) necessary meta types.
-    static void registerScriptMetaTypes(QScriptEngine* scriptEngine)
+    static void registerScriptMetaTypes(QJSEngine* scriptEngine)
     {
+        (void)scriptEngine;
         qRegisterMetaType<ScriptXmlReader*>("ScriptXmlReader*");
         qRegisterMetaType<ScriptXmlElement*>("ScriptXmlElement*");
         qRegisterMetaType<ScriptXmlAttribute*>("ScriptXmlAttribute*");
         qRegisterMetaType<QList<ScriptXmlElement*>>("QList<ScriptXmlElement*>");
         qRegisterMetaType<QList<ScriptXmlAttribute*>>("QList<ScriptXmlAttribute*>");
 
-        qScriptRegisterSequenceMetaType<QList<ScriptXmlElement*>>(scriptEngine);
-        qScriptRegisterSequenceMetaType<QList<ScriptXmlAttribute*>>(scriptEngine);
     }
 
 private:
@@ -289,6 +290,8 @@ private:
 
     ///The xml root element.
     QDomElement m_rootElement;
+
+    QJSEngine* m_scriptEngine;
 };
 
 #endif // SCRIPTXML_H

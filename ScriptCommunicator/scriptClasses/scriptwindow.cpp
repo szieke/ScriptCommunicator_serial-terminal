@@ -29,7 +29,6 @@
 #include <QFileDialog>
 #include <QBuffer>
 #include <QDomDocument>
-#include "plotwindow.h"
 #include "scriptComboBox.h"
 #include "scriptLineEdit.h"
 #include "mainwindow.h"
@@ -483,18 +482,16 @@ void ScriptWindow::loadTableData(void)
 
         if (file.open(QFile::ReadOnly))
         {
+            QByteArray content = file.readAll();
             file.close();
 
-            if (!doc.setContent(&file))
+            if (!doc.setContent(content))
             {
-                if(!file.readAll().isEmpty())
-                {
-                    QMessageBox::critical(this, "parse error", "could not parse " + m_currentScriptConfigFileName);
+                QMessageBox::critical(this, "parse error", "could not parse " + m_currentScriptConfigFileName);
 
-                    m_currentScriptConfigFileName = "";
-                    setTitle(m_currentScriptConfigFileName);
-                    emit configHasToBeSavedSignal();
-                }
+                m_currentScriptConfigFileName = "";
+                setTitle(m_currentScriptConfigFileName);
+                emit configHasToBeSavedSignal();
             }
             else
             {
@@ -621,7 +618,7 @@ void ScriptWindow::saveTable(void)
     if(file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         QTextStream data( &file );
-        data.setCodec("UTF-8");
+        data.setEncoding(QStringConverter::Utf8);
         m_currentScriptConfigFileString = tableToString();
         data << m_currentScriptConfigFileString;
         file.close();
@@ -1390,7 +1387,7 @@ void ScriptWindow::startScriptThread(int selectedRow, bool withDebugger)
         ScriptThread* thread = 0;
         QString scriptFileName = m_userInterface->tableWidget->item(selectedRow, COLUMN_SCRIPT_PATH)->text();
 
-        if(m_userInterface->tableWidget->item(selectedRow, COLUMN_UI_PATH)->text() != 0)
+        if(m_userInterface->tableWidget->item(selectedRow, COLUMN_UI_PATH)->text() != nullptr)
         {//This script has a user interface.
 
             //Load the user interface and start the thread.

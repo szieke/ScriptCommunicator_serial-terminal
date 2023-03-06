@@ -30,19 +30,18 @@
 #include "scriptTcpClient.h"
 #include <mainInterfaceThread.h>
 #include <QNetworkProxy>
-#include <QScriptable>
 #include "scriptObject.h"
 
 ///This wrapper class is used to access a QTcpServer object from a script.
-class ScriptTcpServer : public QObject, protected QScriptable, public ScriptObject
+class ScriptTcpServer : public QObject, public ScriptObject
 {
     Q_OBJECT
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
     Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 public:
-    explicit ScriptTcpServer(QObject *parent, MainInterfaceThread* interfaceThread) : QObject(parent),
-        m_mainInterfaceThread(interfaceThread), m_interfaceIsPaused(false)
+    explicit ScriptTcpServer(QObject *parent, MainInterfaceThread* interfaceThread, QJSEngine* scriptEngine) : QObject(parent),
+        m_mainInterfaceThread(interfaceThread), m_interfaceIsPaused(false), m_scriptEngine(scriptEngine)
     {
         m_tcpServer.setProxy(QNetworkProxy::NoProxy);
 
@@ -79,9 +78,9 @@ public:
     Q_INVOKABLE bool hasPendingConnections(void){return m_tcpServer.hasPendingConnections();}
 
     ///Return the next pending connection (returns a script TCP client).
-    Q_INVOKABLE QScriptValue nextPendingConnection(void)
+    Q_INVOKABLE QJSValue nextPendingConnection(void)
     {
-        QScriptValue result;
+        QJSValue result;
 
         if( m_tcpServer.hasPendingConnections())
         {
@@ -89,7 +88,7 @@ public:
             if(pendingSocket)
             {
                 ScriptTcpClient * socket = new ScriptTcpClient(pendingSocket, parent(),  m_mainInterfaceThread);
-                result =  engine()->newQObject(socket, QScriptEngine::ScriptOwnership);
+                result =  m_scriptEngine->newQObject(socket);
             }
         }
 
@@ -132,6 +131,8 @@ private:
 
     ///If m_interfaceIsPaused is true, all data from this interface is dicarded.
     bool m_interfaceIsPaused;
+
+    QJSEngine* m_scriptEngine;
 
 };
 

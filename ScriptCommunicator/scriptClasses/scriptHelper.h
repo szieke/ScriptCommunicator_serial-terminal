@@ -1,8 +1,8 @@
 #ifndef SCRIPTHELPER_H
 #define SCRIPTHELPER_H
 
-#include <QScriptValueIterator>
-#include <QScriptEngine>
+#include <QJSValueIterator>
+#include <QJSEngine>
 #include <QObject>
 
 namespace ScriptHelper
@@ -21,11 +21,13 @@ namespace ScriptHelper
     static inline QByteArray variantListToByteArray(QList<QVariant> list)
     {
         QByteArray bytesArray;
-        for(auto el : list){bytesArray.append(el.toChar());}
+        for(auto el : list){bytesArray.append(el.toChar().toLatin1());}
         return bytesArray;
     }
 
 }
+
+#if 0
 ///Script map class.
 class ScriptMap : public QMap<QString, QVariant>
 {
@@ -41,9 +43,9 @@ public:
         }
     }
 
-    static QScriptValue ScriptMapToScriptValue(QScriptEngine* eng, const ScriptMap& map)
+    static QJSValue ScriptMapToScriptValue(QJSEngine* eng, const ScriptMap& map)
     {
-        QScriptValue a = eng->newObject();
+        QJSValue a = eng->newObject();
         ScriptMap::const_iterator it(map.begin());
         for(; it != map.end(); ++it)
         {
@@ -55,9 +57,9 @@ public:
         return a;
     }
 
-    static void ScriptMapFromScriptValue( const QScriptValue& value, ScriptMap& map)
+    static void ScriptMapFromScriptValue( const QJSValue& value, ScriptMap& map)
     {
-        QScriptValueIterator itr(value);
+        QJSValueIterator itr(value);
         while(itr.hasNext())
         {
             itr.next();
@@ -66,12 +68,12 @@ public:
         }
     }
 
-    static void registerScriptMetaTypes(QScriptEngine* engine)
+    static void registerScriptMetaTypes(QJSEngine* engine)
     {
         qScriptRegisterMetaType<ScriptMap>(engine, ScriptMapToScriptValue, ScriptMapFromScriptValue);
     }
 }; // work around because typedefs do not register correctly.
 Q_DECLARE_METATYPE(ScriptMap)
-
+#endif
 
 #endif // SCRIPTHELPER_H

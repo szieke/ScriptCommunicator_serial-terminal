@@ -22,7 +22,6 @@
 #ifndef COLOR_DIALOG_HPP
 #define COLOR_DIALOG_HPP
 
-#include "colorwidgets_global.hpp"
 #include "color_preview.hpp"
 #include "color_wheel.hpp"
 
@@ -52,7 +51,7 @@ public:
         Close
     };
 
-    explicit ColorDialog(QWidget *parent = 0, Qt::WindowFlags f = 0);
+    explicit ColorDialog(QWidget *parent = 0, Qt::WindowFlags f = Qt::Widget);
 
     /**
      * Get currently selected color

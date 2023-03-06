@@ -41,11 +41,8 @@
 #ifndef QCONTEXT2DCANVAS_H
 #define QCONTEXT2DCANVAS_H
 
-#include <qscriptengine.h>
-#include <qscriptcontext.h>
-#include <qscriptvalue.h>
-#include <QTimer>
 
+#include <QTimer>
 #include <QWidget>
 
 QT_BEGIN_NAMESPACE

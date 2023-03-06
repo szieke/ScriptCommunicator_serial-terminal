@@ -55,8 +55,8 @@ public:
     QPixmap hue_ring;
     QImage inner_selector;
     DisplayFlags display_flags;
-    QColor (*color_from)(qreal,qreal,qreal,qreal);
-    QColor (*rainbow_from_hue)(qreal);
+    QColor (*color_from)(float,float,float,float);
+    QColor (*rainbow_from_hue)(float);
     int max_size = 128;
 
     Private(ColorWheel *widget)

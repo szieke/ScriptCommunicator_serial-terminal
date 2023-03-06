@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QVector>
 #include <QMessageBox>
-#include <QScriptEngine>
+#include <QJSEngine>
 #include <QProgressBar>
 #include <QFileInfo>
 #include "scriptObject.h"
@@ -97,11 +97,11 @@ public:
                              QProgressBar* progress=0, const QString& comment=QString(""));
 
     ///Shows a script exception (message box) to the user.
-    void showExceptionInMessageBox(QScriptValue exception, QString scriptPath, QScriptEngine* scriptEngine, QWidget *parent,
+    void showExceptionInMessageBox(QJSValue exception, QString scriptPath, QJSEngine* scriptEngine, QWidget *parent,
                                    ScriptWindow* scriptWindow);
 
     ///Loads/includes one script (QtScript has no built in include mechanism).
-    bool loadScript(QString scriptPath, bool isRelativePath, QScriptEngine* scriptEngine, QWidget* parent, ScriptWindow* scriptWindow, bool checkForUnsavedData, bool *scriptShallBeStopped);
+    bool loadScript(QString scriptPath, bool isRelativePath, QJSEngine* scriptEngine, QWidget* parent, ScriptWindow* scriptWindow, bool checkForUnsavedData, bool *scriptShallBeStopped);
 
     ///Sets the script file name (path).
     void setScriptFileName(QString scriptFileName){m_scriptFileName = scriptFileName;}

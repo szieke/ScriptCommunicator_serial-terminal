@@ -43,7 +43,7 @@
 #include <QLabel>
 #include <QTimer>
 #include <QKeyEvent>
-#include <QScriptEngine>
+#include <QJSEngine>
 #include "mainwindowHandleData.h"
 #include <QSplitter>
 #include <QListWidgetItem>

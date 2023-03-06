@@ -25,7 +25,7 @@
 
 #include <QDropEvent>
 #include <QDragEnterEvent>
-#include <QDesktopWidget>
+//#include <QDesktopWidget>
 #include <QMimeData>
 #include <QPushButton>
 #if (QT_VERSION >= QT_VERSION_CHECK(5, 0, 0))
@@ -321,8 +321,10 @@ void ColorDialog::dropEvent(QDropEvent *event)
     }
 }
 
-static QColor get_screen_color(const QPoint &global_pos)
+static QColor get_screen_color(const QPointF &global_pos)
 {
+  (void)global_pos;
+  /*ToDo:
 #if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
     WId id = QApplication::desktop()->winId();
     QImage img = QPixmap::grabWindow(id, global_pos.x(), global_pos.y(), 1, 1).toImage();
@@ -335,13 +337,16 @@ static QColor get_screen_color(const QPoint &global_pos)
 #endif
 
     return img.pixel(0,0);
+    */
+
+  return QColor();
 }
 
 void ColorDialog::mouseReleaseEvent(QMouseEvent *event)
 {
     if (p->pick_from_screen)
     {
-        setColorInternal(get_screen_color(event->globalPos()));
+        setColorInternal(get_screen_color(event->globalPosition()));
         p->pick_from_screen = false;
         releaseMouse();
 
@@ -357,7 +362,7 @@ void ColorDialog::mouseMoveEvent(QMouseEvent *event)
 {
     if (p->pick_from_screen)
     {
-        setColorInternal(get_screen_color(event->globalPos()));
+        setColorInternal(get_screen_color(event->globalPosition()));
     }
 }
 

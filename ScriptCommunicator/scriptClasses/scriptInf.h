@@ -28,22 +28,22 @@ public:
     virtual QString getPublicScriptElements(void){return MainWindow::parseApiFile("scriptInf.api");}
 
     ///Creates an UDP socket.
-    Q_INVOKABLE QScriptValue createUdpSocket(void);
+    Q_INVOKABLE QJSValue createUdpSocket(void);
 
     ///Creates a TCP server.
-    Q_INVOKABLE QScriptValue createTcpServer(void);
+    Q_INVOKABLE QJSValue createTcpServer(void);
 
     ///Creates a TCP socket.
-    Q_INVOKABLE QScriptValue createTcpClient(void);
+    Q_INVOKABLE QJSValue createTcpClient(void);
 
     ///Creates a serial port.
-    Q_INVOKABLE QScriptValue createSerialPort(void);
+    Q_INVOKABLE QJSValue createSerialPort(void);
 
     ///Creates an Aardvark I2c/SPI interface.
-    Q_INVOKABLE QScriptValue aardvarkI2cSpiCreateInterface(void);
+    Q_INVOKABLE QJSValue aardvarkI2cSpiCreateInterface(void);
 
     ///Creates a pcan interface.
-    Q_INVOKABLE QScriptValue createPcanInterface(void);
+    Q_INVOKABLE QJSValue createPcanInterface(void);
 
     ///Sends a data array (QVector) with the main interface (in MainInterfaceThread).
     Q_INVOKABLE bool sendDataArray(QVector<unsigned char> data, int repetitionCount=0, int pause=0, bool addToMainWindowSendHistory=false);
@@ -101,7 +101,7 @@ public:
 
     ///Connects the main interface (Aardvark I2C/SPI).
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
-    Q_INVOKABLE bool aardvarkI2cSpiConnect(QScriptValue aardvarkI2cSpiSettings, quint32 connectTimeout = 5000);
+    Q_INVOKABLE bool aardvarkI2cSpiConnect(QJSValue aardvarkI2cSpiSettings, quint32 connectTimeout = 5000);
 
     ///Connects the main interface (serial port).
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
@@ -119,16 +119,16 @@ public:
     Q_INVOKABLE bool aardvarkI2cSpiChangePinConfiguration(quint8 pinIndex, bool isInput, bool withPullups=false);
 
     ///Returns the Aardvark I2C/SPI settings of the main interface.
-    Q_INVOKABLE QScriptValue aardvarkI2cSpiGetMainInterfaceSettings(void);
+    Q_INVOKABLE QJSValue aardvarkI2cSpiGetMainInterfaceSettings(void);
 
     ///Reads all inputs of the Aardvark I2C/SPI device.
     Q_INVOKABLE QVector<bool> aardvarkI2cSpiReadAllInputs(void);
 
     ///Returns the serial port settings of the main interface.
-    Q_INVOKABLE QScriptValue getMainInterfaceSerialPortSettings(void);
+    Q_INVOKABLE QJSValue getMainInterfaceSerialPortSettings(void);
 
     ///Returns the socket (UDP, TCP client/server) settings of the main interface.
-    Q_INVOKABLE QScriptValue getMainInterfaceSocketSettings(void);
+    Q_INVOKABLE QJSValue getMainInterfaceSocketSettings(void);
 
     ///Returns all IP addresses found on the host machine.
     Q_INVOKABLE QStringList getLocalIpAdress(void);
@@ -137,7 +137,7 @@ public:
     Q_INVOKABLE QStringList availableSerialPorts(void);
 
     ///Returns a list with the information of all available serial ports.
-    Q_INVOKABLE QScriptValue availableSerialPortsExt(void);
+    Q_INVOKABLE QJSValue availableSerialPortsExt(void);
 
 
 signals:

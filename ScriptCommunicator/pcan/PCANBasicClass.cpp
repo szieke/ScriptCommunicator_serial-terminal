@@ -557,16 +557,16 @@ void PCANBasicClass::loadAPI()
     {
 
         // Load the API functions.
-        m_pInitialize = (fpInitialize)getFunction("CAN_Initialize");
-        m_pUnInitialize = (fpUninitialize)getFunction("CAN_Uninitialize");
-        m_pReset = (fpReset)getFunction("CAN_Reset");
-        m_pGetStatus = (fpGetStatus)getFunction("CAN_GetStatus");
-        m_pRead = (fpRead)getFunction("CAN_Read");
-        m_pWrite = (fpWrite)getFunction("CAN_Write");
-        m_pFilterMessages = (fpFilterMessages)getFunction("CAN_FilterMessages");
-        m_pGetValue = (fpSetValue)getFunction("CAN_GetValue");
-        m_pSetValue = (fpGetValue)getFunction("CAN_SetValue");
-        m_pGetTextError = (fpGetErrorText)getFunction("CAN_GetErrorText");
+        m_pInitialize = (fpInitialize)((void*)getFunction("CAN_Initialize"));
+        m_pUnInitialize = (fpUninitialize)((void*)getFunction("CAN_Uninitialize"));
+        m_pReset = (fpReset)((void*)getFunction("CAN_Reset"));
+        m_pGetStatus = (fpGetStatus)((void*)getFunction("CAN_GetStatus"));
+        m_pRead = (fpRead)((void*)getFunction("CAN_Read"));
+        m_pWrite = (fpWrite)((void*)getFunction("CAN_Write"));
+        m_pFilterMessages = (fpFilterMessages)((void*)getFunction("CAN_FilterMessages"));
+        m_pGetValue = (fpSetValue)((void*)getFunction("CAN_GetValue"));
+        m_pSetValue = (fpGetValue)((void*)getFunction("CAN_SetValue"));
+        m_pGetTextError = (fpGetErrorText)((void*)getFunction("CAN_GetErrorText"));
 
         m_pcanAlreadyLoaded = m_pInitialize && m_pUnInitialize && m_pReset && m_pGetStatus && m_pRead
                 && m_pWrite && m_pFilterMessages && m_pGetValue && m_pSetValue && m_pGetTextError;

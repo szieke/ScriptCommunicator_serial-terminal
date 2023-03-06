@@ -45,43 +45,6 @@
 #include "scriptSlider.h"
 #include "scriptLineEdit.h"
 
-///The position of an item in the table.
-struct ScriptTableCellPosition
-{
-    int row;
-    int column;
-
-    static QScriptValue toScriptValue(QScriptEngine *engine, const ScriptTableCellPosition &s)
-    {
-      QScriptValue obj = engine->newObject();
-      obj.setProperty("row", s.row);
-      obj.setProperty("column", s.column);
-      return obj;
-    }
-
-    static void fromScriptValue(const QScriptValue &obj, ScriptTableCellPosition &s)
-    {
-      s.row = obj.property("row").toInt32();
-      s.column = obj.property("column").toInt32();
-    }
-
-    static QScriptValue createScriptTableCellPosition(QScriptContext *, QScriptEngine *engine)
-    {
-        ScriptTableCellPosition s = {0, 0};
-        return engine->toScriptValue(s);
-    }
-
-
-    static void registerType(QScriptEngine* engine)
-    {
-        qScriptRegisterMetaType<ScriptTableCellPosition>(engine, toScriptValue, fromScriptValue);
-        qScriptRegisterSequenceMetaType<QVector<ScriptTableCellPosition> >(engine);
-
-        QScriptValue ctor = engine->newFunction(createScriptTableCellPosition);
-        engine->globalObject().setProperty("ScriptTableCellPosition", ctor);
-    }
-};
-Q_DECLARE_METATYPE(ScriptTableCellPosition)
 
 ///This wrapper class is used to access a QTableWidget object (located in a script gui/ui-file) from a script.
 class ScriptTableWidget: public ScriptWidget
@@ -380,9 +343,9 @@ public:
     Q_INVOKABLE void rowsCanBeMovedByUser(bool canBeMoved){m_rowsCanBeMovedByUser = canBeMoved;}
 
     ///Returns the rows and columns of the selected cells.
-    Q_INVOKABLE QVector<ScriptTableCellPosition> getAllSelectedCells(void)
+    Q_INVOKABLE QVector<QJSValue> getAllSelectedCells(void)
     {
-        QVector<ScriptTableCellPosition> result;
+        QVector<QJSValue> result;
 
         QList<QTableWidgetSelectionRange>  ranges = m_tableWidget->selectedRanges();
 
@@ -395,10 +358,10 @@ public:
 
                 for(int row = currentRange.topRow(); row <= currentRange.bottomRow();row++)
                 {
-                    ScriptTableCellPosition pos;
-                    pos.column = column;
-                    pos.row = row;
-                    result.append(pos);
+                    QJSValue obj = m_scriptThread->getScriptEngine()->newObject();
+                    obj.setProperty("row", row);
+                    obj.setProperty("column", column);
+                    result.append(obj);
 
                 }
             }
@@ -451,9 +414,9 @@ public:
     }
 
     ///Returns the cell widget.
-    Q_INVOKABLE QScriptValue getWidget(int row, int column)
+    Q_INVOKABLE QJSValue getWidget(int row, int column)
     {
-        QScriptValue result;
+        QJSValue result;
 
         QWidget* widget = m_tableWidget->cellWidget(row, column);
 
@@ -464,68 +427,68 @@ public:
             if(type == "QComboBox")
             {
                 ScriptComboBox* scriptElement = new ScriptComboBox(static_cast<QComboBox*>(widget), m_scriptThread);
-                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement, QScriptEngine::ScriptOwnership);
+                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement);
 
             }
             else if(type == "QLineEdit")
             {
                 ScriptLineEdit* scriptElement = new ScriptLineEdit(static_cast<QLineEdit*>(widget), m_scriptThread);
-                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement, QScriptEngine::ScriptOwnership);
+                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement);
             }
             else if(type == "QPushButton")
             {
                 ScriptButton* scriptElement = new ScriptButton(static_cast<QPushButton*>(widget), m_scriptThread);
-                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement, QScriptEngine::ScriptOwnership);
+                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement);
             }
             else if(type == "QCheckBox")
             {
                 ScriptCheckBox* scriptElement = new ScriptCheckBox(static_cast<QCheckBox*>(widget), m_scriptThread);
-                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement, QScriptEngine::ScriptOwnership);
+                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement);
             }
             else if(type == "QSpinBox")
             {
                 ScriptSpinBox* scriptElement = new ScriptSpinBox(static_cast<QSpinBox*>(widget), m_scriptThread);
-                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement, QScriptEngine::ScriptOwnership);
+                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement);
             }
             else if(type == "QDoubleSpinBox")
             {
                 ScriptDoubleSpinBox* scriptElement = new ScriptDoubleSpinBox(static_cast<QDoubleSpinBox*>(widget), m_scriptThread);
-                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement, QScriptEngine::ScriptOwnership);
+                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement);
             }
             else if(type == "QSlider")
             {
                 ScriptSlider* scriptElement = new ScriptSlider(static_cast<QSlider*>(widget), m_scriptThread);
-                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement, QScriptEngine::ScriptOwnership);
+                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement);
             }
             else if(type == "QTimeEdit")
             {
                 ScriptTimeEdit* scriptElement = new ScriptTimeEdit(static_cast<QTimeEdit*>(widget), m_scriptThread);
-                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement, QScriptEngine::ScriptOwnership);
+                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement);
             }
             else if(type == "QDateEdit")
             {
                 ScriptDateEdit* scriptElement = new ScriptDateEdit(static_cast<QDateEdit*>(widget), m_scriptThread);
-                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement, QScriptEngine::ScriptOwnership);
+                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement);
             }
             else if(type == "QDateTimeEdit")
             {
                 ScriptDateTimeEdit* scriptElement = new ScriptDateTimeEdit(static_cast<QDateTimeEdit*>(widget), m_scriptThread);
-                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement, QScriptEngine::ScriptOwnership);
+                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement);
             }
             else if(type == "QTextEdit")
             {
                 ScriptTextEdit* scriptElement = new ScriptTextEdit(static_cast<QTextEdit*>(widget), m_scriptThread, m_scriptThread->getScriptWindow());
-                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement, QScriptEngine::ScriptOwnership);
+                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement);
             }
             else if(type == "QDial")
             {
                 ScriptSlider* scriptElement = new ScriptSlider(static_cast<QDial*>(widget), m_scriptThread);
-                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement, QScriptEngine::ScriptOwnership);
+                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement);
             }
             else if(type == "QCalendarWidget")
             {
                 ScriptCalendarWidget* scriptElement = new ScriptCalendarWidget(static_cast<QCalendarWidget*>(widget), m_scriptThread);
-                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement, QScriptEngine::ScriptOwnership);
+                result = m_scriptThread->getScriptEngine()->newQObject(scriptElement);
 
             }
             else

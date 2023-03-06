@@ -723,13 +723,13 @@ void ScriptPlotWidget::setCurrentAxisRanges(double xMinValue, double xMaxValue, 
  * @return
  *      Current view ranges.
  */
-QScriptValue ScriptPlotWidget::getCurrentAxisRanges(void)
+QJSValue ScriptPlotWidget::getCurrentAxisRanges(void)
 {
     const QCPRange xrange = m_plotWidget->xAxis->range();
     const QCPRange yrange = m_plotWidget->yAxis->range();
     const QCPRange y2range = m_plotWidget->yAxis2->range();
 
-    QScriptValue ret = m_scriptThread->getScriptEngine()->newObject();
+    QJSValue ret = m_scriptThread->getScriptEngine()->newObject();
     ret.setProperty("xMinValue", xrange.lower);
     ret.setProperty("xMaxValue", xrange.upper);
     ret.setProperty("yMinValue", yrange.lower);
@@ -860,9 +860,9 @@ bool ScriptPlotWidget::addDataToGraphSlot(int graphIndex, double x, double y, bo
  * @return
  *      Array of found x and y pairs.
  */
-QScriptValue ScriptPlotWidget::getDataFromGraph(int graphIndex, double xStart, int count)
+QJSValue ScriptPlotWidget::getDataFromGraph(int graphIndex, double xStart, int count)
 {
-    QScriptValue ret = m_scriptThread->getScriptEngine()->newArray();
+    QJSValue ret = m_scriptThread->getScriptEngine()->newArray();
 
     if (graphIndex >= 0 && graphIndex < m_plotWidget->graphCount())
     {
@@ -875,7 +875,7 @@ QScriptValue ScriptPlotWidget::getDataFromGraph(int graphIndex, double xStart, i
         // get all items until count items has been shifted out or no more items left
         while ((it != end) && (count != 0))
         {
-            QScriptValue value = m_scriptThread->getScriptEngine()->newObject();
+            QJSValue value = m_scriptThread->getScriptEngine()->newObject();
             value.setProperty("x", it->key);
             value.setProperty("y", it->value);
             ret.setProperty(idx, value);

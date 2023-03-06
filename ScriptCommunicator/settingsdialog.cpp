@@ -141,7 +141,7 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->serialPortInfoListBox, SIGNAL(currentTextChanged(QString)),
             this, SLOT(comPortChangedSlot(QString)));
 
-    connect(m_userInterface->serialPortInfoListBox, SIGNAL(activated(QString)),
+    connect(m_userInterface->serialPortInfoListBox, SIGNAL(textActivated(QString)),
             this, SLOT(comPortChangedSlot(QString)));
 
     m_userInterface->baudRateBox->setInsertPolicy(QComboBox::NoInsert);
@@ -326,11 +326,14 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->btnColorDec, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
     connect(m_userInterface->btnColorHex, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
     connect(m_userInterface->btnColorBin, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
+
+    /*ToDo
     connect(mapColorButtons, static_cast<void(QSignalMapper::*)(QWidget *)>(&QSignalMapper::mapped),
     [=](QWidget *widget){
         QToolButton *btn = qobject_cast<QToolButton *>(widget);
         colorButtonPressed(btn);
     });
+    */
 
     connect(m_userInterface->consoleWrapLinesCheckbox, SIGNAL(toggled(bool)),
             this, SIGNAL(consoleWrapLinesChangedSignal(bool)));
@@ -457,13 +460,13 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
 
     detectPcanSlot();
 
-    QRegExpValidator* v = new QRegExpValidator(m_userInterface->pcanFilterFromLineEdit);
-    QRegExp rx ("[a-f0-9]{1,8}");
-    v->setRegExp(rx);
+    QRegularExpressionValidator* v = new QRegularExpressionValidator(m_userInterface->pcanFilterFromLineEdit);
+    QRegularExpression rx ("[a-f0-9]{1,8}");
+    v->setRegularExpression(rx);
     m_userInterface->pcanFilterFromLineEdit->setValidator(v);
 
-    v = new QRegExpValidator(m_userInterface->pcanFilterToLineEdit);
-    v->setRegExp(rx);
+    v = new QRegularExpressionValidator(m_userInterface->pcanFilterToLineEdit);
+    v->setRegularExpression(rx);
     m_userInterface->pcanFilterToLineEdit->setValidator(v);
 
     setButtonColorFromString("000000", m_userInterface->consoleReceiveColorButton);
@@ -530,9 +533,9 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->logTimestampAtByteCheckBox, SIGNAL(stateChanged(int)),
             this, SLOT(stateFromCheckboxChangedSlot(int)));
 
-    m_userInterface->serialPortInfoListBox->setAutoCompletion(false);
-    m_userInterface->consoleNewLineAt->setAutoCompletion(false);;
-    m_userInterface->logNewLineAt->setAutoCompletion(false);
+    m_userInterface->serialPortInfoListBox->setCompleter(nullptr);
+   // m_userInterface->consoleNewLineAt->setCompleter(nullptr);
+    //m_userInterface->logNewLineAt->setCompleter(nullptr);
 
     setWindowTitle("ScriptCommunicator " + MainWindow::VERSION + " - Settings");
 
@@ -664,27 +667,27 @@ void SettingsDialog::colorButtonPressed(QToolButton* button)
  */
 void SettingsDialog::setFilterRadioButtonPressedSlot(void)
 {
-    QRegExpValidator* v1 = new QRegExpValidator(m_userInterface->pcanFilterFromLineEdit);
-    QRegExpValidator* v2 = new QRegExpValidator(m_userInterface->pcanFilterToLineEdit);
+    QRegularExpressionValidator* v1 = new QRegularExpressionValidator(m_userInterface->pcanFilterFromLineEdit);
+    QRegularExpressionValidator* v2 = new QRegularExpressionValidator(m_userInterface->pcanFilterToLineEdit);
 
     if(m_userInterface->pcanStandardRadioButton->isChecked())
     {
 
-        QRegExp rx("[a-f0-9]{1,3}");
-        v1->setRegExp(rx);
+        QRegularExpression rx("[a-f0-9]{1,3}");
+        v1->setRegularExpression(rx);
         m_userInterface->pcanFilterFromLineEdit->setText("000");
 
 
-        v2->setRegExp(rx);
+        v2->setRegularExpression(rx);
         m_userInterface->pcanFilterToLineEdit->setText("7ff");
     }
     else
     {
-        QRegExp rx("[a-f0-9]{1,8}");
-        v1->setRegExp(rx);
+        QRegularExpression rx("[a-f0-9]{1,8}");
+        v1->setRegularExpression(rx);
         m_userInterface->pcanFilterFromLineEdit->setText("00000000");
 
-        v2->setRegExp(rx);
+        v2->setRegularExpression(rx);
         m_userInterface->pcanFilterToLineEdit->setText("1fffffff");
     }
 

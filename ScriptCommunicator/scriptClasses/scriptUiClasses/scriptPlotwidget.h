@@ -70,13 +70,13 @@ public:
     Q_INVOKABLE void setCurrentAxisRanges(double xMinValue, double xMaxValue, double yMinValue, double yMaxValue, double y2MinValue=0, double y2MaxValue=0);
 
     ///The function gets the current ranges of the diagram.
-    Q_INVOKABLE QScriptValue getCurrentAxisRanges(void);
+    Q_INVOKABLE QJSValue getCurrentAxisRanges(void);
 
     ///This function adds one point to a graph.
     Q_INVOKABLE void addDataToGraph(int graphIndex, double x, double y, bool force = false){emit addDataToGraphSignal(graphIndex, x, y, force);}
 
     ///This function returns several data points from a graph.
-    Q_INVOKABLE QScriptValue getDataFromGraph(int graphIndex, double xStart, int count = 1);
+    Q_INVOKABLE QJSValue getDataFromGraph(int graphIndex, double xStart, int count = 1);
 
     /**
      * Removes all data points with (sort-)keys between xFrom and xTo. If

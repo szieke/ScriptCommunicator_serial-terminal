@@ -65,42 +65,42 @@ public:
     }
 
     ///Coverts a script value to a AardvarkI2cSpiSettings struct.
-    static bool scriptValueToConfig(QScriptValue& aardvarkI2cSpiSettings, AardvarkI2cSpiSettings& convertedSettings,
+    static bool scriptValueToConfig(QJSValue& aardvarkI2cSpiSettings, AardvarkI2cSpiSettings& convertedSettings,
                                       ScriptThread* scriptThread, QString callerName)
     {
         bool succeeded = false;
 
-        if(aardvarkI2cSpiSettings.property("devicePort").isValid() &&
-           aardvarkI2cSpiSettings.property("deviceMode").isValid() &&
-           aardvarkI2cSpiSettings.property("device5VIsOn").isValid() &&
-           aardvarkI2cSpiSettings.property("i2cBaudrate").isValid() &&
-           aardvarkI2cSpiSettings.property("i2cSlaveAddress").isValid() &&
-           aardvarkI2cSpiSettings.property("i2cPullupsOn").isValid() &&
-           aardvarkI2cSpiSettings.property("spiPolarity").isValid() &&
-           aardvarkI2cSpiSettings.property("spiSSPolarity").isValid() &&
-           aardvarkI2cSpiSettings.property("spiBitorder").isValid() &&
-           aardvarkI2cSpiSettings.property("spiPhase").isValid() &&
-           aardvarkI2cSpiSettings.property("spiBaudrate").isValid() &&
-           aardvarkI2cSpiSettings.property("pinConfigs").isValid())
+        if(aardvarkI2cSpiSettings.hasProperty("devicePort") &&
+           aardvarkI2cSpiSettings.hasProperty("deviceMode") &&
+           aardvarkI2cSpiSettings.hasProperty("device5VIsOn") &&
+           aardvarkI2cSpiSettings.hasProperty("i2cBaudrate") &&
+           aardvarkI2cSpiSettings.hasProperty("i2cSlaveAddress") &&
+           aardvarkI2cSpiSettings.hasProperty("i2cPullupsOn") &&
+           aardvarkI2cSpiSettings.hasProperty("spiPolarity") &&
+           aardvarkI2cSpiSettings.hasProperty("spiSSPolarity") &&
+           aardvarkI2cSpiSettings.hasProperty("spiBitorder") &&
+           aardvarkI2cSpiSettings.hasProperty("spiPhase") &&
+           aardvarkI2cSpiSettings.hasProperty("spiBaudrate") &&
+           aardvarkI2cSpiSettings.hasProperty("pinConfigs"))
         {
             succeeded = true;
-            convertedSettings.devicePort = aardvarkI2cSpiSettings.property("devicePort").toUInt16();
-            convertedSettings.deviceMode = (AardvarkI2cSpiDeviceMode)aardvarkI2cSpiSettings.property("deviceMode").toUInt16();
+            convertedSettings.devicePort = aardvarkI2cSpiSettings.property("devicePort").toUInt();
+            convertedSettings.deviceMode = (AardvarkI2cSpiDeviceMode)aardvarkI2cSpiSettings.property("deviceMode").toUInt();
             convertedSettings.device5VIsOn = aardvarkI2cSpiSettings.property("device5VIsOn").toBool();
-            convertedSettings.i2cBaudrate = aardvarkI2cSpiSettings.property("i2cBaudrate").toUInt16();
-            convertedSettings.i2cSlaveAddress = aardvarkI2cSpiSettings.property("i2cSlaveAddress").toUInt16();
+            convertedSettings.i2cBaudrate = aardvarkI2cSpiSettings.property("i2cBaudrate").toUInt();
+            convertedSettings.i2cSlaveAddress = aardvarkI2cSpiSettings.property("i2cSlaveAddress").toUInt();
             convertedSettings.i2cPullupsOn = aardvarkI2cSpiSettings.property("i2cPullupsOn").toBool();
-            convertedSettings.spiSSPolarity = (AardvarkSpiSSPolarity)aardvarkI2cSpiSettings.property("spiSSPolarity").toUInt16();
-            convertedSettings.spiBitorder = (AardvarkSpiBitorder)aardvarkI2cSpiSettings.property("spiBitorder").toUInt16();
-            convertedSettings.spiPhase = (AardvarkSpiPhase)aardvarkI2cSpiSettings.property("spiPhase").toUInt16();
-            convertedSettings.spiBaudrate = aardvarkI2cSpiSettings.property("spiBaudrate").toUInt16();
+            convertedSettings.spiSSPolarity = (AardvarkSpiSSPolarity)aardvarkI2cSpiSettings.property("spiSSPolarity").toUInt();
+            convertedSettings.spiBitorder = (AardvarkSpiBitorder)aardvarkI2cSpiSettings.property("spiBitorder").toUInt();
+            convertedSettings.spiPhase = (AardvarkSpiPhase)aardvarkI2cSpiSettings.property("spiPhase").toUInt();
+            convertedSettings.spiBaudrate = aardvarkI2cSpiSettings.property("spiBaudrate").toUInt();
 
-            QScriptValue pinConfigs = aardvarkI2cSpiSettings.property("pinConfigs");
+            QJSValue pinConfigs = aardvarkI2cSpiSettings.property("pinConfigs");
             for(int i = 0; i < AARDVARK_I2C_SPI_GPIO_COUNT; i++)
             {
-                if(pinConfigs.property(i).property("isInput").isValid() &&
-                   pinConfigs.property(i).property("withPullups").isValid() &&
-                   pinConfigs.property(i).property("outValue").isValid())
+                if(pinConfigs.property(i).hasProperty("isInput") &&
+                   pinConfigs.property(i).hasProperty("withPullups") &&
+                   pinConfigs.property(i).hasProperty("outValue"))
                 {
                     convertedSettings.pinConfigs[i].isInput = pinConfigs.property(i).property("isInput").toBool();
                     convertedSettings.pinConfigs[i].withPullups = pinConfigs.property(i).property("withPullups").toBool();
@@ -126,9 +126,9 @@ public:
     }
 
     ///Converts a AardvarkI2cSpiSettings struct to a script value.
-    static QScriptValue convertConfigToScriptValue(const AardvarkI2cSpiSettings* config, ScriptThread* scriptThread)
+    static QJSValue convertConfigToScriptValue(const AardvarkI2cSpiSettings* config, ScriptThread* scriptThread)
     {
-        QScriptValue ret = scriptThread->getScriptEngine()->newObject();
+        QJSValue ret = scriptThread->getScriptEngine()->newObject();
 
         ret.setProperty("devicePort", config->devicePort);
         ret.setProperty("deviceMode", config->deviceMode);
@@ -142,10 +142,10 @@ public:
         ret.setProperty("spiPhase", config->spiPhase);
         ret.setProperty("spiBaudrate", config->spiBaudrate);
 
-        QScriptValue pinConfigs = scriptThread->getScriptEngine()->newArray(AARDVARK_I2C_SPI_GPIO_COUNT);
+        QJSValue pinConfigs = scriptThread->getScriptEngine()->newArray(AARDVARK_I2C_SPI_GPIO_COUNT);
         for(int i = 0; i < AARDVARK_I2C_SPI_GPIO_COUNT; i++)
         {
-            QScriptValue el = scriptThread->getScriptEngine()->newObject();
+            QJSValue el = scriptThread->getScriptEngine()->newObject();
             el.setProperty("isInput", config->pinConfigs[i].isInput);
             el.setProperty("withPullups", config->pinConfigs[i].withPullups);
             el.setProperty("outValue", config->pinConfigs[i].outValue);
@@ -157,7 +157,7 @@ public:
     }
 
     ///Returns the current interface settings.
-    Q_INVOKABLE QScriptValue getInterfaceSettings(void)
+    Q_INVOKABLE QJSValue getInterfaceSettings(void)
     {
         return convertConfigToScriptValue(&m_currentSettings, m_scriptThread);
     }
@@ -170,7 +170,7 @@ public:
     Q_INVOKABLE QString detectDevices(void){return AardvarkI2cSpi::detectDevices();}
 
     ///Connects to the Aardvark I2C/SPI device/interface.
-    Q_INVOKABLE bool connectToDevice(QScriptValue aardvarkI2cSpiSettings)
+    Q_INVOKABLE bool connectToDevice(QJSValue aardvarkI2cSpiSettings)
     {
 
         AardvarkI2cSpiSettings settings;

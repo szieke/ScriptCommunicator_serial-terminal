@@ -37,7 +37,6 @@
 
 #ifdef Q_OS_WIN32
 #include <Windows.h>
-#include <QtWinExtras/QtWin>
 #endif
 
 #include <QMessageBox>
@@ -50,7 +49,6 @@
 #include "canTab.h"
 #include <QPrintDialog>
 #include "searchconsole.h"
-#include "scriptTcpClient.h"
 #include "version.h"
 
 ///The current version of ScriptCommunicator.
@@ -734,10 +732,12 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     }
 
 #ifdef Q_OS_WIN32
+    /*ToDo
         QString name = m_mainConfigFile.isEmpty() ? QString("%1").arg(QDateTime::currentMSecsSinceEpoch()) : m_mainConfigFile;
         //Specifiy a unique application-defined Application User Model ID (AppUserModelID) that identifies the current process to the taskbar.
         //Note: Because of this id every instance of ScriptCommunicator has its own icon group in the task bar.
         QtWin::setCurrentProcessExplicitAppUserModelID("ScriptCommunicator_" + name);
+        */
 #endif
 
     if(!iconFile.isEmpty())
@@ -1700,10 +1700,10 @@ bool MainWindow::loadSettings()
                         }
                         else
                         {
-                            currentSettings.appFontSize = QApplication::font().pixelSize();
-                            if(currentSettings.appFontSize < 12)
+                            currentSettings.appFontSize = QString::number(QApplication::font().pixelSize());
+                            if(currentSettings.appFontSize.toUInt() < 12)
                             {
-                                currentSettings.appFontSize = 12;
+                                currentSettings.appFontSize = "12";
                             }
                         }
 
@@ -4451,7 +4451,7 @@ QStringList MainWindow::readMainConfigFileList(bool removeDefaultMarker)
     if (inputFile.open(QIODevice::ReadOnly))
     {
         QTextStream in(&inputFile);
-        in.setCodec("UTF-8");
+        in.setEncoding(QStringConverter::Utf8);
         while ( !in.atEnd() )
         {
             QString line = in.readLine();
@@ -4634,7 +4634,7 @@ void MainWindow::saveMainConfigFileList(QStringList list)
     if(file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         QTextStream out(&file);
-        out.setCodec("UTF-8");
+        out.setEncoding(QStringConverter::Utf8);
 
         for(auto el : list)
         {
@@ -4808,7 +4808,7 @@ void MainWindow::saveConsoleSlot()
             if(isHtml)
             {
                 //QTextEdit returns Spaces as 160 (toHtml()).
-                consoleContent.replace(160, ' ');
+               //ToDo consoleContent.replace(160, ' ');
 
 
                 //Write the background color, the font family and the font size into the HTML string.

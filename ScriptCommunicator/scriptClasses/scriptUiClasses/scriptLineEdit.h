@@ -28,7 +28,7 @@
 #include "QLineEdit"
 #include <QIntValidator>
 #include <QDoubleValidator>
-#include <QRegExpValidator>
+#include <QRegularExpression>
 #include "scriptWidget.h"
 
 ///This wrapper class is used to access a QLineEdit object (located in a script gui/ui-file) from a script.
@@ -85,7 +85,8 @@ public:
 
     ///Adds an regular expression validator to the line edit
     ///(this ensures that the line edit contains only the allowed values which are specified in the pattern).
-    Q_INVOKABLE void addRexpExValidator(QString pattern, bool caseSensitiv){addValidator(new QRegExpValidator(QRegExp(pattern, caseSensitiv ? Qt::CaseSensitive : Qt::CaseInsensitive)));}
+    Q_INVOKABLE void addRexpExValidator(QString pattern, bool caseSensitiv)
+    {addValidator(new QRegularExpressionValidator(QRegularExpression(pattern, caseSensitiv ? QRegularExpression::NoPatternOption : QRegularExpression::CaseInsensitiveOption)));}
 
     ///This slot function sets the text of the line edit.
     Q_INVOKABLE void setText(QString text){emit setTextSignal(text);}

@@ -311,10 +311,10 @@ bool QuaZipFile::open(OpenMode mode, const QuaZipNewInfo& info,
     else
         zipClearFlags(p->zip->getZipFile(), ZIP_WRITE_DATA_DESCRIPTOR);
     p->setZipError(zipOpenNewFileInZip3_64(p->zip->getZipFile(),
-          p->zip->getFileNameCodec()->fromUnicode(info.name).constData(), &info_z,
+          info.name.toUtf8().constData(), &info_z,
           info.extraLocal.constData(), info.extraLocal.length(),
           info.extraGlobal.constData(), info.extraGlobal.length(),
-          p->zip->getCommentCodec()->fromUnicode(info.comment).constData(),
+          info.comment.toUtf8().constData(),
           method, level, (int)raw,
           windowBits, memLevel, strategy,
           password, (uLong)crc, p->zip->isZip64Enabled()));

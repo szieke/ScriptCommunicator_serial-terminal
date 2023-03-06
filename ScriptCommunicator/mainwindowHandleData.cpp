@@ -187,7 +187,7 @@ void MainWindowHandleData::calculateConsoleData()
 
     QFont textEditFont("Courier new",  currentSettings->stringConsoleFontSize.toInt());
     QFontMetrics fm(textEditFont);
-    m_consoleData.mixedData.pixelsWide = fm.width("0");
+    m_consoleData.mixedData.pixelsWide = fm.horizontalAdvance("0");
 
     m_consoleData.mixedData.divider = 1;
     m_consoleData.mixedData.bytesPerDecimal = bytesPerDecimalInConsole(currentSettings->consoleDecimalsType);
@@ -457,17 +457,20 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                         utf8String += m_consoleData.mixedData.utf8Spaces;
                     }
 
-
+/*
+                   ToDo
                     QTextCodec::ConverterState state;
                     QTextCodec *codec = QTextCodec::codecForName("UTF-8");
                     tmpString = codec->toUnicode(utf8Array.mid(i, bytesPerChar),bytesPerChar, &state);
+                    */
+                    tmpString = utf8Array;
 
                     if (tmpString == "\n")
                     {
                         tmpString.replace("\n", " ");
                     }
 
-                    if((state.invalidChars != 0) || tmpString.isEmpty())
+                    if(/*(state.invalidChars != 0) ||*/ tmpString.isEmpty())
                     {
                         tmpString = " ";
                     }
@@ -2093,7 +2096,7 @@ void MainWindowHandleData::historyConsoleTimerSlot()
                 else if (el == ' ')tmpString += "&nbsp;";
                 else if (el == '\n')tmpString += "";
                 else if (el == '\r')tmpString += "";
-                else if (el < 33 || el > 126) tmpString += 255;
+                else if (el < 33 || el > 126) tmpString += QByteArrayLiteral("\xff");/*ToDo*/
                 else tmpString += el;
             }
             text += tmpString;

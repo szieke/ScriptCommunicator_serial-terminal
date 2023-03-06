@@ -37,7 +37,7 @@
 #include <QDebug>
 #include "mainwindow.h"
 #include "mainInterfaceThread.h"
-#include "QScriptEngine"
+#include "QJSEngine"
 #include "QRegularExpression"
 #include <QPainter>
 #include <QScrollBar>
@@ -45,7 +45,6 @@
 #include <QProcess>
 #include <QInputDialog>
 #include "scriptwindow.h"
-#include <QScriptEngineDebugger>
 
 
 //Global sequence data maps (sequences can store data here).
@@ -326,19 +325,6 @@ void SequenceTableView::keyPressEvent(QKeyEvent *event)
 }
 
 /**
- * Closes the debugger.
- */
-void SequenceScriptThread::closeDebugger(void)
-{
-
-    if(m_runsInDebugger && m_debugger)
-    {
-        m_debugger->detach();
-        m_debugWindow->close();
-    }
-}
-
-/**
  * Executes a script before sending the data.
  *
  * @param sendScript
@@ -372,19 +358,19 @@ void SequenceScriptThread::executeScriptSlot(QString* sendScript, QByteArray* se
 
             if((*scriptEngineWrapper)->sendDataFunction == 0)
             {
-                (*scriptEngineWrapper)->sendDataFunction = new QScriptValue((*scriptEngineWrapper)->scriptEngine->evaluate("sendData"));
+                (*scriptEngineWrapper)->sendDataFunction = new QJSValue((*scriptEngineWrapper)->scriptEngine->evaluate("sendData"));
             }
 
             if (!(*scriptEngineWrapper)->sendDataFunction->isError())
             {
-                QScriptValue scriptArray = (*scriptEngineWrapper)->scriptEngine->newArray(sendData->size());
+                QJSValue scriptArray = (*scriptEngineWrapper)->scriptEngine->newArray(sendData->size());
                 for(int i = 0; i < sendData->size(); i++)
                 {
-                    scriptArray.setProperty(i, QScriptValue((*scriptEngineWrapper)->scriptEngine, (unsigned char)(sendData->at(i))));
+                    scriptArray.setProperty(i, QJSValue((unsigned char)(sendData->at(i))));
                 }
 
                 //call the sendData function
-                QScriptValue val = (*scriptEngineWrapper)->sendDataFunction->call(QScriptValue(), QScriptValueList() << scriptArray);
+                QJSValue val = (*scriptEngineWrapper)->sendDataFunction->call(QJSValueList() << scriptArray);
                 QList<QVariant> resultVariant = val.toVariant().toList();
 
 
@@ -400,14 +386,16 @@ void SequenceScriptThread::executeScriptSlot(QString* sendScript, QByteArray* se
                 sendData->clear();
             }
 
+            /*ToDo
             if((*scriptEngineWrapper)->scriptEngine->hasUncaughtException())
             {
-                QScriptValue exception = (*scriptEngineWrapper)->scriptEngine->uncaughtException();
+                QJSValue exception = (*scriptEngineWrapper)->scriptEngine->uncaughtException();
                 m_dialogIsShown = true;
                 QWidget *parent = (m_sendWindow->isVisible()) ? static_cast<QWidget *>(m_sendWindow) : static_cast<QWidget *>(m_mainWindow);
                 m_scriptFileObject->showExceptionInMessageBox(exception, *sendScript, (*scriptEngineWrapper)->scriptEngine, parent, m_mainWindow->getScriptWindow());
                 m_dialogIsShown = false;
             }
+            */
 
         }
         else
@@ -575,27 +563,6 @@ QByteArray SequenceTableView::executeScript(QString sendScript, QByteArray sendD
     }
 
     return (sendData.isEmpty()) ? QByteArray() : sendData;
-}
-
-/**
- * Closes the debugger.
- * @param isSingle
- *      True if this is a single sequence.
- */
-void SequenceTableView::closeDebugger(bool isSingle)
-{
-    SequenceScriptThread** thread = isSingle ? &m_scriptSingle : &m_scriptCyclic;
-    if((*thread) != 0)
-    {
-        if((*thread) ->getRunsInDebugger())
-        {
-            (*thread)->closeDebugger();
-
-            delete (*thread);
-            (*thread) = 0;
-        }
-    }
-
 }
 
 /**
@@ -838,10 +805,10 @@ QList<int> SequenceScriptThread::showColorDialog(quint8 initInitalRed, quint8 in
  * @return
  *      All functions and properties of the object.
  */
-QStringList SequenceScriptThread::getAllObjectPropertiesAndFunctions(QScriptValue object)
+QStringList SequenceScriptThread::getAllObjectPropertiesAndFunctions(QJSValue object)
 {
     QStringList resultList;
-    QScriptValueIterator it(object);
+    QJSValueIterator it(object);
     while (it.hasNext())
     {
         it.next();
@@ -912,7 +879,7 @@ SequenceScriptEngineWrapper* SequenceScriptThread::loadScript(QString scriptPath
         scriptEngineWrapper = new SequenceScriptEngineWrapper();
         scriptEngineWrapper->runsInDebugger = m_runsInDebugger;
         //create the script engine
-        QScriptEngine* scriptEngine = new QScriptEngine();
+        QJSEngine* scriptEngine = new QJSEngine();
 
         qRegisterMetaType<SequenceTableView*>("SequenceTableView*");
         qRegisterMetaType<QVector<unsigned char>>("QVector<unsigned char>");
@@ -922,39 +889,14 @@ SequenceScriptEngineWrapper* SequenceScriptThread::loadScript(QString scriptPath
         qRegisterMetaType<QList<double>>("QList<double>");
 
 
-        qScriptRegisterSequenceMetaType<QVector<unsigned char> >(scriptEngine);
-        qScriptRegisterSequenceMetaType<QList<quint32> >(scriptEngine);
-        qScriptRegisterSequenceMetaType<QList<qint32> >(scriptEngine);
-        qScriptRegisterSequenceMetaType<QList<int> >(scriptEngine);
-        qScriptRegisterSequenceMetaType<QList<double> >(scriptEngine);
-
         //register the script thread object
         scriptEngine->globalObject().setProperty("seq", scriptEngine->newQObject(this));
+        QJSEngine::setObjectOwnership(this, QJSEngine::CppOwnership);
 
         m_converterObject.registerScriptMetaTypes(scriptEngine);
 
-        if(m_runsInDebugger)
-        {
-            m_debugger = new QScriptEngineDebugger(this);
-            m_debugWindow = m_debugger->standardWindow();
-            m_debugWindow->setWindowModality(Qt::NonModal);
-            m_debugWindow->resize(1280, 704);
-            m_debugger->attachTo(scriptEngine);
-            m_debugger->action(QScriptEngineDebugger::InterruptAction)->trigger();
-            m_debugWindow->setWindowTitle(scriptFile.fileName());
-            connect(m_mainWindow, SIGNAL(bringWindowsToFrontSignal()), this, SLOT(bringWindowsToFrontSlot()), Qt::DirectConnection);
-        }
 
-        //set ScriptContext
-        QScriptContext *context = scriptEngine->currentContext();
-        QScriptContext *parent=context->parentContext();
-        if(parent!=0)
-        {
-            context->setActivationObject(context->parentContext()->activationObject());
-            context->setThisObject(context->parentContext()->thisObject());
-        }
-
-        QScriptValue result = scriptEngine->evaluate(scriptFile.readAll(), scriptPath);
+        QJSValue result = scriptEngine->evaluate(scriptFile.readAll(), scriptPath);
         scriptFile.close();
 
         scriptEngineWrapper->scriptEngine = scriptEngine;

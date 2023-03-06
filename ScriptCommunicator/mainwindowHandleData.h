@@ -9,7 +9,7 @@
 #include <QMessageBox>
 #include <QXmlStreamWriter>
 #include <QTimer>
-#include <QScriptEngine>
+#include <QJSEngine>
 #include "settingsdialog.h"
 
 

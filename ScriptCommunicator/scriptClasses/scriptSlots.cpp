@@ -372,14 +372,6 @@ QPalette::ColorRole ScriptSlots::stringToPaletteColorRole(QString colorRole)
     {
         convertedColor = QPalette::Base;
     }
-    else if(colorRole == "Foreground")
-    {
-        convertedColor = QPalette::Foreground;
-    }
-    else if(colorRole == "Background")
-    {
-        convertedColor = QPalette::Background;
-    }
     else if(colorRole == "WindowText")
     {
         convertedColor = QPalette::WindowText;
@@ -861,17 +853,6 @@ void ScriptSlots::createGuiElementSlot(QString elementType, QObject** createdGui
     else if(elementType == "QHBoxLayout")
     {
         *createdGuiElement = new QHBoxLayout((QWidget*) additionalArgument);
-    }
-    else if(elementType == "QContext2DCanvas")
-    {
-        QGroupBox* box = (QGroupBox*) additionalArgument;
-        QHBoxLayout* layout = new QHBoxLayout(box);
-        box->setLayout(layout);
-        QContext2DCanvas* canvas2D = new QContext2DCanvas(scriptThread->runsInDebugger());
-        layout->addWidget(canvas2D);
-
-        *createdGuiElement = canvas2D;
-
     }
     else
     {//invalid element type

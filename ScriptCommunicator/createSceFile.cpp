@@ -804,7 +804,7 @@ void CreateSceFile::generateSlot(QStringList* copiedFilesOutput, QProgressBar* p
     if(file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         QTextStream data( &file );
-        data.setCodec("UTF-8");
+        data.setEncoding(QStringConverter::Utf8);
         data << createSceFile();
         file.close();
 
@@ -1079,7 +1079,7 @@ void CreateSceFile::saveCurrentConfig(void)
     if(!configString.isEmpty() && file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
         QTextStream data( &file );
-        data.setCodec("UTF-8");
+        data.setEncoding(QStringConverter::Utf8);
         data << configString;
         file.close();
 
