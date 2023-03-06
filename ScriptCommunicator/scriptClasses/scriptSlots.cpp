@@ -850,10 +850,6 @@ void ScriptSlots::createGuiElementSlot(QString elementType, QObject** createdGui
         *createdGuiElement = new ScriptPlotWidget(scriptThread, scriptWindow, (QHBoxLayout*) additionalArgument);
         (*createdGuiElement)->setParent((QHBoxLayout*) additionalArgument);
     }
-    else if(elementType == "QHBoxLayout")
-    {
-        *createdGuiElement = new QHBoxLayout((QWidget*) additionalArgument);
-    }
     else
     {//invalid element type
 

@@ -66,7 +66,7 @@ function createProcessDetachedPushButtonClicked()
 									   UI_createProcessArgumentsLineEdit.text().split(";"),
 									   ""))
 	{
-		scriptThread.messageBox("Critical", "error", 'could not create process')
+        scriptThread.messageBox("Critical", "error", 'could not create process or the process returned an error')
 	}
 
 }
@@ -77,11 +77,8 @@ function createProcessPushButtonClicked()
 	if(0 != scriptThread.createProcess(UI_createProcessProgramLineEdit.text(), 
 									   UI_createProcessArgumentsLineEdit.text().split(";")))
 	{
-		scriptThread.messageBox("Critical", "error", 'could not create process')
+        scriptThread.messageBox("Critical", "error", 'could not create process or the process returned an error')
 	}
-	
-	var standartOut = scriptThread.readAllStandardOutputLastProcess();
-	var standartError = scriptThread.readAllStandardErrorLastProcess();
 
 }
 
@@ -182,8 +179,8 @@ UI_createProcessProgramLabel.setText(UI_createProcessProgramLabel.text());
 /****************create process***********************************/
 UI_createProcessDetached.clickedSignal.connect(createProcessDetachedPushButtonClicked)
 UI_createProcess.clickedSignal.connect(createProcessPushButtonClicked)
-UI_createProcessProgramLineEdit.setText("C:/Users/internet/Desktop/npp.6.6.9.bin/notepad++.exe");
-UI_createProcessArgumentsLineEdit.setText("C:\\Users\\internet\\Desktop\\npp.6.6.9.bin\\stylers.xml;C:\\Users\\internet\\Desktop\\npp.6.6.9.bin\\session.xml");
+UI_createProcessProgramLineEdit.setText("D:/Programme/Notepad_plus_plus/notepad.exe");
+UI_createProcessArgumentsLineEdit.setText("D:/Programme/Notepad_plus_plus/stylers.xml;D:/Programme/Notepad_plus_plus/session.xml");
 /***********************************************************************/
 
 /****************tabWidget************************/

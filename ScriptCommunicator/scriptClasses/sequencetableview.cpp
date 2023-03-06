@@ -239,7 +239,7 @@ void SequenceTablePlainTextEdit::dropEvent(QDropEvent *event)
         else
         {
             QList<QUrl> urls = event->mimeData()->urls();
-            for(auto el : urls)
+            for(const auto &el : urls)
             {
                 list.append(el.path());
             }

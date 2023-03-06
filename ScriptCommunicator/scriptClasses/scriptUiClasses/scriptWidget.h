@@ -38,21 +38,13 @@ class ScriptWidget: public QObject, public ScriptObject
     Q_OBJECT
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 
 public:
     ScriptWidget(QWidget* widget, ScriptThread *scriptThread, ScriptWindow* scriptWindow) :
-        m_scriptWindow(scriptWindow), m_scriptThread(scriptThread), m_widget(widget)
+        QObject(nullptr), m_scriptWindow(scriptWindow), m_scriptThread(scriptThread), m_widget(widget)
     {
 
-        if(QThread::currentThread() == scriptThread->thread())
-        {
-            setParent(scriptThread);
-        }
-        else
-        {
-            setParent(widget);
-        }
 
         if(m_widget)
         {

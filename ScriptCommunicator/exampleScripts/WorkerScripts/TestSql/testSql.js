@@ -202,4 +202,4 @@ else
 	testSqlIndex()
 }
 
-//scriptThread.stopScript();
+scriptThread.stopScript();

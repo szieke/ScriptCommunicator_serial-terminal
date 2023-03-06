@@ -134,11 +134,13 @@ ScriptThread::~ScriptThread()
         el->deleteLater();
     }
 
+#if 0
     //Delete all created gui elements (created by the script).
     for(auto el : m_allCreatedGuiElementsFromScript)
     {
         el->deleteLater();
     }
+#endif
 
     //Unload all loaded libraries.
     for(auto el : m_libraries)
@@ -507,10 +509,8 @@ QJSValue ScriptThread::createSoundObject(QString filename, bool isRelativePath)
     {
         filename = m_scriptFileObject->createAbsolutePath(filename);
     }
-    ScriptSound* sound = new ScriptSound(this, filename);
+    ScriptSound* sound = new ScriptSound(nullptr, filename);
     QJSValue obj = m_scriptEngine->newQObject(sound);
-    QJSEngine::setObjectOwnership(sound, QJSEngine::CppOwnership);
-
     return obj;
 
 }
@@ -531,6 +531,7 @@ QJSValue ScriptThread::createPlotWindow()
     {
         scriptPlotWindow = static_cast<ScriptPlotWindow*>(obj);
         m_allCreatedGuiElementsFromScript.push_back(scriptPlotWindow);
+        QJSEngine::setObjectOwnership(m_scriptEngine, QJSEngine::CppOwnership);
     }
     return m_scriptEngine->newQObject(scriptPlotWindow);
 }
@@ -542,7 +543,7 @@ QJSValue ScriptThread::createPlotWindow()
  */
 QJSValue ScriptThread::createXmlReader()
 {
-    ScriptXmlReader* reader =  new ScriptXmlReader(m_scriptFileObject, m_scriptEngine, this);
+    ScriptXmlReader* reader =  new ScriptXmlReader(m_scriptFileObject, m_scriptEngine, nullptr);
     return m_scriptEngine->newQObject(reader);
 }
 
@@ -553,7 +554,7 @@ QJSValue ScriptThread::createXmlReader()
  */
 QJSValue ScriptThread::createXmlWriter()
 {
-    ScriptXmlWriter* reader =  new ScriptXmlWriter(m_scriptFileObject, this);
+    ScriptXmlWriter* reader =  new ScriptXmlWriter(m_scriptFileObject, nullptr);
     return m_scriptEngine->newQObject(reader);
 }
 
@@ -908,7 +909,7 @@ void ScriptThread::installAllChilds(QObject* obj, QJSEngine* scriptEngine, bool 
     }
     for(auto child : obj->children())
     {
-        if(installOneChild(child, scriptEngine))
+        if((child != nullptr) && installOneChild(child, scriptEngine))
         {
             installAllChilds(child,scriptEngine);
         }
@@ -1309,7 +1310,7 @@ void ScriptThread::stopScript(void)
     if(!m_shallExit)
     {
         m_shallExit = true;
-        if(m_scriptIsLoading)
+        if(!m_scriptIsLoading)
         {
             m_scriptEngine->setInterrupted(true);
         }
@@ -1378,7 +1379,7 @@ QJSValue ScriptThread::createProcessAsynchronous (QString program, QStringList a
                                                       int startWaitTime, QString workingDirectory)
 {
     QJSValue result;
-    QProcess* process = new QProcess(this);
+    QProcess* process = new QProcess();
     process->setWorkingDirectory(workingDirectory.isEmpty()? QCoreApplication::applicationDirPath() : workingDirectory);
     process->start(program, arguments);
 

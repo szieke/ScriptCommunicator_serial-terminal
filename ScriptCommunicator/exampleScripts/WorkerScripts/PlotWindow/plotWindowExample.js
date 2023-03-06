@@ -4,7 +4,7 @@ This worker script (worker scripts can be added in the script window) demonstrat
 //The plot window is closed.
 function plotWindowClosedSlot()
 {
-	scriptThread.stopScript()
+	//scriptThread.stopScript()
 }
 
 var x1 = 0;
@@ -134,6 +134,7 @@ plot2PositionAndSizelist[0] = (plot1PositionAndSizelist[0] - plot1PositionAndSiz
 var string =  plot2PositionAndSizelist[0] + "," + plot2PositionAndSizelist[1] + "," + plot2PositionAndSizelist[2] + "," + plot2PositionAndSizelist[3];
 plotWindow2.setWindowPositionAndSize(string);
 
+/*
 //start the periodically timer which calls the function timeout
 var timer1 = scriptThread.createTimer()
 timer1.timeoutSignal.connect(timeout1);
@@ -143,6 +144,6 @@ var timer2 = scriptThread.createTimer()
 timer2.setTimerType("PreciseTimer");
 timer2.timeoutSignal.connect(timeout2);
 timer2.start(1000);
-
+*/
 
 

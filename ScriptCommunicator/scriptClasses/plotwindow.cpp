@@ -34,7 +34,7 @@
  *      Parent widget.
  */
 PlotWindow::PlotWindow(ScriptThread* scriptThread, ScriptWindow *scriptWindow) :
-    QMainWindow(0),
+    QMainWindow(nullptr),
     m_userInterface(new Ui::PlotWindow)
 {
     m_userInterface->setupUi(this);

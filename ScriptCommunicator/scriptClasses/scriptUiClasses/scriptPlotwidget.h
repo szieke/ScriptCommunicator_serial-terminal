@@ -29,7 +29,7 @@ typedef struct
 class ScriptPlotWidget : public QObject, public ScriptObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 public:
     explicit ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow* scriptWindow, QHBoxLayout* hLayout );
     ~ScriptPlotWidget();

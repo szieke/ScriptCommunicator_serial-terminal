@@ -10,7 +10,7 @@
  *      The layout of the group box in which the plot widget resides.
  */
 ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scriptWindow, QHBoxLayout *hLayout) :
-    QObject(0), m_scriptThread(scriptThread), m_maxDataPointsPerGraph(10000000), m_addSpaceAfterBiggestValues(false), m_yAxis2IsVisible(false),
+    QObject(nullptr), m_scriptThread(scriptThread), m_maxDataPointsPerGraph(10000000), m_addSpaceAfterBiggestValues(false), m_yAxis2IsVisible(false),
     m_yRangeHelperVisible(false)
 {
 
