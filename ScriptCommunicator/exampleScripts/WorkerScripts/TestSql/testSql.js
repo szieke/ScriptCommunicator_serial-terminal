@@ -53,10 +53,12 @@ function testBinding()
 	
 	//Print all bounded values.
 	var myMap = sqlQuery.boundValues();
-	for( key in myMap )
+	for(var i = 0;  i <  myMap.length; i++ )
 	{
-		scriptThread.appendTextToConsole('bound: ' + key + "," + myMap[key]);
+		scriptThread.appendTextToConsole('bound: ' + myMap[i]);
 	}
+	
+	
 }
 //Returns the largest id from a table.
 function getLastIdFromTable(name)
@@ -200,4 +202,4 @@ else
 	testSqlIndex()
 }
 
-scriptThread.stopScript();
+//scriptThread.stopScript();

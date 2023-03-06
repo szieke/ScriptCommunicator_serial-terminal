@@ -27,7 +27,7 @@ class  ScriptSqlField : public QObject, public ScriptObject
     friend class ScriptSqlRecord;
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 
 public:
 
@@ -48,13 +48,13 @@ public:
 
     Q_INVOKABLE void setValue(QVariant value)
     {
-        if(value.type() == QVariant::List){value = ScriptHelper::variantListToByteArray(value.toList());}
+        if(value.typeId() == (QMetaType::QJsonArray | QMetaType::User)){value = ScriptHelper::variantListToByteArray(value.toList());}
         m_field.setValue(value);
     }
     Q_INVOKABLE QVariant value()
     {
         QVariant val = m_field.value();
-        if(val.type() == QVariant::ByteArray){val = ScriptHelper::byteArrayToVariantList(val.toByteArray());}
+        if(val.typeId() == QMetaType::QByteArray){val = ScriptHelper::byteArrayToVariantList(val.toByteArray());}
         return val;
     }
     Q_INVOKABLE void setName(QString name){m_field.setName(name);}
@@ -63,17 +63,17 @@ public:
     Q_INVOKABLE void setReadOnly(bool readOnly){m_field.setReadOnly(readOnly);}
     Q_INVOKABLE bool isReadOnly(){return m_field.isReadOnly();}
     Q_INVOKABLE void clear(){m_field.clear();}
-    Q_INVOKABLE /*QVariant::Type*/quint32 type(){return (quint32)m_field.type();}
+    Q_INVOKABLE /*QVariant::Type*/quint32 type(){return (quint32)m_field.metaType().id();}
     Q_INVOKABLE bool isAutoValue(){return m_field.isAutoValue();}
 
-    Q_INVOKABLE void setType(QVariant::Type type){m_field.setType(type);}
+    Q_INVOKABLE void setType(QMetaType::Type type){m_field.setMetaType(QMetaType(type));}
     Q_INVOKABLE void setRequiredStatus(quint32 status){m_field.setRequiredStatus((QSqlField::RequiredStatus)status);}
     Q_INVOKABLE void setRequired(bool required){m_field.setRequired(required);}
     Q_INVOKABLE void setLength(int fieldLength){m_field.setLength(fieldLength);}
     Q_INVOKABLE void setPrecision(int precision){m_field.setPrecision(precision);}
     Q_INVOKABLE void setDefaultValue(QVariant value)
     {
-        if(value.type() == QVariant::List){value = ScriptHelper::variantListToByteArray(value.toList());}
+        if(value.typeId() == (QMetaType::QJsonArray | QMetaType::User)){value = ScriptHelper::variantListToByteArray(value.toList());}
         m_field.setDefaultValue(value);
     }
     Q_INVOKABLE void setSqlType(int type){m_field.setSqlType(type);}
@@ -86,7 +86,7 @@ public:
     Q_INVOKABLE QVariant defaultValue()
     {
         QVariant val = m_field.defaultValue();
-        if(val.type() == QVariant::ByteArray){val = ScriptHelper::byteArrayToVariantList(val.toByteArray());}
+        if(val.typeId() == QMetaType::QByteArray){val = ScriptHelper::byteArrayToVariantList(val.toByteArray());}
         return val;
     }
     Q_INVOKABLE int typeID(){return m_field.typeID();}
@@ -102,7 +102,7 @@ class  ScriptSqlRecord : public QObject, public ScriptObject
     Q_OBJECT
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 
 public:
     ScriptSqlRecord(const QSqlRecord& other, QJSEngine* engine) : QObject(0), m_record(other), m_engine(engine){}
@@ -124,24 +124,24 @@ public:
     Q_INVOKABLE QVariant value(int i)
     {
         QVariant val = m_record.value(i);
-        if(val.type() == QVariant::ByteArray){val =ScriptHelper:: byteArrayToVariantList(val.toByteArray());}
+        if(val.typeId() == QMetaType::QByteArray){val =ScriptHelper:: byteArrayToVariantList(val.toByteArray());}
         return val;
         return val;
     }
     Q_INVOKABLE QVariant value(QString name)
     {
         QVariant val = m_record.value(name);
-        if(val.type() == QVariant::ByteArray){val = ScriptHelper::byteArrayToVariantList(val.toByteArray());}
+        if(val.typeId() == QMetaType::QByteArray){val = ScriptHelper::byteArrayToVariantList(val.toByteArray());}
         return val;
     }
     Q_INVOKABLE void setValue(int i, QVariant val)
     {
-        if(val.type() == QVariant::List){val = ScriptHelper::variantListToByteArray(val.toList());}
+        if(val.typeId() == (QMetaType::QJsonArray | QMetaType::User)){val = ScriptHelper::variantListToByteArray(val.toList());}
         m_record.setValue(i, val);
     }
     Q_INVOKABLE void setValue(QString name, QVariant val)
     {
-        if(val.type() == QVariant::List){val = ScriptHelper::variantListToByteArray(val.toList());}
+        if(val.typeId() == (QMetaType::QJsonArray | QMetaType::User)){val = ScriptHelper::variantListToByteArray(val.toList());}
         m_record.setValue(name, val);
     }
 
@@ -197,7 +197,7 @@ class  ScriptSqlIndex : public QObject, public ScriptObject
     Q_OBJECT
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 
 public:
     ScriptSqlIndex(QSqlIndex index) : QObject(0),m_index(index){ }
@@ -235,7 +235,7 @@ class  ScriptSqlError : public QObject, public ScriptObject
     Q_OBJECT
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 
 public:
 
@@ -270,11 +270,11 @@ class  ScriptSqlQuery : public QObject, public ScriptObject
     Q_OBJECT
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 
 public:
 
-    ScriptSqlQuery(const QSqlQuery& other, QJSEngine* engine) : QObject(0), m_query(other), m_engine(engine){}
+  ScriptSqlQuery(const QSqlQuery&& other, QJSEngine* engine) : QObject(0), m_query(other), m_engine(engine){}
     ScriptSqlQuery& operator=(const ScriptSqlQuery& other)
     {
         m_query = other.m_query;
@@ -319,13 +319,13 @@ public:
     Q_INVOKABLE QVariant value(int i)
     {
         QVariant val = m_query.value(i);
-        if(val.type() == QVariant::ByteArray){val = ScriptHelper::byteArrayToVariantList(val.toByteArray());}
+        if(val.typeId() == QMetaType::QByteArray){val = ScriptHelper::byteArrayToVariantList(val.toByteArray());}
         return val;
     }
     Q_INVOKABLE QVariant value(QString name)
     {
         QVariant val = m_query.value(name);
-        if(val.type() == QVariant::ByteArray){val = ScriptHelper::byteArrayToVariantList(val.toByteArray());}
+        if(val.typeId() == QMetaType::QByteArray){val = ScriptHelper::byteArrayToVariantList(val.toByteArray());}
         return val;
     }
 
@@ -346,35 +346,48 @@ public:
 
     Q_INVOKABLE void bindValue(QString placeholder, QVariant val, quint32 type = (quint32)QSql::In)
     {
-        if(val.type() == QVariant::List){val = ScriptHelper::variantListToByteArray(val.toList());}
+        if(val.typeId() == (QMetaType::QJsonArray | QMetaType::User)){val = ScriptHelper::variantListToByteArray(val.toList());}
         m_query.bindValue(placeholder, val, (QSql::ParamType)type);
     }
     Q_INVOKABLE void bindValue(int pos, QVariant val, quint32 type = (quint32)QSql::In)
     {
-        if(val.type() == QVariant::List){val = ScriptHelper::variantListToByteArray(val.toList());}
+        if(val.typeId() == (QMetaType::QJsonArray | QMetaType::User)){val = ScriptHelper::variantListToByteArray(val.toList());}
         m_query.bindValue(pos, val, (QSql::ParamType)type);
     }
 
     Q_INVOKABLE void addBindValue(QVariant val, quint32 type = (quint32)QSql::In)
     {
-        if(val.type() == QVariant::List){val = ScriptHelper::variantListToByteArray(val.toList());}
+        if(val.typeId() == (QMetaType::QJsonArray | QMetaType::User)){val = ScriptHelper::variantListToByteArray(val.toList());}
         m_query.addBindValue(val, (QSql::ParamType)type);
     }
     Q_INVOKABLE QVariant boundValue(QString placeholder)
     {
         QVariant val = m_query.boundValue(placeholder);
-        if(val.type() == QVariant::ByteArray){val = ScriptHelper::byteArrayToVariantList(val.toByteArray());}
+        if(val.typeId() == QMetaType::QByteArray){val = ScriptHelper::byteArrayToVariantList(val.toByteArray());}
         return val;
     }
     Q_INVOKABLE QVariant boundValue(int pos)
     {
         QVariant val = m_query.boundValue(pos);
-        if(val.type() == QVariant::ByteArray){val =ScriptHelper:: byteArrayToVariantList(val.toByteArray());}
+        if(val.typeId() == QMetaType::QByteArray){val =ScriptHelper:: byteArrayToVariantList(val.toByteArray());}
         return val;
     }
-    /*ToDo
-    Q_INVOKABLE ScriptMap boundValues(){return ScriptMap(m_query.boundValues());}
-    */
+
+    Q_INVOKABLE QJSValue boundValues()
+    {
+      QVariantList list = m_query.boundValues();
+      QVariantList result;
+
+      for(auto el : list)
+      {
+        if(el.typeId() == QMetaType::QByteArray){el = ScriptHelper::byteArrayToVariantList(el.toByteArray());}
+
+        result.append(el);
+      }
+
+      return m_engine->toScriptValue<QVariantList>(result);
+    }
+
     Q_INVOKABLE QString executedQuery(){return m_query.executedQuery();}
     Q_INVOKABLE QVariant lastInsertId(){return m_query.lastInsertId();}
     Q_INVOKABLE void finish(){m_query.finish();}
@@ -394,7 +407,7 @@ class ScriptSqlDatabase : public QObject, public ScriptObject
     friend class ScriptSql;
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 
 public:
     explicit ScriptSqlDatabase(QJSEngine* engine, QObject *parent = 0) : QObject(parent), m_database(), m_engine(engine){}
@@ -478,7 +491,7 @@ class ScriptSql : public QObject, public ScriptObject
     Q_OBJECT
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 public:
     ScriptSql() : QObject(0){}
 
@@ -575,9 +588,9 @@ public:
     }
     ///Creates a ScriptSqlField object.
     Q_INVOKABLE QJSValue createField(QString fieldName = QString(),
-                                         quint32 type = (quint32)QVariant::Invalid)
+                                         quint32 type = (quint32)QMetaType::UnknownType)
     {
-        ScriptSqlField* obj = new ScriptSqlField(QSqlField(fieldName, (QVariant::Type)type));
+        ScriptSqlField* obj = new ScriptSqlField(QSqlField(fieldName, QMetaType(type)));
         return m_engine->newQObject(obj);
     }
     ///Creates a ScriptSqlRecord object.

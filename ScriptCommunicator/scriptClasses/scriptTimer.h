@@ -12,7 +12,7 @@ class ScriptTimer : public QObject, public ScriptObject
     ///Returns a semicolon separated list with all public functions, signals and properties.
     Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
 public:
-    explicit ScriptTimer(QObject *parent) : QObject(parent), m_timer()
+    explicit ScriptTimer() : QObject(nullptr), m_timer()
     {
         //connect the necessary signals with the wrapper slots (in this slots the
         //events of the wrapper class are generated, the script can connect to this

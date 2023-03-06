@@ -492,7 +492,7 @@ void ScriptThread::run()
  */
 QJSValue ScriptThread::createTimer(void)
 {
-    ScriptTimer* timer =  new ScriptTimer(this);
+    ScriptTimer* timer =  new ScriptTimer();
     return m_scriptEngine->newQObject(timer);
 }
 
@@ -508,7 +508,10 @@ QJSValue ScriptThread::createSoundObject(QString filename, bool isRelativePath)
         filename = m_scriptFileObject->createAbsolutePath(filename);
     }
     ScriptSound* sound = new ScriptSound(this, filename);
-    return m_scriptEngine->newQObject(sound);
+    QJSValue obj = m_scriptEngine->newQObject(sound);
+    QJSEngine::setObjectOwnership(sound, QJSEngine::CppOwnership);
+
+    return obj;
 
 }
 

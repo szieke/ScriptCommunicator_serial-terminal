@@ -440,9 +440,6 @@ public:
     ///Returns the current pcan baudrate;
     quint16 getPcanBaudrate();
 
-    ///Is called if a color button button is pressed.
-    void colorButtonPressed(QToolButton* button);
-
     ///Shows (socket tab) all local ip addresses found on this PC.
     void showAllLocalIpAddresses(void);
 
@@ -468,6 +465,9 @@ public slots:
 
     ///Is called if the input states of the aardvark I2c/Spi device have been changed.
     void aardvarkI2cSpiInputStatesChangedSlot(QVector<bool> states);
+
+    ///Is called if a color button button is pressed.
+    void colorButtonPressedSlot(void);
 private slots:
 
 
@@ -615,7 +615,6 @@ private:
 
     ///Reads the information from all available serial port.
     QVector<QStringList> getSerialPortsInfo();
-    QSignalMapper *mapColorButtons;
 
     ///Adds all available serial ports to the serial port list box.
     void fillSerialPortListBox(void);

@@ -37,7 +37,6 @@
 #include "scriptFile.h"
 #include <QFileInfo>
 #include <QProcess>
-#include <scriptHelper.h>
 #include <QStandardPaths>
 #include <QToolBox>
 #include "scriptObject.h"

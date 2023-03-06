@@ -157,6 +157,12 @@
        </item>
        <item row="0" column="2">
         <widget class="QSpinBox" name="spin_hue">
+         <property name="minimumSize">
+          <size>
+           <width>80</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="wrapping">
           <bool>true</bool>
          </property>

@@ -6,44 +6,8 @@ function testSendTableWidgetCellChanged(row, column)
 	UI_testReceiveTableWidget.setText(row, column, UI_testSendTableWidget.getText(row, column));
 	UI_testReceiveTableWidget.setCellBackgroundColor("red", row, column);
 }
-//Adjust the width of the right column, so that all columns fit in the complete table.
-function adjustSendTableColmnWidth()
-{
-	var verticalScrollBarWidth = 0;
-	if(UI_testSendTableWidget.isVerticalScrollBarVisible())
-	{
-		verticalScrollBarWidth = UI_testSendTableWidget.verticalScrollBarWidth();
-	}
-	UI_testSendTableWidget.setColumnWidth(1, UI_testSendTableWidget.width() -
-                           (UI_testSendTableWidget.columnWidth(0)
-                           + 2 * UI_testSendTableWidget.frameWidth()
-                           + UI_testSendTableWidget.verticalHeaderWidth()
-						   + verticalScrollBarWidth));
-}
-//Adjust the width of the right column, so that all columns fit in the complete table.
-function adjustReceiveTableColmnWidth()
-{
-	var verticalScrollBarWidth = 0;
-	if(UI_testReceiveTableWidget.isVerticalScrollBarVisible())
-	{
-		verticalScrollBarWidth = UI_testReceiveTableWidget.verticalScrollBarWidth();
-	}
-	UI_testReceiveTableWidget.setColumnWidth(1, UI_testReceiveTableWidget.width() -
-                           (UI_testReceiveTableWidget.columnWidth(0)
-                           + 2 * UI_testReceiveTableWidget.frameWidth()
-                           + UI_testReceiveTableWidget.verticalHeaderWidth()
-						   + verticalScrollBarWidth));
-}
-//The width of a header has been changed.
-function sendTableHorizontalHeaderSectionResizedSignal(logicalIndex, oldSize, newSize)
-{
-	adjustSendTableColmnWidth();
-}
-//The width of a header has been changed.
-function receiveTableHorizontalHeaderSectionResizedSignal(logicalIndex, oldSize, newSize)
-{
-	adjustReceiveTableColmnWidth();
-}
+
+
 
 function ReceiveTableSelectionChanged()
 {
@@ -125,15 +89,7 @@ UI_testReceiveTableWidget.setCellForegroundColor("blue", 2, 0);
 
 UI_testSendTableWidget.cellSelectionChangedSignal.connect(SendTableSelectionChanged)
 						   
-UI_testSendTableWidget.horizontalHeaderSectionResizedSignal.connect(sendTableHorizontalHeaderSectionResizedSignal)
-UI_testReceiveTableWidget.horizontalHeaderSectionResizedSignal.connect(receiveTableHorizontalHeaderSectionResizedSignal)
 
-//Start a timer which periodically calls adjustTableColmnWidth(if the dialog/table 
-//size has been changed the columns have to be adjusted)
-var tableAdjustWidthTimer = scriptThread.createTimer()
-tableAdjustWidthTimer.timeoutSignal.connect(adjustSendTableColmnWidth)
-tableAdjustWidthTimer.timeoutSignal.connect(adjustReceiveTableColmnWidth)
-tableAdjustWidthTimer.start(200);
 
 /******************test widgets in table***************************************/
 function tableComboBox1TextChanged(text)
@@ -277,9 +233,7 @@ UI_testTextEdit.append("class name: " + UI_tableCalendarWidget1.getClassName());
 
 
 UI_testSendTableWidget.resizeColumnToContents(0);
-adjustSendTableColmnWidth();
 UI_testReceiveTableWidget.resizeColumnToContents(0);
-adjustReceiveTableColmnWidth();
 
 //wait 100ms
 scriptThread.sleepFromScript(100);

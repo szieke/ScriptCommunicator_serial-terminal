@@ -37,7 +37,6 @@
 #include <QTimer>
 #include <QSplitter>
 #include <mainwindow.h>
-#include <scriptHelper.h>
 #include "scriptFile.h"
 #include "crc.h"
 #include "settingsdialog.h"

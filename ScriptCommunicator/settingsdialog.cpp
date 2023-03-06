@@ -308,32 +308,16 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->pcanStandardRadioButton, SIGNAL(clicked()),
             this, SLOT(setFilterRadioButtonPressedSlot()));
 
-    // connect color buttons via signal mapper to function which opens color dialog
-    mapColorButtons = new QSignalMapper(this);
-    mapColorButtons->setMapping(m_userInterface->consoleSendColorButton, m_userInterface->consoleSendColorButton);
-    mapColorButtons->setMapping(m_userInterface->consoleMessageColorButton, m_userInterface->consoleMessageColorButton);
-    mapColorButtons->setMapping(m_userInterface->consoleReceiveColorButton, m_userInterface->consoleReceiveColorButton);
-    mapColorButtons->setMapping(m_userInterface->consoleBackgroundColorButton, m_userInterface->consoleBackgroundColorButton);
-    mapColorButtons->setMapping(m_userInterface->btnColorUtf8, m_userInterface->btnColorUtf8);
-    mapColorButtons->setMapping(m_userInterface->btnColorDec, m_userInterface->btnColorDec);
-    mapColorButtons->setMapping(m_userInterface->btnColorHex, m_userInterface->btnColorHex);
-    mapColorButtons->setMapping(m_userInterface->btnColorBin, m_userInterface->btnColorBin);
-    connect(m_userInterface->consoleSendColorButton, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
-    connect(m_userInterface->consoleMessageColorButton, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
-    connect(m_userInterface->consoleReceiveColorButton, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
-    connect(m_userInterface->consoleBackgroundColorButton, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
-    connect(m_userInterface->btnColorUtf8, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
-    connect(m_userInterface->btnColorDec, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
-    connect(m_userInterface->btnColorHex, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
-    connect(m_userInterface->btnColorBin, SIGNAL(clicked()), mapColorButtons, SLOT(map()));
 
-    /*ToDo
-    connect(mapColorButtons, static_cast<void(QSignalMapper::*)(QWidget *)>(&QSignalMapper::mapped),
-    [=](QWidget *widget){
-        QToolButton *btn = qobject_cast<QToolButton *>(widget);
-        colorButtonPressed(btn);
-    });
-    */
+    connect(m_userInterface->consoleSendColorButton, SIGNAL(clicked()), this, SLOT(colorButtonPressedSlot()));
+    connect(m_userInterface->consoleMessageColorButton, SIGNAL(clicked()), this, SLOT(colorButtonPressedSlot()));
+    connect(m_userInterface->consoleReceiveColorButton, SIGNAL(clicked()), this, SLOT(colorButtonPressedSlot()));
+    connect(m_userInterface->consoleBackgroundColorButton, SIGNAL(clicked()), this, SLOT(colorButtonPressedSlot()));
+    connect(m_userInterface->btnColorUtf8, SIGNAL(clicked()), this, SLOT(colorButtonPressedSlot()));
+    connect(m_userInterface->btnColorDec, SIGNAL(clicked()), this, SLOT(colorButtonPressedSlot()));
+    connect(m_userInterface->btnColorHex, SIGNAL(clicked()), this, SLOT(colorButtonPressedSlot()));
+    connect(m_userInterface->btnColorBin, SIGNAL(clicked()), this, SLOT(colorButtonPressedSlot()));
+
 
     connect(m_userInterface->consoleWrapLinesCheckbox, SIGNAL(toggled(bool)),
             this, SIGNAL(consoleWrapLinesChangedSignal(bool)));
@@ -643,8 +627,9 @@ void SettingsDialog::showAllLocalIpAddresses(void)
  * @param button
  *      The pressed button.
  */
-void SettingsDialog::colorButtonPressed(QToolButton* button)
+void SettingsDialog::colorButtonPressedSlot(void)
 {
+    QToolButton* button = static_cast<QToolButton*>(sender());
     QPalette palette = button->palette();
 
     color_widgets::ColorDialog* dialog = new color_widgets::ColorDialog(this);

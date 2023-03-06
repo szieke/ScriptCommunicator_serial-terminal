@@ -44,6 +44,9 @@
             <property name="selectionBehavior">
              <enum>QAbstractItemView::SelectItems</enum>
             </property>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
            </widget>
           </item>
           <item>
@@ -54,6 +57,9 @@
             <property name="selectionBehavior">
              <enum>QAbstractItemView::SelectItems</enum>
             </property>
+            <attribute name="horizontalHeaderStretchLastSection">
+             <bool>true</bool>
+            </attribute>
            </widget>
           </item>
          </layout>
@@ -394,8 +400,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>393</width>
-         <height>211</height>
+         <width>421</width>
+         <height>184</height>
         </rect>
        </property>
        <attribute name="label">
@@ -489,8 +495,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>376</width>
-         <height>255</height>
+         <width>421</width>
+         <height>322</height>
         </rect>
        </property>
        <attribute name="label">
@@ -569,6 +575,15 @@
            </color>
           </brush>
          </colorrole>
+         <colorrole role="PlaceholderText">
+          <brush brushstyle="NoBrush">
+           <color alpha="128">
+            <red>85</red>
+            <green>255</green>
+            <blue>0</blue>
+           </color>
+          </brush>
+         </colorrole>
         </active>
         <inactive>
          <colorrole role="Text">
@@ -585,6 +600,15 @@
            <color alpha="255">
             <red>0</red>
             <green>0</green>
+            <blue>0</blue>
+           </color>
+          </brush>
+         </colorrole>
+         <colorrole role="PlaceholderText">
+          <brush brushstyle="NoBrush">
+           <color alpha="128">
+            <red>85</red>
+            <green>255</green>
             <blue>0</blue>
            </color>
           </brush>
@@ -606,6 +630,15 @@
             <red>240</red>
             <green>240</green>
             <blue>240</blue>
+           </color>
+          </brush>
+         </colorrole>
+         <colorrole role="PlaceholderText">
+          <brush brushstyle="NoBrush">
+           <color alpha="128">
+            <red>85</red>
+            <green>255</green>
+            <blue>0</blue>
            </color>
           </brush>
          </colorrole>

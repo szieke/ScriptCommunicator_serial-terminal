@@ -52,12 +52,12 @@ ColorDialog::ColorDialog(QWidget *parent, Qt::WindowFlags f) :
     p->ui.setupUi(this);
 
     setAcceptDrops(true);
-
+#if 0
     // Add "pick color" button
     QPushButton *pickButton = p->ui.buttonBox->addButton(tr("Pick"), QDialogButtonBox::ActionRole);
     pickButton->setIcon(QIcon::fromTheme("color-picker"));
     pickButton->setToolTip("select a color at the curser position by clicking at a point in a ScriptCommunicator window");
-
+#endif
     setButtonMode(OkApplyCancel);
 
     connect(p->ui.wheel,SIGNAL(displayFlagsChanged(ColorWheel::DisplayFlags)),SIGNAL(wheelFlagsChanged(ColorWheel::DisplayFlags)));
@@ -324,7 +324,7 @@ void ColorDialog::dropEvent(QDropEvent *event)
 static QColor get_screen_color(const QPointF &global_pos)
 {
   (void)global_pos;
-  /*ToDo:
+  /*
 #if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
     WId id = QApplication::desktop()->winId();
     QImage img = QPixmap::grabWindow(id, global_pos.x(), global_pos.y(), 1, 1).toImage();

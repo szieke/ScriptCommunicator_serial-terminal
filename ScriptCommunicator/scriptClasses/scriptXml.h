@@ -54,14 +54,6 @@ public:
     ///Clears the internal buffer.
     Q_INVOKABLE void clearInternalBuffer(void){m_xmlBuffer.close();m_xmlBuffer.open(QIODevice::WriteOnly);}
 
-    /*ToDo entfernen, ist immer UTF8
-    ///Sets the codec for this object to codec. The codec is used for encoding any data that is written.
-    ///By default, ScriptXmlWriter uses UTF-8.
-    ///The encoding information is stored in the initial xml tag which gets written when you call writeStartDocument().
-    ///Call this function before calling writeStartDocument().
-    Q_INVOKABLE void setCodec(QString codecName){m_xmlWriter.set(codecName.toUtf8().constData());}
-    */
-
     ///Sets the autoFormatting property. This property controls whether or not the stream writer automatically formats
     ///the generated XML data. If enabled, the writer automatically adds line-breaks and indentation to empty sections between elements
     ///(ignorable whitespace). The main purpose of auto-formatting is to split the data into several lines, and to
