@@ -374,7 +374,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     QSize tmpSize = m_userInterface->startWorkerScriptsPushButton->size();
     m_userInterface->startWorkerScriptsPushButton->setMinimumSize(tmpSize);
     m_userInterface->pauseWorkerScriptPushButton->setMinimumSize(tmpSize);
-    m_userInterface->pauseWorkerScriptPushButton->setText("debug");
+    m_userInterface->pauseWorkerScriptPushButton->setText("pause");
     m_userInterface->startWorkerScriptsPushButton->setText("start");
 
     m_userInterface->CanTypeBox->addItems(QStringList() << "11 Bit" << "11 Bit RTR" << "29 Bit" << "29 Bit RTR");
@@ -1328,22 +1328,10 @@ void MainWindow::pauseScriptButtonPressedSlot(void)
     QList<QListWidgetItem*> items = m_userInterface->workerScriptListWidget->selectedItems();
     if(!items.isEmpty())
     {
-        QFont font = items[0]->font();
-        bool isOK = false;
-        quint32 index = items[0]->data(1).toUInt(&isOK);
-
+        quint32 index = items[0]->data(1).toUInt();
         if(index != 0xffffffff)
         {
-            if(font.bold() && !font.italic())
-            {//Script is running
-
-                m_scriptWindow->pauseScriptThread(index);
-            }
-            else if(!font.bold() && !font.italic())
-            {//Script is stopped.
-
-                m_scriptWindow->startScriptThread(index, true);
-            }
+            m_scriptWindow->pauseScriptThread(index);
         }
     }
 }
@@ -1370,7 +1358,6 @@ void MainWindow::workerScriptsCurrentRowChangedSlot(int currentRow)
 
                 m_userInterface->startWorkerScriptsPushButton->setText("resume");
                 m_userInterface->pauseWorkerScriptPushButton->setEnabled(false);
-                m_userInterface->pauseWorkerScriptPushButton->setText("pause");
 
             }
             else if(m_scriptWindow->getScriptState(index) == RUNNING)
@@ -1378,20 +1365,17 @@ void MainWindow::workerScriptsCurrentRowChangedSlot(int currentRow)
 
                 m_userInterface->startWorkerScriptsPushButton->setText("stop");
                 m_userInterface->pauseWorkerScriptPushButton->setEnabled(true);
-                m_userInterface->pauseWorkerScriptPushButton->setText("pause");
             }
             else if(m_scriptWindow->getScriptState(index) == SUSPENDED_BY_DEBUGGER)
             {//Script is suspended
 
-                m_userInterface->pauseWorkerScriptPushButton->setEnabled(false);
-                m_userInterface->startWorkerScriptsPushButton->setEnabled(false);
+                //Not implemented at the moment.;
             }
             else
             {//Scripts is stopped.
 
                 m_userInterface->startWorkerScriptsPushButton->setText("start");
-                m_userInterface->pauseWorkerScriptPushButton->setEnabled(true);
-                m_userInterface->pauseWorkerScriptPushButton->setText("debug");
+                m_userInterface->pauseWorkerScriptPushButton->setEnabled(false);
 
             }
         }

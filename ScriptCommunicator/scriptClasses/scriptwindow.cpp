@@ -1336,14 +1336,7 @@ void ScriptWindow::pauseButtonPressedSlot(void)
 
     if(selectedRow != -1)
     {
-        if(m_userInterface->pausePushButton->text() == "pause")
-        {
-            pauseScriptThread(selectedRow);
-        }
-        else
-        {
-            startScriptThread(selectedRow, true);
-        }
+        pauseScriptThread(selectedRow);
     }
     else
     {
@@ -1648,8 +1641,7 @@ void ScriptWindow::itemSelectionChangedSlot(void)
                 m_userInterface->startPushButton->setText("start");
 
                 m_userInterface->stopPushButton->setEnabled(false);
-                m_userInterface->pausePushButton->setEnabled(true);
-                m_userInterface->pausePushButton->setText("debug");
+                m_userInterface->pausePushButton->setEnabled(false);
             }
         }// if(thread)
         else
@@ -1658,8 +1650,7 @@ void ScriptWindow::itemSelectionChangedSlot(void)
             m_userInterface->startPushButton->setText("start");
 
             m_userInterface->stopPushButton->setEnabled(false);
-            m_userInterface->pausePushButton->setEnabled(true);
-            m_userInterface->pausePushButton->setText("debug");
+            m_userInterface->pausePushButton->setEnabled(false);
         }
 
         if(m_userInterface->tableWidget->item(selectedRow, COLUMN_UI_PATH)->text().size() == 0)
@@ -1696,7 +1687,6 @@ void ScriptWindow::itemSelectionChangedSlot(void)
         m_userInterface->startPushButton->setEnabled(false);
         m_userInterface->stopPushButton->setEnabled(false);
         m_userInterface->pausePushButton->setEnabled(false);
-        m_userInterface->pausePushButton->setText("debug");
         m_userInterface->actionEditScript->setEnabled(false);
         m_userInterface->actionRemoveScripts->setEnabled(false);
         m_userInterface->actionMoveUp->setEnabled(false);
@@ -1868,8 +1858,7 @@ void ScriptWindow::stopButtonPressedSlot(void)
 
         m_userInterface->startPushButton->setEnabled(true);
         m_userInterface->stopPushButton->setEnabled(false);
-        m_userInterface->pausePushButton->setEnabled(true);
-        m_userInterface->pausePushButton->setText("debug");
+        m_userInterface->pausePushButton->setEnabled(false);
     }
 }
 
