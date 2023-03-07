@@ -391,7 +391,7 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
         {
             //Replace the binary 0 (for the utf8 console).
             QByteArray utf8Array = data;
-            utf8Array.replace(0, 255);
+            utf8Array.replace((char)0, (char)255);
 
             result = QString::fromUtf8(utf8Array);
             result.replace("<", "&lt;");
@@ -457,20 +457,14 @@ QString MainWindowHandleData::createMixedConsoleString(const QByteArray &data, b
                         utf8String += m_consoleData.mixedData.utf8Spaces;
                     }
 
-/*
-                   ToDo
-                    QTextCodec::ConverterState state;
-                    QTextCodec *codec = QTextCodec::codecForName("UTF-8");
-                    tmpString = codec->toUnicode(utf8Array.mid(i, bytesPerChar),bytesPerChar, &state);
-                    */
-                    tmpString = utf8Array;
+                    tmpString = QString::fromUtf8(utf8Array.mid(i, bytesPerChar));
 
                     if (tmpString == "\n")
                     {
                         tmpString.replace("\n", " ");
                     }
 
-                    if(/*(state.invalidChars != 0) ||*/ tmpString.isEmpty())
+                    if(tmpString.isEmpty())
                     {
                         tmpString = " ";
                     }
@@ -813,7 +807,7 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
             {
 
                 //Replace the binary 0 (for the utf8 console).
-                dataArray->replace(0, 255);
+                dataArray->replace((char)0, (char)255);
 
                 QString tmpString;
                 for(auto el : QString::fromUtf8(*dataArray))
@@ -964,7 +958,7 @@ void MainWindowHandleData::appendDataToLog(const QByteArray &data, bool isSend, 
 
             //Replace the binary 0 (for the utf8 string).
             QByteArray utf8Array = QByteArray(*dataArray);
-            utf8Array.replace(0, 255);
+            utf8Array.replace((char)0, (char)255);
 
             QString tmp = QString::fromUtf8(utf8Array);
 
@@ -2096,7 +2090,6 @@ void MainWindowHandleData::historyConsoleTimerSlot()
                 else if (el == ' ')tmpString += "&nbsp;";
                 else if (el == '\n')tmpString += "";
                 else if (el == '\r')tmpString += "";
-                else if (el < 33 || el > 126) tmpString += QByteArrayLiteral("\xff");/*ToDo*/
                 else tmpString += el;
             }
             text += tmpString;

@@ -394,13 +394,6 @@ void ScriptThread::run()
         ScriptXmlReader::registerScriptMetaTypes(m_scriptEngine);
         ScriptXmlWriter::registerScriptMetaTypes(m_scriptEngine);
 
-/*      ToDo
-         if(!m_scriptRunsInDebugger)
-         {
-            connect(m_scriptEngine, SIGNAL(signalHandlerException(QJSValue)),
-                    this, SLOT(scriptSignalHandlerSlot(QJSValue)));
-         }
-         */
 
         //register the script thread object
         m_scriptEngine->globalObject().setProperty("scriptThread", m_scriptEngine->newQObject(this));

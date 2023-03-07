@@ -116,7 +116,7 @@ void DragDropLineEdit::dropEvent(QDropEvent *event)
         else
         {
             QList<QUrl> urls = event->mimeData()->urls();
-            for(auto el : urls)
+            for(const auto &el : urls)
             {
                 list.append(el.path());
             }
@@ -448,12 +448,12 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     connect(m_userInterface->ReceiveTextEditHex->verticalScrollBar(), SIGNAL(sliderMoved(int)),this, SLOT(verticalSliderMovedSlot(int)));
     connect(m_userInterface->ReceiveTextEditMixed->verticalScrollBar(), SIGNAL(sliderMoved(int)),this, SLOT(verticalSliderMovedSlot(int)));
 
-    connect(m_addMessageDialog, SIGNAL(messageEnteredSignal(QString, bool)),this, SLOT(messageEnteredSlot(QString, bool)));
+    connect(m_addMessageDialog, SIGNAL(messageEnteredSignal(QString,bool)),this, SLOT(messageEnteredSlot(QString,bool)));
 
     connect(&m_resizeTimer, SIGNAL(timeout()),m_handleData, SLOT(reInsertDataInMixecConsoleSlot()));
 
-    connect(m_sendWindow, SIGNAL(sendDataWithTheMainInterfaceSignal(QByteArray,uint)), m_mainInterface, SLOT(sendDataSlot(QByteArray, uint)), Qt::QueuedConnection);
-    connect(m_handleData, SIGNAL(sendDataWithTheMainInterfaceSignal(QByteArray,uint)), m_mainInterface, SLOT(sendDataSlot(QByteArray, uint)), Qt::QueuedConnection);
+    connect(m_sendWindow, SIGNAL(sendDataWithTheMainInterfaceSignal(QByteArray,uint)), m_mainInterface, SLOT(sendDataSlot(QByteArray,uint)), Qt::QueuedConnection);
+    connect(m_handleData, SIGNAL(sendDataWithTheMainInterfaceSignal(QByteArray,uint)), m_mainInterface, SLOT(sendDataSlot(QByteArray,uint)), Qt::QueuedConnection);
 
 
     connect(m_sendWindow, SIGNAL(configHasToBeSavedSignal()),this, SLOT(configHasToBeSavedSlot()));
@@ -488,7 +488,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
     connect(this, SIGNAL(connectDataConnectionSignal(Settings, bool,bool)),m_mainInterface,
             SLOT(connectDataConnectionSlot(Settings, bool,bool)), Qt::QueuedConnection);
-    connect(m_mainInterface, SIGNAL(dataConnectionStatusSignal(bool, QString, bool)),this, SLOT(dataConnectionStatusSlot(bool, QString, bool)), Qt::QueuedConnection);
+    connect(m_mainInterface, SIGNAL(dataConnectionStatusSignal(bool,QString,bool)),this, SLOT(dataConnectionStatusSlot(bool,QString,bool)), Qt::QueuedConnection);
 
     connect(this, SIGNAL(exitThreadSignal()),m_mainInterface, SLOT(exitThreadSlot()), Qt::BlockingQueuedConnection);
 
@@ -560,9 +560,9 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     {
         connect(m_mainInterface, SIGNAL(dataReceivedSignal(QByteArray)),m_handleData, SLOT(dataReceivedSlot(QByteArray)), Qt::QueuedConnection);
         connect(m_mainInterface, SIGNAL(canMessagesReceivedSignal(QVector<QByteArray>)),m_handleData, SLOT(canMessagesReceivedSlot(QVector<QByteArray>)), Qt::QueuedConnection);
-        connect(m_mainInterface, SIGNAL(sendingFinishedSignal(QByteArray, bool, uint)),m_handleData, SLOT(dataHasBeenSendSlot(QByteArray, bool, uint)), Qt::QueuedConnection);
+        connect(m_mainInterface, SIGNAL(sendingFinishedSignal(QByteArray,bool,uint)),m_handleData, SLOT(dataHasBeenSendSlot(QByteArray,bool,uint)), Qt::QueuedConnection);
 
-        connect(m_mainInterface, SIGNAL(sendingFinishedSignal(bool, uint)),m_sendWindow, SLOT(dataHasBeenSendSlot(bool, uint)), Qt::QueuedConnection);
+        connect(m_mainInterface, SIGNAL(sendingFinishedSignal(bool,uint)),m_sendWindow, SLOT(dataHasBeenSendSlot(bool,uint)), Qt::QueuedConnection);
         connect(m_mainInterface, SIGNAL(dataRateUpdateSignal(quint32,quint32)),this, SLOT(dataRateUpdateSlot(quint32,quint32)), Qt::QueuedConnection);
 
         m_mainConfigFileList = getAndCreateProgramUserFolder() + "/mainConfigFileList.txt";
@@ -571,7 +571,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
         QStringList list = readMainConfigFileList(false);
         if(configFile.isEmpty())
         {
-            for(auto el : list)
+            for(const auto &el : list)
             {
                 if(el.indexOf("<DEFAULT_CONFIG_FILE>:") != -1)
                 {
@@ -1223,7 +1223,7 @@ void MainWindow::setUpSequencesPageSlot(void)
 
     if(!sequences.isEmpty())
     {
-        for(auto el : sequences)
+        for(const auto &el : sequences)
         {
             m_userInterface->sequenceListWidget->addItem(" " + el);
             quint32 row = m_userInterface->sequenceListWidget->count() - 1;
@@ -1446,7 +1446,7 @@ void MainWindow::writeXmlElement(QXmlStreamWriter& xmlWriter, QString elementNam
 {
     xmlWriter.writeStartElement(elementName);
 
-    for(auto iter : attributes)
+    for(const auto &iter : attributes)
     {
         xmlWriter.writeAttribute(iter.first, iter.second);
     }
@@ -2609,7 +2609,7 @@ void MainWindow::inititializeTab(void)
         QCoreApplication::processEvents();
 
         QString consoleStyle = QString("QTextEdit {background-color: #%1;color: #%2;border: 1px solid #76797C;}")
-                .arg(currentSettings->consoleBackgroundColor).arg(currentSettings->consoleReceiveColor);
+                .arg(currentSettings->consoleBackgroundColor, currentSettings->consoleReceiveColor);
 
         m_userInterface->historyTextEdit->setStyleSheet(consoleStyle);
         setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->historyTextEdit);
@@ -4620,7 +4620,7 @@ void MainWindow::saveMainConfigFileList(QStringList list)
         QTextStream out(&file);
         out.setEncoding(QStringConverter::Utf8);
 
-        for(auto el : list)
+        for(const auto &el : list)
         {
             out << (el + "\n");
         }
@@ -4792,7 +4792,7 @@ void MainWindow::saveConsoleSlot()
             if(isHtml)
             {
                 //QTextEdit returns Spaces as 160 (toHtml()).
-               //ToDo consoleContent.replace(160, ' ');
+                consoleContent.replace((char)160, ' ');
 
 
                 //Write the background color, the font family and the font size into the HTML string.
@@ -4802,9 +4802,8 @@ void MainWindow::saveConsoleSlot()
 
                 //Write the style tag after the head tag.
                 consoleContent.insert(index + 6, QString("<style>body {background-color:%1;color:%2;font-family:%3;font-size:%4;}</style>")
-                                      .arg(palette.color(QPalette::Base).name(QColor::HexRgb))
-                                      .arg(palette.color(QPalette::Text).name(QColor::HexRgb))
-                                      .arg(font.family())
+                                      .arg(palette.color(QPalette::Base).name(QColor::HexRgb), palette.color(QPalette::Text).name(QColor::HexRgb),
+                                      font.family())
                                       .arg(font.pointSize()));
             }
 
