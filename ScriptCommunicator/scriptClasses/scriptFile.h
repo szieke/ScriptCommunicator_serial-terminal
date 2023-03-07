@@ -97,8 +97,7 @@ public:
                              QProgressBar* progress=0, const QString& comment=QString(""));
 
     ///Shows a script exception (message box) to the user.
-    void showExceptionInMessageBox(QJSValue exception, QString scriptPath, QJSEngine* scriptEngine, QWidget *parent,
-                                   ScriptWindow* scriptWindow);
+    void showExceptionInMessageBox(QJSValue exception, QString scriptPath, QWidget *parent);
 
     ///Loads/includes one script (QtScript has no built in include mechanism).
     bool loadScript(QString scriptPath, bool isRelativePath, QJSEngine* scriptEngine, QWidget* parent, ScriptWindow* scriptWindow, bool checkForUnsavedData, bool *scriptShallBeStopped);

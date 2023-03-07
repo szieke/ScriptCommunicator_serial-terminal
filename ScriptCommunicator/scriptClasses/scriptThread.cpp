@@ -434,28 +434,26 @@ void ScriptThread::run()
 
             //stop the timer
             m_pauseTimer->stop();
+
+            //Note: The signals must be enabled, otherwise the script could be blocked.
             blockSignals(false);
             m_scriptInf->blockSignals(false);
 
-            //call the script stop function
+            //Call the script stop function
             QJSValue stopFunction = m_scriptEngine->evaluate("stopScript");
 
-            if (stopFunction.isError())
-            {//The script has no stop function
+            if (!stopFunction.isError())
+            {//The script has a stop function
 
-            }
-            else
-            {
-                stopFunction.call();
+                QJSValue result = stopFunction.call();
 
-                /*ToDo
-                if(m_scriptEngine->hasUncaughtException())
-                {//In stopScript an error has been occured.
+                if(result.isError())
+                {//An error has occurred in stopScript.
 
                     QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
-                    m_scriptFileObject->showExceptionInMessageBox(m_scriptEngine->uncaughtException(), m_scriptFileName, m_scriptEngine, parent, m_scriptWindow);
+                    m_scriptFileObject->showExceptionInMessageBox(result, m_scriptFileName, parent);
                 }
-                */
+
             }
 
 
@@ -1240,7 +1238,7 @@ void ScriptThread::pauseTimerSlot()
 void ScriptThread::scriptSignalHandlerSlot(const QJSValue & exception)
 {
     QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
-    m_scriptFileObject->showExceptionInMessageBox(exception, m_scriptFileName, m_scriptEngine, parent, m_scriptWindow);
+    m_scriptFileObject->showExceptionInMessageBox(exception, m_scriptFileName, parent);
     stopScript();
 }
 

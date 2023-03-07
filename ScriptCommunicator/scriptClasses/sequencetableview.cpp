@@ -36,12 +36,10 @@
 #include <QSignalMapper>
 #include <QDebug>
 #include "mainwindow.h"
-#include "mainInterfaceThread.h"
 #include "QJSEngine"
 #include "QRegularExpression"
 #include <QPainter>
 #include <QScrollBar>
-#include "scriptThread.h"
 #include <QProcess>
 #include <QInputDialog>
 #include "scriptwindow.h"
@@ -371,31 +369,36 @@ void SequenceScriptThread::executeScriptSlot(QString* sendScript, QByteArray* se
 
                 //call the sendData function
                 QJSValue val = (*scriptEngineWrapper)->sendDataFunction->call(QJSValueList() << scriptArray);
-                QList<QVariant> resultVariant = val.toVariant().toList();
-
-
-                sendData->clear();
-                for(auto el : resultVariant)
+                if(val.isError())
                 {
-                    sendData->append((char)el.toUInt());
+                  m_dialogIsShown = true;
+                  QWidget *parent = (m_sendWindow->isVisible()) ? static_cast<QWidget *>(m_sendWindow) : static_cast<QWidget *>(m_mainWindow);
+                  m_scriptFileObject->showExceptionInMessageBox(val, *sendScript, parent);
+                  m_dialogIsShown = false;
 
+                  sendData->clear();
+                }
+                else
+                {
+                  QList<QVariant> resultVariant = val.toVariant().toList();
+                  sendData->clear();
+                  for(const auto &el : resultVariant)
+                  {
+                      sendData->append((char)el.toUInt());
+
+                  }
                 }
             }
             else
             {
                 sendData->clear();
-            }
 
-            /*ToDo
-            if((*scriptEngineWrapper)->scriptEngine->hasUncaughtException())
-            {
-                QJSValue exception = (*scriptEngineWrapper)->scriptEngine->uncaughtException();
+                QJSValue exception = "Function sendData not found in sequence script.";
                 m_dialogIsShown = true;
                 QWidget *parent = (m_sendWindow->isVisible()) ? static_cast<QWidget *>(m_sendWindow) : static_cast<QWidget *>(m_mainWindow);
-                m_scriptFileObject->showExceptionInMessageBox(exception, *sendScript, (*scriptEngineWrapper)->scriptEngine, parent, m_mainWindow->getScriptWindow());
+                m_scriptFileObject->showExceptionInMessageBox(exception, *sendScript, parent);
                 m_dialogIsShown = false;
             }
-            */
 
         }
         else
@@ -905,7 +908,7 @@ SequenceScriptEngineWrapper* SequenceScriptThread::loadScript(QString scriptPath
         {
             m_dialogIsShown = true;
             QWidget *parent = (m_sendWindow->isVisible()) ? static_cast<QWidget *>(m_sendWindow) : static_cast<QWidget *>(m_mainWindow);
-            m_scriptFileObject->showExceptionInMessageBox(result, scriptPath, scriptEngineWrapper->scriptEngine, parent, m_mainWindow->getScriptWindow());
+            m_scriptFileObject->showExceptionInMessageBox(result, scriptPath, parent);
             m_dialogIsShown = false;
             delete scriptEngineWrapper;
             scriptEngineWrapper = 0;

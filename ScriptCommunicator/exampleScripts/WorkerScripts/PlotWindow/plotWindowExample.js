@@ -1,6 +1,12 @@
 ﻿/*************************************************************************
 This worker script (worker scripts can be added in the script window) demonstrates the usage of the script plot window class.
 ***************************************************************************/
+function stopScript()
+{
+	scriptThread.appendTextToConsole("stopped by user");
+}
+
+
 //The plot window is closed.
 function plotWindowClosedSlot()
 {

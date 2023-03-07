@@ -1,4 +1,4 @@
-/**********************************************************************
+﻿/**********************************************************************
 This is an example sequence send script which can be added to a sequence (send window), It demonstrates
 the possibilities of sequence send scripts.
 

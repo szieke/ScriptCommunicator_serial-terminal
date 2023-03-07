@@ -245,70 +245,15 @@ QString ScriptFile::createAbsolutePath(QString fileName)
  * @param parent
  *      The parent window.
  */
-void ScriptFile::showExceptionInMessageBox(QJSValue exception, QString scriptPath, QJSEngine* scriptEngine, QWidget *parent, ScriptWindow *scriptWindow)
+void ScriptFile::showExceptionInMessageBox(QJSValue exception, QString scriptPath, QWidget *parent)
 {
-    QString textToShow;
-    QString functionsAndProperies;
-
-
-    QString exceptionString = exception.toString();
-    QStringList list = exceptionString.split("'");
-    bool errorOcured = true;
-
-    if(list.length() >= 2)
-    {
-        list = list[1].split(".");
-        QJSValue object = scriptEngine->evaluate(list[0]);
-        if(!object.isError())
-        {
-            ScriptThread::getAllObjectPropertiesAndFunctionsInternal(object, 0, &functionsAndProperies);
-
-            if(!functionsAndProperies.isEmpty())
-            {
-                functionsAndProperies = "\n\n\nFunctions and properies of " + list[0] + ":\n" + functionsAndProperies;
-
-                textToShow = exceptionString + "\n\nNote: All functions" +
-                                               " and properties of " + list[0] + " are shown in the script window console.";
-                errorOcured = false;
-            }
-        }
-        else if(m_isWorkerScript && list[0].endsWith(": cust"))
-        {
-            errorOcured = false;
-            textToShow = exceptionString + "\n\nNote: The cust object is only available in sequence scripts (send window).";
-        }
-        else if(!m_isWorkerScript && list[0].endsWith(": scriptThread"))
-        {
-            errorOcured = false;
-            textToShow = exceptionString + "\n\nNote: The scriptThread object is only available in worker scripts (script window).";
-        }
-    }
-
-
-    if(errorOcured)
-    {
-        textToShow = exceptionString;
-    }
-
-    emit disableMouseEventsSignal();
-    emit enableMouseEventsSignal();
-
-    if((scriptWindow != 0) && !functionsAndProperies.isEmpty())
-    {
-        emit appendTextToConsoleSignal(functionsAndProperies, true, true);
-        parent = scriptWindow;
-    }
-
-    emit showMessageBoxSignal(QMessageBox::Critical, scriptPath,
-                              QString::fromLatin1("%0:%1: %2")
+    emit showMessageBoxSignal(QMessageBox::Critical, "Script Error",
+                              QString::fromLatin1("%0, line %1: %2")
                               .arg(scriptPath)
                               .arg(exception.property("lineNumber").toInt())
-                              .arg(textToShow), QMessageBox::Ok, parent);
+                              .arg(exception.toString()), QMessageBox::Ok, parent);
 
-    if((scriptWindow == 0) && !functionsAndProperies.isEmpty())
-    {
-        emit appendTextToConsoleSignal(functionsAndProperies, true, true);
-    }
+
 }
 
 /**
@@ -331,6 +276,7 @@ void ScriptFile::showExceptionInMessageBox(QJSValue exception, QString scriptPat
 bool ScriptFile::loadScript(QString scriptPath, bool isRelativePath, QJSEngine* scriptEngine, QWidget *parent, ScriptWindow *scriptWindow,
                             bool checkForUnsavedData, bool* scriptShallBeStopped)
 {
+  (void)scriptWindow;
     bool hasSucceded = true;
 
     scriptPath = isRelativePath ? createAbsolutePath(scriptPath) : scriptPath;
@@ -380,7 +326,7 @@ bool ScriptFile::loadScript(QString scriptPath, bool isRelativePath, QJSEngine* 
                 it.next();
                 str += it.name() + "\n";
             }
-            showExceptionInMessageBox(result, scriptPath, scriptEngine, parent, scriptWindow);
+            showExceptionInMessageBox(result, scriptPath, parent);
 
             hasSucceded = false;
         }
