@@ -618,6 +618,9 @@ public:
     ///Sets m_registerMetaTypeCalledinScriptWidget.
     void setRegisterMetaTypeCalledinScriptWidget(bool called){m_registerMetaTypeCalledinScriptWidget = called;}
 
+    ///Adds an GUI element that was created by a script.
+    void addCreatedGuiElement(ScriptWidget* element);
+
 signals:
 
     ///Is emitted if the clear console button in the main window is pressed.

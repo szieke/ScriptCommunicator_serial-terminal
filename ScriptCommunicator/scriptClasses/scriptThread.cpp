@@ -68,7 +68,6 @@
 #include <QSerialPortInfo>
 #include "ui_mainwindow.h"
 #include "scriptTimer.h"
-#include "scriptAardvarkI2cSpi.h"
 #include "scriptSound.h"
 
 
@@ -137,6 +136,7 @@ ScriptThread::~ScriptThread()
     //Delete all created gui elements (created by the script).
     for(auto el : m_allCreatedGuiElementsFromScript)
     {
+        el->close();
         el->deleteLater();
     }
 
@@ -307,7 +307,7 @@ void ScriptThread::run()
         qRegisterMetaType<QList<quint8>>("QList<quint8>");
         qRegisterMetaType<QList<quint32>>("QList<quint32>");
         qRegisterMetaType<QList<qint32>>("QList<qint32>");
-        qRegisterMetaType<ScriptPlotWidget*>("ScriptPlotWidget*");
+        qRegisterMetaType<PlotWidget*>("PlotWidget*");
         qRegisterMetaType< QMessageBox::Icon>("QMessageBox::Icon");
         qRegisterMetaType<QMessageBox::StandardButtons>("QMessageBox::StandardButtons");
         qRegisterMetaType<QVector<quint8>>("QVector<quint8>");
@@ -540,6 +540,15 @@ QJSValue ScriptThread::createPlotWindow()
     }
 
     return scriptObj;
+}
+/**
+ * Adds an GUI element that was created by a script.
+ * @param element
+ *        The GUI element.
+ */
+void ScriptThread::addCreatedGuiElement(ScriptWidget* element)
+{
+  m_allCreatedGuiElementsFromScript.push_back(element);
 }
 
 /**

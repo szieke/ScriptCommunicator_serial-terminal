@@ -44,6 +44,7 @@ RC_FILE = images/ScriptCommunicator.rc
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    scriptClasses/scriptUiClasses/plotwidget.cpp \
     settingsdialog.cpp \
     sendwindow.cpp \
     scriptClasses/scriptwindow.cpp \
@@ -110,7 +111,6 @@ SOURCES += \
     quazip/zLib/zutil.c \
     quazip/unzip.c \
     quazip/zip.c \
-    scriptClasses/scriptUiClasses/scriptPlotwidget.cpp \
     scriptClasses/scriptConverter.cpp \
     aardvarkI2cSpi/aardvark.c \
     aardvarkI2cSpi/aardvarkI2cSpi.cpp \
@@ -119,6 +119,8 @@ SOURCES += \
 
 HEADERS += \
     mainwindow.h \
+    scriptClasses/scriptPlotWidget.h \
+    scriptClasses/scriptUiClasses/plotwidget.h \
     settingsdialog.h \
     sendwindow.h \
     scriptClasses/scriptwindow.h \
@@ -166,7 +168,6 @@ HEADERS += \
     scriptClasses/scriptUiClasses/scriptDateEdit.h \
     scriptClasses/scriptUiClasses/scriptTimeEdit.h \
     searchconsole.h \
-    scriptClasses/scriptUiClasses/scriptPlotwidget.h \
     scriptClasses/sequencetableview.h \
     scriptClasses/scriptsqldatabase.h \
     scriptClasses/scriptHelper.h \

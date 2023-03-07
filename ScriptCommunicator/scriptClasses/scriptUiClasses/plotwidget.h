@@ -1,5 +1,5 @@
-#ifndef SCRIPTPLOTWIDGET_H
-#define SCRIPTPLOTWIDGET_H
+#ifndef PlotWidget_H
+#define PlotWidget_H
 
 #include <QObject>
 #include "qcustomplot.h"
@@ -25,19 +25,19 @@ typedef struct
 }SavedPlotOperation;
 
 
-///Script plot widget.
-class ScriptPlotWidget : public QObject, public ScriptObject
+///Plot widget.
+class PlotWidget : public QObject, public ScriptObject
 {
     Q_OBJECT
     Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 public:
-    explicit ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow* scriptWindow, QHBoxLayout* hLayout );
-    ~ScriptPlotWidget();
+    explicit PlotWidget(ScriptThread* scriptThread, ScriptWindow* scriptWindow, QHBoxLayout* hLayout );
+    ~PlotWidget();
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
     virtual QString getPublicScriptElements(void)
     {
-        return MainWindow::parseApiFile("ScriptPlotWidget.api");
+        return MainWindow::parseApiFile("PlotWidget.api");
     }
 
     /**
@@ -440,4 +440,4 @@ private:
 };
 
 
-#endif // SCRIPTPLOTWIDGET_H
+#endif // PlotWidget_H

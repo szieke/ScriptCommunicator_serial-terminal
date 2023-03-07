@@ -1,4 +1,4 @@
-#include "scriptPlotwidget.h"
+#include "plotWidget.h"
 #include "scriptwindow.h"
 
 
@@ -9,7 +9,7 @@
  * @param hLayout
  *      The layout of the group box in which the plot widget resides.
  */
-ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scriptWindow, QHBoxLayout *hLayout) :
+PlotWidget::PlotWidget(ScriptThread* scriptThread, ScriptWindow *scriptWindow, QHBoxLayout *hLayout) :
     QObject(nullptr), m_scriptThread(scriptThread), m_maxDataPointsPerGraph(10000000), m_addSpaceAfterBiggestValues(false), m_yAxis2IsVisible(false),
     m_yRangeHelperVisible(false)
 {
@@ -211,7 +211,7 @@ ScriptPlotWidget::ScriptPlotWidget(ScriptThread* scriptThread, ScriptWindow *scr
 /**
  * Destruktor.
  */
-ScriptPlotWidget::~ScriptPlotWidget()
+PlotWidget::~PlotWidget()
 {
     ///delete all vector vectors in the freeze vector
     for(uint i = 0; i < m_savedOperationsDuringPlotFreeze.size(); i++)
@@ -229,7 +229,7 @@ ScriptPlotWidget::~ScriptPlotWidget()
  * @param country
  *      The country (QLocale::Country)
  */
-void ScriptPlotWidget::setLocaleSlot(int language, int country)
+void PlotWidget::setLocaleSlot(int language, int country)
 {
     m_plotWidget->setLocale(QLocale(static_cast<QLocale::Language>(language), static_cast<QLocale::Country>(country)));
 }
@@ -240,7 +240,7 @@ void ScriptPlotWidget::setLocaleSlot(int language, int country)
  * @param format
  *      The date time format (see QDateTime::toString for more details).
  */
-void ScriptPlotWidget::showDateTimeAtXAxisSlot(QString format)
+void PlotWidget::showDateTimeAtXAxisSlot(QString format)
 {
     QSharedPointer<QCPAxisTickerDateTime> dateTicker(new QCPAxisTickerDateTime);
     dateTicker->setDateTimeFormat(format);
@@ -254,7 +254,7 @@ void ScriptPlotWidget::showDateTimeAtXAxisSlot(QString format)
  * @param thread
  *      The script thread.
  */
-void ScriptPlotWidget::threadStateChangedSlot(ThreadSate state, ScriptThread* thread)
+void PlotWidget::threadStateChangedSlot(ThreadSate state, ScriptThread* thread)
 {
 
     (void)thread;
@@ -276,7 +276,7 @@ void ScriptPlotWidget::threadStateChangedSlot(ThreadSate state, ScriptThread* th
 /**
  * This function clears the data of all graphs.
  */
-void ScriptPlotWidget::clearGraphsSlot(void)
+void PlotWidget::clearGraphsSlot(void)
 {
     for (qint32 i = 0; i < m_plotWidget->graphCount(); i++)
     {
@@ -288,7 +288,7 @@ void ScriptPlotWidget::clearGraphsSlot(void)
 /**
  * This function removes all graphs.
  */
-void ScriptPlotWidget::removeAllGraphsSlot(void)
+void PlotWidget::removeAllGraphsSlot(void)
 {
     m_plotWidget->clearGraphs();
     m_xAxisMaxValues.clear();
@@ -306,7 +306,7 @@ void ScriptPlotWidget::removeAllGraphsSlot(void)
 }
 
 ///Is called if the user press a mouse button inside the plot.
-void ScriptPlotWidget::plotMousePressSlot(QMouseEvent *event)
+void PlotWidget::plotMousePressSlot(QMouseEvent *event)
 {
     (void)event;
 
@@ -331,7 +331,7 @@ void ScriptPlotWidget::plotMousePressSlot(QMouseEvent *event)
  * @param text
  *      The new text/value.
  */
-void ScriptPlotWidget::doubleLineEditChangedSlot(QString text)
+void PlotWidget::doubleLineEditChangedSlot(QString text)
 {
     QLineEdit* lineEdit = dynamic_cast<QLineEdit*>(sender());
     if( lineEdit != NULL )
@@ -374,7 +374,7 @@ void ScriptPlotWidget::doubleLineEditChangedSlot(QString text)
  * This function clears the plot widget.
  * It is called if the clear button is pressed.
  */
-void ScriptPlotWidget::clearButtonPressedSlot()
+void PlotWidget::clearButtonPressedSlot()
 {
     emit clearButtonPressedSignal();
 }
@@ -387,7 +387,7 @@ void ScriptPlotWidget::clearButtonPressedSlot()
  * @param hasSucceed
  *  True if saving has succeeded.
  */
-void ScriptPlotWidget::saveAllGraphsSlot(QString fileName, bool* hasSucceed)
+void PlotWidget::saveAllGraphsSlot(QString fileName, bool* hasSucceed)
 {
     *hasSucceed = false;
 
@@ -461,7 +461,7 @@ void ScriptPlotWidget::saveAllGraphsSlot(QString fileName, bool* hasSucceed)
  * This function saves the current displayed graphs.
  * It is called if the save button is pressed.
  */
-void ScriptPlotWidget::saveButtonPressed()
+void PlotWidget::saveButtonPressed()
 {
 
     bool hasSucceed;
@@ -493,7 +493,7 @@ void ScriptPlotWidget::saveButtonPressed()
  * This function loads saved graphes.
  * It is called if the load button is pressed.
  */
-void ScriptPlotWidget::loadButtonPressed()
+void PlotWidget::loadButtonPressed()
 {
     QString tmpFileName = QFileDialog::getOpenFileName(m_plotWidget, tr("load saved graphes"),
                                                        "", tr("CSV (*.csv);;Files (*.*)"));
@@ -587,7 +587,7 @@ void ScriptPlotWidget::loadButtonPressed()
  * @param show
  *      True for show and false for hiding the legend.
  */
-void ScriptPlotWidget::showLegendSlot(bool show)
+void PlotWidget::showLegendSlot(bool show)
 {
     m_plotWidget->legend->setVisible(show);
     m_showLegendCheckBox->setChecked(show);
@@ -598,7 +598,7 @@ void ScriptPlotWidget::showLegendSlot(bool show)
  * @param state
  *      The state of the check box (1== checked).
  */
-void ScriptPlotWidget::visibiltyCheckBoxSlot(int state)
+void PlotWidget::visibiltyCheckBoxSlot(int state)
 {
     (void)state;
 
@@ -623,7 +623,7 @@ void ScriptPlotWidget::visibiltyCheckBoxSlot(int state)
  * @param state
  *      The state of the update check box (1== checked).
  */
-void ScriptPlotWidget::showLegendCheckBoxSlot(int state)
+void PlotWidget::showLegendCheckBoxSlot(int state)
 {
     (void)state;
     m_plotWidget->legend->setVisible(m_showLegendCheckBox->isChecked());
@@ -635,7 +635,7 @@ void ScriptPlotWidget::showLegendCheckBoxSlot(int state)
  * @param state
  *      The state of the update check box (1== checked).
  */
-void ScriptPlotWidget::updateCheckBoxSlot(int state)
+void PlotWidget::updateCheckBoxSlot(int state)
 {
     //Adjust the borders of diagram and replot all graphs.
     adjustBordersAndReplot();
@@ -682,7 +682,7 @@ void ScriptPlotWidget::updateCheckBoxSlot(int state)
  * @param addSpaceAfterBiggestValues
  *      True if a space shall be added after the biggest value of a graph.
  */
-void ScriptPlotWidget::setInitialAxisRangesSlot(double xRange, double yMinValue, double yMaxValue, bool addSpaceAfterBiggestValues, double y2MinValue, double y2MaxValue)
+void PlotWidget::setInitialAxisRangesSlot(double xRange, double yMinValue, double yMaxValue, bool addSpaceAfterBiggestValues, double y2MinValue, double y2MaxValue)
 {
     m_addSpaceAfterBiggestValues = addSpaceAfterBiggestValues;
     m_xRangeLineEdit->setText(QString("%1").arg(xRange));
@@ -710,7 +710,7 @@ void ScriptPlotWidget::setInitialAxisRangesSlot(double xRange, double yMinValue,
  * @param y2MaxValue
  *      The max. value of the y axis 2.
  */
-void ScriptPlotWidget::setCurrentAxisRanges(double xMinValue, double xMaxValue, double yMinValue, double yMaxValue, double y2MinValue, double y2MaxValue)
+void PlotWidget::setCurrentAxisRanges(double xMinValue, double xMaxValue, double yMinValue, double yMaxValue, double y2MinValue, double y2MaxValue)
 {
     m_plotWidget->yAxis->setRange(yMinValue, yMaxValue);
     m_plotWidget->yAxis2->setRange(y2MinValue, y2MaxValue);
@@ -723,7 +723,7 @@ void ScriptPlotWidget::setCurrentAxisRanges(double xMinValue, double xMaxValue, 
  * @return
  *      Current view ranges.
  */
-QJSValue ScriptPlotWidget::getCurrentAxisRanges(void)
+QJSValue PlotWidget::getCurrentAxisRanges(void)
 {
     const QCPRange xrange = m_plotWidget->xAxis->range();
     const QCPRange yrange = m_plotWidget->yAxis->range();
@@ -746,7 +746,7 @@ QJSValue ScriptPlotWidget::getCurrentAxisRanges(void)
  * @param yAxisLabel
  *      The label for the y axis.
  */
-void ScriptPlotWidget::setAxisLabelsSlot(QString xAxisLabel, QString yAxisLabel, QString yAxis2Label)
+void PlotWidget::setAxisLabelsSlot(QString xAxisLabel, QString yAxisLabel, QString yAxis2Label)
 {
     m_plotWidget->xAxis->setLabel(xAxisLabel);
     m_plotWidget->yAxis->setLabel(yAxisLabel);
@@ -767,7 +767,7 @@ void ScriptPlotWidget::setAxisLabelsSlot(QString xAxisLabel, QString yAxisLabel,
  * @param force
  *      If true then the data is removed even if auto update is disabled (setAutoUpdateEnabled).
  */
-void ScriptPlotWidget::removeDataRangeFromGraphSlot(int graphIndex, double xFrom, double xTo, bool force)
+void PlotWidget::removeDataRangeFromGraphSlot(int graphIndex, double xFrom, double xTo, bool force)
 {
     if(m_updatePlotCheckBox->isChecked() || force)
     {
@@ -813,7 +813,7 @@ void ScriptPlotWidget::removeDataRangeFromGraphSlot(int graphIndex, double xFrom
  * @return
  *      True for success.
  */
-bool ScriptPlotWidget::addDataToGraphSlot(int graphIndex, double x, double y, bool force)
+bool PlotWidget::addDataToGraphSlot(int graphIndex, double x, double y, bool force)
 {
     bool hasSucceeded = true;
 
@@ -860,7 +860,7 @@ bool ScriptPlotWidget::addDataToGraphSlot(int graphIndex, double x, double y, bo
  * @return
  *      Array of found x and y pairs.
  */
-QJSValue ScriptPlotWidget::getDataFromGraph(int graphIndex, double xStart, int count)
+QJSValue PlotWidget::getDataFromGraph(int graphIndex, double xStart, int count)
 {
     QJSValue ret = m_scriptThread->getScriptEngine()->newArray();
 
@@ -931,7 +931,7 @@ QJSValue ScriptPlotWidget::getDataFromGraph(int graphIndex, double xStart, int c
  * @param size
  *      The size of the single data points.
  */
-void ScriptPlotWidget::setScatterStyleSlot(int graphIndex, QString style, double size)
+void PlotWidget::setScatterStyleSlot(int graphIndex, QString style, double size)
 {
     QCPScatterStyle::ScatterShape scatterStyle = QCPScatterStyle::ssNone;
 
@@ -1030,7 +1030,7 @@ void ScriptPlotWidget::setScatterStyleSlot(int graphIndex, QString style, double
  *      - StepCenter: Line is drawn as steps where the step is in between two data points.
  *      - Impulse: Each data point is represented by a line parallel to the value axis, which reaches from the data point to the zero-value-line.
  */
-void ScriptPlotWidget::setLineStyleSlot(int graphIndex, QString style)
+void PlotWidget::setLineStyleSlot(int graphIndex, QString style)
 {
     QCPGraph::LineStyle lineStyle = QCPGraph::lsNone;
 
@@ -1081,7 +1081,7 @@ void ScriptPlotWidget::setLineStyleSlot(int graphIndex, QString style)
  * @param width
  *      The line width.
  */
-void ScriptPlotWidget::setLineWidthSlot(int graphIndex, int width)
+void PlotWidget::setLineWidthSlot(int graphIndex, int width)
 {
     if (graphIndex >= 0 && graphIndex < m_plotWidget->graphCount())
     {
@@ -1110,7 +1110,7 @@ void ScriptPlotWidget::setLineWidthSlot(int graphIndex, int width)
  * @param useYAxis2
  *     True if y axis 2 shall be used for this graph
  */
-void ScriptPlotWidget::addGraphSlot(QString color, QString penStyle, QString name, int *graphIndex, bool useYAxis2)
+void PlotWidget::addGraphSlot(QString color, QString penStyle, QString name, int *graphIndex, bool useYAxis2)
 {
     if(useYAxis2)
     {
@@ -1208,7 +1208,7 @@ void ScriptPlotWidget::addGraphSlot(QString color, QString penStyle, QString nam
  * @param showGraphVisibility
  *      True if the show group box.
  */
-void ScriptPlotWidget::showHelperElementsSlot(bool showXRange, bool showYRange, bool showUpdate, bool showSave, bool showLoad, bool showClear, bool showGraphVisibility,
+void PlotWidget::showHelperElementsSlot(bool showXRange, bool showYRange, bool showUpdate, bool showSave, bool showLoad, bool showClear, bool showGraphVisibility,
                                               quint32 graphVisibilityMaxSize, bool showLegend)
 {
     m_xRangeLineEdit->setVisible(showXRange);
@@ -1243,7 +1243,7 @@ void ScriptPlotWidget::showHelperElementsSlot(bool showXRange, bool showYRange, 
  * This function adjusts the borders of diagram and replots all graphs.
  * It is called periodically by m_plotTimer.
  */
-void ScriptPlotWidget::adjustBordersAndReplot(void)
+void PlotWidget::adjustBordersAndReplot(void)
 {   
     if (m_xAxisMaxValues.size())
     {
@@ -1261,7 +1261,7 @@ void ScriptPlotWidget::adjustBordersAndReplot(void)
 /**
  * This function is called periodically by m_plotTimer (adjusts the borders of diagram and replots all graphs).
  */
-void ScriptPlotWidget::plotTimeoutSlot()
+void PlotWidget::plotTimeoutSlot()
 {
 
     if(m_updatePlotCheckBox->isChecked())

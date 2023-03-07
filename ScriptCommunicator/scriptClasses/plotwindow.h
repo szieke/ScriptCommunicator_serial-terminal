@@ -26,8 +26,7 @@
 #define PLOTWINDOW_H
 
 #include <QMainWindow>
-#include "qcustomplot.h"
-#include "scriptPlotwidget.h"
+#include "plotwidget.h"
 
 namespace Ui {
 class PlotWindow;
@@ -51,7 +50,7 @@ public:
     void resizeEvent(QResizeEvent * event);
 
     ///Returns the plot widget.
-    ScriptPlotWidget* getWidget(void){return m_plotWidget;}
+    PlotWidget* getWidget(void){return m_plotWidget;}
 
 signals:
 
@@ -66,7 +65,7 @@ private:
     ///The user interface.
     Ui::PlotWindow *m_userInterface;
 
-    ScriptPlotWidget* m_plotWidget;
+    PlotWidget* m_plotWidget;
 
 };
 #endif // PLOTWINDOW_H

@@ -28,7 +28,8 @@
 #include <QObject>
 
 #include "scriptWidget.h"
-#include "scriptPlotwidget.h"
+#include "scriptPlotWidget.h"
+#include "plotwidget.h"
 
 
 ///This wrapper class is used to access a QGroupBox object (located in a script gui/ui-file) from a script.
@@ -71,14 +72,26 @@ public:
     Q_INVOKABLE QString title(void){return m_box->title();}
 
     ///Adds a plot widget to the group box.
-    Q_INVOKABLE ScriptPlotWidget* addPlotWidget(void)
+    Q_INVOKABLE QJSValue addPlotWidget(void)
     {
+        QJSValue scriptObj;
         QHBoxLayout* layout = 0;
-        ScriptPlotWidget* widget = 0;
+        PlotWidget* widget = 0;
+        ScriptPlotWidget* scriptPlotWidget= 0;
         emit createGuiElementSignal("QHBoxLayout", (QObject**)&layout, m_scriptWindow, m_scriptThread, m_box);
         m_box->setLayout(layout);
-        emit createGuiElementSignal("ScriptPlotWidget", (QObject**)&widget, m_scriptWindow, m_scriptThread, layout);
-        return widget;
+        emit createGuiElementSignal("PlotWidget", (QObject**)&widget, m_scriptWindow, m_scriptThread, layout);
+
+        if(widget != 0)
+         {
+             scriptPlotWidget = new ScriptPlotWidget(widget, m_scriptThread, m_scriptWindow);
+             m_scriptThread->addCreatedGuiElement(scriptPlotWidget);
+
+             scriptObj = m_scriptThread->getScriptEngine()->newQObject(scriptPlotWidget);
+             QJSEngine::setObjectOwnership(scriptPlotWidget, QJSEngine::CppOwnership);
+         }
+
+        return scriptObj;
     }
 
     ///Checks or unchecks the group box checkbox.

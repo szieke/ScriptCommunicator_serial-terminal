@@ -38,7 +38,7 @@ PlotWindow::PlotWindow(ScriptThread* scriptThread, ScriptWindow *scriptWindow) :
     m_userInterface(new Ui::PlotWindow)
 {
     m_userInterface->setupUi(this);
-    m_plotWidget = new ScriptPlotWidget(scriptThread, scriptWindow, m_userInterface->horizontalLayout);
+    m_plotWidget = new PlotWidget(scriptThread, scriptWindow, m_userInterface->horizontalLayout);
 
 
 }
