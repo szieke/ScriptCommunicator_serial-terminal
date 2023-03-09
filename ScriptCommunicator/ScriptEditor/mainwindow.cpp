@@ -379,12 +379,12 @@ void MainWindow::mouseMoveTimerSlot()
 
         if(m_ctrlIsPressed)
         {
-            QString completeWord = textEditor->wordAtPosition(pos, true);
+            QString completeWord = textEditor->wordAtPosition(pos);
             if(!completeWord.isEmpty())
             {
                 bool wordIsInOutline = false;
 
-                QString contextString = textEditor->getContextString(line);
+                QString contextString = textEditor->getContextString(completeWord);
                 if(!contextString.isEmpty())
                 {
                     int index = 0;
@@ -443,7 +443,7 @@ void MainWindow::mouseMoveTimerSlot()
 
                 if(wordIsInOutline)
                 {
-                    textEditor->underlineWordWhichCanBeClicked(pos);
+                    textEditor->underlineWordWhichCanBeClicked(pos, line);
                 }
             }
         }
@@ -452,14 +452,13 @@ void MainWindow::mouseMoveTimerSlot()
             if(textEditor->lexer() && !word.isEmpty())
             {
                 //Show the calltip (if possible).
-              if(!textEditor->callTip(pos))
-              {
-                  QString lineText = textEditor->text(line);
-                  int index = lineText.indexOf(word);
-                  index = lineText.indexOf("(", index + 1);
-                  pos = textEditor->positionFromLineIndex(line, index + 1);
-                  (void)textEditor->callTip(pos);
-              }
+              textEditor->callTip();
+
+              QString lineText = textEditor->text(line);
+              int index = lineText.indexOf(word);
+              index = lineText.indexOf("(", index + 1);
+              pos = textEditor->positionFromLineIndex(line, index + 1);
+              (void)textEditor->callTip();
             }
         }
 
@@ -540,11 +539,14 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
         m_indicatorClickTimer.stop();
 
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-        QString text = textEditor->wordAtPosition(m_lastIndicatorClickPosition, true);
+        QString text = textEditor->wordAtPosition(m_lastIndicatorClickPosition);
 
 
         bool isLocalVariable = false;
-        QString searchString = textEditor->getContextString(line);
+
+        long pos = textEditor->SendScintilla(QsciScintillaBase::SCI_POSITIONFROMPOINTCLOSE, m_lastMouseMoveEvent.x(), m_lastMouseMoveEvent.y());
+        QString completeWord = textEditor->wordAtPosition(pos);
+        QString searchString = textEditor->getContextString(completeWord);
         if(!searchString.isEmpty())
         {
             int index = 0;
@@ -560,6 +562,12 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
             }
             searchString = searchString.replace("::", ".");
 
+        }
+        else
+        {
+
+            searchString = completeWord;
+            int index = 0;
 
             do
             {
@@ -580,12 +588,11 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
                }
 
             }while((index != -1) && !isLocalVariable);
-
         }
 
         if(!isLocalVariable)
         {
-            searchString = text;
+           // searchString = text;
         }
 
         //Iterate over all elements in the scripts outline.
@@ -658,9 +665,6 @@ bool MainWindow::addTab(QString script, bool setTabIndex)
 
         connect(textEditor, SIGNAL(copyAvailable(bool)), ui->actionCut, SLOT(setEnabled(bool)));
         connect(textEditor, SIGNAL(copyAvailable(bool)),  ui->actionCopy, SLOT(setEnabled(bool)));
-
-        connect(textEditor, SIGNAL(zoomInSignal()), this, SLOT(zoomInSlot()));
-        connect(textEditor, SIGNAL(zoomOutSignal()), this, SLOT(zoomOutSlot()));
 
         connect(textEditor, SIGNAL(modificationChanged(bool)), this, SLOT(modificationChangedSlot()));
 
@@ -2265,12 +2269,6 @@ void MainWindow::functionListDoubleClicked(QTreeWidgetItem* item, int column)
                     int foundLine, column;
                     textEditor->getCursorPosition(&foundLine, &column);
                     textEditor->ensureLineVisible(foundLine);
-
-                    int startPos = textEditor->SendScintilla(QsciScintillaBase::SCI_GETSELECTIONSTART);
-                    QString word = textEditor->selectedText();
-                    int index = word.indexOf(entry->name);
-                    startPos += index;
-                    textEditor->setSelectionFromPosition(startPos, startPos + entry->name.length());
                 }
             }
             clearCurrentIndicator();

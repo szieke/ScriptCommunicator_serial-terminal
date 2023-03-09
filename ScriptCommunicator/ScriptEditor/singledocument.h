@@ -35,7 +35,7 @@ public:
     void updateLastModified(void);
 
     ///Underlines a word which can be clicked (funktion or variable in the outline window).
-    void underlineWordWhichCanBeClicked(int pos);
+    void underlineWordWhichCanBeClicked(int pos, int line);
 
     ///Clears the current underline (clickable word).
     void removeUndlineFromWordWhichCanBeClicked(void);
@@ -74,7 +74,7 @@ public:
     void addFunction(ParsedEntry& function);
 
     ///Returns the current context string.
-    QString getContextString(int line);
+    QString getContextString(QString name);
 
     ///Sets the style to 'dark style' if useDarkStyle is true otherwise the default style is used.
     void setUseDarkStyle(bool useDarkStyle);
@@ -82,12 +82,17 @@ public:
 protected:
 
     ///Handle mouse moves
-   void mouseMoveEventChild(QMouseEvent *event);
+   void mouseMoveEvent(QMouseEvent *event);
 
    ///Handle key presses
-   void keyPressEventChild(QKeyEvent *event);
+   void keyPressEvent(QKeyEvent *event);
 
    void keyReleaseEvent(QKeyEvent *event);
+
+   ///Drop event.
+   void dropEvent(QDropEvent *event);
+
+   void wheelEvent(QWheelEvent *event);
 
 
 private:

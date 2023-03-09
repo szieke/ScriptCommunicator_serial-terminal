@@ -6,7 +6,6 @@
 #include <QCoreApplication>
 #include <QDirIterator>
 #include <QThread>
-#include "parseThread.h"
 
 
 
@@ -41,8 +40,10 @@ void SingleDocument::keyReleaseEvent(QKeyEvent *event)
         m_mainWindow->m_ctrlIsPressed = false;
         removeUndlineFromWordWhichCanBeClicked();
     }
+
+    QsciScintillaBase::keyReleaseEvent(event);
 }
-void SingleDocument::keyPressEventChild(QKeyEvent *event)
+void SingleDocument::keyPressEvent(QKeyEvent *event)
 {
 
     if((event->modifiers() & Qt::ControlModifier) != 0)
@@ -51,6 +52,8 @@ void SingleDocument::keyPressEventChild(QKeyEvent *event)
         m_mainWindow->m_ctrlIsPressed = true;
         m_mainWindow->m_mouseEventTimer.start(100);
     }
+
+    QsciScintillaBase::keyPressEvent(event);
 }
 
 /**
@@ -71,12 +74,12 @@ void SingleDocument::setUseDarkStyle(bool useDarkStyle)
  * @return
  *      The context string.
  */
-QString SingleDocument::getContextString(int line)
+QString SingleDocument::getContextString(QString name)
 {
     QString result;
-    for(auto el : m_functions)
+    for(const auto &el : m_functions)
     {
-        if((el.endLine >= line) && (el.line <= line))
+        if(el.name == name)
         {//Context found.
 
             result = el.completeName;
@@ -92,22 +95,52 @@ void SingleDocument::addFunction(ParsedEntry& function)
     m_functions.append(function);
 }
 
-void SingleDocument::mouseMoveEventChild(QMouseEvent *event)
+void SingleDocument::mouseMoveEvent(QMouseEvent *event)
 {
     if(!m_mainWindow->m_ctrlIsPressed)
     {
         removeUndlineFromWordWhichCanBeClicked();
     }
+
+    QsciScintillaBase::mouseMoveEvent(event);
     m_mainWindow->m_lastMouseMoveEvent = *event;
     m_mainWindow->m_mouseEventTimer.start(100);
 }
+/**
+ * Drop event.
+ * @param event
+ *      The drop event.
+ */
+void SingleDocument::dropEvent(QDropEvent *event)
+{
+    m_mainWindow->dropEvent(event);
+}
 
+
+void SingleDocument::wheelEvent(QWheelEvent *event)
+ {
+     if(m_mainWindow->m_ctrlIsPressed)
+     {
+         if(event->delta() > 0)
+         {
+             m_mainWindow->zoomInSlot();
+         }
+         else
+         {
+             m_mainWindow->zoomOutSlot();
+         }
+     }
+     else
+     {
+         QsciScintilla::wheelEvent(event);
+     }
+ }
 /**
  * Underlines a word which can be clicked (funktion or variable in the outline window).
  * @param pos
  *      The position of one character of the word.
  */
-void SingleDocument::underlineWordWhichCanBeClicked(int pos)
+void SingleDocument::underlineWordWhichCanBeClicked(int pos, int line)
 {
     if(m_clickIndicatorStart != -1)
     {
@@ -117,7 +150,8 @@ void SingleDocument::underlineWordWhichCanBeClicked(int pos)
     m_clickIndicatorStart = SendScintilla(SCI_WORDSTARTPOSITION, pos, true);
     m_clickIndicatorEnd = SendScintilla(SCI_WORDENDPOSITION, pos, true);
 
-    fillIndicatorRangeWithPosition(m_clickIndicatorStart, m_clickIndicatorEnd, m_clickIndicatorIdentifier);
+    /*ToDo*/
+    fillIndicatorRange(line, m_clickIndicatorStart, line, m_clickIndicatorEnd, m_clickIndicatorIdentifier);
 }
 
 /**
@@ -127,7 +161,8 @@ void SingleDocument::removeUndlineFromWordWhichCanBeClicked(void)
 {
     if(m_clickIndicatorStart != -1)
     {
-        clearIndicatorRangeWithPosition(m_clickIndicatorStart, m_clickIndicatorEnd, m_clickIndicatorIdentifier);
+        /*ToDo*/
+        //clearIndicatorRangeWithPosition(m_clickIndicatorStart, m_clickIndicatorEnd, m_clickIndicatorIdentifier);
         m_clickIndicatorStart = -1;
         m_clickIndicatorEnd = -1;
     }
