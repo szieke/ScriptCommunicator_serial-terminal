@@ -621,6 +621,9 @@ public:
     ///Adds an GUI element that was created by a script.
     void addCreatedGuiElement(ScriptWidget* element);
 
+    ///Shows a script exception (message box) to the user.
+    void showExceptionInMessageBox(QJSValue exception, QWidget *parent);
+
 signals:
 
     ///Is emitted if the clear console button in the main window is pressed.

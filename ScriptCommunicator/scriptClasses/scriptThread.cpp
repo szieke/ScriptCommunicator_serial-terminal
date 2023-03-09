@@ -451,7 +451,7 @@ void ScriptThread::run()
                 {//An error has occurred in stopScript.
 
                     QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
-                    m_scriptFileObject->showExceptionInMessageBox(result, m_scriptFileName, parent);
+                    showExceptionInMessageBox(result, parent);
                 }
 
             }
@@ -475,7 +475,17 @@ void ScriptThread::run()
     setThreadState(EXITED);
 }
 
-
+/**
+ * Shows a script exception (message box) to the user.
+ * @param exception
+ *      The script exception.
+ * @param parent
+ *      The parent window.
+ */
+void ScriptThread::showExceptionInMessageBox(QJSValue exception, QWidget *parent)
+{
+  m_scriptFileObject->showExceptionInMessageBox(exception, m_scriptFileName, parent);
+}
 
 /**
  * Creates a timer.
@@ -1238,7 +1248,7 @@ void ScriptThread::pauseTimerSlot()
 void ScriptThread::scriptSignalHandlerSlot(const QJSValue & exception)
 {
     QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
-    m_scriptFileObject->showExceptionInMessageBox(exception, m_scriptFileName, parent);
+    showExceptionInMessageBox(exception, parent);
     stopScript();
 }
 

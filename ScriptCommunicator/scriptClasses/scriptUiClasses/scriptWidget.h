@@ -31,7 +31,6 @@
 #include "scriptThread.h"
 #include "scriptObject.h"
 
-
 ///This wrapper class is used to access a QWidget object (located in a script gui/ui-file) from a script.
 class ScriptWidget: public QObject, public ScriptObject
 {
@@ -42,7 +41,8 @@ class ScriptWidget: public QObject, public ScriptObject
 
 public:
     ScriptWidget(QWidget* widget, ScriptThread *scriptThread, ScriptWindow* scriptWindow) :
-        QObject(nullptr), m_scriptWindow(scriptWindow), m_scriptThread(scriptThread), m_widget(widget)
+        QObject(nullptr), m_scriptWindow(scriptWindow), m_scriptThread(scriptThread), m_widget(widget),
+        m_shortCuts()
     {
 
 
@@ -65,17 +65,17 @@ public:
             connect(this, SIGNAL(showSignal()), widget, SLOT(show()), directConnectionType);
             connect(this, SIGNAL(closeSignal()), widget, SLOT(close()), Qt::QueuedConnection);
             connect(this, SIGNAL(hideSignal()), widget, SLOT(hide()), Qt::QueuedConnection);
-            connect(this, SIGNAL(setWindowTitleSignal(QString)), widget, SLOT(setWindowTitle(QString)), Qt::QueuedConnection);
-            connect(this, SIGNAL(setWindowIconSignal(QString, QWidget*)), scriptWindow, SLOT(setWindowIconSlot(QString, QWidget*)), Qt::QueuedConnection);
+            connect(this, SIGNAL(setWindowTitleSignal(QString)),widget, SLOT(setWindowTitle(QString)), Qt::QueuedConnection);
+            connect(this, SIGNAL(setWindowIconSignal(QString,QWidget*)), scriptWindow, SLOT(setWindowIconSlot(QString,QWidget*)), Qt::QueuedConnection);
 
-            connect(this, SIGNAL(setWindowPositionAndSizeSignal(QString, QWidget*)),
-                    scriptWindow, SLOT(setWindowPositionAndSizeSlot(QString, QWidget*)), directConnectionType);
+            connect(this, SIGNAL(setWindowPositionAndSizeSignal(QString,QWidget*)),
+                    scriptWindow, SLOT(setWindowPositionAndSizeSlot(QString,QWidget*)), directConnectionType);
 
             connect(this, SIGNAL(windowPositionAndSizeSignal(QString*,QWidget*)),
                     scriptWindow, SLOT(windowPositionAndSizeSlot(QString*,QWidget*)), directConnectionType);
 
             connect(this, SIGNAL(setScriptGuiElementColorSignal(QColor,QWidget*,QPalette::ColorRole)),
-                    scriptWindow, SLOT(setScriptGuiElementColorSlot(QColor,QWidget*, QPalette::ColorRole)), Qt::QueuedConnection);
+                    scriptWindow, SLOT(setScriptGuiElementColorSlot(QColor,QWidget*,QPalette::ColorRole)), Qt::QueuedConnection);
 
             connect(this, SIGNAL(setScriptGuiElementAutoFillBackgroundSignal(QWidget*,bool)),
                     scriptWindow, SLOT(setScriptGuiElementAutoFillBackgroundSlot(QWidget*,bool)), Qt::QueuedConnection);
@@ -244,23 +244,18 @@ public:
     }
 
     ///Creates a shortcut and connects it to a script function.
-    Q_INVOKABLE void createShortCut(QString keys, QJSValue scriptFunction)
+    Q_INVOKABLE void createShortCut(QString keys, QJSValue function)
     {
-      (void)keys;
-      (void)scriptFunction;
-      /*ToDo
+
         QShortcut* shortCut;
         emit createShortCutSignal(keys, m_widget, &shortCut);
-        if (!qScriptConnect(shortCut, SIGNAL(activated()), QJSValue(), scriptFunction))
-        {
-            m_scriptThread->getScriptEngine()->currentContext()->throwError("could not find function: " + scriptFunction.toString());
+        m_shortCuts[shortCut] = function;
+        connect(shortCut, SIGNAL(activated()), this, SLOT(shortCutActivatedSlot()), Qt::QueuedConnection);
 
-        }
-        */
     }
 
     ///Sets the style sheet of a script widget.
-    Q_INVOKABLE void setStyleSheet(QString styleSheet){emit setStyleSheetSignal(styleSheet, m_widget);}
+    Q_INVOKABLE void setStyleSheet(QString styleSheet){emit setStyleSheetSignal(styleSheet, m_widget);}    
 
 Q_SIGNALS:
 
@@ -348,6 +343,25 @@ Q_SIGNALS:
     ///This signal is private and must not be used inside a script.
     void setStyleSheetSignal(QString styleSheet, QWidget* element);
 
+private slots:
+
+    ///Is called if a short cut is been activated.
+    void shortCutActivatedSlot(void)
+    {
+      QShortcut* shortCut = static_cast<QShortcut*>(sender());
+
+      if(m_shortCuts.contains(shortCut))
+      {
+        //Call the script function.
+        QJSValue result = m_shortCuts[shortCut].call();
+        if(result.isError())
+        {
+          m_scriptThread->showExceptionInMessageBox(result, m_widget);
+          m_scriptThread->stopScript();
+        }
+      }
+    }
+
 protected:
     ///Script window pointer.
     ScriptWindow* m_scriptWindow;
@@ -360,6 +374,9 @@ private:
 
     ///Map for storing additional data.
     QMap<int, QString> m_additionalData;
+
+    ///The shorr cuts of the widget.
+    QMap<QShortcut*, QJSValue> m_shortCuts;
 
 };
 

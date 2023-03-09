@@ -7,26 +7,10 @@
 #include <QBuffer>
 #include<QDomDocument>
 #include "plotwindow.h"
-#include "scriptComboBox.h"
-#include "scriptLineEdit.h"
+
 #include "mainwindow.h"
-#include "scriptTableWidget.h"
-#include "scriptTextEdit.h"
-#include "scriptCheckBox.h"
-#include "scriptButton.h"
-#include "scriptPlotWindow.h"
-#include "scriptProgressBar.h"
-#include "scriptSpinBox.h"
-#include "scriptTimeEdit.h"
-#include "scriptDateEdit.h"
-#include "scriptDateTimeEdit.h"
-#include "scriptTextEdit.h"
-#include "scriptSlider.h"
-#include "scriptDoubleSpinBox.h"
-#include "scriptCalendarWidget.h"
 #include "scriptwindow.h"
 #include "colorWidgets/color_dialog.hpp"
-#include "qcontext2dcanvas.h"
 
 
 QWidget* createWidget(QString& type, QWidget* parent, bool insertedInTableWidget)
@@ -907,7 +891,6 @@ void ScriptSlots::processStoredOperationsSlot(QTextEdit* textEdit, bool isLocked
 {
     int pos = 0;
 
-    QTextCursor cursor = textEdit->textCursor();
     textEdit->setUpdatesEnabled(false);
     textEdit->blockSignals(true);
     textEdit->document()->blockSignals(true);
@@ -918,7 +901,7 @@ void ScriptSlots::processStoredOperationsSlot(QTextEdit* textEdit, bool isLocked
         pos = textEdit->verticalScrollBar()->value();
     }
 
-    for(auto el : *m_storedOperations)
+    for(const auto &el : *m_storedOperations)
     {
         if(el.atTheEnd)textEdit->moveCursor(QTextCursor::End);
 

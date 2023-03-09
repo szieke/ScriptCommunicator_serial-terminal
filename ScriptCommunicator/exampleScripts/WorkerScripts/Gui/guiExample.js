@@ -125,6 +125,15 @@ function secondDialogOkButtonClicked()
 	UI_testTextEdit.append("UI_secondDialogOkButtonClicked: " + UI_secondDialogLineEdit.text());
 }
 
+function shortCutDialogSlot()
+{
+	UI_testTextEdit.append("shortCutDialogSlot");
+}
+function shortCutTreeWidgetSlot()
+{
+	UI_testTextEdit.append("shortCutTreeWidgetSlot");
+}
+
 try
 {
 	//Test if the GUI has already been loaded.
@@ -271,4 +280,7 @@ else
 	
 	scriptThread.setScriptThreadPriority("NormalPriority");
 }	
+
+UI_Dialog.createShortCut("Ctrl+s", shortCutDialogSlot);
+UI_treeWidget.createShortCut("Ctrl+d", shortCutTreeWidgetSlot);
 

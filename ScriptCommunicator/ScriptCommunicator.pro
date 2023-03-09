@@ -35,7 +35,6 @@ scriptClasses/scriptUiClasses \
 cheetahSpi \
 aardvarkI2cSpi \
 pcan \
-scriptClasses/canvas2D \
 quazip \
 ScriptEditor
 
