@@ -32,7 +32,8 @@
 #include <QLibrary>
 #include <QProcess>
 #include <QStandardPaths>
-
+#include <scriptThread.h>
+#include <QMutex>
 
 #ifdef Q_OS_WIN32
 #include <Windows.h>
@@ -45,14 +46,75 @@ bool g_aThreadHasBeenTerminated = false;
 ///The current SCEZ folder.
 QString g_currentScezFolder = "";
 
-#ifdef Q_OS_WIN32
+///Contains all running script threads.
+static QVector<ScriptThread*> g_scriptThreads;
+
+///Mutex for accessing g_scriptThreads;
+static QMutex g_scriptThreadsMutex;
+/**
+ * Adds a thread to the global script thread vector.
+ * @param thread
+ *      The thread.
+ */
+void addScriptThreadToGlobalList(ScriptThread* thread)
+{
+  g_scriptThreadsMutex.lock();
+  g_scriptThreads.append(thread);
+  g_scriptThreadsMutex.unlock();
+}
+
+/**
+ * Removes a thread from the global script thread vector.
+ * @param thread
+ *      The thread.
+ */
+void removeScriptThreadFromGlobalList(ScriptThread* thread)
+{
+  g_scriptThreadsMutex.lock();
+  int index = g_scriptThreads.indexOf(thread);
+  if(index != -1)
+  {
+    g_scriptThreads.remove(index, 1);
+  }
+  g_scriptThreadsMutex.unlock();
+}
+
 static void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString &message)
 {
     (void)type;
     (void)context;
-    OutputDebugString(reinterpret_cast<const wchar_t *>(message.utf16()));
+
+    bool isScriptError = false;
+
+    //Check if the source of the QDebug message is a script.
+    //Note: There is no possibility to get a notification of a runtime error (e.g. error in timer slot) in Qt6.4.2  (like a signal).
+    for(auto el : g_scriptThreads)
+    {
+      for(const auto &file : el->getLoadedScripts())
+      {
+        if((context.file == ("file:///" + file) && el == QThread::currentThread()))
+        {
+          isScriptError = true;
+          break;
+        }
+
+      }
+
+      if(isScriptError)
+      {
+        el->showExceptionInMessageBox(message, nullptr);
+        el->stopScript();
+        break;
+      }
+    }
+
+    if(!isScriptError)
+    {
+      OutputDebugString(reinterpret_cast<const wchar_t *>(message.utf16()));
+    }
+
 }
-#endif
+
 
 ///Deletes the current SCEZ folder.
 void deleteCurrentScezFolder(void)
@@ -73,10 +135,6 @@ void deleteCurrentScezFolder(void)
 
 int main(int argc, char *argv[])
 {
-
-#if QT_VERSION >= QT_VERSION_CHECK(5,6,0)
-    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-#endif
 
     QApplication* a = new QApplication(argc, argv);
     QStringList extraPluginPaths;
@@ -145,6 +203,7 @@ int main(int argc, char *argv[])
                 QMessageBox box(QMessageBox::Warning, "ScriptCommunicator", QString("unknown command line argument: ") + currentArg);
                 QApplication::setActiveWindow(&box);
                 box.exec();
+                delete a;
                 return -1;
             }
         }
@@ -157,6 +216,7 @@ int main(int argc, char *argv[])
                 if(!MainWindow::parseSceFile(currentArg.replace("\\", "/"), &scripts, &extraPluginPaths, &scriptArguments,
                                              &withScriptWindow, &scriptWindowIsMinimized, &minimumScVersion, &extraLibPaths))
                 {
+                    delete a;
                     return -1;
                 }
 
@@ -171,7 +231,7 @@ int main(int argc, char *argv[])
                         QString currentSceFile;
                         QStringList dirContent = ScriptFile(0, "", false).readDirectory(g_currentScezFolder, false, false, true, false);
 
-                        for(auto el : dirContent)
+                        for(const auto &el : dirContent)
                         {
                             if(el.endsWith(".sce"))
                             {
@@ -201,12 +261,14 @@ int main(int argc, char *argv[])
                         QMessageBox box(QMessageBox::Warning, "ScriptCommunicator", QString("could not unzip: ") + currentArg);
                         QApplication::setActiveWindow(&box);
                         box.exec();
+                        delete a;
                         return -1;
                     }
 
                 }//if(MainWindow::checkScezFileHash(currentArg))
                 else
                 {
+                    delete a;
                     return -1;
                 }
 
@@ -224,6 +286,7 @@ int main(int argc, char *argv[])
 
     if(!MainWindow::checkParsedScVersion(minimumScVersion))
     {
+        delete a;
         return -1;
     }
 
@@ -233,7 +296,7 @@ int main(int argc, char *argv[])
     for(int i = 0; (i < 5) && oneLibraryLoadFailed; i++)
     {
         oneLibraryLoadFailed = false;
-        for(auto el : extraLibPaths)
+        for(const auto &el : extraLibPaths)
         {
             QDir dir(el);
             QStringList foundEntries = dir.entryList(QDir::Files);

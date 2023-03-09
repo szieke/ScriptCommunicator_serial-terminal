@@ -32,6 +32,10 @@
 class ScriptTimeEdit : public ScriptWidget
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     explicit ScriptTimeEdit(QTimeEdit* timeEdit, ScriptThread *scriptThread) :
         ScriptWidget(timeEdit,scriptThread, scriptThread->getScriptWindow()), m_timeEdit(timeEdit)

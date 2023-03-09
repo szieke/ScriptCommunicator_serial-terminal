@@ -36,6 +36,9 @@ class ScriptLineEdit: public ScriptWidget
 {
     Q_OBJECT
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     ScriptLineEdit(QLineEdit* lineEdit, ScriptThread *scriptThread) :
         ScriptWidget(lineEdit,scriptThread, scriptThread->getScriptWindow()), m_lineEdit(lineEdit), m_hexModeActivated(false),
@@ -46,7 +49,7 @@ public:
         //wrapper events)
         Qt::ConnectionType directConnectionType = scriptThread->runsInDebugger() ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
-        connect(m_lineEdit, SIGNAL(textChanged(const QString&)),this, SIGNAL(textChangedSignal(const QString&)));
+        connect(m_lineEdit, SIGNAL(textChanged(QString&)),this, SIGNAL(textChangedSignal(QString&)));
 
         connect(this, SIGNAL(setTextSignal(QString)),m_lineEdit, SLOT(setText(QString)), directConnectionType);
 
@@ -100,7 +103,7 @@ public:
         m_hexModeActivated = true;
         m_maxValue = maxValue;
 
-        connect(m_lineEdit, SIGNAL(textChanged(const QString&)),this, SLOT(textChangedInHexMode(const QString&)));
+        connect(m_lineEdit, SIGNAL(textChanged(QString&)),this, SLOT(textChangedInHexMode(QString&)));
     };
 
 public slots:

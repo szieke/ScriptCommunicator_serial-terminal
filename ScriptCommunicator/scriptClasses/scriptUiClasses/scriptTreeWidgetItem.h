@@ -34,7 +34,9 @@
 class ScriptTreeWidgetItem : public QObject, public ScriptObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 
 public:
     ScriptTreeWidgetItem(QTreeWidgetItem* treeWidgetItem, ScriptThread *scriptThread, QObject* parent) :
@@ -47,8 +49,8 @@ public:
 
         Qt::ConnectionType directConnectionType = scriptThread->runsInDebugger() ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
-        connect(this, SIGNAL(expandItemSignal(QTreeWidgetItem*, bool)), scriptThread->getScriptWindow(),
-                SLOT(expandItemSlot(QTreeWidgetItem*, bool)), directConnectionType);
+        connect(this, SIGNAL(expandItemSignal(QTreeWidgetItem*,bool)), scriptThread->getScriptWindow(),
+                SLOT(expandItemSlot(QTreeWidgetItem*,bool)), directConnectionType);
 
         connect(this, SIGNAL(setItemIconSignal(QTreeWidgetItem*,int,QString)), scriptThread->getScriptWindow(),
                 SLOT(setItemIcon(QTreeWidgetItem*,int,QString)), Qt::QueuedConnection);

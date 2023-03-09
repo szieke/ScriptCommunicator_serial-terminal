@@ -36,6 +36,9 @@ class ScriptPlotWindow : public ScriptWidget
 {
     Q_OBJECT
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     explicit ScriptPlotWindow(PlotWindow* plotWindow, ScriptThread *scriptThread, ScriptWindow *scriptWindow) : ScriptWidget(plotWindow, scriptThread, scriptWindow),
         m_plotWindow(plotWindow)

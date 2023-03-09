@@ -90,6 +90,12 @@ static QMutex g_realNumberMapMutex;
 ///This variable is used un the main function.
 extern bool g_aThreadHasBeenTerminated;
 
+///Adds a thread to the global script thread vector.
+extern void addScriptThreadToGlobalList(ScriptThread* thread);
+
+///Removes a thread from the global script thread vector.
+extern void removeScriptThreadFromGlobalList(ScriptThread* thread);
+
 /**
  * Constructor.
  * @param scriptWindow
@@ -105,7 +111,7 @@ ScriptThread::ScriptThread(ScriptWindow* scriptWindow, quint32 sendId, QString s
                            SettingsDialog *settingsDialog, bool scriptRunsInDebugger) :
     m_shallExit(false), m_shallPause(false) ,m_scriptRunsInDebugger(scriptRunsInDebugger), m_state(INVALID),
     m_pauseTimer(0),m_scriptEngine(0), m_settingsDialog(settingsDialog), m_scriptSql(), m_blockTime(DEFAULT_BLOCK_TIME),
-    m_standardDialogs(0), m_scriptFileObject(0), m_isSuspendedByDebuger(false), m_debugWindow(0), m_hasMainWindowGuiElements(false),
+    m_standardDialogs(0), m_scriptFileObject(0), m_isSuspendedByDebuger(false), m_hasMainWindowGuiElements(false),
     m_libraries(0), m_scriptInf(0), m_registerMetaTypeCalledinScriptWidget(false), m_scriptIsLoading(false)
 {
     m_scriptWindow = scriptWindow;
@@ -113,6 +119,8 @@ ScriptThread::ScriptThread(ScriptWindow* scriptWindow, quint32 sendId, QString s
     m_sendId = sendId;
     m_scriptFileName = scriptName;
     m_userInterface.push_back(new ScriptWidget(scriptUi, this, m_scriptWindow));
+
+    addScriptThreadToGlobalList(this);
 
 
 
@@ -148,6 +156,8 @@ ScriptThread::~ScriptThread()
         el->deleteLater();
     }
     m_libraries.clear();
+
+    removeScriptThreadFromGlobalList(this);
 
 }
 
@@ -337,26 +347,26 @@ void ScriptThread::run()
         connect(this, SIGNAL(enableAllTabsForOneScriptThreadSignal(QObject*,bool)),
                 m_scriptWindow->m_mainWindow, SLOT(enableAllTabsForOneScriptThreadSlot(QObject*,bool)), directConnectionType);
 
-        connect(this, SIGNAL(createGuiElementSignal(QString,QObject**, ScriptWindow*, ScriptThread*, QObject*)),
+        connect(this, SIGNAL(createGuiElementSignal(QString,QObject**,ScriptWindow*,ScriptThread*,QObject*)),
                 m_scriptWindow, SLOT(createGuiElementSlot(QString,QObject**,ScriptWindow*,ScriptThread*,QObject*)), directConnectionType);
 
         connect(this, SIGNAL(loadUserInterfaceFileSignal(QWidget**,QString)),
                 m_scriptWindow, SLOT(loadUserInterfaceFileSlot(QWidget**,QString)), directConnectionType);
 
-        connect(this, SIGNAL(addMessageToLogAndConsolesSignal(QString, bool)),m_scriptWindow->m_mainWindow, SLOT(messageEnteredSlot(QString, bool)),
+        connect(this, SIGNAL(addMessageToLogAndConsolesSignal(QString,bool)),m_scriptWindow->m_mainWindow, SLOT(messageEnteredSlot(QString,bool)),
                 directConnectionType);
 
         connect(this, SIGNAL(setAllSettingsSignal(Settings&,bool)),
                 m_settingsDialog, SLOT(setAllSettingsSlot(Settings&,bool)), directConnectionType);
 
-        connect(this, SIGNAL(appendTextToConsoleSignal(QString, bool,bool)),
-                m_scriptWindow, SLOT(appendTextToConsoleSlot(QString, bool,bool)), Qt::QueuedConnection);
+        connect(this, SIGNAL(appendTextToConsoleSignal(QString,bool,bool)),
+                m_scriptWindow, SLOT(appendTextToConsoleSlot(QString,bool,bool)), Qt::QueuedConnection);
 
         connect(this, SIGNAL(exitScriptCommunicatorSignal(qint32)),
                 m_scriptWindow, SLOT(exitScriptCommunicatorSlot(qint32)), Qt::QueuedConnection);
 
-        connect(this, SIGNAL(threadStateChangedSignal(ThreadSate, ScriptThread*)),
-                m_scriptWindow, SLOT(threadStateChangedSlot(ThreadSate, ScriptThread*)), Qt::QueuedConnection);
+        connect(this, SIGNAL(threadStateChangedSignal(ThreadSate,ScriptThread*)),
+                m_scriptWindow, SLOT(threadStateChangedSlot(ThreadSate,ScriptThread*)), Qt::QueuedConnection);
 
         connect(this, SIGNAL(setScriptStateSignal(quint8,QString,bool*)),m_scriptWindow,
                 SLOT(setScriptStateSlot(quint8,QString,bool*)), directConnectionType);
@@ -484,7 +494,8 @@ void ScriptThread::run()
  */
 void ScriptThread::showExceptionInMessageBox(QJSValue exception, QWidget *parent)
 {
-  m_scriptFileObject->showExceptionInMessageBox(exception, m_scriptFileName, parent);
+
+  m_scriptFileObject->showExceptionInMessageBox(exception, m_scriptFileName, (parent == 0) ? m_userInterface[0]->getWidgetPointer() : parent);
 }
 
 /**
@@ -587,7 +598,7 @@ void ScriptThread::installsCustomWidget(QObject* child, QJSEngine* scriptEngine)
      QStringList files;
 
      //Look in the extra paths.
-     for(auto el : m_scriptWindow->m_mainWindow->getExtraPluginPaths())
+     for(const auto &el : m_scriptWindow->m_mainWindow->getExtraPluginPaths())
      {
          QStringList tmpFiles = QDir(el).entryList(QDir::Files);
 
@@ -1040,110 +1051,16 @@ void ScriptThread::messageBox(QString icon, QString title, QString text, QWidget
  */
 bool ScriptThread::showYesNoDialog(QString icon, QString title, QString text, QWidget* parent)
 {
-    return m_standardDialogs->showYesNoDialog(icon, title, text, (parent == 0) ? m_userInterface[0]->getWidgetPointer() : parent);
-}
-
-#ifdef Q_OS_MAC
-/**
-* Debug timer slot (checks if the script is suspended by the debugger or is running).
-*/
-void ScriptThread::debugTimerSlot(void)
-{
-    static QJSEngineDebugger::DebuggerState state = QJSEngineDebugger::SuspendedState;
-
-    if(m_debugger->state() != state)
+    if(parent == 0)
     {
-        state = m_debugger->state();
-        if(state == QJSEngineDebugger::RunningState)
-        {//The script is suspended (seems to be a bug on Mac OS X).
-
-            m_pauseTimer->stop();
-            m_shallPause = true;
-            m_isSuspendedByDebuger = true;
-
-            setThreadState(PAUSED);
-
-            for(auto el : m_userInterface)
-            {
-                el->setEnabled(false);
-            }
-            for(auto el : m_allCreatedGuiElementsFromScript)
-            {
-                el->setEnabled(false);
-            }
-            emit enableAllTabsForOneScriptThreadSignal(this, false);
-            emit pauseAllCreatedInterfaces(true);
-
-            //Block the signals of all timer.
-            for(auto child : children())
-            {
-                if(QString(child->metaObject()->className()) == QString("QTimer"))
-                {
-                    static_cast<QTimer*>(child)->blockSignals(true);
-                }
-            }
-
-            blockSignals(true);
-            m_scriptInf->blockSignals(true);
-
-        }
-        else
-        {
-            m_shallPause = false;
-            m_isSuspendedByDebuger = false;
-
-            if(m_userInterface[0]->getWidgetPointer() != 0)
-            {
-                bool allWindowsAreClosed = true;
-
-                for(auto el : m_userInterface)
-                {
-                    if(el->isVisible())
-                    {//the user has not closed the dialog
-                        allWindowsAreClosed = false;
-                        break;
-                    }
-                }
-                if(allWindowsAreClosed  && !m_hasMainWindowGuiElements)
-                {
-                    if(m_isSuspendedByDebuger)
-                    {
-                        stopScript();
-                    }
-                }
-            }
-            blockSignals(false);
-            m_scriptInf->blockSignals(false);
-
-            //Unblock the signals of all timer.
-            for(auto child : children())
-            {
-                if(QString(child->metaObject()->className()) == QString("QTimer"))
-                {
-                    static_cast<QTimer*>(child)->blockSignals(false);
-                }
-            }
-
-            emit pauseAllCreatedInterfaces(false);
-            for(auto el : m_userInterface)
-            {
-                el->setEnabled(true);
-            }
-            for(auto el : m_allCreatedGuiElementsFromScript)
-            {
-                el->setEnabled(true);
-            }
-            emit enableAllTabsForOneScriptThreadSignal(this, true);
-
-            QCoreApplication::processEvents();
-            setThreadState(RUNNING);
-            m_pauseTimer->start(100);
-
-        }
+      if(!m_userInterface.isEmpty())
+      {
+        parent = m_userInterface[0]->getWidgetPointer();
+      }
     }
 
+    return m_standardDialogs->showYesNoDialog(icon, title, text, parent);
 }
-#endif
 
 /**
  * This slot is called periodically by the timer m_pauseTimer.
@@ -1273,6 +1190,12 @@ bool ScriptThread::loadScript(QString scriptPath, bool isRelativePath)
     if(!result && scriptShallBeStopped)
     {
         stopScript();
+    }
+
+    if(result)
+    {
+      scriptPath = isRelativePath ? createAbsolutePath(scriptPath) : scriptPath;
+      m_loadedScripts.append(scriptPath);
     }
 
     return result;
@@ -1593,7 +1516,7 @@ QVector<unsigned char>  ScriptThread::readAllStandardOutputFromProcess(QJSValue 
                 byteArray = proc->readAllStandardOutput();
             }
 
-            for(auto val : byteArray)
+            for(const auto &val : byteArray)
             {
                 result.push_back((unsigned char) val);
             }
@@ -1650,7 +1573,7 @@ QVector<unsigned char>  ScriptThread::readAllStandardErrorFromProcess(QJSValue p
                 byteArray = proc->readAllStandardError();
             }
 
-            for(auto val : byteArray)
+            for(const auto &val : byteArray)
             {
                 result.push_back((unsigned char) val);
             }
@@ -2317,7 +2240,7 @@ void ScriptThread::getAllObjectPropertiesAndFunctionsInternal(QJSValue object, Q
     }
     if(elements.isValid())
     {
-        for(auto el : elements.toString().split(";"))
+        for(const auto &el : elements.toString().split(";"))
         {
             if(resultString)
             {

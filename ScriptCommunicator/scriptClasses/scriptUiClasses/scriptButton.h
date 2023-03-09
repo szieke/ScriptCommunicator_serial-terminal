@@ -33,6 +33,10 @@
 class ScriptButton : public ScriptWidget
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     explicit ScriptButton(QPushButton* button, ScriptThread *scriptThread) :
         ScriptWidget(button, scriptThread, scriptThread->getScriptWindow()), m_button(button)

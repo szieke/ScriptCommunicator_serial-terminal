@@ -37,6 +37,10 @@
 class ScriptTreeWidget: public ScriptWidget
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     ScriptTreeWidget(QTreeWidget* treeWidget, ScriptThread *scriptThread) :
         ScriptWidget(treeWidget, scriptThread, scriptThread->getScriptWindow()), m_treeWidget(treeWidget), m_scriptThread(scriptThread)
@@ -54,8 +58,8 @@ public:
         connect(this, SIGNAL(resizeColumnToContentsSignal(int,QTreeWidget*)), scriptThread->getScriptWindow(),
                 SLOT(resizeColumnToContentsSlot(int,QTreeWidget*)), directConnectionType);
 
-        connect(this, SIGNAL(expandItemSignal(QTreeWidgetItem*, bool)), scriptThread->getScriptWindow(),
-                SLOT(expandItemSlot(QTreeWidgetItem*, bool)), directConnectionType);
+        connect(this, SIGNAL(expandItemSignal(QTreeWidgetItem*,bool)), scriptThread->getScriptWindow(),
+                SLOT(expandItemSlot(QTreeWidgetItem*,bool)), directConnectionType);
 
         connect(this, SIGNAL(expandAllSignal(QTreeWidget*)), scriptThread->getScriptWindow(),
                 SLOT(expandAllSlot(QTreeWidget*)), directConnectionType);

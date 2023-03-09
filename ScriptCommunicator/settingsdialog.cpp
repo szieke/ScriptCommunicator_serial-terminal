@@ -433,7 +433,7 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     m_userInterface->aardvarkSpiBaudrate->setValidator(new QIntValidator(0, 8000, m_userInterface->aardvarkSpiBaudrate));
 
     //Read all serial port informations.
-    for(auto list : getSerialPortsInfo())
+    for(const auto &list : getSerialPortsInfo())
     {
         m_userInterface->serialPortInfoListBox->addItem(list.at(0));
     }
@@ -1207,7 +1207,7 @@ void SettingsDialog::lockScrollingSlot(void)
  */
 void SettingsDialog::comPortChangedSlot(QString text)
 {
-    for(auto list : getSerialPortsInfo())
+    for(const auto &list : getSerialPortsInfo())
     {
         if(text == list.at(0))
         {
@@ -1679,7 +1679,7 @@ void SettingsDialog::fillSerialPortListBox(void)
     //read all serial port informations
     QVector<QStringList> list = getSerialPortsInfo();
     m_userInterface->serialPortInfoListBox->clear();
-    for(auto entry : list)
+    for(const auto &entry : list)
     {
         m_userInterface->serialPortInfoListBox->addItem(entry.at(0));
 

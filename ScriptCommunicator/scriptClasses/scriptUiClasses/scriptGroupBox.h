@@ -36,6 +36,10 @@
 class ScriptGroupBox : public ScriptWidget
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     explicit ScriptGroupBox(QGroupBox* box, ScriptThread *scriptThread) :
         ScriptWidget(box, scriptThread, scriptThread->getScriptWindow()), m_box(box), m_scriptThread(scriptThread)
@@ -50,7 +54,7 @@ public:
                 SLOT(setTitleSlot(QString,QGroupBox*)), directConnectionType);
 
 
-        connect(this, SIGNAL(createGuiElementSignal(QString,QObject**, ScriptWindow*, ScriptThread*,QObject*)), scriptThread->getScriptWindow(),
+        connect(this, SIGNAL(createGuiElementSignal(QString,QObject**,ScriptWindow*,ScriptThread*,QObject*)), scriptThread->getScriptWindow(),
                 SLOT(createGuiElementSlot(QString,QObject**,ScriptWindow*,ScriptThread*,QObject*)), directConnectionType);
 
 

@@ -32,8 +32,6 @@
 #include "scriptTextEdit.h"
 #include "scriptCheckBox.h"
 #include "scriptButton.h"
-#include "scriptPlotWindow.h"
-#include "scriptProgressBar.h"
 #include "scriptSpinBox.h"
 #include "scriptTimeEdit.h"
 #include "scriptDateEdit.h"
@@ -50,6 +48,10 @@
 class ScriptTableWidget: public ScriptWidget
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     ScriptTableWidget(QTableWidget* tableWidget, ScriptThread *scriptThread) :
         ScriptWidget(tableWidget, scriptThread, scriptThread->getScriptWindow()), m_tableWidget(tableWidget), m_scriptThread(scriptThread), m_rowsCanBeMovedByUser(true)
@@ -61,13 +63,13 @@ public:
 
         Qt::ConnectionType directConnectionType = scriptThread->runsInDebugger() ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
-        connect(m_tableWidget, SIGNAL(cellPressed(int, int)), this, SIGNAL(cellPressedSignal(int, int)));
-        connect(m_tableWidget, SIGNAL(cellClicked(int, int)), this, SIGNAL(cellClickedSignal(int, int)));
-        connect(m_tableWidget, SIGNAL(cellDoubleClicked(int, int)), this, SIGNAL(cellDoubleClickedSignal(int, int)));
-        connect(m_tableWidget, SIGNAL(cellChanged(int, int)), this, SIGNAL(cellChangedSignal(int, int)));
-        connect(m_tableWidget->horizontalHeader(), SIGNAL(sectionResized(int, int, int)), this, SIGNAL(horizontalHeaderSectionResizedSignal(int, int, int)));
+        connect(m_tableWidget, SIGNAL(cellPressed(int,int)), this, SIGNAL(cellPressedSignal(int,int)));
+        connect(m_tableWidget, SIGNAL(cellClicked(int,int)), this, SIGNAL(cellClickedSignal(int,int)));
+        connect(m_tableWidget, SIGNAL(cellDoubleClicked(int,int)), this, SIGNAL(cellDoubleClickedSignal(int,int)));
+        connect(m_tableWidget, SIGNAL(cellChanged(int,int)), this, SIGNAL(cellChangedSignal(int,int)));
+        connect(m_tableWidget->horizontalHeader(), SIGNAL(sectionResized(int,int,int)), this, SIGNAL(horizontalHeaderSectionResizedSignal(int,int,int)));
         connect(m_tableWidget, SIGNAL(itemSelectionChanged()), this, SIGNAL(cellSelectionChangedSignal()), Qt::QueuedConnection);
-        connect(m_tableWidget, SIGNAL(cellEntered(int, int)), this, SLOT(stub_cellEnteredSlot(int, int)), Qt::DirectConnection);
+        connect(m_tableWidget, SIGNAL(cellEntered(int,int)), this, SLOT(stub_cellEnteredSlot(int,int)), Qt::DirectConnection);
 
         connect(this, SIGNAL(insertRowSignal(int)), m_tableWidget, SLOT(insertRow(int)), directConnectionType);
         connect(this, SIGNAL(insertColumnSignal(int)), m_tableWidget, SLOT(insertColumn(int)), directConnectionType);

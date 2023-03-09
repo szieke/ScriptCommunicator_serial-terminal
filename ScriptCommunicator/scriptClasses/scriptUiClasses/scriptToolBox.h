@@ -33,6 +33,10 @@
 class ScriptToolBox : public ScriptWidget
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     explicit ScriptToolBox(QToolBox* box, ScriptThread *scriptThread) :
         ScriptWidget(box, scriptThread, scriptThread->getScriptWindow()), m_box(box)

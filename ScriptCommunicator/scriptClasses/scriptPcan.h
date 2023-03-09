@@ -35,7 +35,8 @@ class ScriptPcan : public QObject, public ScriptObject
     Q_OBJECT
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     explicit ScriptPcan(QObject *parent = 0) : QObject(parent), m_pcan(this)
     {

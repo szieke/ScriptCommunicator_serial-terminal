@@ -29,24 +29,11 @@
 #include <QFileDialog>
 #include <QBuffer>
 #include <QDomDocument>
-#include "scriptComboBox.h"
-#include "scriptLineEdit.h"
 #include "mainwindow.h"
-#include "scriptTableWidget.h"
-#include "scriptTextEdit.h"
-#include "scriptCheckBox.h"
-#include "scriptButton.h"
-#include "scriptPlotWindow.h"
-#include "scriptProgressBar.h"
-#include "scriptSpinBox.h"
-#include "scriptTimeEdit.h"
-#include "scriptDateEdit.h"
-#include "scriptTextEdit.h"
-#include "scriptSlider.h"
+
 
 ///Deletes the current SCEZ folder.
 extern void deleteCurrentScezFolder(void);
-
 
 
 
@@ -95,7 +82,7 @@ bool DragDropTableWidget::dropMimeData(int row, int column, const QMimeData *dat
         else
         {
             QList<QUrl> urls = data->urls();
-            for(auto el : urls)
+            for(const auto &el : urls)
             {
                 list.append(el.path());
             }
@@ -150,7 +137,7 @@ ScriptWindow::ScriptWindow(MainWindow* mainWindow, MainInterfaceThread *thread, 
 
     m_createSceFileDialog = new CreateSceFile(0, m_userInterface->tableWidget);
 
-    connect(m_userInterface->tableWidget->horizontalHeader(), SIGNAL(sectionResized(int, int, int)), this, SLOT(resizeTableColumnsSlot()));
+    connect(m_userInterface->tableWidget->horizontalHeader(), SIGNAL(sectionResized(int,int,int)), this, SLOT(resizeTableColumnsSlot()));
 
     QShortcut *shortcut = new QShortcut(QKeySequence("Ctrl+1"), this);
     QObject::connect(shortcut, SIGNAL(activated()), this, SLOT(startButtonPressedSlot()));
@@ -187,8 +174,8 @@ ScriptWindow::ScriptWindow(MainWindow* mainWindow, MainInterfaceThread *thread, 
     connect(m_userInterface->actionMoveUp, SIGNAL(triggered()), this, SLOT(moveTableEntryUpSlot()));
 
 
-    connect(m_userInterface->tableWidget, SIGNAL(cellEntered(int, int)), this, SLOT(cellEnteredSlot(int, int)));
-    connect(m_userInterface->tableWidget, SIGNAL(cellChanged(int, int)), this, SLOT(cellChangedSlot(int, int)));
+    connect(m_userInterface->tableWidget, SIGNAL(cellEntered(int,int)), this, SLOT(cellEnteredSlot(int,int)));
+    connect(m_userInterface->tableWidget, SIGNAL(cellChanged(int,int)), this, SLOT(cellChangedSlot(int,int)));
     connect(m_userInterface->tableWidget, SIGNAL(dropEventSignal(int,int,QStringList)), this, SLOT(tableDropEventSlot(int,int,QStringList)));
     connect(m_userInterface->tableWidget, SIGNAL(itemSelectionChanged()), this, SLOT(itemSelectionChangedSlot()));
 
@@ -215,9 +202,7 @@ ScriptWindow::ScriptWindow(MainWindow* mainWindow, MainInterfaceThread *thread, 
     }
     else
     {
-        connect(m_userInterface->tableWidget, SIGNAL(cellDoubleClicked(int, int)), this, SLOT(cellDoubleClickedSlot(int, int)));
-
-
+        connect(m_userInterface->tableWidget, SIGNAL(cellDoubleClicked(int,int)), this, SLOT(cellDoubleClickedSlot(int,int)));
     }
 
 
@@ -271,7 +256,7 @@ void ScriptWindow::startCommandLineScripts(void)
 {
     m_userInterface->tableWidget->setRowCount(0);
 
-    for(auto script : m_commandLineScripts)
+    for(const auto &script : m_commandLineScripts)
     {
         QString scriptFile = script;
         if(QFile::exists(scriptFile))
@@ -1279,6 +1264,9 @@ void ScriptWindow::threadStateChangedSlot(ThreadSate state, ScriptThread* thread
             text = "not running";
             if(thread)
             {
+
+                m_mainWindow->removeAllTabsAndToolBoxPages(thread);
+
                 if(threadIsInTable)
                 {
                     m_userInterface->tableWidget->item(row, COLUMN_SCRIPT_THREAD_POINTER)->setData(USER_ROLE_SCRIPT_THREAD_IN_TABLE, (quint64)0);
@@ -1286,8 +1274,6 @@ void ScriptWindow::threadStateChangedSlot(ThreadSate state, ScriptThread* thread
 
                 delete thread;
             }
-
-            m_mainWindow->removeAllTabsAndToolBoxPages(thread);
         }
 
         if(m_userInterface->tableWidget->rowCount() > 0)
@@ -1390,7 +1376,7 @@ void ScriptWindow::startScriptThread(int selectedRow, bool withDebugger)
             loader.addPluginPath(MainWindow::getPluginsFolder() + "/designer");
 
             //Add the extra paths.
-            for(auto el : m_mainWindow->getExtraPluginPaths())
+            for(const auto &el : m_mainWindow->getExtraPluginPaths())
             {
                 loader.addPluginPath(el);
             }

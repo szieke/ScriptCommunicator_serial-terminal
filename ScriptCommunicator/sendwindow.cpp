@@ -174,7 +174,7 @@ void SendWindowTextEdit::dropEvent(QDropEvent *event)
         else
         {
             QList<QUrl> urls = event->mimeData()->urls();
-            for(auto el : urls)
+            for(const auto &el : urls)
             {
                 list.append(el.path());
             }
@@ -241,11 +241,11 @@ SendWindow::SendWindow(SettingsDialog *settingsDialog, MainWindow *mainWindow) :
     m_userInterface->CanIdLineEdit->setVisible(false);
     m_userInterface->CanIdLineEdit->configure(0x7ff);
 
-    connect(m_userInterface->tableWidget->horizontalHeader(), SIGNAL(sectionResized(int, int, int)), this, SLOT(resizeTableColumnsSlot()));
+    connect(m_userInterface->tableWidget->horizontalHeader(), SIGNAL(sectionResized(int,int,int)), this, SLOT(resizeTableColumnsSlot()));
     connect(m_userInterface->tableWidget, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(sequenceNameChangeSlot(QTableWidgetItem*)));
 
     connect(m_userInterface->SendPushButton, SIGNAL(clicked()), this, SLOT(sendButtonPressedSlot()));
-    connect(m_userInterface->tableWidget, SIGNAL(cellEntered(int, int)), this, SLOT(cellEnteredSlot(int, int)));
+    connect(m_userInterface->tableWidget, SIGNAL(cellEntered(int,int)), this, SLOT(cellEnteredSlot(int,int)));
     connect(m_userInterface->action_new, SIGNAL(triggered()), this, SLOT(newButtonClickedSlot()));
     connect(m_userInterface->action_delete, SIGNAL(triggered()), this, SLOT(deleteButtonClickedSlot()));
     connect(m_userInterface->actionRemoveScript, SIGNAL(triggered()), this, SLOT(removeScriptButtonClickedSlot()));
@@ -504,11 +504,13 @@ void SendWindow::textEditChanged(QPlainTextEdit* textEdit, QString currentFormat
 
             if((currentFormat == "hex") || (currentFormat == "can"))
             {
-                text.replace(QRegularExpression("[^a-fA-F\\d\\s]"), "");
+                static QRegularExpression re("[^a-fA-F\\d\\s]");
+                text.replace(re, "");
             }
             else if(currentFormat == "bin")
             {
-                text.replace(QRegularExpression("[^0-1\\s]"), "");
+                static QRegularExpression re("[^0-1\\s]");
+                text.replace(re, "");
             }
             else
             {
@@ -531,7 +533,8 @@ void SendWindow::textEditChanged(QPlainTextEdit* textEdit, QString currentFormat
                         regEx +="\\-";
                     }
                     regEx += "\\d\\s]";
-                    list[i].replace(QRegularExpression(regEx), "");
+                    static QRegularExpression re(regEx);
+                    list[i].replace(re, "");
                     resulText += list[i];
                     if((i + 1) != list.length())
                     {

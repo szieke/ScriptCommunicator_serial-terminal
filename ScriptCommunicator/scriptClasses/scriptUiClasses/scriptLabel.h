@@ -33,6 +33,10 @@
 class ScriptLabel : public ScriptWidget
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     explicit ScriptLabel(QLabel* label, ScriptThread *scriptThread) :
         ScriptWidget(label, scriptThread, scriptThread->getScriptWindow()), m_label(label)

@@ -33,6 +33,10 @@
 class ScriptProgressBar : public ScriptWidget
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     explicit ScriptProgressBar(QProgressBar* progress, ScriptThread *scriptThread) :
         ScriptWidget(progress, scriptThread, scriptThread->getScriptWindow()), m_progress(progress)

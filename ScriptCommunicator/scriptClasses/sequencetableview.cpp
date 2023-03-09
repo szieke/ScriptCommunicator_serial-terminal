@@ -561,7 +561,10 @@ QByteArray SequenceTableView::executeScript(QString sendScript, QByteArray sendD
             createThread(isSingle, debug);
         }
 
-        (*thread)->executeScriptSlot(&sendScript, &sendData, scriptEngineWrapper);
+        if((*thread) != 0)
+        {
+            (*thread)->executeScriptSlot(&sendScript, &sendData, scriptEngineWrapper);
+        }
 
     }
 

@@ -33,6 +33,10 @@
 class ScriptDialog : public ScriptWidget
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     explicit ScriptDialog(QDialog* dialog, ScriptThread *scriptThread) :
         ScriptWidget(dialog, scriptThread, scriptThread->getScriptWindow()), m_dialog(dialog)

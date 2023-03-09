@@ -26,8 +26,8 @@ void ScriptStandardDialogs::intSignals(ScriptWindow *scriptWindow, bool runsInDe
 {
     Qt::ConnectionType directConnectionType = runsInDebugger ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
-    connect(this, SIGNAL(showTextInputDialogSignal(QString,QString,QString,QString*, QWidget*)),
-            scriptWindow, SLOT(showTextInputDialogSlot(QString,QString,QString,QString*, QWidget*)), directConnectionType);
+    connect(this, SIGNAL(showTextInputDialogSignal(QString,QString,QString,QString*,QWidget*)),
+            scriptWindow, SLOT(showTextInputDialogSlot(QString,QString,QString,QString*,QWidget*)), directConnectionType);
 
     connect(this, SIGNAL(showMultiLineTextInputDialogSignal(QString,QString,QString,QString*,QWidget*)),
             scriptWindow, SLOT(showMultiLineTextInputDialogSlot(QString,QString,QString,QString*,QWidget*)), directConnectionType);
@@ -44,8 +44,8 @@ void ScriptStandardDialogs::intSignals(ScriptWindow *scriptWindow, bool runsInDe
     connect(this, SIGNAL(showOpenFileNamesDialogSignal(QString,QString,QString,QStringList*,QWidget*)),
             scriptWindow, SLOT(showOpenFileNamesDialogSlot(QString,QString,QString,QStringList*,QWidget*)), directConnectionType);
 
-    connect(this, SIGNAL(showFileDialogSignal(bool,QString,QString,QString,QString*, QWidget*)),
-            scriptWindow, SLOT(showFileDialogSlot(bool,QString,QString,QString,QString*, QWidget*)), directConnectionType);
+    connect(this, SIGNAL(showFileDialogSignal(bool,QString,QString,QString,QString*,QWidget*)),
+            scriptWindow, SLOT(showFileDialogSlot(bool,QString,QString,QString,QString*,QWidget*)), directConnectionType);
 
     connect(this, SIGNAL(showDirectoryDialogSignal(QString,QString,QString*,QWidget*)),
             scriptWindow, SLOT(showDirectoryDialogSlot(QString,QString,QString*,QWidget*)), directConnectionType);
@@ -57,8 +57,8 @@ void ScriptStandardDialogs::intSignals(ScriptWindow *scriptWindow, bool runsInDe
             scriptWindow->getMainWindow(), SLOT(showYesNoDialogSlot(QMessageBox::Icon,QString,QString,QWidget*,bool*)),
             directConnectionType);
 
-    connect(this, SIGNAL(showMessageBoxSignal(QMessageBox::Icon, QString, QString, QMessageBox::StandardButtons, QWidget* )),
-            scriptWindow->getMainWindow(), SLOT(showMessageBoxSlot(QMessageBox::Icon, QString, QString, QMessageBox::StandardButtons, QWidget*)),
+    connect(this, SIGNAL(showMessageBoxSignal(QMessageBox::Icon,QString,QString,QMessageBox::StandardButtons,QWidget*)),
+            scriptWindow->getMainWindow(), SLOT(showMessageBoxSlot(QMessageBox::Icon,QString,QString,QMessageBox::StandardButtons,QWidget*)),
             directConnectionType);
 
     connect(this, SIGNAL(disableMouseEventsSignal()),

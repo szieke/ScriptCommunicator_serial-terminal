@@ -77,7 +77,7 @@ class ScriptThread : public QThread, public ScriptObject
     friend class ScriptWindow;
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 
 public:
     ScriptThread(ScriptWindow* scriptWindow, quint32 sendId, QString scriptName, QWidget *scriptUi, SettingsDialog *settingsDialog,
@@ -624,6 +624,9 @@ public:
     ///Shows a script exception (message box) to the user.
     void showExceptionInMessageBox(QJSValue exception, QWidget *parent);
 
+    ///Return all loaded scripts of the script thread.
+    QStringList getLoadedScripts(void){return m_loadedScripts;}
+
 signals:
 
     ///Is emitted if the clear console button in the main window is pressed.
@@ -764,12 +767,6 @@ public slots:
     ///Is called if the lock scrolling button in the main window is pressed.
     void mainWindowLockScrollingSlot(bool isChecked){emit mainWindowLockScrollingClickedSignal(isChecked);}
 
-
-#ifdef Q_OS_MAC
-    ///Debug timer slot (checks if the script is suspended by the debugger or is running).
-    void debugTimerSlot(void);
-#endif
-
 private:
 
     ///Contains all created gui elements (creates by the script).
@@ -831,9 +828,6 @@ private:
     ///True if the script is suspended by the debugger.
     bool m_isSuspendedByDebuger;
 
-    ///The debug window.
-    QMainWindow *m_debugWindow;
-
     ///True if the script has GUI elements in the main window.
     bool m_hasMainWindowGuiElements;
 
@@ -862,6 +856,9 @@ private:
 
     ///True if a script is loading.
     bool m_scriptIsLoading;
+
+    ///Contains all loaded scripts of the script thread.
+    QStringList m_loadedScripts;
 
 };
 

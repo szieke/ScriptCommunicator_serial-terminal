@@ -32,8 +32,8 @@ void ScriptInf::disconnectDataSignals(void)
                     this, SLOT(dataReceivedSlot(QByteArray)));
     QObject::disconnect(m_scriptThread->getScriptWindow()->getMainInterfaceThread(), SIGNAL(canMessagesReceivedSignal(QVector<QByteArray>)),
                     this, SLOT(canMessagesReceivedSlot(QVector<QByteArray>)));
-    QObject::disconnect(m_scriptThread->getScriptWindow()->getMainInterfaceThread(), SIGNAL(dataConnectionStatusSignal(bool, QString)),
-                    this, SLOT(dataConnectionStatusSlot(bool, QString)));
+    QObject::disconnect(m_scriptThread->getScriptWindow()->getMainInterfaceThread(), SIGNAL(dataConnectionStatusSignal(bool,QString)),
+                    this, SLOT(dataConnectionStatusSlot(bool,QString)));
     QObject::disconnect(m_scriptThread->getScriptWindow()->getMainInterfaceThread(), SIGNAL(sendingFinishedSignal(bool,uint)),
                     this, SLOT(sendingFinishedSlot(bool,uint)));
 }
@@ -51,8 +51,8 @@ void ScriptInf::intSignals(bool runsInDebugger)
     connect(this, SIGNAL(addDataToMainWindowSendHistorySignal(QByteArray)),
             m_scriptThread->getScriptWindow()->getMainWindow(), SLOT(addDataToMainWindowSendHistorySlot(QByteArray)), Qt::QueuedConnection);
 
-    connect(this, SIGNAL(sendDataSignal(const QByteArray, uint)),
-            m_scriptThread->getScriptWindow()->getMainInterfaceThread(), SLOT(sendDataSlot(const QByteArray, uint)), Qt::BlockingQueuedConnection);
+    connect(this, SIGNAL(sendDataSignal(QByteArray,uint)),
+            m_scriptThread->getScriptWindow()->getMainInterfaceThread(), SLOT(sendDataSlot(QByteArray,uint)), Qt::BlockingQueuedConnection);
 
     connect(this, SIGNAL(ardvarkI2cSpiReadAllInputsSignal(QVector<bool>&)),
             m_scriptThread->getScriptWindow()->getMainInterfaceThread()->m_aardvarkI2cSpi, SLOT(readAllInputs(QVector<bool>&)), Qt::BlockingQueuedConnection);
@@ -60,11 +60,11 @@ void ScriptInf::intSignals(bool runsInDebugger)
     connect(this, SIGNAL(i2cMasterFreeBusSignal()),
             m_scriptThread->getScriptWindow()->getMainInterfaceThread()->m_aardvarkI2cSpi, SLOT(freeI2cBusSlot()), Qt::QueuedConnection);
 
-    connect(m_scriptThread->getScriptWindow()->getMainInterfaceThread(), SIGNAL(dataConnectionStatusSignal(bool, QString, bool)),
+    connect(m_scriptThread->getScriptWindow()->getMainInterfaceThread(), SIGNAL(dataConnectionStatusSignal(bool,QString,bool)),
             this, SLOT(dataConnectionStatusSlot(bool,QString,bool)), Qt::DirectConnection);
 
-    connect(this, SIGNAL(connectDataConnectionSignal(Settings, bool,bool)),m_scriptThread->getScriptWindow()->getMainInterfaceThread(),
-            SLOT(connectDataConnectionSlot(Settings, bool,bool)), Qt::BlockingQueuedConnection);
+    connect(this, SIGNAL(connectDataConnectionSignal(Settings,bool,bool)),m_scriptThread->getScriptWindow()->getMainInterfaceThread(),
+            SLOT(connectDataConnectionSlot(Settings,bool,bool)), Qt::BlockingQueuedConnection);
 
     connect(this, SIGNAL(setSerialPortPinsSignal(bool,bool)),
             m_scriptThread->getScriptWindow()->getMainWindow(), SLOT(setSerialPortPinsSlot(bool,bool)), directConnectionType);
@@ -894,7 +894,7 @@ void ScriptInf::canMessagesReceivedSlot(QVector<QByteArray> messages)
             QVector<quint32> timestamps;
             QVector<QVector<unsigned char>> data;
 
-            for(auto el : messages)
+            for(const auto &el : messages)
             {
                 QVector<unsigned char> dataVector;
 
@@ -970,7 +970,7 @@ void ScriptInf::dataReceivedSlot(QByteArray data)
                 data.remove(0, AardvarkI2cSpi::RECEIVE_CONTROL_BYTES_COUNT);
 
                 QVector<unsigned char> dataVector;
-                for(auto val : data)
+                for(const auto &val : data)
                 {
                     dataVector.push_back((unsigned char) val);
                 }

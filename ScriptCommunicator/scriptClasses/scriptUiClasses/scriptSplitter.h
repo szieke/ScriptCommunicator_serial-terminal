@@ -34,7 +34,10 @@
 class ScriptSplitter : public QObject, public ScriptObject
 {
     Q_OBJECT
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     explicit ScriptSplitter(QSplitter* splitter, ScriptThread *scriptThread) :
         QObject(scriptThread), m_splitter(splitter)

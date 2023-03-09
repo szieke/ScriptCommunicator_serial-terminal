@@ -39,7 +39,7 @@ class ScriptTcpClient: public QObject, public ScriptObject
     Q_OBJECT
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 
 public:
     ScriptTcpClient(QTcpSocket* socket, QObject *parent, MainInterfaceThread* interfaceThread) :

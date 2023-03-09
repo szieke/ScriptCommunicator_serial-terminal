@@ -24,8 +24,8 @@ void ScriptFile::intSignals(ScriptWindow *scriptWindow, bool runsInDebugger, boo
 {
     Qt::ConnectionType directConnectionType = runsInDebugger ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
-    connect(this, SIGNAL(showMessageBoxSignal(QMessageBox::Icon, QString, QString, QMessageBox::StandardButtons, QWidget* )),
-            scriptWindow->getMainWindow(), SLOT(showMessageBoxSlot(QMessageBox::Icon, QString, QString, QMessageBox::StandardButtons, QWidget*)),
+    connect(this, SIGNAL(showMessageBoxSignal(QMessageBox::Icon,QString,QString,QMessageBox::StandardButtons,QWidget*)),
+            scriptWindow->getMainWindow(), SLOT(showMessageBoxSlot(QMessageBox::Icon,QString,QString,QMessageBox::StandardButtons,QWidget*)),
             useBlockingSignals ? directConnectionType : Qt::QueuedConnection);
 
     connect(this, SIGNAL(showYesNoDialogSignal(QMessageBox::Icon,QString,QString,QWidget*,bool*)),
@@ -247,11 +247,20 @@ QString ScriptFile::createAbsolutePath(QString fileName)
  */
 void ScriptFile::showExceptionInMessageBox(QJSValue exception, QString scriptPath, QWidget *parent)
 {
-    emit showMessageBoxSignal(QMessageBox::Critical, "Script Error",
-                              QString::fromLatin1("%0, line %1: %2")
-                              .arg(scriptPath)
-                              .arg(exception.property("lineNumber").toInt())
-                              .arg(exception.toString()), QMessageBox::Ok, parent);
+    if(exception.hasProperty("lineNumber"))
+    {//The exception comes from directly from the script engine.
+
+      emit showMessageBoxSignal(QMessageBox::Critical, "Script Error",
+                                QString::fromLatin1("%0, line %1: %2")
+                                .arg(scriptPath)
+                                .arg(exception.property("lineNumber").toInt())
+                                .arg(exception.toString()), QMessageBox::Ok, parent);
+    }
+    else
+    {//The exception comes from from QDebug.
+
+            emit showMessageBoxSignal(QMessageBox::Critical, "Script Error", exception.toString(), QMessageBox::Ok, parent);
+    }
 
 
 }

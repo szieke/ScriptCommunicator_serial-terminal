@@ -57,7 +57,6 @@ SOURCES += \
     scriptClasses/scriptSlots.cpp \
     searchconsole.cpp \
     scriptClasses/sequencetableview.cpp \
-    scriptClasses/scriptsqldatabase.cpp \
     mainwindowHandleData.cpp \
     crc.cpp \
     scriptClasses/scriptUiClasses/scriptStandardDialogs.cpp \
@@ -120,6 +119,7 @@ HEADERS += \
     mainwindow.h \
     scriptClasses/scriptPlotWidget.h \
     scriptClasses/scriptUiClasses/plotwidget.h \
+    scriptClasses/scriptsqldatabase.h \
     settingsdialog.h \
     sendwindow.h \
     scriptClasses/scriptwindow.h \
@@ -168,7 +168,6 @@ HEADERS += \
     scriptClasses/scriptUiClasses/scriptTimeEdit.h \
     searchconsole.h \
     scriptClasses/sequencetableview.h \
-    scriptClasses/scriptsqldatabase.h \
     scriptClasses/scriptHelper.h \
     mainwindowHandleData.h \
     crc.h \

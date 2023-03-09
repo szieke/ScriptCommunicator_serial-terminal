@@ -486,13 +486,14 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     connect(m_settingsDialog, SIGNAL(conectionTypeChangesSignal()),this, SLOT(conectionTypeChangesSlot()));
     connect(m_settingsDialog, SIGNAL(consoleWrapLinesChangedSignal(bool)),this, SLOT(consoleWrapLinesChangedSlot(bool)));
 
-    connect(this, SIGNAL(connectDataConnectionSignal(Settings, bool,bool)),m_mainInterface,
-            SLOT(connectDataConnectionSlot(Settings, bool,bool)), Qt::QueuedConnection);
+    connect(this, SIGNAL(connectDataConnectionSignal(Settings,bool,bool)),m_mainInterface,
+            SLOT(connectDataConnectionSlot(Settings,bool,bool)), Qt::QueuedConnection);
     connect(m_mainInterface, SIGNAL(dataConnectionStatusSignal(bool,QString,bool)),this, SLOT(dataConnectionStatusSlot(bool,QString,bool)), Qt::QueuedConnection);
 
     connect(this, SIGNAL(exitThreadSignal()),m_mainInterface, SLOT(exitThreadSlot()), Qt::BlockingQueuedConnection);
 
-    connect(m_mainInterface, SIGNAL(showMessageBoxSignal(QMessageBox::Icon, QString, QString, QMessageBox::StandardButtons )),this, SLOT(showMessageBoxSlot(QMessageBox::Icon, QString, QString, QMessageBox::StandardButtons )), Qt::BlockingQueuedConnection);
+    connect(m_mainInterface, SIGNAL(showMessageBoxSignal(QMessageBox::Icon,QString,QString,QMessageBox::StandardButtons)),this,
+            SLOT(showMessageBoxSlot(QMessageBox::Icon,QString,QString,QMessageBox::StandardButtons)), Qt::BlockingQueuedConnection);
 
     connect(this, SIGNAL(globalSettingsChangedSignal(Settings)),m_mainInterface, SLOT(globalSettingsChangedSlot(Settings)), Qt::QueuedConnection);
 
@@ -1196,7 +1197,7 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
                 else
                 {
                     QList<QUrl> urls = dropEvent->mimeData()->urls();
-                    for(auto el : urls)
+                    for(const auto &el : urls)
                     {
                         list.append(el.path());
                     }
@@ -3745,6 +3746,9 @@ bool MainWindow::startScriptEditor(QString scriptEditor, QStringList arguments, 
         success = false;
     }
 #endif
+
+    myProcess->deleteLater();
+
     return success;
 
 }
@@ -4199,8 +4203,8 @@ void  MainWindow::addToolBoxPagesToMainWindowSlot(QToolBox* toolBox)
 void MainWindow::removeAllTabsAndToolBoxPages(QObject* scriptThread)
 {
     //Add all script tabs.
-    QMap<QWidget*, QObject*>::iterator i;
-    for (i = m_scriptTabs.begin(); i != m_scriptTabs.end();)
+    QMap<QWidget*, QObject*>::const_iterator i;
+    for (i = m_scriptTabs.constBegin(); i != m_scriptTabs.constEnd();)
     {
         if(i.value() == scriptThread)
         {
@@ -4217,7 +4221,7 @@ void MainWindow::removeAllTabsAndToolBoxPages(QObject* scriptThread)
         }
     }
 
-    for (i = m_scriptToolBoxPage.begin(); i != m_scriptToolBoxPage.end();)
+    for (i = m_scriptToolBoxPage.constBegin(); i != m_scriptToolBoxPage.constEnd();)
     {
         if(i.value() == scriptThread)
         {
@@ -5296,7 +5300,7 @@ bool MainWindow::checkParsedScVersion(QString version)
                 QString neededMajorString = (neededMajor < 10) ? QString("0%1").arg(neededMajor) : QString("%1").arg(neededMajor);
 
                 QMessageBox box(QMessageBox::Warning, "ScriptCommunicator", QString("The current used version of ScriptCommunicator is to old to execute the current sce file.\nThe needed version is %1.%2"
-                                                                                    " and the current version is %3").arg(neededMajorString).arg(neededMinorString).arg(VERSION));
+                                                                                    " and the current version is %3").arg(neededMajorString, neededMinorString, VERSION));
                 QApplication::setActiveWindow(&box);
                 box.exec();
             }

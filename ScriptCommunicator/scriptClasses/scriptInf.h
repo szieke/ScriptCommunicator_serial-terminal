@@ -14,7 +14,7 @@ class ScriptInf : public QObject, public ScriptObject
     Q_OBJECT
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 
 public:
     ScriptInf(ScriptThread* scriptThread, SettingsDialog *settingsDialog);

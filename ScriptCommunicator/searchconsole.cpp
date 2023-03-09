@@ -42,7 +42,7 @@ QString SearchConsole::getLastSearchStrings(void)
 
     if(!m_lastSearchString.isEmpty())
     {
-        for(auto el : m_lastSearchString)
+        for(const auto &el : m_lastSearchString)
         {
             string += el + ";";
         }
@@ -65,7 +65,7 @@ void SearchConsole::setLastSearchStrings(QString string)
     {
         QStringList list = string.split(";");
 
-        for(auto el : list)
+        for(const auto &el : list)
         {
             if(!el.isEmpty())
             {

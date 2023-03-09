@@ -27,8 +27,9 @@
 
 #include <QObject>
 
-#include "scriptWidget.h"
 #include "scriptObject.h"
+#include "ScriptThread.h"
+#include "scriptwindow.h"
 
 ///This wrapper class is used to access a QAction object (located in a script gui/ui-file) from a script.
 class ScriptAction : public QObject, public ScriptObject
@@ -36,7 +37,7 @@ class ScriptAction : public QObject, public ScriptObject
     Q_OBJECT
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 public:
     explicit ScriptAction(QAction* action, ScriptThread *scriptThread) :
         QObject(scriptThread), m_action(action)
@@ -48,9 +49,10 @@ public:
 
         connect(m_action, SIGNAL(triggered()), this, SIGNAL(clickedSignal()));
 
-        connect(this, SIGNAL(setTextSignal(QString, QAction*)), scriptThread->getScriptWindow(),
+        connect(this, SIGNAL(setTextSignal(QString,QAction*)),scriptThread->getScriptWindow(),
                 SLOT(setActionTextSlot(QString,QAction*)), directConnectionType);
-        connect(this, SIGNAL(setCheckStateSignal(bool,QAction*)), scriptThread->getScriptWindow(), SLOT(setActionCheckStateSlot(bool,QAction*)));
+        connect(this, SIGNAL(setCheckStateSignal(bool,QAction*)), scriptThread->getScriptWindow(),
+                SLOT(setActionCheckStateSlot(bool,QAction*)));
 
         connect(this, SIGNAL(setEnabledSignal(bool)), m_action, SLOT(setEnabled(bool)), Qt::QueuedConnection);
 

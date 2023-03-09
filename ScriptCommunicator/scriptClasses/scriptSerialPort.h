@@ -37,7 +37,8 @@ class ScriptSerialPort : public QObject, public ScriptObject
     Q_OBJECT
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     explicit ScriptSerialPort(QObject *parent, MainInterfaceThread* interfaceThread) :
         QObject(parent), m_serialPort(), m_mainInterfaceThread(interfaceThread), m_interfaceIsPaused(false)

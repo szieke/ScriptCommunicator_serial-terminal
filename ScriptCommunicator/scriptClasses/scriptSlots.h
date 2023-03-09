@@ -55,6 +55,7 @@ class ScriptSlots :  public QMainWindow
 {
     Q_OBJECT
 
+
 public slots:
 
     ///Sets the splitter child widgets respective sizes to the values given in the list.

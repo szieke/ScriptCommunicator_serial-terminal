@@ -33,6 +33,9 @@ class ScriptComboBox : public ScriptWidget
 {
     Q_OBJECT
 
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     ScriptComboBox(QComboBox* comboBox, ScriptThread *scriptThread):
         ScriptWidget(comboBox, scriptThread, scriptThread->getScriptWindow()), m_comboBox(comboBox)

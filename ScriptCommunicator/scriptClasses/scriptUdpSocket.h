@@ -27,7 +27,6 @@
 
 #include <QUdpSocket>
 #include <mainInterfaceThread.h>
-#include "scriptTcpClient.h"
 #include <QNetworkProxy>
 #include <scriptSerialPort.h>
 #include "scriptObject.h"
@@ -38,7 +37,7 @@ class ScriptUdpSocket: public QObject, public ScriptObject
     Q_OBJECT
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 
 public:
     ScriptUdpSocket(QObject* parent, MainInterfaceThread* interfaceThread) : QObject(parent),

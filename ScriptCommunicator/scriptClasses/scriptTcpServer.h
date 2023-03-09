@@ -38,7 +38,8 @@ class ScriptTcpServer : public QObject, public ScriptObject
     Q_OBJECT
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
-    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements)
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     explicit ScriptTcpServer(QObject *parent, MainInterfaceThread* interfaceThread, QJSEngine* scriptEngine) : QObject(parent),
         m_mainInterfaceThread(interfaceThread), m_interfaceIsPaused(false), m_scriptEngine(scriptEngine)

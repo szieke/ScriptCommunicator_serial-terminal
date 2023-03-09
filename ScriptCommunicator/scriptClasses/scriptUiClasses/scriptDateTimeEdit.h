@@ -32,6 +32,11 @@
 class ScriptDateTimeEdit : public ScriptWidget
 {
     Q_OBJECT
+
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     explicit ScriptDateTimeEdit(QDateTimeEdit* dateTimeEdit, ScriptThread *scriptThread) :
         ScriptWidget(dateTimeEdit,scriptThread, scriptThread->getScriptWindow()), m_dateTimeEdit(dateTimeEdit)

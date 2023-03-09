@@ -23,9 +23,7 @@
 ****************************************************************************/
 
 #include "mainInterfaceThread.h"
-#include "ui_mainwindow.h"
 #include "settingsdialog.h"
-#include "sendwindow.h"
 #include <QTimer>
 #include <QScrollBar>
 #include <QMutex>
@@ -35,7 +33,6 @@
 #include <QtSerialPort/QSerialPort>
 #include <QFileDialog>
 #include <QDomDocument>
-#include "scriptwindow.h"
 #include <QNetworkProxyFactory>
 #include <QNetworkProxy>
 #include "scriptTcpClient.h"
@@ -542,7 +539,7 @@ void MainInterfaceThread::sendDataSlot(const QByteArray data, uint id)
                 isI2cRead = (data.size() == AardvarkI2cSpi::SEND_CONTROL_BYTES_COUNT) ? true : false;
             }
 
-            sendingFinishedSignal(true, id);
+            emit sendingFinishedSignal(true, id);
 
             if(!isI2cRead)
             {
@@ -703,12 +700,12 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
                     m_serial->setRequestToSend(m_currentGlobalSettings.serialPort.setRTS);
 
                     emit dataConnectionStatusSignal(true, tr("Connected to %1: baudrate=%2, data bits=%3, parity=%4, stop bits=%5, flow control=%6")
-                                                    .arg(m_currentGlobalSettings.serialPort.name)
-                                                    .arg(m_currentGlobalSettings.serialPort.stringBaudRate)
-                                                    .arg(m_currentGlobalSettings.serialPort.stringDataBits)
-                                                    .arg(m_currentGlobalSettings.serialPort.stringParity)
-                                                    .arg(m_currentGlobalSettings.serialPort.stringStopBits)
-                                                    .arg(m_currentGlobalSettings.serialPort.stringFlowControl), false);
+                                                    .arg(m_currentGlobalSettings.serialPort.name,
+                                                    m_currentGlobalSettings.serialPort.stringBaudRate,
+                                                    m_currentGlobalSettings.serialPort.stringDataBits,
+                                                    m_currentGlobalSettings.serialPort.stringParity,
+                                                    m_currentGlobalSettings.serialPort.stringStopBits,
+                                                    m_currentGlobalSettings.serialPort.stringFlowControl), false);
                     emit showAdditionalConnectionInformationSignal(serialPortPinoutSignalsToInfoString());
                 }
                 else
@@ -879,9 +876,9 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
                                                 .arg(SettingsDialog::convertPcanBaudrate(m_currentGlobalSettings.pcanInterface.baudRate))
                                                 .arg(m_currentGlobalSettings.pcanInterface.powerSupply)
                                                 .arg(m_currentGlobalSettings.pcanInterface.busOffAutoReset)
-                                                .arg(m_currentGlobalSettings.pcanInterface.filterExtended ? "ext" : "std")
-                                                .arg(m_currentGlobalSettings.pcanInterface.filterFrom)
-                                                .arg(m_currentGlobalSettings.pcanInterface.filterTo), false);
+                                                .arg(m_currentGlobalSettings.pcanInterface.filterExtended ? "ext" : "std",
+                                                     m_currentGlobalSettings.pcanInterface.filterFrom,
+                                                     m_currentGlobalSettings.pcanInterface.filterTo), false);
 
             }
             else

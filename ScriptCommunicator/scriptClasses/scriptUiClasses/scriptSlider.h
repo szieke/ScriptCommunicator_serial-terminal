@@ -33,6 +33,10 @@
 class ScriptSlider : public ScriptWidget
 {
     Q_OBJECT
+
+    ///Returns a semicolon separated list with all public functions, signals and properties.
+    Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
+
 public:
     explicit ScriptSlider(QAbstractSlider* slider, ScriptThread *scriptThread) :
         ScriptWidget(slider, scriptThread, scriptThread->getScriptWindow()), m_slider(slider)
