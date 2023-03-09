@@ -303,6 +303,7 @@ void ScriptThread::run()
         qRegisterMetaType<ScriptSerialPort*>("ScriptSerialPort*");
         qRegisterMetaType<QString*>("QString*");
         qRegisterMetaType<ScriptTcpClient*>("ScriptTcpClient*");
+        qRegisterMetaType<ScriptToolBox*>("ScriptToolBox*");
         qRegisterMetaType<ScriptTcpServer*>("ScriptTcpServer*");
         qRegisterMetaType<ScriptUdpSocket*>("ScriptUdpSocket*");
         qRegisterMetaType<ScriptPlotWindow*>("ScriptPlotWindow*");
