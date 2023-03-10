@@ -38,6 +38,9 @@ class ParseThread : public QThread
 public:
     explicit ParseThread(QObject *parent = 0);
 
+    ///Removes all comments from a string.
+    static QString removeComments(const char *buffer, size_t size);
+
 protected:
     ///The thread main function.
     void run();

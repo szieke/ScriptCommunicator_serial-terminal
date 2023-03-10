@@ -1571,26 +1571,14 @@ QMap<QString, bool> MainWindow::getAllIncludedScripts(int tabIndex)
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(tabIndex)->layout()->itemAt(0)->widget());
         QString text = textEditor->text();
 
-        //Remove all '/**/' comments.
-        QRegExp comment("/\\*(.|[\r\n])*\\*/");
-        comment.setMinimal(true);
-        comment.setPatternSyntax(QRegExp::RegExp);
-        text.remove(comment);
+        //Remove all comments.
+        text = ParseThread::removeComments(text.toLocal8Bit().constData(), text.length());
 
-        //Remove all '//' comments.
-        comment.setMinimal(false);
-        comment.setPattern("//[^\n]*");
-        text.remove(comment);
-
-        bool custSearched = false;
-        QRegExp rx("scriptThread.loadScript(*)");
-        rx.setPatternSyntax(QRegExp::Wildcard);
+        //Get all scripts that a loaded by the current script.
         int index = 0;
-
-
         while(index != -1)
         {
-            index = text.indexOf(rx,index);
+            index = text.indexOf("scriptThread.loadScript(",index);
 
             if(index != -1)
             {
@@ -1615,16 +1603,6 @@ QMap<QString, bool> MainWindow::getAllIncludedScripts(int tabIndex)
                     }
                 }
                 index++;
-            }
-            else
-            {
-                if(!custSearched)
-                {
-                    custSearched = true;
-                    index = 0;
-                    rx.setPattern("cust.loadScript(*)");
-                }
-
             }
 
         }

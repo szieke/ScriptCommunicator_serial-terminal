@@ -7,7 +7,6 @@
 #include <QCoreApplication>
 
 
-
 /**
  * Returns the folder ich which the ScriptEditor files
  * are locared (api files).
@@ -145,23 +144,59 @@ void ParseThread::run()
 }
 
 /**
- * Removes in text all left of character.
+ * @brief Removes all comments from a string.
  *
- * @param text
- *      The string.
- * @param character
- *      The character.
+ * @param buffer
+ *      THe buffer that holds the string.
+ * @param size
+ *      The size of buffer.
+ * @return
+ *      The resulting string.
  */
-static inline void removeAllLeft(QString& text, QString character)
+QString ParseThread::removeComments(const char *buffer, size_t size)
 {
-    int index = text.indexOf(character);
-    if(index != -1)
+    QString buff;
+
+    if(size == 0)
     {
-        text = text.right((text.length() - index) - 1);
+        return buffer;
     }
+
+    for(size_t i = 0; i < size ; i++)
+    {
+        if(buffer[i] == '/')
+        {
+            if(i < (size - 1))
+            {
+                if(buffer[i + 1] == '/')
+                {
+                    while((i < size) && (buffer[i] != '\n'))
+                    {
+                        i++;
+                    }
+
+                    i++;
+                }
+                else if(buffer[i + 1] == '*')
+                {
+                    while((i < (size - 1)) && ((buffer[i] != '*') || (buffer[i + 1] != '/')))
+                    {
+                        i++;
+                    }
+
+                    i += 2;
+                }
+            }
+        }
+
+        if(i < size)
+        {
+            buff += buffer[i];
+        }
+    }
+    return buff;
+
 }
-
-
 /**
  * Removes all unnecessary characters (e.g. comments).
  *
@@ -170,21 +205,14 @@ static inline void removeAllLeft(QString& text, QString character)
  */
 void ParseThread::removeAllUnnecessaryCharacters(QString& currentText)
 {
-    //Remove all '/**/' comments.
-    QRegExp comment("/\\*(.|[\r\n])*\\*/");
-    comment.setMinimal(true);
-    comment.setPatternSyntax(QRegExp::RegExp);
-    currentText.replace(comment, " ");
-
-    //Remove all '//' comments.
-    comment.setMinimal(false);
-    comment.setPattern("//[^\n]*");
-    currentText.remove(comment);
+    currentText = removeComments(currentText.toLocal8Bit().constData(), currentText.length());
 
     currentText.replace("var ", "");
     currentText.replace(" ", "");
     currentText.replace("\t", "");
     currentText.replace("\r", "");
+    currentText.replace("[", "");
+    currentText.replace("]", "");
 }
 
 /**
@@ -1072,7 +1100,7 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
         }
 
         //Parse the complete File.
-        for(int i = 0; i < program->body.size(); i++)
+        for(quint32 i = 0; i < program->body.size(); i++)
         {
             ParsedEntry entry;
             esprima::VariableDeclaration* varDecl = dynamic_cast<esprima::VariableDeclaration*>(program->body[i]);
@@ -1258,7 +1286,6 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
     m_tableWidgets.clear();
     m_unknownTypeObjects.clear();
 
-    QRegExp splitRegexp("[\n;]");
 
 
     bool uiFileChanged = false;
@@ -1300,7 +1327,7 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
     removeAllUnnecessaryCharacters(currentText);
 
     //Get all lines (without square brackets).
-    QStringList lines = currentText.split(splitRegexp);
+    QStringList lines = currentText.split("\n");
 
     //Parse all loaded ui files.
     QMap<QString, QString>::const_iterator iterUi  = loadedUiFiles.constBegin();
