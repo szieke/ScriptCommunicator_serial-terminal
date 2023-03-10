@@ -37,11 +37,11 @@
 #include <QStatusBar>
 #include <QTextStream>
 #include <QToolBar>
-#include "Qsci/qscilexerjavascript.h"
 #include <QMimeData>
 #include <QProcess>
 #include <QMessageBox>
 #include <QSplitter>
+#include "Qsci/qscilexer.h"
 #include "version.h"
 #include <QFontDialog>
 #include "Qsci/qscistyle.h"
@@ -54,7 +54,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "ui_findDialog.h"
-#include "esprima/esprima.h"
+
 
 
 
@@ -75,7 +75,7 @@ MainWindow* getMainWindow()
  */
 MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTimer(), m_parseThread(0), m_parsingFinished(true),
     m_lockFiles(), m_unsavedInfoFiles(), m_checkForFileChangesTimer(),
-    m_lastMouseMoveEvent(QEvent::None,QPointF(),Qt::NoButton, Qt::NoButton, Qt::NoModifier), m_mouseEventTimer(),
+    m_lastMouseMoveEventPosition(0, 0), m_mouseEventTimer(),
     m_ctrlIsPressed(false), m_indicatorClickTimer(), m_lastIndicatorClickPosition(0), m_showParseError(true),
     m_scriptsToLoadAfterStart(scripts), m_useDarkStyle(false), m_applicationFontSize(10)
 {
@@ -115,9 +115,6 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     connect(&m_showEventTimer, SIGNAL(timeout()), this, SLOT(showEventTimerSlot()));
 
 
-    m_findDialog->ui->findWhatComboBox->setAutoCompletion(false);
-    m_findDialog->ui->replaceComboBox->setAutoCompletion(false);
-
     connect(ui->outlineTreeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(functionListDoubleClicked(QTreeWidgetItem*,int)));
     connect(ui->uiTreeWidget, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(uiViewDoubleClicked(QTreeWidgetItem*,int)));
     connect(ui->findResults, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(findResultsDoubleClicked(QTreeWidgetItem*,int)));
@@ -135,10 +132,10 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     qRegisterMetaType<QMap<int,QString>>("QMap<int,QString>");
     qRegisterMetaType<QMap<int,QVector<ParsedEntry>>>("QMap<int,QVector<ParsedEntry>>");
 
-    connect(this, SIGNAL(parseSignal(QMap<QString, QString>,QMap<int, QString>,QMap<int, QString>, bool,bool)), m_parseThread,
-            SLOT(parseSlot(QMap<QString, QString>,QMap<int, QString>,QMap<int, QString>,bool,bool)), Qt::QueuedConnection);
-    connect(m_parseThread, SIGNAL(parsingFinishedSignal(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>,QMap<int, QVector<ParsedEntry>>,bool,bool)),
-            this, SLOT(parsingFinishedSlot(QMap<QString,QStringList>,QMap<QString,QStringList>, QMap<QString, QStringList>,QMap<int, QVector<ParsedEntry>>,bool,bool)), Qt::QueuedConnection);
+    connect(this, SIGNAL(parseSignal(QMap<QString,QString>,QMap<int,QString>,QMap<int,QString>,bool,bool)), m_parseThread,
+            SLOT(parseSlot(QMap<QString,QString>,QMap<int,QString>,QMap<int,QString>,bool,bool)), Qt::QueuedConnection);
+    connect(m_parseThread, SIGNAL(parsingFinishedSignal(QMap<QString,QStringList>,QMap<QString,QStringList>,QMap<QString,QStringList>,QMap<int,QVector<ParsedEntry>>,bool,bool)),
+            this, SLOT(parsingFinishedSlot(QMap<QString,QStringList>,QMap<QString,QStringList>,QMap<QString,QStringList>,QMap<int,QVector<ParsedEntry>>,bool,bool)), Qt::QueuedConnection);
 }
 
 MainWindow::~MainWindow()
@@ -243,7 +240,7 @@ void MainWindow::checkForFileChanges(void)
                     if (file.open(QFile::ReadOnly))
                     {
                         QTextStream in(&file);
-                        in.setCodec("UTF-8");
+                        in.setEncoding(QStringConverter::Utf8);
                         textEditor->setText(in.readAll());
                         file.close();
 
@@ -272,8 +269,8 @@ void MainWindow::checkForFileChanges(void)
                     {
                         QMessageBox::warning(this, tr("Script Editor"),
                                              tr("Cannot read file %1:\n%2")
-                                             .arg(textEditor->getDocumentName())
-                                             .arg(file.errorString()));
+                                             .arg(textEditor->getDocumentName(),
+                                                  file.errorString()));
                     }
                 }
 
@@ -305,7 +302,7 @@ void MainWindow::indicatorClickTimerSlot()
 {
     m_indicatorClickTimer.stop();
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
-    int line = textEditor->lineAt(m_lastMouseMoveEvent.pos());
+    int line = textEditor->lineAt(m_lastMouseMoveEventPosition);
     handleDoubleClicksInEditor(m_lastIndicatorClickPosition, line, m_ctrlIsPressed ? QsciScintillaBase::SCMOD_CTRL : QsciScintillaBase:: SCMOD_NORM);
 
 }
@@ -371,9 +368,9 @@ void MainWindow::mouseMoveTimerSlot()
     if(ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex()) && ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex())->layout())
     {
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(ui->documentsTabWidget->currentIndex())->layout()->itemAt(0)->widget());
-        QString word = textEditor->wordAtPoint(m_lastMouseMoveEvent.pos());
-        long pos = textEditor->SendScintilla(QsciScintillaBase::SCI_POSITIONFROMPOINTCLOSE, m_lastMouseMoveEvent.x(), m_lastMouseMoveEvent.y());
-        int line = textEditor->lineAt(m_lastMouseMoveEvent.pos());
+        QString word = textEditor->wordAtPoint(m_lastMouseMoveEventPosition);
+        long pos = textEditor->SendScintilla(QsciScintillaBase::SCI_POSITIONFROMPOINTCLOSE, m_lastMouseMoveEventPosition.x(), m_lastMouseMoveEventPosition.y());
+        int line = textEditor->lineAt(m_lastMouseMoveEventPosition);
 
         clearCurrentIndicator();
 
@@ -384,7 +381,7 @@ void MainWindow::mouseMoveTimerSlot()
             {
                 bool wordIsInOutline = false;
 
-                QString contextString = textEditor->getContextString(completeWord);
+                QString contextString = textEditor->getContextString(line);
                 if(!contextString.isEmpty())
                 {
                     int index = 0;
@@ -443,7 +440,7 @@ void MainWindow::mouseMoveTimerSlot()
 
                 if(wordIsInOutline)
                 {
-                    textEditor->underlineWordWhichCanBeClicked(pos, line);
+                    textEditor->underlineWordWhichCanBeClicked(pos);
                 }
             }
         }
@@ -451,14 +448,9 @@ void MainWindow::mouseMoveTimerSlot()
         {
             if(textEditor->lexer() && !word.isEmpty())
             {
-                //Show the calltip (if possible).
-              textEditor->callTip();
-
-              QString lineText = textEditor->text(line);
-              int index = lineText.indexOf(word);
-              index = lineText.indexOf("(", index + 1);
-              pos = textEditor->positionFromLineIndex(line, index + 1);
-              (void)textEditor->callTip();
+              //Show the calltip (if possible).
+              //Note: callTipForWordAtPosition is a custom function added to QsciScintilla
+              textEditor->callTipForWordAtPosition(pos);
             }
         }
 
@@ -532,6 +524,7 @@ void MainWindow::parseTimeout(bool parseOnlyUIFiles)
 void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifiers)
 {
     (void)position;
+    (void)line;
     const bool ctrl = (modifiers & QsciScintillaBase::SCMOD_CTRL) != 0;
 
     if(ui->documentsTabWidget->currentWidget() && ui->documentsTabWidget->currentWidget()->layout() && ctrl)
@@ -544,46 +537,46 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
 
         bool isLocalVariable = false;
 
-        long pos = textEditor->SendScintilla(QsciScintillaBase::SCI_POSITIONFROMPOINTCLOSE, m_lastMouseMoveEvent.x(), m_lastMouseMoveEvent.y());
+        long pos = textEditor->SendScintilla(QsciScintillaBase::SCI_POSITIONFROMPOINTCLOSE, m_lastMouseMoveEventPosition.x(), m_lastMouseMoveEventPosition.y());
         QString completeWord = textEditor->wordAtPosition(pos);
-        QString searchString = textEditor->getContextString(completeWord);
-        if(!searchString.isEmpty())
+        QString contextString = textEditor->getContextString(line);
+        if(!contextString.isEmpty())
         {
             int index = 0;
             if(text.startsWith("this."))
             {
                 //Remove this.
                 text.remove(0, 5);
-                index = searchString.lastIndexOf("::");
+                index = contextString.lastIndexOf("::");
                 if(index != -1)
                 {
-                    searchString.remove(index, searchString.length() - index);
+                    contextString.remove(index, contextString.length() - index);
                 }
             }
-            searchString = searchString.replace("::", ".");
+            contextString = contextString.replace("::", ".");
 
         }
         else
         {
 
-            searchString = completeWord;
+            contextString = completeWord;
             int index = 0;
 
             do
             {
                //Check the local variables.
-               isLocalVariable = checkIfElementsInOutlineTree(searchString + "." + text);
+               isLocalVariable = checkIfElementsInOutlineTree(contextString + "." + text);
 
                if(isLocalVariable)
                {
-                   searchString += "." + text;
+                   contextString += "." + text;
                }
                else
                {
-                   index = searchString.lastIndexOf(".");
+                   index = contextString.lastIndexOf(".");
                    if(index != -1)
                    {
-                       searchString.remove(index, searchString.length() - index);
+                       contextString.remove(index, contextString.length() - index);
                    }
                }
 
@@ -595,7 +588,8 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
            // searchString = text;
         }
 
-        //Iterate over all elements in the scripts outline.
+        bool found = false;
+
         QTreeWidgetItemIterator iter(ui->outlineTreeWidget);
         while (*iter)
         {
@@ -604,32 +598,54 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
             if(entry)
             {
                 //The double clicked word is in the scripts outline.
-                if (entry->completeName == searchString)
+                if (entry->completeName == contextString + "." + completeWord)
                 {
                     functionListDoubleClicked((*iter), 0);
-                  break;
-                }
-                else
-                {
-                    QTreeWidgetItemIterator iter(ui->uiTreeWidget);
-                    while (*iter)
-                    {
-                        bool isOk = false;
-                        ParsedUiObject* entry  = (ParsedUiObject*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
-
-                      if ("UI_" + entry->objectName == searchString)
-                      {
-                          uiViewDoubleClicked((*iter), 0);
-                          break;
-                      }
-
-                      ++iter;
-                    }
-
+                    found = true;
+                    break;
                 }
             }
+            iter++;
+        }
 
-          ++iter;
+        if(!found)
+        {
+            //Iterate over all elements in the scripts outline.
+            iter = QTreeWidgetItemIterator(ui->outlineTreeWidget);
+            while (*iter)
+            {
+                bool isOk = false;
+                ParsedEntry* entry  = (ParsedEntry*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
+                if(entry)
+                {
+                    //The double clicked word is in the scripts outline.
+                    if (entry->completeName == contextString)
+                    {
+                        functionListDoubleClicked((*iter), 0);
+                        break;
+                    }
+                    else
+                    {
+                        QTreeWidgetItemIterator iter(ui->uiTreeWidget);
+                        while (*iter)
+                        {
+                            bool isOk = false;
+                            ParsedUiObject* entry  = (ParsedUiObject*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
+
+                          if ("UI_" + entry->objectName == contextString)
+                          {
+                              uiViewDoubleClicked((*iter), 0);
+                              break;
+                          }
+
+                          ++iter;
+                        }
+
+                    }
+                }
+
+              ++iter;
+            }
         }
     }
 }
@@ -1042,7 +1058,7 @@ void MainWindow::reloadSlot()
     if (file.open(QFile::ReadOnly))
     {
         QTextStream in(&file);
-        in.setCodec("UTF-8");
+        in.setEncoding(QStringConverter::Utf8);
         textEditor->setText(in.readAll());
         file.close();
 
@@ -1302,7 +1318,7 @@ bool MainWindow::checkIfDocumentAlreadyLoaded(QString fileName, int& index)
     bool result = false;
     index = -1;
 
-    for(quint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+    for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
     {
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
 
@@ -1535,7 +1551,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
     m_parseTimer.stop();
 
     bool cancelled = false;
-    for(quint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+    for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
     {
         if(!maybeSave(i))
         {
@@ -2015,7 +2031,7 @@ void MainWindow::setFont()
     m_currentFont = QFontDialog::getFont(&ok, m_currentFont, this);
     if (ok)
     {
-        for(quint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+        for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
         {
             SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
             textEditor->lexer()->setFont(m_currentFont, -1);
@@ -2065,7 +2081,7 @@ bool MainWindow::saveAs()
 void MainWindow::zoomOutSlot()
 {
     m_currentFont.setPointSize(m_currentFont.pointSize() - 1);
-    for(quint32 i = 0; i < ui->documentsTabWidget->count(); i++)
+    for(qint32 i = 0; i < ui->documentsTabWidget->count(); i++)
     {
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->widget(i)->layout()->itemAt(0)->widget());
         textEditor->lexer()->setFont(m_currentFont, -1);
@@ -2412,7 +2428,7 @@ void MainWindow::readSettings()
         m_currentFont.setFamily(settings.value("fontFamily", QFont().family()).toString());
         bool ok;
         m_currentFont.setPointSize(settings.value("fontPointSize", QFont().pointSize()).toInt(&ok));
-        m_currentFont.setWeight(settings.value("fontWeight", QFont().weight()).toInt(&ok));
+        m_currentFont.setWeight((QFont::Weight)settings.value("fontWeight", (quint32)QFont::Normal).toUInt());
         m_currentFont.setItalic(settings.value("fontItalic", QFont().italic()).toBool());
         ui->actionUseDarkStyle->setChecked(settings.value("useDarkStyle", false).toBool());
         m_applicationFontSize = settings.value("appFontSize", QApplication::font().pixelSize()).toInt();
@@ -2425,7 +2441,7 @@ void MainWindow::readSettings()
         }
         else
         {
-            for(auto el : m_scriptsToLoadAfterStart)
+            for(const auto &el : m_scriptsToLoadAfterStart)
             {
                 addTab(el, true);
             }
@@ -2486,7 +2502,7 @@ void MainWindow::writeSettings()
     settings.setValue("mainSplitter", ui->splitter->saveState());
     settings.setValue("fontFamily", m_currentFont.family());
     settings.setValue("fontPointSize", m_currentFont.pointSize());
-    settings.setValue("fontWeight", m_currentFont.weight());
+    settings.setValue("fontWeight", (quint32)m_currentFont.weight());
     settings.setValue("fontItalic", m_currentFont.italic());
     settings.setValue("useDarkStyle", m_useDarkStyle);
     settings.setValue("appFontSize", m_applicationFontSize);
@@ -2886,7 +2902,7 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
             if(root->child(iter.key()))
             {
                 int color = ui->actionUseDarkStyle->isChecked() ? 255 : 0;
-                root->child(iter.key())->setTextColor(0, QColor(color,color,color));
+                root->child(iter.key())->setForeground(0, QColor(color,color,color));
             }
 
             if(iter.value().isEmpty())
@@ -2928,7 +2944,7 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
 
                 if(inserSubElementsToScriptView(fileElement, iter.value(), ""))
                 {
-                    fileElement->setTextColor(0, QColor(255,0,0));
+                    fileElement->setForeground(0, QColor(255,0,0));
                 }
 
                 for(int i = 0; i < fileElement->columnCount(); i++)
@@ -2951,7 +2967,7 @@ bool MainWindow::insertFillScriptViewAndDisplayErrors(QMap<int,QVector<ParsedEnt
 
                     if(root->child(iter.key()))
                     {
-                        root->child(iter.key())->setTextColor(0, QColor(255,0,0));
+                        root->child(iter.key())->setForeground(0, QColor(255,0,0));
                     }
                     else
                     {
@@ -3034,7 +3050,7 @@ bool MainWindow::loadFile(const QString &fileName)
 
 
     QTextStream in(&file);
-    in.setCodec("UTF-8");
+    in.setEncoding(QStringConverter::Utf8);
     QApplication::setOverrideCursor(Qt::WaitCursor);
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
     textEditor->setText(in.readAll());
@@ -3075,7 +3091,7 @@ bool MainWindow::saveFile(const QString &fileName)
     file.write(bom, 3);
 
     QTextStream out(&file);
-    out.setCodec("UTF-8");
+    out.setEncoding(QStringConverter::Utf8);
     QApplication::setOverrideCursor(Qt::WaitCursor);
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
     out << textEditor->text();

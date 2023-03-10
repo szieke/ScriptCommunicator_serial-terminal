@@ -289,6 +289,145 @@ bool QsciScintilla::isCallTipActive() const
 }
 
 
+
+// Handle a possible change to any current call tip.
+void QsciScintilla::callTipForWordAtPosition(int pos)
+{
+    QsciAbstractAPIs *apis = lex->apis();
+
+    if (!apis)
+        return;
+
+    int commas = 0;
+    bool found = false;
+    char ch;
+    while ((pos <= length()) && (ch = getCharacter(pos)) != '\0')
+    {
+        //Note: getCharacter pos is decreased by 1.
+        pos += 2;
+        if (ch == ',')
+            ++commas;
+
+        else if (ch == '(')
+        {
+            found = true;
+            pos -= 2;
+            break;
+        }
+
+    }
+
+    if (!found)
+    {
+        pos--;
+    }
+
+    // Cancel any existing call tip.
+    SendScintilla(SCI_CALLTIPCANCEL);
+
+
+
+    QStringList context = apiContext(pos, pos, ctPos);
+
+    if (context.isEmpty())
+        return;
+
+    // The last word is complete, not partial.
+    context << QString();
+
+    ct_cursor = 0;
+    ct_shifts.clear();
+    ct_entries = apis->callTips(context, commas, call_tips_style, ct_shifts);
+
+    int nr_entries = ct_entries.count();
+
+    if (nr_entries == 0)
+        return;
+
+    if (maxCallTips > 0 && maxCallTips < nr_entries)
+    {
+        ct_entries = ct_entries.mid(0, maxCallTips);
+        nr_entries = maxCallTips;
+    }
+
+    int shift;
+    QString ct;
+
+    int nr_shifts = ct_shifts.count();
+
+    if (maxCallTips < 0 && nr_entries > 1)
+    {
+        shift = (nr_shifts > 0 ? ct_shifts.first() : 0);
+        ct = ct_entries[0];
+        ct.prepend('\002');
+    }
+    else
+    {
+        if (nr_shifts > nr_entries)
+            nr_shifts = nr_entries;
+
+        // Find the biggest shift.
+        shift = 0;
+
+        for (int i = 0; i < nr_shifts; ++i)
+        {
+            int sh = ct_shifts[i];
+
+            if (shift < sh)
+                shift = sh;
+        }
+
+        ct = ct_entries.join("\n");
+    }
+
+    ScintillaBytes ct_bytes = textAsBytes(ct);
+    const char *cts = ScintillaBytesConstData(ct_bytes);
+
+    SendScintilla(SCI_CALLTIPSHOW, adjustedCallTipPosition(shift), cts);
+
+    // Done if there is more than one call tip.
+    if (nr_entries > 1)
+        return;
+
+    // Highlight the current argument.
+    const char *astart;
+
+    if (commas == 0)
+        astart = strchr(cts, '(');
+    else
+        for (astart = strchr(cts, ','); astart && --commas > 0; astart = strchr(astart + 1, ','))
+            ;
+
+    if (!astart || !*++astart)
+        return;
+
+    // The end is at the next comma or unmatched closing parenthesis.
+    const char *aend;
+    int depth = 0;
+
+    for (aend = astart; *aend; ++aend)
+    {
+        char ch = *aend;
+
+        if (ch == ',' && depth == 0)
+            break;
+        else if (ch == '(')
+            ++depth;
+        else if (ch == ')')
+        {
+            if (depth == 0)
+                break;
+
+            --depth;
+        }
+    }
+
+    if (astart != aend)
+        SendScintilla(SCI_CALLTIPSETHLT, astart - cts, aend - cts);
+}
+
+
+
 // Handle a possible change to any current call tip.
 void QsciScintilla::callTip()
 {
@@ -309,6 +448,7 @@ void QsciScintilla::callTip()
     {
         if (ch == ',')
             ++commas;
+
         else if (ch == ')')
         {
             int depth = 1;
@@ -328,6 +468,7 @@ void QsciScintilla::callTip()
             found = true;
             break;
         }
+
     }
 
     // Cancel any existing call tip.

@@ -35,7 +35,7 @@ public:
     void updateLastModified(void);
 
     ///Underlines a word which can be clicked (funktion or variable in the outline window).
-    void underlineWordWhichCanBeClicked(int pos, int line);
+    void underlineWordWhichCanBeClicked(int pos);
 
     ///Clears the current underline (clickable word).
     void removeUndlineFromWordWhichCanBeClicked(void);
@@ -74,7 +74,7 @@ public:
     void addFunction(ParsedEntry& function);
 
     ///Returns the current context string.
-    QString getContextString(QString name);
+    QString getContextString(int line);
 
     ///Sets the style to 'dark style' if useDarkStyle is true otherwise the default style is used.
     void setUseDarkStyle(bool useDarkStyle);

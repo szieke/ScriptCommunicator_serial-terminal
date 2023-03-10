@@ -1659,6 +1659,10 @@ public slots:
     //! of the cursor.
     virtual void callTip();
 
+    //! Display a call tip based on the the characters immediately to the left
+    //! of the cursor.
+    virtual void callTipForWordAtPosition(int pos);
+
     //! Deletes all the text in the text edit.
     virtual void clear();
 

@@ -350,7 +350,7 @@ private:
     QTimer m_checkForFileChangesTimer;
 
     ///The last mouse move event.
-    QMouseEvent m_lastMouseMoveEvent;
+    QPoint m_lastMouseMoveEventPosition;
 
     ///This timer is started if a mouse move event occurs (calls mouseTimerSlot).
     QTimer m_mouseEventTimer;

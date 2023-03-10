@@ -842,7 +842,7 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
                 int row = (entry.additionalInformation.size() >= 1) ? entry.additionalInformation[0].toInt(&isOk) : 0;
                 int column = (entry.additionalInformation.size() >= 2) ? entry.additionalInformation[1].toInt(&isOk) : 0;
                 QVector<TableWidgetSubObject> tableWidgetObjects = m_tableWidgetObjects[split[0]];
-                for(auto el : tableWidgetObjects)
+                for(const auto &el : tableWidgetObjects)
                 {
                     if((row == el.row) && (column == el.column))
                     {
@@ -851,7 +851,7 @@ bool ParseThread::replaceAllParsedTypes(QMap<QString, QString>& parsedTypes, Par
                         split.push_front(el.className);
                         entry.valueType = "";
 
-                        for(auto splitEl : split)
+                        for(const auto &splitEl : split)
                         {
                             entry.valueType += splitEl + ".";
                         }
@@ -1117,7 +1117,7 @@ QMap<int,QVector<ParsedEntry>> ParseThread::getAllFunctionsAndGlobalVariables(QM
             {
                 if(checkForControlStatements(program->body[i], entry, iter.key(), &objects))
                 {
-                    for(auto el : entry.subElements)
+                    for(const auto &el : entry.subElements)
                     {
                         fileResult.append(el);
                     }
@@ -1362,7 +1362,7 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
     if(!parseOnlyUIFiles)
     {
         //Search for GUI elements created by a table widget.
-        for(auto el : m_tableWidgets)
+        for(const auto &el : m_tableWidgets)
         {
             parseTableWidgetInsert(el, lines);
         }
@@ -1370,7 +1370,7 @@ void ParseThread::parseSlot(QMap<QString, QString> loadedUiFiles, QMap<int, QStr
         parsedEntries = getAllFunctionsAndGlobalVariables(loadedScripts);
 
         //Add all objects with an unknown type.
-        for(auto el : m_unknownTypeObjects)
+        for(const auto &el : m_unknownTypeObjects)
         {
             if(!m_autoCompletionEntries.contains(el))
             {

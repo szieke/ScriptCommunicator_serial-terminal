@@ -74,12 +74,12 @@ void SingleDocument::setUseDarkStyle(bool useDarkStyle)
  * @return
  *      The context string.
  */
-QString SingleDocument::getContextString(QString name)
+QString SingleDocument::getContextString(int line)
 {
     QString result;
     for(const auto &el : m_functions)
     {
-        if(el.name == name)
+        if((line >= el.line) && (line <= el.endLine))
         {//Context found.
 
             result = el.completeName;
@@ -103,7 +103,7 @@ void SingleDocument::mouseMoveEvent(QMouseEvent *event)
     }
 
     QsciScintillaBase::mouseMoveEvent(event);
-    m_mainWindow->m_lastMouseMoveEvent = *event;
+    m_mainWindow->m_lastMouseMoveEventPosition = event->pos();
     m_mainWindow->m_mouseEventTimer.start(100);
 }
 /**
@@ -121,7 +121,7 @@ void SingleDocument::wheelEvent(QWheelEvent *event)
  {
      if(m_mainWindow->m_ctrlIsPressed)
      {
-         if(event->delta() > 0)
+         if(event->angleDelta().y() > 0)
          {
              m_mainWindow->zoomInSlot();
          }
@@ -140,7 +140,7 @@ void SingleDocument::wheelEvent(QWheelEvent *event)
  * @param pos
  *      The position of one character of the word.
  */
-void SingleDocument::underlineWordWhichCanBeClicked(int pos, int line)
+void SingleDocument::underlineWordWhichCanBeClicked(int pos)
 {
     if(m_clickIndicatorStart != -1)
     {
@@ -150,8 +150,10 @@ void SingleDocument::underlineWordWhichCanBeClicked(int pos, int line)
     m_clickIndicatorStart = SendScintilla(SCI_WORDSTARTPOSITION, pos, true);
     m_clickIndicatorEnd = SendScintilla(SCI_WORDENDPOSITION, pos, true);
 
-    /*ToDo*/
-    fillIndicatorRange(line, m_clickIndicatorStart, line, m_clickIndicatorEnd, m_clickIndicatorIdentifier);
+
+    SendScintilla(SCI_SETINDICATORCURRENT, m_clickIndicatorIdentifier);
+    SendScintilla(SCI_INDICATORFILLRANGE, m_clickIndicatorStart, m_clickIndicatorEnd - m_clickIndicatorStart);
+
 }
 
 /**
@@ -161,8 +163,8 @@ void SingleDocument::removeUndlineFromWordWhichCanBeClicked(void)
 {
     if(m_clickIndicatorStart != -1)
     {
-        /*ToDo*/
-        //clearIndicatorRangeWithPosition(m_clickIndicatorStart, m_clickIndicatorEnd, m_clickIndicatorIdentifier);
+        SendScintilla(SCI_SETINDICATORCURRENT, m_clickIndicatorIdentifier);
+        SendScintilla(SCI_INDICATORCLEARRANGE, m_clickIndicatorStart, m_clickIndicatorEnd - m_clickIndicatorStart);
         m_clickIndicatorStart = -1;
         m_clickIndicatorEnd = -1;
     }
@@ -302,8 +304,6 @@ void SingleDocument::initLexer(QString script)
     if(lexer() == 0)
     {
         setLexer(new QsciLexerJavaScript(this));
-        QsciAPIs* apis = new QsciAPIs(lexer());
-        (void)apis;
 
 
         setAutoCompletionSource(QsciScintilla::AcsAPIs);
@@ -345,7 +345,7 @@ void SingleDocument::initAutoCompletion(QMap<QString, QStringList>& autoCompleti
         QMap<QString, QStringList>::iterator i;
         for (i = autoCompletionEntries.begin(); i != autoCompletionEntries.end(); ++i)
         {
-            for(auto el : i.value())
+            for(const auto &el : i.value())
             {
                 apis->add(el);
             }
@@ -353,7 +353,7 @@ void SingleDocument::initAutoCompletion(QMap<QString, QStringList>& autoCompleti
 
         for (i = autoCompletionApiFiles.begin(); i != autoCompletionApiFiles.end(); ++i)
         {
-            for(auto el : i.value())
+            for(const auto &el : i.value())
             {
                 apis->add(el);
             }
