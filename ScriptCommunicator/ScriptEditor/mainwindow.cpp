@@ -534,32 +534,27 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
         SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
         QString text = textEditor->wordAtPosition(m_lastIndicatorClickPosition);
 
-
+        QString searchString;
         bool isLocalVariable = false;
 
         long pos = textEditor->SendScintilla(QsciScintillaBase::SCI_POSITIONFROMPOINTCLOSE, m_lastMouseMoveEventPosition.x(), m_lastMouseMoveEventPosition.y());
-        QString completeWord = textEditor->wordAtPosition(pos);
         QString contextString = textEditor->getContextString(line);
+
+        int index = 0;
+        if(text.startsWith("this."))
+        {
+            //Remove this.
+            text.remove(0, 5);
+            index = contextString.lastIndexOf("::");
+            if(index != -1)
+            {
+                contextString.remove(index, contextString.length() - index);
+            }
+        }
+        contextString = contextString.replace("::", ".");
+
         if(!contextString.isEmpty())
         {
-            int index = 0;
-            if(text.startsWith("this."))
-            {
-                //Remove this.
-                text.remove(0, 5);
-                index = contextString.lastIndexOf("::");
-                if(index != -1)
-                {
-                    contextString.remove(index, contextString.length() - index);
-                }
-            }
-            contextString = contextString.replace("::", ".");
-
-        }
-        else
-        {
-
-            contextString = completeWord;
             int index = 0;
 
             do
@@ -569,7 +564,7 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
 
                if(isLocalVariable)
                {
-                   contextString += "." + text;
+                   searchString = contextString + "." + text;
                }
                else
                {
@@ -585,12 +580,13 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
 
         if(!isLocalVariable)
         {
-           // searchString = text;
+            searchString = text;
         }
 
         bool found = false;
 
         QTreeWidgetItemIterator iter(ui->outlineTreeWidget);
+        #if 0
         while (*iter)
         {
             bool isOk = false;
@@ -598,7 +594,7 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
             if(entry)
             {
                 //The double clicked word is in the scripts outline.
-                if (entry->completeName == contextString + "." + completeWord)
+                if (entry->completeName == searchString + "." + completeWord)
                 {
                     functionListDoubleClicked((*iter), 0);
                     found = true;
@@ -607,7 +603,7 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
             }
             iter++;
         }
-
+#endif
         if(!found)
         {
             //Iterate over all elements in the scripts outline.
@@ -619,7 +615,7 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
                 if(entry)
                 {
                     //The double clicked word is in the scripts outline.
-                    if (entry->completeName == contextString)
+                    if (entry->completeName == searchString)
                     {
                         functionListDoubleClicked((*iter), 0);
                         break;
@@ -632,7 +628,7 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
                             bool isOk = false;
                             ParsedUiObject* entry  = (ParsedUiObject*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
 
-                          if ("UI_" + entry->objectName == contextString)
+                          if ("UI_" + entry->objectName == searchString)
                           {
                               uiViewDoubleClicked((*iter), 0);
                               break;
