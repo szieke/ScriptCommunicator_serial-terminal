@@ -951,7 +951,7 @@ void ScriptThread::installAllChilds(QObject* obj, QJSEngine* scriptEngine, bool 
  * @param timeMs
  *      The time in ms.
  */
-void ScriptThread::sleepFromScript(quint32 timeMs )
+void ScriptThread::sleep(quint32 timeMs )
 {
     msleep(timeMs);
     QCoreApplication::processEvents();

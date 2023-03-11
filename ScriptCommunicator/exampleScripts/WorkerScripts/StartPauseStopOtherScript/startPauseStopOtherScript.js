@@ -12,10 +12,10 @@ function stopScript()
 scriptThread.appendTextToConsole('script ' + scriptThread.getScriptTableName() + ' has started');
 
 scriptThread.setScriptState(0, "sendUserInput");//Start the script.
-scriptThread.sleepFromScript(3000);
+scriptThread.sleep(3000);
 
 scriptThread.setScriptState(1, "sendUserInput");//Pause the script.
-scriptThread.sleepFromScript(3000);
+scriptThread.sleep(3000);
 
 scriptThread.setScriptState(2, "sendUserInput");//Stop the script.
 

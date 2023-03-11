@@ -1,6 +1,6 @@
 scriptThread::getAllObjectPropertiesAndFunctions(ScriptValue object):Array<String> \nReturns all functions and properties of an object.
 scriptThread::appendTextToConsole(String string, bool newLine=true, bool bringToForeground=false):void \nAppends text to the script window console.
-scriptThread::sleepFromScript(Number timeMs):void \nForces the script thread to sleep for ms milliseconds.
+scriptThread::sleep(Number timeMs):void \nForces the script thread to sleep for ms milliseconds.
 scriptThread::createUdpSocket(void):ScriptUdpSocket \nCreates an UDP socket.\nNote: This function is deprecated. Use the scriptInf.createUdpSocket instead.
 scriptThread::createTcpServer(void):ScriptTcpServer \nCreates a TCP server.\nNote: This function is deprecated. Use the scriptInf.createTcpServer instead.
 scriptThread::createTcpClient(void):ScriptTcpClient \nCreates a TCP socket.\nNote: This function is deprecated. Use the scriptInf.createTcpClient instead.

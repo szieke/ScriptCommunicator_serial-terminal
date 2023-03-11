@@ -236,6 +236,6 @@ UI_testSendTableWidget.resizeColumnToContents(0);
 UI_testReceiveTableWidget.resizeColumnToContents(0);
 
 //wait 100ms
-scriptThread.sleepFromScript(100);
+scriptThread.sleep(100);
 UI_testSendTableWidget.cellChangedSignal.connect(testSendTableWidgetCellChanged);
 

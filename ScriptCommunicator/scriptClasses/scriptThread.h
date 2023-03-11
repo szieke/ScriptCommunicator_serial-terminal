@@ -270,7 +270,11 @@ public:
     /*************************************************************************************************************************/
 
     ///Forces the script thread to sleep for ms milliseconds.
-    Q_INVOKABLE void sleepFromScript(quint32 timeMs);
+    ///Deprecated, replaced by sleep.
+    Q_INVOKABLE void sleepFromScript(quint32 timeMs){sleep(timeMs);}
+
+    ///Forces the script thread to sleep for ms milliseconds.
+    Q_INVOKABLE void sleep(quint32 timeMs);
 
     ///Creates a timer.
     Q_INVOKABLE QJSValue createTimer(void);

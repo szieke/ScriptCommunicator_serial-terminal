@@ -9,7 +9,7 @@ soundObject.play();
 
 while(!soundObject.isFinished())
 {
-	scriptThread.sleepFromScript(100);
+	scriptThread.sleep(100);
 }
 
 scriptThread.stopScript();

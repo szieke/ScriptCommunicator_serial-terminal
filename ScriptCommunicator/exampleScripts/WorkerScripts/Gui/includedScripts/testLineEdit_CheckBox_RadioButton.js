@@ -1,7 +1,7 @@
 ﻿//the user has pressed the get text button
-function UI_testGetTextLineEditTextChangedSignal(text)
+function testGetTextLineEditTextChangedSignal(text)
 {
-	UI_testTextEdit.append("UI_UI_testGetTextLineEditTextChangedSignal");
+	UI_testTextEdit.append("testGetTextLineEditTextChangedSignal");
 	UI_testSetTextLineEdit.setText(text);
 	UI_testSetTextLineEdit.setReadOnly(true);
 	UI_testSetTextLineEdit.setBackgroundColor("red");
@@ -46,7 +46,8 @@ function groupBoxCheckBoxClickedSlot(checked)
 }
 
 UI_testGetTextLineEdit.setToolTip("tool tip text", -1);
-UI_testGetTextLineEdit.textChangedSignal.connect(UI_testGetTextLineEditTextChangedSignal)
+UI_testGetTextLineEdit.textChangedSignal.connect(testGetTextLineEditTextChangedSignal)
+
 
 UI_testSendCheckBox.clickedSignal.connect(testSendCheckBoxClicked)
 UI_testSendComboBox.addItem("myItem")

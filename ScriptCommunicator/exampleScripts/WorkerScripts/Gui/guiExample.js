@@ -284,3 +284,4 @@ else
 UI_Dialog.createShortCut("Ctrl+s", shortCutDialogSlot);
 UI_treeWidget.createShortCut("Ctrl+d", shortCutTreeWidgetSlot);
 
+

@@ -49,7 +49,7 @@ public:
         //wrapper events)
         Qt::ConnectionType directConnectionType = scriptThread->runsInDebugger() ? Qt::DirectConnection : Qt::BlockingQueuedConnection;
 
-        connect(m_lineEdit, SIGNAL(textChanged(QString&)),this, SIGNAL(textChangedSignal(QString&)));
+        connect(m_lineEdit, SIGNAL(textChanged(QString)),this, SIGNAL(textChangedSignal(QString)));
 
         connect(this, SIGNAL(setTextSignal(QString)),m_lineEdit, SLOT(setText(QString)), directConnectionType);
 
@@ -103,7 +103,7 @@ public:
         m_hexModeActivated = true;
         m_maxValue = maxValue;
 
-        connect(m_lineEdit, SIGNAL(textChanged(QString&)),this, SLOT(textChangedInHexMode(QString&)));
+        connect(m_lineEdit, SIGNAL(textChanged(QString)),this, SLOT(textChangedInHexMode(QString)));
     };
 
 public slots:
@@ -116,7 +116,8 @@ public slots:
         QString savedNewText = newText;
 
         //Allow only hexedecimal characters.
-        newText.replace(QRegularExpression("[^xa-fA-F\\d\\s]"), "");
+        static QRegularExpression re("[^xa-fA-F\\d\\s]");
+        newText.replace(re, "");
 
         if(newText.startsWith("x"))
         {//The current value starts with x.

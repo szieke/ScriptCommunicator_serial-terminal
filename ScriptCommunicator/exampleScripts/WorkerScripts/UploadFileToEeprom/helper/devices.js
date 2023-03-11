@@ -63,7 +63,7 @@ function i2cMasterReadWrite(flags, i2cAddress, memoryAddress, numberOfBytesToRea
 		if(dataToSend.length > 0)
 		{
 			//Wait until the Eeprom is writting.
-			scriptThread.sleepFromScript(waitTimeAfterWrite);
+			scriptThread.sleep(waitTimeAfterWrite);
 		}
 	}
 	

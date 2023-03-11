@@ -57,7 +57,7 @@ function sendFilePushButtonClickedSlot()
 						UI_InformationLabel.setText("bytes send: " + send);
 						UI_SendFileProgressBar.setValue((send * 100) / fileSize);
 						succeeded = true;
-						scriptThread.sleepFromScript(10);
+						scriptThread.sleep(10);
 					}
 					else
 					{
