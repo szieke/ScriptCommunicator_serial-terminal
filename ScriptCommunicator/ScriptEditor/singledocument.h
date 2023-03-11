@@ -5,6 +5,7 @@
 #include <Qsci/qsciscintilla.h>
 #include <QDomDocument>
 #include <QDateTime>
+#include "Qsci/qsciapis.h"
 #include "parseThread.h"
 
 
@@ -142,6 +143,9 @@ private:
 
     ///True if the dark style shall be used.
     bool m_useDarkStyle;
+
+    ///Contains the textual API information used in call tips and for auto-completion.
+    QsciAPIs* m_apis;
 };
 
 #endif // SINGLEDOCUMENT_H

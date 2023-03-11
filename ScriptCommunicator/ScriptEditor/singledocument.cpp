@@ -20,7 +20,7 @@
 SingleDocument::SingleDocument(MainWindow *mainWindow, bool useDarkStyle, QWidget *parent) :
     QsciScintilla(parent), m_mainWindow(mainWindow), m_documentName(""), m_fileLastModified(QDateTime::currentDateTime()),
     m_fileMustBeParsed(true), m_clickIndicatorStart(-1), m_clickIndicatorEnd(-1), m_clickIndicatorIdentifier(1),
-    m_functions(), m_useDarkStyle(useDarkStyle)
+    m_functions(), m_useDarkStyle(useDarkStyle), m_apis(nullptr)
 {
 
     connect(this, SIGNAL(textChanged()), m_mainWindow, SLOT(documentWasModified()));
@@ -304,6 +304,7 @@ void SingleDocument::initLexer(QString script)
     if(lexer() == 0)
     {
         setLexer(new QsciLexerJavaScript(this));
+        m_apis = new QsciAPIs(lexer());
 
 
         setAutoCompletionSource(QsciScintilla::AcsAPIs);
