@@ -401,31 +401,43 @@ public:
     Q_INVOKABLE QList<int> showColorDialog(quint8 initInitalRed=255, quint8 initInitalGreen=255, quint8 initInitalBlue=255, quint8 initInitalAlpha=255, bool alphaIsEnabled=false, QWidget* parent=0);
 
 
+     /****************Deprecated******************************************************/
+
     ///Calculates a crc8 with a given polynomial.
+    ///Deprecated, replaced by calculateCrc8.
     Q_INVOKABLE static quint8 calculateCrc8WithPolynomial(const QVector<unsigned char> data, const unsigned char polynomial, const unsigned char startValue=0xff,
                                                           quint8 finalXorValue = 0)
                 {return CRC::calculateCrc8(data, polynomial, startValue, finalXorValue);}
 
     ///Calculates a crc16 with a given polynomial.
+    ///Deprecated, replaced by calculateCrc16.
     Q_INVOKABLE static quint16 calculateCrc16WithPolynomial(const QVector<unsigned char> data, const quint16 polynomial, quint16 startValue=0xffff,
                                                             quint16 finalXorValue = 0)
                 {return CRC::calculateCrc16(data, polynomial, startValue, finalXorValue);}
 
     ///Calculates a crc32 with a given polynomial.
+    ///Deprecated, replaced by calculateCrc32.
     Q_INVOKABLE static quint32 calculateCrc32WithPolynomial(const QVector<unsigned char> data, const quint32 polynomial, quint32 startValue= 0xffffffff,
                                                             quint32 finalXorValue = 0)
                 {return CRC::calculateCrc32(data, polynomial, startValue, finalXorValue);}
 
-    /****************Deprecated******************************************************/
+    /********************************************************************************/
+
     ///Calculates a crc8.
-    Q_INVOKABLE static quint8 calculateCrc8(const QVector<unsigned char> data){return CRC::calculateCrc8(data);}
+    Q_INVOKABLE static quint8 calculateCrc8(const QVector<unsigned char> data, const unsigned char polynomial, const unsigned char startValue=0xff,
+                                            quint8 finalXorValue = 0)
+    {return CRC::calculateCrc8(data, polynomial, startValue, finalXorValue);}
 
     ///Calculates a crc16.
-    Q_INVOKABLE static quint16 calculateCrc16(const QVector<unsigned char> data){return CRC::calculateCrc16(data);}
+    Q_INVOKABLE static quint16 calculateCrc16(const QVector<unsigned char> data, const quint16 polynomial, quint16 startValue=0xffff,
+                                              quint16 finalXorValue = 0)
+    {return CRC::calculateCrc16(data, polynomial, startValue, finalXorValue);}
 
     ///Calculates a crc32.
-    Q_INVOKABLE static quint32 calculateCrc32(const QVector<unsigned char> data){return CRC::calculateCrc32(data);}
-    /********************************************************************************/
+    Q_INVOKABLE static quint32 calculateCrc32(const QVector<unsigned char> data, const quint32 polynomial, quint32 startValue= 0xffffffff,
+                                              quint32 finalXorValue = 0)
+    {return CRC::calculateCrc32(data, polynomial, startValue, finalXorValue);}
+
 
     ///Scripts can switch on/off the adding of received data in the consoles (for fast data transfers).
     Q_INVOKABLE bool showReceivedDataInConsoles(bool show);

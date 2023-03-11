@@ -19,7 +19,7 @@ function sendData(data)
 	data = conv.addUint32ToArray(data, counter, false);
 	
 	//Append a CRC8
-	var crc8 = seq.calculateCrc8(data);
+	var crc8 = seq.calculateCrc8(data, 0xfe);
 	data.push(crc8 & 0xff);	
 	
 	counter++;
