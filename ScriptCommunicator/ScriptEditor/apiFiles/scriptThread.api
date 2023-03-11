@@ -46,9 +46,9 @@ scriptThread::showGetItemDialog(String title, String label, Array<String> displa
 scriptThread::showGetIntDialog(String title, String label, Number initialValue, Number min, Number max, Number step, QWidget* parent=0):Array<Number> \nscriptThreadenience function to get an integer input from the user.\nShows a QInputDialog::getInt dialog (spinbox).
 scriptThread::showGetDoubleDialog(String title, String label, Number initialValue, Number min, Number max, Number decimals, QWidget* parent=0):Array<Number> \nscriptThreadenience function to get a floating point number from the user.\nShows a QInputDialog::getDouble dialog (spinbox).
 scriptThread::showColorDialog(Number initInitalRed=255, Number initInitalGreen=255, Number initInitalBlue=255, Number initInitalAlpha=255, bool alphaIsEnabled=false, QWidget* parent=0):Array<Number> \nscriptThreadenience function to get color settings from the user.
-scriptThread::calculateCrc8WithPolynomial(Array<Number> data, Number polynomial, Number startValue=0):Number \nCalculates a crc8 with a given polynomial.
-scriptThread::calculateCrc16WithPolynomial(Array<Number> data, Number polynomial, Number startValue=0):Number \nCalculates a crc16 with a given polynomial.
-scriptThread::calculateCrc32WithPolynomial(Array<Number> data, Number polynomial, Number startValue=0):Number \nCalculates a crc32 with a given polynomial.
+scriptThread::calculateCrc8(Array<Number> data, Number polynomial, Number startValue=0xFF, Number finalXorValue=0):Number \nCalculates a crc8 with a given polynomial.
+scriptThread::calculateCrc16(Array<Number> data, Number polynomial, Number startValue=0xFFFF, Number finalXorValue=0):Number \nCalculates a crc16 with a given polynomial.
+scriptThread::calculateCrc32(Array<Number> data, Number polynomial, Number startValue=0xFFFFFFFF, Number finalXorValue=0):Number \nCalculates a crc32 with a given polynomial.
 scriptThread::showReceivedDataInConsoles(bool show):bool \nScripts can switch on/off the adding of received data in the consoles (for fast data transfers).
 scriptThread::showTransmitDataInConsoles(bool show):bool \nScripts can switch on/off the adding of transmitted data in the consoles (for fast data transfers).
 scriptThread::addMessageToLogAndConsoles(String text, bool forceTimeStamp=false):void \nAdds a message into the log and the consoles (if they are active).
