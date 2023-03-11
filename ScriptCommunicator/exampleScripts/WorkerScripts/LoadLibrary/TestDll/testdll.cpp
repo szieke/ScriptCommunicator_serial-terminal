@@ -7,13 +7,14 @@ TestDll testDll;
 TestDll::TestDll() : QObject()
 {
 }
-void init(QScriptEngine* engine)
+void init(QJSEngine* engine)
 {
-    qRegisterMetaType<QScriptEngine*>("TestDll*");
+    qRegisterMetaType<QJSEngine*>("TestDll*");
 
     engine->globalObject().setProperty("TestDll", engine->newQObject(&testDll));
+    engine->setObjectOwnership(&testDll, QJSEngine::CppOwnership);
 
-    QScriptValue sendDataArrayFunction = engine->evaluate("sendDataArray");
+    QJSValue sendDataArrayFunction = engine->evaluate("sendDataArray");
 
     testDll.setSendDataArrayFunction(sendDataArrayFunction);
     testDll.setScriptEngine(engine);

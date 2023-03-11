@@ -1,12 +1,11 @@
 #ifndef TESTDLL_H
 #define TESTDLL_H
 
-#include "testdll_global.h"
-#include <QScriptEngine>
+#include <QJSEngine>
 #include <QObject>
 #include <QVector>
 
-extern "C" Q_DECL_EXPORT void init(QScriptEngine* engine);
+extern "C" Q_DECL_EXPORT void init(QJSEngine* engine);
 
 class TestDll : public QObject
 {
@@ -31,11 +30,11 @@ public:
     {
         bool hasSucceeded = true;
 
-        QScriptValue scriptArray = convertByteVectorToScriptArray(appendChecksum(data));
+        QJSValue scriptArray = convertByteVectorToScriptArray(appendChecksum(data));
 
         if (!m_sendDataArrayFunction.isError())
         {
-            QScriptValue result = m_sendDataArrayFunction.call(QScriptValue(), QScriptValueList() << scriptArray);
+            QJSValue result = m_sendDataArrayFunction.call(QJSValueList() << scriptArray);
             hasSucceeded = result.toBool();
         }
         else
@@ -46,32 +45,32 @@ public:
         return hasSucceeded;
     }
 
-    void setSendDataArrayFunction(QScriptValue sendDataArrayFunction)
+    void setSendDataArrayFunction(QJSValue sendDataArrayFunction)
     {
         m_sendDataArrayFunction = sendDataArrayFunction;
     }
 
-    void setScriptEngine(QScriptEngine* scriptEngine)
+    void setScriptEngine(QJSEngine* scriptEngine)
     {
         m_scriptEngine = scriptEngine;
     }
 
 private:
 
-    QScriptValue convertByteVectorToScriptArray(QVector<unsigned char> vector)
+    QJSValue convertByteVectorToScriptArray(QVector<unsigned char> vector)
     {
-        QScriptValue scriptArray = m_scriptEngine->newArray(vector.size());
+        QJSValue scriptArray = m_scriptEngine->newArray(vector.size());
 
         for(int i = 0; i < vector.size(); i++)
         {
-            scriptArray.setProperty(i, QScriptValue(m_scriptEngine, vector[i]));
+            scriptArray.setProperty(i, QJSValue(vector[i]));
         }
 
         return scriptArray;
     }
 
-    QScriptValue m_sendDataArrayFunction;
-    QScriptEngine* m_scriptEngine;
+    QJSValue m_sendDataArrayFunction;
+    QJSEngine* m_scriptEngine;
 
 };
 

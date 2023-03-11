@@ -8,7 +8,7 @@
 
 CONFIG += c++11
 
-QT += script
+QT += qml
 
 
 INCLUDEPATH += ../

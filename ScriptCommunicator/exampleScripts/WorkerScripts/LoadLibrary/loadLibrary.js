@@ -94,21 +94,12 @@ if(scriptThread.productType() == "windows")
 {
 	main("TestDll.dll");
 }
-else if(scriptThread.productType() == "osx")
-{
-	main("libTestDll.dylib");
-}
 else
-{//Linux
-	if(scriptThread.currentCpuArchitecture() == "x86_64")
-	{
-		main("libTestDll.so");
-	}
-	else
-	{
-		main("libTestDll_32_bit.so");
-	}
+{//Linux 64 Bit
+
+	main("libTestDll.so");
 }
+
 
 
 
