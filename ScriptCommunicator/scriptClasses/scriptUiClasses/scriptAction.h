@@ -28,7 +28,7 @@
 #include <QObject>
 
 #include "scriptObject.h"
-#include "ScriptThread.h"
+#include "scriptThread.h"
 #include "scriptwindow.h"
 
 ///This wrapper class is used to access a QAction object (located in a script gui/ui-file) from a script.

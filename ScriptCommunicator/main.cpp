@@ -110,7 +110,12 @@ static void messageHandler(QtMsgType type, const QMessageLogContext& context, co
 
     if(!isScriptError)
     {
+#ifdef Q_OS_WIN32
       OutputDebugString(reinterpret_cast<const wchar_t *>(message.utf16()));
+#else
+        fprintf(stderr, "%s", message.toLocal8Bit().constData());
+        fflush(stderr);
+#endif
     }
 
 }
@@ -149,9 +154,7 @@ int main(int argc, char *argv[])
     QString minimumScVersion;
     QString iconFile;
 
-#ifdef Q_OS_WIN32
     qInstallMessageHandler(messageHandler);
-#endif
 
 
     //Parse all arguments.

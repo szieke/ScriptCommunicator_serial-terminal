@@ -1,4 +1,4 @@
-#include "plotWidget.h"
+#include "plotwidget.h"
 #include "scriptwindow.h"
 
 
