@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>683</width>
-    <height>559</height>
+    <width>872</width>
+    <height>668</height>
    </rect>
   </property>
   <property name="focusPolicy">
@@ -46,6 +46,9 @@
             </property>
             <attribute name="horizontalHeaderStretchLastSection">
              <bool>true</bool>
+            </attribute>
+            <attribute name="verticalHeaderMinimumSectionSize">
+             <number>50</number>
             </attribute>
            </widget>
           </item>
@@ -400,8 +403,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>421</width>
-         <height>184</height>
+         <width>393</width>
+         <height>199</height>
         </rect>
        </property>
        <attribute name="label">
@@ -495,8 +498,8 @@
         <rect>
          <x>0</x>
          <y>0</y>
-         <width>421</width>
-         <height>322</height>
+         <width>505</width>
+         <height>308</height>
         </rect>
        </property>
        <attribute name="label">

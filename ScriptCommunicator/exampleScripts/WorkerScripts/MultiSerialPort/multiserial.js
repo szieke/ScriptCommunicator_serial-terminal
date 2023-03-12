@@ -646,7 +646,7 @@ plotWindow.clearButtonPressedSignal.connect(ClearButtonPressed);
 plotWindow.setInitialAxisRanges(10000,-10,500);
 plotWindow.plotMousePressSignal.connect(plotWindowMousePress);
 
-plotTimer.interval = 100;
+plotTimer.setInterval(100);
 plotTimer.timeoutSignal.connect(zeroPlots);
 plotTimer.start();
 

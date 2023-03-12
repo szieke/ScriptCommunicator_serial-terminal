@@ -5,14 +5,14 @@ all recieved data (main interface) in a ANSI console.
 
 // Color regexes:
 const RGX_Color_Default = (/\u001b\[0m/);
-const RGX_Color_BLACK 	= (/\u001b\[0;30m/);
-const RGX_Color_RED 	= (/\u001b\[0;31m/);
-const RGX_Color_GREEN 	= (/\u001b\[0;32m/);
-const RGX_Color_YELLOW 	= (/\u001b\[0;33m/);
-const RGX_Color_BLUE 	= (/\u001b\[0;34m/);
-const RGX_Color_PURPLE 	= (/\u001b\[0;35m/);
-const RGX_Color_CYAN 	= (/\u001b\[0;36m/);
-const RGX_Color_WHITE 	= (/\u001b\[0;37m/);
+const RGX_Color_BLACK 	= (/\u001b\[30m/);
+const RGX_Color_RED 	= (/\u001b\[31m/);
+const RGX_Color_GREEN 	= (/\u001b\[32m/);
+const RGX_Color_YELLOW 	= (/\u001b\[33m/);
+const RGX_Color_BLUE 	= (/\u001b\[34m/);
+const RGX_Color_PURPLE 	= (/\u001b\[35m/);
+const RGX_Color_CYAN 	= (/\u001b\[36m/);
+const RGX_Color_WHITE 	= (/\u001b\[37m/);
 
 var g_textColor = "000000";
 var g_tmpBuf = "";
@@ -132,7 +132,7 @@ function dataReceivedSlot(data)
 		for(var i=1; i<stringArray.length; i++) 
 		{
 			// Put the ESC character back (if split was done by ESC):
-			stringArray[i] = "\033" + stringArray[i];
+			stringArray[i] = "\u001b" + stringArray[i];
 			
 			var len = stringArray[i].length;
 			// Check length of last element and if not correct, save it for later and skip.		
@@ -142,10 +142,10 @@ function dataReceivedSlot(data)
 				// ESC+[0m -> 4chars (color reset to default); ESC+[0;3xm -> 7 chars (basic color set)	
 				
 				// If (shorter than 4 chars) OR (longer than 4 but shorter than 7) OR (equals 4 but not ESC+[0m):
-				if ( (len < 4) || ((len > 4) && (len < 7)) || ((len == 4) && (stringArray[i] != "\033[0m")) ) 
+				if ( (len < 4) || ((len > 4) && (len < 7)) || ((len == 4) && (stringArray[i] != "\u001b[0m")) ) 
 				{
 					// But also skip for ESC+[0m with newline character/s:
-					if( (stringArray[i] != "\033[0m\n") || (stringArray[i] != "\033[0m\r\n") ) 
+					if( (stringArray[i] != "\u001b[0m\n") || (stringArray[i] != "\u001b[0m\r\n") ) 
 					{		   
 						g_tmpBuf = stringArray[i];	// Store current string for next run:
 						break;	// Break from for-loop now

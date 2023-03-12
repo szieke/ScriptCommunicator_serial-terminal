@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>892</width>
-    <height>462</height>
+    <width>952</width>
+    <height>578</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -132,13 +132,16 @@
          <widget class="QTableWidget" name="tableWidget">
           <property name="maximumSize">
            <size>
-            <width>200</width>
-            <height>120</height>
+            <width>16777215</width>
+            <height>16777215</height>
            </size>
           </property>
           <property name="showGrid">
            <bool>true</bool>
           </property>
+          <attribute name="verticalHeaderMinimumSectionSize">
+           <number>50</number>
+          </attribute>
           <row>
            <property name="text">
             <string>row 1</string>

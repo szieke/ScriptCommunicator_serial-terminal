@@ -124,7 +124,7 @@ UI_tableLineEdit6.addIntValidator(0, 99)
 
 //Create, start and connect the send timer.
 var timer = scriptThread.createTimer();
-timer.timeoutSignal.connect(eval("timerSlot"));
+timer.timeoutSignal.connect(timerSlot);
 timer.start(1);//timer interval= 1ms
 
 //Create the element map (contains the meta data from all GUI elements).
