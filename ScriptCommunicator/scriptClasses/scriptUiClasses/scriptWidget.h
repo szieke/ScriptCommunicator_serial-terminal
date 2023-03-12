@@ -201,9 +201,6 @@ public:
     ///Returns the height of the widget excluding any window frame.
     Q_INVOKABLE int height(void){return m_widget->height();}
 
-    ///Returns the widget pointer.
-    Q_INVOKABLE QWidget* getWidgetPointer(void){return m_widget;}
-
     ///Sets/stores an additional data entry.
     Q_INVOKABLE void setAdditionalData(int key, QString data){m_additionalData[key] = data;}
 
@@ -255,7 +252,10 @@ public:
     }
 
     ///Sets the style sheet of a script widget.
-    Q_INVOKABLE void setStyleSheet(QString styleSheet){emit setStyleSheetSignal(styleSheet, m_widget);}    
+    Q_INVOKABLE void setStyleSheet(QString styleSheet){emit setStyleSheetSignal(styleSheet, m_widget);}
+
+    ///Returns the widget pointer.
+    QWidget* getWidgetPointer(void){return m_widget;}
 
 Q_SIGNALS:
 

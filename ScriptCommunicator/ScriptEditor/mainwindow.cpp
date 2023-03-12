@@ -583,10 +583,10 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
             searchString = text;
         }
 
-        bool found = false;
 
         QTreeWidgetItemIterator iter(ui->outlineTreeWidget);
-        #if 0
+        //Iterate over all elements in the scripts outline.
+        iter = QTreeWidgetItemIterator(ui->outlineTreeWidget);
         while (*iter)
         {
             bool isOk = false;
@@ -594,54 +594,32 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
             if(entry)
             {
                 //The double clicked word is in the scripts outline.
-                if (entry->completeName == searchString + "." + completeWord)
+                if (entry->completeName == searchString)
                 {
                     functionListDoubleClicked((*iter), 0);
-                    found = true;
                     break;
                 }
-            }
-            iter++;
-        }
-#endif
-        if(!found)
-        {
-            //Iterate over all elements in the scripts outline.
-            iter = QTreeWidgetItemIterator(ui->outlineTreeWidget);
-            while (*iter)
-            {
-                bool isOk = false;
-                ParsedEntry* entry  = (ParsedEntry*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
-                if(entry)
+                else
                 {
-                    //The double clicked word is in the scripts outline.
-                    if (entry->completeName == searchString)
+                    QTreeWidgetItemIterator iter(ui->uiTreeWidget);
+                    while (*iter)
                     {
-                        functionListDoubleClicked((*iter), 0);
-                        break;
+                        bool isOk = false;
+                        ParsedUiObject* entry  = (ParsedUiObject*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
+
+                      if ("UI_" + entry->objectName == searchString)
+                      {
+                          uiViewDoubleClicked((*iter), 0);
+                          break;
+                      }
+
+                      ++iter;
                     }
-                    else
-                    {
-                        QTreeWidgetItemIterator iter(ui->uiTreeWidget);
-                        while (*iter)
-                        {
-                            bool isOk = false;
-                            ParsedUiObject* entry  = (ParsedUiObject*)(*iter)->data(0, PARSED_ENTRY).toULongLong(&isOk);
 
-                          if ("UI_" + entry->objectName == searchString)
-                          {
-                              uiViewDoubleClicked((*iter), 0);
-                              break;
-                          }
-
-                          ++iter;
-                        }
-
-                    }
                 }
-
-              ++iter;
             }
+
+          ++iter;
         }
     }
 }

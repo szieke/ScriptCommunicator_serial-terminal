@@ -50,8 +50,8 @@ public:
         //events of the wrapper class are generated, the script can connect to this
         //wrapper events)
         connect(&m_socket, SIGNAL(readyRead()),this, SLOT(stub_readyReadSlot()));
-        connect(this, SIGNAL(sendDataWithMainInterfaceSignal(const QByteArray, uint)),
-                m_mainInterfaceThread, SLOT(sendDataSlot(const QByteArray, uint)));
+        connect(this, SIGNAL(sendDataWithMainInterfaceSignal(QByteArray,uint)),
+                m_mainInterfaceThread, SLOT(sendDataSlot(QByteArray,uint)));
 
         connect(parent, SIGNAL(pauseAllCreatedInterfaces(bool)),this, SLOT(pauseInterfaceSlot(bool)));
     }

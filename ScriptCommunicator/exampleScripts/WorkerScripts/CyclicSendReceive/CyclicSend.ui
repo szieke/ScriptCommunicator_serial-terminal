@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>472</width>
-    <height>291</height>
+    <width>457</width>
+    <height>326</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -165,6 +165,9 @@
      <property name="showGrid">
       <bool>true</bool>
      </property>
+     <attribute name="horizontalHeaderStretchLastSection">
+      <bool>true</bool>
+     </attribute>
      <row>
       <property name="text">
        <string>row 1</string>

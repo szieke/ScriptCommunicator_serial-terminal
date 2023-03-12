@@ -1,4 +1,4 @@
-
+﻿
 //Is called if the script has been stopped.
 function stopScript() 
 {
@@ -72,34 +72,6 @@ function appendNumberAtByteArray(array, number, numberOfBytes)
 	return array;
 }
 
-//The header section has been resized, therefore the table columns must be adjusted.
-function tableHorizontalHeaderSectionResizedSignal(logicalIndex, oldSize, newSize)
-{
-	adjustTableColmnWidth();
-}
-
-//Adjust the width of the right column, so that all columns fit in the complete table.
-function adjustTableColmnWidth()
-{
-	var verticalScrollBarWidth = 0;
-	if(UI_tableWidget.isVerticalScrollBarVisible())
-	{
-		verticalScrollBarWidth = UI_tableWidget.verticalScrollBarWidth();
-	}
-	UI_tableWidget.setColumnWidth(1, UI_tableWidget.width() -
-                           (UI_tableWidget.columnWidth(0)
-                           + 2 * UI_tableWidget.frameWidth()
-                           + UI_tableWidget.verticalHeaderWidth()
-						   + verticalScrollBarWidth));
-}
 
 scriptThread.appendTextToConsole('script has started');
 UI_Dialog.finishedSignal.connect(dialogFinished);
-
-//Connect the section resized signal (to adjust the table column width).
-UI_tableWidget.horizontalHeaderSectionResizedSignal.connect(tableHorizontalHeaderSectionResizedSignal);
-
-//Create and connect a timer which cyclically adjust the table column width.
-var tableAdjustWidthTimer = scriptThread.createTimer()
-tableAdjustWidthTimer.timeoutSignal.connect(adjustTableColmnWidth)
-tableAdjustWidthTimer.start(200);

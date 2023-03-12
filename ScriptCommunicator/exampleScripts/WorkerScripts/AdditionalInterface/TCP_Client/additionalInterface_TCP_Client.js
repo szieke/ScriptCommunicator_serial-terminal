@@ -1,4 +1,4 @@
-/***************************************************************************************
+﻿/***************************************************************************************
 This script send all data which shall be sent with the main interface to an additional TCP client.
 All data which has been received with the additional TCP client will be sent to the main interface
 (this data will be added to the standard consoles, the logs and worker scripts can received this data 
@@ -212,6 +212,7 @@ loadUiSettings();
 //Check the version of ScriptCommunicator.
 checkVersion();
 
+UI_SocketDestinationPort.addIntValidator(0, 0xffff)
 UI_Dialog.finishedSignal.connect(UI_DialogFinished);
 
 UI_ToolBox.setItemText(0, g_instanceName);

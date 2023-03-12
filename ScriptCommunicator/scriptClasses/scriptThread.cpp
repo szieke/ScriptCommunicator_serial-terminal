@@ -136,7 +136,6 @@ ScriptThread::~ScriptThread()
         if(el->getWidgetPointer())
         {
             el->close();
-            el->getWidgetPointer()->deleteLater();
         }
         el->deleteLater();
     }
@@ -679,6 +678,7 @@ bool ScriptThread::installOneChild(QObject* child, QJSEngine* scriptEngine)
         ScriptTableWidget* element = new ScriptTableWidget(static_cast<QTableWidget*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QTextEdit"))
     {
@@ -824,12 +824,14 @@ bool ScriptThread::installOneChild(QObject* child, QJSEngine* scriptEngine)
         ScriptListWidget* element = new ScriptListWidget(static_cast<QListWidget*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QTreeWidget"))
     {
         ScriptTreeWidget* element = new ScriptTreeWidget(static_cast<QTreeWidget*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
         element->setObjectName(objectName);
+        childsOfGuiElementMustBeInstalled = false;
     }
     else if(QString(child->metaObject()->className()) == QString("QSplitter"))
     {
@@ -972,9 +974,9 @@ void ScriptThread::sleep(quint32 timeMs )
  * @return
  *      The path of the selected file
  */
-QString ScriptThread::showFileDialog(bool isSaveDialog, QString caption, QString dir, QString filter, QWidget* parent)
+QString ScriptThread::showFileDialog(bool isSaveDialog, QString caption, QString dir, QString filter, QJSValue parent)
 {
-    return m_standardDialogs->showFileDialog(isSaveDialog, caption, dir, filter, (parent == 0) ? m_userInterface[0]->getWidgetPointer() : parent);
+    return m_standardDialogs->showFileDialog(isSaveDialog, caption, dir, filter, getWidgetPointerFromScriptValue(parent));
 }
 
 /**
@@ -990,9 +992,9 @@ QString ScriptThread::showFileDialog(bool isSaveDialog, QString caption, QString
 * @return
 *      The paths of the selected files
 */
-QStringList ScriptThread::showOpenFileNamesDialog(QString caption, QString dir, QString filter, QWidget* parent)
+QStringList ScriptThread::showOpenFileNamesDialog(QString caption, QString dir, QString filter, QJSValue parent)
 {
-    return m_standardDialogs->showOpenFileNamesDialog(caption, dir, filter, (parent == 0) ? m_userInterface[0]->getWidgetPointer() : parent);
+    return m_standardDialogs->showOpenFileNamesDialog(caption, dir, filter, getWidgetPointerFromScriptValue(parent));
 }
 
 
@@ -1007,9 +1009,9 @@ QStringList ScriptThread::showOpenFileNamesDialog(QString caption, QString dir, 
  * @return
  *      The selected directory.
  */
-QString ScriptThread::showDirectoryDialog(QString caption, QString dir, QWidget* parent)
+QString ScriptThread::showDirectoryDialog(QString caption, QString dir, QJSValue parent)
 {
-    return m_standardDialogs->showDirectoryDialog(caption, dir, (parent == 0) ? m_userInterface[0]->getWidgetPointer() : parent);
+    return m_standardDialogs->showDirectoryDialog(caption, dir, getWidgetPointerFromScriptValue(parent));
 }
 
 /**
@@ -1028,9 +1030,9 @@ QString ScriptThread::showDirectoryDialog(QString caption, QString dir, QWidget*
  * @param parent
  *      The parent of the dialog.
  */
-void ScriptThread::messageBox(QString icon, QString title, QString text, QWidget* parent)
+void ScriptThread::messageBox(QString icon, QString title, QString text, QJSValue parent)
 {
-    m_standardDialogs->messageBox(icon, title, text, (parent == 0) ? m_userInterface[0]->getWidgetPointer() : parent);
+    m_standardDialogs->messageBox(icon, title, text, getWidgetPointerFromScriptValue(parent));
 }
 
 /**
@@ -1050,17 +1052,9 @@ void ScriptThread::messageBox(QString icon, QString title, QString text, QWidget
  * @return
  *      True if the yes button has been pressed.
  */
-bool ScriptThread::showYesNoDialog(QString icon, QString title, QString text, QWidget* parent)
+bool ScriptThread::showYesNoDialog(QString icon, QString title, QString text, QJSValue parent)
 {
-    if(parent == 0)
-    {
-      if(!m_userInterface.isEmpty())
-      {
-        parent = m_userInterface[0]->getWidgetPointer();
-      }
-    }
-
-    return m_standardDialogs->showYesNoDialog(icon, title, text, parent);
+    return m_standardDialogs->showYesNoDialog(icon, title, text, getWidgetPointerFromScriptValue(parent));
 }
 
 /**
@@ -1639,6 +1633,28 @@ bool ScriptThread::loadLibrary(QString path, bool isRelativePath)
 }
 
 /**
+ * Returns the widget pointer of a script object. If it has none then the current dialog will be return (or 0 is the
+ * script has no dialog).
+ * @param value
+ *      The script value.
+ * @return
+ *      The pointer.
+ */
+QWidget* ScriptThread::getWidgetPointerFromScriptValue(QJSValue value)
+{
+    QWidget* widget;
+    QObject* obj = value.toQObject();
+    if (obj && obj->inherits(ScriptWidget::staticMetaObject.className()))
+    {
+        widget = static_cast<ScriptWidget*>(obj)->getWidgetPointer();
+    }
+    else
+    {
+        widget = m_userInterface[0]->getWidgetPointer();
+    }
+    return widget;
+}
+/**
  * Convenience function to get a string from the user.
  * Shows a QInputDialog::getText dialog (line edit).
  * @param title
@@ -1650,9 +1666,9 @@ bool ScriptThread::loadLibrary(QString path, bool isRelativePath)
  * @return
  *      The text in the input section after closing the dialog (empty if the ok button was not pressed).
  */
-QString ScriptThread::showTextInputDialog(QString title, QString label, QString displayedText, QWidget* parent)
-{
-    return m_standardDialogs->showTextInputDialog(title, label, displayedText, (parent == 0) ? m_userInterface[0]->getWidgetPointer() : parent);
+QString ScriptThread::showTextInputDialog(QString title, QString label, QString displayedText, QJSValue parent)
+{   
+    return m_standardDialogs->showTextInputDialog(title, label, displayedText, getWidgetPointerFromScriptValue(parent));
 }
 
 /**
@@ -1669,9 +1685,9 @@ QString ScriptThread::showTextInputDialog(QString title, QString label, QString 
  * @return
  *      The text in the input section after closing the dialog (empty if the ok button was not pressed).
  */
-QString ScriptThread::showMultiLineTextInputDialog(QString title, QString label, QString displayedText, QWidget* parent)
+QString ScriptThread::showMultiLineTextInputDialog(QString title, QString label, QString displayedText, QJSValue parent)
 {
-    return m_standardDialogs->showMultiLineTextInputDialog(title, label, displayedText, (parent == 0) ? m_userInterface[0]->getWidgetPointer() : parent);
+    return m_standardDialogs->showMultiLineTextInputDialog(title, label, displayedText, getWidgetPointerFromScriptValue(parent));
 }
 
 /**
@@ -1693,9 +1709,9 @@ QString ScriptThread::showMultiLineTextInputDialog(QString title, QString label,
  *      The text of the selected item after closing the dialog (empty if the ok button was not pressed).
  */
 QString ScriptThread::showGetItemDialog(QString title, QString label, QStringList displayedItems,
-                           int currentItemIndex, bool editable, QWidget* parent)
+                           int currentItemIndex, bool editable, QJSValue parent)
 {
-    return m_standardDialogs->showGetItemDialog(title, label, displayedItems, currentItemIndex, editable, (parent == 0) ? m_userInterface[0]->getWidgetPointer() : parent);
+    return m_standardDialogs->showGetItemDialog(title, label, displayedItems, currentItemIndex, editable, getWidgetPointerFromScriptValue(parent));
 }
 
 /**
@@ -1720,9 +1736,9 @@ QString ScriptThread::showGetItemDialog(QString title, QString label, QStringLis
  *      item 0: 1 if the ok button has been pressed, 0 otherwise
  *      item 1: The value of the spinbox after closing the dialog.
  */
-QList<int> ScriptThread::showGetIntDialog(QString title, QString label, int initialValue, int min, int max, int step, QWidget* parent)
+QList<int> ScriptThread::showGetIntDialog(QString title, QString label, int initialValue, int min, int max, int step, QJSValue parent)
 {
-    return m_standardDialogs->showGetIntDialog(title, label, initialValue, min, max, step, (parent == 0) ? m_userInterface[0]->getWidgetPointer() : parent);
+    return m_standardDialogs->showGetIntDialog(title, label, initialValue, min, max, step, getWidgetPointerFromScriptValue(parent));
 }
 
 /**
@@ -1747,9 +1763,9 @@ QList<int> ScriptThread::showGetIntDialog(QString title, QString label, int init
  *      item 0: 1.0 if the ok button has been pressed, 0 otherwise
  *      item 1: The value of the spinbox after closing the dialog.
  */
-QList<double> ScriptThread::showGetDoubleDialog(QString title, QString label, double initialValue, double min, double max, int decimals, QWidget* parent)
+QList<double> ScriptThread::showGetDoubleDialog(QString title, QString label, double initialValue, double min, double max, int decimals, QJSValue parent)
 {
-    return m_standardDialogs->showGetDoubleDialog(title, label, initialValue, min, max, decimals, (parent == 0) ? m_userInterface[0]->getWidgetPointer() : parent);
+    return m_standardDialogs->showGetDoubleDialog(title, label, initialValue, min, max, decimals, getWidgetPointerFromScriptValue(parent));
 }
 
 /**
@@ -1774,9 +1790,9 @@ QList<double> ScriptThread::showGetDoubleDialog(QString title, QString label, do
  *      - the selected blue value
  *      - the selected alpha value
  */
-QList<int> ScriptThread::showColorDialog(quint8 initInitalRed, quint8 initInitalGreen, quint8 initInitalBlue, quint8 initInitalAlpha, bool alphaIsEnabled, QWidget* parent)
+QList<int> ScriptThread::showColorDialog(quint8 initInitalRed, quint8 initInitalGreen, quint8 initInitalBlue, quint8 initInitalAlpha, bool alphaIsEnabled, QJSValue parent)
 {
-    return m_standardDialogs->showColorDialog(initInitalRed, initInitalGreen, initInitalBlue, initInitalAlpha, alphaIsEnabled, (parent == 0) ? m_userInterface[0]->getWidgetPointer() : parent);
+    return m_standardDialogs->showColorDialog(initInitalRed, initInitalGreen, initInitalBlue, initInitalAlpha, alphaIsEnabled, getWidgetPointerFromScriptValue(parent));
 }
 
 /**

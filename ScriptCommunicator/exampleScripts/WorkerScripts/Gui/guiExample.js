@@ -97,7 +97,8 @@ function NewElementsButtonButtonClicked()
 	UI_testTextEdit.append("NewElementsButtonButtonClicked: " + testButton.getObjectName());
 	UI_testTextEdit.append("NewElementsButtonButtonClicked: " + UI_NewElementsButton.getObjectName());
 	
-	var input = scriptThread.showTextInputDialog("Enter name", "item name", "newItem", UI_Dialog.getWidgetPointer())
+	var input = scriptThread.showTextInputDialog("Enter name", "item name", "newItem", 	UI_Dialog)
+
 	
 	if(input != "")
 	{

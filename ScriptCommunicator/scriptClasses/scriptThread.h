@@ -362,43 +362,43 @@ public:
     Q_INVOKABLE bool scriptShallExit(void){return m_shallExit;}
 
     ///Wrapper for QFileDialog::getSaveFileName and QFileDialog::getOpenFileName.
-    Q_INVOKABLE QString showFileDialog(bool isSaveDialog, QString caption, QString dir, QString filter, QWidget* parent=0);
+    Q_INVOKABLE QString showFileDialog(bool isSaveDialog, QString caption, QString dir, QString filter, QJSValue parent = QJSValue());
 
     ///Wrapper for QFileDialog::getOpenFileNames
-    Q_INVOKABLE QStringList showOpenFileNamesDialog(QString caption, QString dir, QString filter, QWidget* parent=0);
+    Q_INVOKABLE QStringList showOpenFileNamesDialog(QString caption, QString dir, QString filter, QJSValue parent = QJSValue());
 
     ///Wrapper for QFileDialog::getExistingDirectory.
-    Q_INVOKABLE QString showDirectoryDialog(QString caption, QString dir, QWidget* parent=0);
+    Q_INVOKABLE QString showDirectoryDialog(QString caption, QString dir, QJSValue parent = QJSValue());
 
     ///Shows a message box.
-    Q_INVOKABLE void messageBox(QString icon, QString title, QString text, QWidget* parent=0);
+    Q_INVOKABLE void messageBox(QString icon, QString title, QString text, QJSValue parent = QJSValue());
 
     ///Shows a yes/no dialog.
-    Q_INVOKABLE bool showYesNoDialog(QString icon, QString title, QString text, QWidget* parent=0);
+    Q_INVOKABLE bool showYesNoDialog(QString icon, QString title, QString text, QJSValue parent = QJSValue());
 
     ///Convenience function to get a string from the user.
     ///Shows a QInputDialog::getText dialog (line edit).
-    Q_INVOKABLE QString showTextInputDialog(QString title, QString label, QString displayedText="", QWidget* parent=0);
+    Q_INVOKABLE QString showTextInputDialog(QString title, QString label, QString displayedText="", QJSValue parent = QJSValue());
 
     ///Convenience function to get a multiline string from the user.
     ///Shows a QInputDialog::getMultiLineText dialog (plain text edit).
-    Q_INVOKABLE QString showMultiLineTextInputDialog(QString title, QString label, QString displayedText="", QWidget* parent=0);
+    Q_INVOKABLE QString showMultiLineTextInputDialog(QString title, QString label, QString displayedText="", QJSValue parent = QJSValue());
 
     ///Convenience function to let the user select an item from a string list.
     ///Shows a QInputDialog::getItem dialog (combobox).
     Q_INVOKABLE QString showGetItemDialog(QString title, QString label, QStringList displayedItems,
-                               int currentItemIndex=0, bool editable=false, QWidget* parent=0);
+                               int currentItemIndex=0, bool editable=false, QJSValue parent = QJSValue());
 
     ///Convenience function to get an integer input from the user.
     ///Shows a QInputDialog::getInt dialog (spinbox).
-    Q_INVOKABLE QList<int> showGetIntDialog(QString title, QString label, int initialValue, int min, int max, int step, QWidget* parent=0);
+    Q_INVOKABLE QList<int> showGetIntDialog(QString title, QString label, int initialValue, int min, int max, int step, QJSValue parent = QJSValue());
 
     ///Convenience function to get a floating point number from the user.
     ///Shows a QInputDialog::getDouble dialog (spinbox).
-    Q_INVOKABLE QList<double> showGetDoubleDialog(QString title, QString label, double initialValue, double min, double max, int decimals, QWidget* parent=0);
+    Q_INVOKABLE QList<double> showGetDoubleDialog(QString title, QString label, double initialValue, double min, double max, int decimals, QJSValue parent = QJSValue());
 
     ///Convenience function to get color settings from the user.
-    Q_INVOKABLE QList<int> showColorDialog(quint8 initInitalRed=255, quint8 initInitalGreen=255, quint8 initInitalBlue=255, quint8 initInitalAlpha=255, bool alphaIsEnabled=false, QWidget* parent=0);
+    Q_INVOKABLE QList<int> showColorDialog(quint8 initInitalRed=255, quint8 initInitalGreen=255, quint8 initInitalBlue=255, quint8 initInitalAlpha=255, bool alphaIsEnabled=false, QJSValue parent = QJSValue());
 
 
      /****************Deprecated******************************************************/
@@ -784,6 +784,10 @@ public slots:
     void mainWindowLockScrollingSlot(bool isChecked){emit mainWindowLockScrollingClickedSignal(isChecked);}
 
 private:
+
+    ///Returns the widget pointer of a script object. If it has none then the current dialog will be return (or 0 is the
+    ///script has no dialog).
+    QWidget* getWidgetPointerFromScriptValue(QJSValue value);
 
     ///Contains all created gui elements (creates by the script).
     std::vector<ScriptWidget*> m_allCreatedGuiElementsFromScript;

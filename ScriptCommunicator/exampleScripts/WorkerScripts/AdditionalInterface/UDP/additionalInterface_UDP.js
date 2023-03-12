@@ -1,4 +1,4 @@
-/***************************************************************************************
+﻿/***************************************************************************************
 This script send all data which shall be sent with the main interface to an additional UDP socket.
 All data which has been received with the additional UDP socket will be sent to the main interface
 (this data will be added to the standard consoles, the logs and worker scripts can received this data 
@@ -181,6 +181,7 @@ var consoleTimer = scriptThread.createTimer()
 consoleTimer.timeoutSignal.connect(updateConsole);
 consoleTimer.start(200);
 
-
+UI_SocketOwnPort.addIntValidator(0, 0xffff);
+UI_SocketDestinationPort.addIntValidator(0, 0xffff);
 
 

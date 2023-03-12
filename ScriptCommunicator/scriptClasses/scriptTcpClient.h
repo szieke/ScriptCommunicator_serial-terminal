@@ -53,10 +53,10 @@ public:
         connect(m_tcpSocket, SIGNAL(connected()),this, SIGNAL(connectedSignal()));
         connect(m_tcpSocket, SIGNAL(disconnected()),this, SIGNAL(disconnectedSignal()));
         connect(m_tcpSocket, SIGNAL(readyRead()),this, SLOT(stub_readyReadSlot()));
-        connect(m_tcpSocket, SIGNAL(error(QAbstractSocket::SocketError)),this, SLOT(stub_errorSlot(QAbstractSocket::SocketError)));
+        connect(m_tcpSocket, SIGNAL(errorOccurred(QAbstractSocket::SocketError)),this, SLOT(stub_errorSlot(QAbstractSocket::SocketError)));
 
-        connect(this, SIGNAL(sendDataWithMainInterfaceSignal(const QByteArray, uint)),
-                m_mainInterfaceThread, SLOT(sendDataSlot(const QByteArray, uint)));
+        connect(this, SIGNAL(sendDataWithMainInterfaceSignal(QByteArray,uint)),
+                m_mainInterfaceThread, SLOT(sendDataSlot(QByteArray,uint)));
 
         connect(parent, SIGNAL(pauseAllCreatedInterfaces(bool)),this, SLOT(pauseInterfaceSlot(bool)));
     }

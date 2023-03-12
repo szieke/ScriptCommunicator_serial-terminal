@@ -242,10 +242,10 @@ function fillFileList()
 //Is called if the user clicks the select button.
 function folderSlot()
 {
-	var folder = scriptThread.showDirectoryDialog("select folder", UI_Folder.text(), UI_Dialog.getWidgetPointer());
+	var folder = scriptThread.showDirectoryDialog("select folder", UI_Folder.text(), UI_Dialog);
 	if(folder.length > 0)
 	{
-		UI_Folder.setText(folder);
+		UI_Folder.setText(folder)
 		fillFileList();
 	}
 }
