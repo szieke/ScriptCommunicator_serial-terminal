@@ -400,7 +400,6 @@ void ScriptThread::run()
         //create the script engine
         m_scriptEngine = new QJSEngine();
 
-       // ScriptMap::registerScriptMetaTypes(m_scriptEngine);
         ScriptXmlReader::registerScriptMetaTypes(m_scriptEngine);
         ScriptXmlWriter::registerScriptMetaTypes(m_scriptEngine);
 
@@ -425,6 +424,17 @@ void ScriptThread::run()
         m_scriptInf->intSignals(m_scriptRunsInDebugger);
         m_scriptEngine->globalObject().setProperty("scriptInf", m_scriptEngine->newQObject(m_scriptInf));
         QJSEngine::setObjectOwnership(m_scriptInf, QJSEngine::CppOwnership);
+
+        //Overwrite the standard eval function of the java script interpreter.
+        //This is done because in the current version of Qt (6.4.2) there is no possibility of getting errors from
+        //eval functions executed in a slot (e.g. timer elapsed slot). Errors are only printed directly to
+        //stderr (therefore the message handler in main.c does not get the error).
+        QJSValue result = m_scriptEngine->evaluate("function eval(obj){return scriptThread.eval(obj)}");
+        if(result.isError())
+        {
+            QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
+            showExceptionInMessageBox(result, parent);
+        }
 
         if(m_userInterface[0]->getWidgetPointer())
         {//the script has an user interface
@@ -483,6 +493,24 @@ void ScriptThread::run()
     }
 
     setThreadState(EXITED);
+}
+
+/**
+ * Evaluates a java script string.
+ * @param val
+ *      The value.
+ * @return
+ *      The result.
+ */
+QJSValue ScriptThread::eval(QString val)
+{
+    QJSValue result = m_scriptEngine->evaluate(val);
+    if(result.isError())
+    {//An error has occurred.
+        showExceptionInMessageBox(result, m_userInterface[0]->getWidgetPointer());
+    }
+
+    return result;
 }
 
 /**

@@ -592,6 +592,9 @@ public:
     ///Supported formats: .ico, .gif, .png, .jpeg, .tiff, .bmp, .icns.
     Q_INVOKABLE void setMainWindowAndTaskBarIcon(QString iconFile, bool isRelativePath=true);
 
+    ///Evaluates a java script string.
+    Q_INVOKABLE QJSValue eval(QString val);
+
     ///Returns and all functions, signals and properties of an object.
     static void getAllObjectPropertiesAndFunctionsInternal(QJSValue object, QStringList* resultList, QString* resultString);
 
