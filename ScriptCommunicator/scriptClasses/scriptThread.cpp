@@ -508,6 +508,7 @@ QJSValue ScriptThread::eval(QString val)
     if(result.isError())
     {//An error has occurred.
         showExceptionInMessageBox(result, m_userInterface[0]->getWidgetPointer());
+        stopScript();
     }
 
     return result;
