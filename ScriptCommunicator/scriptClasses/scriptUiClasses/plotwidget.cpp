@@ -133,14 +133,14 @@ PlotWidget::PlotWidget(ScriptThread* scriptThread, ScriptWindow *scriptWindow, Q
     connect(this, SIGNAL(updatePlotSignal()), m_plotWidget, SLOT(replot()), Qt::QueuedConnection);
 
 
-    connect(this, SIGNAL(addGraphSignal(QString, QString, QString, int*,bool)),
-            this, SLOT(addGraphSlot(QString, QString, QString, int*,bool)), directConnectionType);
+    connect(this, SIGNAL(addGraphSignal(QString,QString,QString,int*,bool)),
+            this, SLOT(addGraphSlot(QString,QString,QString,int*,bool)), directConnectionType);
 
-    connect(this, SIGNAL(setInitialAxisRangesSignal(double, double, double, bool,double,double)),
-            this, SLOT(setInitialAxisRangesSlot(double, double, double, bool, double,double)), Qt::QueuedConnection);
+    connect(this, SIGNAL(setInitialAxisRangesSignal(double,double,double,bool,double,double)),
+            this, SLOT(setInitialAxisRangesSlot(double,double,double,bool,double,double)), Qt::QueuedConnection);
 
-    connect(this, SIGNAL(addDataToGraphSignal(int, double, double, bool)),
-            this, SLOT(addDataToGraphSlot(int, double, double, bool)), Qt::QueuedConnection);
+    connect(this, SIGNAL(addDataToGraphSignal(int,double,double,bool)),
+            this, SLOT(addDataToGraphSlot(int,double,double,bool)), Qt::QueuedConnection);
 
     connect(this, SIGNAL(removeDataRangeFromGraphSignal(int,double,double,bool)),
             this, SLOT(removeDataRangeFromGraphSlot(int,double,double,bool)), Qt::QueuedConnection);
@@ -166,8 +166,8 @@ PlotWidget::PlotWidget(ScriptThread* scriptThread, ScriptWindow *scriptWindow, Q
     connect(this, SIGNAL(removeAllGraphsSignal()),
             this, SLOT(removeAllGraphsSlot()), directConnectionType);
 
-    connect(this, SIGNAL(showHelperElementsSignal(bool,bool,bool,bool,bool,bool,bool, quint32,bool)),
-            this, SLOT(showHelperElementsSlot(bool,bool,bool,bool,bool,bool,bool, quint32,bool)), directConnectionType);
+    connect(this, SIGNAL(showHelperElementsSignal(bool,bool,bool,bool,bool,bool,bool,quint32,bool)),
+            this, SLOT(showHelperElementsSlot(bool,bool,bool,bool,bool,bool,bool,quint32,bool)), directConnectionType);
 
     connect(m_xRangeLineEdit, SIGNAL(textChanged(QString)),
             this, SLOT(doubleLineEditChangedSlot(QString)), Qt::QueuedConnection);
@@ -283,6 +283,11 @@ void PlotWidget::clearGraphsSlot(void)
         m_plotWidget->graph(i)->data()->clear();
         m_xAxisMaxValues[i] = 0;
     }
+
+    m_plotWidget->xAxis->setRange(m_xRangeLineEdit->text().toDouble() * -1,  0);
+    m_plotWidget->yAxis->setRange(m_yMinRangeLineEdit->text().toDouble(), m_yMaxRangeLineEdit->text().toDouble());
+    m_plotWidget->yAxis2->setRange(m_y2MinRangeLineEdit->text().toDouble(), m_y2MaxRangeLineEdit->text().toDouble());
+    m_plotWidget->replot();
 }
 
 /**
