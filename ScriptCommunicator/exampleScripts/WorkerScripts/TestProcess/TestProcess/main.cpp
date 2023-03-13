@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     }
 
 
-    QTextStream(stderr) << "this is a simulated error" << endl; // simulate an error
+    QTextStream(stderr) << "this is a simulated error" << Qt::endl; // simulate an error
 
     return 10;
 }

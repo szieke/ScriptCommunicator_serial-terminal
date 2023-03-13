@@ -4,12 +4,14 @@
 
 
 var soundObject = scriptThread.createSoundObject("yes-2.wav");
-soundObject.setLoops(5);
-soundObject.play();
 
-while(!soundObject.isFinished())
+//Play the sound three times.
+for(var i = 0; i < 3; i++)
 {
-	scriptThread.sleep(100);
+	soundObject.play();
+	while(!soundObject.isFinished())
+	{
+		scriptThread.sleep(100);
+	}
 }
-
 scriptThread.stopScript();

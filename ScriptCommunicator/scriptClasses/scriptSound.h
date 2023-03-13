@@ -1,7 +1,8 @@
 #ifndef SCRIPTSOUND_H
 #define SCRIPTSOUND_H
 
-#include <QSoundEffect>
+#include<QMediaPlayer>
+#include <QAudioOutput>
 #include "scriptObject.h"
 
 ///This wrapper class is used to access a QSound object from a script.
@@ -13,12 +14,15 @@ class ScriptSound : public QObject, public ScriptObject
     Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 
 public:
-    explicit ScriptSound(QObject *parent, QString filename) : QObject(parent), m_sound(this)
+    explicit ScriptSound(QObject *parent, QString filename) : QObject(parent), m_player(this)
     {
-      m_sound.setSource(filename);
         //connect the necessary signals with the wrapper slots (in this slots the
         //events of the wrapper class are generated, the script can connect to this
         //wrapper events)
+
+      m_player.setAudioOutput(&m_audioOutput);
+      m_player.setSource(QUrl::fromLocalFile(filename));
+      m_audioOutput.setVolume(100);
 
     }
 
@@ -29,26 +33,16 @@ public:
     }
 
     ///Returns the filename associated with this script sound object.
-    Q_INVOKABLE QString fileName(void){return m_sound.source().fileName();}
+    Q_INVOKABLE QString fileName(void){return m_player.source().fileName();}
 
     ///Returns true if the sound has finished playing; otherwise returns false.
-    Q_INVOKABLE bool isFinished(void){return !m_sound.isPlaying();}
-
-    ///Returns the number of times the sound will play. Return value of QSound::Infinite (-1) indicates infinite number of loops.
-    Q_INVOKABLE int loops(void){return m_sound.loopsRemaining();}
-
-    ///Returns the remaining number of times the sound will loop (for all positive values this value decreases each time the sound is played).
-    ///Return value of QSound::Infinite (-1) indicates infinite number of loops.
-    Q_INVOKABLE int loopsRemaining(void){return m_sound.loopsRemaining();}
+    Q_INVOKABLE bool isFinished(void){return (m_player.playbackState() == QMediaPlayer::PlayingState) ? false : true;}
 
     ///Starts playing the sound specified by this QSound object.
-    Q_INVOKABLE void play(void){m_sound.play();}
-
-    ///Sets the sound to repeat the given number of times when it is played.
-    Q_INVOKABLE void setLoops(int number){m_sound.setLoopCount(number);}
+    Q_INVOKABLE void play(void){m_player.play();}
 
     ///Stops the sound playing.
-    Q_INVOKABLE void stop(void){m_sound.stop();}
+    Q_INVOKABLE void stop(void){m_player.stop();}
 
 
 signals:
@@ -57,7 +51,9 @@ signals:
 private:
 
     ///The wrapped QSoundEffect object.
-    QSoundEffect m_sound;
+    QMediaPlayer m_player;
+
+    QAudioOutput m_audioOutput;
 
 };
 #endif // SCRIPTSOUND_H
