@@ -1330,14 +1330,14 @@ void MainWindow::dropEvent(QDropEvent *event)
         else
         {
             QList<QUrl> urls = event->mimeData()->urls();
-            for(auto el : urls)
+            for(const auto &el : urls)
             {
                 list.append(el.path());
             }
         }
 
 
-        for(auto file : list)
+        for(const auto &file : list)
         {
             if(!file.isEmpty())
             {
@@ -2443,7 +2443,7 @@ void MainWindow::readSettings()
         }
         else
         {
-            for(auto el : m_scriptsToLoadAfterStart)
+            for(const auto &el : m_scriptsToLoadAfterStart)
             {
                 addTab(el, true);
             }
@@ -2694,7 +2694,7 @@ bool MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
 
                 textInTreeWidget += "(";
 
-                for(auto param : el.params)
+                for(const auto &param : el.params)
                 {
                     textInTreeWidget += param + ",";
                 }
@@ -3012,8 +3012,7 @@ bool MainWindow::loadFile(const QString &fileName)
     {
         QMessageBox::warning(this, tr("Script Editor"),
                              tr("Cannot read file %1:\n%2")
-                             .arg(fileName)
-                             .arg(file.errorString()));
+                             .arg(fileName, file.errorString()));
         return false;
     }
 
@@ -3058,8 +3057,7 @@ bool MainWindow::saveFile(const QString &fileName)
     {
         QMessageBox::warning(this, tr("Script Editor"),
                              tr("Cannot write file %1:\n%2.")
-                             .arg(fileName)
-                             .arg(file.errorString()));
+                             .arg(fileName, file.errorString()));
         return false;
     }
 
@@ -3119,7 +3117,7 @@ void MainWindow::setCurrentFile(const QString &fileName)
 
     setStateLoadAllIncludedScriptsButton();
 
-    setWindowTitle(tr("ScriptCommunicator %1 - Script Editor %2[*]").arg(SCRIPT_COMMUNICATOR_VERSION).arg(windowShownName));
+    setWindowTitle(tr("ScriptCommunicator %1 - Script Editor %2[*]").arg(SCRIPT_COMMUNICATOR_VERSION, windowShownName));
 
     ui->documentsTabWidget->setTabText(ui->documentsTabWidget->currentIndex(), tabShownName);
     ui->documentsTabWidget->setTabToolTip(ui->documentsTabWidget->currentIndex(), fileName);

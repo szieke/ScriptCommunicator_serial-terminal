@@ -62,7 +62,7 @@ public:
     virtual ~ScriptMainWindow()
     {
         m_timer->stop();
-        m_timer->deleteLater();
+        delete m_timer;
     }
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
