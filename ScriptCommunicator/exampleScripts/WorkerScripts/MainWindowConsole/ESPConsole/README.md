@@ -17,6 +17,7 @@ Of course you can use this as serial terminal with no backtrace decoding in whic
 
 ### Autodetect tools (recommended)
 
+#### Requires:
 - Completely set-up and working ESP-IDF Cmake build environment
 - Project output `.elf` file and `CmakeCache.txt` in same folder
 - Project successfully built, same build version running on ESP MCU
@@ -26,6 +27,7 @@ If you have corectly set up and working ESP-IDF Cmake build environment the only
 
 ### Manual tools selection (advanced)
 
+#### Requires:
 - Project output `.elf` file
 - `elf-addr2line` executable to decode backtraces (*xtensa-esp32-elf-addr2line.exe* for example)
 - Optional: `elf-readelf` executable to decode firmware information (*xtensa-esp32-elf-readelf.exe* for example) 
@@ -42,7 +44,5 @@ If you, for example, run the console on different system without build tools, yo
 
 #### TODO:
 
-- Elf list combo box needs some more care. We may want to autoparse the info when file is selected, which can happen from settings file, from open file dialog or by selecting fromm the list.
-- Show warning if CmakeCache.txt was not found while autodetect was on -> opens multiple times -> optimize parseFwInfo
 - Add tooltips and/or link to this readme
 - Some more testing and debug
