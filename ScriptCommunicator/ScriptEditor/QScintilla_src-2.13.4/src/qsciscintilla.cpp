@@ -537,8 +537,8 @@ void QsciScintilla::callTip()
     SendScintilla(SCI_CALLTIPSHOW, adjustedCallTipPosition(shift), cts);
 
     // Done if there is more than one call tip.
-    if (nr_entries > 1)
-        return;
+   // if (nr_entries > 1)
+     //   return;
 
     // Highlight the current argument.
     const char *astart;
@@ -912,6 +912,18 @@ void QsciScintilla::startAutoCompletion(AutoCompletionSource acs,
 
     if (wlist.isEmpty())
         return;
+
+    //Remove functions from objects if now object is in front of the word.
+    QStringList tmp;
+    for(const auto &el : wlist)
+    {
+        if(!el.contains("("))
+        {
+            tmp.append(el);
+        }
+    }
+    wlist.clear();
+    wlist = tmp;
 
     wlist.sort();
 
