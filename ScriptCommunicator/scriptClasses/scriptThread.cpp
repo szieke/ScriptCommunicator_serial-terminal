@@ -137,14 +137,14 @@ ScriptThread::~ScriptThread()
         {
             el->close();
         }
-        el->deleteLater();
+        delete el;
     }
 
     //Delete all created gui elements (created by the script).
     for(auto el : m_allCreatedGuiElementsFromScript)
     {
         el->close();
-        el->deleteLater();
+        delete el;
     }
 
 
@@ -152,7 +152,7 @@ ScriptThread::~ScriptThread()
     for(auto el : m_libraries)
     {
         el->unload();
-        el->deleteLater();
+        delete el;
     }
     m_libraries.clear();
 
@@ -481,7 +481,7 @@ void ScriptThread::run()
         }//if (loadScript(m_scriptFileName))
 
         delete m_pauseTimer;
-        m_scriptEngine->deleteLater();
+        delete m_scriptEngine;
         m_isSuspendedByDebuger = false;
 
 
@@ -783,6 +783,8 @@ bool ScriptThread::installOneChild(QObject* child, QJSEngine* scriptEngine)
     {
         ScriptMainWindow* element = new ScriptMainWindow(static_cast<QMainWindow*>(child), this);
         scriptEngine->globalObject().setProperty(objectName, scriptEngine->newQObject(element));
+        QJSEngine::setObjectOwnership(element, QJSEngine::CppOwnership);
+        m_allCreatedGuiElementsFromScript.push_back(element);
         element->setObjectName(objectName);
 
         connect(m_scriptWindow->m_mainWindow, SIGNAL(bringWindowsToFrontSignal()),element, SLOT(bringWindowsToFrontSlot()), Qt::DirectConnection);
@@ -1540,7 +1542,7 @@ QVector<unsigned char>  ScriptThread::readAllStandardOutputFromProcess(QJSValue 
                 byteArray = proc->readAllStandardOutput();
             }
 
-            for(const auto &val : byteArray)
+            for(const auto &val : qAsConst(byteArray))
             {
                 result.push_back((unsigned char) val);
             }
@@ -1597,7 +1599,7 @@ QVector<unsigned char>  ScriptThread::readAllStandardErrorFromProcess(QJSValue p
                 byteArray = proc->readAllStandardError();
             }
 
-            for(const auto &val : byteArray)
+            for(const auto &val : qAsConst(byteArray))
             {
                 result.push_back((unsigned char) val);
             }
@@ -1642,13 +1644,13 @@ bool ScriptThread::loadLibrary(QString path, bool isRelativePath)
             }
             else
             {
-                lib->deleteLater();
+                delete lib;
                 appendTextToConsole(QString("could not init function in library: %1").arg(path));
             }
         }
         else
         {
-            lib->deleteLater();
+            delete lib;
             appendTextToConsole(QString("could not load library: %1").arg(path));
         }
 
@@ -2073,7 +2075,7 @@ bool ScriptThread::loadUserInterfaceFile(QString path, bool isRelativePath, bool
 
         if(m_userInterface[0]->getWidgetPointer()== 0)
         {
-            m_userInterface[0]->deleteLater();
+            delete m_userInterface[0];
             m_userInterface[0] = newElement;
 
         }
