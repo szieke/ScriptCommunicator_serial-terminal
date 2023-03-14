@@ -6,7 +6,7 @@
 #include <QDomDocument>
 #include <QDateTime>
 #include "Qsci/qsciapis.h"
-#include "parseThread.h"
+#include "esprima/esprimaparsefunctions.h"
 
 
 
