@@ -1,6 +1,7 @@
 #include "singledocument.h"
 #include "Qsci/qscilexerjavascript.h"
 #include "mainwindow.h"
+#include "qapplication.h"
 #include <Qsci/qsciapis.h>
 #include <QTextStream>
 #include <QCoreApplication>
@@ -35,9 +36,8 @@ SingleDocument::SingleDocument(MainWindow *mainWindow, bool useDarkStyle, QWidge
 
 void SingleDocument::keyReleaseEvent(QKeyEvent *event)
 {
-    if((event->modifiers() & Qt::ControlModifier) == 0)
+    //if((event->modifiers() & Qt::ControlModifier) == 0)
     {
-        m_mainWindow->m_ctrlIsPressed = false;
         removeUndlineFromWordWhichCanBeClicked();
     }
 
@@ -49,7 +49,6 @@ void SingleDocument::keyPressEvent(QKeyEvent *event)
     if((event->modifiers() & Qt::ControlModifier) != 0)
     {
         removeUndlineFromWordWhichCanBeClicked();
-        m_mainWindow->m_ctrlIsPressed = true;
         m_mainWindow->m_mouseEventTimer.start(100);
     }
 
@@ -97,7 +96,8 @@ void SingleDocument::addFunction(ParsedEntry& function)
 
 void SingleDocument::mouseMoveEvent(QMouseEvent *event)
 {
-    if(!m_mainWindow->m_ctrlIsPressed)
+    bool ctrlPressed = (Qt::ControlModifier == QGuiApplication::queryKeyboardModifiers()) ? true : false;
+    if(!ctrlPressed)
     {
         removeUndlineFromWordWhichCanBeClicked();
     }
@@ -119,7 +119,9 @@ void SingleDocument::dropEvent(QDropEvent *event)
 
 void SingleDocument::wheelEvent(QWheelEvent *event)
  {
-     if(m_mainWindow->m_ctrlIsPressed)
+    bool ctrlPressed = (Qt::ControlModifier == QGuiApplication::queryKeyboardModifiers()) ? true : false;
+
+     if(ctrlPressed)
      {
          if(event->angleDelta().y() > 0)
          {
