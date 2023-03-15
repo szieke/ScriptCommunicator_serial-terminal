@@ -1,4 +1,4 @@
-/********************************************************************************************************
+﻿/********************************************************************************************************
 * The script demonstrates the usage of the ScriptCommunicator XML API.
 **********************************************************************************************/
 
@@ -11,7 +11,6 @@ function stopScript()
 scriptThread.appendTextToConsole('script has started');
 
 var xmlWriter = scriptThread.createXmlWriter();
-xmlWriter.setCodec("UTF-8");
 xmlWriter.setAutoFormatting(true);
 xmlWriter.setAutoFormattingIndent(2);
 
