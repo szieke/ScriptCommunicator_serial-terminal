@@ -1,18 +1,7 @@
-﻿/***************************************************************************************
+/***************************************************************************************
 This worker script (worker scripts can be added in the script window) shows 
 all recieved data (main interface) in a ANSI console.
 ****************************************************************************************/
-
-//scriptThread.appendTextToConsole(scriptThread.productType());
-//scriptThread.appendTextToConsole(scriptThread.productVersion());
-
-/*
-var folder = "~/.config/"
-if(scriptFile.checkDirectoryExists(folder, false)) { 
-	scriptThread.appendTextToConsole(scriptThread.productType());
-}
-*/
-
 
 // Load additional scripts and UI
 scriptThread.loadScript("runProcessAsync.js");
