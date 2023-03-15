@@ -13,7 +13,7 @@ namespace ScriptHelper
     static inline QList<QVariant> byteArrayToVariantList(QByteArray byteArray)
     {
         QList<QVariant> list;
-        for(auto el : byteArray){list.push_back((unsigned char) el);}
+        for(const auto &el : byteArray){list.push_back((unsigned char) el);}
         return list;
     }
 
@@ -21,7 +21,7 @@ namespace ScriptHelper
     static inline QByteArray variantListToByteArray(QList<QVariant> list)
     {
         QByteArray bytesArray;
-        for(auto el : list){bytesArray.append(el.toUInt());}
+        for(const auto &el : list){bytesArray.append(el.toUInt());}
         return bytesArray;
     }
 

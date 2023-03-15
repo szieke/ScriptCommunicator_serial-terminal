@@ -289,6 +289,9 @@ public:
         return MainWindow::parseApiFile("ScriptSqlQuery.api");
     }
 
+    ///The type id of a script array.
+    static const quint32 SCRIPT_ARRAY_TYPE_ID = 0x10030;
+
     Q_INVOKABLE bool isValid(){return m_query.isValid();}
     Q_INVOKABLE bool isActive(){return m_query.isActive();}
     Q_INVOKABLE bool isNull(int field){return m_query.isNull(field);}
@@ -346,7 +349,7 @@ public:
 
     Q_INVOKABLE void bindValue(QString placeholder, QVariant val, quint32 type = (quint32)QSql::In)
     {
-        if(val.typeId() == (QMetaType::QJsonArray | QMetaType::User)){val = ScriptHelper::variantListToByteArray(val.toList());}
+        if(val.typeId() == SCRIPT_ARRAY_TYPE_ID){val = ScriptHelper::variantListToByteArray(val.toList());}
         m_query.bindValue(placeholder, val, (QSql::ParamType)type);
     }
     Q_INVOKABLE void bindValue(int pos, QVariant val, quint32 type = (quint32)QSql::In)

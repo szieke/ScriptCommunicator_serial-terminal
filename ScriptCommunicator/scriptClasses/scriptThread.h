@@ -541,6 +541,18 @@ public:
     ///Returns the ScriptCommunicator program folder.
     Q_INVOKABLE QString getScriptCommunicatorFolder(void){return MainWindow::getScriptCommunicatorFilesFolder();}
 
+    ///Returns the user home folder.
+    /// MAC:"~"; WIN:"C:/Users/<USER>"; LINUX:"~"
+    Q_INVOKABLE QString getUserHomeFolder(void){return QStandardPaths::writableLocation(QStandardPaths::HomeLocation);}
+
+    ///Returns a directory location where user-specific configuration files should be written. This may be either a generic value or application-specific.
+    /// MAC: "~/Library/Preferences"; WIN:"C:/Users/<USER>/AppData/Local/<APPNAME>","C:/ProgramData/<APPNAME>"; LINUX:"~/.config","/etc/xdg"
+    Q_INVOKABLE QString getUserConfigFolder(void){return QStandardPaths::writableLocation(QStandardPaths::ConfigLocation);}
+
+    ///Returns a directory location where user-specific configuration files shared between multiple applications should be written.
+    /// MAC: "~/Library/Preferences"; WIN:"C:/Users/<USER>/AppData/Local","C:/ProgramData"; LINUX:"~/.config","/etc/xdg"
+    Q_INVOKABLE QString getUserGenericConfigFolder(void){return QStandardPaths::writableLocation(QStandardPaths::GenericConfigLocation);}
+
     ///Returns the directory containing user document files.
     Q_INVOKABLE QString getUserDocumentsFolder(void){return QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);}
 
