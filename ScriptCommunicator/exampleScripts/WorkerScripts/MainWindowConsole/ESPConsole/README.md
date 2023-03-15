@@ -44,6 +44,7 @@ If you, for example, run the console on different system without build tools, yo
 
 #### TODO:
 
+- Normalize line endings to CR+LF (currently mixed win+linux style)
 - Move config file to better location (currently it's ESPConsole.ini in user's document folder)
 - Add tooltips and/or link to this readme
 - Some more testing and debug
