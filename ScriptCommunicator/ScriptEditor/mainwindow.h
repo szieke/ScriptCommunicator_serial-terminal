@@ -355,9 +355,6 @@ private:
     ///This timer is started if a mouse move event occurs (calls mouseTimerSlot).
     QTimer m_mouseEventTimer;
 
-    ///True if the ctrl key is pressed.
-    bool m_ctrlIsPressed;
-
     ///This timer is started if an indicator is clicked. (calls indicatorClickTimerSlot)
     QTimer m_indicatorClickTimer;
 

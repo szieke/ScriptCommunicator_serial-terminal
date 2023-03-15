@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>248</width>
-    <height>193</height>
+    <width>287</width>
+    <height>226</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -116,6 +116,12 @@
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QSpinBox" name="spinBox">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="minimum">
         <number>0</number>
        </property>
@@ -146,6 +152,12 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QSpinBox" name="spinBox_2">
+       <property name="minimumSize">
+        <size>
+         <width>100</width>
+         <height>0</height>
+        </size>
+       </property>
        <property name="minimum">
         <number>8080</number>
        </property>

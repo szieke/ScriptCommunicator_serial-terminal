@@ -76,7 +76,7 @@ MainWindow* getMainWindow()
 MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTimer(), m_parseThread(0), m_parsingFinished(true),
     m_lockFiles(), m_unsavedInfoFiles(), m_checkForFileChangesTimer(),
     m_lastMouseMoveEventPosition(0, 0), m_mouseEventTimer(),
-    m_ctrlIsPressed(false), m_indicatorClickTimer(), m_lastIndicatorClickPosition(0), m_showParseError(true),
+    m_indicatorClickTimer(), m_lastIndicatorClickPosition(0), m_showParseError(true),
     m_scriptsToLoadAfterStart(scripts), m_useDarkStyle(false), m_applicationFontSize(10)
 {
     ui->setupUi(this);
@@ -303,7 +303,8 @@ void MainWindow::indicatorClickTimerSlot()
     m_indicatorClickTimer.stop();
     SingleDocument* textEditor = static_cast<SingleDocument*>(ui->documentsTabWidget->currentWidget()->layout()->itemAt(0)->widget());
     int line = textEditor->lineAt(m_lastMouseMoveEventPosition);
-    handleDoubleClicksInEditor(m_lastIndicatorClickPosition, line, m_ctrlIsPressed ? QsciScintillaBase::SCMOD_CTRL : QsciScintillaBase:: SCMOD_NORM);
+    bool ctrlPressed = (Qt::ControlModifier == QGuiApplication::queryKeyboardModifiers()) ? true : false;
+    handleDoubleClicksInEditor(m_lastIndicatorClickPosition, line, ctrlPressed ? QsciScintillaBase::SCMOD_CTRL : QsciScintillaBase:: SCMOD_NORM);
 
 }
 
@@ -374,7 +375,7 @@ void MainWindow::mouseMoveTimerSlot()
 
         clearCurrentIndicator();
 
-        if(m_ctrlIsPressed)
+        if(Qt::ControlModifier == QGuiApplication::queryKeyboardModifiers())
         {
             QString completeWord = textEditor->wordAtPosition(pos);
             if(!completeWord.isEmpty())
