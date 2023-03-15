@@ -1,6 +1,10 @@
-/***************************************************************************************
+﻿/***************************************************************************************
 This worker script (worker scripts can be added in the script window) shows 
-all recieved data (main interface) in a ANSI console.
+all recieved data (main interface) in a ESPConsole and can automatically 
+decode backtrace if configured correctly. 
+
+See README.md for more details.
+Requres ScriptCommunicator v6+ (getUserGenericConfigFolder())
 ****************************************************************************************/
 
 // Load additional scripts and UI
@@ -19,7 +23,7 @@ const RGX_Color_CYAN 	= (/\u001b\[0;36m/);
 const RGX_Color_WHITE 	= (/\u001b\[0;37m/);
 
 var g_textColor = "000000";
-var g_tmpBuf = "";		// Temporary buffe for unfinished ANSI data
+var g_tmpBuf = "";		// Temporary buffer for unfinished ANSI data
 var g_addrChunk = "";	// Temporary buffer for incomplete addreses to decode
 
 //The Lock button in the main window has been pressed.
@@ -33,7 +37,7 @@ function mainWindowClearConsoleClicked()
 {
 	UI_TextEdit1.clear();
 	UI_label_backtrace.setText("Decoding backtrace for ESP Project:");
-	UI_label_backtrace.setWindowTextColor("black");
+	UI_label_backtrace.setWindowTextColor("");	// Use "" as reset to default instead of "black", which does not work well in dark style
 }
 
 //Reads the global console settings (settings dialog) and adjusts the utf8 console to it.
@@ -101,17 +105,15 @@ function addStrToConsole(strData, fontColor)
 
 /* Find and decode backtrace addresses, print the output using xtensa tools.
  * Example backtrace: 
- *		Backtrace:0x12345678:0x123456780x12345678:0x12345678 0x12345678:0x12345678 0x12345678:0x12345678 0x12345678:0x12345678 0x12345678:0x00000000  |<-CORRUPTED
+ *  Backtrace:0x12345678:0x123456780x12345678:0x12345678 0x12345678:0x12345678 0x12345678:0x12345678 0x12345678:0x12345678 0x12345678:0x00000000  |<-CORRUPTED
  */
-function decodeBacktrace(backtraceString)
+function findAndDecodeBacktrace(backtraceString)
 {
 	// If there is some unfinished addres leftover, add it first:
 	if(g_addrChunk != "") backtraceString = g_addrChunk + backtraceString;
 	g_addrChunk = ""; 	// Clear the buffer after that, not needed anymore
-	
-	//scriptThread.appendTextToConsole("==BACKTRACE IN==");	
-	var addrs = Array();	// Create arrray of strings for backtrace addresses
-
+	// Create arrray of strings for backtrace addresses:
+	var addrs = Array();	
 	// Safest option would be to search for every '0x' character combination and take folowing 8 characters
 	var idx = backtraceString.indexOf("0x", 0);	// from start
 	// If 0x was found at all:
@@ -147,40 +149,26 @@ function decodeBacktrace(backtraceString)
 		}
 	}
 
-	var program = UI_lnEd_pathAddr2Line.text();
-	var workingDirectory = scriptFile.getScriptFolder();
-	
+	var program = UI_lnEd_pathAddr2Line.text();	
+	var elfFile = UI_comBox_projecElfFile.currentText();
+	// Run xtensa addr2line command for every address: xtensa-esp32-elf-addr2line -pfiaC -e build/PROJECT.elf ADDRESS
 	for(var i = 0; i < addrs.length; i++)
 	{
-		// Run xtensa addr2line command for every address: xtensa-esp32-elf-addr2line -pfiaC -e build/PROJECT.elf ADDRESS
-		var arguments = Array("-pfiaC", "-e", ""+UI_comBox_projecElfFile.currentText()+"", addrs[i]);	
-		//scriptThread.appendTextToConsole(addrs[i] + "\r\n");
-		var process = scriptThread.createProcessAsynchronous(program, arguments, -1, workingDirectory);	
-		
-		if (typeof process == 'undefined') {
-			addStrToConsole("Process could not start.", "AA0000");	// red
+		var arguments = Array("-pfiaC", "-e", ""+elfFile+"", addrs[i]);
+		var ret = runProcessAsync(program, arguments, 1000, 1000, "");		
+		if(ret.exitCode != 0) { 	// Error
+			addStrToConsole(ret.stdErr, "CC0000");	// red
 		}
-		else {
-			var finished = scriptThread.waitForFinishedProcess(process, 1000);
-			if(!finished) {
-				addStrToConsole("Killing process...", "AA0000");	// red
-				scriptThread.killProcess(process);
-			}
-			//stdOut = conv.byteArrayToString(scriptThread.readAllStandardOutputFromProcess(process)).replace("\n", "");
-			var stdOut = conv.byteArrayToString(scriptThread.readAllStandardOutputFromProcess(process));
-			var stdErr = conv.byteArrayToString(scriptThread.readAllStandardErrorFromProcess(process));
-			scriptThread.appendTextToConsole("\r\n" + stdErr);
-				
-			// Filer out invalid results. unfortunately no string.includes("") function?
-			if( ((/[?][?][ ][?][?][:][0]/).test(stdOut) || (/[?][?][:][?]/).test(stdOut)) != true ) {
-				//scriptThread.appendTextToConsole(stdOut);
-				if( (/call_start_cpu/).test(stdOut) == true ) {	// Not an eror, print green
-					addStrToConsole("\r\n" + stdOut, "00AA00");	// green
+		else {	// OK, but also filer out invalid results. Unfortunately no string.includes("") function?
+			if( ((/[?][?][ ][?][?][:][0]/).test(ret.stdOut) || (/[?][?][:][?]/).test(ret.stdOut)) != true ) 
+			{
+				if( (/call_start_cpu/).test(ret.stdOut) == true ) {	
+					addStrToConsole("\r\n" + ret.stdOut, "AAAA00");	// Not an eror, print this one in yellow
 				}
 				else {	// May be backtrace
-					addStrToConsole("\r\n" + stdOut, "FF0000");	// red
+					addStrToConsole("\r\n" + ret.stdOut, "FF0000");	// red
 					UI_label_backtrace.setText("Backtrace detected in ESP Project:");
-					UI_label_backtrace.setWindowTextColor("red");	// Does not work with dark style
+					UI_label_backtrace.setWindowTextColor("red");
 				}
 			}
 		}
@@ -210,14 +198,13 @@ function dataReceivedSlot(data)
 		// Split string to array of strings separated by ESC character (033, u001B) 
 		// split() deletes the split character, so it has to be added back later.
 		var stringArray = stringData.split(/\u001b/g);		
-		//var idx = stringData.search(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, "");
 		
 		// Print first element of array (data before first escape char), using stored color from previous run:
 		addStrToConsole(stringArray[0], g_textColor);
 		
 		// Check for Backtrace addresses:
 		if(UI_chkBox_backtraceDecode.isChecked()) {
-			decodeBacktrace(stringArray[0]);
+			findAndDecodeBacktrace(stringArray[0]);
 		}
 
 		// Process following elements:
@@ -261,7 +248,7 @@ function dataReceivedSlot(data)
 			
 			// Check for Backtrace addresses:
 			if(UI_chkBox_backtraceDecode.isChecked()) {
-				decodeBacktrace(stringArray[i]);
+				findAndDecodeBacktrace(stringArray[i]);
 			}		
 		}
 	}

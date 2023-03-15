@@ -5,15 +5,16 @@ This script file contains function for script settings data loading and saving
   from where we can parse  other necessary info, like project name and exact 
   xtensa tool path which should be used (from CmakeCache.txt).
   This way it may be OS independent.
-
+  
+Requres ScriptCommunicator v6+ (getUserGenericConfigFolder())
 ***************************************************************************/
 
 /* ====    Load additional scripts and UI    ==== */
 scriptThread.loadUserInterfaceFile("./backtraceSettings.ui", true, false);
 
 /* ====    Global variables    ==== */
-var g_settingsFileName = scriptThread.getUserDocumentsFolder() + "/ESPConsole.ini";
-var g_projBuildPath = "";	// Store project build folder path including last slash 
+var g_settingsFolder = scriptThread.getUserGenericConfigFolder() + "/SCScripts/";
+var g_settingsFileName = g_settingsFolder + "ESPConsole.ini";
 
 /* ====   Connect signals   ==== */
 // Buttons
@@ -27,9 +28,7 @@ UI_chkBox_backtraceDecode.clickedSignal.connect(clickedDecode);
 UI_chkBox_autodetectTools.clickedSignal.connect(clickedAutodetect);
 // Combo box
 UI_comBox_projecElfFile.currentTextChangedSignal.connect(parseFwFileInfo);
-// Line Edits
-//UI_lnEd_pathAddr2Line.textChangedSignal.connect(addr2lineVersionUpdate);
-//UI_lnEd_pathReadElf.textChangedSignal.connect(readelfVersionUpdate);
+
 
 /* ====    Functions     ==== */
 
@@ -48,17 +47,14 @@ function cleanFwInfo()
 /* Empty all info if requirements not satisfied */
 function cleanAll() 
 {
-	if(scriptFile.checkFileExists(UI_comBox_projecElfFile.currentText(), false)) {
-		g_projBuildPath = "";
-	}	
 	// Only if autodetect, otherwise keep what is set
 	if(UI_chkBox_autodetectTools.isChecked() ) {
 		UI_lnEd_pathAddr2Line.setText("");
 		UI_label_verAddr2Line.setText("");
-		UI_label_verAddr2Line.setWindowTextColor("black");	// Does not work with dark style
+		UI_label_verAddr2Line.setWindowTextColor("");
 		UI_lnEd_pathReadElf.setText("");
 		UI_label_verReadelf.setText("");
-		UI_label_verReadelf.setWindowTextColor("black");	// Does not work with dark style
+		UI_label_verReadelf.setWindowTextColor("");
 	}
 	cleanFwInfo();
 }
@@ -70,13 +66,13 @@ function addr2lineVersionUpdate()
 	if(scriptThread.checkFileExists(programPath, false)) 
 	{
 		var ret = runProcessAsync(programPath, Array("-v"), -1, 1000, "");
-		if(ret.exitCode >= 0) {
-			UI_label_verAddr2Line.setText( (ret.stdOut).split("\n")[0] );		// First Line
-			UI_label_verAddr2Line.setWindowTextColor("black");	// Does not work with dark style
-		}
-		else {
+		if(ret.exitCode != 0) {		// Error
 			UI_label_verAddr2Line.setText( (ret.stdErr).split("\n")[0] );	// First Line
-			UI_label_backtrace.setWindowTextColor("darkRed");	// Does not work with dark style
+			UI_label_backtrace.setWindowTextColor("red");
+		}
+		else {		// OK
+			UI_label_verAddr2Line.setText( (ret.stdOut).split("\n")[0] );	// First Line
+			UI_label_verAddr2Line.setWindowTextColor("");
 		}
 	}
 }
@@ -88,13 +84,13 @@ function readelfVersionUpdate()
 	if(scriptThread.checkFileExists(programPath, false)) 
 	{
 		var ret = runProcessAsync(programPath, Array("-v"), -1, 1000, "");
-		if(ret.exitCode >= 0) {
-			UI_label_verReadelf.setText( (ret.stdOut).split("\n")[0] );		// First Line
-			UI_label_verReadelf.setWindowTextColor("black");	// Does not work with dark style
-		}
-		else {
+		if(ret.exitCode != 0) {		// Error
 			UI_label_verReadelf.setText( (ret.stdErr).split("\n")[0] );	// First Line
-			UI_label_verReadelf.setWindowTextColor("darkRed");	// Does not work with dark style
+			UI_label_verReadelf.setWindowTextColor("red");			
+		}
+		else {		// OK
+			UI_label_verReadelf.setText( (ret.stdOut).split("\n")[0] );		// First Line
+			UI_label_verReadelf.setWindowTextColor("");
 		}
 	}
 }
@@ -153,13 +149,12 @@ function parseFwFileInfo ()
 		UI_chkBox_backtraceDecode.setChecked(true);
 		clickedDecode();	// Simulate checkbox clicked signal
 		
-		var idx = elfFile.lastIndexOf('/');				// index of last forward slash. Works on windows too
-		g_projBuildPath = elfFile.substring(0, idx+1);	// including last slash
-		
 		var autodetect = UI_chkBox_autodetectTools.isChecked();
+		var idx = elfFile.lastIndexOf('/');				// index of last forward slash. Works on windows too
+		var projBuildPath = elfFile.substring(0, idx+1);	// including last slash
 		
-		// Check for CmakeCache.txt in same folder as .elf file		
-		var fileCmakeCache = g_projBuildPath + "CMakeCache.txt";
+		// Check for CmakeCache.txt in same folder as .elf file:
+		var fileCmakeCache = projBuildPath + "CMakeCache.txt";
 		var cmakeCachePresent = scriptFile.checkFileExists(fileCmakeCache, false)
 		if(cmakeCachePresent)
 		{
@@ -168,16 +163,16 @@ function parseFwFileInfo ()
 			
 			if(autodetect)
 			{
-				// Find Addr2Line executable. Use:  xtensa-esp32-elf-addr2line -pfiaC -e build/PROJECT.elf ADDRESS
+				// Find Addr2Line executable. Use: xtensa-esp32-elf-addr2line -pfiaC -e build/PROJECT.elf ADDRESS
 				// Example to search: CMAKE_ADDR2LINE:FILEPATH=/home/user/.espressif/tools/xtensa-esp32-elf/esp-2021r2-patch3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-addr2line
 				idx = cmakeFile.indexOf("CMAKE_ADDR2LINE:FILEPATH");	// Match string (first occurence)
-				idx = cmakeFile.indexOf('=', idx);	// Match following '=' (first occurence starting at index)
+				idx = cmakeFile.indexOf('=', idx);						// Match following '=' (first occurence starting at previous index)
 				UI_lnEd_pathAddr2Line.setText( cmakeFile.substring(idx+1, cmakeFile.indexOf('\n', idx)).trim() );
 		
 				// Find ReadElf executable. Use: xtensa-esp32-elf-readelf -p .flash.appdesc build//my_project.elf
 				// Example to search: CMAKE_READELF:FILEPATH=/home/user/.espressif/tools/xtensa-esp32-elf/esp-2021r2-patch3-8.4.0/xtensa-esp32-elf/bin/xtensa-esp32-elf-readelf		
-				idx = cmakeFile.indexOf("CMAKE_READELF:FILEPATH");	// Match string (first occurence)
-				idx = cmakeFile.indexOf('=', idx);	// Match following '=' (first occurence starting at index)
+				idx = cmakeFile.indexOf("CMAKE_READELF:FILEPATH");		// Match string (first occurence)
+				idx = cmakeFile.indexOf('=', idx);						// Match following '=' (first occurence starting at previous index)
 				UI_lnEd_pathReadElf.setText( cmakeFile.substring(idx+1, cmakeFile.indexOf('\n', idx)).trim() );
 			}
 			
@@ -186,7 +181,7 @@ function parseFwFileInfo ()
 			}
 			else {
 				UI_label_verAddr2Line.setText("Addr2Line not found!");
-				UI_label_verAddr2Line.setWindowTextColor("darkRed");	// Does not work with dark style
+				UI_label_verAddr2Line.setWindowTextColor("red");
 				UI_chkBox_backtraceDecode.setChecked(false);
 				clickedDecode();	// Simulate checkbox clicked signal
 			}
@@ -198,28 +193,29 @@ function parseFwFileInfo ()
 				// Get String dump of section '.flash.appdesc'. Use: xtensa-esp32-elf-readelf -p .flash.appdesc <project.elf>
 				var program = UI_lnEd_pathReadElf.text();
 				var arguments = Array("-p", ".flash.appdesc", elfFile);	
-				var appDesc = runProcessAsync(program, arguments, -1, 1000, "");
-				var stringArray = (appDesc.stdOut).split("\n");
+				var ret = runProcessAsync(program, arguments, -1, 1000, "");
+				var stringArray = (ret.stdOut).split("\n");
 				
-				if((appDesc.exitCode >= 0) && (stringArray.length > 7)) {
-					/* NOTE: Nothing too crazy here, positions are hardcoded. In case the tool output format 
-					* 	changes it will only break firmware info, not decoding ability */
+				if((ret.exitCode == 0) && (stringArray.length > 7)) 
+				{
+					// NOTE: Nothing too crazy here, positions are hardcoded.
+					// 	In case the tool output format changes it will only break firmware info, not decoding ability
 					UI_lnEd_FwAppVer.setText(	stringArray[3].slice(12));	// Project version example: '  [    10]  0.1.0.77'
 					UI_lnEd_FwName.setText(		stringArray[4].slice(12));	// Project name example: 	'  [    30]  my_project'
 					UI_lnEd_FwBuildTime.setText(stringArray[5].slice(12));	// Build time example: 		'  [    50]  12:23:58'
 					UI_lnEd_FwBuildDate.setText(stringArray[6].slice(12));	// Build date example: 		'  [    60]  Mar 11 2023'
-					UI_lnEd_FwIDFVer.setText(	stringArray[7].slice(12));	// IDF version example: 	'  [    70]  v4.4.1'
-					
-					// Main window tab label:
+					UI_lnEd_FwIDFVer.setText(	stringArray[7].slice(12));	// IDF version example: 	'  [    70]  v4.4.1'			
+					// Main window tab info label:
 					UI_lnEd_projectLoaded.setText(UI_lnEd_FwName.text() + " v" + UI_lnEd_FwAppVer.text() + 
 								" / ESP-IDF " + UI_lnEd_FwIDFVer.text() + " on " + UI_lnEd_target.text());
 				}
+				//else just dont fill FW info - not required for backtrace
 			}
 			else {
 				// addr2line not found
 				cleanFwInfo();
 				UI_label_verReadelf.setText("Readelf not found!");
-				UI_label_verReadelf.setWindowTextColor("darkRed");	// Does not work with dark style
+				UI_label_verReadelf.setWindowTextColor("red");
 			}
 			
 			// Find target chip
@@ -233,9 +229,9 @@ function parseFwFileInfo ()
 			cleanAll();
 			if(autodetect) {
 				UI_label_verAddr2Line.setText("CmakeCache.txt not found!");
-				UI_label_verAddr2Line.setWindowTextColor("darkRed");	// Does not work with dark style
+				UI_label_verAddr2Line.setWindowTextColor("red");
 				UI_label_verReadelf.setText("CmakeCache.txt not found!");
-				UI_label_verReadelf.setWindowTextColor("darkRed");	// Does not work with dark style
+				UI_label_verReadelf.setWindowTextColor("red");
 				// Also show warning message if backtrace is enabled so user knows what's up
 				if(UI_chkBox_backtraceDecode.isChecked()) {
 					scriptThread.messageBox("Warning", "CmakeCache.txt not found", "File <b>CmakeCache.txt</b> was not found. "
@@ -251,9 +247,9 @@ function parseFwFileInfo ()
 		// Elf file not present, cant do anything -> disable backtrace
 		cleanAll();
 		UI_label_verAddr2Line.setText("ELF File not found!");
-		UI_label_verAddr2Line.setWindowTextColor("darkRed");	// Does not work with dark style
+		UI_label_verAddr2Line.setWindowTextColor("red");
 		UI_label_verReadelf.setText("ELF File not found!");
-		UI_label_verReadelf.setWindowTextColor("darkRed");	// Does not work with dark style
+		UI_label_verReadelf.setWindowTextColor("red");
 		UI_chkBox_backtraceDecode.setChecked(false);
 		clickedDecode();	// Simulate checkbox clicked signal
 		scriptThread.messageBox("Critical", ".ELF file not found", "ELF File was not found, backtrace won't be decoded.");
@@ -393,6 +389,9 @@ function saveUiSettings()
 		settings += UI_comBox_projecElfFile.itemText(i) + "\r\n";
 	}
 	
+	if( !scriptFile.checkDirectoryExists(g_settingsFolder, false) ) {
+		scriptFile.createDirectory(g_settingsFolder, false);
+	}
 	try {
 		scriptFile.writeFile(g_settingsFileName, false, settings, true);
 	}

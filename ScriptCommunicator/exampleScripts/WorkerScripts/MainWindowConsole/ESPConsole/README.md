@@ -4,7 +4,7 @@ This script is based on ANSI Color Console but also adds an option to decode ESP
 
 Without it you would have to use `idf.py monitor` or other tools separatelly to decode the backtrace. That means you have to disconnect, set your idf environment, find correct port, start monitor and at the end find out what was that key combination to stop the monitor. 
 
-*(Btw. it is `CTRL+]` which can even translate to `CTRL+ALTgr+G` on CZ keyboard for example - try that with one hand).*
+> Btw. it is `CTRL+]` which can even translate to `CTRL+ALTgr+G` on CZ keyboard for example - try that with one hand).
 
 Instead, when backtrace is detected, we can simply call `xtensa-esp32-elf-addr2line -pfiaC -e build/PROJECT.elf ADDRESS` command directly from this script and see the decoded messages in console without having to switch to other tools. 
 
@@ -44,7 +44,5 @@ If you, for example, run the console on different system without build tools, yo
 
 #### TODO:
 
-- Normalize line endings to CR+LF (currently mixed win+linux style)
-- Move config file to better location (currently it's ESPConsole.ini in user's document folder)
 - Add tooltips and/or link to this readme
-- Some more testing and debug
+
