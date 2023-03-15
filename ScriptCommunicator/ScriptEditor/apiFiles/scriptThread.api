@@ -75,6 +75,9 @@ scriptThread::availableSerialPorts(void):Array<String> \nReturns a list with the
 scriptThread::getScriptArguments(void):Array<String> \nReturns the script arguments (command-line argument -A).
 scriptThread::getScriptCommunicatorFolder(void):String \nReturns the ScriptCommunicator program folder.
 scriptThread::getUserDocumentsFolder(void):String \nReturns the directory containing user document files.
+scriptThread::getUserHomeFolder(void):String \nReturns the user home folder.\nMAC:"~"\nWIN:"C:/Users/<USER>"\nLINUX:"~"
+scriptThread::getUserConfigFolder(void):String \nReturns a directory location where user-specific configuration files should be written. This may be either a generic value or application-specific.\nMAC: "~/Library/Preferences"\nWIN:"C:/Users/<USER>/AppData/Local/<APPNAME>","C:/ProgramData/<APPNAME>"\nLINUX:"~/.config","/etc/xdg"
+scriptThread::getUserGenericConfigFolder(void):String \nReturns a directory location where user-specific configuration files shared between multiple applications should be written.\nMAC: "~/Library/Preferences"\nWIN:"C:/Users/<USER>/AppData/Local","C:/ProgramData"\nLINUX:"~/.config","/etc/xdg"
 scriptThread::addTabsToMainWindow(ScriptTabWidget* tabWidget):bool \nAdds script tabs to the main window.\nNote: This function fails in command-line mode.
 scriptThread::addToolBoxPagesToMainWindow(ScriptToolBox* scriptToolBox):bool \nAdds script toolbox pages to the main window (all pages are removed from toolBox).\nNote: This function fails in command-line mode.
 scriptThread::sendReceivedDataToMainInterface(Array<Number> data):void \nSends received data (received with an script internal interface) to the main interface.\nThis data will be shown as received data in the consoles, the log and will be received by worker scripts via the dataReceivedSignal.
