@@ -44,5 +44,6 @@ If you, for example, run the console on different system without build tools, yo
 
 #### TODO:
 
+- Move config file to better location (currently it's ESPConsole.ini in user's document folder)
 - Add tooltips and/or link to this readme
 - Some more testing and debug
