@@ -537,8 +537,6 @@ void MainWindow::handleDoubleClicksInEditor(int position, int line, int modifier
 
         QString searchString;
         bool isLocalVariable = false;
-
-        long pos = textEditor->SendScintilla(QsciScintillaBase::SCI_POSITIONFROMPOINTCLOSE, m_lastMouseMoveEventPosition.x(), m_lastMouseMoveEventPosition.y());
         QString contextString = textEditor->getContextString(line);
 
         int index = 0;
@@ -957,7 +955,7 @@ void MainWindow::tabIndexChangedSlot(int index)
             nameInTitle = textEditor->getDocumentName();
         }
 
-        setWindowTitle(tr("ScriptCommunicator %1 - Script Editor %2[*]").arg(SCRIPT_COMMUNICATOR_VERSION).arg(nameInTitle));
+        setWindowTitle(tr("ScriptCommunicator %1 - Script Editor %2[*]").arg(SCRIPT_COMMUNICATOR_VERSION, nameInTitle));
 
         textEditor->setFocus();
     }
@@ -1056,8 +1054,8 @@ void MainWindow::reloadSlot()
     {
         QMessageBox::warning(this, tr("Script Editor"),
                              tr("Cannot read file %1:\n%2")
-                             .arg(textEditor->getDocumentName())
-                             .arg(file.errorString()));
+                             .arg(textEditor->getDocumentName(),
+                                  file.errorString()));
     }
 }
 
@@ -2349,7 +2347,7 @@ void MainWindow::documentWasModified(int index)
          ui->documentsTabWidget->setTabText(index, shownName);
     }
 
-    m_showParseError = false;
+    m_showParseError = true;
     m_parseTimer.start(2000);
 
 }
@@ -2580,7 +2578,7 @@ void MainWindow::insertAllUiObjectsInUiView(QMap<QString, QStringList> parsedUiO
     QMap<QString, QStringList>::const_iterator iter = parsedUiObjects.constBegin();
     while (iter != parsedUiObjects.constEnd())
     {
-        for(auto el : iter.value())
+        for(const auto &el : iter.value())
         {
             currenCompleteTreeString += el;
         }
@@ -2626,7 +2624,7 @@ void MainWindow::insertAllUiObjectsInUiView(QMap<QString, QStringList> parsedUiO
 
 
         //Add all gui elements from the current ui file.
-        for(auto el : iter.value())
+        for(const auto &el : iter.value())
         {
             QTreeWidgetItem* funcElement = new QTreeWidgetItem(fileElement);
             QString textInTreeWidget = "UI_" + el;
@@ -2748,14 +2746,14 @@ bool MainWindow::inserSubElementsToScriptView(QTreeWidgetItem* parent, QVector<P
 static void parsedEntryToString(const QVector<ParsedEntry>& parsedEntries,
                                 QString& currentCompleteTreeString)
 {
-    for(auto el : parsedEntries)
+    for(const auto &el : parsedEntries)
     {
         currentCompleteTreeString += el.name + QString("%1,%2").arg(el.type).arg(el.line);
         if((el.type == PARSED_ENTRY_TYPE_FUNCTION) || (el.type == PARSED_ENTRY_TYPE_CLASS_FUNCTION)
                 || (el.type == PARSED_ENTRY_TYPE_CLASS_THIS_FUNCTION))
         {
             //Add all parameters to the string.
-            for(auto param : el.params)
+            for(const auto &param : el.params)
             {
                 currentCompleteTreeString += param;
             }

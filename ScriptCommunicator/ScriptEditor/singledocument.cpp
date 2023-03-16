@@ -365,4 +365,6 @@ void SingleDocument::initAutoCompletion(QMap<QString, QStringList>& autoCompleti
 
     }
 
+    setAutoCompletionSource(QsciScintilla::AcsAPIs);
+
 }

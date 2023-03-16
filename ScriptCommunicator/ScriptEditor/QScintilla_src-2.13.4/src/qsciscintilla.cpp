@@ -917,7 +917,7 @@ void QsciScintilla::startAutoCompletion(AutoCompletionSource acs,
     QStringList tmp;
     for(const auto &el : wlist)
     {
-        if(!el.contains("("))
+        if(!el.contains("(") || el.contains("."))
         {
             tmp.append(el);
         }
