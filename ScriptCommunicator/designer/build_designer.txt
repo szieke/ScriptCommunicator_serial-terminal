@@ -6,12 +6,11 @@
 - widgetbox.xml ersetzen (Src\qttools\src\designer\src\components\widgetbox)
 - Qt konfigurieren
 	- windows: configure.bat in src aufrufen
-	- Ununtu 64 bit: ./configure -shared -prefix $PWD/qtbase -platform linux-g++-64 -release -nomake examples -nomake tests -opengl desktop
-	- Ununtu 32 bit: ./configure -shared -prefix $PWD/qtbase -platform linux-g++-32 -release -nomake examples -nomake tests -opengl desktop -qt-xcb
+	- Ununtu 64 bit: ./configure in src aufrufen
 
 	
 - kompilieren
 	- windows: mingw32-make -j12 -k
-	- Ubuntu: make -k
+	- Ubuntu: make -j4 -k
 
 - Src\qtbase(oder qttools)\(lib oder bin)\Qt5DesignerComponents.(dll, so) kopieren
