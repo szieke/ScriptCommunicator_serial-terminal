@@ -1,4 +1,4 @@
-/***************************************************************************************
+﻿/***************************************************************************************
 This script send all data which shall be sent with the main interface to an additional serial port.
 All data which has been received with the additional serial port will be sent to the main interface
 (this data will be added to the standard consoles, the logs and worker scripts can received this data 
@@ -189,7 +189,7 @@ checkVersion();
 
 UI_Dialog.finishedSignal.connect(UI_DialogFinished);
 
-UI_ToolBox.setItemText(0, g_instanceName);
+//UI_ToolBox.setItemText(0, g_instanceName);
 scriptThread.addToolBoxPagesToMainWindow(UI_ToolBox);
 
 UI_TabWidget.setTabText(0, g_instanceName);

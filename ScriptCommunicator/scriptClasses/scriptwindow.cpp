@@ -69,12 +69,16 @@ bool DragDropTableWidget::dropMimeData(int row, int column, const QMimeData *dat
 {
     if(data->hasUrls())
     {
+        QStringList list;
+
 #ifdef Q_OS_LINUX
-        QString files = data->text().remove("file://");
+        QList<QUrl> urls = data->urls();
+        for(const auto &el : urls)
+        {
+            list.append(el.path());
+        }
 #else
         QString files = data->text().remove("file:///");
-#endif
-        QStringList list;
         if(!files.isEmpty())
         {
             list = files.split(files.contains("\r\n") ? "\r\n" : "\n");
@@ -87,6 +91,7 @@ bool DragDropTableWidget::dropMimeData(int row, int column, const QMimeData *dat
                 list.append(el.path());
             }
         }
+#endif
 
         if(!list.isEmpty())
         {
