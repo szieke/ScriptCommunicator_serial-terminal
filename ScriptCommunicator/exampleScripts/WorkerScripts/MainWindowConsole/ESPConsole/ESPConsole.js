@@ -37,7 +37,7 @@ function mainWindowClearConsoleClicked()
 {
 	UI_TextEdit1.clear();
 	UI_label_backtrace.setText("Decoding backtrace for ESP Project:");
-	UI_label_backtrace.setWindowTextColor("");	// Use "" as reset to default instead of "black", which does not work well in dark style
+	UI_label_backtrace.setWindowTextColor("darkGray");	// Reasonable default that works on dark and light themes
 }
 
 //Reads the global console settings (settings dialog) and adjusts the utf8 console to it.
@@ -286,3 +286,4 @@ settingsTimer.start(2000);
 
 // Load settings
 loadUiSettings();
+UI_label_backtrace.setWindowTextColor("darkGray");	// Reasonable default that works on dark and light themes
