@@ -1,13 +1,15 @@
 #ifndef SCRIPTSOUND_H
 #define SCRIPTSOUND_H
 
+
+#include <QAudioOutput>
+#include "scriptObject.h"
+
 #ifdef Q_OS_WIN32
-#include<QMediaPlayer>
+#include <QMediaPlayer>
 #else
 #include <QSoundEffect>
 #endif
-#include <QAudioOutput>
-#include "scriptObject.h"
 
 ///This wrapper class is used to access a QSound object from a script.
 class ScriptSound : public QObject, public ScriptObject
