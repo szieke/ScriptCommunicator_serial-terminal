@@ -52,7 +52,14 @@ void SingleDocument::keyPressEvent(QKeyEvent *event)
         m_mainWindow->m_mouseEventTimer.start(100);
     }
 
-    QsciScintillaBase::keyPressEvent(event);
+    if((event->modifiers() & Qt::ControlModifier) && (event->key() == Qt::Key_Space))
+    {
+        autoCompleteFromAPIs();
+    }
+    else
+    {
+        QsciScintillaBase::keyPressEvent(event);
+    }
 }
 
 /**
