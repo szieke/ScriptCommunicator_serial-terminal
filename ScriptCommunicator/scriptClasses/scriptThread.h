@@ -187,7 +187,7 @@ public:
 
     ///Zips a directory.
     Q_INVOKABLE bool zipDirectory(QString fileName, QString sourceDirName, QString comment="")
-    {return m_scriptFileObject->zipDirectory(fileName, sourceDirName, 0, comment);}
+    {return m_scriptFileObject->zipDirectory(fileName, sourceDirName, comment);}
 
     ///Adds files to a zip file.
     Q_INVOKABLE bool zipFiles(QString fileName, QVariantList fileList, QString comment="")
