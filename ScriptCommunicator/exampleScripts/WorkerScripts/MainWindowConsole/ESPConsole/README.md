@@ -44,5 +44,6 @@ If you, for example, run the console on different system without build tools, yo
 
 #### TODO:
 
+- Possible logical error with decoder autodisable when incorrect input file/s are selected
 - Add tooltips and/or link to this readme
 

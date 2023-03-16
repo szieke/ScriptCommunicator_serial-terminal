@@ -87,7 +87,7 @@ public:
     Q_INVOKABLE static bool extractZipFile(const QString& fileName, const QString& destinationDirectory);
 
     ///Zips a directory.
-    Q_INVOKABLE static bool zipDirectory(const QString& fileName, const QString sourceDirName, QProgressBar *progress=0, const QString& comment=QString(""));
+    Q_INVOKABLE static bool zipDirectory(const QString& fileName, const QString sourceDirName, const QString comment=QString(""));
 
     ///Adds files to a zip file.
     Q_INVOKABLE bool zipFiles(QString fileName, QVariantList fileList, QString comment="");

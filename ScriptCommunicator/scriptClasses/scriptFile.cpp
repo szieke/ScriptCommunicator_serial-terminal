@@ -620,7 +620,7 @@ static void recurseAddDir(QDir dir, QStringList & list)
  * @return
  *      True on success.
  */
-bool ScriptFile::zipDirectory(const QString& fileName, const QString sourceDirName, QProgressBar *progress, const QString& comment)
+bool ScriptFile::zipDirectory(const QString& fileName, const QString sourceDirName, const QString comment)
 {
 
     QDir dir(sourceDirName);
@@ -642,7 +642,7 @@ bool ScriptFile::zipDirectory(const QString& fileName, const QString sourceDirNa
         fileList << entry;
     }
 
-    return zipFiles(fileName, fileList, progress, comment);
+    return zipFiles(fileName, fileList, nullptr, comment);
 }
 
 
