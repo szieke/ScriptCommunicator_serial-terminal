@@ -1694,9 +1694,9 @@ bool MainWindow::loadSettings()
                         else
                         {
                             currentSettings.appFontSize = QString::number(QApplication::font().pixelSize());
-                            if(currentSettings.appFontSize.toUInt() < 12)
+                            if(currentSettings.appFontSize.toUInt() < 14)
                             {
-                                currentSettings.appFontSize = "12";
+                                currentSettings.appFontSize = "14";
                             }
                         }
 

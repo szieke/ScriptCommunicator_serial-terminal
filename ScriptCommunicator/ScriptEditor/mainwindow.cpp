@@ -77,7 +77,7 @@ MainWindow::MainWindow(QStringList scripts) : ui(new Ui::MainWindow), m_parseTim
     m_lockFiles(), m_unsavedInfoFiles(), m_checkForFileChangesTimer(),
     m_lastMouseMoveEventPosition(0, 0), m_mouseEventTimer(),
     m_indicatorClickTimer(), m_lastIndicatorClickPosition(0), m_showParseError(true),
-    m_scriptsToLoadAfterStart(scripts), m_useDarkStyle(false), m_applicationFontSize(10)
+    m_scriptsToLoadAfterStart(scripts), m_useDarkStyle(false), m_applicationFontSize(14)
 {
     ui->setupUi(this);
 
@@ -2436,6 +2436,13 @@ void MainWindow::readSettings()
     }
     else
     {
+        m_currentFont = QApplication::font();
+        m_applicationFontSize = QApplication::font().pixelSize();
+        if(m_applicationFontSize < 14)
+        {
+            m_applicationFontSize = 14;
+        }
+
         if(m_scriptsToLoadAfterStart.isEmpty())
         {
             addTab("", false);

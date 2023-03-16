@@ -282,7 +282,7 @@ void SingleDocument::setTextColors(QColor defaultColor)
  */
 void SingleDocument::setUpBackgroundColor(void)
 {
-    QColor colorBack = m_useDarkStyle ? QColor(0x31, 0x36, 0x3b) : QColor(0xff, 0xff, 0xff);
+    QColor colorBack = m_useDarkStyle ? QColor(0x31, 0x36, 0x3b) : QColor(0xfa, 0xfa, 0xfa);
     QColor colorFor = m_useDarkStyle ?  QColor(0xef, 0xf0, 0xf1) : QColor(0, 0, 0);
 
     setMarginsBackgroundColor(m_useDarkStyle ? QColor(0x20, 0x20, 0x20) : QColor(0xe0, 0xe0, 0xe0));
