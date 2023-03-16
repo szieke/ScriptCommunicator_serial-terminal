@@ -51,10 +51,10 @@ function cleanAll()
 	if(UI_chkBox_autodetectTools.isChecked() ) {
 		UI_lnEd_pathAddr2Line.setText("");
 		UI_label_verAddr2Line.setText("");
-		UI_label_verAddr2Line.setWindowTextColor("");
+		UI_label_verAddr2Line.setWindowTextColor("darkGray");	// Reasonable default that works on dark and light themes
 		UI_lnEd_pathReadElf.setText("");
 		UI_label_verReadelf.setText("");
-		UI_label_verReadelf.setWindowTextColor("");
+		UI_label_verReadelf.setWindowTextColor("darkGray");		// Reasonable default that works on dark and light themes
 	}
 	cleanFwInfo();
 }
@@ -72,7 +72,7 @@ function addr2lineVersionUpdate()
 		}
 		else {		// OK
 			UI_label_verAddr2Line.setText( (ret.stdOut).split("\n")[0] );	// First Line
-			UI_label_verAddr2Line.setWindowTextColor("");
+			UI_label_verAddr2Line.setWindowTextColor("darkGray");	// Reasonable default that works on dark and light themes
 		}
 	}
 }
@@ -90,7 +90,7 @@ function readelfVersionUpdate()
 		}
 		else {		// OK
 			UI_label_verReadelf.setText( (ret.stdOut).split("\n")[0] );		// First Line
-			UI_label_verReadelf.setWindowTextColor("");
+			UI_label_verReadelf.setWindowTextColor("darkGray");	// Reasonable default that works on dark and light themes
 		}
 	}
 }
