@@ -11,7 +11,7 @@ for(var i = 0; i < 3; i++)
 	soundObject.play();
 	while(!soundObject.isFinished())
 	{
-		scriptThread.sleep(100);
+		scriptThread.sleep(1);
 	}
 }
 scriptThread.stopScript();
