@@ -68,7 +68,11 @@ MainWindowBase::MainWindowBase(QWidget *parent, Qt::WindowFlags flags) :
     if(qDesigner->darkModeIsEnabled())
     {
         (void)QResource::registerResource(QCoreApplication::applicationDirPath() + "/stylesheet.rcc");
+#ifdef Q_OS_LINUX
+        QFile file(QCoreApplication::applicationDirPath() + "/stylesheetDesignerLinux.qss");
+#else
         QFile file(QCoreApplication::applicationDirPath() + "/stylesheet.qss");
+#endif
         QString styleSheet;
         if(file.exists())
         {
