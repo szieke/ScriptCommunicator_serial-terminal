@@ -869,7 +869,7 @@ void SendWindow::editScriptButtonClickedSlot(void)
         QStringList arguments;
         SequenceTablePlainTextEdit* textEdit = static_cast<SequenceTablePlainTextEdit*>(m_userInterface->tableWidget->cellWidget(selectedRow, COLUMN_SCRIPT));
         arguments << textEdit->toPlainText();
-        MainWindow::openScriptEditor(arguments, m_settingsDialog->settings(), this);
+        m_mainWindow->openScriptEditor(arguments, m_settingsDialog->settings(), this);
     }
 }
 
@@ -1508,7 +1508,7 @@ void SendWindow::editCyclicSendScriptSlot(void)
 {
     QStringList arguments;
     arguments << m_userInterface->CyclicSendScript->toPlainText() ;
-    MainWindow::openScriptEditor(arguments, m_settingsDialog->settings(), this);
+    m_mainWindow->openScriptEditor(arguments, m_settingsDialog->settings(), this);
 }
 
 /**
@@ -1575,7 +1575,7 @@ void SendWindow::editAllSequenceScriptsSlot(void)
                 arguments << script;
             }
         }
-        MainWindow::openScriptEditor(arguments, m_mainWindow->getSettingsDialog()->settings(), this);
+        m_mainWindow->openScriptEditor(arguments, m_mainWindow->getSettingsDialog()->settings(), this);
     }
 }
 

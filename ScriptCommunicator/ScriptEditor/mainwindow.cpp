@@ -1172,6 +1172,11 @@ void MainWindow::startDesigner(QString uiFile)
     QStringList arguments;
     arguments << uiFile;
 
+    if(m_useDarkStyle)
+    {
+        arguments << "-darkMode";
+    }
+
     QProcess *myProcess = new QProcess(this);
     bool processCreated = myProcess->startDetached(program, arguments);
 

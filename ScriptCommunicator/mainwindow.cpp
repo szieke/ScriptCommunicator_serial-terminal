@@ -3740,6 +3740,8 @@ bool MainWindow::startScriptEditor(QString scriptEditor, QStringList arguments, 
 #else
     (void)isInternalEditor;
 
+   // if(m_settingsDialog->settings().)
+
     //Start the script editor.
     if(!myProcess->startDetached(scriptEditor, arguments))
     {

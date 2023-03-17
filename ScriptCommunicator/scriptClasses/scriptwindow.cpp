@@ -860,7 +860,7 @@ void ScriptWindow::editAllWorkerScriptsSlot()
                 arguments << script;
             }
         }
-        MainWindow::openScriptEditor(arguments, m_mainWindow->getSettingsDialog()->settings(), this);
+        m_mainWindow->openScriptEditor(arguments, m_mainWindow->getSettingsDialog()->settings(), this);
     }
 }
 
@@ -925,6 +925,11 @@ void ScriptWindow::editUiSlot()
 #endif
         QStringList arguments;
         arguments << m_userInterface->tableWidget->item(selectedRow, COLUMN_UI_PATH)->text() ;
+
+        if(m_mainWindow->getSettingsDialog()->settings()->useDarkStyle)
+        {
+            arguments << "-darkMode";
+        }
 
         QProcess *myProcess = new QProcess(this);
         QProcessEnvironment env = QProcessEnvironment::systemEnvironment();
@@ -1696,7 +1701,7 @@ void ScriptWindow::editScriptButtonPressedSlot(void)
     {
         QStringList arguments;
         arguments << m_userInterface->tableWidget->item(selectedRow, COLUMN_SCRIPT_PATH)->text();
-        MainWindow::openScriptEditor(arguments, m_mainWindow->getSettingsDialog()->settings(), this);
+        m_mainWindow->openScriptEditor(arguments, m_mainWindow->getSettingsDialog()->settings(), this);
     }
 }
 

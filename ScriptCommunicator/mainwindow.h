@@ -186,10 +186,10 @@ public:
                                            bool withSpaces = true, DecimalType decimalType = DECIMAL_TYPE_UINT8, Endianess endianess = LITTLE_ENDIAN_TARGET);
 
     ///Starts/executes the script editor.
-    static bool startScriptEditor(QString scriptEditor, QStringList arguments, QWidget *parent, bool isInternalEditor);
+    bool startScriptEditor(QString scriptEditor, QStringList arguments, QWidget *parent, bool isInternalEditor);
 
     ///Opens the external script editor.
-    static void openScriptEditor(QStringList arguments, const Settings *currentSettings, QWidget *parent);
+    void openScriptEditor(QStringList arguments, const Settings *currentSettings, QWidget *parent);
 
     ///Limits the number of char in the given text edit to the value of maxChars.
     static void limtCharsInTextEdit(const QTextEdit *textEdit, const int maxChars);
