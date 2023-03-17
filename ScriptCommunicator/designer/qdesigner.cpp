@@ -53,7 +53,7 @@ QDesigner::QDesigner(int &argc, char **argv)
     : QApplication(argc, argv),
       m_server(nullptr),
       m_client(nullptr),
-      m_workbench(0), m_suppressNewFormShow(false)
+      m_workbench(0), m_suppressNewFormShow(false), m_darkModeIsEnabled(false)
 {
     setOrganizationName(QStringLiteral("QtProject"));
     QGuiApplication::setApplicationDisplayName(QLatin1String(designerDisplayName));
