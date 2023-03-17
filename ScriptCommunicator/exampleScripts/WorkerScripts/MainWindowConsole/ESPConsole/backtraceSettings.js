@@ -95,6 +95,60 @@ function readelfVersionUpdate()
 	}
 }
 
+/* Check if addr2line executable present and its version */
+function checkAddr2line()
+{
+	if( scriptThread.checkFileExists(UI_lnEd_pathAddr2Line.text(), false) ) {
+		UI_chkBox_backtraceDecode.setChecked(true);
+		clickedDecode();	// Simulate checkbox clicked signal
+		addr2lineVersionUpdate();
+	}
+	else {
+		UI_label_verAddr2Line.setText("Addr2Line not found!");
+		UI_label_verAddr2Line.setWindowTextColor("red");
+		UI_chkBox_backtraceDecode.setChecked(false);
+		clickedDecode();	// Simulate checkbox clicked signal
+	}
+}
+
+/* Check if readelf executable present and its version 
+ * 	Also update fwinfo if present (elf should be checked before)
+*/
+function checkReadelf(elfFile)
+{
+	if( scriptThread.checkFileExists(UI_lnEd_pathReadElf.text(), false) ) 
+	{
+		readelfVersionUpdate();
+		
+		// Get String dump of section '.flash.appdesc'. Use: xtensa-esp32-elf-readelf -p .flash.appdesc <project.elf>
+		var program = UI_lnEd_pathReadElf.text();
+		var arguments = Array("-p", ".flash.appdesc", elfFile);	
+		var ret = runProcessAsync(program, arguments, -1, 1000, "");
+		var stringArray = (ret.stdOut).split("\n");
+		
+		if((ret.exitCode == 0) && (stringArray.length > 7)) 
+		{
+			// NOTE: Nothing too crazy here, positions are hardcoded.
+			// 	In case the tool output format changes it will only break firmware info, not decoding ability
+			UI_lnEd_FwAppVer.setText(	stringArray[3].slice(12));	// Project version example: '  [    10]  0.1.0.77'
+			UI_lnEd_FwName.setText(		stringArray[4].slice(12));	// Project name example: 	'  [    30]  my_project'
+			UI_lnEd_FwBuildTime.setText(stringArray[5].slice(12));	// Build time example: 		'  [    50]  12:23:58'
+			UI_lnEd_FwBuildDate.setText(stringArray[6].slice(12));	// Build date example: 		'  [    60]  Mar 11 2023'
+			UI_lnEd_FwIDFVer.setText(	stringArray[7].slice(12));	// IDF version example: 	'  [    70]  v4.4.1'			
+			// Main window tab info label:
+			UI_lnEd_projectLoaded.setText(UI_lnEd_FwName.text() + " v" + UI_lnEd_FwAppVer.text() + 
+						" / ESP-IDF " + UI_lnEd_FwIDFVer.text() + " on " + UI_lnEd_target.text());
+		}
+		//else just dont fill FW info - not required for backtrace
+	}
+	else {
+		// addr2line not found
+		cleanFwInfo();
+		UI_label_verReadelf.setText("Readelf not found!");
+		UI_label_verReadelf.setWindowTextColor("red");
+	}
+}
+
 /* Manual Tools Executable selection */
 function clickedOpenToolsFile()
 {
@@ -146,9 +200,6 @@ function parseFwFileInfo ()
 	// First check if elf file is present, otherwise we can't do anything
 	if(scriptFile.checkFileExists(elfFile, false))
 	{
-		UI_chkBox_backtraceDecode.setChecked(true);
-		clickedDecode();	// Simulate checkbox clicked signal
-		
 		var autodetect = UI_chkBox_autodetectTools.isChecked();
 		var idx = elfFile.lastIndexOf('/');				// index of last forward slash. Works on windows too
 		var projBuildPath = elfFile.substring(0, idx+1);	// including last slash
@@ -176,48 +227,9 @@ function parseFwFileInfo ()
 				UI_lnEd_pathReadElf.setText( cmakeFile.substring(idx+1, cmakeFile.indexOf('\n', idx)).trim() );
 			}
 			
-			if( scriptThread.checkFileExists(UI_lnEd_pathAddr2Line.text(), false) ) {
-				addr2lineVersionUpdate();
-			}
-			else {
-				UI_label_verAddr2Line.setText("Addr2Line not found!");
-				UI_label_verAddr2Line.setWindowTextColor("red");
-				UI_chkBox_backtraceDecode.setChecked(false);
-				clickedDecode();	// Simulate checkbox clicked signal
-			}
-			
-			if( scriptThread.checkFileExists(UI_lnEd_pathReadElf.text(), false) ) 
-			{
-				readelfVersionUpdate();
-				
-				// Get String dump of section '.flash.appdesc'. Use: xtensa-esp32-elf-readelf -p .flash.appdesc <project.elf>
-				var program = UI_lnEd_pathReadElf.text();
-				var arguments = Array("-p", ".flash.appdesc", elfFile);	
-				var ret = runProcessAsync(program, arguments, -1, 1000, "");
-				var stringArray = (ret.stdOut).split("\n");
-				
-				if((ret.exitCode == 0) && (stringArray.length > 7)) 
-				{
-					// NOTE: Nothing too crazy here, positions are hardcoded.
-					// 	In case the tool output format changes it will only break firmware info, not decoding ability
-					UI_lnEd_FwAppVer.setText(	stringArray[3].slice(12));	// Project version example: '  [    10]  0.1.0.77'
-					UI_lnEd_FwName.setText(		stringArray[4].slice(12));	// Project name example: 	'  [    30]  my_project'
-					UI_lnEd_FwBuildTime.setText(stringArray[5].slice(12));	// Build time example: 		'  [    50]  12:23:58'
-					UI_lnEd_FwBuildDate.setText(stringArray[6].slice(12));	// Build date example: 		'  [    60]  Mar 11 2023'
-					UI_lnEd_FwIDFVer.setText(	stringArray[7].slice(12));	// IDF version example: 	'  [    70]  v4.4.1'			
-					// Main window tab info label:
-					UI_lnEd_projectLoaded.setText(UI_lnEd_FwName.text() + " v" + UI_lnEd_FwAppVer.text() + 
-								" / ESP-IDF " + UI_lnEd_FwIDFVer.text() + " on " + UI_lnEd_target.text());
-				}
-				//else just dont fill FW info - not required for backtrace
-			}
-			else {
-				// addr2line not found
-				cleanFwInfo();
-				UI_label_verReadelf.setText("Readelf not found!");
-				UI_label_verReadelf.setWindowTextColor("red");
-			}
-			
+			checkAddr2line();		// Check if addr2line executable present and its version
+			checkReadelf(elfFile);	// Check if readelf executable present and its version 
+
 			// Find target chip
 			// Example to search: IDF_TARGET:STRING=esp32
 			idx = cmakeFile.indexOf("IDF_TARGET:STRING");	// Match string (first occurence)
@@ -228,10 +240,14 @@ function parseFwFileInfo ()
 			// Cleanup invalid info
 			cleanAll();
 			if(autodetect) {
+				UI_lnEd_pathAddr2Line.setText("");
 				UI_label_verAddr2Line.setText("CmakeCache.txt not found!");
 				UI_label_verAddr2Line.setWindowTextColor("red");
+				UI_lnEd_pathReadElf.setText("");
 				UI_label_verReadelf.setText("CmakeCache.txt not found!");
 				UI_label_verReadelf.setWindowTextColor("red");
+				UI_chkBox_backtraceDecode.setChecked(false);
+				clickedDecode();	// Simulate checkbox clicked signal
 				// Also show warning message if backtrace is enabled so user knows what's up
 				if(UI_chkBox_backtraceDecode.isChecked()) {
 					scriptThread.messageBox("Warning", "CmakeCache.txt not found", "File <b>CmakeCache.txt</b> was not found. "
@@ -240,6 +256,11 @@ function parseFwFileInfo ()
 						+ "Backtrace can only be decoded if correct <b>Addr2Line</b> tool is used for selected .elf file."
 					);
 				}
+			}
+			else {	// Elf found, CmakeCache.txt not, but autodetect off
+				// try parsing with selected tools
+				checkAddr2line();		// Check if addr2line executable present and its version
+				checkReadelf(elfFile);	// Check if readelf executable present and its version
 			}
 		}
 	}

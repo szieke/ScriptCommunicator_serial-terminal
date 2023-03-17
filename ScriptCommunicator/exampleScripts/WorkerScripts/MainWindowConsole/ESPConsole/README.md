@@ -17,15 +17,17 @@ Of course you can use this as serial terminal with no backtrace decoding in whic
 
 ### Autodetect tools (recommended)
 
+If you have corectly set up and working ESP-IDF Cmake build environment the only requirement would be to select project **ELF file that is running on your ESP MCU**. You should find this file in `/build` subfolder of your project. With default config it should be the only `.elf` file in build folder. Autodetect then finds correct xtensa tools that will be used for backtrace decoding by parsing contents of `CmakeCache.txt` from the same folder.
+
 #### Requires:
 - Completely set-up and working ESP-IDF Cmake build environment
 - Project output `.elf` file and `CmakeCache.txt` in same folder
 - Project successfully built, same build version running on ESP MCU
 
-If you have corectly set up and working ESP-IDF Cmake build environment the only requirement would be to select project **ELF file that is running on your ESP MCU**. You should find this file in `/build` subfolder of your project. With default config it should be the only `.elf` file in build folder. Autodetect then finds correct xtensa tools that will be used for backtrace decoding by parsing contents of `CmakeCache.txt` from the same folder.
-
 
 ### Manual tools selection (advanced)
+
+If you, for example, run the console on different system without build tools or your IDF project is using **legacy make**, you can still decode the backtraces. In this case you have to find correct decoding tools manually, which may be a bit complicated as there are multiple versions of the tools, each for specific target and ESP-IDF version. 
 
 #### Requires:
 - Project output `.elf` file
@@ -33,17 +35,16 @@ If you have corectly set up and working ESP-IDF Cmake build environment the only
 - Optional: `elf-readelf` executable to decode firmware information (*xtensa-esp32-elf-readelf.exe* for example) 
 - Project successfully built, same build version running on ESP MCU
 
-If you, for example, run the console on different system without build tools, you can still decode the backtraces. In this case you have to find correct decoding tools manually, which may be a bit complicated as there are multiple versions of the tools, each for specific target and ESP-IDF version. 
 
 ----
 
 ## Notes
 
-- Tested on Ubuntu 20 with autodetect, IDF v4.4.1
+- Tested on Ubuntu 20 with autodetect and manual, IDF v4.4.1
 - Tested on Windows with manual tools selection, IDF tools v4.4.4
+- Backtrace decoding of of project build with *legacy make* not tested
 
 #### TODO:
 
-- Possible logical error with decoder autodisable when incorrect input file/s are selected
 - Add tooltips and/or link to this readme
 
