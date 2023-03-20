@@ -1,4 +1,4 @@
-/***************************************************************************************
+﻿/***************************************************************************************
 This worker script (worker scripts can be added in the script window) demonstrates the usage of
 a custom widget class (LED class).
 ****************************************************************************************/
@@ -77,7 +77,12 @@ function sliderSlot(value)
 	try
 	{
 		//Get the corresponding LED and switch it on.
-		eval("UI_l" + Math.round((value / 10))).setState(true);
+		var index = parseInt(Math.round((value / 10)))
+		if(index == 0)
+		{
+			index++;
+		}
+		eval("UI_l" + index).setState(true);
 	}
 	catch(e)
 	{
