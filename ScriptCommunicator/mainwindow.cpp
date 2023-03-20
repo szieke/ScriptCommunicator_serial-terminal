@@ -4847,7 +4847,7 @@ void MainWindow::saveConsoleSlot()
 void MainWindow::submitBugSlot()
 {
     QString text = "To report a bug go to";
-    text.append("<br><a href=\"http://sourceforge.net/p/scriptcommunicator/discussion/bugreports/\">http://sourceforge.net/p/scriptcommunicator/discussion/bugreports</a>");
+    text.append("<br><a href=\"http://sourceforge.net/p/scriptcommunicator/discussion/bugreports/\" style=\"color: #1c86ce\">http://sourceforge.net/p/scriptcommunicator/discussion/bugreports</a>");
     text.append("<br>and create a topic with your bug");
 
     QMessageBox msgBox(QMessageBox::Information, "report a bug",text);
@@ -4861,7 +4861,7 @@ void MainWindow::submitBugSlot()
 void MainWindow::requestFeatureSlot()
 {
     QString text = "To request a new feature go to";
-    text.append("<br><a href=\"http://sourceforge.net/p/scriptcommunicator/discussion/featurerequests//\">http://sourceforge.net/p/scriptcommunicator/discussion/featurerequests</a>");
+    text.append("<br><a href=\"http://sourceforge.net/p/scriptcommunicator/discussion/featurerequests//\"style=\"color: #1c86ce\">http://sourceforge.net/p/scriptcommunicator/discussion/featurerequests</a>");
     text.append("<br>and create a topic with the desired feature");
 
     QMessageBox msgBox(QMessageBox::Information, "request a feature",text);
@@ -4900,7 +4900,7 @@ void MainWindow::addScriptSlot()
 void MainWindow::getSupportSlot()
 {
     QString text = "To get support go to";
-    text.append("<br><a href=\"http://sourceforge.net/p/scriptcommunicator/discussion/general//\">http://sourceforge.net/p/scriptcommunicator/discussion/general</a>");
+    text.append("<br><a href=\"http://sourceforge.net/p/scriptcommunicator/discussion/general//\"style=\"color: #1c86ce\">http://sourceforge.net/p/scriptcommunicator/discussion/general</a>");
     text.append("<br>and create a topic.");
 
     QMessageBox msgBox(QMessageBox::Information, "get support",text);
@@ -4914,7 +4914,7 @@ void MainWindow::getSupportSlot()
 void MainWindow::watchVideoSlot()
 {
     QString text = "A video which demonstrates the basic features of ScriptCommunicator can be found here:";
-    text.append("<br><a href=\"https://www.youtube.com/playlist?list=PLniMuy2Q_xGuFB_kl1nte2mDxfeeOu8ce\">https://www.youtube.com/playlist?list=PLniMuy2Q_xGuFB_kl1nte2mDxfeeOu8ce</a>");
+    text.append("<br><a href=\"https://www.youtube.com/playlist?list=PLniMuy2Q_xGuFB_kl1nte2mDxfeeOu8ce\"style=\"color: #1c86ce\">https://www.youtube.com/playlist?list=PLniMuy2Q_xGuFB_kl1nte2mDxfeeOu8ce</a>");
 
     QMessageBox msgBox(QMessageBox::Information, "video",text);
     msgBox.setTextFormat(Qt::RichText);
