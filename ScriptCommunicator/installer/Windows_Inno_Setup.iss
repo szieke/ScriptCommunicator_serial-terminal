@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "ScriptCommunicator"
-#define MyAppVersion "5.21"
+#define MyAppVersion "6.00"
 #define MyAppPublisher "Stefan Zieker"
 #define MyAppURL "https://sourceforge.net/projects/scriptcommunicator/"
 #define MyAppExeName "ScriptCommunicator.exe"
@@ -19,11 +19,11 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\{#MyAppName}_{#MyAppVersion}
+DefaultDirName={commonpf}\{#MyAppName}_{#MyAppVersion}
 DefaultGroupName={#MyAppName} {#MyAppVersion}
 AllowNoIcons=yes
 OutputDir=C:\Users\bcsstzi\Desktop\
-OutputBaseFilename=ScriptCommunicatorSetup_05_21_windows
+OutputBaseFilename=ScriptCommunicatorSetup_06_00_windows
 SetupIconFile=D:\ScriptCommunicator\ScriptCommunicator\images\main.ico
 Compression=lzma
 SolidCompression=yes
