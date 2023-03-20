@@ -36,6 +36,7 @@
 #include <QNetworkProxyFactory>
 #include <QNetworkProxy>
 #include "scriptTcpClient.h"
+#include <QCoreApplication>
 
 
 
@@ -1004,8 +1005,16 @@ bool MainInterfaceThread::sendDataWithTheMainInterface(const QByteArray &data, Q
                         m_serial->blockSignals(true);
                         *serialPortSignalBlocked = true;
 
-                        if(!m_serial->waitForBytesWritten(SEND_TIMEOUT))
+                        //Note: waitForBytesWritten generates a segmentation fault (Qt 6.4.2)
+                        qint64 timeStart = QDateTime::currentMSecsSinceEpoch();
+                        while((m_serial->bytesToWrite() > 0) && ((QDateTime::currentMSecsSinceEpoch() - timeStart) < SEND_TIMEOUT))
                         {
+                            QCoreApplication::processEvents();
+                            QThread::msleep(1);
+                        }
+
+                        if((QDateTime::currentMSecsSinceEpoch() - timeStart) >= SEND_TIMEOUT)
+                        {//Timeout.
                             success = false;
                         }
 

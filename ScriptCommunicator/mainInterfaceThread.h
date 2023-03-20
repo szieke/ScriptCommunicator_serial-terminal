@@ -45,7 +45,7 @@ public:
     ~MainInterfaceThread();
 
     ///Timeout (ms)for sending data (5 minutes).
-    static const uint SEND_TIMEOUT = (1000 * 60 * 5);
+    static const qint32 SEND_TIMEOUT = (1000 * 60 * 5);
 
     ///Start value for the send thread send ids .
     static const quint32 SEND_ID_SCRIPTS_START = 1000;
