@@ -283,7 +283,7 @@ void ScriptFile::showExceptionInMessageBox(QJSValue exception, QString scriptPat
  *      True on success.
  */
 bool ScriptFile::loadScript(QString scriptPath, bool isRelativePath, QJSEngine* scriptEngine, QWidget *parent, ScriptWindow *scriptWindow,
-                            bool checkForUnsavedData, bool* scriptShallBeStopped)
+                            bool checkForUnsavedData)
 {
   (void)scriptWindow;
     bool hasSucceded = true;
@@ -301,10 +301,6 @@ bool ScriptFile::loadScript(QString scriptPath, bool isRelativePath, QJSEngine* 
                                        parent, &yesPressed);
             if(!yesPressed)
             {
-                if(scriptShallBeStopped)
-                {
-                    *scriptShallBeStopped = true;
-                }
                 return false;
             }
         }
@@ -325,8 +321,8 @@ bool ScriptFile::loadScript(QString scriptPath, bool isRelativePath, QJSEngine* 
         QJSValue result = scriptEngine->evaluate(scriptFile.readAll(), scriptPath);
         scriptFile.close();
 
-        // If any Error, Display line number and error in a message box.
-        if (result.isError())
+        // If any Error (and the sript was not stopped), Display line number and error in a message box.
+        if (result.isError() && !scriptEngine->isInterrupted())
         {
             QString str;
             QJSValueIterator it(result);

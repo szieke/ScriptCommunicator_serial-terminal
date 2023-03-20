@@ -100,7 +100,7 @@ public:
     void showExceptionInMessageBox(QJSValue exception, QString scriptPath, QWidget *parent);
 
     ///Loads/includes one script (QtScript has no built in include mechanism).
-    bool loadScript(QString scriptPath, bool isRelativePath, QJSEngine* scriptEngine, QWidget* parent, ScriptWindow* scriptWindow, bool checkForUnsavedData, bool *scriptShallBeStopped);
+    bool loadScript(QString scriptPath, bool isRelativePath, QJSEngine* scriptEngine, QWidget* parent, ScriptWindow* scriptWindow, bool checkForUnsavedData);
 
     ///Sets the script file name (path).
     void setScriptFileName(QString scriptFileName){m_scriptFileName = scriptFileName;}

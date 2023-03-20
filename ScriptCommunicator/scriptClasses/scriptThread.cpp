@@ -448,7 +448,7 @@ void ScriptThread::run()
         setThreadState(RUNNING);
 
 
-        if (loadScript(m_scriptFileName, false))
+        if (loadScript(m_scriptFileName, false, false))
         {
             exec();
 
@@ -459,21 +459,25 @@ void ScriptThread::run()
             blockSignals(false);
             m_scriptInf->blockSignals(false);
 
-            //Call the script stop function
-            QJSValue stopFunction = m_scriptEngine->evaluate("stopScript");
+            if(!m_scriptEngine->isInterrupted())
+            {//The script was not stopped due to an error.
 
-            if (!stopFunction.isError())
-            {//The script has a stop function
+                //Call the script stop function
+                QJSValue stopFunction = m_scriptEngine->evaluate("stopScript");
 
-                QJSValue result = stopFunction.call();
+                if (!stopFunction.isError())
+                {//The script has a stop function
 
-                if(result.isError())
-                {//An error has occurred in stopScript.
+                    QJSValue result = stopFunction.call();
 
-                    QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
-                    showExceptionInMessageBox(result, parent);
+                    if(result.isError())
+                    {//An error has occurred in stopScript.
+
+                        QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
+                        showExceptionInMessageBox(result, parent);
+                    }
+
                 }
-
             }
 
 
@@ -1201,27 +1205,31 @@ void ScriptThread::scriptSignalHandlerSlot(const QJSValue & exception)
  *      The script path.
  * @param isRelativePath
  *      True of scriptPath is a relative path.
+ * @param stopScriptOnError
+ *      True if the script shall be stopped in case of an error.
  * @return
  *      True for success.
  */
-bool ScriptThread::loadScript(QString scriptPath, bool isRelativePath)
+bool ScriptThread::loadScript(QString scriptPath, bool isRelativePath, bool stopScriptOnError)
 {
     QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
-    bool scriptShallBeStopped = false;
 
     m_scriptIsLoading = true;
-    bool result =  m_scriptFileObject->loadScript(scriptPath, isRelativePath, m_scriptEngine, parent, m_scriptWindow, true, &scriptShallBeStopped);
+    bool result =  m_scriptFileObject->loadScript(scriptPath, isRelativePath, m_scriptEngine, parent, m_scriptWindow, true);
     m_scriptIsLoading = false;
 
-    if(!result && scriptShallBeStopped)
-    {
-        stopScript();
-    }
 
     if(result)
     {
       scriptPath = isRelativePath ? createAbsolutePath(scriptPath) : scriptPath;
       m_loadedScripts.append(scriptPath);
+    }
+    else
+    {
+        if(stopScriptOnError)
+        {
+            stopScript();
+        }
     }
 
     return result;

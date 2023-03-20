@@ -292,7 +292,7 @@ public:
     Q_INVOKABLE QJSValue createXmlWriter();
 
     ///Loads/includes one script (QtScript has no built in include mechanism).
-    Q_INVOKABLE bool loadScript(QString scriptPath, bool isRelativePath=true);
+    Q_INVOKABLE bool loadScript(QString scriptPath, bool isRelativePath=true, bool stopScriptOnError = true);
 
     ///Loads a dynamic link library and calls the init function (void init(QJSEngine* engine)).
     ///With this function a script can extend his functionality.
