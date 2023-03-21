@@ -19,6 +19,12 @@
 
 class ScriptSqlIndex;
 
+#ifdef Q_OS_LINUX
+///The type id of a script array.
+static const quint32 SCRIPT_ARRAY_TYPE_ID = 0x1003D;
+#else
+static const quint32 SCRIPT_ARRAY_TYPE_ID = 0x10030;
+#endif
 
 class  ScriptSqlField : public QObject, public ScriptObject
 {
@@ -48,7 +54,7 @@ public:
 
     Q_INVOKABLE void setValue(QVariant value)
     {
-        if(value.typeId() == (QMetaType::QJsonArray | QMetaType::User)){value = ScriptHelper::variantListToByteArray(value.toList());}
+        if(value.typeId() == SCRIPT_ARRAY_TYPE_ID){value = ScriptHelper::variantListToByteArray(value.toList());}
         m_field.setValue(value);
     }
     Q_INVOKABLE QVariant value()
@@ -73,7 +79,7 @@ public:
     Q_INVOKABLE void setPrecision(int precision){m_field.setPrecision(precision);}
     Q_INVOKABLE void setDefaultValue(QVariant value)
     {
-        if(value.typeId() == (QMetaType::QJsonArray | QMetaType::User)){value = ScriptHelper::variantListToByteArray(value.toList());}
+        if(value.typeId() == SCRIPT_ARRAY_TYPE_ID){value = ScriptHelper::variantListToByteArray(value.toList());}
         m_field.setDefaultValue(value);
     }
     Q_INVOKABLE void setSqlType(int type){m_field.setSqlType(type);}
@@ -136,12 +142,12 @@ public:
     }
     Q_INVOKABLE void setValue(int i, QVariant val)
     {
-        if(val.typeId() == (QMetaType::QJsonArray | QMetaType::User)){val = ScriptHelper::variantListToByteArray(val.toList());}
+        if(val.typeId() == SCRIPT_ARRAY_TYPE_ID){val = ScriptHelper::variantListToByteArray(val.toList());}
         m_record.setValue(i, val);
     }
     Q_INVOKABLE void setValue(QString name, QVariant val)
     {
-        if(val.typeId() == (QMetaType::QJsonArray | QMetaType::User)){val = ScriptHelper::variantListToByteArray(val.toList());}
+        if(val.typeId() == SCRIPT_ARRAY_TYPE_ID){val = ScriptHelper::variantListToByteArray(val.toList());}
         m_record.setValue(name, val);
     }
 
@@ -289,8 +295,6 @@ public:
         return MainWindow::parseApiFile("ScriptSqlQuery.api");
     }
 
-    ///The type id of a script array.
-    static const quint32 SCRIPT_ARRAY_TYPE_ID = 0x10030;
 
     Q_INVOKABLE bool isValid(){return m_query.isValid();}
     Q_INVOKABLE bool isActive(){return m_query.isActive();}
@@ -354,13 +358,13 @@ public:
     }
     Q_INVOKABLE void bindValue(int pos, QVariant val, quint32 type = (quint32)QSql::In)
     {
-        if(val.typeId() == (QMetaType::QJsonArray | QMetaType::User)){val = ScriptHelper::variantListToByteArray(val.toList());}
+        if(val.typeId() == SCRIPT_ARRAY_TYPE_ID){val = ScriptHelper::variantListToByteArray(val.toList());}
         m_query.bindValue(pos, val, (QSql::ParamType)type);
     }
 
     Q_INVOKABLE void addBindValue(QVariant val, quint32 type = (quint32)QSql::In)
     {
-        if(val.typeId() == (QMetaType::QJsonArray | QMetaType::User)){val = ScriptHelper::variantListToByteArray(val.toList());}
+        if(val.typeId() == SCRIPT_ARRAY_TYPE_ID){val = ScriptHelper::variantListToByteArray(val.toList());}
         m_query.addBindValue(val, (QSql::ParamType)type);
     }
     Q_INVOKABLE QVariant boundValue(QString placeholder)
