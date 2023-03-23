@@ -459,27 +459,25 @@ void ScriptThread::run()
             blockSignals(false);
             m_scriptInf->blockSignals(false);
 
-            if(!m_scriptEngine->isInterrupted())
-            {//The script was not stopped due to an error.
+            //Unblock the script (otherwise evaluate would fail).
+            m_scriptEngine->setInterrupted(false);
 
-                //Call the script stop function
-                QJSValue stopFunction = m_scriptEngine->evaluate("stopScript");
+            //Call the script stop function
+            QJSValue stopFunction = m_scriptEngine->evaluate("stopScript");
 
-                if (!stopFunction.isError())
-                {//The script has a stop function
+            if (!stopFunction.isError())
+            {//The script has a stop function
 
-                    QJSValue result = stopFunction.call();
+                QJSValue result = stopFunction.call();
 
-                    if(result.isError())
-                    {//An error has occurred in stopScript.
+                if(result.isError())
+                {//An error has occurred in stopScript.
 
-                        QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
-                        showExceptionInMessageBox(result, parent);
-                    }
-
+                    QWidget* parent = (m_scriptWindow->isVisible()) ? static_cast<QWidget *>(m_scriptWindow) : static_cast<QWidget *>(m_scriptWindow->getMainWindow());
+                    showExceptionInMessageBox(result, parent);
                 }
-            }
 
+            }
 
 
         }//if (loadScript(m_scriptFileName))
