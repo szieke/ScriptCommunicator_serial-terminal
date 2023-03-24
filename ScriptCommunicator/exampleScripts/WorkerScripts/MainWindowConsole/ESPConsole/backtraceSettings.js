@@ -12,6 +12,7 @@ Requres ScriptCommunicator v6+ (getUserGenericConfigFolder())
 /* ====    Load additional scripts and UI    ==== */
 scriptThread.loadUserInterfaceFile("./backtraceSettings.ui", true, false);
 
+
 /* ====    Global variables    ==== */
 var g_settingsFolder = scriptThread.getUserGenericConfigFolder() + "/SCScripts/";
 var g_settingsFileName = g_settingsFolder + "ESPConsole.ini";
@@ -29,6 +30,8 @@ UI_chkBox_autodetectTools.clickedSignal.connect(clickedAutodetect);
 // Combo box
 UI_comBox_projecElfFile.currentTextChangedSignal.connect(parseFwFileInfo);
 
+/* ====    Set info text     ==== */
+UI_label_EspConsoleVersion.setText(VERSION_INFO);
 
 /* ====    Functions     ==== */
 
@@ -137,7 +140,7 @@ function checkReadelf(elfFile)
 			UI_lnEd_FwIDFVer.setText(	stringArray[7].slice(12));	// IDF version example: 	'  [    70]  v4.4.1'			
 			// Main window tab info label:
 			UI_lnEd_projectLoaded.setText(UI_lnEd_FwName.text() + " v" + UI_lnEd_FwAppVer.text() + 
-						" / ESP-IDF " + UI_lnEd_FwIDFVer.text() + " on " + UI_lnEd_target.text());
+					" / ESP-IDF " + UI_lnEd_FwIDFVer.text());
 		}
 		//else just dont fill FW info - not required for backtrace
 	}
@@ -370,6 +373,8 @@ function loadUiSettings()
 		UI_chkBox_backtraceDecode.setChecked(((getValOfStrArr(stringArray, "DecodeBacktrace") == "true") ? true : false));		
 		clickedDecode();  // Sets correct state of other elements in relation checkbox
 		
+		UI_chkBox_invalidResultsEnable.setChecked(((getValOfStrArr(stringArray, "InvalidEnable") == "true") ? true : false));		
+		
 		var elfCurIndex = getValOfStrArr(stringArray, "ElfCurrentIndex");
 		var elfCount = getValOfStrArr(stringArray, "ElfCount");
 		
@@ -399,6 +404,7 @@ function saveUiSettings()
 	
 	settings += "[Settings]" + "\r\n";
 	settings += "DecodeBacktrace=" + (UI_chkBox_backtraceDecode.isChecked() ? "true" : "false") + "\r\n";
+	settings += "InvalidEnable=" + (UI_chkBox_invalidResultsEnable.isChecked() ? "true" : "false") + "\r\n";
 	settings += "ElfCurrentIndex=" + UI_comBox_projecElfFile.currentIndex() + "\r\n";
 	settings += "ElfCount=" + UI_comBox_projecElfFile.count() + "\r\n";
 	settings += "AutodetectTools=" + (UI_chkBox_autodetectTools.isChecked() ? "true" : "false") + "\r\n";
