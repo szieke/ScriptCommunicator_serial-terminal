@@ -7,7 +7,7 @@ See README.md for more details.
 Requres ScriptCommunicator v6+ (getUserGenericConfigFolder())
 ****************************************************************************************/
 
-var VERSION_INFO = "ESP Console v1.1 (24.03.2023)";
+var VERSION_INFO = "ESP Console v1.1 (26.03.2023)";
 
 // Load additional scripts and UI
 scriptThread.loadScript("runProcessAsync.js");
@@ -277,7 +277,6 @@ function dataReceivedSlot(data)
 
 // Connect Signals
 UI_btnBacktraceSettings.clickedSignal.connect(showSettingsDialog);
-
 
 //The console settings.
 var g_settings = scriptThread.getConsoleSettings();
