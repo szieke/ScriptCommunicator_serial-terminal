@@ -35,7 +35,7 @@
  * @param parent
  *      The parent pointer.
  */
-PCANBasicClass::PCANBasicClass(QObject *parent) : QObject(parent), m_dataReadyForRead(false)
+PCANBasicClass::PCANBasicClass(QObject *parent) : QObject(parent), m_dataReadyForRead(false), m_isCanFdInterface(false)
 {
 
     m_pcanAlreadyLoaded = false;
@@ -99,7 +99,9 @@ bool PCANBasicClass::setFilter(bool filterExtended, quint32 filterFrom, quint32 
  * @param channel
  *      The pcan channel.
  * @param baudRate
- *      The baudrate.
+ *      The baudrate. In case of CAN-FD the bitrate for the transmission of the CAN ID.
+ * @param dataBitrate
+ *      The bitrate for the transmission of the data (CAN-FD). If 0 classic CAN is used.
  * @param busOffAutoReset
  *      True if the PCAN driver shall reset automatically the CAN controller of a PCAN Channel when a bus-off state is detected.
  * @param powerSupply
@@ -107,14 +109,14 @@ bool PCANBasicClass::setFilter(bool filterExtended, quint32 filterFrom, quint32 
  * @return
  *      True on success.
  */
-bool PCANBasicClass::open(quint8 channel, quint32 baudRate, bool busOffAutoReset, bool powerSupply)
+bool PCANBasicClass::open(quint8 channel, quint32 baudRate, quint32 dataBitrate, bool busOffAutoReset, bool powerSupply)
 {
     bool result = false;
 
     m_currentHandle = (PCAN_USBBUS1 + channel) - 1;
     m_firstMessageReceived = false;
 
-    TPCANStatus status = initialize(m_currentHandle, (TPCANBaudrate)baudRate);
+    TPCANStatus status = initialize(m_currentHandle, (TPCANBaudrate)baudRate, dataBitrate);
     if(status == PCAN_ERROR_OK)
     {
        m_dataReadyForRead = false;
@@ -130,11 +132,18 @@ bool PCANBasicClass::open(quint8 channel, quint32 baudRate, bool busOffAutoReset
        QThread::msleep(100);
 
        //Discard all available messages.
-       TPCANMsg message;
+       TPCANMsgFD message;
        TPCANTimestamp time;
        do
        {
-           m_currentStatus = read(m_currentHandle, &message, &time);
+           if(m_isCanFdInterface)
+           {
+               m_currentStatus = readFd(m_currentHandle, &message, &time);
+           }
+           else
+           {
+               m_currentStatus = read(m_currentHandle, (TPCANMsg*)&message, &time);
+           }
 
        }while(!(m_currentStatus & PCAN_ERROR_QRCVEMPTY));
 
@@ -263,10 +272,11 @@ quint16 PCANBasicClass::convertBaudrateString(QString baudrate)
 bool PCANBasicClass::sendCanMessage(quint8 type, quint32 canId, QVector<unsigned char> data)
 {
     bool result = false;
-    TPCANMsg messageBuffer;
+    TPCANMsgFD messageBuffer;
+    quint32 maxBytesPerMessage = m_isCanFdInterface ? MAX_BYTES_PER_MESSAGE_FD : MAX_BYTES_PER_MESSAGE;
 
 
-    if(data.length() <= MAX_BYTES_PER_MESSAGE)
+    if(data.length() <= maxBytesPerMessage)
     {
         TPCANStatus status = PCAN_ERROR_UNKNOWN;
         quint32 errorCounter = 0;
@@ -274,12 +284,20 @@ bool PCANBasicClass::sendCanMessage(quint8 type, quint32 canId, QVector<unsigned
         messageBuffer.MSGTYPE = type;
         messageBuffer.ID = canId;
 
-        messageBuffer.LEN = data.length();
-        memcpy(messageBuffer.DATA, data.constData(), messageBuffer.LEN);
+        messageBuffer.DLC = dataLengthToDlc(data.length());
+        memcpy(messageBuffer.DATA, data.constData(), data.length());
 
         do
         {
-           status = write(m_currentHandle, &messageBuffer);
+            if(m_isCanFdInterface)
+            {
+                messageBuffer.MSGTYPE += PCAN_MESSAGE_FD + PCAN_MESSAGE_BRS;
+                status = writeFd(m_currentHandle, &messageBuffer);
+            }
+            else
+            {
+                status = write(m_currentHandle, (TPCANMsg*)&messageBuffer);
+            }
 
             if(status == PCAN_ERROR_QXMTFULL)
             {
@@ -316,7 +334,8 @@ bool PCANBasicClass::sendCanMessage(quint8 type, quint32 canId, QVector<unsigned
 bool PCANBasicClass::sendData(const QByteArray &data)
 {
     bool result = false;
-    TPCANMsg messageBuffer;
+    TPCANMsgFD messageBuffer;
+    quint32 maxBytesPerMessage = m_isCanFdInterface ? MAX_BYTES_PER_MESSAGE_FD : MAX_BYTES_PER_MESSAGE;
 
      if(m_currentHandle != PCAN_NONEBUS)
      {
@@ -339,17 +358,25 @@ bool PCANBasicClass::sendData(const QByteArray &data)
 
          if(data.length() > (BYTES_FOR_CAN_TYPE + BYTES_FOR_CAN_ID) )
          {
-             for(int i = 0; i < data.length() - (BYTES_FOR_CAN_TYPE + BYTES_FOR_CAN_ID) ; i+= MAX_BYTES_PER_MESSAGE)
+             for(int i = 0; i < data.length() - (BYTES_FOR_CAN_TYPE + BYTES_FOR_CAN_ID) ; i+= maxBytesPerMessage)
              {
-                 QByteArray tmpArray = data.mid(i + (BYTES_FOR_CAN_TYPE + BYTES_FOR_CAN_ID) , MAX_BYTES_PER_MESSAGE);
+                 QByteArray tmpArray = data.mid(i + (BYTES_FOR_CAN_TYPE + BYTES_FOR_CAN_ID) , maxBytesPerMessage);
                  quint32 errorCounter = 0;
 
-                 messageBuffer.LEN = tmpArray.length();
-                 memcpy(messageBuffer.DATA, tmpArray.constData(), messageBuffer.LEN);
+                 messageBuffer.DLC = dataLengthToDlc(tmpArray.length());
+                 memcpy(messageBuffer.DATA, tmpArray.constData(), tmpArray.length());
 
                  do
                  {
-                    status = write(m_currentHandle, &messageBuffer);
+                     if(m_isCanFdInterface)
+                     {
+                        messageBuffer.MSGTYPE += PCAN_MESSAGE_FD + PCAN_MESSAGE_BRS;
+                        status = writeFd(m_currentHandle, &messageBuffer);
+                     }
+                     else
+                     {
+                         status = write(m_currentHandle, (TPCANMsg*)&messageBuffer);
+                     }
 
                      if(status == PCAN_ERROR_QXMTFULL)
                      {
@@ -374,8 +401,16 @@ bool PCANBasicClass::sendData(const QByteArray &data)
              if(data.length() == (BYTES_FOR_CAN_TYPE + BYTES_FOR_CAN_ID))
              {//Empty message.
 
-                messageBuffer.LEN = 0;
-                status = write(m_currentHandle, &messageBuffer);
+                messageBuffer.DLC = 0;
+                if(m_isCanFdInterface)
+                {
+                   messageBuffer.MSGTYPE += PCAN_MESSAGE_FD + PCAN_MESSAGE_BRS;
+                   status = writeFd(m_currentHandle, &messageBuffer);
+                }
+                else
+                {
+                    status = write(m_currentHandle, (TPCANMsg*)&messageBuffer);
+                }
              }
              else
              {//Insufficient number of bytes.
@@ -439,6 +474,121 @@ QString PCANBasicClass::getStatusString(void)
 }
 
 /**
+ * Converts a CAN data length to a DLC.
+ * @param dlc
+ *      The DLC.
+ * @return
+ *      The data length.
+ */
+quint32 PCANBasicClass::dataLengthToDlc(quint32 length)
+{
+    quint32 dlc = 0;
+
+    if(length <= 8)
+    {
+        dlc = length;
+    }
+    else
+    {
+        if(!m_isCanFdInterface)
+        {//Classic CAN.
+
+            dlc = 8;
+        }
+        else
+        {
+            if(length <= 12)
+            {
+                dlc = 9;
+            }
+            else if(length <= 16)
+            {
+                dlc = 10;
+            }
+            else if(length <= 20)
+            {
+                dlc = 11;
+            }
+            else if(length <= 24)
+            {
+                dlc = 12;
+            }
+            else if(length <= 32)
+            {
+                dlc = 13;
+            }
+            else if(length <= 48)
+            {
+                dlc = 14;
+            }
+            else if(length <= 64)
+            {
+                dlc = 15;
+            }
+        }
+    }
+
+    return dlc;
+}
+
+/**
+ * Converts a CAN DLC to a data length.
+ * @param dlc
+ *      The DLC.
+ * @return
+ *      The data length.
+ */
+quint32 PCANBasicClass::dlcToDataLength(quint32 dlc)
+{
+    quint32 length = 0;
+
+    if(dlc <= 8)
+    {
+        length = dlc;
+    }
+    else
+    {
+        if(!m_isCanFdInterface)
+        {//Classic CAN.
+
+            length = 8;
+        }
+        else
+        {
+            if(dlc == 9)
+            {
+                length = 12;
+            }
+            else if(dlc == 10)
+            {
+                length = 16;
+            }
+            else if(dlc == 11)
+            {
+                length = 20;
+            }
+            else if(dlc == 12)
+            {
+                length = 24;
+            }
+            else if(dlc == 13)
+            {
+                length = 32;
+            }
+            else if(dlc == 14)
+            {
+                length = 48;
+            }
+            else if(dlc == 15)
+            {
+                length = 64;
+            }
+        }
+    }
+    return length;
+}
+
+/**
  * Reads the last received messages.
  * @return
  *      The received message.
@@ -448,14 +598,21 @@ QByteArray PCANBasicClass::readLastMessage(void)
 
     m_dataReadyForRead = false;
     QByteArray data;
+    quint32 dataLength = 0;
 
      if(m_currentHandle != PCAN_NONEBUS)
      {
 
         if(m_lastReadMessage.ID == 0xffffffff)
         {
-
-            m_currentStatus = read(m_currentHandle, &m_lastReadMessage, &m_timeStampLastReceivedMessage);
+            if(m_isCanFdInterface)
+            {
+                m_currentStatus = readFd(m_currentHandle, &m_lastReadMessage, &m_timeStampLastReceivedMessage);
+            }
+            else
+            {
+                m_currentStatus = read(m_currentHandle, (TPCANMsg*)&m_lastReadMessage, &m_timeStampLastReceivedMessage);
+            }
 
             if((m_currentStatus & PCAN_ERROR_QRCVEMPTY) || (m_currentStatus & PCAN_ERROR_BUSOFF) || (m_lastReadMessage.MSGTYPE == PCAN_MESSAGE_STATUS))
             {//The message is not a CAN message.
@@ -466,6 +623,8 @@ QByteArray PCANBasicClass::readLastMessage(void)
 
         if(m_lastReadMessage.ID != 0xffffffff)
         {
+            dataLength = dlcToDataLength(m_lastReadMessage.DLC);
+
             if(!m_firstMessageReceived)
             {
                 m_timeStampFirstReceivedMessage = (quint64)m_timeStampLastReceivedMessage.micros + (quint64)(1000 * (quint64)m_timeStampLastReceivedMessage.millis) +
@@ -495,10 +654,10 @@ QByteArray PCANBasicClass::readLastMessage(void)
 
             if(m_lastReadMessage.MSGTYPE & PCAN_MESSAGE_RTR)
             {
-                m_lastReadMessage.LEN = 0;
+                dataLength = 0;
             }
 
-            for(int i = 0; i < m_lastReadMessage.LEN; i ++)
+            for(quint32 i = 0; i < dataLength; i ++)
             {
                 data.push_back(m_lastReadMessage.DATA[i]);
             }
@@ -522,7 +681,14 @@ void PCANBasicClass::receiveTimerSlot()
         {
             m_receiveTimer.stop();
 
-            m_currentStatus = read(m_currentHandle, &m_lastReadMessage, &m_timeStampLastReceivedMessage);
+            if(m_isCanFdInterface)
+            {
+                m_currentStatus = readFd(m_currentHandle, &m_lastReadMessage, &m_timeStampLastReceivedMessage);
+            }
+            else
+            {
+                m_currentStatus = read(m_currentHandle, (TPCANMsg*)&m_lastReadMessage, &m_timeStampLastReceivedMessage);
+            }
 
             if(!((m_currentStatus & PCAN_ERROR_QRCVEMPTY) || (m_currentStatus & PCAN_ERROR_BUSOFF)))
             {//message received
@@ -558,18 +724,22 @@ void PCANBasicClass::loadAPI()
 
         // Load the API functions.
         m_pInitialize = (fpInitialize)((void*)getFunction("CAN_Initialize"));
+        m_pInitializeFd = (fpInitializeFd)((void*)getFunction("CAN_InitializeFD"));
         m_pUnInitialize = (fpUninitialize)((void*)getFunction("CAN_Uninitialize"));
         m_pReset = (fpReset)((void*)getFunction("CAN_Reset"));
         m_pGetStatus = (fpGetStatus)((void*)getFunction("CAN_GetStatus"));
         m_pRead = (fpRead)((void*)getFunction("CAN_Read"));
+        m_pReadFd = (fpReadFd)((void*)getFunction("CAN_ReadFD"));
         m_pWrite = (fpWrite)((void*)getFunction("CAN_Write"));
+        m_pWriteFd = (fpWriteFd)((void*)getFunction("CAN_WriteFD"));
         m_pFilterMessages = (fpFilterMessages)((void*)getFunction("CAN_FilterMessages"));
         m_pGetValue = (fpSetValue)((void*)getFunction("CAN_GetValue"));
         m_pSetValue = (fpGetValue)((void*)getFunction("CAN_SetValue"));
         m_pGetTextError = (fpGetErrorText)((void*)getFunction("CAN_GetErrorText"));
 
         m_pcanAlreadyLoaded = m_pInitialize && m_pUnInitialize && m_pReset && m_pGetStatus && m_pRead
-                && m_pWrite && m_pFilterMessages && m_pGetValue && m_pSetValue && m_pGetTextError;
+                && m_pWrite && m_pFilterMessages && m_pGetValue && m_pSetValue && m_pGetTextError && m_pInitializeFd
+                && m_pReadFd;
     }
 
 }
@@ -643,21 +813,73 @@ FARPROC PCANBasicClass::getFunction(const char *strName)
     return GetProcAddress(m_hDll, strName);
 }
 
-TPCANStatus PCANBasicClass::initialize(
-        TPCANHandle Channel, 
-        TPCANBaudrate Btr0Btr1, 
-        TPCANType HwType,
-		DWORD IOPort, 
-		WORD Interrupt)
+
+static QByteArray nominalBitrateString(int nominalBitrate)
+{
+    switch (nominalBitrate) {
+    case PCAN_BAUD_125K:
+        return "f_clock=80000000, nom_brp=40, nom_tseg1=12, nom_tseg2=3, nom_sjw=1";
+    case PCAN_BAUD_250K:
+        return "f_clock=80000000, nom_brp=20, nom_tseg1=12, nom_tseg2=3, nom_sjw=1";
+    case PCAN_BAUD_500K:
+        return "f_clock=80000000, nom_brp=10, nom_tseg1=12, nom_tseg2=3, nom_sjw=1";
+    case PCAN_BAUD_1M:
+        return "f_clock=80000000, nom_brp=10, nom_tseg1=5,  nom_tseg2=2, nom_sjw=1";
+    default:
+        return QByteArray();
+    }
+}
+
+static QByteArray dataBitrateString(int dataBitrate)
+{
+    switch (dataBitrate) {
+    case 2000000:
+        return ", data_brp=4, data_tseg1=7, data_tseg2=2, data_sjw=1";
+    case 4000000:
+        return ", data_brp=2, data_tseg1=7, data_tseg2=2, data_sjw=1";
+    case 8000000:
+        return ", data_brp=1, data_tseg1=7, data_tseg2=2, data_sjw=1";
+    case 10000000:
+        return ", data_brp=1, data_tseg1=5, data_tseg2=2, data_sjw=1";
+    default:
+        return QByteArray();
+    }
+}
+
+static QByteArray bitrateStringFromBitrate(int nominalBitrate, int dataBitrate)
+{
+    QByteArray result = nominalBitrateString(nominalBitrate);
+
+    if (result.isEmpty())
+        return QByteArray();
+
+    result += dataBitrateString(dataBitrate);
+
+    return result;
+}
+
+TPCANStatus PCANBasicClass::initialize(TPCANHandle Channel, TPCANBaudrate Btr0Btr1, quint32 dataBitrate)
 {
     if(!m_pcanAlreadyLoaded)
 		return PCAN_ERROR_UNKNOWN;
 
-	return (TPCANStatus)m_pInitialize(Channel, Btr0Btr1, HwType, IOPort, Interrupt); 
+    if(dataBitrate != 0)
+    {
+        m_isCanFdInterface = true;
+
+        const QByteArray bitrateStr = bitrateStringFromBitrate(Btr0Btr1, dataBitrate);
+        return (TPCANStatus)m_pInitializeFd(Channel, const_cast<char *>(bitrateStr.data()));
+    }
+    else
+    {
+        m_isCanFdInterface = false;
+        return (TPCANStatus)m_pInitialize(Channel, Btr0Btr1, 0, 0, 0);
+    }
+
+
 }
 
-TPCANStatus PCANBasicClass::uninitialize(
-        TPCANHandle Channel)
+TPCANStatus PCANBasicClass::uninitialize(TPCANHandle Channel)
 {
     if(!m_pcanAlreadyLoaded)
 		return PCAN_ERROR_UNKNOWN;
@@ -687,6 +909,17 @@ TPCANStatus PCANBasicClass::read(
 	return (TPCANStatus)m_pRead(Channel, MessageBuffer, TimestampBuffer);  
 }
 
+TPCANStatus PCANBasicClass::readFd(
+        TPCANHandle Channel,
+        TPCANMsgFD* MessageBuffer,
+        TPCANTimestamp* TimestampBuffer)
+{
+    if(!m_pcanAlreadyLoaded)
+        return PCAN_ERROR_UNKNOWN;
+
+    return (TPCANStatus)m_pReadFd(Channel, MessageBuffer, TimestampBuffer);
+}
+
 TPCANStatus PCANBasicClass::write(
         TPCANHandle Channel, 
         TPCANMsg* MessageBuffer)
@@ -695,6 +928,16 @@ TPCANStatus PCANBasicClass::write(
 		return PCAN_ERROR_UNKNOWN;
 
 	return (TPCANStatus)m_pWrite(Channel, MessageBuffer);  
+}
+
+TPCANStatus PCANBasicClass::writeFd(
+        TPCANHandle Channel,
+        TPCANMsgFD* MessageBuffer)
+{
+    if(!m_pcanAlreadyLoaded)
+        return PCAN_ERROR_UNKNOWN;
+
+    return (TPCANStatus)m_pWriteFd(Channel, MessageBuffer);
 }
 
 TPCANStatus PCANBasicClass::filterMessages(

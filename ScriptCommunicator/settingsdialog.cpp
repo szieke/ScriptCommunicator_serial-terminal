@@ -734,7 +734,7 @@ void SettingsDialog::detectPcanSlot(void)
     int iBuffer;
     int counter = 1;
 
-    for(int i = PCAN_USBBUS1; i <= PCAN_USBBUS8; i++)
+    for(quint32 i = PCAN_USBBUS1; i <= PCAN_USBBUS8; i++)
     {
         TPCANStatus stsResult = m_pcanInterface->getValue(i, PCAN_CHANNEL_CONDITION, (void*)&iBuffer, sizeof(iBuffer));
 

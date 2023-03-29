@@ -700,13 +700,28 @@ void MainWindowHandleData::appendDataToConsoleStrings(QByteArray &data, const Se
                     }
                     messageIdString = leadingZeros + messageIdString;
 
-                    if(type == PCAN_MESSAGE_STANDARD){typeString = "std";}
-                    else if(type == PCAN_MESSAGE_RTR){typeString = "rtr";}
-                    else if(type == PCAN_MESSAGE_EXTENDED){typeString = "ext";}
-                    else if(type == (PCAN_MESSAGE_EXTENDED + PCAN_MESSAGE_RTR)){typeString = "ert";}
+                    if(type & PCAN_MESSAGE_FD)
+                    {
+                        typeString += "fd,";
+                        type -= PCAN_MESSAGE_FD;
+                    }
+                    if(type & PCAN_MESSAGE_BRS)
+                    {
+                       typeString += "brs,";
+                       type -= PCAN_MESSAGE_BRS;
+                    }
+                    if(type & PCAN_MESSAGE_ESI)
+                    {
+                       typeString += "esi,";
+                       type -= PCAN_MESSAGE_ESI;
+                    }
+                    if(type == PCAN_MESSAGE_STANDARD){typeString += "std";}
+                    else if(type == PCAN_MESSAGE_RTR){typeString += "rtr";}
+                    else if(type == PCAN_MESSAGE_EXTENDED){typeString += "ext";}
+                    else if(type == (PCAN_MESSAGE_EXTENDED + PCAN_MESSAGE_RTR)){typeString += "ertr";}
                     else
                     {
-                        typeString = QString("%1").arg(type) + " (valid range is 0-3)";
+                        typeString = QString("%1").arg(type) + " (valid range is 0-4)";
                     }
 
                     additionalInformation = "<br>id: " +  messageIdString + " type: " + typeString + "&nbsp;&nbsp;&nbsp;";
@@ -889,13 +904,28 @@ void MainWindowHandleData::appendDataToLog(const QByteArray &data, bool isSend, 
                 }
                 messageIdString = leadingZeros + messageIdString;
 
-                if(type == PCAN_MESSAGE_STANDARD){typeString = "std";}
-                else if(type == PCAN_MESSAGE_RTR){typeString = "rtr";}
-                else if(type == PCAN_MESSAGE_EXTENDED){typeString = "ext";}
-                else if(type == (PCAN_MESSAGE_EXTENDED + PCAN_MESSAGE_RTR)){typeString = "ert";}
+                if(type & PCAN_MESSAGE_FD)
+                {
+                    typeString += "fd,";
+                    type -= PCAN_MESSAGE_FD;
+                }
+                if(type & PCAN_MESSAGE_BRS)
+                {
+                   typeString += "brs,";
+                   type -= PCAN_MESSAGE_BRS;
+                }
+                if(type & PCAN_MESSAGE_ESI)
+                {
+                   typeString += "esi,";
+                   type -= PCAN_MESSAGE_ESI;
+                }
+                if(type == PCAN_MESSAGE_STANDARD){typeString += "std";}
+                else if(type == PCAN_MESSAGE_RTR){typeString += "rtr";}
+                else if(type == PCAN_MESSAGE_EXTENDED){typeString += "ext";}
+                else if(type == (PCAN_MESSAGE_EXTENDED + PCAN_MESSAGE_RTR)){typeString += "ertr";}
                 else
                 {
-                    typeString = QString("%1").arg(type) + " (valid range is 0-3)";
+                    typeString = QString("%1").arg(type) + " (valid range is 0-4)";
                 }
 
 
@@ -1123,14 +1153,8 @@ void MainWindowHandleData::dataHasBeenSendSlot(QByteArray data, bool success, ui
         {
             m_sentBytes -= PCANBasicClass::BYTES_METADATA_SEND;
 
-            QByteArray tmpIdAndType = data.mid(0, PCANBasicClass::BYTES_METADATA_SEND);
-            for(int i = PCANBasicClass::BYTES_METADATA_SEND; i < data.length(); i += PCANBasicClass::MAX_BYTES_PER_MESSAGE)
-            {
-                QByteArray tmpArray = tmpIdAndType + data.mid(i, PCANBasicClass::MAX_BYTES_PER_MESSAGE);
-
-                appendDataToStoredData(tmpArray, true, false, m_mainWindow->m_isConnectedWithCan, false, m_mainWindow->m_isConnectedWithI2cMaster);
-                m_mainWindow->m_canTab->canMessageTransmitted(tmpArray);
-            }
+            appendDataToStoredData(data, true, false, m_mainWindow->m_isConnectedWithCan, false, m_mainWindow->m_isConnectedWithI2cMaster);
+            m_mainWindow->m_canTab->canMessageTransmitted(data);
         }
         else
         {

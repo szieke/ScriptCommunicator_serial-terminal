@@ -73,7 +73,7 @@ public:
 
         if(convertedBaudrate != 0)
         {
-            result =  m_pcan.open(channel, convertedBaudrate, busOffAutoReset,powerSupply);
+            result =  m_pcan.open(channel, convertedBaudrate, busOffAutoReset,powerSupply, 0);
         }
 
         return result;

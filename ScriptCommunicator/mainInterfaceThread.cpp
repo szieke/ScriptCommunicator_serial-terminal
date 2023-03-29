@@ -858,7 +858,7 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
         {
 
             bool isOk;
-            m_isConnected = m_pcanInterface->open(m_currentGlobalSettings.pcanInterface.channel, m_currentGlobalSettings.pcanInterface.baudRate,
+            m_isConnected = m_pcanInterface->open(m_currentGlobalSettings.pcanInterface.channel, m_currentGlobalSettings.pcanInterface.baudRate, 2000000,
                                                   m_currentGlobalSettings.pcanInterface.busOffAutoReset, m_currentGlobalSettings.pcanInterface.powerSupply);
 
             if(m_isConnected)

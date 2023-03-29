@@ -132,31 +132,47 @@ void CanTab::createNewReceiveEntry(QTableWidget* table, int row)
 QString CanTab::typeToString(quint8 type)
 {
     QString result;
+
+    if(type & PCAN_MESSAGE_FD)
+    {
+        result += "fd,";
+        type -= PCAN_MESSAGE_FD;
+    }
+    if(type & PCAN_MESSAGE_BRS)
+    {
+       result += "brs,";
+       type -= PCAN_MESSAGE_BRS;
+    }
+    if(type & PCAN_MESSAGE_ESI)
+    {
+       result += "esi,";
+       type -= PCAN_MESSAGE_ESI;
+    }
     switch(type)
     {
         case PCAN_MESSAGE_STANDARD:
         {
-            result = "std";
+            result += "std";
             break;
         }
         case PCAN_MESSAGE_RTR:
         {
-            result = "std rtr";
+            result += "std rtr";
             break;
         }
         case PCAN_MESSAGE_EXTENDED:
         {
-            result = "ext";
+            result += "ext";
             break;
         }
         case (PCAN_MESSAGE_RTR + PCAN_MESSAGE_EXTENDED):
         {
-            result = "ext rtr";
+            result += "ext rtr";
             break;
         }
         default:
         {
-            result = "unkown";
+            result += "unkown";
             break;
 
         }
@@ -271,7 +287,20 @@ void CanTab::updateTableEntry(QTableWidget* table, const QByteArray &data, bool 
         QString leadingZeros;
         int numberOfLeadingZeros = 8;
 
-        if((type == PCAN_MESSAGE_STANDARD) || (type == PCAN_MESSAGE_RTR))
+        quint8 tmpType = type;
+        if(tmpType & PCAN_MESSAGE_BRS)
+        {
+            tmpType -= PCAN_MESSAGE_FD;
+        }
+        if(tmpType & PCAN_MESSAGE_BRS)
+        {
+           tmpType -= PCAN_MESSAGE_BRS;
+        }
+        if(tmpType & PCAN_MESSAGE_ESI)
+        {
+           tmpType -= PCAN_MESSAGE_ESI;
+        }
+        if((tmpType == PCAN_MESSAGE_STANDARD) || (tmpType == PCAN_MESSAGE_RTR))
         {
             numberOfLeadingZeros = 3;
         }

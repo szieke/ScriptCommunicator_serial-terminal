@@ -38,9 +38,12 @@
 //
 
 typedef TPCANStatus (__stdcall *fpInitialize)(TPCANHandle, TPCANBaudrate, TPCANType, DWORD, WORD);
+typedef TPCANStatus (__stdcall *fpInitializeFd)(TPCANHandle, TPCANBitrateFD);
 typedef TPCANStatus (__stdcall *fpOneParam)(TPCANHandle);
 typedef TPCANStatus (__stdcall *fpRead)(TPCANHandle, TPCANMsg*, TPCANTimestamp*);
+typedef TPCANStatus (__stdcall *fpReadFd)(TPCANHandle, TPCANMsgFD*, TPCANTimestamp*);
 typedef TPCANStatus (__stdcall *fpWrite)(TPCANHandle, TPCANMsg*);
+typedef TPCANStatus (__stdcall *fpWriteFd)(TPCANHandle, TPCANMsgFD*);
 typedef TPCANStatus (__stdcall *fpFilterMessages)(TPCANHandle, DWORD, DWORD, TPCANMode);
 typedef TPCANStatus (__stdcall *fpGetSetValue)(TPCANHandle, TPCANParameter, void*, DWORD);
 typedef TPCANStatus (__stdcall *fpGetErrorText)(TPCANStatus, WORD, LPSTR);
@@ -64,7 +67,7 @@ class PCANBasicClass : public QObject
         ~PCANBasicClass();
 
         ///Opens a pcan interface.
-        bool open(quint8 channel, quint32 baudRate, bool busOffAutoReset, bool powerSupply);
+        bool open(quint8 channel, quint32 baudRate, quint32 dataBitrate, bool busOffAutoReset, bool powerSupply);
 
         ///Configures the reception filter.
         bool setFilter(bool filterExtended, quint32 filterFrom, quint32 filterTo);
@@ -109,8 +112,11 @@ class PCANBasicClass : public QObject
         ///The max. number of allowed send errors for a single CAN message (after this number the sending of data fails).
         const quint32 MAX_SEND_ERROR = 10;
 
-        ///The max. number of bytes in a single CAN message.
+        ///The max. number of bytes in a single CAN message (classic CAN).
         static const qint32 MAX_BYTES_PER_MESSAGE = 8;
+
+        ///The max. number of bytes in a single CAN message (CAN-FD).
+        static const qint32 MAX_BYTES_PER_MESSAGE_FD = 64;
 
         ///The number of bytes for the CAN type.
         static const qint32 BYTES_FOR_CAN_TYPE = 1;
@@ -136,18 +142,21 @@ private slots:
 
 private:
 
+        ///Converts a CAN DLC to a data length.
+        quint32 dlcToDataLength(quint32 dlc);
 
+        ///Converts a CAN data length to a DLC.
+        quint32 dataLengthToDlc(quint32 length);
 
         /// <summary>
         /// Initializes a PCAN Channel
         /// </summary>
         /// <param name="Channel">"The handle of a PCAN Channel"</param>
         /// <param name="Btr0Btr1">"The speed for the communication (BTR0BTR1 code)"</param>
-        /// <param name="HwType">"NON PLUG&PLAY: The type of hardware and operation mode"</param>
-        /// <param name="IOPort">"NON PLUG&PLAY: The I/O address for the parallel port"</param>
-        /// <param name="Interrupt">"NON PLUG&PLAY: Interrupt number of the parallel port"</param>
+        /// <param name="dataBitrate">The bitrate for the data transmission. If 0 then classic CAN is used
+        /// otherwise CAN FD".</param>
         /// <returns>"A TPCANStatus error code"</returns>
-        TPCANStatus initialize(TPCANHandle Channel, TPCANBaudrate Btr0Btr1, TPCANType HwType = 0, DWORD IOPort = 0, WORD Interrupt = 0);
+        TPCANStatus initialize(TPCANHandle Channel, TPCANBaudrate Btr0Btr1, quint32 dataBitrate);
 
         /// <summary>
         /// Uninitializes one or all PCAN Channels initialized by CAN_Initialize
@@ -170,7 +179,7 @@ private:
 
 
         /// <summary>
-        /// Reads a CAN message from the receive queue of a PCAN Channel
+        /// Reads a CAN message from the receive queue of a PCAN Channel (classic CAN)
         /// </summary>
         /// <param name="Channel">"The handle of a PCAN Channel"</param>
         /// <param name="MessageBuffer">"A TPCANMsg structure buffer to store the CAN message"</param>
@@ -181,12 +190,31 @@ private:
         TPCANStatus read(TPCANHandle Channel, TPCANMsg* MessageBuffer, TPCANTimestamp* TimestampBuffer);
 
         /// <summary>
-        /// Transmits a CAN message
+        /// Reads a CAN message from the receive queue of a PCAN Channel (CAN-FD)
+        /// </summary>
+        /// <param name="Channel">"The handle of a PCAN Channel"</param>
+        /// <param name="MessageBuffer">"A TPCANMsg structure buffer to store the CAN message"</param>
+        /// <param name="TimestampBuffer">"A TPCANTimestamp structure buffer to get
+        /// the reception time of the message. If this value is not desired, this parameter
+        /// should be passed as NULL"</param>
+        /// <returns>"A TPCANStatus error code"</returns>
+        TPCANStatus readFd(TPCANHandle Channel, TPCANMsgFD* MessageBuffer, TPCANTimestamp* TimestampBuffer);
+
+        /// <summary>
+        /// Transmits a CAN message (classic CAN)
         /// </summary>
         /// <param name="Channel">"The handle of a PCAN Channel"</param>
         /// <param name="MessageBuffer">"A TPCANMsg buffer with the message to be sent"</param>
         /// <returns>"A TPCANStatus error code"</returns>
         TPCANStatus write(TPCANHandle Channel, TPCANMsg* MessageBuffer);
+
+        /// <summary>
+        /// Transmits a CAN message (CAN-FD)
+        /// </summary>
+        /// <param name="Channel">"The handle of a PCAN Channel"</param>
+        /// <param name="MessageBuffer">"A TPCANMsg buffer with the message to be sent"</param>
+        /// <returns>"A TPCANStatus error code"</returns>
+        TPCANStatus writeFd(TPCANHandle Channel, TPCANMsgFD* MessageBuffer);
 
         /// <summary>
         /// Configures the reception filter.
@@ -208,11 +236,14 @@ private:
 
     //Function pointers
     fpInitialize m_pInitialize;
+    fpInitializeFd m_pInitializeFd;
     fpUninitialize m_pUnInitialize;
     fpReset m_pReset;
     fpGetStatus m_pGetStatus;
     fpRead m_pRead;
+    fpReadFd m_pReadFd;
     fpWrite m_pWrite;
+    fpWriteFd m_pWriteFd;
     fpFilterMessages m_pFilterMessages;
     fpGetValue m_pGetValue;
     fpSetValue m_pSetValue;
@@ -244,7 +275,7 @@ private:
     ///Checks if data has been received.
     QTimer m_receiveTimer;
 
-    TPCANMsg m_lastReadMessage;
+    TPCANMsgFD m_lastReadMessage;
 
     ///The time stamp of the first received message.
     quint64 m_timeStampFirstReceivedMessage;
@@ -257,6 +288,9 @@ private:
 
     ///The current CAN status.
     TPCANStatus m_currentStatus;
+
+    ///True if the current interface is a CAN FD interface.
+    bool m_isCanFdInterface;
 };
 #else//Linux is not supported.
 class PCANBasicClass : public QObject
