@@ -566,7 +566,7 @@ public:
 
     ///Sends received data (received with an script internal interface) to the main interface.
     ///This data will be shown as received data in the consoles, the log and will be received by
-    ///worker scripts via the dataReceivedSignal.
+    ///worker scripts via the scriptInf.dataReceivedSignal.
     Q_INVOKABLE void sendReceivedDataToMainInterface(QVector<unsigned char> data);
 
     ///Checks if the version of ScriptCommunicator is equal/greater then the version in minVersion.
@@ -692,6 +692,7 @@ signals:
     ///use canMessagesReceivedSignal if the main interface is a can interface and i2cMasterDataReceivedSignal if the main interface is
     ///an I2C interface).
     ///Scripts can connect a function to this signal.
+    ///Note: This signal is emitted by the scriptInf object (the data receiption is only done there).
     void dataReceivedSignal(QVector<unsigned char> data);
 
     ///This signal is emitted in setMainWindowAndTaskBarIcon.
@@ -870,9 +871,6 @@ private:
     ///The debug timer (checks if the script is suspended by the debugger or is running).
     QTimer m_debugTimer;
 #endif
-
-    ///This timer is used to emit the dataReceivedSignal in debugReceiveTimerSlot (if the script is running in the script debugger).
-    QTimer m_debugReceiveTimer;
 
     ///Contains the saved received data (dataReceivedSlot) if the script is running in the script debugger.
     QVector<unsigned char> m_savedReceivedData;

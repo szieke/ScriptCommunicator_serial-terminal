@@ -140,6 +140,8 @@ typedef struct
 {
     quint8 channel;
     quint32 baudRate;
+    bool isCanFdMode;
+    quint32 payloadBaudrate;
     bool busOffAutoReset;
     bool powerSupply;
     bool filterExtended;
@@ -469,7 +471,6 @@ public slots:
     ///Is called if a color button button is pressed.
     void colorButtonPressedSlot(void);
 private slots:
-
 
     ///Is called if a filter radio button is pressed.
     void setFilterRadioButtonPressedSlot(void);

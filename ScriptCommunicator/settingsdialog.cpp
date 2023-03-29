@@ -284,6 +284,12 @@ SettingsDialog::SettingsDialog(QAction *actionLockScrolling) :
     connect(m_userInterface->pcanBaudratecomboBox, SIGNAL(currentTextChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
 
+    connect(m_userInterface->pcanModeComboBox, SIGNAL(currentTextChanged(QString)),
+            this, SLOT(textFromGuiElementChangedSlot(QString)));
+
+    connect(m_userInterface->pcanPayloadBaudrateComboBox, SIGNAL(currentTextChanged(QString)),
+            this, SLOT(textFromGuiElementChangedSlot(QString)));
+
     connect(m_userInterface->consoleDecimalsType, SIGNAL(currentTextChanged(QString)),
             this, SLOT(textFromGuiElementChangedSlot(QString)));
 
@@ -1084,6 +1090,8 @@ void SettingsDialog::setAllSettingsSlot(Settings& settings, bool setTabIndex)
     m_userInterface->pcan5VoltComboBox->setCurrentText(settings.pcanInterface.powerSupply ? "on" : "off");
     m_userInterface->pcanBusOffResetComboBox->setCurrentText(settings.pcanInterface.busOffAutoReset ? "on" : "off");
     m_userInterface->pcanBaudratecomboBox->setCurrentText(convertPcanBaudrate(settings.pcanInterface.baudRate));
+    m_userInterface->pcanPayloadBaudrateComboBox->setCurrentText(QString::number(settings.pcanInterface.payloadBaudrate / 1000));
+    m_userInterface->pcanModeComboBox->setCurrentIndex(settings.pcanInterface.isCanFdMode ? 1 : 0);
     if(settings.pcanInterface.channel > 0 && settings.pcanInterface.channel < 9)
     {
         m_userInterface->pcanDevicesComboBox->setCurrentText(QString("%1").arg(settings.pcanInterface.channel));
@@ -1555,6 +1563,15 @@ void SettingsDialog::initializePcanTab(void)
 
         m_userInterface->pcan5VoltComboBox->setEnabled(true);
         m_userInterface->pcanBaudratecomboBox->setEnabled(true);
+        m_userInterface->pcanModeComboBox->setEnabled(true);
+        if(m_userInterface->pcanModeComboBox->currentText() == "CAN")
+        {
+            m_userInterface->pcanPayloadBaudrateComboBox->setEnabled(false);
+        }
+        else
+        {
+            m_userInterface->pcanPayloadBaudrateComboBox->setEnabled(true);
+        }
         m_userInterface->pcanBusOffResetComboBox->setEnabled(true);
         m_userInterface->pcanDetectPushButton->setEnabled(true);
         m_userInterface->pcanDevicesComboBox->setEnabled(true);
@@ -1568,6 +1585,8 @@ void SettingsDialog::initializePcanTab(void)
     {
         m_userInterface->pcan5VoltComboBox->setEnabled(false);
         m_userInterface->pcanBaudratecomboBox->setEnabled(false);
+        m_userInterface->pcanModeComboBox->setEnabled(false);
+        m_userInterface->pcanPayloadBaudrateComboBox->setEnabled(false);
         m_userInterface->pcanBusOffResetComboBox->setEnabled(false);
         m_userInterface->pcanDetectPushButton->setEnabled(false);
         m_userInterface->pcanDevicesComboBox->setEnabled(false);
@@ -2217,6 +2236,8 @@ void SettingsDialog::updateSettings(bool forceUpdate)
 
     //pcan settings
     m_currentSettings.pcanInterface.baudRate = getPcanBaudrate();
+    m_currentSettings.pcanInterface.payloadBaudrate = m_userInterface->pcanPayloadBaudrateComboBox->currentText().toUInt() * 1000;
+    m_currentSettings.pcanInterface.isCanFdMode = (m_userInterface->pcanModeComboBox->currentText() == "CAN") ? false : true;
     m_currentSettings.pcanInterface.busOffAutoReset = (m_userInterface->pcanBusOffResetComboBox->currentText() == "on") ? true : false;
     m_currentSettings.pcanInterface.powerSupply = (m_userInterface->pcan5VoltComboBox->currentText() == "on") ? true : false;
     m_currentSettings.pcanInterface.channel = m_userInterface->pcanDevicesComboBox->currentText().toUInt();

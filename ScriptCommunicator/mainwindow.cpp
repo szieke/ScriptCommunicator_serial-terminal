@@ -1880,6 +1880,8 @@ bool MainWindow::loadSettings()
                         QDomNode node = nodeList.at(0);
 
                         currentSettings.pcanInterface.baudRate = node.attributes().namedItem("baudRate").nodeValue().toUInt();
+                        currentSettings.pcanInterface.payloadBaudrate = node.attributes().namedItem("payloadBaudrate").nodeValue().toUInt();
+                        currentSettings.pcanInterface.isCanFdMode= (node.attributes().namedItem("isCanFdMode").nodeValue().toUInt() == 1) ? true : false;
                         currentSettings.pcanInterface.busOffAutoReset= (node.attributes().namedItem("busOffAutoReset").nodeValue().toUInt() == 1) ? true : false;
                         currentSettings.pcanInterface.powerSupply= (node.attributes().namedItem("powerSupply").nodeValue().toUInt() == 1) ? true : false;
                         currentSettings.pcanInterface.channel = node.attributes().namedItem("channel").nodeValue().toUInt();
@@ -2930,6 +2932,8 @@ void MainWindow::saveSettings()
             {//pcan
                 std::map<QString, QString> settingsMap =
                 {std::make_pair(QString("baudRate"), QString("%1").arg(currentSettings->pcanInterface.baudRate)),
+                 std::make_pair(QString("payloadBaudrate"), QString("%1").arg(currentSettings->pcanInterface.payloadBaudrate)),
+                 std::make_pair(QString("isCanFdMode"), QString("%1").arg(currentSettings->pcanInterface.isCanFdMode)),
                  std::make_pair(QString("busOffAutoReset"), QString("%1").arg(currentSettings->pcanInterface.busOffAutoReset)),
                  std::make_pair(QString("channel"), QString("%1").arg(currentSettings->pcanInterface.channel)),
                  std::make_pair(QString("powerSupply"), QString("%1").arg(currentSettings->pcanInterface.powerSupply)),

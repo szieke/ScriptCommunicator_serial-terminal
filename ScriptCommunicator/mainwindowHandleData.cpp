@@ -1153,8 +1153,54 @@ void MainWindowHandleData::dataHasBeenSendSlot(QByteArray data, bool success, ui
         {
             m_sentBytes -= PCANBasicClass::BYTES_METADATA_SEND;
 
-            appendDataToStoredData(data, true, false, m_mainWindow->m_isConnectedWithCan, false, m_mainWindow->m_isConnectedWithI2cMaster);
-            m_mainWindow->m_canTab->canMessageTransmitted(data);
+            QByteArray tmpIdAndType = data.mid(0, PCANBasicClass::BYTES_METADATA_SEND);
+            quint32 maxBytesPerMessage = (tmpIdAndType[0] & PCAN_MESSAGE_FD) ? PCANBasicClass::MAX_BYTES_PER_MESSAGE_FD : PCANBasicClass::MAX_BYTES_PER_MESSAGE;
+
+            for(int i = 0; i < (data.length() - PCANBasicClass::BYTES_METADATA_SEND);)
+            {
+
+                QByteArray tmpArray = data.mid(i + PCANBasicClass::BYTES_METADATA_SEND , maxBytesPerMessage);
+                if((tmpIdAndType[0]  & PCAN_MESSAGE_FD))
+                {
+                    //Adjust the data size the possible frame data lenth.
+                    quint32 dataToSent = maxBytesPerMessage;
+                    if((tmpArray.length() > 8) && (tmpArray.length() < 12))
+                    {
+                        dataToSent = 8;
+                    }
+                    else if((tmpArray.length() > 12) && (tmpArray.length() < 16))
+                    {
+                        dataToSent = 12;
+                    }
+                    else if((tmpArray.length() > 16) && (tmpArray.length() < 20))
+                    {
+                        dataToSent = 16;
+                    }
+                    else if((tmpArray.length() > 20) && (tmpArray.length() < 24))
+                    {
+                        dataToSent = 20;
+                    }
+                    else if((tmpArray.length() > 24) && (tmpArray.length() < 32))
+                    {
+                        dataToSent = 24;
+                    }
+                    else if((tmpArray.length() > 32) && (tmpArray.length() < 48))
+                    {
+                        dataToSent = 32;
+                    }
+                    else if((tmpArray.length() > 48) && (tmpArray.length() < 64))
+                    {
+                        dataToSent = 48;
+                    }
+
+                    tmpArray =  data.mid(i + PCANBasicClass::BYTES_METADATA_SEND , dataToSent);
+                }
+                i+= tmpArray.length();
+
+                appendDataToStoredData(tmpArray.prepend(tmpIdAndType), true, false, m_mainWindow->m_isConnectedWithCan, false, m_mainWindow->m_isConnectedWithI2cMaster);
+                m_mainWindow->m_canTab->canMessageTransmitted(tmpArray);
+            }
+
         }
         else
         {

@@ -63,7 +63,7 @@
             <x>0</x>
             <y>0</y>
             <width>947</width>
-            <height>362</height>
+            <height>374</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0">
@@ -424,8 +424,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>926</width>
-            <height>372</height>
+            <width>947</width>
+            <height>374</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0,1">
@@ -939,8 +939,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>926</width>
-            <height>417</height>
+            <width>930</width>
+            <height>397</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_18">
@@ -2071,7 +2071,7 @@ for TCP clients.</string>
             <x>0</x>
             <y>0</y>
             <width>947</width>
-            <height>362</height>
+            <height>374</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2087,137 +2087,7 @@ for TCP clients.</string>
               <string>general</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_6">
-              <item row="0" column="0">
-               <widget class="QLabel" name="label_10">
-                <property name="text">
-                 <string>pcan usb</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="2">
-               <widget class="QPushButton" name="pcanDetectPushButton">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="text">
-                 <string>detect</string>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="0">
-               <widget class="QLabel" name="label_11">
-                <property name="text">
-                 <string>baudrate</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QComboBox" name="pcanDevicesComboBox">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-               </widget>
-              </item>
-              <item row="1" column="1">
-               <widget class="QComboBox" name="pcanBaudratecomboBox">
-                <property name="sizePolicy">
-                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                  <horstretch>0</horstretch>
-                  <verstretch>0</verstretch>
-                 </sizepolicy>
-                </property>
-                <property name="toolTip">
-                 <string>kBaud</string>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>1000</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>800</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>500</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>250</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>125</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>100</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>95</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>83</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>50</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>47</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>33</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>20</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>10</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>5</string>
-                 </property>
-                </item>
-               </widget>
-              </item>
-              <item row="2" column="0">
-               <widget class="QLabel" name="label_12">
-                <property name="statusTip">
-                 <string>5 volt power supply</string>
-                </property>
-                <property name="text">
-                 <string>5 volt</string>
-                </property>
-               </widget>
-              </item>
-              <item row="2" column="1">
+              <item row="4" column="1">
                <widget class="QComboBox" name="pcan5VoltComboBox">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -2240,7 +2110,7 @@ for TCP clients.</string>
                 </item>
                </widget>
               </item>
-              <item row="3" column="0">
+              <item row="5" column="0">
                <widget class="QLabel" name="label_13">
                 <property name="toolTip">
                  <string>automatic reset on BUS-OFF</string>
@@ -2250,7 +2120,87 @@ for TCP clients.</string>
                 </property>
                </widget>
               </item>
-              <item row="3" column="1">
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_10">
+                <property name="text">
+                 <string>pcan usb</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="3">
+               <spacer name="horizontalSpacer_6">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>300</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="label_8">
+                <property name="text">
+                 <string>mode</string>
+                </property>
+               </widget>
+              </item>
+              <item row="1" column="1">
+               <widget class="QComboBox" name="pcanModeComboBox">
+                <item>
+                 <property name="text">
+                  <string>CAN</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>CAN-FD</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QComboBox" name="pcanDevicesComboBox">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>80</width>
+                  <height>0</height>
+                 </size>
+                </property>
+               </widget>
+              </item>
+              <item row="4" column="0">
+               <widget class="QLabel" name="label_12">
+                <property name="statusTip">
+                 <string>5 volt power supply</string>
+                </property>
+                <property name="text">
+                 <string>5 volt</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="2">
+               <widget class="QPushButton" name="pcanDetectPushButton">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="text">
+                 <string>detect</string>
+                </property>
+               </widget>
+              </item>
+              <item row="5" column="1">
                <widget class="QComboBox" name="pcanBusOffResetComboBox">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -2273,18 +2223,91 @@ for TCP clients.</string>
                 </item>
                </widget>
               </item>
-              <item row="0" column="3">
-               <spacer name="horizontalSpacer_6">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+              <item row="2" column="0">
+               <widget class="QLabel" name="label_11">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;kBaud (in CAN-FD mode this the the bitrate for the CAN ID and the cotrol field)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
-                <property name="sizeHint" stdset="0">
-                 <size>
-                  <width>300</width>
-                  <height>20</height>
-                 </size>
+                <property name="text">
+                 <string>bitrate </string>
                 </property>
-               </spacer>
+               </widget>
+              </item>
+              <item row="2" column="1">
+               <widget class="QComboBox" name="pcanBaudratecomboBox">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;kBaud (in CAN-FD mode this the the bitrate for the CAN ID and the cotrol field)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>1000</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>500</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>250</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>125</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item row="3" column="0">
+               <widget class="QLabel" name="label_9">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;kBaud (in CAN-FD mode this the the bitrate for the payload)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>payload bitrate</string>
+                </property>
+               </widget>
+              </item>
+              <item row="3" column="1">
+               <widget class="QComboBox" name="pcanPayloadBaudrateComboBox">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;kBaud (in CAN-FD mode this the the bitrate for the payload)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>2000</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>4000</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>8000</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>10000</string>
+                 </property>
+                </item>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -2426,8 +2449,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>926</width>
-            <height>372</height>
+            <width>947</width>
+            <height>374</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
@@ -3075,7 +3098,7 @@ for TCP clients.</string>
             <x>0</x>
             <y>0</y>
             <width>947</width>
-            <height>362</height>
+            <height>374</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3324,7 +3347,7 @@ for TCP clients.</string>
             <x>0</x>
             <y>0</y>
             <width>947</width>
-            <height>362</height>
+            <height>374</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_11">

@@ -2089,11 +2089,11 @@ void SendWindow::sendButtonPressedSlot()
         {
             QByteArray canData;
             quint8 type = m_userInterface->CanTypeBox->currentIndex();
-            if(m_userInterface->CanTypeBox->currentText() == "can-fd")
+            if(m_userInterface->CyclicSendFormat->currentText() == "can-fd")
             {
                 type += PCAN_MESSAGE_FD;
             }
-            else if(m_userInterface->CanTypeBox->currentText() == "can-fd brs")
+            else if(m_userInterface->CyclicSendFormat->currentText() == "can-fd brs")
             {
                 type += PCAN_MESSAGE_BRS;
                 type += PCAN_MESSAGE_FD;

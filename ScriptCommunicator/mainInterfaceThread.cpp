@@ -858,7 +858,8 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
         {
 
             bool isOk;
-            m_isConnected = m_pcanInterface->open(m_currentGlobalSettings.pcanInterface.channel, m_currentGlobalSettings.pcanInterface.baudRate, 2000000,
+            m_isConnected = m_pcanInterface->open(m_currentGlobalSettings.pcanInterface.channel, m_currentGlobalSettings.pcanInterface.baudRate,
+                                                  m_currentGlobalSettings.pcanInterface.isCanFdMode ? m_currentGlobalSettings.pcanInterface.payloadBaudrate : 0,
                                                   m_currentGlobalSettings.pcanInterface.busOffAutoReset, m_currentGlobalSettings.pcanInterface.powerSupply);
 
             if(m_isConnected)
@@ -872,9 +873,12 @@ void MainInterfaceThread::connectDataConnectionSlot(Settings globalSettings, boo
             }
             if(m_isConnected)
             {
-                emit dataConnectionStatusSignal(true, tr("Connected to pcan %1: baud.=%2 (kHz), 5V=%3, reset=%4, filter=%5 %6-%7")
+                emit dataConnectionStatusSignal(true, tr("Connected to %1 %2: bitrate.=%3 (kHz)%4, 5V=%5, reset=%6, filter=%7 %8-%9")
+                                                .arg(m_currentGlobalSettings.pcanInterface.isCanFdMode ? "pcan-fd" : "pcan")
                                                 .arg(m_currentGlobalSettings.pcanInterface.channel)
-                                                .arg(SettingsDialog::convertPcanBaudrate(m_currentGlobalSettings.pcanInterface.baudRate))
+                                                .arg(SettingsDialog::convertPcanBaudrate(m_currentGlobalSettings.pcanInterface.baudRate),
+                                                m_currentGlobalSettings.pcanInterface.isCanFdMode ?
+                                                 QString(" payload bitrate:%1 k(Hz)").arg(m_currentGlobalSettings.pcanInterface.payloadBaudrate / 1000) : "")
                                                 .arg(m_currentGlobalSettings.pcanInterface.powerSupply)
                                                 .arg(m_currentGlobalSettings.pcanInterface.busOffAutoReset)
                                                 .arg(m_currentGlobalSettings.pcanInterface.filterExtended ? "ext" : "std",

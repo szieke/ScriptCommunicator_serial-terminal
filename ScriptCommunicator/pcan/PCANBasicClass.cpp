@@ -359,9 +359,48 @@ bool PCANBasicClass::sendData(const QByteArray &data)
          {
              quint32 maxBytesPerMessage = (messageBuffer.MSGTYPE & PCAN_MESSAGE_FD) ? MAX_BYTES_PER_MESSAGE_FD : MAX_BYTES_PER_MESSAGE;
 
-             for(int i = 0; i < data.length() - (BYTES_FOR_CAN_TYPE + BYTES_FOR_CAN_ID) ; i+= maxBytesPerMessage)
+             for(int i = 0; i < data.length() - (BYTES_METADATA_SEND) ; )
              {
-                 QByteArray tmpArray = data.mid(i + (BYTES_FOR_CAN_TYPE + BYTES_FOR_CAN_ID) , maxBytesPerMessage);
+
+                 QByteArray tmpArray = data.mid(i + BYTES_METADATA_SEND , maxBytesPerMessage);
+
+                 if((messageBuffer.MSGTYPE & PCAN_MESSAGE_FD))
+                 {
+                     //Adjust the data size the possible frame data lenth.
+                     quint32 dataToSent = maxBytesPerMessage;
+                     if((tmpArray.length() > 8) && (tmpArray.length() < 12))
+                     {
+                         dataToSent = 8;
+                     }
+                     else if((tmpArray.length() > 12) && (tmpArray.length() < 16))
+                     {
+                         dataToSent = 12;
+                     }
+                     else if((tmpArray.length() > 16) && (tmpArray.length() < 20))
+                     {
+                         dataToSent = 16;
+                     }
+                     else if((tmpArray.length() > 20) && (tmpArray.length() < 24))
+                     {
+                         dataToSent = 20;
+                     }
+                     else if((tmpArray.length() > 24) && (tmpArray.length() < 32))
+                     {
+                         dataToSent = 24;
+                     }
+                     else if((tmpArray.length() > 32) && (tmpArray.length() < 48))
+                     {
+                         dataToSent = 32;
+                     }
+                     else if((tmpArray.length() > 48) && (tmpArray.length() < 64))
+                     {
+                         dataToSent = 48;
+                     }
+
+                     tmpArray = data.mid(i + BYTES_METADATA_SEND , dataToSent);
+                 }
+
+                 i+= tmpArray.length();
                  quint32 errorCounter = 0;
 
                  messageBuffer.DLC = dataLengthToDlc(tmpArray.length());

@@ -2216,7 +2216,7 @@ bool ScriptThread::addToolBoxPagesToMainWindow(ScriptToolBox* scriptToolBox)
 /**
  * Sends received data (received with an script internal interface) to the main interface.
  * This data will be shown as received data in the consoles, the log and will be received by
- * worker scripts via the dataReceivedSignal.
+ * worker scripts via the scriptInf.dataReceivedSignal.
  * @param data
  *      The data.
  */
