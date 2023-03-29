@@ -291,7 +291,6 @@ bool PCANBasicClass::sendCanMessage(quint8 type, quint32 canId, QVector<unsigned
         {
             if(m_isCanFdInterface)
             {
-                messageBuffer.MSGTYPE += PCAN_MESSAGE_FD + PCAN_MESSAGE_BRS;
                 status = writeFd(m_currentHandle, &messageBuffer);
             }
             else
@@ -335,7 +334,7 @@ bool PCANBasicClass::sendData(const QByteArray &data)
 {
     bool result = false;
     TPCANMsgFD messageBuffer;
-    quint32 maxBytesPerMessage = m_isCanFdInterface ? MAX_BYTES_PER_MESSAGE_FD : MAX_BYTES_PER_MESSAGE;
+
 
      if(m_currentHandle != PCAN_NONEBUS)
      {
@@ -351,13 +350,15 @@ bool PCANBasicClass::sendData(const QByteArray &data)
          }
          messageBuffer.ID  = ((quint8)idArray[0] << 24) + ((quint8)idArray[1] << 16) + ((quint8)idArray[2] << 8) + ((quint8)idArray[3] & 0xff);
 
-         if(messageBuffer.MSGTYPE <= PCAN_MESSAGE_RTR){messageBuffer.ID = messageBuffer.ID & 0x7ff;}
+         if(!(messageBuffer.MSGTYPE & PCAN_MESSAGE_EXTENDED)){messageBuffer.ID = messageBuffer.ID & 0x7ff;}
          else{messageBuffer.ID = messageBuffer.ID & 0x1fffffff;}
 
 
 
          if(data.length() > (BYTES_FOR_CAN_TYPE + BYTES_FOR_CAN_ID) )
          {
+             quint32 maxBytesPerMessage = (messageBuffer.MSGTYPE & PCAN_MESSAGE_FD) ? MAX_BYTES_PER_MESSAGE_FD : MAX_BYTES_PER_MESSAGE;
+
              for(int i = 0; i < data.length() - (BYTES_FOR_CAN_TYPE + BYTES_FOR_CAN_ID) ; i+= maxBytesPerMessage)
              {
                  QByteArray tmpArray = data.mid(i + (BYTES_FOR_CAN_TYPE + BYTES_FOR_CAN_ID) , maxBytesPerMessage);
@@ -370,7 +371,6 @@ bool PCANBasicClass::sendData(const QByteArray &data)
                  {
                      if(m_isCanFdInterface)
                      {
-                        messageBuffer.MSGTYPE += PCAN_MESSAGE_FD + PCAN_MESSAGE_BRS;
                         status = writeFd(m_currentHandle, &messageBuffer);
                      }
                      else
@@ -404,7 +404,6 @@ bool PCANBasicClass::sendData(const QByteArray &data)
                 messageBuffer.DLC = 0;
                 if(m_isCanFdInterface)
                 {
-                   messageBuffer.MSGTYPE += PCAN_MESSAGE_FD + PCAN_MESSAGE_BRS;
                    status = writeFd(m_currentHandle, &messageBuffer);
                 }
                 else

@@ -396,7 +396,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     m_userInterface->historyFormatComboBox->addItems(availTargets);
     m_userInterface->historyFormatComboBox->setCurrentText("hex");
 
-    m_userInterface->SendFormatComboBox->addItems(availTargets << "can");
+    m_userInterface->SendFormatComboBox->addItems(availTargets << "can" << "can-fd" << "can-fd brs");
     m_userInterface->SendFormatComboBox->setCurrentText("utf8");
     m_oldSendFormat = "utf8";
 
@@ -881,10 +881,21 @@ void MainWindow::sendButtonPressedSlot(bool debug)
         const Settings* settings = m_settingsDialog->settings();
         sendData.replace("\n", settings->consoleSendOnEnter.toUtf8());
     }
-    else if(m_userInterface->SendFormatComboBox->currentText() == "can")
+    else if(m_userInterface->SendFormatComboBox->currentText().contains("can"))
     {
         QByteArray canData;
-        canData.append(m_userInterface->CanTypeBox->currentIndex());
+
+        quint8 type = m_userInterface->CanTypeBox->currentIndex();
+        if(m_userInterface->SendFormatComboBox->currentText() == "can-fd")
+        {
+            type += PCAN_MESSAGE_FD;
+        }
+        else if(m_userInterface->SendFormatComboBox->currentText() == "can-fd brs")
+        {
+            type += PCAN_MESSAGE_BRS;
+            type += PCAN_MESSAGE_FD;
+        }
+        canData.append(type);
         quint32 value = m_userInterface->CanIdLineEdit->getValue();
         canData.append((value >> 24) & 0xff);
         canData.append((value >> 16) & 0xff);
@@ -1048,7 +1059,7 @@ void MainWindow::createScriptButtonSlot()
  */
 void MainWindow::currentSendFormatChangedSlot(QString format)
 {
-    bool setVisible = (format == "can") ? true : false;
+    bool setVisible = (format.contains("can")) ? true : false;
     m_userInterface->CanTypeBox->setVisible(setVisible);
     m_userInterface->CanTypeLabel->setVisible(setVisible);
     m_userInterface->CanIdLabel->setVisible(setVisible);

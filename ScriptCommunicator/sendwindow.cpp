@@ -297,7 +297,7 @@ SendWindow::SendWindow(SettingsDialog *settingsDialog, MainWindow *mainWindow) :
     m_currentSequenceFileString = tableToString();
 
     QStringList availTargets;
-    availTargets << "utf8" << "hex" << "bin" << "uint8" << "uint16" << "uint32" << "int8" << "int16" << "int32" << "can";
+    availTargets << "utf8" << "hex" << "bin" << "uint8" << "uint16" << "uint32" << "int8" << "int16" << "int32" << "can" << "can-fd" << "can-fd brs";
     m_userInterface->CyclicSendFormat->addItems(availTargets);
 
     QShortcut* shortcut = new QShortcut(QKeySequence("Ctrl+Shift+X"), this);
@@ -507,7 +507,7 @@ void SendWindow::textEditChanged(QPlainTextEdit* textEdit, QString currentFormat
         {
             text.replace("\n", "");
 
-            if((currentFormat == "hex") || (currentFormat == "can"))
+            if((currentFormat == "hex") || (currentFormat.contains("can")))
             {
                 static QRegularExpression re("[^a-fA-F\\d\\s]");
                 text.replace(re, "");
@@ -653,7 +653,8 @@ void SendWindow::checkTextEditContent(QPlainTextEdit* textEdit, QString currentF
 
             QByteArray array = textToByteArray(currentFormat, text, formatToDecimalType(currentFormat), settings->targetEndianess);
 
-            text = MainWindow::byteArrayToNumberString(array, (currentFormat == "bin") ? true : false, ((currentFormat == "hex") || (currentFormat == "can")) ? true : false,
+            text = MainWindow::byteArrayToNumberString(array, (currentFormat == "bin") ? true : false,
+                                                       ((currentFormat == "hex") || (currentFormat.contains("can"))) ? true : false,
                                                        false, true, true, formatToDecimalType(currentFormat), settings->targetEndianess);
 
             textEdit->blockSignals(true);
@@ -699,12 +700,12 @@ QString SendWindow::formatComboBoxChanged(QPlainTextEdit* textEdit, QString form
     QString newText;
     const Settings* settings = m_settingsDialog->settings();
 
-    if(format == "can")
+    if(format.contains("can"))
     {
         format = "hex";
     }
 
-    if(oldFormat == "can")
+    if(oldFormat.contains("can"))
     {
         oldFormat = "hex";
     }
@@ -775,7 +776,7 @@ void SendWindow::setCanElementsInSequenceTable(void)
     {
         SequenceTableComboBox* box = static_cast<SequenceTableComboBox*>(m_userInterface->tableWidget->cellWidget(i,COLUMN_FORMAT));
         bool enable = false;
-        if(box->currentText() == "can")
+        if(box->currentText().contains("can"))
         {
             canIsSelected = true;
             enable = true;
@@ -816,7 +817,7 @@ void SendWindow::currentCanTypeChangedSlot(QString type)
  */
 void SendWindow::currentSendStringFormatChangedSlot(QString format)
 {
-    bool setVisible = (format == "can") ? true : false;
+    bool setVisible = (format.contains("can")) ? true : false;
     m_userInterface->CanTypeBox->setVisible(setVisible);
     m_userInterface->CanTypeLabel->setVisible(setVisible);
     m_userInterface->CanIdLabel->setVisible(setVisible);
@@ -915,7 +916,7 @@ void SendWindow::newButtonClickedSlot(void)
 
     SequenceTableComboBox* comboBox = new SequenceTableComboBox(m_userInterface->tableWidget);
     QStringList availTargets;
-    availTargets  << "utf8" << "hex" << "bin" << "uint8" << "uint16" << "uint32" << "int8" << "int16" << "int32" << "can";
+    availTargets  << "utf8" << "hex" << "bin" << "uint8" << "uint16" << "uint32" << "int8" << "int16" << "int32" << "can" << "can-fd" << "can-fd brs";
     comboBox->addItems(availTargets);
     comboBox->setToolTip(toolTip());
     m_userInterface->tableWidget->setCellWidget(0, COLUMN_FORMAT, comboBox);
@@ -1014,10 +1015,20 @@ void SendWindow::debugCyclicScriptSlot(void)
         const Settings* settings = m_settingsDialog->settings();
         sendData.replace("\n", settings->consoleSendOnEnter.toUtf8());
     }
-    else if(m_userInterface->CyclicSendFormat->currentText() == "can")
+    else if(m_userInterface->CyclicSendFormat->currentText().contains("can"))
     {
         QByteArray canData;
-        canData.append(m_userInterface->CanTypeBox->currentIndex());
+        quint8 type = m_userInterface->CanTypeBox->currentIndex();
+        if(m_userInterface->CanTypeBox->currentText() == "can-fd")
+        {
+            type += PCAN_MESSAGE_FD;
+        }
+        else if(m_userInterface->CanTypeBox->currentText() == "can-fd brs")
+        {
+            type += PCAN_MESSAGE_BRS;
+            type += PCAN_MESSAGE_FD;
+        }
+        canData.append(type);
         quint32 value = m_userInterface->CanIdLineEdit->getValue();
         canData.append((value >> 24) & 0xff);
         canData.append((value >> 16) & 0xff);
@@ -1657,16 +1668,16 @@ void SendWindow::swapTableRowPositions(int row1, int row2)
     QString type = typeBox1->currentText();
     typeBox1->setCurrentText(typeBox2->currentText());
     typeBox2->setCurrentText(type);
-    typeBox1->setEnabled(box1->currentText() == "can");
-    typeBox2->setEnabled(box2->currentText() == "can");
+    typeBox1->setEnabled(box1->currentText().contains("can"));
+    typeBox2->setEnabled(box2->currentText().contains("can"));
     typeBox1->setRow(row1);
     typeBox2->setRow(row2);
 
     QString tmpValue = canIdLineEdit1->toPlainText();
     canIdLineEdit1->setPlainText(canIdLineEdit2->toPlainText());
     canIdLineEdit2->setPlainText(tmpValue);
-    canIdLineEdit1->setEnabled(box1->currentText() == "can");
-    canIdLineEdit2->setEnabled(box2->currentText() == "can");
+    canIdLineEdit1->setEnabled(box1->currentText().contains("can"));
+    canIdLineEdit2->setEnabled(box2->currentText().contains("can"));
     canIdLineEdit1->setRow(row1);
     canIdLineEdit2->setRow(row2);
     bool is11Bit = ((typeBox1->currentText() == "11 Bit" ) || (typeBox1->currentText() == "11 Bit RTR" )) ? true : false;
@@ -1799,7 +1810,7 @@ QByteArray SendWindow::textToByteArray(QString formatString, QString text, Decim
         uint format = 10;
         qint32 bytesPerNumber = 1;
 
-        if((formatString == "hex") || (formatString == "can"))
+        if((formatString == "hex") || (formatString.contains("can")))
         {
             format = 16;
             bytesPerNumber = 2;
@@ -1814,7 +1825,7 @@ QByteArray SendWindow::textToByteArray(QString formatString, QString text, Decim
         {
             bool isOk = false;
 
-            if((formatString == "hex") || (formatString == "can") || (formatString == "bin"))
+            if((formatString == "hex") || (formatString.contains("can")) || (formatString == "bin"))
             {
                 while(!var.isEmpty())
                 {
@@ -2074,10 +2085,20 @@ void SendWindow::sendButtonPressedSlot()
             const Settings* settings = m_settingsDialog->settings();
             sendData.replace("\n", settings->consoleSendOnEnter.toUtf8());
         }
-        else if(m_userInterface->CyclicSendFormat->currentText() == "can")
+        else if(m_userInterface->CyclicSendFormat->currentText().contains("can"))
         {
             QByteArray canData;
-            canData.append(m_userInterface->CanTypeBox->currentIndex());
+            quint8 type = m_userInterface->CanTypeBox->currentIndex();
+            if(m_userInterface->CanTypeBox->currentText() == "can-fd")
+            {
+                type += PCAN_MESSAGE_FD;
+            }
+            else if(m_userInterface->CanTypeBox->currentText() == "can-fd brs")
+            {
+                type += PCAN_MESSAGE_BRS;
+                type += PCAN_MESSAGE_FD;
+            }
+            canData.append(type);
             quint32 value = m_userInterface->CanIdLineEdit->getValue();
             canData.append((value >> 24) & 0xff);
             canData.append((value >> 16) & 0xff);

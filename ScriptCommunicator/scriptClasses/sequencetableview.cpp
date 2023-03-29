@@ -606,10 +606,20 @@ void SequenceTableView::sendSequence(int row, bool debug, QWidget* callerWidget)
             const Settings* settings = m_sendWindow->m_settingsDialog->settings();
             sendData.replace("\n", settings->consoleSendOnEnter.toUtf8());
         }
-        else if(box->currentText() == "can")
+        else if(box->currentText().contains("can"))
         {
             QByteArray canData;
-            canData.append(typeBox->currentIndex());
+            quint8 type = typeBox->currentIndex();
+            if(box->currentText() == "can-fd")
+            {
+                type += PCAN_MESSAGE_FD;
+            }
+            else if(box->currentText() == "can-fd brs")
+            {
+                type += PCAN_MESSAGE_BRS;
+                type += PCAN_MESSAGE_FD;
+            }
+            canData.append(type);
             quint32 value = canIdLineEdit->getValue();
             canData.append((value >> 24) & 0xff);
             canData.append((value >> 16) & 0xff);
