@@ -1,5 +1,6 @@
 ﻿/*************************************************************************
-This script file contains function for script settings data loading and saving
+This script file contains functions for script settings data loading and saving 
+and other features that are used in Backtrace Settings dialog window.
 
   We need to find ESP project build path (ideally by selscting project's output .elf) 
   from where we can parse  other necessary info, like project name and exact 
@@ -23,14 +24,96 @@ UI_pbOk.clickedSignal.connect(UI_pbOk, closeSettingsDialog);
 UI_pbCancel.clickedSignal.connect(UI_pbCancel, closeSettingsDialog);
 UI_pb_selectAddr2Line.clickedSignal.connect(UI_pb_selectAddr2Line, clickedOpenToolsFile);
 UI_pb_selectReadElf.clickedSignal.connect(UI_pb_selectReadElf, clickedOpenToolsFile);
+UI_pb_manualAddrDecode.clickedSignal.connect(clickedManualAddrDecode);
+UI_pb_Readme.clickedSignal.connect(openReadme);
 // Checkbox
 UI_chkBox_backtraceDecode.clickedSignal.connect(clickedDecode);
 UI_chkBox_autodetectTools.clickedSignal.connect(clickedAutodetect);
 // Combo box
 UI_comBox_projecElfFile.currentTextChangedSignal.connect(parseFwFileInfo);
 
+/* ====    Set info text     ==== */
+var readmeTab = UI_settingsTab.removeTab(2);	// Remove Readme tab by default, can be opened by clicking on Readme button
+UI_label_EspConsoleVersion.setText(VERSION_INFO);
 
 /* ====    Functions     ==== */
+
+/* Async timer callback that waits for readme text to show up in text edit after
+	it was loaded and then it can autoscroll to beginning of text.
+ */
+function readmeRefresh() {
+	UI_txtEd_Help.show();	// may not be necessary
+	var tout = 3000;	
+	while( (UI_txtEd_Help.verticalScrollBarValue() == 0) && (tout > 0) ) {
+		scriptThread.sleep(10);
+		tout -= 10;		// Failsafe tout countdown
+	}
+	UI_txtEd_Help.verticalScrollBarSetValue(0);	// Now we can finally scroll to top
+}
+
+/* Add readme tab and load text after clicking the Readme button the first time */
+function openReadme() 
+{
+	if(readmeTab != null) 
+	{
+		UI_settingsTab.insertTab(readmeTab, 2);				// Insert tab which was removed during script init
+		UI_settingsTab.setCurrentIndex(2);					// Set it active too
+		scriptThread.loadScript("snarkdown.js");			// Load snarkdown lib 
+		var readmeMd = scriptThread.readFile("README.md");	// Load markdown text from file
+		var readmeHtml = snarkdown(readmeMd);				// Parse MD using snarkdown to HTML
+		UI_txtEd_Help.insertHtml(readmeHtml);				// Insert resulting HTML to text edit
+		readmeTab = null;						// Clear the ID variable to diable this part of code to rerun
+		/* Now the problem is if we want to autoscroll to top after load. Showing the resulting text currently
+			takes 300ms and will change depending on content. That means we can not just show() and set
+			verticalScrollBarSetValue(0) now as there is nothing to show and set - we need to wait instead.
+		   Using sleep would be quite simple, but that is barely a workaround. It also does not seem to work 
+			as expected while we are still in this button callback. UI_txtEd_Help.textChangedSignal.connect() 
+			does not help either.
+		   What seems to be working best is using one shot timer so we can exit this callback and then 
+			wait for loaded text in that timer's callback. 
+		*/
+		var readmeLoad = scriptThread.createTimer();
+		readmeLoad.timeoutSignal.connect(readmeRefresh);
+		readmeLoad.setSingleShot(true);
+		readmeLoad.start(10);
+	}
+}
+
+/* Find and decode backtrace addresses provided in text field input
+Example: Backtrace: 0x40081f06:0x3fff0fa0 0x4008ac4d:0x3fff0fc0 0x4008ec3a:0x3fff0fe0 0x4008cb1f:0x3fff1060 0x4008ad48:0x3fff1080 0x4008acfa:0x007b1948 |<-CORRUPTED 
+ */
+function clickedManualAddrDecode()
+{
+	var backtraceString = UI_txtEd_manualAddr.toPlainText();
+	UI_txtEd_manualAddrResult.setPlainText("");
+	
+	// Create arrray of strings for backtrace addresses:
+	var addrs = Array();	
+	// Safest option would be to search for every '0x' character combination and take folowing 8 characters
+	var idx = backtraceString.indexOf("0x", 0);	// from start
+	// If 0x was found at all:
+	while( idx >= 0 ) 
+	{
+		// In this case we can simply add anything up to 21 characters and try decoding it
+		addrs.push( backtraceString.slice(idx, idx+21) ); 	// Add address:address to array of strings
+		idx = backtraceString.indexOf("0x", idx+10);		// Start next search after previous end
+	}
+
+	var program = UI_lnEd_pathAddr2Line.text();	
+	var elfFile = UI_comBox_projecElfFile.currentText();
+	// Run xtensa addr2line command for every address: xtensa-esp32-elf-addr2line -pfiaC -e build/PROJECT.elf ADDRESS
+	for(var i = 0; i < addrs.length; i++)
+	{
+		var arguments = Array("-pfiaC", "-e", ""+elfFile+"", addrs[i]);
+		var ret = runProcessAsync(program, arguments, 1000, 1000, "");		
+		if(ret.exitCode != 0) { 	// Error
+			UI_txtEd_manualAddrResult.setPlainText( UI_txtEd_manualAddrResult.toPlainText() + ret.stdErr );
+		}
+		else {
+			UI_txtEd_manualAddrResult.setPlainText( UI_txtEd_manualAddrResult.toPlainText() + ret.stdOut );
+		}
+	}
+}
 
 /* Empty firmware info if requirements not satisfied */
 function cleanFwInfo() 
@@ -137,7 +220,7 @@ function checkReadelf(elfFile)
 			UI_lnEd_FwIDFVer.setText(	stringArray[7].slice(12));	// IDF version example: 	'  [    70]  v4.4.1'			
 			// Main window tab info label:
 			UI_lnEd_projectLoaded.setText(UI_lnEd_FwName.text() + " v" + UI_lnEd_FwAppVer.text() + 
-						" / ESP-IDF " + UI_lnEd_FwIDFVer.text() + " on " + UI_lnEd_target.text());
+					" / ESP-IDF " + UI_lnEd_FwIDFVer.text());
 		}
 		//else just dont fill FW info - not required for backtrace
 	}
@@ -303,20 +386,22 @@ function closeSettingsDialog()
 function clickedDecode ()
 {
 	if(UI_chkBox_backtraceDecode.isChecked()) {
-		UI_lnEd_projectLoaded.setEnabled(true);	// Main window tab
-		UI_label_backtrace.setEnabled(true);	// Main window tab
+		UI_lnEd_projectLoaded.setEnabled(true);		// Main window tab
+		UI_label_backtrace.setEnabled(true);		// Main window tab
 		UI_grpBox_FWInfo.setEnabled(true);
 		UI_lnEd_pathAddr2Line.setEnabled(true);
 		UI_lnEd_pathReadElf.setEnabled(true);
 		UI_chkBox_autodetectTools.setEnabled(true);
+		UI_pb_manualAddrDecode.setEnabled(true);	// Manual address decode tab			
 	}
 	else {
-		UI_lnEd_projectLoaded.setEnabled(false);// Main window tab
-		UI_label_backtrace.setEnabled(false);	// Main window tab
+		UI_lnEd_projectLoaded.setEnabled(false);	// Main window tab
+		UI_label_backtrace.setEnabled(false);		// Main window tab
 		UI_grpBox_FWInfo.setEnabled(false);
 		UI_lnEd_pathAddr2Line.setEnabled(false);
 		UI_lnEd_pathReadElf.setEnabled(false);
 		UI_chkBox_autodetectTools.setEnabled(false);
+		UI_pb_manualAddrDecode.setEnabled(false);	// Manual address decode tab	
 	}
 }
 
@@ -370,6 +455,8 @@ function loadUiSettings()
 		UI_chkBox_backtraceDecode.setChecked(((getValOfStrArr(stringArray, "DecodeBacktrace") == "true") ? true : false));		
 		clickedDecode();  // Sets correct state of other elements in relation checkbox
 		
+		UI_chkBox_invalidResultsEnable.setChecked(((getValOfStrArr(stringArray, "InvalidEnable") == "true") ? true : false));		
+		
 		var elfCurIndex = getValOfStrArr(stringArray, "ElfCurrentIndex");
 		var elfCount = getValOfStrArr(stringArray, "ElfCount");
 		
@@ -399,6 +486,7 @@ function saveUiSettings()
 	
 	settings += "[Settings]" + "\r\n";
 	settings += "DecodeBacktrace=" + (UI_chkBox_backtraceDecode.isChecked() ? "true" : "false") + "\r\n";
+	settings += "InvalidEnable=" + (UI_chkBox_invalidResultsEnable.isChecked() ? "true" : "false") + "\r\n";
 	settings += "ElfCurrentIndex=" + UI_comBox_projecElfFile.currentIndex() + "\r\n";
 	settings += "ElfCount=" + UI_comBox_projecElfFile.count() + "\r\n";
 	settings += "AutodetectTools=" + (UI_chkBox_autodetectTools.isChecked() ? "true" : "false") + "\r\n";

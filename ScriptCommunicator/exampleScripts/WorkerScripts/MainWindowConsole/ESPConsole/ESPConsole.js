@@ -7,6 +7,8 @@ See README.md for more details.
 Requres ScriptCommunicator v6+ (getUserGenericConfigFolder())
 ****************************************************************************************/
 
+var VERSION_INFO = "ESP Console v1.1 (26.03.2023)";
+
 // Load additional scripts and UI
 scriptThread.loadScript("runProcessAsync.js");
 scriptThread.loadScript("backtraceSettings.js");
@@ -38,6 +40,10 @@ function mainWindowClearConsoleClicked()
 	UI_TextEdit1.clear();
 	UI_label_backtrace.setText("Decoding backtrace for ESP Project:");
 	UI_label_backtrace.setWindowTextColor("darkGray");	// Reasonable default that works on dark and light themes
+	// Also refresh FW info if available
+	if( UI_chkBox_backtraceDecode.isChecked() ) {
+		checkReadelf(UI_comBox_projecElfFile.currentText());
+	}
 }
 
 //Reads the global console settings (settings dialog) and adjusts the utf8 console to it.
@@ -109,6 +115,12 @@ function addStrToConsole(strData, fontColor)
  */
 function findAndDecodeBacktrace(backtraceString)
 {
+	// Basic workaround to show "backtrace detected" message even if result was not correct
+	if( backtraceString.search("Backtrace:") >= 0 ) {
+		UI_label_backtrace.setText("Backtrace detected!");
+		UI_label_backtrace.setWindowTextColor("red");
+	}
+	
 	// If there is some unfinished addres leftover, add it first:
 	if(g_addrChunk != "") backtraceString = g_addrChunk + backtraceString;
 	g_addrChunk = ""; 	// Clear the buffer after that, not needed anymore
@@ -159,16 +171,25 @@ function findAndDecodeBacktrace(backtraceString)
 		if(ret.exitCode != 0) { 	// Error
 			addStrToConsole(ret.stdErr, "CC0000");	// red
 		}
-		else {	// OK, but also filer out invalid results. Unfortunately no string.includes("") function?
-			if( ((/[?][?][ ][?][?][:][0]/).test(ret.stdOut) || (/[?][?][:][?]/).test(ret.stdOut)) != true ) 
-			{
-				if( (/call_start_cpu/).test(ret.stdOut) == true ) {	
-					addStrToConsole("\r\n" + ret.stdOut, "AAAA00");	// Not an eror, print this one in yellow
-				}
-				else {	// May be backtrace
-					addStrToConsole("\r\n" + ret.stdOut, "FF0000");	// red
-					UI_label_backtrace.setText("Backtrace detected in ESP Project:");
-					UI_label_backtrace.setWindowTextColor("red");
+		else {	
+			// OK, but also filer out invalid results. Unfortunately no string.includes("") function?
+			if(	UI_chkBox_invalidResultsEnable.isChecked() ) {
+				// No filter, print everything that was decoded
+				addStrToConsole("\r\n" + ret.stdOut, "FF0000");	// red
+				UI_label_backtrace.setText("Backtrace detected!");
+				UI_label_backtrace.setWindowTextColor("red");
+			}
+			else {
+				if( ((/[?][?][ ][?][?][:][0]/).test(ret.stdOut) || (/[?][?][:][?]/).test(ret.stdOut)) != true ) 
+				{
+					if( (/call_start_cpu/).test(ret.stdOut) == true ) {	
+						addStrToConsole("\r\n" + ret.stdOut, "AAAA00");	// Not an eror, print this one in yellow
+					}
+					else {	// May be backtrace
+						addStrToConsole("\r\n" + ret.stdOut, "FF0000");	// red
+						UI_label_backtrace.setText("Backtrace detected!");
+						UI_label_backtrace.setWindowTextColor("red");
+					}
 				}
 			}
 		}
@@ -256,7 +277,6 @@ function dataReceivedSlot(data)
 
 // Connect Signals
 UI_btnBacktraceSettings.clickedSignal.connect(showSettingsDialog);
-
 
 //The console settings.
 var g_settings = scriptThread.getConsoleSettings();
