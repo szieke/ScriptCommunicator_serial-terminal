@@ -57,8 +57,11 @@ public:
      * @param channel
      *      The pcan channel.
      * @param baudRate
-     *      The baudrate. Possible values are:
-     *      1000, 800, 500, 250, 125,100,95,83,50,47,33,20,10,5.
+     *      The CAN bitrate (kHz) in classic CAN mode. In case of CAN-FD the bitrate for the transmission of the CAN header.
+     *      Possible values are: 1000, 500, 250, 125.
+     * @param payloadBitrate
+     *      The bitrate (kHz) for the transmission of the data (CAN-FD). If 0 classic CAN is used.
+     *      Possible values are: 2000, 4000, 8000, 10000.
      * @param busOffAutoReset
      *      True if the PCAN driver shall reset automatically the CAN controller of a PCAN Channel if a bus-off state is detected.
      * @param powerSupply
@@ -66,14 +69,14 @@ public:
      * @return
      *      True on success.
      */
-    Q_INVOKABLE bool open(quint8 channel, quint32 baudrate, bool busOffAutoReset, bool powerSupply)
+    Q_INVOKABLE bool open(quint8 channel, quint32 baudrate, quint32 payloadBitrate, bool busOffAutoReset, bool powerSupply)
     {
         quint16 convertedBaudrate = PCANBasicClass::convertBaudrateString(QString("%1").arg(baudrate));
         bool result = false;
 
         if(convertedBaudrate != 0)
         {
-            result =  m_pcan.open(channel, convertedBaudrate, busOffAutoReset,powerSupply, 0);
+            result =  m_pcan.open(channel, convertedBaudrate, payloadBitrate * 1000, busOffAutoReset,powerSupply);
         }
 
         return result;
@@ -100,8 +103,12 @@ public:
     /**
      * Sends a can message. If more then 8 data bytes are given several can messages with the same can id will be sent.
      * @param type
-     *  The can message type: 0=standard, 1=standard remote-transfer-request, 2=extended,
-     *  3= extended remote-transfer-request
+     *          The can message type. Following or combined values are possible:
+     *          0x0: standard CAN message (11-bit identifier)
+     *          0x1: standard remote-transfer-request message
+     *          0x2: extended CAN message (29-bit identifier)
+     *          0x4: the CAN message represents a FD frame in terms of CiA Specs
+     *          0x8: the CAN message represents a FD bit rate switch (CAN data/payload at a higher bit rate)
      * @param canId
      *      The can id.
      * @param data

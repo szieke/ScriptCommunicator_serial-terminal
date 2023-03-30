@@ -78,7 +78,7 @@ public:
 
     ///Connects the main interface (PCAN).
     ///Note: A successful call will modify the corresponding settings in the settings dialog.
-    Q_INVOKABLE bool connectPcan(quint8 channel, quint32 baudrate, quint32 connectTimeout = 2000, bool busOffAutoReset = true, bool powerSupply = false,
+    Q_INVOKABLE bool connectPcan(quint8 channel, quint32 baudrate, quint32 payloadBitrate = 0, quint32 connectTimeout = 2000, bool busOffAutoReset = true, bool powerSupply = false,
                                  bool filterExtended = true, quint32 filterFrom = 0, quint32 filterTo = 0x1fffffff);
 
     ///Sets the serial port (main interface) RTS and DTR pins.

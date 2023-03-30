@@ -249,11 +249,13 @@ bool ScriptInf::sendDataArray(QVector<unsigned char> data, int repetitionCount, 
 
 /** Sends a can message with the main interface (in MainInterfaceThread).
  *  @param type
- *          The can message type. Following values are possible:
- *          0: standard can message (11-bit identifier)
- *          1: standard remote-transfer-request message (11-bit identifier)
- *          2: extended can message (29-bit identifier)
- *          3: extended remote-transfer-request message (29-bit identifier)
+ *          The can message type. Following or combined values are possible:
+ *          0x0: standard CAN message (11-bit identifier)
+ *          0x1: standard remote-transfer-request message
+ *          0x2: extended CAN message (29-bit identifier)
+ *          0x4: the CAN message represents a FD frame in terms of CiA Specs
+ *          0x8: the CAN message represents a FD bit rate switch (CAN data/payload at a higher bit rate)
+ *
  *  @param data
  *          The can data.
  *  @param repetitionCount
@@ -363,9 +365,12 @@ bool ScriptInf::sendString(QString string, int repetitionCount, int pause, bool 
  * Note: A successful call will modify the corresponding settings in the settings dialog.
  * @param channel
  *      The PCAN channel.
- * @param baudrate
- *      The baudrate. Possible values are:
- *      1000, 800, 500, 250, 125,100,95,83,50,47,33,20,10,5.
+ * @param bitrate
+ *      The CAN bitrate (kHz) in classic CAN mode. In case of CAN-FD the bitrate for the transmission of the CAN header.
+ *      1000, 500, 250, 125.
+ * @param payloadBitrate
+ *      The bitrate (kHz) for the transmission of the data (CAN-FD). If 0 classic CAN is used.
+ *      Possible values are: 2000, 4000, 8000, 10000.
  * @param connectTimeout
  *      Connect timeout(ms)
  * @param busOffAutoReset
@@ -382,7 +387,7 @@ bool ScriptInf::sendString(QString string, int repetitionCount, int pause, bool 
  * @return
  *      True on success.
  */
-bool ScriptInf::connectPcan(quint8 channel, quint32 baudrate, quint32 connectTimeout, bool busOffAutoReset, bool powerSupply,
+bool ScriptInf::connectPcan(quint8 channel, quint32 baudrate,  quint32 payloadBitrate, quint32 connectTimeout, bool busOffAutoReset, bool powerSupply,
                                bool filterExtended, quint32 filterFrom, quint32 filterTo)
 {
     bool succeeded = false;
@@ -393,6 +398,8 @@ bool ScriptInf::connectPcan(quint8 channel, quint32 baudrate, quint32 connectTim
     Settings newSettings = *m_settingsDialog->settings();
     newSettings.connectionType = CONNECTION_TYPE_PCAN;
     newSettings.pcanInterface.baudRate = PCANBasicClass::convertBaudrateString(QString("%1").arg(baudrate));
+    newSettings.pcanInterface.payloadBaudrate = payloadBitrate;
+    newSettings.pcanInterface.isCanFdMode = (payloadBitrate != 0) ? true : false;
     newSettings.pcanInterface.busOffAutoReset = busOffAutoReset;
     newSettings.pcanInterface.channel = channel;
     newSettings.pcanInterface.powerSupply = powerSupply;

@@ -99,7 +99,7 @@ bool PCANBasicClass::setFilter(bool filterExtended, quint32 filterFrom, quint32 
  * @param channel
  *      The pcan channel.
  * @param baudRate
- *      The baudrate. In case of CAN-FD the bitrate for the transmission of the CAN ID.
+ *      The baudrate. In case of CAN-FD the bitrate for the transmission of the CAN header.
  * @param dataBitrate
  *      The bitrate for the transmission of the data (CAN-FD). If 0 classic CAN is used.
  * @param busOffAutoReset
