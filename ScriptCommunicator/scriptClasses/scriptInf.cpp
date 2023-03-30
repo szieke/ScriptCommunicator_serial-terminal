@@ -398,7 +398,7 @@ bool ScriptInf::connectPcan(quint8 channel, quint32 baudrate,  quint32 payloadBi
     Settings newSettings = *m_settingsDialog->settings();
     newSettings.connectionType = CONNECTION_TYPE_PCAN;
     newSettings.pcanInterface.baudRate = PCANBasicClass::convertBaudrateString(QString("%1").arg(baudrate));
-    newSettings.pcanInterface.payloadBaudrate = payloadBitrate;
+    newSettings.pcanInterface.payloadBaudrate = payloadBitrate * 1000;
     newSettings.pcanInterface.isCanFdMode = (payloadBitrate != 0) ? true : false;
     newSettings.pcanInterface.busOffAutoReset = busOffAutoReset;
     newSettings.pcanInterface.channel = channel;

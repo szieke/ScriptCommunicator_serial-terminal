@@ -18,11 +18,12 @@ function dialogFinished(e)
 
 
 var sendData = 0;
+var canType = 0x2 + 0x4 + 0x8; //CAN Type is extended, CAN-FD frame and bit rate switching is on.
 function sendMessages()
 {
 	for(var i = 0xff; i < (0xff + 2); i++)
 	{
-		scriptInf.sendCanMessage(2, i, Array(0,0,0,0,(sendData >> 24) & 0xff,(sendData >> 16) & 0xff,(sendData >> 8) & 0xff,sendData & 0xff));
+		scriptInf.sendCanMessage(canType, i, Array(0,0,0,0,(sendData >> 24) & 0xff,(sendData >> 16) & 0xff,(sendData >> 8) & 0xff,sendData & 0xff));
 		sendData++;
 	}
 }
@@ -97,8 +98,8 @@ UI_Dialog.finishedSignal.connect(dialogFinished);
 
 scriptInf.disconnect()
 
-//Open the PCAN adapter in classic CAN mode (the payload bitrate ist 0, no CAN-FD)
-if(!scriptInf.connectPcan(1, 1000, 0))
+//Open the PCAN adapter in  CAN-FD mode
+if(!scriptInf.connectPcan(1, 1000, 2000))
 {
 	scriptThread.messageBox("Critical", "error", 'error while connecting main interface')
 }
@@ -112,8 +113,8 @@ SendTimer.start(500);
 var pcan2 = scriptInf.createPcanInterface();
 pcan2.canMessagesReceivedSignal.connect(pcan2MessagesReceived);
 
-//Open the PCAN adapter in classic CAN mode (the payload bitrate ist 0, no CAN-FD)
-if(!pcan2.open(2, 1000, 0, true, false) || !pcan2.isConnected())
+//Open the PCAN adapter in  CAN-FD mode
+if(!pcan2.open(2, 1000, 2000, true, false) || !pcan2.isConnected())
 {
 	scriptThread.messageBox("Critical", "error", 'could not open pcan interface');
 }
