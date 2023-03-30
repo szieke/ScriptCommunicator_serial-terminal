@@ -208,6 +208,7 @@ function checkReadelf(elfFile)
 		var arguments = Array("-p", ".flash.appdesc", elfFile);	
 		var ret = runProcessAsync(program, arguments, -1, 1000, "");
 		var stringArray = (ret.stdOut).split("\n");
+		var stringArray = (ret.stdOut).split("\n");
 		
 		if((ret.exitCode == 0) && (stringArray.length > 7)) 
 		{
@@ -473,8 +474,11 @@ function loadUiSettings()
 			//scriptThread.appendTextToConsole( stringArray[elfListIdx+1+i] );
 			UI_comBox_projecElfFile.addItem( stringArray[elfListIdx+1+i] );
 		}
-		UI_comBox_projecElfFile.setCurrentIndex(elfCurIndex);		
-		parseFwFileInfo();
+		UI_comBox_projecElfFile.setCurrentIndex(elfCurIndex);
+		if( UI_chkBox_backtraceDecode.isChecked() ) {
+			// Parse only if decode is enabled, Otherwise don't bother, user may just want the console
+			parseFwFileInfo();
+		}
 		UI_comBox_projecElfFile.blockSignals(false);	// Unblock index/text changed signal
 	}
 }
