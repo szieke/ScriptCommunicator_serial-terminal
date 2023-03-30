@@ -208,7 +208,6 @@ function checkReadelf(elfFile)
 		var arguments = Array("-p", ".flash.appdesc", elfFile);	
 		var ret = runProcessAsync(program, arguments, -1, 1000, "");
 		var stringArray = (ret.stdOut).split("\n");
-		var stringArray = (ret.stdOut).split("\n");
 		
 		if((ret.exitCode == 0) && (stringArray.length > 7)) 
 		{
