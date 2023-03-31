@@ -300,7 +300,7 @@ class PCANBasicClass : public QObject
 
         PCANBasicClass(QObject *parent) : QObject(parent){}
         ~PCANBasicClass(){}
-        bool open(quint8 channel, quint32 baudRate, bool busOffAutoReset, bool powerSupply){(void)channel;(void)baudRate;(void)busOffAutoReset;(void)powerSupply;return false;}
+        bool open(quint8 channel, quint32 baudRate, quint32 dataBitrate, bool busOffAutoReset, bool powerSupply){(void)channel;(void)baudRate;(void)dataBitrate;(void)busOffAutoReset;(void)powerSupply;return false;}
         void close(){}
         bool sendData(const QByteArray &data){(void)data;return false;}
         QByteArray readLastMessage(void){QByteArray data;return data;}
@@ -311,6 +311,9 @@ class PCANBasicClass : public QObject
 
         ///The max. number of bytes in a single CAN message.
         static const qint32 MAX_BYTES_PER_MESSAGE = 8;
+
+        ///The max. number of bytes in a single CAN message (CAN-FD).
+        static const qint32 MAX_BYTES_PER_MESSAGE_FD = 64;
 
         ///The number of bytes for the CAN type.
         static const qint32 BYTES_FOR_CAN_TYPE = 1;

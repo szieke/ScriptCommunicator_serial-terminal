@@ -25,6 +25,9 @@
 typedef quint32 DWORD;
 typedef quint16 WORD;
 typedef quint8 BYTE;
+#define __stdcall
+typedef quint64 UINT64;
+typedef char* LPSTR;
 #endif
 
 ////////////////////////////////////////////////////////////
