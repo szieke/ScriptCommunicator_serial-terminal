@@ -473,8 +473,11 @@ function loadUiSettings()
 			//scriptThread.appendTextToConsole( stringArray[elfListIdx+1+i] );
 			UI_comBox_projecElfFile.addItem( stringArray[elfListIdx+1+i] );
 		}
-		UI_comBox_projecElfFile.setCurrentIndex(elfCurIndex);		
-		parseFwFileInfo();
+		UI_comBox_projecElfFile.setCurrentIndex(elfCurIndex);
+		if( UI_chkBox_backtraceDecode.isChecked() ) {
+			// Parse only if decode is enabled, Otherwise don't bother, user may just want the console
+			parseFwFileInfo();
+		}
 		UI_comBox_projecElfFile.blockSignals(false);	// Unblock index/text changed signal
 	}
 }

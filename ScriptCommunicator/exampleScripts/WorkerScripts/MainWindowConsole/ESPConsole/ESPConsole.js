@@ -7,7 +7,7 @@ See README.md for more details.
 Requres ScriptCommunicator v6+ (getUserGenericConfigFolder())
 ****************************************************************************************/
 
-var VERSION_INFO = "ESP Console v1.1 (26.03.2023)";
+var VERSION_INFO = "ESP Console v1.1.1 (30.03.2023)";
 
 // Load additional scripts and UI
 scriptThread.loadScript("runProcessAsync.js");
@@ -273,6 +273,13 @@ function dataReceivedSlot(data)
 			}		
 		}
 	}
+}
+
+// Is called if this script shall be exited.
+function stopScript() 
+{
+	saveUiSettings();
+	scriptThread.stopScript();	// This is the stopper
 }
 
 // Connect Signals

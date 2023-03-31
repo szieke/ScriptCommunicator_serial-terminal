@@ -58,6 +58,11 @@ Alternatively you can try original ScriptCommunicator repo: [https://github.com/
 
 ### Changelog
 
+#### ESP Console v1.1.1 (30.03.2023)
+
+- Bugfix: only show the "ELF not found" dialog on start if decode was enabled on previous exit. Otherwise it may be disturbing if user just wants to use console without backtrace.
+- Also save settings on script exit, not just after OK button click.
+
 #### ESP Console v1.1 (26.03.2023)
 
 - Firmware info can now be refreshed by clicking **Clear** button in main window.
