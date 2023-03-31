@@ -39,8 +39,8 @@ This script interface has the following features:
 # Homepage
 [https://sourceforge.net/projects/scriptcommunicator/](https://sourceforge.net/projects/scriptcommunicator/)
 
-# Downloads (release 06.00)
-- [Windows](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicatorSetup_06_00_windows.exe/download)
-- [Windows no installer](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicator_06_00_windows_no_installer.zip/download)
-- [Linux 64 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_64Bit/ScriptCommunicator_06_00_linux_64_bit.zip/download)
-- [Source](http://sourceforge.net/projects/scriptcommunicator/files/Source/ScriptCommunicator_06_00_source.zip/download)
+# Downloads (release 06.01)
+- [Windows](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicatorSetup_06_01_windows.zip/download)
+- [Windows no installer](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicator_06_01_windows_no_installer.zip/download)
+- [Linux 64 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_64Bit/ScriptCommunicator_06_01_linux_64_bit.zip/download)
+- [Source](http://sourceforge.net/projects/scriptcommunicator/files/Source/ScriptCommunicator_06_01_source.zip/download)
