@@ -1156,6 +1156,13 @@ void MainWindowHandleData::dataHasBeenSendSlot(QByteArray data, bool success, ui
             QByteArray tmpIdAndType = data.mid(0, PCANBasicClass::BYTES_METADATA_SEND);
             quint32 maxBytesPerMessage = (tmpIdAndType[0] & PCAN_MESSAGE_FD) ? PCANBasicClass::MAX_BYTES_PER_MESSAGE_FD : PCANBasicClass::MAX_BYTES_PER_MESSAGE;
 
+            if(data.length() == PCANBasicClass::BYTES_METADATA_SEND)
+            {//Empty message
+
+              appendDataToStoredData(tmpIdAndType, true, false, m_mainWindow->m_isConnectedWithCan, false, m_mainWindow->m_isConnectedWithI2cMaster);
+              m_mainWindow->m_canTab->canMessageTransmitted(tmpIdAndType);
+            }
+
             for(int i = 0; i < (data.length() - PCANBasicClass::BYTES_METADATA_SEND);)
             {
 

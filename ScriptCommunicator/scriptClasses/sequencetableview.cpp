@@ -596,7 +596,7 @@ void SequenceTableView::sendSequence(int row, bool debug, QWidget* callerWidget)
     SequenceTablePlainTextEdit* lineEdit = static_cast<SequenceTablePlainTextEdit*>(m_sendWindow->m_userInterface->tableWidget->cellWidget(row, SendWindow::COLUMN_VALUE));
     SequenceTablePlainTextEdit* scriptLineEdit = static_cast<SequenceTablePlainTextEdit*>(m_sendWindow->m_userInterface->tableWidget->cellWidget(row, SendWindow::COLUMN_SCRIPT));
 
-    if(!lineEdit->toPlainText().isEmpty())
+    if(!lineEdit->toPlainText().isEmpty() || box->currentText().contains("can"))
     {
         QByteArray sendData = m_sendWindow->textToByteArray(box->currentText(), lineEdit->toPlainText(),
                                                             m_sendWindow->formatToDecimalType(box->currentText()), settings->targetEndianess);
