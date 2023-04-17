@@ -203,23 +203,41 @@ void SendWindowTextEdit::dropEvent(QDropEvent *event)
  */
 void SendWindowTextEdit::keyPressEvent(QKeyEvent *event)
 {
+  bool sendData = false;
+
+  if(m_sendOnEnter)
+  {
+    if((event->text() == "\r"))
+    {
+      sendData = true;
+    }
+  }
+  else
+  {
     if((event->modifiers() == Qt::AltModifier) && (event->text() == "\r"))
     {//alt+enter pressed
-
-        if(m_mainWindow)
-        {
-            m_mainWindow->sendButtonPressedSlot();
-        }
-        else if(m_sendWindow)
-        {
-            m_sendWindow->sendButtonPressedSlot();
-        }
-
+      sendData = true;
     }
-    else
-    {
-        QPlainTextEdit::keyPressEvent(event);
-    }
+  }
+
+
+
+  if(sendData)
+  {
+      if(m_mainWindow)
+      {
+          m_mainWindow->sendButtonPressedSlot();
+      }
+      else if(m_sendWindow)
+      {
+          m_sendWindow->sendButtonPressedSlot();
+      }
+
+  }
+  else
+  {
+      QPlainTextEdit::keyPressEvent(event);
+  }
 }
 
 
@@ -268,7 +286,6 @@ SendWindow::SendWindow(SettingsDialog *settingsDialog, MainWindow *mainWindow) :
     connect(m_userInterface->actionAddSequenceScript, SIGNAL(triggered()), this, SLOT(addScriptSlot()));
     connect(m_userInterface->actionCreateSequenceScript, SIGNAL(triggered()), this, SLOT(createScriptSlot()));
     connect(m_userInterface->actionDebugSequenceScript, SIGNAL(triggered()), this, SLOT(debugScriptSlot()));
-    connect(m_userInterface->actionDebugCyclicSequenceScript, SIGNAL(triggered()), this, SLOT(debugCyclicScriptSlot()));
 
     connect(m_userInterface->CyclicSendFormat, SIGNAL(currentTextChanged(QString)), this, SLOT(currentSendStringFormatChangedSlot(QString)));
     connect(m_userInterface->CanTypeBox, SIGNAL(currentTextChanged(QString)), this, SLOT(currentCanTypeChangedSlot(QString)));
@@ -581,13 +598,6 @@ void SendWindow::cyclicSendInputTextChangedSlot(void)
 {
     textEditChanged(m_userInterface->CyclicSendInput, m_userInterface->CyclicSendFormat->currentText(),
                     formatToDecimalType(m_userInterface->CyclicSendFormat->currentText()));
-
-    m_userInterface->actionDebugCyclicSequenceScript->setEnabled(false);
-    if(!m_userInterface->CyclicSendInput->toPlainText().isEmpty() &&
-            !m_userInterface->CyclicSendScript->toPlainText().isEmpty())
-    {
-        m_userInterface->actionDebugCyclicSequenceScript->setEnabled(true);
-    }
 }
 
 /**
@@ -1001,60 +1011,13 @@ void SendWindow::newButtonClickedSlot(void)
 
 
 /**
- * This slot function for the debug cyclic script menu item.
- */
-void SendWindow::debugCyclicScriptSlot(void)
-{
-    checkCyclicSendInputSlot();
-
-    const Settings* settings = m_settingsDialog->settings();
-    QByteArray sendData = textToByteArray(m_userInterface->CyclicSendFormat->currentText(), m_userInterface->CyclicSendInput->toPlainText(),
-                                          formatToDecimalType(m_userInterface->CyclicSendFormat->currentText()), settings->targetEndianess);
-    if(m_userInterface->CyclicSendFormat->currentText() == "utf8")
-    {
-        const Settings* settings = m_settingsDialog->settings();
-        sendData.replace("\n", settings->consoleSendOnEnter.toUtf8());
-    }
-    else if(m_userInterface->CyclicSendFormat->currentText().contains("can"))
-    {
-        QByteArray canData;
-        quint8 type = m_userInterface->CanTypeBox->currentIndex();
-        if(m_userInterface->CanTypeBox->currentText() == "can-fd")
-        {
-            type += PCAN_MESSAGE_FD;
-        }
-        else if(m_userInterface->CanTypeBox->currentText() == "can-fd brs")
-        {
-            type += PCAN_MESSAGE_BRS;
-            type += PCAN_MESSAGE_FD;
-        }
-        canData.append(type);
-        quint32 value = m_userInterface->CanIdLineEdit->getValue();
-        canData.append((value >> 24) & 0xff);
-        canData.append((value >> 16) & 0xff);
-        canData.append((value >> 8) & 0xff);
-        canData.append(value & 0xff);
-
-        sendData.prepend(canData);
-
-    }
-
-    if(!sendData.isEmpty())
-    {
-        sendDataWithTheMainInterface(sendData, this,
-                                     m_userInterface->CyclicSendRepetition->text().toInt(),
-                                     m_userInterface->CyclicSendPause->text().toInt(), true, m_userInterface->CyclicSendScript->toPlainText(), true);
-    }
-}
-
-/**
  *This slot function for the debug script menu item.
  */
 void SendWindow::debugScriptSlot(void)
 {
     if(m_userInterface->tableWidget->selectedItems().length() > 0)
     {
-        sendSequence(m_userInterface->tableWidget->selectedItems().at(SendWindow::COLUMN_NAME)->row(), true, this);
+        sendSequence(m_userInterface->tableWidget->selectedItems().at(SendWindow::COLUMN_NAME)->row(), this);
     }
 }
 
@@ -2129,13 +2092,6 @@ void SendWindow::cyclicScriptTextEditChangedSlot(void)
     {
         m_userInterface->actionEditCyclicScript->setEnabled(true);
     }
-
-    m_userInterface->actionDebugCyclicSequenceScript->setEnabled(false);
-    if(!m_userInterface->CyclicSendInput->toPlainText().isEmpty() &&
-            !m_userInterface->CyclicSendScript->toPlainText().isEmpty())
-    {
-        m_userInterface->actionDebugCyclicSequenceScript->setEnabled(true);
-    }
 }
 
 ///Is called when the user double clicks the cyclic script text edit.
@@ -2148,14 +2104,12 @@ void SendWindow::cyclicScriptTextEditDoubleClickedSlot(void)
  * Sends a sequence.
  * @param sequenceIndex
  *      The sequence index.
- * @param debug
- *      True if the script shall be executed in the script debugger.
  * @param callerWidget
  *      The caller widget.
  */
-void SendWindow::sendSequence(quint32 sequenceIndex, bool debug, QWidget* callerWidget)
+void SendWindow::sendSequence(quint32 sequenceIndex, QWidget* callerWidget)
 {
-    m_userInterface->tableWidget->sendSequence(sequenceIndex, debug, callerWidget);
+    m_userInterface->tableWidget->sendSequence(sequenceIndex, callerWidget);
 }
 
 /**
@@ -2332,10 +2286,8 @@ void SendWindow::dataHasBeenSendSlot(bool success, uint id)
  *      The pause between two repetitions.
  * @param scriptName
  *      The name of the script.
- * @param debug
- *      True if the script shall be executed in the script debugger.
  */
-void SendWindow::sendDataWithTheMainInterface(const QByteArray &data, QWidget* callerWidget, int repetitionCount, int pause, bool isCyclicSend, QString scriptName, bool debug)
+void SendWindow::sendDataWithTheMainInterface(const QByteArray &data, QWidget* callerWidget, int repetitionCount, int pause, bool isCyclicSend, QString scriptName)
 {
     if(!m_isConnected)
     {
@@ -2352,7 +2304,7 @@ void SendWindow::sendDataWithTheMainInterface(const QByteArray &data, QWidget* c
 
         if(!scriptName.isEmpty())
         {
-            sendData = m_userInterface->tableWidget->executeScript(scriptName, data, &scriptEngineWrapper, !isCyclicSend, debug, true);
+            sendData = m_userInterface->tableWidget->executeScript(scriptName, data, &scriptEngineWrapper, !isCyclicSend);
         }
         else
         {
@@ -2469,9 +2421,6 @@ void SendWindow::enableWindowForCyclicSend(bool enable)
         m_userInterface->actionEditCyclicScript->setEnabled(false);
         m_userInterface->actionAddCyclicScript->setEnabled(false);
 
-        m_userInterface->actionDebugCyclicSequenceScript->setEnabled(false);
-
-
     }
 
     itemSelectionChangedSlot();
@@ -2491,7 +2440,7 @@ void SendWindow::sendTimerElapsedSlot(void)
     {//The sequence has a script.
 
         QByteArray sendData = m_userInterface->tableWidget->executeScript(m_currentSendScript, m_currentSendData,
-                                                                          &m_currentScriptEngineWrapper, false, m_currentScriptEngineWrapper->runsInDebugger);
+                                                                          &m_currentScriptEngineWrapper, false);
         if(!sendData.isEmpty())
         {
             emit sendDataWithTheMainInterfaceSignal(sendData, MainInterfaceThread::SEND_ID_SEND_WINDOW_CYCLIC);

@@ -462,6 +462,8 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
     connect(m_sendWindow, SIGNAL(configHasToBeSavedSignal()),this, SLOT(configHasToBeSavedSlot()));
 
+    connect(m_userInterface->SendOnComboBox, SIGNAL(currentIndexChanged(int)),this, SLOT(sendOnComboBoxChangedSlot()));
+
     connect(m_mainInterface, SIGNAL(showAdditionalConnectionInformationSignal(QString)),this, SLOT(showAdditionalConnectionInformationSlot(QString)), Qt::QueuedConnection);
 
     connect(m_mainInterface, SIGNAL(disableMouseEventsSignal()),
@@ -816,16 +818,6 @@ void MainWindow::sendInputTextChangedSlot(void)
 {
     m_sendWindow->textEditChanged(m_userInterface->SendTextEdit, m_userInterface->SendFormatComboBox->currentText(),
                                   m_sendWindow->formatToDecimalType(m_userInterface->SendFormatComboBox->currentText()));
-
-    if(!m_userInterface->ScriptTextEdit->toPlainText().isEmpty() &&
-            !m_userInterface->SendTextEdit->toPlainText().isEmpty())
-    {
-        m_userInterface->actionDebugSequenceScript->setEnabled(true);
-    }
-    else
-    {
-        m_userInterface->actionDebugSequenceScript->setEnabled(false);
-    }
 }
 
 /**
@@ -866,16 +858,19 @@ void MainWindow::historyFormatChanged(QString value)
 
 /**
  * Slot function for the send button.
- * @param debug
- *      True if the script shall be executed in the script debugger.
  */
-void MainWindow::sendButtonPressedSlot(bool debug)
+void MainWindow::sendButtonPressedSlot(void)
 {
     checkSendInputSlot();
 
     const Settings* settings = m_settingsDialog->settings();
     QByteArray sendData = m_sendWindow->textToByteArray(m_userInterface->SendFormatComboBox->currentText(), m_userInterface->SendTextEdit->toPlainText(),
                                                         m_sendWindow->formatToDecimalType(m_userInterface->SendFormatComboBox->currentText()), settings->targetEndianess);
+
+    if(m_userInterface->ClearAfterSendingCheckBox->isChecked())
+    {
+      m_userInterface->SendTextEdit->clear();
+    }
     if(m_userInterface->SendFormatComboBox->currentText() == "utf8")
     {
         const Settings* settings = m_settingsDialog->settings();
@@ -907,8 +902,30 @@ void MainWindow::sendButtonPressedSlot(bool debug)
 
     if(!sendData.isEmpty())
     {
-        m_sendWindow->sendDataWithTheMainInterface(sendData, this, 0, 0, false, m_userInterface->ScriptTextEdit->toPlainText(), debug);
+      if(m_userInterface->AppendComboBox->currentText() == "CR")
+      {
+        sendData.append('\r');
+      }
+      else if(m_userInterface->AppendComboBox->currentText() == "LF")
+      {
+        sendData.append('\n');
+      }
+      else if(m_userInterface->AppendComboBox->currentText() == "CR+LF")
+      {
+        sendData.append('\r');
+        sendData.append('\n');
+      }
+
+        m_sendWindow->sendDataWithTheMainInterface(sendData, this, 0, 0, false, m_userInterface->ScriptTextEdit->toPlainText());
     }
+}
+
+/**
+ * The user has chanaged the value of SendOnComboBox.
+ */
+void MainWindow::sendOnComboBoxChangedSlot(void)
+{
+  m_userInterface->SendTextEdit->setSendOnEnter((m_userInterface->SendOnComboBox->currentText() == "Enter") ? true : false);
 }
 
 /**
@@ -1106,7 +1123,7 @@ void MainWindow::sequenceListItemDoubleClickedSlot(QListWidgetItem *item)
     quint32 row = item->data(1).toUInt(&isOK);
     if(row != 0xffffffff)
     {
-        m_sendWindow->sendSequence(row, false, this);
+        m_sendWindow->sendSequence(row, this);
     }
 }
 
@@ -1962,6 +1979,16 @@ bool MainWindow::loadSettings()
                         m_oldSendFormat = m_userInterface->SendFormatComboBox->currentText();
                         m_userInterface->SendTextEdit->blockSignals(false);
                         m_userInterface->SendFormatComboBox->blockSignals(false);
+
+
+                        m_userInterface->ClearAfterSendingCheckBox->setChecked((node.attributes().namedItem("clearAfterSendingCheckBox").nodeValue().toUInt() == 1) ? true : false);
+                        m_userInterface->AppendComboBox->setCurrentText(node.attributes().namedItem("appendComboBox").nodeValue());
+
+                        m_userInterface->SendOnComboBox->blockSignals(true);
+                        m_userInterface->SendOnComboBox->setCurrentText(node.attributes().namedItem("sendOnComboBox").nodeValue());
+                        sendOnComboBoxChangedSlot();
+                        m_userInterface->SendOnComboBox->blockSignals(false);
+
 
                         m_userInterface->CanTypeBox->blockSignals(true);
                         m_userInterface->CanIdLineEdit->blockSignals(true);
@@ -2965,6 +2992,9 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("sendTextEdit"), m_userInterface->SendTextEdit->toPlainText()),
                  std::make_pair(QString("scriptTextEdit"), m_userInterface->ScriptTextEdit->toPlainText()),
                  std::make_pair(QString("sendFormatComboBox"), m_userInterface->SendFormatComboBox->currentText()),
+                 std::make_pair(QString("appendComboBox"), m_userInterface->AppendComboBox->currentText()),
+                 std::make_pair(QString("sendOnComboBox"), m_userInterface->SendOnComboBox->currentText()),
+                 std::make_pair(QString("clearAfterSendingCheckBox"), QString("%1").arg(m_userInterface->ClearAfterSendingCheckBox->isChecked())),
                  std::make_pair(QString("canTypeBox"), m_userInterface->CanTypeBox->currentText()),
                  std::make_pair(QString("canIdLineEdit"), m_userInterface->CanIdLineEdit->text()),
                  std::make_pair(QString("mainWindowState"), saveState().toHex()),
@@ -4006,7 +4036,6 @@ void MainWindow::initActionsConnections()
 
     connect(m_userInterface->actionAddScript, SIGNAL(triggered()),this, SLOT(addScriptSlot()));
     connect(m_userInterface->actionEditScript, SIGNAL(triggered()),this, SLOT(editScriptSlot()));
-    connect(m_userInterface->actionDebugSequenceScript, SIGNAL(triggered()),this, SLOT(debugSequenceScript()));
     connect(m_userInterface->actionReopenAllLogs, SIGNAL(triggered()),this, SLOT(reopenLogsSlot()));
 }
 
@@ -4505,20 +4534,10 @@ void MainWindow::sendAreaSplitterMoved(int pos, int index)
 }
 
 /**
- * Menu debug sequence script slot function.
- */
-void MainWindow::debugSequenceScript(void)
-{
-    sendButtonPressedSlot(true);
-}
-
-/**
  * Is called if text of the cyclic script text edit has been changed.
  */
 void MainWindow::scriptTextEditSlot(void)
 {
-    m_userInterface->actionDebugSequenceScript->setEnabled(false);
-
     if(m_userInterface->ScriptTextEdit->toPlainText().isEmpty())
     {
         m_userInterface->actionEditScript->setEnabled(false);
@@ -4526,11 +4545,6 @@ void MainWindow::scriptTextEditSlot(void)
     else
     {
         m_userInterface->actionEditScript->setEnabled(true);
-
-        if(!m_userInterface->SendTextEdit->toPlainText().isEmpty())
-        {
-            m_userInterface->actionDebugSequenceScript->setEnabled(true);
-        }
     }
 }
 /**

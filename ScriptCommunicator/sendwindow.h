@@ -53,7 +53,7 @@ class SendWindowTextEdit : public QPlainTextEdit
     Q_OBJECT
 
 public:
-    SendWindowTextEdit(QWidget * parent = 0) : QPlainTextEdit(parent), m_mainWindow(0), m_sendWindow(0)
+    SendWindowTextEdit(QWidget * parent = 0) : QPlainTextEdit(parent), m_mainWindow(0), m_sendWindow(0), m_sendOnEnter(false)
     {
     }
 
@@ -75,6 +75,10 @@ public:
     {
         m_sendWindow = sendWindow;
     }
+
+    ///Sets m_sendOnEnter.
+    void setSendOnEnter(bool send){m_sendOnEnter = send;}
+
 protected:
     ///Drag enter event.
     void dragEnterEvent(QDragEnterEvent *event);
@@ -107,6 +111,9 @@ private:
     ///Pointer to the send window.
     SendWindow* m_sendWindow;
 
+    ///If true the data is send of the enter key is pressed. Otherwise the data is sent if alt+enter is pressed.
+    bool m_sendOnEnter;
+
 };
 
 ///Wrapper class for a QPlainTextEdit in the sequence table.
@@ -129,7 +136,7 @@ public:
 
         if ( event->button() == Qt::RightButton )
         {
-            m_tableView->sendSequence(m_row, false, this);
+            m_tableView->sendSequence(m_row, this);
         }
 
     }
@@ -239,7 +246,7 @@ protected:
 
         if ( event->button() == Qt::RightButton )
         {
-            m_tableView->sendSequence(m_row, false, this);
+            m_tableView->sendSequence(m_row, this);
         }
 
     }
@@ -250,7 +257,7 @@ protected:
         if((event->modifiers() == Qt::AltModifier) && (event->text() == "\r"))
         {//alt+enter pressed
 
-            m_tableView->sendSequence(m_row, false, this);
+            m_tableView->sendSequence(m_row, this);
         }
         else
         {
@@ -286,7 +293,7 @@ public:
 
     ///Send data with the main interface.
     void sendDataWithTheMainInterface(const QByteArray &data, QWidget* callerWidget, int repetitionCount = 0, int pause = 0, bool isCyclicSend=false,
-                                      QString scriptName="", bool debug=false);
+                                      QString scriptName="");
 
     ///Shows the send window.
     void show(void);
@@ -386,7 +393,7 @@ public:
 
 
     ///Sends a sequence.
-    void sendSequence(quint32 sequenceIndex, bool debug, QWidget* callerWidget);
+    void sendSequence(quint32 sequenceIndex, QWidget* callerWidget);
 
     ///Is called if the content of a text edit in the sequence table of if the content
     ///of the cyclic text edit has been changed.
@@ -485,9 +492,6 @@ private slots:
 
     ///This slot function for the debug script menu item.
     void debugScriptSlot(void);
-
-    ///This slot function for the debug cyclic script menu item.
-    void debugCyclicScriptSlot(void);
 
     ///This slot function for the add menu item.
     void addScriptSlot(void);

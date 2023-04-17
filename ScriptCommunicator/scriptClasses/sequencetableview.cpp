@@ -268,7 +268,7 @@ void SequenceTablePlainTextEdit::keyPressEvent(QKeyEvent *event)
     if((event->modifiers() == Qt::AltModifier) && (event->text() == "\r"))
     {//alt+enter pressed
 
-        m_tableView->sendSequence(m_row, false, this);
+        m_tableView->sendSequence(m_row, this);
     }
     else
     {
@@ -302,7 +302,7 @@ void SequenceTableView::mouseReleaseEvent(QMouseEvent* event)
     {
         if(m_sendWindow->m_userInterface->tableWidget->selectedItems().length() > 0)
         {
-            sendSequence(m_sendWindow->m_userInterface->tableWidget->selectedItems().at(SendWindow::COLUMN_NAME)->row(), false, this);
+            sendSequence(m_sendWindow->m_userInterface->tableWidget->selectedItems().at(SendWindow::COLUMN_NAME)->row(), this);
         }
     }
 }
@@ -318,7 +318,7 @@ void SequenceTableView::keyPressEvent(QKeyEvent *event)
     if((event->modifiers() == Qt::AltModifier) && (event->text() == "\r"))
     {//alt+enter pressed
 
-        sendSequence(m_sendWindow->m_userInterface->tableWidget->selectedItems().at(SendWindow::COLUMN_NAME)->row(), false, this);
+        sendSequence(m_sendWindow->m_userInterface->tableWidget->selectedItems().at(SendWindow::COLUMN_NAME)->row(), this);
     }
     else
     {
@@ -504,72 +504,47 @@ void SequenceTableView::terminateThread(bool isSingle)
  *      The script wrapper. If 0 then the script wrapper will be create and written to this argument.
  * @param isSingle
  *      True if this is a single sequence.
- * @param debug
- *      True if the script shall be executed in the script debugger.
- * @param firstCyclicSend
- *      True if this call is the first call of a cyclic sequence.
+
  * @return
  *      The resulting data from the script.
  */
-QByteArray SequenceTableView::executeScript(QString sendScript, QByteArray sendData, SequenceScriptEngineWrapper **scriptEngineWrapper, bool isSingle,
-                                            bool debug, bool firstCyclicSend)
+QByteArray SequenceTableView::executeScript(QString sendScript, QByteArray sendData, SequenceScriptEngineWrapper **scriptEngineWrapper, bool isSingle)
 {
     SequenceScriptThread** thread = isSingle ? &m_scriptSingle : &m_scriptCyclic;
 
-    if(!debug)
+    if((*thread) == 0)
     {
-        if((*thread) == 0)
-        {
-            createThread(isSingle);
-        }
+        createThread(isSingle);
+    }
 
-        (*thread)->m_scriptFunctionIsFinished = false;
-        QDateTime callTime = QDateTime::currentDateTime();
+    (*thread)->m_scriptFunctionIsFinished = false;
+    QDateTime callTime = QDateTime::currentDateTime();
 
-        if(isSingle)
-        {
-            emit executeScriptSingle(&sendScript, &sendData, scriptEngineWrapper);
-        }
-        else
-        {
-            emit executeScriptCyclic(&sendScript, &sendData, scriptEngineWrapper);
-        }
-        while(!(*thread)->m_scriptFunctionIsFinished)
-        {
-            QCoreApplication::processEvents();
-            if((*thread)->m_dialogIsShown)
-            {
-                callTime = QDateTime::currentDateTime();
-            }
-
-            if(callTime.msecsTo(QDateTime::currentDateTime()) > (*thread)->m_blockTime)
-            {//Thread is blocked.
-
-                terminateThread(isSingle);
-                createThread(isSingle);
-                sendData.clear();
-                QMessageBox::critical(this, "error", sendScript + " is blocked");
-                break;
-            }
-        }
+    if(isSingle)
+    {
+        emit executeScriptSingle(&sendScript, &sendData, scriptEngineWrapper);
     }
     else
     {
-        if((*thread) != 0 && firstCyclicSend)
+        emit executeScriptCyclic(&sendScript, &sendData, scriptEngineWrapper);
+    }
+    while(!(*thread)->m_scriptFunctionIsFinished)
+    {
+        QCoreApplication::processEvents();
+        if((*thread)->m_dialogIsShown)
         {
-            (*thread)->exit();
+            callTime = QDateTime::currentDateTime();
         }
 
-        if(firstCyclicSend)
-        {
-            createThread(isSingle, debug);
-        }
+        if(callTime.msecsTo(QDateTime::currentDateTime()) > (*thread)->m_blockTime)
+        {//Thread is blocked.
 
-        if((*thread) != 0)
-        {
-            (*thread)->executeScriptSlot(&sendScript, &sendData, scriptEngineWrapper);
+            terminateThread(isSingle);
+            createThread(isSingle);
+            sendData.clear();
+            QMessageBox::critical(this, "error", sendScript + " is blocked");
+            break;
         }
-
     }
 
     return (sendData.isEmpty()) ? QByteArray() : sendData;
@@ -579,12 +554,10 @@ QByteArray SequenceTableView::executeScript(QString sendScript, QByteArray sendD
  * This function sends the selected sequence.
  * @param row
  *      The row of the sequence in the sequence table.
- * @param debug
- *      True if the script shall be executed in the script debugger.
  * @param callerWidget
  *      The caller widget.
  */
-void SequenceTableView::sendSequence(int row, bool debug, QWidget* callerWidget)
+void SequenceTableView::sendSequence(int row, QWidget* callerWidget)
 {
 
     m_sendWindow->checkTextEditCell(row);
@@ -631,7 +604,7 @@ void SequenceTableView::sendSequence(int row, bool debug, QWidget* callerWidget)
 
         if(!sendData.isEmpty())
         {
-            m_sendWindow->sendDataWithTheMainInterface(sendData, callerWidget, 0, 0, false, scriptLineEdit->toPlainText(), debug);
+            m_sendWindow->sendDataWithTheMainInterface(sendData, callerWidget, 0, 0, false, scriptLineEdit->toPlainText());
         }
 
     }

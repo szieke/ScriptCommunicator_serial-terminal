@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>703</width>
+    <width>826</width>
     <height>525</height>
    </rect>
   </property>
@@ -369,8 +369,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>703</width>
-     <height>22</height>
+     <width>826</width>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuSequence">
@@ -408,7 +408,6 @@
     <addaction name="actionAddCyclicScript"/>
     <addaction name="actionEditCyclicScript"/>
     <addaction name="actionCopySequenceFromTable"/>
-    <addaction name="actionDebugCyclicSequenceScript"/>
    </widget>
    <addaction name="menuConfig"/>
    <addaction name="menuSequence"/>

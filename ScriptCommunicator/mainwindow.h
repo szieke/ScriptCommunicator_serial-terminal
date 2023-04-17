@@ -382,9 +382,6 @@ private slots:
    ///Is called if the style shall be changed.
     void setStyleSlot(bool useDarkStyle, int fontSize);
 
-    ///Menu debug sequence script slot function.
-    void debugSequenceScript(void);
-
     ///Is called if text of the cyclic script text edit has been changed.
     void scriptTextEditSlot(void);
 
@@ -423,7 +420,7 @@ private slots:
     void createScriptButtonSlot();
 
     ///Slot function for the send button.
-    void sendButtonPressedSlot(bool debug = false);
+    void sendButtonPressedSlot(void);
 
     ///Is called if the history start index has been changed.
     void historyStartIndexChangedSlot(int value);
@@ -544,6 +541,9 @@ private slots:
     ///This slot function is called if the text log file has to be activated.
     ///It is connected to the SettingsDialog::textLogActivatedSignal signal.
     void textLogActivatedSlot(bool activated);
+
+    ///The user has chanaged the value of SendOnComboBox.
+    void sendOnComboBoxChangedSlot(void);
 
 private:
 

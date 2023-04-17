@@ -77,7 +77,7 @@ public:
     ///Pointer to the send data script function.
     QJSValue* sendDataFunction;
 
-    ///True if the scripts runs in a script debugger.
+    ///True if the script runs in a debugger.
     bool runsInDebugger;
 
 };
@@ -336,11 +336,11 @@ public:
     void setMainWindow(MainWindow* window){m_mainWindow = window;}
 
     ///This function sends the selected sequence.
-    void sendSequence(int row, bool debug, QWidget* callerWidget);
+    void sendSequence(int row, QWidget* callerWidget);
 
     ///Executes a script before sending the data.
     QByteArray executeScript(QString sendScript, QByteArray sendData, SequenceScriptEngineWrapper** scriptEngineWrapper,
-                             bool isSingle, bool debug=false, bool firstCyclicSend=false);
+                             bool isSingle);
 
 protected:
 

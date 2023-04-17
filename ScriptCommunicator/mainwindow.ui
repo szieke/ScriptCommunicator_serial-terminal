@@ -783,8 +783,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>332</width>
-                  <height>111</height>
+                  <width>936</width>
+                  <height>210</height>
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_3">
@@ -966,7 +966,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
           <widget class="QWidget" name="verticalLayoutWidget">
            <layout class="QVBoxLayout" name="verticalLayout_10" stretch="0,0">
             <item>
-             <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,0,0,0,0,0,0">
+             <layout class="QHBoxLayout" name="horizontalLayout_7" stretch="1,0,0,0,0,0,0,0,0,0,0,0,0,0">
               <item>
                <spacer name="horizontalSpacer_4">
                 <property name="orientation">
@@ -1021,9 +1021,127 @@ li.checked::marker { content: &quot;\2612&quot;; }
                </widget>
               </item>
               <item>
+               <spacer name="horizontalSpacer_9">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Fixed</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>10</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QCheckBox" name="ClearAfterSendingCheckBox">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;if checked the input field is cleared after the data is sent&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Clear after sending</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_9">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;the control byte(s) that shall be appended&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Append:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="AppendComboBox">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;the control byte(s) that shall be appended&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>None</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>CR</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>LF</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>CR+LF</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
+               <spacer name="horizontalSpacer_7">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::Fixed</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>10</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_10">
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;the key(s) on which the data is sent&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <property name="text">
+                 <string>Send on:</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QComboBox" name="SendOnComboBox">
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="toolTip">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;the key(s) on which the data is sent&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+                <item>
+                 <property name="text">
+                  <string>Enter</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Alt+Enter</string>
+                 </property>
+                </item>
+               </widget>
+              </item>
+              <item>
                <widget class="QPushButton" name="SendPushButton">
                 <property name="toolTip">
-                 <string>send the current data (the data can be sent with 'alt+enter' too)</string>
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;send the current data&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                 <property name="text">
                  <string>send</string>
@@ -1051,7 +1169,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                 </size>
                </property>
                <property name="toolTip">
-                <string>multi-line send input (to send the data press the send button or 'alt+enter')</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;multi-line send input (to send the data press the send button or the configured keys)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="verticalScrollBarPolicy">
                 <enum>Qt::ScrollBarAsNeeded</enum>
@@ -1094,8 +1212,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>98</width>
-          <height>93</height>
+          <width>188</width>
+          <height>517</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1138,8 +1256,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>363</width>
-          <height>549</height>
+          <width>231</width>
+          <height>500</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1225,8 +1343,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>184</width>
-          <height>316</height>
+          <width>231</width>
+          <height>500</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1451,8 +1569,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>149</width>
-          <height>298</height>
+          <width>188</width>
+          <height>517</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1732,7 +1850,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <x>0</x>
      <y>0</y>
      <width>1183</width>
-     <height>22</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp">
@@ -1777,7 +1895,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
     </property>
     <addaction name="actionEditScript"/>
     <addaction name="actionAddScript"/>
-    <addaction name="actionDebugSequenceScript"/>
    </widget>
    <widget class="QMenu" name="menu_File">
     <property name="title">

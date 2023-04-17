@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>991</width>
+    <width>1046</width>
     <height>567</height>
    </rect>
   </property>
@@ -62,8 +62,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>947</width>
-            <height>374</height>
+            <width>994</width>
+            <height>336</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0">
@@ -424,8 +424,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>947</width>
-            <height>374</height>
+            <width>977</width>
+            <height>409</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0,1">
@@ -939,8 +939,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>930</width>
-            <height>397</height>
+            <width>977</width>
+            <height>454</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_18">
@@ -2070,8 +2070,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>947</width>
-            <height>374</height>
+            <width>977</width>
+            <height>369</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2448,9 +2448,9 @@ for TCP clients.</string>
           <property name="geometry">
            <rect>
             <x>0</x>
-            <y>0</y>
-            <width>947</width>
-            <height>374</height>
+            <y>-86</y>
+            <width>977</width>
+            <height>422</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
@@ -2948,7 +2948,7 @@ for TCP clients.</string>
                 </size>
                </property>
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;this is sent/used for the enter key (console, message dialog, main window send area and utf8 sequence in the send window)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;this is sent/used for the enter key (console, message dialog, main window send area (utf8 only) and utf8 sequence in the send window)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -2983,7 +2983,7 @@ for TCP clients.</string>
              <item row="16" column="0">
               <widget class="QLabel" name="label_18">
                <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;this is sent/used for the enter key (console, message dialog, main window send area and utf8 sequence in the send window)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;this is sent/used for the enter key (console, message dialog, main window send area (utf8 only) and utf8 sequence in the send window)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
                <property name="text">
                 <string>send on enter key</string>
@@ -3097,7 +3097,7 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>947</width>
+            <width>977</width>
             <height>374</height>
            </rect>
           </property>
@@ -3346,8 +3346,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>947</width>
-            <height>374</height>
+            <width>977</width>
+            <height>386</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_11">
