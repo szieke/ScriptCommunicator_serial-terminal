@@ -4092,6 +4092,15 @@ void MainWindow::clearConsoleSlot(void)
  */
 void MainWindow::showSettingsWindowSlot(void)
 {
+    //Check if the window position is valid.
+    QRect rect = windowPositionAndSize(m_settingsDialog);
+    if(QGuiApplication::screenAt(QPoint(rect.left(),rect.top())) == nullptr)
+    {//The position is not valid.
+
+      rect.setLeft(0);
+      rect.setTop(0);
+      setWindowPositionAndSize(m_settingsDialog, rect);
+    }
     m_settingsDialog->isVisible() ? (void)m_settingsDialog->close() : m_settingsDialog->show();
 }
 
@@ -4181,6 +4190,17 @@ void MainWindow::showScriptWindowSlot(void)
 
             m_scriptWindow->move(x()+ size().width() / 2, y());
         }
+
+        //Check if the window position is valid.
+        QRect rect = windowPositionAndSize(m_scriptWindow);
+        if(QGuiApplication::screenAt(QPoint(rect.left(),rect.top())) == nullptr)
+        {//The position is not valid.
+
+          rect.setLeft(0);
+          rect.setTop(0);
+          setWindowPositionAndSize(m_scriptWindow, rect);
+        }
+
         m_scriptWindow->show();
         m_scriptWindow->showNormal();
     }
@@ -4209,6 +4229,16 @@ void MainWindow::showSendingWindowSlot(void)
             m_sendWindow->setGeometry(sendWindowRect);
 
             m_sendWindow->move(x()+ size().width() +  frameWidth * 2, y());
+        }
+
+        //Check if the window position is valid.
+        QRect rect = windowPositionAndSize(m_sendWindow);
+        if(QGuiApplication::screenAt(QPoint(rect.left(),rect.top())) == nullptr)
+        {//The position is not valid.
+
+          rect.setLeft(0);
+          rect.setTop(0);
+          setWindowPositionAndSize(m_sendWindow, rect);
         }
         m_sendWindow->show();
         m_sendWindow->showNormal();
