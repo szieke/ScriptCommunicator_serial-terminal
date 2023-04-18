@@ -2072,6 +2072,26 @@ void SendWindow::sendButtonPressedSlot()
 
         }
 
+        if(m_mainWindow->getMainInterface()->isConnectedWithCan())
+        {
+          if(!m_userInterface->CyclicSendFormat->currentText().contains("can"))
+          {
+            sendData.clear();
+            QMessageBox::critical(this, "error", QString("ScriptCommunicator is connected to a CAN interface but the send format is not can or can-fd.")
+                                .arg(m_userInterface->CyclicSendFormat->currentText()));
+          }
+        }
+        else
+        {
+          if(m_userInterface->CyclicSendFormat->currentText().contains("can"))
+          {
+            sendData.clear();
+            QMessageBox::critical(this, "error", QString("The send format is %1 but ScriptCommunicator is not connected to a CAN interface.")
+                                  .arg(m_userInterface->CyclicSendFormat->currentText()));
+          }
+
+        }
+
         if(!sendData.isEmpty())
         {
             sendDataWithTheMainInterface(sendData, this,

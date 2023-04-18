@@ -900,6 +900,26 @@ void MainWindow::sendButtonPressedSlot(void)
         sendData.prepend(canData);
     }
 
+    if(m_mainInterface->isConnectedWithCan())
+    {
+      if(!m_userInterface->SendFormatComboBox->currentText().contains("can"))
+      {
+        sendData.clear();
+        QMessageBox::critical(this, "error", QString("ScriptCommunicator is connected to a CAN interface but the send format is not can or can-fd.")
+                            .arg(m_userInterface->SendFormatComboBox->currentText()));
+      }
+    }
+    else
+    {
+      if(m_userInterface->SendFormatComboBox->currentText().contains("can"))
+      {
+        sendData.clear();
+        QMessageBox::critical(this, "error", QString("The send format is %1 but ScriptCommunicator is not connected to a CAN interface.")
+                              .arg(m_userInterface->SendFormatComboBox->currentText()));
+      }
+
+    }
+
     if(!sendData.isEmpty())
     {
       if(m_userInterface->AppendComboBox->currentText() == "CR")

@@ -283,6 +283,9 @@ public:
     ///Sets the exit code from a script.
     void setExitCodeFromScript(quint32 code){m_exitCode = code; m_closedByScript = true;}
 
+    ///Returns m_mainInterface.
+    MainInterfaceThread* getMainInterface(void){return m_mainInterface;}
+
 
 signals:
     ///With this signal the main window requests the main interface thread to connect with the man interface interface.
