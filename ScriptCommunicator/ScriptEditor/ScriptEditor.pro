@@ -18,7 +18,7 @@ QT += gui
 
 
 RC_FILE = images/ScriptEditor.rc
-macx:QT += macextras
+#macx:QT += macextras
 CONFIG += c++11
 
 unix{

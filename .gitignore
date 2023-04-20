@@ -45,3 +45,7 @@ ScriptCommunicator/exampleScripts/WorkerScripts/AdditionalInterface/TCP_Client/u
 ScriptCommunicator/exampleScripts/WorkerScripts/AdditionalInterface/UDP/uiSettings_UDP_1.txt
 build_editor/
 ScriptCommunicator/exampleScripts/WorkerScripts/Sniffer/snif_convertUiSettings.txt
+
+ScriptCommunicator/.DS_Store
+
+.DS_Store

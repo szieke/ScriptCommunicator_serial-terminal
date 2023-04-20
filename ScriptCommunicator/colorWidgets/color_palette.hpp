@@ -112,11 +112,6 @@ public:
     Q_INVOKABLE bool loadImage(const QImage& image);
 
     /**
-     * \brief Creates a ColorPalette from a Gimp palette (gpl) file
-     */
-    static ColorPalette fromImage(const QImage& image);
-
-    /**
      * \brief Load contents from a Gimp palette (gpl) file
      * \returns \b true On Success
      * \note If this function returns \b false, the palette will become empty

@@ -176,13 +176,6 @@ bool ColorPalette::loadImage(const QImage& image)
     return true;
 }
 
-ColorPalette ColorPalette::fromImage(const QImage& image)
-{
-    ColorPalette p;
-    p.fromImage(image);
-    return p;
-}
-
 bool ColorPalette::load(const QString& name)
 {
     p->fileName = name;

@@ -912,10 +912,6 @@ void ScriptWindow::editUiSlot()
         else
         {
             QString text = "To edit a user interface you need QtCreator.";
-            text.append("<br>Download QtCreator from here: <a href=\"http://sourceforge.net/projects/scriptcommunicator/files/Mac%20OS%20X/qt-creator-opensource-mac-x86_64-3.6.0.dmg/download\">");
-            text.append("http://sourceforge.net/projects/scriptcommunicator/files/Mac%20OS%20X/qt-creator-opensource-mac-x86_64-3.6.0.dmg/download</a>");
-                        myProcess->start("/Applications/Qt Creator.app/Contents/MacOS/Qt Creator", arguments);
-            text.append("<br>Open the dmg file and copy the app to the Applications folder.");
             QMessageBox::critical(this, "could not find QtCreator", text);
         }
 

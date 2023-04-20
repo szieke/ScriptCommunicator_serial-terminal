@@ -1565,8 +1565,8 @@ void MainWindow::setStyleSlot(bool useDarkStyle, int fontSize)
         p.setColor(QPalette::Disabled, QPalette::Light, QColor(0, 0, 0, 0));
         QApplication::setPalette(p);
 
-        (void)QResource::registerResource(QCoreApplication::applicationDirPath() + "/stylesheet.rcc");
-        QFile file(QCoreApplication::applicationDirPath() + "/stylesheet.qss");
+        (void)QResource::registerResource(getScriptCommunicatorFilesFolder() + "/stylesheet.rcc");
+        QFile file(getScriptCommunicatorFilesFolder() + "/stylesheet.qss");
 
         if(file.exists())
         {
@@ -1585,21 +1585,21 @@ void MainWindow::setStyleSlot(bool useDarkStyle, int fontSize)
 
     if(fontSize > 22)
     {
-        m_settingsDialog->getUserInterface()->connectionTypeComboBox->setMinimumWidth(160);
+        m_settingsDialog->getUserInterface()->connectionTypeComboBox->setMinimumWidth(170);
         m_settingsDialog->getUserInterface()->endianessComboBox->setMinimumWidth(180);
-        m_settingsDialog->getUserInterface()->appFontSizeComboBox->setMinimumWidth(60);
+        m_settingsDialog->getUserInterface()->appFontSizeComboBox->setMinimumWidth(80);
     }
     else if(fontSize > 18)
     {
-        m_settingsDialog->getUserInterface()->connectionTypeComboBox->setMinimumWidth(130);
+        m_settingsDialog->getUserInterface()->connectionTypeComboBox->setMinimumWidth(140);
         m_settingsDialog->getUserInterface()->endianessComboBox->setMinimumWidth(150);
-        m_settingsDialog->getUserInterface()->appFontSizeComboBox->setMinimumWidth(60);
+        m_settingsDialog->getUserInterface()->appFontSizeComboBox->setMinimumWidth(70);
     }
     else
     {
-        m_settingsDialog->getUserInterface()->connectionTypeComboBox->setMinimumWidth(100);
+        m_settingsDialog->getUserInterface()->connectionTypeComboBox->setMinimumWidth(110);
         m_settingsDialog->getUserInterface()->endianessComboBox->setMinimumWidth(120);
-        m_settingsDialog->getUserInterface()->appFontSizeComboBox->setMinimumWidth(50);
+        m_settingsDialog->getUserInterface()->appFontSizeComboBox->setMinimumWidth(60);
     }
 
     qApp->setStyleSheet(styleSheet);

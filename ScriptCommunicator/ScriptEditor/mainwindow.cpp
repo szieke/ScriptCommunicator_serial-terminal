@@ -1422,7 +1422,7 @@ void MainWindow::useDarkStyleMenuPressedSlot(void)
     if(ui->actionUseDarkStyle->isChecked())
     {
         (void)QResource::registerResource(QCoreApplication::applicationDirPath() + "/stylesheet.rcc");
-        QFile file(QCoreApplication::applicationDirPath() + "/stylesheetEditor.qss");
+        QFile file(QCoreApplication::applicationDirPath() + "/../../../stylesheetEditor.qss");
 
         if(file.exists())
         {
