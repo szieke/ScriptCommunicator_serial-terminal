@@ -90,9 +90,15 @@ function main(fileName)
 
 }
 
+scriptThread.appendTextToConsole(scriptThread.productType());
+
 if(scriptThread.productType() == "windows")
 {
 	main("TestDll.dll");
+}
+else if(scriptThread.productType() == "macos")
+{
+    main("libTestDll.dylib");
 }
 else
 {//Linux 64 Bit

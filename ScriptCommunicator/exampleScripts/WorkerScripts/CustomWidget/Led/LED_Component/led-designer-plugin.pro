@@ -12,6 +12,10 @@ lessThan(QT_MAJOR_VERSION, 5) {
 
 CONFIG += plugin
 
+macx{
+QMAKE_APPLE_DEVICE_ARCHS = x86_64 arm64
+}
+
 TEMPLATE = lib
 TARGET = $$qtLibraryTarget($$TARGET)
 target.path = $$[QT_INSTALL_PLUGINS]/designer

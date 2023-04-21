@@ -10,7 +10,7 @@ function getExecutableName()
 	{
 		result += ".exe" 
 	}
-	else if(scriptThread.productType() == "osx")
+    else if(scriptThread.productType() == "macos")
 	{
 		result += "_Mac";
 	}

@@ -29,6 +29,9 @@ LIBS += -ldl
 QMAKE_RPATHDIR += lib
 }
 
+macx{
+QMAKE_APPLE_DEVICE_ARCHS = x86_64 arm64
+}
 
 INCLUDEPATH += scriptClasses \
 scriptClasses/scriptUiClasses \

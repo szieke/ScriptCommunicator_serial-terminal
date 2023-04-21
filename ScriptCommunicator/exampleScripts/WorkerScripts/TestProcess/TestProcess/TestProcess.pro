@@ -9,3 +9,7 @@ TEMPLATE = app
 
 SOURCES += main.cpp
 
+macx{
+QMAKE_APPLE_DEVICE_ARCHS = x86_64 arm64
+}
+
