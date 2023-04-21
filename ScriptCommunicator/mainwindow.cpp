@@ -2813,7 +2813,7 @@ QString MainWindow::getPluginsFolder(void)
 QString MainWindow::getScriptCommunicatorFilesFolder(void)
 {
 #ifdef Q_OS_MAC
-    return QCoreApplication::applicationDirPath() + "/../../..";
+    return QCoreApplication::applicationDirPath() + "/../..";
 #else
     return QCoreApplication::applicationDirPath();
 #endif

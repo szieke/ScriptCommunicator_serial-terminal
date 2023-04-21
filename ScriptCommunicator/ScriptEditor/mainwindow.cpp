@@ -1159,9 +1159,6 @@ void MainWindow::startDesigner(QString uiFile)
     else
     {
         QString text = "To edit a user interface you need QtCreator.";
-        text.append("<br>Download QtCreator from here: <a href=\"http://sourceforge.net/projects/scriptcommunicator/files/Mac%20OS%20X/qt-creator-opensource-mac-x86_64-3.6.0.dmg/download\">");
-        text.append("http://sourceforge.net/projects/scriptcommunicator/files/Mac%20OS%20X/qt-creator-opensource-mac-x86_64-3.6.0.dmg/download</a>");
-        text.append("<br>Open the dmg file and copy the app to the Applications folder.");
         QMessageBox::critical(this, "could not find QtCreator", text);
     }
 
@@ -1237,8 +1234,11 @@ void MainWindow::openAllIncludedScriptsSlot()
  */
 QString MainWindow::getScriptEditorFilesFolder(void)
 {
+#ifdef Q_OS_MAC
+    return QCoreApplication::applicationDirPath() + "/../..";
+#else
     return QCoreApplication::applicationDirPath();
-
+#endif
 }
 
 /**
@@ -1249,17 +1249,7 @@ QString MainWindow::getScriptEditorFilesFolder(void)
 void MainWindow::startScriptEditor(QStringList arguments)
 {
 
-    QString scriptEditor;
-
-#ifdef Q_OS_LINUX
-    scriptEditor = getScriptEditorFilesFolder() + "/ScriptEditor";
-#elif defined Q_OS_MAC
-    scriptEditor = getScriptEditorFilesFolder() + "/ScriptEditor";
-#else//Windows
-    scriptEditor = getScriptEditorFilesFolder() + "/ScriptEditor.exe";
-#endif
-
-
+    QString scriptEditor = QCoreApplication::applicationDirPath() + "/ScriptEditor";
     QProcess *myProcess = new QProcess(this);
 
     //Start the script editor.
@@ -1421,8 +1411,8 @@ void MainWindow::useDarkStyleMenuPressedSlot(void)
 
     if(ui->actionUseDarkStyle->isChecked())
     {
-        (void)QResource::registerResource(QCoreApplication::applicationDirPath() + "/stylesheet.rcc");
-        QFile file(QCoreApplication::applicationDirPath() + "/../../../stylesheetEditor.qss");
+        (void)QResource::registerResource(getScriptEditorFilesFolder() + "/stylesheet.rcc");
+        QFile file(getScriptEditorFilesFolder() + "/stylesheetEditor.qss");
 
         if(file.exists())
         {
