@@ -8,21 +8,6 @@
 
 
 /**
- * Returns the folder ich which the ScriptEditor files
- * are locared (api files).
- * @return
- *      The folder.
- */
-QString getScriptEditorFilesFolder(void)
-{
-#ifdef Q_OS_MAC
-    return QCoreApplication::applicationDirPath() + "/../../..";
-#else
-    return QCoreApplication::applicationDirPath();
-#endif
-}
-
-/**
  * Parses a single line from an api file and adds functions which return objects to m_functionsWithResultObjects.
  *
  * @param singleLine
@@ -110,7 +95,7 @@ ParseThread::ParseThread(QObject *parent) : QThread(parent), m_autoCompletionApi
     if(m_autoCompletionApiFiles.isEmpty())
     {
         //Parse all api files.
-        QDirIterator it(getScriptEditorFilesFolder()+ "/apiFiles", QStringList() << "*.api", QDir::Files, QDirIterator::Subdirectories);
+        QDirIterator it(MainWindow::getScriptEditorFilesFolder()+ "/apiFiles", QStringList() << "*.api", QDir::Files, QDirIterator::Subdirectories);
         while (it.hasNext())
         {
             QFile file(it.next());

@@ -58,7 +58,7 @@ public:
     bool addTab(QString script, bool setTabIndex);
 
     ///Returns the folder ich which the ScriptEditor files
-    QString getScriptEditorFilesFolder(void);
+    static QString getScriptEditorFilesFolder(void);
 
     ///Starts an other instance of ScriptEditor.
     void startScriptEditor(QStringList arguments);
