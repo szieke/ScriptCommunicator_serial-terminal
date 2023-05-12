@@ -26,11 +26,11 @@ This script interface has the following features:
 
 **main window**
 
-![main window](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2017-08-07_16h01_36.png/1)
+![main window](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/light-e26c07a8.png/max/max/1)
 
 **dark mode**
 
-![dask mode](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2020-12-23_14h01_25.png/max/max/1)
+![dask mode](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/dark-0b552686.png/max/max/1)
 
 **example script GUI**
 
