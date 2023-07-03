@@ -356,7 +356,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     m_isConnectedWithCan(false), m_isConnectedWithI2cMaster(false), m_commandLineScripts(scripts),
     m_isFirstProgramStart(false), m_mouseGrabWidget(0), m_searchConsole(0),
     m_dataRateSend(0), m_dataRateReceive(0), m_handleData(0), m_toolBoxSplitterSizeSecond(0),
-    m_sendAreaSplitterSizeSecond(0), m_sendAreaInputsSplitterSizeSecond(0), m_toolBoxSplitterSizesSecond(), m_currentToolBoxIndex(0), m_mainConfigLockFile(),
+    m_sendAreaSplitterSizeSecond(0), m_toolBoxSplitterSizesSecond(), m_currentToolBoxIndex(0), m_mainConfigLockFile(),
     m_configLockFileTimer(), m_extraPluginPaths(extraPluginPaths), m_scriptArguments(scriptArguments), m_scriptTabs(), m_scriptTabsTitles(),
     m_scriptToolBoxPage(), m_closedByScript(false), m_exitCode(0)
 {
@@ -365,9 +365,6 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
     m_userInterface->SendAreaSplitter->setStretchFactor(0, 8);
     m_userInterface->SendAreaSplitter->setStretchFactor(1, 1);
-
-    m_userInterface->SendAreaInputsSplitter->setStretchFactor(0, 1);
-    m_userInterface->SendAreaInputsSplitter->setStretchFactor(1, 1);
 
     m_userInterface->ToolboxSplitter->setStretchFactor(0, 3);
     m_userInterface->ToolboxSplitter->setStretchFactor(1, 1);
@@ -519,8 +516,6 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     connect(m_userInterface->SendAreaSplitter, SIGNAL(splitterMoved(int,int)),
             this, SLOT(sendAreaSplitterMoved(int,int)));
 
-    connect(m_userInterface->SendAreaInputsSplitter, SIGNAL(splitterMoved(int,int)),
-            this, SLOT(sendAreaInputsSplitterMoved(int,int)));
 
     connect(m_userInterface->toolBox, SIGNAL(currentChanged(int)),
             this, SLOT(currentToolBoxPageChangedSlot(int)));
@@ -2025,20 +2020,6 @@ bool MainWindow::loadSettings()
 
                         }
 
-                        QString sendAreaInputsSplitterSizes = node.attributes().namedItem("sendAreaInputsSplitterSizes").nodeValue();
-                        if(sendAreaInputsSplitterSizes.size() > 0)
-                        {
-                            QStringList list = sendAreaInputsSplitterSizes.split(":");
-                            if(list.size()== 2)
-                            {
-                                QList<int> readSizes;
-                                readSizes.append(list[0].toInt());
-                                readSizes.append(list[1].toInt());
-                                m_userInterface->SendAreaInputsSplitter->setSizes(readSizes);
-                                m_sendAreaInputsSplitterSizeSecond = list[1].toInt();
-                            }
-                        }
-
                         QString stateValue = node.attributes().namedItem("mainWindowState").nodeValue();
                         if(stateValue != "")
                         {
@@ -2983,7 +2964,6 @@ void MainWindow::saveSettings()
                 QRect rect = windowPositionAndSize(this);
                 QList<int> splitterSizes = m_userInterface->ToolboxSplitter->sizes();
                 QList<int> sendAreaSplitterSizes = m_userInterface->SendAreaSplitter->sizes();
-                QList<int> sendAreaInputsSplitterSizes = m_userInterface->SendAreaInputsSplitter->sizes();
 
 
                 std::map<QString, QString> settingsMap =
@@ -2994,7 +2974,6 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("geometry"), saveGeometry().toHex()),
                  std::make_pair(QString("splitterSizes"), QString("%1:%2").arg(splitterSizes[0]).arg(splitterSizes[1])),
                  std::make_pair(QString("sendAreaSplitterSizes"), QString("%1:%2").arg(sendAreaSplitterSizes[0]).arg(sendAreaSplitterSizes[1])),
-                 std::make_pair(QString("sendAreaInputsSplitterSizes"), QString("%1:%2").arg(sendAreaInputsSplitterSizes[0]).arg(sendAreaInputsSplitterSizes[1])),
                  std::make_pair(QString("toolBoxIndex"), QString("%1").arg(m_currentToolBoxIndex)),
                  std::make_pair(QString("sendTextEdit"), m_userInterface->SendTextEdit->toPlainText()),
                  std::make_pair(QString("sendFormatComboBox"), m_userInterface->SendFormatComboBox->currentText()),
@@ -4561,26 +4540,8 @@ void MainWindow::sendAreaSplitterMoved(int pos, int index)
     (void)index;
     QList<int> splitterSizes = m_userInterface->SendAreaSplitter->sizes();
     m_sendAreaSplitterSizeSecond = splitterSizes[1];
-
-    //Restore the size of the second element in the send area inputs splitter.
-    restoreSizeSplitterSecondElement(m_userInterface->SendAreaInputsSplitter, m_sendAreaInputsSplitterSizeSecond);
 }
 
-
-/**
- * This slot function is called if the send area inputs splitter handle has been moved.
- * @param pos
- *      The new position of the splitter handle.
- * @param index
- *      The index of the splitter handle (always 0).
- */
-void MainWindow::sendAreaInputsSplitterMoved(int pos, int index)
-{
-    (void)pos;
-    (void)index;
-    QList<int> splitterSizes = m_userInterface->SendAreaInputsSplitter->sizes();
-    m_sendAreaInputsSplitterSizeSecond = splitterSizes[1];
-}
 
 /**
  * This slot function is called if the tool box splitter handle has been moved.
@@ -4656,8 +4617,6 @@ void MainWindow::resizeEvent(QResizeEvent* event)
         //Restore the size of the second element in the send area splitter
         restoreSizeSplitterSecondElement(m_userInterface->SendAreaSplitter, m_sendAreaSplitterSizeSecond);
 
-        //Restore the size of the second element in the send area inputs splitter
-        restoreSizeSplitterSecondElement(m_userInterface->SendAreaInputsSplitter, m_sendAreaInputsSplitterSizeSecond);
     }
 }
 

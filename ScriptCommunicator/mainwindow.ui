@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1183</width>
-    <height>786</height>
+    <width>1208</width>
+    <height>764</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -784,7 +784,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <x>0</x>
                   <y>0</y>
                   <width>936</width>
-                  <height>306</height>
+                  <height>294</height>
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_3">
@@ -1198,8 +1198,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>188</width>
-          <height>517</height>
+          <width>213</width>
+          <height>495</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1243,7 +1243,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
           <x>0</x>
           <y>0</y>
           <width>231</width>
-          <height>500</height>
+          <height>478</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1330,7 +1330,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
           <x>0</x>
           <y>0</y>
           <width>231</width>
-          <height>500</height>
+          <height>478</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1555,8 +1555,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>188</width>
-          <height>517</height>
+          <width>213</width>
+          <height>495</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1835,7 +1835,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1183</width>
+     <width>1208</width>
      <height>26</height>
     </rect>
    </property>

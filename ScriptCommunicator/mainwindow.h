@@ -391,9 +391,6 @@ private slots:
     ///This slot function is called if the send area splitter handle has been moved.
     void sendAreaSplitterMoved(int pos, int index);
 
-    ///This slot function is called if the send area inputs splitter handle has been moved.
-    void sendAreaInputsSplitterMoved(int pos, int index);
-
     ///This slot function is called if the tool box splitter handle has been moved.
     void toolBoxSplitterMoved(int pos, int index);
 
@@ -668,9 +665,6 @@ private:
 
     ///The size of the second element in send area splitter.
     qint32 m_sendAreaSplitterSizeSecond;
-
-    ///The size of the second element in send area inputs splitter.
-    qint32 m_sendAreaInputsSplitterSizeSecond;
 
     ///The size of the second element in the tool box splitter (for every tool box page).
     QList<qint32> m_toolBoxSplitterSizesSecond;
