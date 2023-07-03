@@ -2079,6 +2079,11 @@ bool ScriptThread::loadUserInterfaceFile(QString path, bool isRelativePath, bool
     {
         ScriptWidget* newElement = new ScriptWidget(ui, this, m_scriptWindow);
 
+        //Set the window position to the postion of the main window.
+        QRect rectUi = MainWindow::windowPositionAndSize(m_scriptWindow->getMainWindow());
+        newElement->setWindowPositionAndSize(QString("%1,%2,%3,%4").arg(rectUi.left()).arg(rectUi.top())
+                                             .arg(ui->width()).arg(ui->height()));
+
         if(m_userInterface[0]->getWidgetPointer()== 0)
         {
             delete m_userInterface[0];

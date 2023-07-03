@@ -1394,6 +1394,12 @@ void ScriptWindow::startScriptThread(int selectedRow, bool withDebugger)
                 scriptUi = loader.load(&uiFile);
                 uiFile.close();
 
+                //Set the window position to the postion of the main window.
+                QRect rectUi = MainWindow::windowPositionAndSize(m_mainWindow);
+                rectUi.setWidth(scriptUi->width());
+                rectUi.setHeight(scriptUi->height());
+                MainWindow::setWindowPositionAndSize(scriptUi, rectUi);
+
                 thread = new ScriptThread(this, m_sendIdCounter,
                                           m_userInterface->tableWidget->item(selectedRow, COLUMN_SCRIPT_PATH)->text(),
                                           scriptUi, m_mainWindow->getSettingsDialog(), withDebugger);
