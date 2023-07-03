@@ -4136,7 +4136,6 @@ void MainWindow::showAboutWindowSlot(void)
 {
 
     QString text = "author: Stefan Zieker";
-    text.append("<br>email: <a href=\"s.zieker@gmx.net\" style=\"color: #1c86ce\">s.zieker@gmx.net</a>");
     text.append("<br>web1: <a href=\"https://sourceforge.net/projects/scriptcommunicator/\" style=\"color: #1c86ce\">https://sourceforge.net/projects/scriptcommunicator/</a>");
     text.append("<br>web2: <a href=\"https://github.com/szieke/ScriptCommunicator_serial-terminal\" style=\"color: #1c86ce\">https://github.com/szieke/ScriptCommunicator_serial-terminal</a>");
 

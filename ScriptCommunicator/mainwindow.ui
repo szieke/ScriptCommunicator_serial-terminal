@@ -784,7 +784,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
                   <x>0</x>
                   <y>0</y>
                   <width>936</width>
-                  <height>210</height>
+                  <height>306</height>
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_3">
@@ -1844,7 +1844,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <string>&amp;Help</string>
     </property>
     <addaction name="actionManual"/>
-    <addaction name="actionVideo"/>
     <addaction name="separator"/>
     <addaction name="actionGetSupport"/>
     <addaction name="separator"/>
