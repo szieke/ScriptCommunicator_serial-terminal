@@ -385,12 +385,6 @@ private slots:
    ///Is called if the style shall be changed.
     void setStyleSlot(bool useDarkStyle, int fontSize);
 
-    ///Is called if text of the cyclic script text edit has been changed.
-    void scriptTextEditSlot(void);
-
-    ///Is called when the user double clicks the script text edit.
-    void scriptTextEditDoubleClickedSlot(void);
-
     ///Slot for the config file lock file timer.
     void configLockFileTimerSlot();
 
@@ -509,12 +503,6 @@ private slots:
 
     ///Menu request feature slot function.
     void requestFeatureSlot();
-
-    ///Menu edit script slot function.
-    void editScriptSlot();
-
-    ///Menu add script slot function.
-    void addScriptSlot();
 
     ///Menu get support slot function.
     void getSupportSlot();

@@ -1175,20 +1175,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
                 <enum>Qt::ScrollBarAsNeeded</enum>
                </property>
               </widget>
-              <widget class="SendWindowTextEdit" name="ScriptTextEdit">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="toolTip">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;multi-line send input (to send the data press the send button or the configured keys)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-               <property name="horizontalScrollBarPolicy">
-                <enum>Qt::ScrollBarAlwaysOff</enum>
-               </property>
-              </widget>
              </widget>
             </item>
            </layout>
@@ -1889,13 +1875,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
     <addaction name="actionSaveConsole"/>
     <addaction name="actionPrintConsole"/>
    </widget>
-   <widget class="QMenu" name="menuSend_area">
-    <property name="title">
-     <string>&amp;Send area</string>
-    </property>
-    <addaction name="actionEditScript"/>
-    <addaction name="actionAddScript"/>
-   </widget>
    <widget class="QMenu" name="menu_File">
     <property name="title">
      <string>&amp;Actions</string>
@@ -1915,7 +1894,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
    <addaction name="menu_File"/>
    <addaction name="menuConfig"/>
    <addaction name="menuConsole"/>
-   <addaction name="menuSend_area"/>
    <addaction name="menuHelp"/>
   </widget>
   <action name="actionConnect">
@@ -2162,22 +2140,6 @@ li.checked::marker { content: &quot;\2612&quot;; }
    </property>
    <property name="toolTip">
     <string>get support</string>
-   </property>
-  </action>
-  <action name="actionEditScript">
-   <property name="text">
-    <string>Edit sequence script</string>
-   </property>
-   <property name="toolTip">
-    <string>edit sequence script</string>
-   </property>
-  </action>
-  <action name="actionAddScript">
-   <property name="text">
-    <string>Add sequence script</string>
-   </property>
-   <property name="toolTip">
-    <string>add sequence script</string>
    </property>
   </action>
   <action name="actionBringAllToForeground">

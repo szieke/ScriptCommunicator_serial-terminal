@@ -416,7 +416,6 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     m_handleData = new MainWindowHandleData(this, m_settingsDialog, m_userInterface);
 
     m_userInterface->SendTextEdit->setMainWindowPointer(this);
-    m_userInterface->ScriptTextEdit->setMainWindowPointer(this);
 
     m_mainInterface = new MainInterfaceThread(this);
     m_mainInterface->moveToThread(m_mainInterface);
@@ -531,8 +530,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     connect(m_userInterface->SendFormatComboBox, SIGNAL(currentTextChanged(QString)), this, SLOT(currentSendFormatChangedSlot(QString)));
     connect(m_userInterface->CanTypeBox, SIGNAL(currentTextChanged(QString)), this, SLOT(currentCanTypeChangedSlot(QString)));
     connect(m_userInterface->SendPushButton, SIGNAL(clicked()), this, SLOT(sendButtonPressedSlot()));
-    connect(m_userInterface->ScriptTextEdit, SIGNAL(textChanged()), this, SLOT(scriptTextEditSlot()));
-    connect(m_userInterface->ScriptTextEdit, SIGNAL(doubleClickSignal()), this, SLOT(scriptTextEditDoubleClickedSlot()));
+
 
 
     connect(m_userInterface->rtsCheckBox, SIGNAL(clicked()),this, SLOT(serialPortPinsChangedSlot()), Qt::QueuedConnection);
@@ -936,7 +934,7 @@ void MainWindow::sendButtonPressedSlot(void)
         sendData.append('\n');
       }
 
-        m_sendWindow->sendDataWithTheMainInterface(sendData, this, 0, 0, false, m_userInterface->ScriptTextEdit->toPlainText());
+        m_sendWindow->sendDataWithTheMainInterface(sendData, this);
     }
 }
 
@@ -1727,13 +1725,6 @@ bool MainWindow::loadSettings()
                         {
                             currentSettings.useDarkStyle = (bool)node.attributes().namedItem("useDarkStyle").nodeValue().toUInt();
                         }
-                        else
-                        {
-                            currentSettings.useDarkStyle = 1;
-                            currentSettings.consoleBackgroundColor = "000000";
-                            currentSettings.consoleReceiveColor = "00ff00";
-                            currentSettings.consoleSendColor = "ff0000";
-                        }
 
                         if(node.attributes().namedItem("appFontSize").nodeValue() != "")
                         {
@@ -2018,10 +2009,6 @@ bool MainWindow::loadSettings()
                         m_userInterface->CanIdLineEdit->blockSignals(false);
 
                         currentSendFormatChangedSlot(m_userInterface->SendFormatComboBox->currentText());
-
-                        QString script = node.attributes().namedItem("scriptTextEdit").nodeValue();
-                        if(script.startsWith("./")){script.replace("./", getScriptCommunicatorFilesFolder() + "/");}
-                        m_userInterface->ScriptTextEdit->setPlainText(script);
 
                         splitterSizes = node.attributes().namedItem("sendAreaSplitterSizes").nodeValue();
                         if(splitterSizes.size() > 0)
@@ -3010,7 +2997,6 @@ void MainWindow::saveSettings()
                  std::make_pair(QString("sendAreaInputsSplitterSizes"), QString("%1:%2").arg(sendAreaInputsSplitterSizes[0]).arg(sendAreaInputsSplitterSizes[1])),
                  std::make_pair(QString("toolBoxIndex"), QString("%1").arg(m_currentToolBoxIndex)),
                  std::make_pair(QString("sendTextEdit"), m_userInterface->SendTextEdit->toPlainText()),
-                 std::make_pair(QString("scriptTextEdit"), m_userInterface->ScriptTextEdit->toPlainText()),
                  std::make_pair(QString("sendFormatComboBox"), m_userInterface->SendFormatComboBox->currentText()),
                  std::make_pair(QString("appendComboBox"), m_userInterface->AppendComboBox->currentText()),
                  std::make_pair(QString("sendOnComboBox"), m_userInterface->SendOnComboBox->currentText()),
@@ -4054,8 +4040,6 @@ void MainWindow::initActionsConnections()
     connect(m_userInterface->actionVideo, SIGNAL(triggered()),this, SLOT(watchVideoSlot()));
     connect(m_userInterface->actionGetSupport, SIGNAL(triggered()),this, SLOT(getSupportSlot()));
 
-    connect(m_userInterface->actionAddScript, SIGNAL(triggered()),this, SLOT(addScriptSlot()));
-    connect(m_userInterface->actionEditScript, SIGNAL(triggered()),this, SLOT(editScriptSlot()));
     connect(m_userInterface->actionReopenAllLogs, SIGNAL(triggered()),this, SLOT(reopenLogsSlot()));
 }
 
@@ -4583,27 +4567,6 @@ void MainWindow::sendAreaSplitterMoved(int pos, int index)
     restoreSizeSplitterSecondElement(m_userInterface->SendAreaInputsSplitter, m_sendAreaInputsSplitterSizeSecond);
 }
 
-/**
- * Is called if text of the cyclic script text edit has been changed.
- */
-void MainWindow::scriptTextEditSlot(void)
-{
-    if(m_userInterface->ScriptTextEdit->toPlainText().isEmpty())
-    {
-        m_userInterface->actionEditScript->setEnabled(false);
-    }
-    else
-    {
-        m_userInterface->actionEditScript->setEnabled(true);
-    }
-}
-/**
- * Is called when the user double clicks the script text edit.
- */
-void MainWindow::scriptTextEditDoubleClickedSlot(void)
-{
-    addScriptSlot();
-}
 
 /**
  * This slot function is called if the send area inputs splitter handle has been moved.
@@ -4948,30 +4911,6 @@ void MainWindow::requestFeatureSlot()
     msgBox.exec();
 }
 
-
-/**
- * Menu edit script slot function.
- */
-void MainWindow::editScriptSlot()
-{
-    QStringList arguments;
-    arguments << m_userInterface->ScriptTextEdit->toPlainText();
-    openScriptEditor(arguments, m_settingsDialog->settings(), this);
-}
-
-/**
- * Menu add script slot function.
- */
-void MainWindow::addScriptSlot()
-{
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open sequence script file"),
-                                                    "", tr("sequence script files (*.js);;Files (*)"));
-    if(!fileName.isEmpty())
-    {
-        m_userInterface->ScriptTextEdit->setPlainText(fileName);
-        saveSettings();
-    }
-}
 
 /**
  * Menu get support slot function.
