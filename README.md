@@ -26,7 +26,7 @@ This script interface has the following features:
 
 **main window**
 
-![main window]([https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/light-e26c07a8.png/max/max/1](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2023-07-04_09h27_03-08f21d94.png/max/max/1)
+![main window](https://a.fsdn.com/con/app/proj/scriptcommunicator/screenshots/2023-07-04_09h27_03-08f21d94.png/max/max/1)
 
 **dark mode**
 
