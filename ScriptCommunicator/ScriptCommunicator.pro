@@ -43,6 +43,19 @@ ScriptEditor
 
 RC_FILE = images/ScriptCommunicator.rc
 
+outFolder = release
+CONFIG(debug, debug|release){
+outFolder = debug
+}
+
+copydata.commands = $(COPY_FILE) $$system_path($$PWD/qss/stylesheet.qss) $$system_path($$OUT_PWD)\\$$outFolder
+copydata.commands += && $(COPY_FILE) $$system_path($$PWD/qss/stylesheet.rcc) $$system_path($$OUT_PWD)\\$$outFolder
+first.depends = $(first) copydata
+export(first.depends)
+export(copydata.commands)
+QMAKE_EXTRA_TARGETS += first copydata
+
+
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
