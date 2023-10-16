@@ -363,10 +363,10 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
     m_userInterface->setupUi(this);
 
-    m_userInterface->SendAreaSplitter->setStretchFactor(0, 8);
+    m_userInterface->SendAreaSplitter->setStretchFactor(0, 7);
     m_userInterface->SendAreaSplitter->setStretchFactor(1, 1);
 
-    m_userInterface->ToolboxSplitter->setStretchFactor(0, 3);
+    m_userInterface->ToolboxSplitter->setStretchFactor(0, 2);
     m_userInterface->ToolboxSplitter->setStretchFactor(1, 1);
 
     m_userInterface->sequenceListWidget->setIconSize(QSize(0,0));
@@ -1732,6 +1732,8 @@ bool MainWindow::loadSettings()
                             {
                                 currentSettings.appFontSize = "14";
                             }
+
+                            currentSettings.stringConsoleFontSize = currentSettings.appFontSize;
                         }
 
                         setStyleSlot(currentSettings.useDarkStyle, currentSettings.appFontSize.toInt());
@@ -2645,8 +2647,10 @@ void MainWindow::inititializeTab(void)
         m_settingsDialog->setEnabled(false);
         QCoreApplication::processEvents();
 
-        QString consoleStyle = QString("QTextEdit {background-color: #%1;color: #%2;border: 1px solid #76797C;}")
-                .arg(currentSettings->consoleBackgroundColor, currentSettings->consoleReceiveColor);
+        QString consoleStyle = QString("QTextEdit {background-color: #%1;color: #%2;border: 1px solid #76797C;"
+                                       "font-size: %3px}")
+                .arg(currentSettings->consoleBackgroundColor, currentSettings->consoleReceiveColor,
+                     currentSettings->stringConsoleFontSize);
 
         m_userInterface->historyTextEdit->setStyleSheet(consoleStyle);
         setConsoleFont(currentSettings->stringConsoleFont, currentSettings->stringConsoleFontSize, m_userInterface->historyTextEdit);
