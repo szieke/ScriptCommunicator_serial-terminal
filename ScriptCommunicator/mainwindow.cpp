@@ -545,7 +545,7 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
     connect(m_scriptWindow, SIGNAL(scriptTableHasChangedSignal()),this, SLOT(setUpScriptPageSlot()));
 
     connect(m_userInterface->sequenceListWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)),this, SLOT(sequenceListItemDoubleClickedSlot(QListWidgetItem*)), Qt::QueuedConnection);
-    connect(m_userInterface->workerScriptListWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)),this, SLOT(workerScriptListItemDoubleClickedSlot(QListWidgetItem*)), Qt::QueuedConnection);
+    connect(m_userInterface->workerScriptListWidget, SIGNAL(itemDoubleClicked(QListWidgetItem*)),this, SLOT(workerScriptListItemDoubleClickedSlot()), Qt::QueuedConnection);
     connect(m_userInterface->workerScriptListWidget, SIGNAL(currentRowChanged(int)),this, SLOT(workerScriptsCurrentRowChangedSlot(int)), Qt::QueuedConnection);
     connect(m_userInterface->startWorkerScriptsPushButton, SIGNAL(clicked()),this, SLOT(startScriptButtonPressedSlot()));
     connect(m_userInterface->pauseWorkerScriptPushButton, SIGNAL(clicked()),this, SLOT(pauseScriptButtonPressedSlot()));
@@ -1142,28 +1142,13 @@ void MainWindow::sequenceListItemDoubleClickedSlot(QListWidgetItem *item)
 
 /**
  * Is called if an item in the worker script list has been double clicked.
- * @param item
- *      The clicked item.
  */
-void MainWindow::workerScriptListItemDoubleClickedSlot(QListWidgetItem *item)
+void MainWindow::workerScriptListItemDoubleClickedSlot()
 {
-    bool isOK = false;
-    quint32 row = item->data(1).toUInt(&isOK);
-    if(row != 0xffffffff)
-    {
-        if(m_scriptWindow->getScriptState(row) == SUSPENDED_BY_DEBUGGER)
-        {
-            //Do nothing.
-        }
-        else if(m_scriptWindow->getScriptState(row) == RUNNING)
-        {
-            m_scriptWindow->stopScriptThread(row);
-        }
-        else
-        {
-            m_scriptWindow->startScriptThread(row);
-        }
-    }
+    startScriptButtonPressedSlot();
+
+    m_userInterface->workerScriptListWidget->clearSelection();
+
 }
 
 /**
@@ -1192,7 +1177,7 @@ bool MainWindow::eventFilter(QObject *target, QEvent *event)
                 QListWidgetItem *item = m_userInterface->workerScriptListWidget->currentItem();
                 if(item)
                 {
-                    workerScriptListItemDoubleClickedSlot(item);
+                    workerScriptListItemDoubleClickedSlot();
                 }
             }
             else if (target == m_userInterface->sequenceListWidget)
@@ -1312,6 +1297,7 @@ void MainWindow::setUpScriptPageSlot(void)
         selectedRow = items[0]->data(1).toUInt(&isOK);
     }
 
+    m_userInterface->workerScriptListWidget->blockSignals(true);
     m_userInterface->workerScriptListWidget->clear();
 
     if(!scriptNamesAndState.isEmpty())
@@ -1348,16 +1334,6 @@ void MainWindow::setUpScriptPageSlot(void)
 
             item->setFont(font);
         }
-
-        if(selectedRow != 0xffffffff)
-        {
-            QListWidgetItem *item = m_userInterface->workerScriptListWidget->item(selectedRow);
-            if(item)
-            {
-                item->setSelected(true);
-                workerScriptsCurrentRowChangedSlot(selectedRow);
-            }
-        }
     }
     else
     {
@@ -1368,6 +1344,19 @@ void MainWindow::setUpScriptPageSlot(void)
         workerScriptsCurrentRowChangedSlot(0);
         m_userInterface->workerScriptListWidget->clearSelection();
     }
+
+    if(selectedRow != 0xffffffff)
+    {
+        //Restore the selected row.
+        QListWidgetItem *item = m_userInterface->workerScriptListWidget->item(selectedRow);
+        if(item)
+        {
+            item->setSelected(true);
+            workerScriptsCurrentRowChangedSlot(selectedRow);
+        }
+    }
+
+    m_userInterface->workerScriptListWidget->blockSignals(false);
 }
 
 /**
@@ -1419,16 +1408,22 @@ void MainWindow::workerScriptsCurrentRowChangedSlot(int currentRow)
             else if(m_scriptWindow->getScriptState(index) == SUSPENDED_BY_DEBUGGER)
             {//Script is suspended
 
-                //Not implemented at the moment.;
+                //Not implemented at the moment.
             }
             else
-            {//Scripts is stopped.
+            {//Script is stopped.
 
                 m_userInterface->startWorkerScriptsPushButton->setText("start");
                 m_userInterface->pauseWorkerScriptPushButton->setEnabled(false);
-
             }
         }
+    }
+    else
+    {
+      m_userInterface->startWorkerScriptsPushButton->setText("start");
+      m_userInterface->startWorkerScriptsPushButton->setEnabled(false);
+      m_userInterface->pauseWorkerScriptPushButton->setEnabled(false);
+
     }
 }
 

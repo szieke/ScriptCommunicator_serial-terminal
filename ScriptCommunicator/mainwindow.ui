@@ -783,8 +783,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
                  <rect>
                   <x>0</x>
                   <y>0</y>
-                  <width>936</width>
-                  <height>294</height>
+                  <width>897</width>
+                  <height>306</height>
                  </rect>
                 </property>
                 <layout class="QGridLayout" name="gridLayout_3">
@@ -1198,8 +1198,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>213</width>
-          <height>495</height>
+          <width>260</width>
+          <height>527</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1242,8 +1242,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>231</width>
-          <height>478</height>
+          <width>260</width>
+          <height>527</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1270,7 +1270,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="1,2,2,1">
            <item>
             <spacer name="horizontalSpacer_8">
              <property name="orientation">
@@ -1289,6 +1289,18 @@ li.checked::marker { content: &quot;\2612&quot;; }
              <property name="enabled">
               <bool>false</bool>
              </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
+             </property>
              <property name="text">
               <string>resume</string>
              </property>
@@ -1298,6 +1310,18 @@ li.checked::marker { content: &quot;\2612&quot;; }
             <widget class="QPushButton" name="pauseWorkerScriptPushButton">
              <property name="enabled">
               <bool>false</bool>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>100</width>
+               <height>16777215</height>
+              </size>
              </property>
              <property name="text">
               <string>pause</string>
@@ -1329,8 +1353,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>231</width>
-          <height>478</height>
+          <width>260</width>
+          <height>527</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1555,8 +1579,8 @@ li.checked::marker { content: &quot;\2612&quot;; }
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>213</width>
-          <height>495</height>
+          <width>260</width>
+          <height>527</height>
          </rect>
         </property>
         <attribute name="label">
@@ -1836,7 +1860,7 @@ li.checked::marker { content: &quot;\2612&quot;; }
      <x>0</x>
      <y>0</y>
      <width>1208</width>
-     <height>26</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuHelp">
