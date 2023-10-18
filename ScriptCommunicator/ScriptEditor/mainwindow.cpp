@@ -2394,7 +2394,13 @@ void MainWindow::readSettings()
         QSize size = settings.value("size", QSize(600, 600)).toSize();
         ui->splitter->restoreState(settings.value("mainSplitter").toByteArray());
         resize(size);
-        move(pos);
+
+        if(QGuiApplication::screenAt(pos) != nullptr)
+        {//The position is valid.
+
+             move(pos);
+        }
+
 
         m_currentFont.setFamily(settings.value("fontFamily", QFont().family()).toString());
         bool ok;

@@ -731,15 +731,6 @@ MainWindow::MainWindow(QStringList scripts, bool withScriptWindow, bool scriptWi
 
     }
 
-#ifdef Q_OS_WIN32
-    /*ToDo Ist das wirklich notwendig? Mit Release testen
-        QString name = m_mainConfigFile.isEmpty() ? QString("%1").arg(QDateTime::currentMSecsSinceEpoch()) : m_mainConfigFile;
-        //Specifiy a unique application-defined Application User Model ID (AppUserModelID) that identifies the current process to the taskbar.
-        //Note: Because of this id every instance of ScriptCommunicator has its own icon group in the task bar.
-        QtWin::setCurrentProcessExplicitAppUserModelID("ScriptCommunicator_" + name);
-        */
-#endif
-
     if(!iconFile.isEmpty())
     {
         setMainWindowAndTaskBarIconSlot(iconFile);
