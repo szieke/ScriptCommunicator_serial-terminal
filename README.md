@@ -41,6 +41,6 @@ This script interface has the following features:
 
 # Downloads (release 06.06)
 - [Windows](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicator_06_06_windows.zip/download)
-- [Linux 64 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_64Bit/ScriptCommunicator_06_06_linux_64_bit.zip/download)
+- [Linux 64 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_64Bit/ScriptCommunicator_06_06_1_linux_64_bit.zip/download)
 - [MacOS](http://sourceforge.net/projects/scriptcommunicator/files/MacOS/ScriptCommunicator_06_03_macos.zip/download)
 - [Source](http://sourceforge.net/projects/scriptcommunicator/files/Source/ScriptCommunicator_06_06_source.zip/download)
