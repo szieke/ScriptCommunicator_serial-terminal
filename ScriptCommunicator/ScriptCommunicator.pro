@@ -9,6 +9,8 @@ CONFIG += c++11
 QMAKE_CXXFLAGS += -Wno-int-to-pointer-cast
 QMAKE_CXXFLAGS +=-Wno-write-strings
 QMAKE_CXXFLAGS += -Wno-deprecated-declarations
+QMAKE_CXXFLAGS += -Wa,-mbig-obj
+
 unix{
 QMAKE_CXXFLAGS += -Wno-cast-function-type
 }
