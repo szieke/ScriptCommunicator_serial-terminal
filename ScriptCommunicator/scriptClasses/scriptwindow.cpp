@@ -984,56 +984,55 @@ QString ScriptWindow::tableToString(void)
 {
     QString result;
 
-    if(m_userInterface->tableWidget->rowCount() > 0)
+
+    QBuffer xmlBuffer;
+
+    QXmlStreamWriter xmlWriter;
+    xmlWriter.setAutoFormatting(true);
+    xmlWriter.setAutoFormattingIndent(2);
+    xmlBuffer.open(QIODevice::WriteOnly);
+    xmlWriter.setDevice(&xmlBuffer);
+
+    xmlWriter.writeStartElement("ScriptConfig");
+
+    xmlWriter.writeStartElement("fileInfo");
+    xmlWriter.writeAttribute("version", MainWindow::VERSION);
+    xmlWriter.writeAttribute("hasBeenSaved", "1");
+    xmlWriter.writeEndElement();
+
+
+    xmlWriter.writeStartElement("columnWidth");
+    xmlWriter.writeAttribute("width0", QString("%1").arg(m_userInterface->tableWidget->columnWidth(0)));
+    xmlWriter.writeAttribute("width1", QString("%1").arg(m_userInterface->tableWidget->columnWidth(1)));
+    xmlWriter.writeAttribute("width2", QString("%1").arg(m_userInterface->tableWidget->columnWidth(2)));
+    xmlWriter.writeEndElement();//"columnWidth"
+
+    for( int r = 0; r < m_userInterface->tableWidget->rowCount(); ++r )
     {
-        QBuffer xmlBuffer;
 
-        QXmlStreamWriter xmlWriter;
-        xmlWriter.setAutoFormatting(true);
-        xmlWriter.setAutoFormattingIndent(2);
-        xmlBuffer.open(QIODevice::WriteOnly);
-        xmlWriter.setDevice(&xmlBuffer);
+        QTableWidgetItem* item1 = m_userInterface->tableWidget->item(r, COLUMN_NAME);
+        QTableWidgetItem* item2 = m_userInterface->tableWidget->item(r, COLUMN_SCRIPT_THREAD_STATUS);
+        QTableWidgetItem* item3 = m_userInterface->tableWidget->item(r, COLUMN_SCRIPT_PATH);
+        QTableWidgetItem* item4 = m_userInterface->tableWidget->item(r, COLUMN_UI_PATH);
 
-        xmlWriter.writeStartElement("ScriptConfig");
-
-        xmlWriter.writeStartElement("fileInfo");
-        xmlWriter.writeAttribute("version", MainWindow::VERSION);
-        xmlWriter.writeAttribute("hasBeenSaved", "1");
-        xmlWriter.writeEndElement();
-
-
-        xmlWriter.writeStartElement("columnWidth");
-        xmlWriter.writeAttribute("width0", QString("%1").arg(m_userInterface->tableWidget->columnWidth(0)));
-        xmlWriter.writeAttribute("width1", QString("%1").arg(m_userInterface->tableWidget->columnWidth(1)));
-        xmlWriter.writeAttribute("width2", QString("%1").arg(m_userInterface->tableWidget->columnWidth(2)));
-        xmlWriter.writeEndElement();//"columnWidth"
-
-        for( int r = 0; r < m_userInterface->tableWidget->rowCount(); ++r )
+        if(item1 && item2)
         {
+            xmlWriter.writeStartElement("script");
 
-            QTableWidgetItem* item1 = m_userInterface->tableWidget->item(r, COLUMN_NAME);
-            QTableWidgetItem* item2 = m_userInterface->tableWidget->item(r, COLUMN_SCRIPT_THREAD_STATUS);
-            QTableWidgetItem* item3 = m_userInterface->tableWidget->item(r, COLUMN_SCRIPT_PATH);
-            QTableWidgetItem* item4 = m_userInterface->tableWidget->item(r, COLUMN_UI_PATH);
+            xmlWriter.writeAttribute("name", item1->text());
+            xmlWriter.writeAttribute("status", item2->text());
+            xmlWriter.writeAttribute("path", MainWindow::convertToRelativePath(m_currentScriptConfigFileName, item3->text()));
+            xmlWriter.writeAttribute("ui", MainWindow::convertToRelativePath(m_currentScriptConfigFileName, item4->text()));
+            xmlWriter.writeAttribute("height", QString("%1").arg(m_userInterface->tableWidget->rowHeight(r)));
 
-            if(item1 && item2)
-            {
-                xmlWriter.writeStartElement("script");
-
-                xmlWriter.writeAttribute("name", item1->text());
-                xmlWriter.writeAttribute("status", item2->text());
-                xmlWriter.writeAttribute("path", MainWindow::convertToRelativePath(m_currentScriptConfigFileName, item3->text()));
-                xmlWriter.writeAttribute("ui", MainWindow::convertToRelativePath(m_currentScriptConfigFileName, item4->text()));
-                xmlWriter.writeAttribute("height", QString("%1").arg(m_userInterface->tableWidget->rowHeight(r)));
-
-                xmlWriter.writeEndElement();//"script"
-            }
+            xmlWriter.writeEndElement();//"script"
         }
-
-        xmlWriter.writeEndElement();//"scripts"
-
-        result =  xmlBuffer.data();
     }
+
+    xmlWriter.writeEndElement();//"scripts"
+
+    result =  xmlBuffer.data();
+
 
     return result;
 }
