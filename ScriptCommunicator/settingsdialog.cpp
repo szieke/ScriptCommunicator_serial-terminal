@@ -592,11 +592,9 @@ void SettingsDialog::setStyleCheckBoxPressedSlot(bool isChecked)
         m_userInterface->consoleSendColorButton->setStyleSheet("background-color: #ff0000;");
         m_userInterface->consoleReceiveColorButton->setStyleSheet("background-color: #00ff00;");
         m_userInterface->consoleBackgroundColorButton->setStyleSheet("background-color: #000000;");
+        updateSettings();
+        emit configHasToBeSavedSignal();
     }
-
-    updateSettings();
-    emit configHasToBeSavedSignal();
-
     emit setStyleSignal(isChecked, m_userInterface->appFontSizeComboBox->currentText().toUInt());
 }
 

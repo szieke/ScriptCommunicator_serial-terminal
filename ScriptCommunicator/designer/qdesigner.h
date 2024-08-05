@@ -40,8 +40,8 @@ public:
     QDesignerServer *server() const;
     MainWindowBase *mainWindow() const;
     void setMainWindow(MainWindowBase *tw);
-	
-	bool darkModeIsEnabled(){return m_darkModeIsEnabled;}
+
+    bool darkModeIsEnabled(){return m_darkModeIsEnabled;}
     void setDarkModeIsEnabled(bool isEnabled){m_darkModeIsEnabled = isEnabled;}
 
 protected:
@@ -53,19 +53,23 @@ signals:
 public slots:
     void showErrorMessage(const QString &message);
 
+private slots:
+    void callCreateForm();
+
 private:
     void showErrorMessageBox(const QString &);
 
-    QDesignerServer *m_server = nullptr;
-    QDesignerClient *m_client = nullptr;
-    QDesignerWorkbench *m_workbench = nullptr;
+    QDesignerServer *m_server;
+    QDesignerClient *m_client;
+    QDesignerWorkbench *m_workbench;
     QPointer<MainWindowBase> m_mainWindow;
     QPointer<QErrorMessage> m_errorMessageDialog;
 
     QString m_initializationErrors;
     QString m_lastErrorMessage;
-	
-	bool m_darkModeIsEnabled = false;
+    bool m_suppressNewFormShow;
+
+    bool m_darkModeIsEnabled;
 };
 
 QT_END_NAMESPACE
