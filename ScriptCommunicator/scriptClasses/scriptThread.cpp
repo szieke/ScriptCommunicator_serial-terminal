@@ -988,8 +988,23 @@ void ScriptThread::installAllChilds(QObject* obj, QJSEngine* scriptEngine, bool 
  */
 void ScriptThread::sleep(quint32 timeMs )
 {
-    msleep(timeMs);
-    QCoreApplication::processEvents();
+    const quint32 maxSleepTime = 100;
+    quint32 multipeSleeps = timeMs / maxSleepTime;
+    quint32 remainingTime = timeMs % maxSleepTime;
+
+    /**************Process all events during the sleep**************/
+    for(quint32 i = 0; i < multipeSleeps; i++)
+    {
+        msleep(maxSleepTime);
+        QCoreApplication::processEvents();
+    }
+
+    if(remainingTime != 0)
+    {
+      msleep(timeMs);
+      QCoreApplication::processEvents();
+    }
+    /****************************************************************/
 }
 
 /**
