@@ -1,18 +1,7 @@
 
-- Sourcen herrunter laden (am besten auf der jeweilen Plattform auspacken, damit die Rechte stimmen)
-- Pfad zu den build tools(qmake, moc ...) setzen
-	- windows: SET PATH=D:\Programme\Qt\Qt6.4.2\6.4.2\Srcqtbase\bin;D:\Programme\Qt\Qt6.4.2\6.4.2\Src\qmingw_64\bin%PATH%
-	- Ubuntu: export MAKE=/usr/bin/make
+
 - widgetbox.xml ersetzen (Src/qttools/src/designer/src/components/widgetbox)
 - die Designer Sourcecodedateien ersetzen (Src/qttools/src/designer/src/designer)
-- Qt konfigurieren
-	- windows: configure.bat in src aufrufen
-	- Ununtu 64 bit: ./configure in src aufrufen
-
-	
 - kompilieren
-	- windows: mingw32-make -j12 -k
-	- Ubuntu: make -j4 -k
-
 - Src\qtbase\lib\Qt5DesignerComponents.(dll, so) kopieren
 - Src\qtbase\bin\designer (.exe) kopieren (Dark Mode eingebaut)
