@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1046</width>
-    <height>567</height>
+    <width>1127</width>
+    <height>661</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -45,7 +45,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="serialPortTab">
       <attribute name="title">
@@ -62,8 +62,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>994</width>
-            <height>336</height>
+            <width>1075</width>
+            <height>430</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0">
@@ -319,7 +319,7 @@
              <item row="2" column="4">
               <spacer name="horizontalSpacer_5">
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -358,7 +358,7 @@
              <item row="0" column="2">
               <spacer name="horizontalSpacer_3">
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -391,7 +391,7 @@
              <item row="6" column="1">
               <spacer name="verticalSpacer_7">
                <property name="orientation">
-                <enum>Qt::Vertical</enum>
+                <enum>Qt::Orientation::Vertical</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -424,8 +424,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>977</width>
-            <height>409</height>
+            <width>1075</width>
+            <height>430</height>
            </rect>
           </property>
           <layout class="QHBoxLayout" name="horizontalLayout_9" stretch="0,1">
@@ -464,7 +464,7 @@
                   </size>
                  </property>
                  <property name="sizeAdjustPolicy">
-                  <enum>QComboBox::AdjustToContents</enum>
+                  <enum>QComboBox::SizeAdjustPolicy::AdjustToContents</enum>
                  </property>
                  <item>
                   <property name="text">
@@ -610,10 +610,10 @@
                <item row="4" column="0">
                 <spacer name="verticalSpacer_3">
                  <property name="orientation">
-                  <enum>Qt::Vertical</enum>
+                  <enum>Qt::Orientation::Vertical</enum>
                  </property>
                  <property name="sizeType">
-                  <enum>QSizePolicy::Fixed</enum>
+                  <enum>QSizePolicy::Policy::Fixed</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -799,14 +799,14 @@ for TCP clients.</string>
                   </size>
                  </property>
                  <property name="echoMode">
-                  <enum>QLineEdit::Password</enum>
+                  <enum>QLineEdit::EchoMode::Password</enum>
                  </property>
                 </widget>
                </item>
                <item row="13" column="0">
                 <spacer name="verticalSpacer_5">
                  <property name="orientation">
-                  <enum>Qt::Vertical</enum>
+                  <enum>Qt::Orientation::Vertical</enum>
                  </property>
                  <property name="sizeHint" stdset="0">
                   <size>
@@ -939,8 +939,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>977</width>
-            <height>454</height>
+            <width>1058</width>
+            <height>460</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_18">
@@ -959,7 +959,7 @@ for TCP clients.</string>
                  </sizepolicy>
                 </property>
                 <property name="sizeAdjustPolicy">
-                 <enum>QComboBox::AdjustToContents</enum>
+                 <enum>QComboBox::SizeAdjustPolicy::AdjustToContents</enum>
                 </property>
                 <item>
                  <property name="text">
@@ -976,7 +976,7 @@ for TCP clients.</string>
               <item row="4" column="1">
                <spacer name="verticalSpacer_10">
                 <property name="orientation">
-                 <enum>Qt::Vertical</enum>
+                 <enum>Qt::Orientation::Vertical</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -995,7 +995,7 @@ for TCP clients.</string>
                  </sizepolicy>
                 </property>
                 <property name="sizeAdjustPolicy">
-                 <enum>QComboBox::AdjustToContents</enum>
+                 <enum>QComboBox::SizeAdjustPolicy::AdjustToContents</enum>
                 </property>
                 <item>
                  <property name="text">
@@ -1019,7 +1019,7 @@ for TCP clients.</string>
               <item row="0" column="4" rowspan="3">
                <spacer name="horizontalSpacer_12">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1128,7 +1128,7 @@ for TCP clients.</string>
               <item row="4" column="1">
                <spacer name="verticalSpacer_11">
                 <property name="orientation">
-                 <enum>Qt::Vertical</enum>
+                 <enum>Qt::Orientation::Vertical</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1154,7 +1154,7 @@ for TCP clients.</string>
               <item row="0" column="2" rowspan="4">
                <spacer name="horizontalSpacer_13">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1256,10 +1256,10 @@ for TCP clients.</string>
               <item row="1" column="2">
                <spacer name="horizontalSpacer_16">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeType">
-                 <enum>QSizePolicy::Fixed</enum>
+                 <enum>QSizePolicy::Policy::Fixed</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1656,7 +1656,7 @@ for TCP clients.</string>
               <item row="0" column="14">
                <spacer name="horizontalSpacer_14">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1696,7 +1696,7 @@ for TCP clients.</string>
               <item row="4" column="0">
                <spacer name="verticalSpacer_12">
                 <property name="orientation">
-                 <enum>Qt::Vertical</enum>
+                 <enum>Qt::Orientation::Vertical</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1709,10 +1709,10 @@ for TCP clients.</string>
               <item row="1" column="12">
                <spacer name="horizontalSpacer_22">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeType">
-                 <enum>QSizePolicy::Fixed</enum>
+                 <enum>QSizePolicy::Policy::Fixed</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1725,10 +1725,10 @@ for TCP clients.</string>
               <item row="1" column="6">
                <spacer name="horizontalSpacer_19">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeType">
-                 <enum>QSizePolicy::Fixed</enum>
+                 <enum>QSizePolicy::Policy::Fixed</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1741,10 +1741,10 @@ for TCP clients.</string>
               <item row="1" column="10">
                <spacer name="horizontalSpacer_21">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeType">
-                 <enum>QSizePolicy::Fixed</enum>
+                 <enum>QSizePolicy::Policy::Fixed</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1757,10 +1757,10 @@ for TCP clients.</string>
               <item row="1" column="1">
                <spacer name="horizontalSpacer_15">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeType">
-                 <enum>QSizePolicy::Fixed</enum>
+                 <enum>QSizePolicy::Policy::Fixed</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1773,10 +1773,10 @@ for TCP clients.</string>
               <item row="1" column="8">
                <spacer name="horizontalSpacer_20">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeType">
-                 <enum>QSizePolicy::Fixed</enum>
+                 <enum>QSizePolicy::Policy::Fixed</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1789,10 +1789,10 @@ for TCP clients.</string>
               <item row="1" column="4">
                <spacer name="horizontalSpacer_17">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeType">
-                 <enum>QSizePolicy::Fixed</enum>
+                 <enum>QSizePolicy::Policy::Fixed</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1814,7 +1814,7 @@ for TCP clients.</string>
               <item row="5" column="1">
                <spacer name="verticalSpacer_8">
                 <property name="orientation">
-                 <enum>Qt::Vertical</enum>
+                 <enum>Qt::Orientation::Vertical</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -1901,10 +1901,10 @@ for TCP clients.</string>
               <item row="0" column="2">
                <spacer name="horizontalSpacer_11">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeType">
-                 <enum>QSizePolicy::Fixed</enum>
+                 <enum>QSizePolicy::Policy::Fixed</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -2070,8 +2070,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>977</width>
-            <height>369</height>
+            <width>1075</width>
+            <height>430</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -2130,7 +2130,7 @@ for TCP clients.</string>
               <item row="0" column="3">
                <spacer name="horizontalSpacer_6">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -2386,7 +2386,7 @@ for TCP clients.</string>
               <item row="0" column="5">
                <spacer name="horizontalSpacer_7">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -2418,7 +2418,7 @@ for TCP clients.</string>
            <item>
             <spacer name="verticalSpacer_13">
              <property name="orientation">
-              <enum>Qt::Vertical</enum>
+              <enum>Qt::Orientation::Vertical</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -2449,8 +2449,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>977</width>
-            <height>422</height>
+            <width>1075</width>
+            <height>430</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout_9">
@@ -2673,10 +2673,10 @@ for TCP clients.</string>
              <item row="7" column="2">
               <spacer name="verticalSpacer_6">
                <property name="orientation">
-                <enum>Qt::Vertical</enum>
+                <enum>Qt::Orientation::Vertical</enum>
                </property>
                <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
+                <enum>QSizePolicy::Policy::Fixed</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -2721,10 +2721,10 @@ for TCP clients.</string>
              <item row="11" column="4">
               <spacer name="verticalSpacer_2">
                <property name="orientation">
-                <enum>Qt::Vertical</enum>
+                <enum>Qt::Orientation::Vertical</enum>
                </property>
                <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
+                <enum>QSizePolicy::Policy::Fixed</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -2839,14 +2839,14 @@ for TCP clients.</string>
                 </size>
                </property>
                <property name="toolTip">
-                <string>new line at byte</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;new line at byte (in case of 'Custom' a decimal value must be entered)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
              <item row="12" column="8">
               <spacer name="horizontalSpacer_23">
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Orientation::Horizontal</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -2865,7 +2865,7 @@ for TCP clients.</string>
                 </size>
                </property>
                <property name="toolTip">
-                <string>create time stamp at byte</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;create time stamp at byte (in case of 'Custom' a decimal value must be entered)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -2907,7 +2907,7 @@ for TCP clients.</string>
                 </size>
                </property>
                <property name="toolTip">
-                <string>create time stamp after ms</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;create time stamp after ms&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -2993,10 +2993,10 @@ for TCP clients.</string>
              <item row="15" column="1">
               <spacer name="verticalSpacer_15">
                <property name="orientation">
-                <enum>Qt::Vertical</enum>
+                <enum>Qt::Orientation::Vertical</enum>
                </property>
                <property name="sizeType">
-                <enum>QSizePolicy::Fixed</enum>
+                <enum>QSizePolicy::Policy::Fixed</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -3009,7 +3009,7 @@ for TCP clients.</string>
              <item row="17" column="1">
               <spacer name="verticalSpacer">
                <property name="orientation">
-                <enum>Qt::Vertical</enum>
+                <enum>Qt::Orientation::Vertical</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -3097,8 +3097,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>977</width>
-            <height>374</height>
+            <width>1075</width>
+            <height>430</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_9">
@@ -3236,7 +3236,7 @@ for TCP clients.</string>
                  <string>...</string>
                 </property>
                 <property name="toolButtonStyle">
-                 <enum>Qt::ToolButtonFollowStyle</enum>
+                 <enum>Qt::ToolButtonStyle::ToolButtonFollowStyle</enum>
                 </property>
                </widget>
               </item>
@@ -3266,7 +3266,7 @@ for TCP clients.</string>
                  <string>...</string>
                 </property>
                 <property name="toolButtonStyle">
-                 <enum>Qt::ToolButtonFollowStyle</enum>
+                 <enum>Qt::ToolButtonStyle::ToolButtonFollowStyle</enum>
                 </property>
                </widget>
               </item>
@@ -3289,7 +3289,7 @@ for TCP clients.</string>
                  <string>...</string>
                 </property>
                 <property name="toolButtonStyle">
-                 <enum>Qt::ToolButtonFollowStyle</enum>
+                 <enum>Qt::ToolButtonStyle::ToolButtonFollowStyle</enum>
                 </property>
                </widget>
               </item>
@@ -3305,7 +3305,7 @@ for TCP clients.</string>
                  <string>...</string>
                 </property>
                 <property name="toolButtonStyle">
-                 <enum>Qt::ToolButtonFollowStyle</enum>
+                 <enum>Qt::ToolButtonStyle::ToolButtonFollowStyle</enum>
                 </property>
                </widget>
               </item>
@@ -3315,7 +3315,7 @@ for TCP clients.</string>
            <item>
             <spacer name="verticalSpacer_14">
              <property name="orientation">
-              <enum>Qt::Vertical</enum>
+              <enum>Qt::Orientation::Vertical</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -3346,8 +3346,8 @@ for TCP clients.</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>977</width>
-            <height>386</height>
+            <width>1075</width>
+            <height>430</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_11">
@@ -3405,7 +3405,7 @@ for TCP clients.</string>
                  <string>clear the text log</string>
                 </property>
                 <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
+                 <enum>Qt::LayoutDirection::LeftToRight</enum>
                 </property>
                 <property name="text">
                  <string>Clear</string>
@@ -3469,7 +3469,7 @@ for TCP clients.</string>
                  <string>clear the html log</string>
                 </property>
                 <property name="layoutDirection">
-                 <enum>Qt::LeftToRight</enum>
+                 <enum>Qt::LayoutDirection::LeftToRight</enum>
                 </property>
                 <property name="text">
                  <string>Clear</string>
@@ -3832,7 +3832,7 @@ Note: The reopen buton in the main window is only visible if this option is sele
               <item row="2" column="8">
                <spacer name="horizontalSpacer_2">
                 <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
+                 <enum>Qt::Orientation::Horizontal</enum>
                 </property>
                 <property name="sizeHint" stdset="0">
                  <size>
@@ -3929,7 +3929,7 @@ Note: The reopen buton in the main window is only visible if this option is sele
            <item>
             <spacer name="verticalSpacer_9">
              <property name="orientation">
-              <enum>Qt::Vertical</enum>
+              <enum>Qt::Orientation::Vertical</enum>
              </property>
              <property name="sizeHint" stdset="0">
               <size>
@@ -3972,10 +3972,10 @@ Note: The reopen buton in the main window is only visible if this option is sele
       <item row="0" column="7">
        <spacer name="horizontalSpacer_24">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
+         <enum>QSizePolicy::Policy::Fixed</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -3998,10 +3998,10 @@ Note: The reopen buton in the main window is only visible if this option is sele
       <item row="0" column="4">
        <spacer name="horizontalSpacer">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
+         <enum>QSizePolicy::Policy::Fixed</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -4062,7 +4062,7 @@ in the log, the decimal console and the send window)</string>
          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;endianess of the connected device (is used to interpret the decimals&lt;/p&gt;&lt;p&gt;in the log, in the decimal console and in the send window)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
         </property>
         <property name="sizeAdjustPolicy">
-         <enum>QComboBox::AdjustToContents</enum>
+         <enum>QComboBox::SizeAdjustPolicy::AdjustToContents</enum>
         </property>
         <item>
          <property name="text">
@@ -4113,7 +4113,7 @@ in the log, the decimal console and the send window)</string>
          <string>the current interface</string>
         </property>
         <property name="sizeAdjustPolicy">
-         <enum>QComboBox::AdjustToContents</enum>
+         <enum>QComboBox::SizeAdjustPolicy::AdjustToContents</enum>
         </property>
         <item>
          <property name="text">
@@ -4140,7 +4140,7 @@ in the log, the decimal console and the send window)</string>
       <item row="0" column="12">
        <spacer name="horizontalSpacer_8">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -4153,10 +4153,10 @@ in the log, the decimal console and the send window)</string>
       <item row="0" column="9">
        <spacer name="horizontalSpacer_25">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeType">
-         <enum>QSizePolicy::Fixed</enum>
+         <enum>QSizePolicy::Policy::Fixed</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -4232,7 +4232,7 @@ in the log, the decimal console and the send window)</string>
          <number>4</number>
         </property>
         <property name="sizeAdjustPolicy">
-         <enum>QComboBox::AdjustToContents</enum>
+         <enum>QComboBox::SizeAdjustPolicy::AdjustToContents</enum>
         </property>
         <item>
          <property name="text">
