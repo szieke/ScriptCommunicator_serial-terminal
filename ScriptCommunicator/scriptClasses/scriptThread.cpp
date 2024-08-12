@@ -1001,7 +1001,7 @@ void ScriptThread::sleep(quint32 timeMs )
 
     if(remainingTime != 0)
     {
-      msleep(timeMs);
+      msleep(remainingTime);
       QCoreApplication::processEvents();
     }
     /****************************************************************/
