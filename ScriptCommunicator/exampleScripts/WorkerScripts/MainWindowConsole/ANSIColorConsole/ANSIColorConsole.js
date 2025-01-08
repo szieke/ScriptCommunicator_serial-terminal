@@ -183,19 +183,19 @@ function keyPressedSlot(key, ctrlModifier, text)
         data.push(0x5b);
 		
 		if(key == Key_Left)
-		{
+		{//<esc>[D 
 			data.push(0x44);
 		}
 		else if(key== Key_Up)
-        {
+        {//<esc>[A
             data.push(0x41);
         }
         else if(key== Key_Right)
-        {
+        {//<esc>[C
             data.push(0x43);
         }
         else if(key== Key_Down)
-        {
+        {//<esc>[B
             data.push(0x42);
         }
 		else
