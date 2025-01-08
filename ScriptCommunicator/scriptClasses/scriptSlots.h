@@ -1,6 +1,7 @@
 #ifndef SCRIPTSLOTS_H
 #define SCRIPTSLOTS_H
 
+
 #include "scriptThread.h"
 #include "mainwindow.h"
 #include <QSplitter>
@@ -25,6 +26,8 @@
 #include <QRadioButton>
 #include <QIcon>
 #include <QShortcut>
+
+class ScriptEventFilterObject;
 
 ///The ScriptTextEdit operations which are stored for later processing.
 typedef enum
@@ -171,6 +174,8 @@ public slots:
 
    ///This slot function moves the curser to the end of the console.
    void moveTextPositionToEndSlot(QTextEdit* textEdit);
+
+   void createFilterObjectSlot(ScriptEventFilterObject** filterObject);
 
    ///With this slot function a script thread can change the background color
    ///of a script gui element.

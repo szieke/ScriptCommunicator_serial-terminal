@@ -7,6 +7,7 @@
 #include <QBuffer>
 #include<QDomDocument>
 #include "plotwindow.h"
+#include "scriptTextEdit.h"
 
 #include "mainwindow.h"
 #include "scriptwindow.h"
@@ -484,6 +485,12 @@ void ScriptSlots::moveTextPositionToEndSlot(QTextEdit* textEdit)
     textEdit->moveCursor(QTextCursor::End);
     textEdit->horizontalScrollBar()->setSliderPosition(0);
 }
+
+void ScriptSlots::createFilterObjectSlot(ScriptEventFilterObject** filterObject)
+{
+  *filterObject = new ScriptEventFilterObject();
+}
+
 /**
  * Convenience function to get a string from the user.
  * Shows a QInputDialog::getText dialog (line edit).

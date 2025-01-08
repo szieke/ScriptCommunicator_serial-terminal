@@ -31,6 +31,44 @@
 #include "mainwindow.h"
 #include "scriptWidget.h"
 
+///Class for filtering evnets in script widgets.
+class ScriptEventFilterObject : public QObject
+{
+  Q_OBJECT
+
+public:
+
+  ScriptEventFilterObject(void)
+  {
+  }
+  ///Sets the filter object.
+  void setObject(QObject* obj)
+  {
+    obj->installEventFilter(this);
+  }
+
+Q_SIGNALS:
+    ///Is mitted if a key is pressed.
+    void keyPressedSignal(int key, int ctrlModifier, QString text);
+
+protected:
+
+    ///Event filter function.
+    bool eventFilter(QObject *target, QEvent *event)
+    {
+      (void)target;
+
+      bool ignoreEvent = false;
+      if (event->type() == QEvent::KeyPress)
+      {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        keyPressedSignal(keyEvent->key(), keyEvent->modifiers(), keyEvent->text());
+        ignoreEvent = true;
+      }
+      return ignoreEvent;
+    }
+
+};
 
 
 ///This wrapper class is used to access a QTextEdit object (located in a script gui/ui-file) from a script.
@@ -42,9 +80,9 @@ class ScriptTextEdit : public ScriptWidget
     Q_PROPERTY(QString publicScriptElements READ getPublicScriptElements CONSTANT)
 
 public:
-    explicit ScriptTextEdit(QTextEdit* textEdit, ScriptThread *scriptThread, ScriptWindow* scriptWindow ):
+    explicit ScriptTextEdit(QTextEdit* textEdit, ScriptThread *scriptThread, ScriptWindow* scriptWindow):
         ScriptWidget(textEdit, scriptThread, scriptThread->getScriptWindow()), m_textEdit(textEdit), m_maxChars(100000),
-        m_lockScrolling(false), m_storedOperations(), m_bytesInStoredOperations(0), m_storedOperationTimer(), m_updateRate(200)
+        m_lockScrolling(false), m_storedOperations(), m_bytesInStoredOperations(0), m_storedOperationTimer(), m_updateRate(200), m_filterObject()
     {
 
         //connect the necessary signals with the wrapper slots (in this slots the
@@ -67,6 +105,10 @@ public:
 
         connect(this, SIGNAL(processStoredOperationsSignal(QTextEdit*,bool,quint32,QVector<ScriptTextEditStoredOperations_t>*)), scriptThread->getScriptWindow(),
                 SLOT(processStoredOperationsSlot(QTextEdit*,bool,quint32,QVector<ScriptTextEditStoredOperations_t>*)), directConnectionType);
+
+
+        connect(this, SIGNAL(createFilterObjectSignal(ScriptEventFilterObject**)),scriptWindow, SLOT(createFilterObjectSlot(ScriptEventFilterObject**)), directConnectionType);
+
 
     }
 
@@ -150,13 +192,30 @@ public Q_SLOTS:
     ///This slot function sets the text of the text edit.
     void setText(QString text){addStoredOperation(SCRIPT_TEXT_EDIT_OPERATION_SET_TEXT, text, true);}
 
-	///Locks or unlocks the scrolling of the vertical scroll bar.
+    ///Locks or unlocks the scrolling of the vertical scroll bar.
     void lockScrolling(bool lock){m_lockScrolling = lock;}
+
+    ///Adds a key filter for the text edit.
+    ///If this function is called the key events are no longer routed to the text edit. Instead of this
+    ///the event keyPressedSignal is emitted on every key stroke.
+    void addKeyFilter(void)
+    {
+      emit createFilterObjectSignal(&m_filterObject);
+      m_filterObject->setObject(m_textEdit);
+      connect(m_filterObject, SIGNAL(keyPressedSignal(int,int,QString)), this, SLOT(keyPressedSlot(int,int,QString)));
+    }
 
 Q_SIGNALS:
     ///This signal is emitted if the text of the text edit has been changed.
     ///Scripts can connect a function to this signal.
     void textChangedSignal(void);
+
+    ///Is mitted if a key is pressed.
+    ///Scripts can connect a function to this signal.
+    void keyPressedSignal(int key, int ctrlModifier, QString text);
+
+    ///Is emitted in addKeyFilter and is used to create a filter object.
+    void createFilterObjectSignal(ScriptEventFilterObject** filterObject);
 
     ///This signal is emitted if the number of chars in text has to be limited.
     ///If there are more then maxChars characters in the text edit then the first characters will be removed.
@@ -211,6 +270,12 @@ private Q_SLOTS:
         emit processStoredOperationsSignal(m_textEdit, m_lockScrolling, m_maxChars, &m_storedOperations);
         m_bytesInStoredOperations = 0;
         m_storedOperations.clear();
+    }
+
+    ///Is called if a key is pressed while the text edit has the focus.
+    void keyPressedSlot(int key, int ctrlModifier, QString text)
+    {
+      emit keyPressedSignal(key, ctrlModifier, text);
     }
 
 private:
@@ -289,6 +354,8 @@ private:
 
     ///The update rate of the text edit.
     int m_updateRate;
+
+    ScriptEventFilterObject* m_filterObject;
 
 };
 

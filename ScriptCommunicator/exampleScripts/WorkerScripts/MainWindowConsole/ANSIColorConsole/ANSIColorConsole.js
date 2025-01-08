@@ -99,15 +99,6 @@ function addDataToConsole(data, fontColor)
 	UI_TextEdit1.insertHtml(stringToAdd);	
 }
 
-//The main interface has sent data.
-function dataSendSlot(data)
-{
-	if(g_settings.showSendData)
-	{
-		addDataToConsole(data, g_settings.sendColor);
-	}
-}
-
 //The main interface has received data.
 function dataReceivedSlot(data)
 {
@@ -172,10 +163,64 @@ function dataReceivedSlot(data)
 	}
 }
 
+function keyPressedSlot(key, ctrlModifier, text)
+{
+	const ShiftModifier        = 0x02000000;
+    const ControlModifier      = 0x04000000;
+    const AltModifier          = 0x08000000;
+	const Key_Left = 0x01000012;
+	const Key_Up = 0x01000013;
+	const Key_Right = 0x01000014;
+	const Key_Down = 0x01000015;
+	
+	//scriptThread.appendTextToConsole("key:" + key.toString(16) + " ctrl:" + ctrlModifier.toString(16) + " text:" + text);
+	
+	var data = Array();
+	
+	if(text == "")
+	{
+		data.push(0x1b);
+        data.push(0x5b);
+		
+		if(key == Key_Left)
+		{
+			data.push(0x44);
+		}
+		else if(key== Key_Up)
+        {
+            data.push(0x41);
+        }
+        else if(key== Key_Right)
+        {
+            data.push(0x43);
+        }
+        else if(key== Key_Down)
+        {
+            data.push(0x42);
+        }
+		else
+		{
+			data = Array();
+		}
+	}
+	else
+	{
+		data = conv.stringToUtf8Array(text);
+	}
+	
+	//ToDo: Other keys (e.g. tab) and other combination (e.g. ctrl+c)
+	
+	if(data.length != 0)
+	{
+		scriptInf.sendDataArray(data);
+	}
+}
 //The console settings.
 var g_settings = scriptThread.getConsoleSettings();
 
 UI_TextEdit1.setMaxChars(1000000);
+UI_TextEdit1.keyPressedSignal.connect(keyPressedSlot);
+UI_TextEdit1.addKeyFilter();
 
 //The time at which the the last timestamp has been created.
 var g_timeLastTimestamp = Date.now();
@@ -189,7 +234,6 @@ scriptThread.addTabsToMainWindow(UI_TabWidget)
 scriptInf.dataReceivedSignal.connect(dataReceivedSlot);
 scriptThread.mainWindowLockScrollingClickedSignal.connect(mainWindowLockScrollingClicked);
 scriptThread.mainWindowClearConsoleClickedSignal.connect(mainWindowClearConsoleClicked);
-scriptInf.sendDataFromMainInterfaceSignal.connect(dataSendSlot);
 
 var g_saveBackgroundColor = "";
 readConsoleSetting();
