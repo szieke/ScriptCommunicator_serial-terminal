@@ -626,6 +626,25 @@ void ScriptWindow::saveTable(void)
     }
 }
 
+QT_BEGIN_NAMESPACE
+
+///Is needed to call the private function QEvent::setSpontaneous in ScriptWindow::cellDoubleClickedSlot
+///(QSpontaneKeyEvent is a friend class of QEvent).
+class QSpontaneKeyEvent
+{
+public:
+
+    static inline void mouseReleaseEvent(QWidget* widget, Qt::MouseButton button)
+    {
+      QPoint pos = widget->rect().center();
+      QMouseEvent me(QEvent::MouseButtonRelease, pos, widget->mapToGlobal(pos),
+                     button, button, Qt::KeyboardModifiers(), QPointingDevice::primaryPointingDevice());
+      me.setSpontaneous();
+      qApp->notify(widget, &me);
+    }
+};
+
+QT_END_NAMESPACE
 
 /**
  * This slot function is called if the user double clicks a cell in the script table.
@@ -638,6 +657,7 @@ void ScriptWindow::cellDoubleClickedSlot(int row, int column)
 {
     if(column == COLUMN_SCRIPT_PATH)
     {//script file path column
+
         QString tmpFileName = QFileDialog::getOpenFileName(this, tr("Open worker script file"),
                                                            "", tr("scipt files (*.js);;Files (*)"));
         if(!tmpFileName.isEmpty())
@@ -656,6 +676,13 @@ void ScriptWindow::cellDoubleClickedSlot(int row, int column)
             m_userInterface->tableWidget->item(row,column)->setText(tmpFileName);
         }
     }
+
+    //Simulate release events (otherwise QGuiApplication::mouseButtons() will return a pressed button (is caused by QFileDialog::getOpenFileName)).
+     QSpontaneKeyEvent::mouseReleaseEvent(m_userInterface->tableWidget, Qt::LeftButton);
+     QSpontaneKeyEvent::mouseReleaseEvent(m_userInterface->tableWidget, Qt::RightButton);
+     QSpontaneKeyEvent::mouseReleaseEvent(m_userInterface->tableWidget, Qt::MiddleButton);
+
+
 
     itemSelectionChangedSlot();
 }
