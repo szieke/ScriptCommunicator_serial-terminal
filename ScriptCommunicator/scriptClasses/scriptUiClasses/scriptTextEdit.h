@@ -96,6 +96,7 @@ public:
         connect(this, SIGNAL(setPlainTextSignal(QString)),m_textEdit, SLOT(setPlainText(QString)), directConnectionType);
         connect(this, SIGNAL(setTextSignal(QString)), m_textEdit, SLOT(setText(QString)), directConnectionType);
         connect(this, SIGNAL(moveTextPositionToEndSignal(QTextEdit*)),scriptWindow, SLOT(moveTextPositionToEndSlot(QTextEdit*)), directConnectionType);
+        connect(this, SIGNAL(deleteLastCharactersSignal(QTextEdit*,int)),scriptWindow, SLOT(deleteLastCharactersSlot(QTextEdit*,int)), directConnectionType);
         connect(this, SIGNAL(verticalScrollBarSetValueSignal(int)),m_textEdit->verticalScrollBar(), SLOT(setValue(int)), directConnectionType);
         connect(this, SIGNAL(setFontPointSizeSignal(qreal)),m_textEdit, SLOT(setFontPointSize(qreal)), directConnectionType);
         connect(this, SIGNAL(setFontFamilySignal(QString)),m_textEdit, SLOT(setFontFamily(QString)), directConnectionType);
@@ -166,6 +167,9 @@ public:
         return m_textEdit->blockSignals(block);
     }
 
+    ///This function moves the curser to the end of the console and removes the last character.
+    Q_INVOKABLE void deleteLastCharacters(int count){emit deleteLastCharactersSignal(m_textEdit, count);}
+
 public Q_SLOTS:
 
     ///This slot function sets font size.
@@ -233,6 +237,10 @@ Q_SIGNALS:
     ///This signal is emitted if the moveTextPositionToEnd function is called.
     ///This signal is private and must not be used inside a script.
     void moveTextPositionToEndSignal(QTextEdit* textEdit);
+
+    ///This signal is emitted if the deleteLastCharacter function is called.
+    ///This signal is private and must not be used inside a script.
+    void deleteLastCharactersSignal(QTextEdit* textEdit, int count);
 
     ///This signal is emitted if the verticalScrollBarSetValue function is called.
     ///This signal is private and must not be used inside a script.

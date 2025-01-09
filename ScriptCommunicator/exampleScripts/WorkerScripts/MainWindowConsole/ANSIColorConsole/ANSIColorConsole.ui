@@ -395,6 +395,9 @@
          <pointsize>8</pointsize>
         </font>
        </property>
+       <property name="undoRedoEnabled">
+        <bool>false</bool>
+       </property>
        <property name="readOnly">
         <bool>false</bool>
        </property>

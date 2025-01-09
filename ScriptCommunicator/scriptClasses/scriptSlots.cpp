@@ -486,6 +486,27 @@ void ScriptSlots::moveTextPositionToEndSlot(QTextEdit* textEdit)
     textEdit->horizontalScrollBar()->setSliderPosition(0);
 }
 
+/**
+ * This slot function moves the curser to the end of the console and removes the last characters.
+ * @param textEdit
+ *      The console.
+ * @param count
+ *      The number of characters to delete.
+ */
+void ScriptSlots::deleteLastCharactersSlot(QTextEdit* textEdit, int count)
+{
+    moveTextPositionToEndSlot(textEdit);
+    for(int i = 0; i < count; i++)
+    {
+        textEdit->textCursor().deletePreviousChar();
+    }
+}
+
+/**
+ * Creates a filter object.
+ * @param textEdit[out]
+ *      The created filter object.
+ */
 void ScriptSlots::createFilterObjectSlot(ScriptEventFilterObject** filterObject)
 {
   *filterObject = new ScriptEventFilterObject();

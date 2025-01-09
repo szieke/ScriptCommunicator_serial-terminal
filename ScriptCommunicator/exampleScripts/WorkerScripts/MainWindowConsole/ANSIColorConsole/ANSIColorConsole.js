@@ -3,19 +3,17 @@ This worker script (worker scripts can be added in the script window) shows
 all recieved data (main interface) in a ANSI console.
 ****************************************************************************************/
 
-// Color regexes:
-const RGX_Color_Default = (/\u001b\[0m/);
-const RGX_Color_BLACK 	= (/\u001b\[30m/);
-const RGX_Color_RED 	= (/\u001b\[31m/);
-const RGX_Color_GREEN 	= (/\u001b\[32m/);
-const RGX_Color_YELLOW 	= (/\u001b\[33m/);
-const RGX_Color_BLUE 	= (/\u001b\[34m/);
-const RGX_Color_PURPLE 	= (/\u001b\[35m/);
-const RGX_Color_CYAN 	= (/\u001b\[36m/);
-const RGX_Color_WHITE 	= (/\u001b\[37m/);
-
-var g_textColor = "000000";
-var g_tmpBuf = "";
+// Textcolor regexes:
+const RGX_Color_Default = (/\u001b\[([0-9]{1,4};)*0m/);
+const RGX_Color_BLACK 	= (/\u001b\[([0-9]{1,4};)*30m/);
+const RGX_Color_RED 	= (/\u001b\[([0-9]{1,4};)*31m/);
+const RGX_Color_GREEN 	= (/\u001b\[([0-9]{1,4};)*32m/);
+const RGX_Color_YELLOW 	= (/\u001b\[([0-9]{1,4};)*33m/);
+const RGX_Color_BLUE 	= (/\u001b\[([0-9]{1,4};)*34m/);
+const RGX_Color_PURPLE 	= (/\u001b\[([0-9]{1,4};)*35m/);
+const RGX_Color_CYAN 	= (/\u001b\[([0-9]{1,4};)*36m/);
+const RGX_Color_WHITE 	= (/\u001b\[([0-9]{1,4};)*37m/);
+const RGX_Color_GREY 	= (/\u001b\[([0-9]{1,4};)*39m/);
 
 
 //The Lock button in the main window has been pressed.
@@ -27,142 +25,157 @@ function mainWindowLockScrollingClicked(isChecked)
 //The Clear button in the main window has been pressed.
 function mainWindowClearConsoleClicked()
 {
+	UI_TextEdit1.blockSignals(true);
 	UI_TextEdit1.clear();
+	g_currentConsoleConent = "";
+	UI_TextEdit1.blockSignals(false);
 }
 
-//Reads the global console settings (settings dialog) and adjusts the utf8 console to it.
-function readConsoleSetting()
-{
-	//get the console settings
-	g_settings = scriptThread.getConsoleSettings();
-
-	if(g_saveBackgroundColor != g_settings.backgroundColor)
-	{
-		g_saveBackgroundColor = g_settings.backgroundColor;
-		
-		UI_TextEdit1.setPaletteColorRgb(parseInt(g_settings.backgroundColor.slice(0,2), 16), 
-		parseInt(g_settings.backgroundColor.slice(2,4), 16), parseInt(g_settings.backgroundColor.slice(4), 16), "Base");
-	}
-}
 
 function addDataToConsole(data, fontColor)
 {
-	var stringToAdd = "<span style=\"font-family:'"+ g_settings.font;
-	stringToAdd += "';font-size:" + g_settings.fontSize + "pt;color:#" + fontColor + "\">";
+	var stringToAdd = "<span style=\"font-family:'"+ g_font;
+	stringToAdd += "';font-size:" + g_fontSize + "pt;color:#" + fontColor + "\">";
 	
-	if(g_settings.generateCyclicTimeStamps)
+	if(g_generateCyclicTimeStamps)
 	{
-		if((Date.now() - g_timeLastTimestamp) >= g_settings.timeStampInterval)
+		if((Date.now() - g_timeLastTimestamp) >= g_timeStampInterval)
 		{
 			g_timeLastTimestamp = Date.now();
 			stringToAdd += UI_TextEdit1.replaceNonHtmlChars(scriptThread.getTimestamp(), true);
 		}
 	}
-	
-	var newLineAtByte = String.fromCharCode(g_settings.newLineAtByte);
+
 	
 	//Replace all HTML characters (all but '\n').
 	stringToAdd += UI_TextEdit1.replaceNonHtmlChars(conv.byteArrayToUtf8String(data), false);
 	
-	if(g_settings.createNewLineAtByte)
-	{
-		//Replace the new line bytes.
-		stringToAdd = stringToAdd.replace(RegExp(newLineAtByte, 'g'), "<br>" + newLineAtByte)
-	}
+	//Replace the new line bytes.
+	stringToAdd = stringToAdd.replace(RegExp(g_newLineAtByte, 'g'), "<br>" + g_newLineAtByte)
 	
-	if(g_settings.ceateTimestampAtByte)
-	{
-		var timeAtByte = String.fromCharCode(g_settings.timestampAtByte);
-		var list = stringToAdd.split(timeAtByte);
-		stringToAdd = "";
-		for(var i = 0; i < list.length; i++)
-		{
-			stringToAdd += list[i] ;
-			
-			if(i < (list.length - 1))
-			{
-				stringToAdd += UI_TextEdit1.replaceNonHtmlChars(scriptThread.getTimestamp(), true);
-			}
-		}	
-	}
 	
 	// Apply ANSI Esc Filter. This matches most of the ANSI escape codes, beyond just colors, 
 	// 	including the extended VT100 codes, archaic/proprietary printer codes, etc.
 	// Regex source: https://stackoverflow.com/questions/25245716/remove-all-ansi-colors-styles-from-strings
 	stringToAdd = stringToAdd.replace(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, "");		
 	
-	if(g_settings.createNewLineAtByte)
-	{
-		stringToAdd = stringToAdd.replace(RegExp(newLineAtByte, 'g'), "")
-	}
+	stringToAdd = stringToAdd.replace(RegExp(g_newLineAtByte, 'g'), "")
 
+	UI_TextEdit1.blockSignals(true);
 	UI_TextEdit1.insertHtml(stringToAdd);	
+	g_currentConsoleConent = UI_TextEdit1.toPlainText();
+	UI_TextEdit1.blockSignals(false);
 }
 
 //The main interface has received data.
 function dataReceivedSlot(data)
 {
-	if(g_settings.showReceivedData)
-	{
-		// First, convert array to string so we can work with them:
-		var stringData = conv.byteArrayToString(data);
+	if(data[0] == 0x7)
+	{//Terminal bell.
+		return
+	}
+	else if((data[0] == 0x8) && (data[1] == 0x20) && (data[2] == 0x8)) 
+	{//Backspace key pressed.
 		
-		// If there are some leftover data from previous run, add them:
-		if(g_tmpBuf != "") stringData = g_tmpBuf + stringData;
-		g_tmpBuf = ""; 	// Clear the buffer after that, not needed anymore
+		//Remove the last character.
+		UI_TextEdit1.blockSignals(true);
+		UI_TextEdit1.deleteLastCharacters(1);
+		g_currentConsoleConent = UI_TextEdit1.toPlainText();
+		UI_TextEdit1.blockSignals(false);
+		return;
+	}
+	else if(data[0] == 0x8) 
+	{//Backspace.
+		var i = 0
 		
-		// Split string to array of strings separated by ECS character (033, u001B) 
-		// split() deletes the split character, so it has to be added back later.
-		var stringArray = stringData.split(/\u001b/g);		
-		//var idx = stringData.search(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, "");
+		UI_TextEdit1.blockSignals(true);
 		
-		// Print first element of array (data before first escape char), using stored color from previous run:
-		addDataToConsole(conv.stringToArray(stringArray[0]), g_textColor);
-
-		// Process following elements:
-		for(var i=1; i<stringArray.length; i++) 
+		for(; i < data.length; i++)
 		{
-			// Put the ESC character back (if split was done by ESC):
-			stringArray[i] = "\u001b" + stringArray[i];
-			
-			var len = stringArray[i].length;
-			// Check length of last element and if not correct, save it for later and skip.		
-			// If last element: 
-			if (i == (stringArray.length - 1)) 
+			if(data[i] == 0x8)
 			{
-				// ESC+[0m -> 4chars (color reset to default); ESC+[0;3xm -> 7 chars (basic color set)	
-				
-				// If (shorter than 4 chars) OR (longer than 4 but shorter than 7) OR (equals 4 but not ESC+[0m):
-				if ( (len < 4) || ((len > 4) && (len < 7)) || ((len == 4) && (stringArray[i] != "\u001b[0m")) ) 
-				{
-					// But also skip for ESC+[0m with newline character/s:
-					if( (stringArray[i] != "\u001b[0m\n") || (stringArray[i] != "\u001b[0m\r\n") ) 
-					{		   
-						g_tmpBuf = stringArray[i];	// Store current string for next run:
-						break;	// Break from for-loop now
-					}
-				}	
+				//Remove the last character.
+				UI_TextEdit1.deleteLastCharacters(1);
 			}
-
-			// Now we can search for possible color setting ANSI sequence.
-			// Not the best, but does the job (basic colors only):	
-			if (RGX_Color_Default.test(stringArray[i])) 	g_textColor = "000000";
-			else if (RGX_Color_BLACK.test(stringArray[i])) 	g_textColor = "000000";
-			else if (RGX_Color_RED.test(stringArray[i])) 	g_textColor = "AA0000";
-			else if (RGX_Color_GREEN.test(stringArray[i])) 	g_textColor = "00AA00";
-			else if (RGX_Color_YELLOW.test(stringArray[i])) g_textColor = "AAAA00";
-			else if (RGX_Color_BLUE.test(stringArray[i])) 	g_textColor = "0000AA";
-			else if (RGX_Color_PURPLE.test(stringArray[i])) g_textColor = "AA00AA";
-			else if (RGX_Color_CYAN.test(stringArray[i])) 	g_textColor = "00AAAA";
-			else if (RGX_Color_WHITE.test(stringArray[i])) 	g_textColor = "AAAAAA";
-			else g_textColor = "000000"
-			
-			// Convert and print processed string data back to array so main console can show it:
-			addDataToConsole(conv.stringToArray(stringArray[i]), g_textColor);				
+			else
+			{
+				break;
+			}
 		}
+		
+		g_currentConsoleConent = UI_TextEdit1.toPlainText();
+		UI_TextEdit1.blockSignals(false);
+		
+		data = data.slice(i, data.length);
+
+	}
+	
+	if(data.length == 0)
+	{
+		return
+	}
+	
+
+	// First, convert array to string so we can work with them:
+	var stringData = conv.byteArrayToString(data);
+	
+	// If there are some leftover data from previous run, add them:
+	if(g_storedRxData != "") stringData = g_storedRxData + stringData;
+	g_storedRxData = ""; 	// Clear the buffer after that, not needed anymore
+	
+	// Split string to array of strings separated by ECS character (033, u001B) 
+	// split() deletes the split character, so it has to be added back later.
+	var stringArray = stringData.split(/\u001b/g);		
+	//var idx = stringData.search(/[\u001b\u009b][[()#;?]*(?:[0-9]{1,4}(?:;[0-9]{0,4})*)?[0-9A-ORZcf-nqry=><]/g, "");
+	
+	// Print first element of array (data before first escape char), using stored color from previous run:
+	addDataToConsole(conv.stringToArray(stringArray[0]), g_textColor);
+
+	// Process following elements:
+	for(var i=1; i<stringArray.length; i++) 
+	{
+		// Put the ESC character back (if split was done by ESC):
+		stringArray[i] = "\u001b" + stringArray[i];
+		
+		var len = stringArray[i].length;
+		// Check length of last element and if not correct, save it for later and skip.		
+		// If last element: 
+		if (i == (stringArray.length - 1)) 
+		{
+			// ESC+[0m -> 4chars (color reset to default); ESC+[0;3xm -> 7 chars (basic color set)	
+			
+			// If (shorter than 4 chars) OR (longer than 4 but shorter than 7) OR (equals 4 but not ESC+[0m):
+			if ( (len < 4) || ((len > 4) && (len < 7)) || ((len == 4) && (stringArray[i] != "\u001b[0m")) ) 
+			{
+				// But also skip for ESC+[0m with newline character/s:
+				if( (stringArray[i] != "\u001b[0m\n") || (stringArray[i] != "\u001b[0m\r\n") ) 
+				{		   
+					g_storedRxData = stringArray[i];	// Store current string for next run:
+					break;	// Break from for-loop now
+				}
+			}	
+		}
+
+		// Now we can search for possible color setting ANSI sequence.
+		// Not the best, but does the job (basic colors only):	
+		if (RGX_Color_Default.test(stringArray[i])) 	g_textColor = "EEEEEE";
+		else if (RGX_Color_BLACK.test(stringArray[i])) 	g_textColor = "000000";
+		else if (RGX_Color_RED.test(stringArray[i])) 	g_textColor = "AA0000";
+		else if (RGX_Color_GREEN.test(stringArray[i])) 	g_textColor = "00AA00";
+		else if (RGX_Color_YELLOW.test(stringArray[i])) g_textColor = "AAAA00";
+		else if (RGX_Color_BLUE.test(stringArray[i])) 	g_textColor = "0000AA";
+		else if (RGX_Color_PURPLE.test(stringArray[i])) g_textColor = "AA00AA";
+		else if (RGX_Color_CYAN.test(stringArray[i])) 	g_textColor = "00AAAA";
+		else if (RGX_Color_WHITE.test(stringArray[i])) 	g_textColor = "EEEEEE";
+		else if (RGX_Color_GREY.test(stringArray[i])) 	g_textColor = "A9A9A9";
+		else g_textColor = "EEEEEE"
+		
+		// Convert and print processed string data back to array so main console can show it:
+		addDataToConsole(conv.stringToArray(stringArray[i]), g_textColor);				
 	}
 }
 
+//Key was pressed while the console had the focus.
 function keyPressedSlot(key, ctrlModifier, text)
 {
 	const ShiftModifier        = 0x02000000;
@@ -173,8 +186,6 @@ function keyPressedSlot(key, ctrlModifier, text)
 	const Key_Right = 0x01000014;
 	const Key_Down = 0x01000015;
 	
-	//scriptThread.appendTextToConsole("key:" + key.toString(16) + " ctrl:" + ctrlModifier.toString(16) + " text:" + text);
-	
 	var data = Array();
 	
 	if(text == "")
@@ -183,19 +194,19 @@ function keyPressedSlot(key, ctrlModifier, text)
         data.push(0x5b);
 		
 		if(key == Key_Left)
-		{//<esc>[D 
+		{//\u001b[D 
 			data.push(0x44);
 		}
 		else if(key== Key_Up)
-        {//<esc>[A
+        {//\u001b[A
             data.push(0x41);
         }
         else if(key== Key_Right)
-        {//<esc>[C
+        {//\u001b[C
             data.push(0x43);
         }
         else if(key== Key_Down)
-        {//<esc>[B
+        {//\u001b[B
             data.push(0x42);
         }
 		else
@@ -208,22 +219,30 @@ function keyPressedSlot(key, ctrlModifier, text)
 		data = conv.stringToUtf8Array(text);
 	}
 	
-	//ToDo: Other keys (e.g. tab) and other combination (e.g. ctrl+c)
 	
+	UI_TextEdit1.moveTextPositionToEnd();
 	if(data.length != 0)
 	{
 		scriptInf.sendDataArray(data);
 	}
 }
-//The console settings.
-var g_settings = scriptThread.getConsoleSettings();
 
-UI_TextEdit1.setMaxChars(1000000);
-UI_TextEdit1.keyPressedSignal.connect(keyPressedSlot);
-UI_TextEdit1.addKeyFilter();
-
-//The time at which the the last timestamp has been created.
-var g_timeLastTimestamp = Date.now();
+//The text of the console has been changed (only possible with 'paste' via the console context menu). 
+function consoleTextChangedSlot()
+{
+	var currentText = UI_TextEdit1.toPlainText();
+	var charCount = currentText.length - g_currentConsoleConent.length;
+	var stringToSend = currentText.slice(currentText.length - charCount, currentText.length);
+	
+	//Remove the pasted characters.
+	UI_TextEdit1.blockSignals(true);
+	UI_TextEdit1.deleteLastCharacters(charCount);
+	UI_TextEdit1.blockSignals(false);
+	
+	//Send the pasted characters.
+	scriptInf.sendString(stringToSend);
+	
+}
 
 //Hide the dialog (the tab will be removed from the dialog therefore the dialog is not needed).
 UI_Dialog.hide();
@@ -231,14 +250,45 @@ UI_Dialog.hide();
 //Remove the tab from the dialog and add it to the main window.
 scriptThread.addTabsToMainWindow(UI_TabWidget)
 
+//Setup the console.
+UI_TextEdit1.setMaxChars(50000);
+UI_TextEdit1.keyPressedSignal.connect(keyPressedSlot);
+UI_TextEdit1.textChangedSignal.connect(consoleTextChangedSlot);
+UI_TextEdit1.addKeyFilter();
+UI_TextEdit1.setUpdateRate(200);
+var g_currentConsoleConent = "";
+
 scriptInf.dataReceivedSignal.connect(dataReceivedSlot);
 scriptThread.mainWindowLockScrollingClickedSignal.connect(mainWindowLockScrollingClicked);
 scriptThread.mainWindowClearConsoleClickedSignal.connect(mainWindowClearConsoleClicked);
 
-var g_saveBackgroundColor = "";
-readConsoleSetting();
+//The time at which the the last timestamp has been created.
+var g_timeLastTimestamp = Date.now();
 
-var settingsTimer = scriptThread.createTimer();
-settingsTimer.timeoutSignal.connect(readConsoleSetting);
-settingsTimer.start(2000);
+//The time stamp interval.
+var g_timeStampInterval = 1000;
+
+//True if a cyclic timestamp shall be generated.
+var g_generateCyclicTimeStamps = false;
+
+//The console text color.
+var g_textColor = "EEEEEE";
+
+//The stored recieved data.
+var g_storedRxData = "";
+
+//A new line is created in the console when this byte is received.
+var g_newLineAtByte = "\n";
+
+//The console font.
+var g_font = "Courier New";
+
+//The console font size.
+var g_fontSize = 12;
+
+
+
+
+
+
 

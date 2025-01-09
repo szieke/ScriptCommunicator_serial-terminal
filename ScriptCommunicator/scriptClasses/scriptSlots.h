@@ -175,6 +175,10 @@ public slots:
    ///This slot function moves the curser to the end of the console.
    void moveTextPositionToEndSlot(QTextEdit* textEdit);
 
+   ///This slot function moves the curser to the end of the console and removes the last characters.
+   void deleteLastCharactersSlot(QTextEdit* textEdit, int count);
+
+   ///Creates a filter object.
    void createFilterObjectSlot(ScriptEventFilterObject** filterObject);
 
    ///With this slot function a script thread can change the background color
