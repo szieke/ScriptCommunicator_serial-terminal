@@ -167,7 +167,7 @@ public:
         return m_textEdit->blockSignals(block);
     }
 
-    ///This function moves the curser to the end of the console and removes the last character.
+    ///This function moves the curser to the end of the text edit and removes the last characters.
     Q_INVOKABLE void deleteLastCharacters(int count){emit deleteLastCharactersSignal(m_textEdit, count);}
 
 public Q_SLOTS:
@@ -214,7 +214,7 @@ Q_SIGNALS:
     ///Scripts can connect a function to this signal.
     void textChangedSignal(void);
 
-    ///Is mitted if a key is pressed.
+    ///Is emitted if addKeyFilter was called, a key is pressed and the text edit has the focus.
     ///Scripts can connect a function to this signal.
     void keyPressedSignal(int key, int ctrlModifier, QString text);
 
