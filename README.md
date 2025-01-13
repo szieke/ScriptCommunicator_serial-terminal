@@ -40,7 +40,7 @@ This script interface has the following features:
 [https://sourceforge.net/projects/scriptcommunicator/](https://sourceforge.net/projects/scriptcommunicator/)
 
 # Downloads (release 06.09)
-- [Windows](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicator_06_09_windows.7z/download)
-- [Linux 64 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_64Bit/ScriptCommunicator_06_09_linux_64_bit.tar.xz/download)
+- [Windows](http://sourceforge.net/projects/scriptcommunicator/files/Windows/ScriptCommunicator_06_10_windows.7z/download)
+- [Linux 64 bit](http://sourceforge.net/projects/scriptcommunicator/files/Linux_64Bit/ScriptCommunicator_06_10_linux_64_bit.tar.xz/download)
 - [MacOS](http://sourceforge.net/projects/scriptcommunicator/files/MacOS/ScriptCommunicator_06_03_macos.zip/download)
-- [Source](http://sourceforge.net/projects/scriptcommunicator/files/Source/ScriptCommunicator_06_09_source.7z/download)
+- [Source](http://sourceforge.net/projects/scriptcommunicator/files/Source/ScriptCommunicator_06_10_source.7z/download)
