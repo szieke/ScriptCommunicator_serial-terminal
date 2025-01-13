@@ -24,5 +24,7 @@ ScriptDoubleSpinBox::setSingleStep(Number value):void \nIf the user uses the arr
 ScriptDoubleSpinBox::singleStep(void):Number \nReturns the single step value.
 ScriptDoubleSpinBox::setDecimals(Number value):void \nSets the precision of the spin box, in decimals.
 ScriptDoubleSpinBox::decimals(void):Number \nReturns the precision of the spin box, in decimals.
+ScriptDoubleSpinBox::setReadOnly(bool):void \nSets the read only property of the spin box.
+ScriptDoubleSpinBox::readOnly(void):bool \nReturns true if the spin box is read-only.
 ScriptDoubleSpinBox::setAutoFillBackground(bool enabled):void \nThis property holds whether the widget background is filled automatically.\nIf enabled, this property will cause Qt to fill the background of the widget before invoking the paint event.\nNote:\nSome GUI elements (like the RadioButton) need this property set to true if the background color shall be changed with setBackgroundColor.
 ScriptDoubleSpinBox::valueChangedSignal.connect(Number) \nThis signal is emitted if the value of the spin box has been changed.

@@ -294,6 +294,12 @@ public slots:
    ///Setting a single step value of less than 0 does nothing.
    void setSingleStepSlot(double value, QDoubleSpinBox* spinBox){spinBox->setSingleStep(value);}
 
+   ///Sets the read only propertry of the spin box.
+   void setReadOnlySlot(bool readOnly,QSpinBox*spinBox){spinBox->setReadOnly(readOnly);}
+
+   ///Sets the read only propertry of the spin box.
+   void setReadOnlySlot(bool readOnly,QDoubleSpinBox*spinBox){spinBox->setReadOnly(readOnly);}
+
    ///If the user uses the arrows to change the spin box's value the value will be
    ///incremented/decremented by the amount of the single step. The default value is 1.
    ///Setting a single step value of less than 0 does nothing.

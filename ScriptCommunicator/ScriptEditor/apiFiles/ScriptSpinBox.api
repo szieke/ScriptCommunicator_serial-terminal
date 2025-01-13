@@ -22,5 +22,7 @@ ScriptSpinBox::setValue(Number value):void \nSets the spin box's current value.
 ScriptSpinBox::value(void):Number \nReturns the spin box's current value.
 ScriptSpinBox::setSingleStep(Number value):void \nIf the user uses the arrows to change the spin box's value the value will be\nincremented/decremented by the amount of the single step. The default value is 1.\nSetting a single step value of less than 0 does nothing.
 ScriptSpinBox::singleStep(void):Number \nReturns the single step value.
+ScriptSpinBox::setReadOnly(bool):void \nSets the read only property of the spin box.
+ScriptSpinBox::readOnly(void):bool \nReturns true if the spin box is read-only.
 ScriptSpinBox::setAutoFillBackground(bool enabled):void \nThis property holds whether the widget background is filled automatically.\nIf enabled, this property will cause Qt to fill the background of the widget before invoking the paint event.\nNote:\nSome GUI elements (like the RadioButton) need this property set to true if the background color shall be changed with setBackgroundColor.
 ScriptSpinBox::valueChangedSignal.connect(Number currentValue) \nThis signal is emitted if the value of the spin box has been changed.

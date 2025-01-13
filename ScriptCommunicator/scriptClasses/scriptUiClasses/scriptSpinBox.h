@@ -55,6 +55,9 @@ public:
                 SLOT(setSingleStepSlot(int,QSpinBox*)), directConnectionType);
 
         connect(m_spinBox, SIGNAL(valueChanged(int)),this, SIGNAL(valueChangedSignal(int)));
+
+        connect(this, SIGNAL(setReadOnlySignal(bool,QSpinBox*)),scriptThread->getScriptWindow(),
+                SLOT(setReadOnlySlot(bool,QSpinBox*)), directConnectionType);
     }
 
     ///Returns a semicolon separated list with all public functions, signals and properties.
@@ -80,7 +83,11 @@ public:
     ///Returns the single step value.
     Q_INVOKABLE int singleStep(void){return m_spinBox->singleStep();}
 
+    ///Sets the read only property of the spin box.
+    Q_INVOKABLE void setReadOnly(bool readOnly){emit setReadOnlySignal(readOnly, m_spinBox);};
 
+    ///Returns true if the spin box is read-only.
+    Q_INVOKABLE bool readOnly(void){return m_spinBox->isReadOnly();}
 
 Q_SIGNALS:
 
@@ -98,6 +105,10 @@ Q_SIGNALS:
     ///Is emitted by the setSingleStep function.
     ///This signal is private and must not be used inside a script.
     void setSingleStepSignal(int value, QSpinBox* spinBox);
+
+    ///Is emitted by the setReadOnly function.
+    ///This signal is private and must not be used inside a script.
+    void setReadOnlySignal(bool readOnly, QSpinBox* spinBox);
 
 private:
     ///The wrapped progress bar.

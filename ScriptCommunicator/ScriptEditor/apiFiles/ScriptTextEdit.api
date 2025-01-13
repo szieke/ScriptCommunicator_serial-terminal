@@ -37,5 +37,6 @@ ScriptTextEdit::setUpdateRate(Number updateRate):void \nSets the update rate of 
 ScriptTextEdit::setAutoFillBackground(bool enabled):void \nThis property holds whether the widget background is filled automatically.\nIf enabled, this property will cause Qt to fill the background of the widget before invoking the paint event.\nNote:\nSome GUI elements (like the RadioButton) need this property set to true if the background color shall be changed with setBackgroundColor.
 ScriptTextEdit::addKeyFilter(void) \nAdds a key filter for the text edit.\nIf this function is called the key events are no longer routed to the text edit.\nInstead of this the event keyPressedSignal is emitted on every key stroke.
 ScriptTextEdit::deleteLastCharacters(Number count)\nThis function moves the curser to the end of the text edit and removes the last characters.
+ScriptTextEdit::deleteLastLine(void) \nDeletes the last line.
 ScriptTextEdit::textChangedSignal.connect(void) \nThis signal is emitted if the text of the text edit has been changed.
 ScriptTextEdit::keyPressedSignal(Number key, Number ctrlModifier, String text) \nIs emitted if addKeyFilter was called, a key is pressed and the text edit has the focus.\nThe type of key is Qt::Key (enumeration in qnamespace.h).\nThe type of ctrlModifier is Qt::KeyboardModifiers (enumeration in qnamespace.h).
