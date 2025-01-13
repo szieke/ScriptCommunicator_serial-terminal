@@ -93,6 +93,8 @@ public:
         connect(m_textEdit, SIGNAL(textChanged()), this, SIGNAL(textChangedSignal()));
         connect(this, SIGNAL(limtCharsInTextEditSignal(QTextEdit*,int)),
                 scriptWindow, SLOT(limtCharsInTextEditSlot(QTextEdit*,int)), directConnectionType);
+        connect(this, SIGNAL(deleteLastLineSignal(QTextEdit*)),
+                scriptWindow, SLOT(deleteLastLineSlot(QTextEdit*)), directConnectionType);
         connect(this, SIGNAL(setPlainTextSignal(QString)),m_textEdit, SLOT(setPlainText(QString)), directConnectionType);
         connect(this, SIGNAL(setTextSignal(QString)), m_textEdit, SLOT(setText(QString)), directConnectionType);
         connect(this, SIGNAL(moveTextPositionToEndSignal(QTextEdit*)),scriptWindow, SLOT(moveTextPositionToEndSlot(QTextEdit*)), directConnectionType);
@@ -209,7 +211,11 @@ public Q_SLOTS:
       connect(m_filterObject, SIGNAL(keyPressedSignal(int,int,QString)), this, SLOT(keyPressedSlot(int,int,QString)));
     }
 
+    ///Deletes the last line.
+    void deleteLastLine(void){emit deleteLastLineSignal(m_textEdit);}
+
 Q_SIGNALS:
+
     ///This signal is emitted if the text of the text edit has been changed.
     ///Scripts can connect a function to this signal.
     void textChangedSignal(void);
@@ -225,6 +231,10 @@ Q_SIGNALS:
     ///If there are more then maxChars characters in the text edit then the first characters will be removed.
     ///This signal is private and must not be used inside a script.
     void limtCharsInTextEditSignal(QTextEdit* textEdit, const int maxChars);
+
+    ///This signal is emitted if the deleteLastLine function is called.
+    ///This signal is private and must not be used inside a script.
+    void deleteLastLineSignal(QTextEdit* textEdit);
 
     ///This signal is emitted if the setPlainText function is called.
     ///This signal is private and must not be used inside a script.

@@ -476,9 +476,24 @@ void ScriptSlots::limtCharsInTextEditSlot (QTextEdit *textEdit, const int maxCha
 }
 
 /**
+ * Deletes the last line.
+ * @param textEdit
+ *      The text edit.
+ */
+void ScriptSlots::deleteLastLineSlot(QTextEdit *textEdit)
+{
+    textEdit->setFocus();
+    QTextCursor storeCursorPos = textEdit->textCursor();
+    textEdit->moveCursor(QTextCursor::End, QTextCursor::MoveAnchor);
+    textEdit->moveCursor(QTextCursor::StartOfLine, QTextCursor::MoveAnchor);
+    textEdit->moveCursor(QTextCursor::End, QTextCursor::KeepAnchor);
+    textEdit->textCursor().removeSelectedText();
+}
+
+/**
  * This slot function moves the curser to the end of a console.
  * @param textEdit
- *      The console.
+ *      The text edit.
  */
 void ScriptSlots::moveTextPositionToEndSlot(QTextEdit* textEdit)
 {

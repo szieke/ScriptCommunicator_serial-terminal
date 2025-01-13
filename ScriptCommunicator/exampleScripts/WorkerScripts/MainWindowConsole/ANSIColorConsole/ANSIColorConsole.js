@@ -51,7 +51,7 @@ function addDataToConsole(data, fontColor)
 	stringToAdd += UI_TextEdit1.replaceNonHtmlChars(conv.byteArrayToUtf8String(data), false);
 	
 	//Replace the new line bytes.
-	stringToAdd = stringToAdd.replace(RegExp(g_newLineAtByte, 'g'), "<br>" + g_newLineAtByte)
+	stringToAdd = stringToAdd.replace(RegExp(g_newLineAtByte, 'g'), "<br>")
 	
 	
 	// Apply ANSI Esc Filter. This matches most of the ANSI escape codes, beyond just colors, 
@@ -67,9 +67,31 @@ function addDataToConsole(data, fontColor)
 	UI_TextEdit1.blockSignals(false);
 }
 
+
 //The main interface has received data.
 function dataReceivedSlot(data)
 {
+	var pos;
+	
+	if(g_deleteLastLine)
+	{
+		
+		UI_TextEdit1.deleteLastLine()
+		g_deleteLastLine = false;
+		
+	}
+	
+	pos = data.indexOf(13);
+	if(pos!= -1)
+	{//Carriage return found.
+		
+		if(data[pos +1] != 10)
+		{//No new line after the carriage return.
+			g_deleteLastLine = true;
+		}
+	}
+	
+	//scriptThread.appendTextToConsole(data)
 	if(data[0] == 0x7)
 	{//Terminal bell.
 		return
@@ -255,12 +277,15 @@ UI_TextEdit1.setMaxChars(50000);
 UI_TextEdit1.keyPressedSignal.connect(keyPressedSlot);
 UI_TextEdit1.textChangedSignal.connect(consoleTextChangedSlot);
 UI_TextEdit1.addKeyFilter();
-UI_TextEdit1.setUpdateRate(200);
+UI_TextEdit1.setUpdateRate(10);
 var g_currentConsoleConent = "";
 
 scriptInf.dataReceivedSignal.connect(dataReceivedSlot);
 scriptThread.mainWindowLockScrollingClickedSignal.connect(mainWindowLockScrollingClicked);
 scriptThread.mainWindowClearConsoleClickedSignal.connect(mainWindowClearConsoleClicked);
+
+//True if the last line shall be deleted.
+var g_deleteLastLine = false;
 
 //The time at which the the last timestamp has been created.
 var g_timeLastTimestamp = Date.now();

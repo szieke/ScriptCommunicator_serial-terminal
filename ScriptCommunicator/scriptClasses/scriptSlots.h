@@ -172,6 +172,9 @@ public slots:
    ///Limits the number of chars in the given text edit to the value of maxChars.
    void limtCharsInTextEditSlot (QTextEdit *textEdit, const int maxChars);
 
+   ///Deletes the last line.
+   void deleteLastLineSlot(QTextEdit *textEdit);
+
    ///This slot function moves the curser to the end of the console.
    void moveTextPositionToEndSlot(QTextEdit* textEdit);
 
