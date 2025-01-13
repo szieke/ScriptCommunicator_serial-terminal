@@ -277,7 +277,7 @@ UI_TextEdit1.setMaxChars(50000);
 UI_TextEdit1.keyPressedSignal.connect(keyPressedSlot);
 UI_TextEdit1.textChangedSignal.connect(consoleTextChangedSlot);
 UI_TextEdit1.addKeyFilter();
-UI_TextEdit1.setUpdateRate(10);
+UI_TextEdit1.setUpdateRate(200);
 var g_currentConsoleConent = "";
 
 scriptInf.dataReceivedSignal.connect(dataReceivedSlot);
