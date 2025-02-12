@@ -54,3 +54,4 @@ ScriptCommunicator/exampleScripts/WorkerScripts/Sniffer/snif_convertUiSettings.t
 ScriptCommunicator/.DS_Store
 
 .DS_Store
+ScriptCommunicator/exampleScripts/WorkerScripts/TestProcess/TestProcess/build/Qt_6_7_3_for_macOS-Release/.qmake.stash
