@@ -71,12 +71,28 @@ function addDataToConsole(data, fontColor)
 //The main interface has received data.
 function dataReceivedSlot(data)
 {
+	g_receivedData = g_receivedData.concat(data);
+}
+
+//Process the received data.
+function processTimerSlot()
+{
 	var pos;
+	
+	if(g_receivedData.length == 0)
+	{
+		return;
+	}
+	
+	g_processTimer.stop();
+	
+	var data = g_receivedData;
+	g_receivedData = Array();
 	
 	if(g_deleteLastLine)
 	{
 		
-		UI_TextEdit1.deleteLastLine()
+	   UI_TextEdit1.deleteLastLine()
 		g_deleteLastLine = false;
 		
 	}
@@ -94,6 +110,7 @@ function dataReceivedSlot(data)
 	//scriptThread.appendTextToConsole(data)
 	if(data[0] == 0x7)
 	{//Terminal bell.
+		g_processTimer.start(100);
 		return
 	}
 	else if((data[0] == 0x8) && (data[1] == 0x20) && (data[2] == 0x8)) 
@@ -104,6 +121,7 @@ function dataReceivedSlot(data)
 		UI_TextEdit1.deleteLastCharacters(1);
 		g_currentConsoleConent = UI_TextEdit1.toPlainText();
 		UI_TextEdit1.blockSignals(false);
+		g_processTimer.start(100);
 		return;
 	}
 	else if(data[0] == 0x8) 
@@ -134,6 +152,7 @@ function dataReceivedSlot(data)
 	
 	if(data.length == 0)
 	{
+		g_processTimer.start(100);
 		return
 	}
 	
@@ -195,6 +214,8 @@ function dataReceivedSlot(data)
 		// Convert and print processed string data back to array so main console can show it:
 		addDataToConsole(conv.stringToArray(stringArray[i]), g_textColor);				
 	}
+	
+	g_processTimer.start(100);
 }
 
 //Key was pressed while the console had the focus.
@@ -311,6 +332,11 @@ var g_font = "Courier New";
 //The console font size.
 var g_fontSize = 12;
 
+
+var g_processTimer = scriptThread.createTimer();
+g_processTimer.timeoutSignal.connect(processTimerSlot);
+g_receivedData = Array();
+g_processTimer.start(100);
 
 
 
