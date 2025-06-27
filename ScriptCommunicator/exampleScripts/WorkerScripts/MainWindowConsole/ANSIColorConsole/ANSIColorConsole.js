@@ -34,6 +34,7 @@ function mainWindowClearConsoleClicked()
 
 function addDataToConsole(data, fontColor)
 {
+	
 	var stringToAdd = "<span style=\"font-family:'"+ g_font;
 	stringToAdd += "';font-size:" + g_fontSize + "pt;color:#" + fontColor + "\">";
 	
@@ -67,98 +68,20 @@ function addDataToConsole(data, fontColor)
 	UI_TextEdit1.blockSignals(false);
 }
 
-
-//The main interface has received data.
-function dataReceivedSlot(data)
+function processStringData(data)
 {
-	g_receivedData = g_receivedData.concat(data);
-}
-
-//Process the received data.
-function processTimerSlot()
-{
-	var pos;
 	
-	if(g_receivedData.length == 0)
-	{
-		return;
-	}
-	
-	g_processTimer.stop();
-	
-	var data = g_receivedData;
-	g_receivedData = Array();
-	
-	if(g_deleteLastLine)
-	{
-		
-	   UI_TextEdit1.deleteLastLine()
-		g_deleteLastLine = false;
-		
-	}
-	
-	pos = data.indexOf(13);
-	if(pos!= -1)
-	{//Carriage return found.
-		
-		if(data[pos +1] != 10)
-		{//No new line after the carriage return.
-			g_deleteLastLine = true;
-		}
-	}
-	
-	//scriptThread.appendTextToConsole(data)
-	if(data[0] == 0x7)
-	{//Terminal bell.
-		g_processTimer.start(100);
-		return
-	}
-	else if((data[0] == 0x8) && (data[1] == 0x20) && (data[2] == 0x8)) 
-	{//Backspace key pressed.
-		
-		//Remove the last character.
-		UI_TextEdit1.blockSignals(true);
-		UI_TextEdit1.deleteLastCharacters(1);
-		g_currentConsoleConent = UI_TextEdit1.toPlainText();
-		UI_TextEdit1.blockSignals(false);
-		g_processTimer.start(100);
-		return;
-	}
-	else if(data[0] == 0x8) 
-	{//Backspace.
-		var i = 0
-		
-		UI_TextEdit1.blockSignals(true);
-		
-		for(; i < data.length; i++)
-		{
-			if(data[i] == 0x8)
-			{
-				//Remove the last character.
-				UI_TextEdit1.deleteLastCharacters(1);
-			}
-			else
-			{
-				break;
-			}
-		}
-		
-		g_currentConsoleConent = UI_TextEdit1.toPlainText();
-		UI_TextEdit1.blockSignals(false);
-		
-		data = data.slice(i, data.length);
-
-	}
-	
-	if(data.length == 0)
-	{
-		g_processTimer.start(100);
-		return
-	}
-	
-
 	// First, convert array to string so we can work with them:
 	var stringData = conv.byteArrayToString(data);
+	
+	//Ignore control code
+	stringData = stringData.replace(/\u001b\u005b4P/g,"");
+	stringData = stringData.replace(/\u001b\u005bK/g,"");
+	stringData = stringData.replace(/\u001b\u005bA/g,"");
+	
+	//Remove terminal bell.
+	stringData = stringData.replace(/\u0007/g,"");
+	
 	
 	// If there are some leftover data from previous run, add them:
 	if(g_storedRxData != "") stringData = g_storedRxData + stringData;
@@ -172,9 +95,12 @@ function processTimerSlot()
 	// Print first element of array (data before first escape char), using stored color from previous run:
 	addDataToConsole(conv.stringToArray(stringArray[0]), g_textColor);
 
+	
 	// Process following elements:
 	for(var i=1; i<stringArray.length; i++) 
 	{
+				
+		
 		// Put the ESC character back (if split was done by ESC):
 		stringArray[i] = "\u001b" + stringArray[i];
 		
@@ -196,6 +122,7 @@ function processTimerSlot()
 				}
 			}	
 		}
+		
 
 		// Now we can search for possible color setting ANSI sequence.
 		// Not the best, but does the job (basic colors only):	
@@ -211,11 +138,132 @@ function processTimerSlot()
 		else if (RGX_Color_GREY.test(stringArray[i])) 	g_textColor = "A9A9A9";
 		else g_textColor = "EEEEEE"
 		
+
+		
 		// Convert and print processed string data back to array so main console can show it:
 		addDataToConsole(conv.stringToArray(stringArray[i]), g_textColor);				
 	}
+}
+//The main interface has received data.
+function dataReceivedSlot(data)
+{
+	g_receivedData = g_receivedData.concat(data);
+}
+
+//Process the received data.
+function processTimerSlot()
+{
+	var pos;
 	
-	g_processTimer.start(100);
+	if(g_receivedData.length == 0)
+	{
+		return;
+	}
+	
+
+	
+	g_processTimer.stop();
+	
+	var data = g_receivedData;
+	g_receivedData = Array();
+	
+	
+	
+	if(g_deleteLastLine)
+	{
+		UI_TextEdit1.blockSignals(true);
+	    UI_TextEdit1.deleteLastLine()
+		g_currentConsoleConent = UI_TextEdit1.toPlainText();
+		UI_TextEdit1.blockSignals(false);
+		
+		g_deleteLastLine = false;
+		
+	}
+	
+	pos = data.indexOf(0x8);
+	while(pos!= -1)
+	{
+		if(pos != 0)
+		{
+			processStringData(data.slice(0, pos));
+		}
+			
+		
+	
+		if((data[pos + 1] == 0x20) && (data[pos + 2] == 0x8)) 
+		{//Backspace key pressed.
+			
+			//Remove the last character.
+			UI_TextEdit1.blockSignals(true);
+			UI_TextEdit1.deleteLastCharacters(1);
+			g_currentConsoleConent = UI_TextEdit1.toPlainText();
+			UI_TextEdit1.blockSignals(false);
+			
+			data = data.slice(pos + 3, data.length);
+		}
+		else
+		{//Remove the last character.
+			
+			UI_TextEdit1.blockSignals(true);
+			UI_TextEdit1.deleteLastCharacters(1);
+			g_currentConsoleConent = UI_TextEdit1.toPlainText();
+			UI_TextEdit1.blockSignals(false);
+			
+			data = data.slice(pos + 1, data.length);
+		}
+		
+		pos = data.indexOf(0x8);
+	}
+	
+	pos = data.indexOf(13);
+	while(pos!= -1)
+	{//Carriage return found.
+		
+
+		if(pos != 0)
+		{
+			processStringData(data.slice(0, pos - 1));
+		}
+			
+			
+		if(data[pos +1] != 10)
+		{//No new line after the carriage return.
+			
+			
+			if((pos + 1) == data.length)
+			{//Carriage return is the last character
+				
+				g_deleteLastLine = true;
+			}
+		}
+		else
+		{
+			if(data[pos +2] == 13)
+			{
+				UI_TextEdit1.blockSignals(true);
+				UI_TextEdit1.deleteLastLine()
+				g_currentConsoleConent = UI_TextEdit1.toPlainText();
+				UI_TextEdit1.blockSignals(false);
+			}
+		}
+	
+		data = data.slice(pos + 1, data.length);
+		pos = data.indexOf(13);
+	}
+	
+	
+	if(data.length == 0)
+	{
+		g_processTimer.start(g_timerInterval);
+		return
+	}
+	
+		
+	processStringData(data);
+	
+	
+	
+	g_processTimer.start(g_timerInterval);
 }
 
 //Key was pressed while the console had the focus.
@@ -333,10 +381,11 @@ var g_font = "Courier New";
 var g_fontSize = 12;
 
 
+var g_timerInterval = 100;
 var g_processTimer = scriptThread.createTimer();
 g_processTimer.timeoutSignal.connect(processTimerSlot);
 g_receivedData = Array();
-g_processTimer.start(100);
+g_processTimer.start(g_timerInterval);
 
 
 
