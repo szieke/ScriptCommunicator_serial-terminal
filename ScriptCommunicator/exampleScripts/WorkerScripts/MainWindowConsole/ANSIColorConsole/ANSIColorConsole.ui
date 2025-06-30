@@ -398,6 +398,9 @@
        <property name="undoRedoEnabled">
         <bool>false</bool>
        </property>
+       <property name="lineWrapMode">
+        <enum>QTextEdit::LineWrapMode::NoWrap</enum>
+       </property>
        <property name="readOnly">
         <bool>false</bool>
        </property>

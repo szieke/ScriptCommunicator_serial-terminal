@@ -167,19 +167,6 @@ function processTimerSlot()
 	var data = g_receivedData;
 	g_receivedData = Array();
 	
-	
-	
-	if(g_deleteLastLine)
-	{
-		UI_TextEdit1.blockSignals(true);
-	    UI_TextEdit1.deleteLastLine()
-		g_currentConsoleConent = UI_TextEdit1.toPlainText();
-		UI_TextEdit1.blockSignals(false);
-		
-		g_deleteLastLine = false;
-		
-	}
-	
 	pos = data.indexOf(0x8);
 	while(pos!= -1)
 	{
@@ -187,8 +174,6 @@ function processTimerSlot()
 		{
 			processStringData(data.slice(0, pos));
 		}
-			
-		
 	
 		if((data[pos + 1] == 0x20) && (data[pos + 2] == 0x8)) 
 		{//Backspace key pressed.
@@ -219,27 +204,19 @@ function processTimerSlot()
 	while(pos!= -1)
 	{//Carriage return found.
 		
-
 		if(pos != 0)
 		{
-			processStringData(data.slice(0, pos - 1));
+			processStringData(data.slice(0, pos));
 		}
-			
-			
-		if(data[pos +1] != 10)
+		
+		data = data.slice(pos + 1, data.length);
+
+		if(data[0] != 10)
 		{//No new line after the carriage return.
-			
-			
-			if((pos + 1) == data.length)
+
+			if(data.length == 0)
 			{//Carriage return is the last character
 				
-				g_deleteLastLine = true;
-			}
-		}
-		else
-		{
-			if(data[pos +2] == 13)
-			{
 				UI_TextEdit1.blockSignals(true);
 				UI_TextEdit1.deleteLastLine()
 				g_currentConsoleConent = UI_TextEdit1.toPlainText();
@@ -247,22 +224,16 @@ function processTimerSlot()
 			}
 		}
 	
-		data = data.slice(pos + 1, data.length);
 		pos = data.indexOf(13);
 	}
-	
 	
 	if(data.length == 0)
 	{
 		g_processTimer.start(g_timerInterval);
 		return
 	}
-	
-		
+			
 	processStringData(data);
-	
-	
-	
 	g_processTimer.start(g_timerInterval);
 }
 
@@ -352,9 +323,6 @@ var g_currentConsoleConent = "";
 scriptInf.dataReceivedSignal.connect(dataReceivedSlot);
 scriptThread.mainWindowLockScrollingClickedSignal.connect(mainWindowLockScrollingClicked);
 scriptThread.mainWindowClearConsoleClickedSignal.connect(mainWindowClearConsoleClicked);
-
-//True if the last line shall be deleted.
-var g_deleteLastLine = false;
 
 //The time at which the the last timestamp has been created.
 var g_timeLastTimestamp = Date.now();
