@@ -3,7 +3,7 @@ This worker script (worker scripts can be added in the script window) demonstrat
 Aardvark I2C/SPI varerface (used as main varerface).
 ***************************************************************************/
 
-const AARDVARD_I2C_SPI_GPIO_COUNT = 6;
+AARDVARD_I2C_SPI_GPIO_COUNT = 6;
 
 //Is called if this script shall be exited.
 function stopScript() 
